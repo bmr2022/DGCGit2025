@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using System.Data;
 using System.Globalization;
 using static eTactWeb.DOM.Models.Common;
@@ -44,14 +45,14 @@ public class HRAttendanceController : Controller
         FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
 
         ToDate = string.IsNullOrEmpty(model.ToDate) ? DateTime.Now.ToString("dd/MM/yyyy") : model.ToDate;
-        var MainModel = await IHRAttendance.GetHRAListData(string.Empty, string.Empty, string.Empty, model);
-        var MRNType = "MRN";
+        var MainModel = new HRAListDataModel();
+        //var MainModel = await IHRAttendance.GetHRAListData(string.Empty, string.Empty, string.Empty, model);
+
         DateTime now = DateTime.Now;
         DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
         DateTime today = DateTime.Now;
         var commonparams = new Dictionary<string, object>()
         {
-            { "@MRNTYpe", MRNType },
             { "@Fromdate", firstDayOfMonth },
             { "@ToDate", today }
         };
@@ -60,6 +61,72 @@ public class HRAttendanceController : Controller
         MainModel.ToDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day).ToString("dd/MM/yyyy").Replace("-", "/");// Last day in January next year
 
         return View(MainModel);
+    }
+    public async Task<IActionResult> GetSearchHRAListData(HRAListDataModel model)
+    {
+        var _List = new List<TextValue>();
+        DateTime now = DateTime.Now;
+        DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+        DateTime today = DateTime.Now;
+
+        string fromDate = (model.FromDate);
+        string toDate = (model.ToDate);
+        var MainModel = new HRAListDataModel();
+       // var MainModel = await IHRAttendance.GetHRAttendanceListData("DisplayPendingData", MRNType, model.DashboardType ?? "SUMMARY", fromDate, toDate, model);
+
+        //fromDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+        //toDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+        var commonparams = new Dictionary<string, object>()
+        {
+            { "@Fromdate", model.FromDate != null ? fromDate : firstDayOfMonth },
+            { "@ToDate", model.ToDate != null ? toDate : today }
+        };
+        MainModel = await BindPBList(MainModel, commonparams);
+        MainModel.FromDate = new DateTime(DateTime.Today.Year, 4, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+        MainModel.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");// Last day in January next year
+
+        //MainModel.DashboardType = "Summary";
+        return PartialView("_HRAListDataGrid", MainModel);
+    }
+    public async Task<IActionResult> GetHRAListDropdownData(HRAListDataModel model)
+    {
+        var _List = new List<TextValue>();
+        DateTime now = DateTime.Now;
+        DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+        DateTime today = DateTime.Now;
+        var MainModel = model;
+        DateTime fromDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+        DateTime toDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+        var commonparams = new Dictionary<string, object>()
+        {
+            { "@Fromdate", model.FromDate != null ? fromDate : firstDayOfMonth },
+            { "@ToDate", model.ToDate != null ? toDate : today }
+        };
+        MainModel = await BindPBList(MainModel, commonparams);
+        return PartialView("_SearchParamList", MainModel);
+    }
+    public async Task<HRAListDataModel> BindPBList(HRAListDataModel MainModel, Dictionary<string, object> commonparams)
+    {
+        Dictionary<string, object> Build(string flag)
+        {
+            var p = new Dictionary<string, object>() { { "@flag", flag } };
+
+            foreach (var kv in commonparams)
+                if (kv.Key != "@flag") p[kv.Key] = kv.Value;
+
+            return p;
+        }
+        var dashdep = Build("DashboardFillDepartment");
+        var dashcat = Build("DashboardFillCategory");
+        var dashdesg = Build("DashboardFillDesignation");
+        var dashemp = Build("DashboardFillEmployee");
+        MainModel.DashDepartmentList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPHRAttendanceMainDetail", dashdep, false, false);
+        MainModel.DashCategoryList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPHRAttendanceMainDetail", dashcat, false, true);
+        MainModel.DashDesignationList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPHRAttendanceMainDetail", dashdesg, false, false);
+        MainModel.DashEmployeeList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPHRAttendanceMainDetail", dashemp, false, false);
+        return MainModel;
     }
     public string GetEmpByMachineName()
     {
@@ -75,40 +142,18 @@ public class HRAttendanceController : Controller
             return "";
         }
     }
-    public async Task<HRAListDataModel> BindPBList(HRAListDataModel MainModel, Dictionary<string, object> commonparams)
+    public async Task<JsonResult> GetFormRights()
     {
-        //var partyparams = new Dictionary<string, object>() { { "@flag", "FillPartyName" } };
-        //partyparams.AddRange(commonparams);
-        //MainModel.PartyNameList = await IDataLogic.GetDropDownListWithCustomeVar("GetPendingMRNListForPurchaseBill", partyparams, true);
-
-        //var mrnnoparams = new Dictionary<string, object>() { { "@flag", "FillMRNNO" } };
-        //mrnnoparams.AddRange(commonparams);
-        //MainModel.MRNNoList = await IDataLogic.GetDropDownListWithCustomeVar("GetPendingMRNListForPurchaseBill", mrnnoparams, true);
-
-        //var ponoparams = new Dictionary<string, object>() { { "@flag", "PONO" } };
-        //ponoparams.AddRange(commonparams);
-        //MainModel.PONOList = await IDataLogic.GetDropDownListWithCustomeVar("GetPendingMRNListForPurchaseBill", ponoparams, true);
-
-        //var invparams = new Dictionary<string, object>() { { "@flag", "FillInvoiceNo" } };
-        //invparams.AddRange(commonparams);
-        //MainModel.InvoiceNoList = await IDataLogic.GetDropDownListWithCustomeVar("GetPendingMRNListForPurchaseBill", invparams, true);
-
-        //var gatenoparams = new Dictionary<string, object>() { { "@flag", "FillGateNo" } };
-        //gatenoparams.AddRange(commonparams);
-        //MainModel.GateNoList = await IDataLogic.GetDropDownListWithCustomeVar("GetPendingMRNListForPurchaseBill", gatenoparams, true);
-
-        //var docnameparams = new Dictionary<string, object>() { { "@flag", "FillDocument" } };
-        //docnameparams.AddRange(commonparams);
-        //MainModel.DocumentNameList = await IDataLogic.GetDropDownListWithCustomeVar("GetPendingMRNListForPurchaseBill", docnameparams, true);
-
-        //var itemnameparams = new Dictionary<string, object>() { { "@flag", "FillItemName" } };
-        //itemnameparams.AddRange(commonparams);
-        //MainModel.ItemNameList = await IDataLogic.GetDropDownListWithCustomeVar("GetPendingMRNListForPurchaseBill", itemnameparams, true);
-
-        //var partcodeparams = new Dictionary<string, object>() { { "@flag", "FillPartCode" } };
-        //partcodeparams.AddRange(commonparams);
-        //MainModel.PartCodeList = await IDataLogic.GetDropDownListWithCustomeVar("GetPendingMRNListForPurchaseBill", partcodeparams, true);
-        return MainModel;
+        var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+        var JSON = await IHRAttendance.GetFormRights(userID);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> FillEntryId(int YearCode)
+    {
+        var JSON = await IHRAttendance.FillEntryId(YearCode);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
     }
 }
 

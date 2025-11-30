@@ -35,7 +35,18 @@
                                 <div id="container">
 
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="CostCenterMaster" asp-route-Mode="V" onclick="BackButtonData(event);">
+                                        <a class="table-link link-success" asp-route-ID="@item.CostcenterId" asp-action="CostCenterMaster" asp-route-Mode="V" asp-route-EntryDate="@item.EntryDate"
+                                           asp-route-CostCenterCode="@item.CostCenterCode"
+                                           asp-route-CostCenterName="@item.CostCenterName"
+                                           asp-route-ShortName="@item.ShortName"
+                                           asp-route-DepartmentName="@item.DepartmentName"
+                                           asp-route-DeptId="@item.DepartmentID"
+                                           asp-route-UnderGroupId="@item.UnderGroupId"
+                                           asp-route-UnderGroupName="@item.UnderGroupName"
+                                           asp-route-Remarks="@item.Remarks"
+                                           asp-route-CC="@item.CC"
+                                           asp-route-CostCenterGroupID="@item.CostcentergroupID"
+                                           asp-route-CostcenetrGroupName="@item.CostcenetrGroupName">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>

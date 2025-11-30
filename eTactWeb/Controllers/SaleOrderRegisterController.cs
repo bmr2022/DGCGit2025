@@ -71,110 +71,31 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        //public async Task<IActionResult> GetSaleOrderDetailsData(string OrderSchedule, string ReportType, string PartCode, string ItemName, string Sono, string CustOrderNo, string CustomerName, string SalesPersonName, string SchNo, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
-        //{
-        //    var model = new SaleOrderRegisterModel();
-        //    model = await _ISaleOrderRegister.GetSaleOrderDetailsData( OrderSchedule,  ReportType,  PartCode,  ItemName,  Sono,  CustOrderNo,  CustomerName,  SalesPersonName,  SchNo,  FromDate,  ToDate);
-
-        //    var modelList = model?.saleOrderRegisterGrid ?? new List<SaleOrderRegisterModel>();
-
-
-        //    if (string.IsNullOrWhiteSpace(SearchBox))
-        //    {
-        //        model.TotalRecords = modelList.Count();
-        //        model.PageNumber = pageNumber;
-        //        model.PageSize = pageSize;
-        //        model.saleOrderRegisterGrid = modelList
-        //        .Skip((pageNumber - 1) * pageSize)
-        //           .Take(pageSize)
-        //           .ToList();
-        //    }
-        //    else
-        //    {
-        //        List<SaleOrderRegisterModel> filteredResults;
-        //        if (string.IsNullOrWhiteSpace(SearchBox))
-        //        {
-        //            filteredResults = modelList.ToList();
-        //        }
-        //        else
-        //        {
-        //            filteredResults = modelList
-        //                .Where(i => i.GetType().GetProperties()
-        //                    .Where(p => p.PropertyType == typeof(string))
-        //                    .Select(p => p.GetValue(i)?.ToString())
-        //                    .Any(value => !string.IsNullOrEmpty(value) &&
-        //                                  value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
-        //                .ToList();
-
-
-        //            if (filteredResults.Count == 0)
-        //            {
-        //                filteredResults = modelList.ToList();
-        //            }
-        //        }
-
-        //        model.TotalRecords = filteredResults.Count;
-        //        model.saleOrderRegisterGrid = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-        //        model.PageNumber = pageNumber;
-        //        model.PageSize = pageSize;
-        //    }
-        //    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-        //    {
-        //        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-        //        SlidingExpiration = TimeSpan.FromMinutes(55),
-        //        Size = 1024,
-        //    };
-
-        //    _MemoryCache.Set("KeySaleOrderList", modelList, cacheEntryOptions);
-
-        //    //string serializedGrid = JsonConvert.SerializeObject(modelList);
-        //    if (ReportType == "Sale Order Summary")
-        //    {
-        //        return PartialView("_SaleOrderSummary", model);
-        //    }
-        //    if (ReportType == "Sale Order Detail")
-        //    {
-        //        return PartialView("_SaleOrderDetail", model);
-        //    }
-        //    if (ReportType == "Schedule Summary")
-        //    {
-        //        return PartialView("_SaleOrderScheduleSummaryRegisterGrid", model);
-        //    }
-        //    if (ReportType == "Schedule Summary Detail")
-        //    {
-        //        return PartialView("_SaleOrderScheduleDetailRegisterGrid", model);
-        //    }
-        //    if (ReportType == "Monthly Order+Schedule Summary")
-        //    {
-        //        return PartialView("_SaleOrderMonthlyOrder+ScheduleSummary", model);
-        //    }
-        //    if (ReportType == "Day Wise Order+Schedule (Item Wise)")
-        //    {
-        //        return PartialView("_SaleOrderDayWiseOrder+Schedule(Item Wise)", model);
-        //    }
-        //    if (ReportType == "Monthly Order+Schedule+Pending Summary")
-        //    {
-        //        return PartialView("_SaleOrderMonthlyOrder+Schedule+PendingSummary", model);
-        //    }
-        //    if (ReportType == "Day Wise Order+Schedule (Item + Customer Wise)")
-        //    {
-        //        return PartialView("_SaleOrderDayWiseOrder+Schedule(Item + Customer Wise)", model);
-        //    }
-
-        //    return null;
-        //}
-        public async Task<IActionResult> GetSaleOrderDetailsData(string OrderSchedule, string ReportType, string PartCode, string ItemName, string Sono, string CustOrderNo, string CustomerName, string SalesPersonName, string SchNo, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        public async Task<IActionResult> GetSaleOrderDetailsData(
+            string OrderSchedule, string ReportType, string PartCode, string ItemName,
+            string Sono, string CustOrderNo, string CustomerName, string SalesPersonName,
+            string SchNo, string FromDate, string ToDate,
+            int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
-          
             string cacheKey = $"KeySaleOrderList_{ReportType}";
 
             List<SaleOrderRegisterModel> modelList;
+            List<string> dynamicHeaders;   // ⭐ NEW (to store dynamic columns)
 
             if (!_MemoryCache.TryGetValue(cacheKey, out modelList))
             {
-                var model = await _ISaleOrderRegister.GetSaleOrderDetailsData(OrderSchedule, ReportType, PartCode, ItemName, Sono, CustOrderNo, CustomerName, SalesPersonName, SchNo, FromDate, ToDate);
-                modelList = (List<SaleOrderRegisterModel>?)(model?.saleOrderRegisterGrid ?? new List<SaleOrderRegisterModel>());
+                // Load data from DB
+                var model = await _ISaleOrderRegister.GetSaleOrderDetailsData(
+                    OrderSchedule, ReportType, PartCode, ItemName, Sono, CustOrderNo,
+                    CustomerName, SalesPersonName, SchNo, FromDate, ToDate);
 
+                // ⭐ Keep rows
+                modelList = model?.saleOrderRegisterGrid?.ToList() ?? new List<SaleOrderRegisterModel>();
+
+                // ⭐ Keep dynamic headers (CRITICAL)
+                dynamicHeaders = model?.DynamicHeaders ?? new List<string>();
+
+                // Cache only rows. Headers must be stored separately.
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60),
@@ -183,23 +104,62 @@ namespace eTactWeb.Controllers
                 };
 
                 _MemoryCache.Set(cacheKey, modelList, cacheEntryOptions);
+                HttpContext.Session.SetString("DynamicHeaders_" + ReportType, System.Text.Json.JsonSerializer.Serialize(dynamicHeaders));
+            }
+            else
+            {
+                // Still fetch new dataset (you want updated headers)
+                var model = await _ISaleOrderRegister.GetSaleOrderDetailsData(
+                    OrderSchedule, ReportType, PartCode, ItemName, Sono, CustOrderNo,
+                    CustomerName, SalesPersonName, SchNo, FromDate, ToDate);
+
+                // ⭐ Keep rows
+                modelList = model?.saleOrderRegisterGrid?.ToList() ?? new List<SaleOrderRegisterModel>();
+
+                // ⭐ Keep headers
+                dynamicHeaders = model?.DynamicHeaders ?? new List<string>();
+
+                HttpContext.Session.SetString("DynamicHeaders_" + ReportType, System.Text.Json.JsonSerializer.Serialize(dynamicHeaders));
             }
 
-            var modelResult = new SaleOrderRegisterModel();
+            // ⭐ Retrieve headers
+            if (HttpContext.Session.TryGetValue("DynamicHeaders_" + ReportType, out var headerBytes))
+            {
+                dynamicHeaders = System.Text.Json.JsonSerializer.Deserialize<List<string>>(headerBytes);
+            }
+            else
+            {
+                dynamicHeaders = new List<string>();
+            }
 
+            // Filtering based on search box
             List<SaleOrderRegisterModel> filteredResults = string.IsNullOrWhiteSpace(SearchBox)
                 ? modelList
                 : modelList.Where(i => i.GetType().GetProperties()
                     .Where(p => p.PropertyType == typeof(string))
                     .Select(p => p.GetValue(i)?.ToString())
-                    .Any(value => !string.IsNullOrEmpty(value) && value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
-                    .ToList();
+                    .Any(value => !string.IsNullOrEmpty(value) &&
+                                  value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                  .ToList();
 
-            modelResult.TotalRecords = filteredResults.Count;
-            modelResult.PageNumber = pageNumber;
-            modelResult.PageSize = pageSize;
-            modelResult.saleOrderRegisterGrid = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
+            // Build final model
+            var modelResult = new SaleOrderRegisterModel
+            {
+                TotalRecords = filteredResults.Count,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                saleOrderRegisterGrid = filteredResults
+                                        .Skip((pageNumber - 1) * pageSize)
+                                        .Take(pageSize)
+                                        .ToList(),
+
+                // ⭐ MOST IMPORTANT: bind dynamic headers
+                DynamicHeaders = dynamicHeaders
+            };
+
+
+            // Return proper partial based on ReportType
             return ReportType switch
             {
                 "Sale Order Summary" => PartialView("_SaleOrderSummary", modelResult),
@@ -210,7 +170,9 @@ namespace eTactWeb.Controllers
                 "Day Wise Order+Schedule (Item Wise)" => PartialView("_SaleOrderDayWiseOrder+Schedule(Item Wise)", modelResult),
                 "Monthly Order+Schedule+Pending Summary" => PartialView("_SaleOrderMonthlyOrder+Schedule+PendingSummary", modelResult),
                 "Day Wise Order+Schedule (Item + Customer Wise)" => PartialView("_SaleOrderDayWiseOrder+Schedule(Item + Customer Wise)", modelResult),
-                _ => null
+
+                // ⭐ DEFAULT CASE — Dynamic Table
+                _ => PartialView("_SaleOrderDynamicRowData", modelResult)
             };
         }
 

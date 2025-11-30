@@ -25,5 +25,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _CommonDAL.CheckFinYearBeforeSave(YearCode, Date, DateName);
         }
+        public async Task<ResponseResult> FillReportTypes(string TableName)
+        {
+            return await _CommonDAL.FillReportTypes(TableName);
+        }
     }
 }

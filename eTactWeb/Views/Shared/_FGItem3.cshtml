@@ -1,59 +1,59 @@
 ﻿@model eTactWeb.DOM.Models.BomModel
 
-  <div class="row">
-        <div class="col-lg-4 col-md-4 col-sm-6 col-12">
-            <div class="col-md-6">
-            <label asp-for="AltItemCode1" class="form-label">Alt Part Code1</label>
-            <select asp-for="AltItemCode1" style="width:200px !important;" class="form-select col-12" asp-items="@(new SelectList(Model.CodeList, "Text", "Value"))">                
-                <option value="">-Select-</option>
-            </select>
-        </div>
-        </div>
-        <div class="col-lg-8 col-md-8 col-sm-6 col-12">
-            <div class="row">
-                <div class="col-6">
-                    <label asp-for="AltItemName1" class="form-label">Alt Item Name1</label>
-                </div>
-                <div class="col-6 p-0">
+<div class="row">
+	<div class="col-lg-4 col-md-4 col-sm-6 col-12">
+		<div class="col-md-6">
+			<label asp-for="AltItemCode1" class="form-label">Alt Part Code1</label>
+			<select asp-for="AltItemCode1" style="width:200px !important;" class="form-select col-12" asp-items="@(new SelectList(Model.CodeList, "Text", "Value"))">
+				<option value="">-Select-</option>
+			</select>
+		</div>
+	</div>
+	<div class="col-lg-8 col-md-8 col-sm-6 col-12">
+		<div class="row">
+			<div class="col-6">
+				<label asp-for="AltItemName1" class="form-label">Alt Item Name1</label>
+			</div>
+			<div class="col-6 p-0">
 
-                @if (@Model.Mode != "U")
-                {
-                   
-                    <div class="form-check form-switch">
-                    <input asp-for="FG3" class="form-check-input  mb-2" type="checkbox" role="switch" onchange="FetchItem(this);" />Show All
-                    </div>
-                }
-                else
-                {                   
-                    <div class="form-check form-switch">
-                    <input asp-for="FG3" checked class="form-check-input  mb-2" type="checkbox" role="switch" onchange="FetchItem(this);" />Show All
-                    </div>
-                }
+				@if (@Model.Mode != "U")
+				{
 
-                </div>
-            </div>
-        <select asp-for="AltItemName1" class="form-select" style="width:400px !important;" asp-items="@(new SelectList(Model.NameList, "Text", "Value"))">
-                <option value="">-Select-</option>
-            </select>
-        </div>
+					<div class="form-check form-switch">
+						<input asp-for="FG3" class="form-check-input  mb-2" type="checkbox" role="switch" onchange="FetchItem(this);" />Show All
+					</div>
+				}
+				else
+				{
+					<div class="form-check form-switch">
+						<input asp-for="FG3" checked class="form-check-input  mb-2" type="checkbox" role="switch" onchange="FetchItem(this);" />Show All
+					</div>
+				}
+
+			</div>
+		</div>
+		<select asp-for="AltItemName1" class="form-select" style="width:400px !important;" asp-items="@(new SelectList(Model.NameList, "Text", "Value"))">
+			<option value="">-Select-</option>
+		</select>
+	</div>
 </div>
 
-    <div class="row">
-        <div class="col-lg-4 col-md-4 col-sm-6 col-12">
-        <div class="col-md-6">
-            <label asp-for="AltItemCode2" class="form-label">Alt Part Code2</label>
-            <select asp-for="AltItemCode2" class="form-select" style="width:200px !important;" asp-items="@(new SelectList(Model.CodeList, "Text", "Value"))">
-                <option value="">-Select-</option>
-            </select>
-            </div>
-        </div>
-        <div class="col-lg-8 col-md-8 col-sm-6 col-12">
-            <div class="col-md-6">
-            <label asp-for="AltItemName2" class="form-label">Alt Item Name2</label>
-            <select asp-for="AltItemName2" class="form-select" style="width:400px !important;" asp-items="@(new SelectList(Model.NameList, "Text", "Value"))">
-                <option value="">-Select-</option>
-            </select>
-            </div>
-        </div>
-    </div>
+<div class="row">
+	<div class="col-lg-4 col-md-4 col-sm-6 col-12">
+		<div class="col-md-6">
+			<label asp-for="AltItemCode2" class="form-label">Alt Part Code2</label>
+			<select asp-for="AltItemCode2" class="form-select" style="width:200px !important;" asp-items="@(new SelectList(Model.CodeList, "Text", "Value"))">
+				<option value="">-Select-</option>
+			</select>
+		</div>
+	</div>
+	<div class="col-lg-8 col-md-8 col-sm-6 col-12">
+		<div class="col-md-6">
+			<label asp-for="AltItemName2" class="form-label">Alt Item Name2</label>
+			<select asp-for="AltItemName2" class="form-select" style="width:400px !important;" asp-items="@(new SelectList(Model.NameList, "Text", "Value"))">
+				<option value="">-Select-</option>
+			</select>
+		</div>
+	</div>
+</div>
 

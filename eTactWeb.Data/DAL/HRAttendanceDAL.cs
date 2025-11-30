@@ -25,7 +25,7 @@ public class HRAttendanceDAL
         DBConnectionString = _connectionStringService.GetConnectionString();
         //DBConnectionString = configuration.GetConnectionString("eTactDB");
     }
-    internal async Task<HRAListDataModel> GetHRAttendanceListData(string? flag, string? AttendanceDate, string? EmpCateg, HRAListDataModel model)
+    internal async Task<HRAListDataModel> GetHRAttendanceListData(int? YearCode, string? AttendanceDate, string? EmpCateg, HRAListDataModel model)
     {
         var HRAListData = new HRAListDataModel();
         var SqlParams = new List<dynamic>();
@@ -38,29 +38,20 @@ public class HRAttendanceDAL
                 DateTime now = DateTime.Now;
                 DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
                 DateTime today = DateTime.Now;
-                SqlCommand oCmd = new SqlCommand("GetPendingMRNListForPurchaseBill", myConnection)
+                SqlCommand oCmd = new SqlCommand("HRSPHRAttendanceMainDetail", myConnection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                flag = !string.IsNullOrEmpty(flag) ? flag : "DisplayPendingData";
                 //MRNType = !string.IsNullOrEmpty(MRNType) ? MRNType : "MRN";
                 //dashboardtype = !string.IsNullOrEmpty(dashboardtype) ? dashboardtype : "SUMMARY";
                 //firstdate = CommonFunc.ParseFormattedDate(firstdate);
                 //todate = CommonFunc.ParseFormattedDate(todate);
                 
-                oCmd.Parameters.AddWithValue("@flag", flag);
-                //oCmd.Parameters.AddWithValue("@MRNTYpe", MRNType);
+                oCmd.Parameters.AddWithValue("@flag", "PendingGateAttendance");
                 //oCmd.Parameters.AddWithValue("@Fromdate", firstdate);
                 //oCmd.Parameters.AddWithValue("@Todate", todate);
-                //oCmd.Parameters.AddWithValue("@SummaryDetail", dashboardtype.ToUpper());
-                oCmd.Parameters.AddWithValue("@VendorName", !string.IsNullOrEmpty(model.PartyName) && model.PartyName != "0" ? model.PartyName : string.Empty);
-                oCmd.Parameters.AddWithValue("@Mrnno", !string.IsNullOrEmpty(model.MRNNo) && model.MRNNo != "0" ? model.MRNNo : string.Empty);
-                oCmd.Parameters.AddWithValue("@Pono", !string.IsNullOrEmpty(model.PONO) && model.PONO != "0" ? model.PONO : string.Empty);
-                oCmd.Parameters.AddWithValue("@InvNo", !string.IsNullOrEmpty(model.InvoiceNo) && model.InvoiceNo != "0" ? model.InvoiceNo : string.Empty);
-                oCmd.Parameters.AddWithValue("@gateNo", !string.IsNullOrEmpty(model.GateNo) && model.GateNo != "0" ? model.GateNo : string.Empty);
-                oCmd.Parameters.AddWithValue("@Itemname", !string.IsNullOrEmpty(model.ItemName) && model.ItemName != "0" ? model.ItemName : string.Empty);
-                oCmd.Parameters.AddWithValue("@docname", !string.IsNullOrEmpty(model.DocumentName) && model.DocumentName != "0" ? model.DocumentName : string.Empty);
-                oCmd.Parameters.AddWithValue("@partcode", !string.IsNullOrEmpty(model.PartCode) && model.PartCode != "0" ? model.PartCode : string.Empty);
+                oCmd.Parameters.AddWithValue("@HRAttYearCode", !string.IsNullOrEmpty(model.EmpAttYear.ToString()) && model.EmpAttYear > 0 ? model.EmpAttYear : string.Empty);
+                oCmd.Parameters.AddWithValue("@AttendanceDate", !string.IsNullOrEmpty(model.AttandanceDate) && model.AttandanceDate != "0" ? model.AttandanceDate : string.Empty);
                 await myConnection.OpenAsync();
                 using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                 {
@@ -80,21 +71,21 @@ public class HRAttendanceDAL
                     HRAListData.HRAListData.Add(new HRAListDataModel
                     {
                         HRAListDataSeqNo = seq++,
-                        MRNNo = dr["MRNNo"].ToString(),
-                        MRNYearCode = string.IsNullOrEmpty(dr["MRNYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["MRNYearCode"]),
-                        MRNEntryDate = string.IsNullOrEmpty(dr["MRNEntryDate"].ToString()) ? DateTime.MinValue : Convert.ToDateTime(dr["MRNEntryDate"]),
-                        PartyName = dr["VendorName"].ToString(),
-                        InvoiceNo = dr["InvoiceNo"].ToString(),
-                        InvoiceDate = string.IsNullOrEmpty(dr["InvDate"].ToString()) ? DateTime.MinValue : Convert.ToDateTime(dr["InvDate"]),
-                        GateNo = dr["GateNo"].ToString(),
-                        GateDate = string.IsNullOrEmpty(dr["GateDate"].ToString()) ? DateTime.MinValue : Convert.ToDateTime(dr["GateDate"]),
-                        DocumentName = string.Empty, // Default as empty
-                        CheckQc = dr["CheckQc"].ToString(),
-                        QCCompleted = dr["QCCompleted"].ToString(),
-                        TotalMRNItemCount = string.IsNullOrEmpty(dr["TotalMRNItemCount"].ToString()) ? 0 : Convert.ToInt32(dr["TotalMRNItemCount"]),
-                        QCtotalQty = string.IsNullOrEmpty(dr["QCtotalQty"].ToString()) ? 0 : Convert.ToInt32(dr["QCtotalQty"]),
-                        ItemQCCompledCount = string.IsNullOrEmpty(dr["ItemQCCompledCount"].ToString()) ? 0 : Convert.ToInt32(dr["ItemQCCompledCount"]),
-                        AccountCode = string.IsNullOrEmpty(dr["AccountCode"].ToString()) ? 0 : Convert.ToInt32(dr["AccountCode"])
+                        //MRNNo = dr["MRNNo"].ToString(),
+                        //MRNYearCode = string.IsNullOrEmpty(dr["MRNYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["MRNYearCode"]),
+                        //MRNEntryDate = string.IsNullOrEmpty(dr["MRNEntryDate"].ToString()) ? DateTime.MinValue : Convert.ToDateTime(dr["MRNEntryDate"]),
+                        //PartyName = dr["VendorName"].ToString(),
+                        //InvoiceNo = dr["InvoiceNo"].ToString(),
+                        //InvoiceDate = string.IsNullOrEmpty(dr["InvDate"].ToString()) ? DateTime.MinValue : Convert.ToDateTime(dr["InvDate"]),
+                        //GateNo = dr["GateNo"].ToString(),
+                        //GateDate = string.IsNullOrEmpty(dr["GateDate"].ToString()) ? DateTime.MinValue : Convert.ToDateTime(dr["GateDate"]),
+                        //DocumentName = string.Empty, // Default as empty
+                        //CheckQc = dr["CheckQc"].ToString(),
+                        //QCCompleted = dr["QCCompleted"].ToString(),
+                        TotalItemCount = string.IsNullOrEmpty(dr["TotalItemCount"].ToString()) ? 0 : Convert.ToInt32(dr["TotalItemCount"])
+                        //QCtotalQty = string.IsNullOrEmpty(dr["QCtotalQty"].ToString()) ? 0 : Convert.ToInt32(dr["QCtotalQty"]),
+                        //ItemQCCompledCount = string.IsNullOrEmpty(dr["ItemQCCompledCount"].ToString()) ? 0 : Convert.ToInt32(dr["ItemQCCompledCount"]),
+                        //AccountCode = string.IsNullOrEmpty(dr["AccountCode"].ToString()) ? 0 : Convert.ToInt32(dr["AccountCode"])
                     });
                 }
             }
@@ -108,5 +99,44 @@ public class HRAttendanceDAL
         }
 
         return HRAListData;
+    }
+    public async Task<ResponseResult> FillEntryId(int YearCode)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@flag", "NewEntryId"));
+            SqlParams.Add(new SqlParameter("@HRAttYearCode", YearCode));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("HRSPHRAttendanceMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
+    public async Task<ResponseResult> GetFormRights(int userId)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
+            SqlParams.Add(new SqlParameter("@EmpId", userId));
+            SqlParams.Add(new SqlParameter("@MainMenu", "HR Attendance"));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
     }
 }

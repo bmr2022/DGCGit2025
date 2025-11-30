@@ -27,5 +27,13 @@ namespace eTactWeb.Data.BLL
         {
             throw new NotImplementedException();//return await _HRAttendanceDAL.GetHRAttendanceListData(flag, AttendanceDate, EmpCateg, model);
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _HRAttendanceDAL.GetFormRights(ID);
+        }
+        public async Task<ResponseResult> FillEntryId(int YearCode)
+        {
+            return await _HRAttendanceDAL.FillEntryId(YearCode);
+        }
     }
 }

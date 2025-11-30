@@ -155,7 +155,9 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var ledgeropnDt = CommonFunc.ParseFormattedDate(model.ActualEntryDate.ToString());
-                var upDt = model.UpdationDate == null ? null : CommonFunc.ParseFormattedDate(model.UpdationDate.ToString());
+                var upDt = model.UpdationDate == null
+                           ? DateTime.Now.ToString("dd/MM/yyyy")
+                           : CommonFunc.ParseFormattedDate(model.UpdationDate.ToString());
                 var sqlParams = new List<dynamic>();
                 if (model.Mode == "U" || model.Mode == "V")
                 {

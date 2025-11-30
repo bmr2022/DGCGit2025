@@ -1,0 +1,165 @@
+﻿@model eTactWeb.DOM.Models.HRAListDataModel
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@using System.Globalization
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-bordered TbCss text-nowrap mb-0" id="HRADashboardGrid">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashHRAThead">
+            <tr>
+                <th>Sr#</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Emp Id</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Emp Code</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Emp Name</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate Att Entry Id</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate Att Year Code</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Card Or Biometric Id</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HR Attend Status</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Attend Status</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Attend Date</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>In Time</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Out Time</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total No Of Hour</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total No Of Shift Hour</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Late Entry</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Early Exit</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Leave Type Id</th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Shift Name</th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Shift Id</th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Emp Categ</th>
+                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Category Code</th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CC</th>
+                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Emp Attend Date</th>
+                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Emp Attend Year</th>
+                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Emp Attend Time</th>
+                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Designation</th>
+                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dept Name</th>
+                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Leave Date</th>
+                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Leave Entry Id</th>
+                <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Half Day Full Day</th>
+            </tr>
+        </thead>
+        <tbody id="divDashboardGrid1">
+            @{
+                var @Cntr = 0;
+                if (Model.HRAListData == null || Model.HRAListData.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="18" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.HRAListData)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr id="approvedRow-@Cntr">
+                            <td class="FWB">
+                                @Cntr
+                                <input type="hidden" id="EmpId_@Cntr" value="@item.EmpId" />
+                                @*<input type="hidden" id="approvedOrNot-@Cntr" value="@item.Approved" />
+                                    <input type="hidden" id="fLevelApproved-@Cntr" value="@item.Approval1Levelapproved" />
+                                    <input type="hidden" id="AmmApproved-@Cntr" value="@item.ApproveAmm" />*@
+                            </td>
+                            @*<td id='MRNNo_@Cntr'><a onclick="transferDataToEdit('@Cntr')">@item.MRNNo</a></td>
+                            <td id='MRNYearCode_@Cntr'>@item.MRNYearCode</td>
+                            <td id='MRNEntryDate_@Cntr'>
+                                @(item.MRNEntryDate.HasValue
+                                ? item.MRNEntryDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                                : string.Empty)
+                            </td>
+                            <td id='PartyName_@Cntr'>@item.PartyName</td>
+                            <td id='InvoiceNo_@Cntr'>@item.InvoiceNo</td>
+                            <td id='InvoiceDate_@Cntr'>
+                                @(item.InvoiceDate.HasValue
+                                ? item.InvoiceDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                                : string.Empty)
+                            </td>
+                            <td id='GateNo_@Cntr'>@item.GateNo</td>
+                            <td id='GateDate_@Cntr'>
+                                @(item.GateDate.HasValue
+                                ? item.GateDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                                : string.Empty)
+                            </td>
+                            <td id='DocumentName_@Cntr'>@item.DocumentName</td>*@
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                            <td id='@Cntr'></td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+
+    #HRADashboardGrid {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashHRAThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>

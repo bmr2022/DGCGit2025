@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.EMMA;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +12,7 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.DAL
 {
-    public  class SaleOrderRegisterDAL
+    public class SaleOrderRegisterDAL
     {
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
@@ -169,7 +170,7 @@ namespace eTactWeb.Data.DAL
                     var fromDt = CommonFunc.ParseFormattedDate(FromDate);
                     var toDt = CommonFunc.ParseFormattedDate(ToDate);
                     command.Parameters.AddWithValue("@flag", "ReportDisplay");
-                    command.Parameters.AddWithValue("@FromDate",fromDt);
+                    command.Parameters.AddWithValue("@FromDate", fromDt);
                     command.Parameters.AddWithValue("@ToDate", toDt);
                     command.Parameters.AddWithValue("@ReportType", ReportType);
                     command.Parameters.AddWithValue("@SaleorderOrSchData", OrderSchedule);
@@ -179,11 +180,6 @@ namespace eTactWeb.Data.DAL
                     command.Parameters.AddWithValue("@SchNo", SchNo);
                     command.Parameters.AddWithValue("@accountcode", CustomerName);
                     command.Parameters.AddWithValue("@SaleManEmpId", SalesPersonName);
-                    //command.Parameters.AddWithValue("@WCID", WorkCenterid);
-                    // command.Parameters.AddWithValue("@RMItemcode", RMItemCode);
-
-
-                    // Open connection
                     await connection.OpenAsync();
 
                     // Execute command and fill dataset
@@ -310,7 +306,6 @@ namespace eTactWeb.Data.DAL
                                                             }).ToList();
                     }
                 }
-
                 else if (ReportType.ToString() == "Schedule Summary Detail")
                 {
                     if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
@@ -343,7 +338,6 @@ namespace eTactWeb.Data.DAL
                                                             }).ToList();
                     }
                 }
-               
                 else if (ReportType.ToString() == "Monthly Order+Schedule Summary")
                 {
                     if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
@@ -425,8 +419,6 @@ namespace eTactWeb.Data.DAL
                                                             }).ToList();
                     }
                 }
-               
-               
                 else if (ReportType.ToString() == "Day Wise Order+Schedule (Item + Customer Wise)")
                 {
                     if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
@@ -475,8 +467,7 @@ namespace eTactWeb.Data.DAL
                                                             }).ToList();
                     }
                 }
-
-               else if (ReportType.ToString() == "Monthly Order+Schedule+Pending Summary")
+                else if (ReportType.ToString() == "Monthly Order+Schedule+Pending Summary")
                 {
                     if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                     {
@@ -509,8 +500,51 @@ namespace eTactWeb.Data.DAL
                                                             }).ToList();
                     }
                 }
-               
+                else
+                {
+                    try
+                    {
+                        if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                        {
+                            DataTable dt = oDataSet.Tables[0];
 
+                            List<SaleOrderRegisterModel> list = new List<SaleOrderRegisterModel>();
+
+                            foreach (DataRow dr in dt.Rows)
+                            {
+                                SaleOrderRegisterModel obj = new SaleOrderRegisterModel();
+                                obj.DynamicColumns = new Dictionary<string, string>();
+
+                                foreach (DataColumn col in dt.Columns)
+                                {
+                                    string colName = col.ColumnName;
+                                    string colValue = dr[col] == DBNull.Value ? "" : dr[col].ToString();
+
+                                    obj.DynamicColumns[colName] = colValue;
+                                }
+
+                                list.Add(obj);
+                            }
+
+                            // ⭐⭐⭐ THE MAIN FIX ⭐⭐⭐
+                            resultList.DynamicHeaders = dt.Columns
+                                                          .Cast<DataColumn>()
+                                                          .Select(c => c.ColumnName)
+                                                          .ToList();
+
+                            resultList.saleOrderRegisterGrid = list;
+                        }
+                        else
+                        {
+                            resultList.DynamicHeaders = new List<string>();
+                            resultList.saleOrderRegisterGrid = new List<SaleOrderRegisterModel>();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                }
             }
             catch (Exception ex)
             {
