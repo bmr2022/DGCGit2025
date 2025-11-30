@@ -134,6 +134,11 @@
                             <input asp-for="SoTypeBack" type="hidden" value="@Model.SoTypeBack" />
                             <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
                             <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                            <input asp-for="POFromDataBase" type="hidden" value="@Model.POFromDataBase" />
+                            <input asp-for="BranchPOEntryId" type="hidden" value="@Model.BranchPOEntryId" />
+                            <input asp-for="BranchPOYearCode" type="hidden" value="@Model.BranchPOYearCode" />
+                            <input asp-for="BranchPONO" type="hidden" value="@Model.BranchPONO" />
+
 
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
@@ -2670,6 +2675,11 @@
 
 
                     $('#divSaleItemGrid').html(data);
+                            $('#POFromDataBase').val(DatabaseName);
+                            $('#BranchPOEntryId').val(POEntryId);
+                    $('#BranchPOYearCode').val(POYearCode);
+                            $('#BranchPONO').val(PONo);
+
 $('#PendingPOFromOtherBranchModel').modal('hide');
 
                     $('#SeqNo').val('0');

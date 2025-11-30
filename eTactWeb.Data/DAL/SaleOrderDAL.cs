@@ -1123,6 +1123,10 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Branch", model.Branch));
                 SqlParams.Add(new SqlParameter("@SOFor", model.SOFor));
                 SqlParams.Add(new SqlParameter("@SOType", model.SOType));
+                SqlParams.Add(new SqlParameter("@POFromDataBase", model.POFromDataBase));
+                SqlParams.Add(new SqlParameter("@BranchPOEntryId", model.BranchPOEntryId));
+                SqlParams.Add(new SqlParameter("@BranchPOYearCode", model.BranchPOYearCode));
+                SqlParams.Add(new SqlParameter("@BranchPONO", model.BranchPONO));
                 SqlParams.Add(new SqlParameter("@CurrencyID", model.CurrencyID));
                 SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
                 SqlParams.Add(new SqlParameter("@Address", model.Address));

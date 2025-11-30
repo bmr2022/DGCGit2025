@@ -297,6 +297,10 @@ namespace eTactWeb.DOM.Models
 
         //[Required]
         public string? CustOrderNo { get; set; }
+        public string? POFromDataBase { get; set; }
+        public int? BranchPOEntryId { get; set; }
+        public int? BranchPOYearCode { get; set; }
+        public string? BranchPONO { get; set; }
 
         public int DAltQty { get; set; }
         public string? DDate { get; set; }
