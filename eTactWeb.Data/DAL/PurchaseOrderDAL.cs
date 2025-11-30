@@ -53,6 +53,75 @@ public class PurchaseOrderDAL
         return JsonString;
     }
 
+
+    public async Task<PurchaseOrderModel> ItemBelowReOrderLevel(string FromDate, string ToDate, string GroupName, string CatName, int Storeid)
+    {
+        var resultList = new PurchaseOrderModel();
+        DataSet oDataSet = new DataSet();
+
+        try
+        {
+            using (SqlConnection connection = new SqlConnection(DBConnectionString))
+            {
+                SqlCommand command = new SqlCommand("SPReportSTockRegister", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                ;
+
+                command.Parameters.AddWithValue("@Flag", "BATCHWISESTOCKSUMMARY");
+                command.Parameters.AddWithValue("@reportcallingfrom", "BatchWiseStockOnurchaseOrder");
+                command.Parameters.AddWithValue("@FromDate", CommonFunc.ParseFormattedDate(FromDate));
+                command.Parameters.AddWithValue("@ToDate", CommonFunc.ParseFormattedDate(ToDate));
+                command.Parameters.AddWithValue("@GroupName", GroupName);
+                command.Parameters.AddWithValue("@CatName", CatName);
+                command.Parameters.AddWithValue("@Storeid", Storeid);
+
+                await connection.OpenAsync();
+
+                using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
+                {
+                    dataAdapter.Fill(oDataSet);
+                }
+            }
+
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+                resultList.ItemDetailGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                             select new POItemDetail
+                                             {
+                                                 ItemCode = row["ItemCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemCode"]),
+                                                 //AccountCode = row["AccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccountCode"]), 
+                                                 PartText = row["PartCode"] == DBNull.Value ? string.Empty : row["PartCode"].ToString(),
+                                                 ItemText = row["ItemName"] == DBNull.Value ? string.Empty : row["ItemName"].ToString(),
+                                                 VehicleNo = row["VehicleNo"] == DBNull.Value ? string.Empty : row["VehicleNo"].ToString(),
+                                                 ItemLocation = row["ItemLocation"] == DBNull.Value ? string.Empty : row["ItemLocation"].ToString(),
+                                                 ItemGroupName = row["groupName"] == DBNull.Value ? string.Empty : row["groupName"].ToString(),
+
+                                                 Unit = row["unit"] == DBNull.Value ? string.Empty : row["unit"].ToString(),
+                                                 HSNNo = row["HSNNO"] == DBNull.Value ? 0 : Convert.ToInt32(row["HSNNO"]),
+                                                 Rate = row["Rate"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Rate"]),
+                                                 SORate = row["SalePrice"] == DBNull.Value ? 0 : Convert.ToDecimal(row["SalePrice"]),
+                                                 MinLevel = row["MinimumLevel"] == DBNull.Value ? 0 : Convert.ToDecimal(row["MinimumLevel"]),
+                                                 MaxLevel = row["MaximumLevel"] == DBNull.Value ? 0 : Convert.ToDecimal(row["MaximumLevel"]),
+                                                 Balance = row["BatchStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["BatchStock"]),
+                                                 Amount = row["AMOUNT"] == DBNull.Value ? 0 : Convert.ToDecimal(row["AMOUNT"]),
+                                                 POQty = row["Qty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Qty"]),
+
+                                                
+
+
+                                             }).ToList();
+            }
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error fetching data.", ex);
+        }
+
+        return resultList;
+    }
     public async Task<ResponseResult> GetFormRights(int userId)
     {
         var _ResponseResult = new ResponseResult();

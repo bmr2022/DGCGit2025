@@ -14,6 +14,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillCurrency(string Ctrl);
         Task<ResponseResult> NewAmmEntryId(int PoAmendYearCode);
         Task<ResponseResult> FillVendors();
+        Task<PurchaseOrderModel> ItemBelowReOrderLevel(string FromDate, string ToDate,string GroupName,string CatName,int Storeid);
         Task<ResponseResult> GetAllPartyName(string CTRL);
         Task<ResponseResult> GetGstRegister(string Flag, int Code);
         Task<PODashBoard> GetUpdAmmData(PODashBoard model);

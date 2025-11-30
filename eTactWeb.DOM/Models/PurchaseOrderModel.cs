@@ -208,6 +208,10 @@ public class POItemDetail : TaxModel
     public string? ItemLocation { get; set; }
     public string? ItemGroupName { get; set; }
     public string? VehicleNo { get; set; }
+    public decimal? SORate    { get; set; }
+    public decimal? Balance { get; set; }
+    public decimal? MinLevel { get; set; }
+    public decimal? MaxLevel { get; set; }
 
     public IList<SelectListItem> UnitRateList
     {

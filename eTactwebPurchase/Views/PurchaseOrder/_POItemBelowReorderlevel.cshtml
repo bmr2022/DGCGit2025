@@ -1,0 +1,47 @@
+﻿@model eTactWeb.DOM.Models.PurchaseOrderModel
+
+
+@{
+    var @Cntr = 0;
+    if (Model.ItemDetailGrid == null)
+    {
+        <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+    }
+    else
+    {
+        foreach (var item in Model.ItemDetailGrid)
+        {
+            Cntr = Cntr + 1;
+            <tr>
+                <td>@Cntr</td>
+                <td><input type="checkbox" class="row-select" id="MBCheckbox-@Cntr" value="@item.ItemCode" /></td>
+                <td style="background-color: #e09ef0;"><input type="text" id="PartText-@Cntr" value="@item.PartText" readonly>
+                </input><input id="ItemCode-@Cntr" type="hidden" value="@item.ItemCode" />
+                    <input type="hidden" style="width:50px" id="Amount-@Cntr" value="@item.Amount" readonly>
+                    <input type="hidden" id="VehicleNo-@Cntr" value="@item.VehicleNo" readonly>
+                    <input type="hidden" id="ItemGroupName-@Cntr" value="@item.ItemGroupName" readonly>
+                    <input type="hidden" id="ItemLocation-@Cntr" value="@item.ItemLocation" readonly>
+
+                    <input type="hidden" id="Unit-@Cntr" value="@item.Unit" readonly>
+                    <input type="hidden" id="HSNNo-@Cntr" value="@item.HSNNo" readonly>
+                
+                </td>
+                <td><input type="text" id="ItemText-@Cntr" value="@item.ItemText" style="width:350px" readonly></td>
+                <td><input id="Rate-@Cntr" type="number" style="width:50px" value="@item.Rate" /></td>
+                <td><input id="SORate-@Cntr" type="number" style="width:50px" value="@item.SORate" /></td>
+                <td><input type="number" id="Balance-@Cntr" style="width:50px" value="@item.Balance" /></td>
+                <td><input type="number" id="MinLevel-@Cntr" style="width:50px" value="@item.MinLevel" /></td>
+                <td><input type="number" id="MaxLevel-@Cntr" style="width:50px" value="@item.MaxLevel" /></td>
+                <td><input type="number" id="POQty-@Cntr" style="width:50px" value="@item.POQty" /></td>
+                
+                  
+
+               
+
+               
+
+
+            </tr>
+        }
+    }
+}                                      
