@@ -205,6 +205,16 @@ public class PurchaseOrderController : Controller
         }
     }
 
+    public async Task<IActionResult> ItemBelowReOrderLevel(string FromDate, string ToDate, string GroupName, string CatName, int Storeid)
+    {
+        var model = new PurchaseOrderModel();
+        model = await IPurchaseOrder.ItemBelowReOrderLevel(FromDate, ToDate, GroupName, CatName, Storeid);
+
+
+        return PartialView("_POItemBelowReorderlevel", model);
+
+    }
+
     public IActionResult GetImage(int EntryId = 0, int YearCode = 0, string PONO = "")
     {
         // Creatint the Report object

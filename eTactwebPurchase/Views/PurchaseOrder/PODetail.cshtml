@@ -25,6 +25,13 @@
                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                     SAVE
                     </a> *@
+						<div class="col-auto">
+							<button type="button" class="ItemBelowReoder btn btn-secondary btn-sm mr-2" style="color:white!important;margin-right:5px;" onclick="AddMultipleItems();">
+								<i class="fa-regular fa-pen-to-square" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+								Item Below Reoder Level
+							</button>
+						</div>
+
 						<a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="GetImage" asp-controller="PurchaseOrder" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PONO="@Model.PONo">
 							<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
 							EXPORT
@@ -550,6 +557,92 @@
 		<partial name="_PendingIndentDetail" />
 	</form>
 </div>
+
+
+<div class="modal fade" style="display:none" id="SaleOrderGroupWiseItem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="staticBackdropLabel">Group Name</h5>
+				@* <select class="form-select" asp-for="Group_Code" id="Group_Code1" style="width:170px">
+					<option value="0">-Select-</option>
+				</select> *@
+				<label style="margin-left:3px;margin-right:3px" for="PartName">Party Name</label>
+				<input type="text" id="PartyName" style="width:200px" class="form-control" readonly />
+				<label for="PartName" style="margin-left:3px;margin-right:3px">Disc Category</label>
+				<input type="text" id="DiscCategory" style="width:200px" class="form-control" readonly />
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="card">
+					<div class="card-body">
+						<div class="row g-2 gx-3">
+
+							<div class="card-body text-center overflow-auto pb-0 mt-0 pt-0  ">
+								<div class="d-flex align-items-center mb-2">
+									<button class="btn btn-sm btn-outline-warning mb-2" type="button" id="CheckAll" style="display: flex; align-items: center;">
+										<i class="fa fa-check-square" aria-hidden="true"></i>
+										<span style="margin-left: 5px;">Ch/UnCh All</span>
+									</button>
+									<div class="col-md-2 me-3" style="margin-left:50px">
+										<input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
+									</div>
+								</div>
+
+
+								<div class="table-responsive" style="max-height:350px;">
+									<table class="table table-hover table-bordered table-striped mb-0">
+										<thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+											<tr>
+												<th>Sr#</th>
+												<th>Action</th>
+												<th>Part Code</th>
+												<th>Item Name</th>
+												<th>Sale Rate</th>
+												<th>Purchase Rate</th>
+												<th>Balance</th>
+												<th>Min Level</th>
+												<th>Max Level</th>
+												<th>Qty</th>
+												
+
+
+
+											</tr>
+										</thead>
+										<tbody id="MultiItemBody">
+											<partial name="_POItemBelowReorderlevel" />
+										</tbody>
+									</table>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					<div class="progress my-2" style="height: 4px;">
+						<div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+					</div>
+					<div class="row g-2 gx-3">
+						<div class="col-12 text-center">
+							<strong>Total No Of Items : <span id="lblTotalNoOfItems1"></span></strong>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="GridMultiItemBtn btn btn-sm btn-outline-success me-2">
+						<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+					</button>
+
+					<button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
 
 
 @section Scripts
@@ -1228,6 +1321,50 @@
 		//        $('#AccountCode').select2('open').select2('focus');
 		//    }
 		//});
+				function AddMultipleItems()
+				{
+					$('#SaleOrderGroupWiseItem').modal('show');
+					$('#MultiItemBody').empty();
+							ItemBelowReOrderLevel();
+				}
+								function ItemBelowReOrderLevel() {
+
+					//var reportType = $('#ReportType').val();
+							var FromDate = $('#FromDate').val();
+					var ToDate = $('#ToDate').val();
+							var GroupName = $('#GroupName').val();
+							var CatName = $('#CatName').val();
+							var Storeid = $('#Storeid').val();
+
+					$.ajax({
+						type: 'POST',
+								url: "@Url.Action("ItemBelowReOrderLevel", "PurchaseOrder")",
+						data: {
+									FromDate: FromDate,
+									ToDate: ToDate,
+									GroupName:GroupName,
+									CatName:CatName,
+											Storeid:Storeid
+
+						},
+						success: function (response) {
+							// Clear the existing items in the table body
+							$('#MultiItemBody').empty(); // Clear existing items
+							$('#MultiItemBody').html(response);
+
+
+							var totalRows = $('#MultiItemBody tr').length;
+							$('#lblTotalNoOfItems1').text(totalRows);
+
+
+						},
+						error: function (xhr, status, error) {
+							console.error("Error fetching BOM tree data:", error);
+						}
+					});
+					
+				}
+
 
 		function BackButtonData() {
 			window.history.back();

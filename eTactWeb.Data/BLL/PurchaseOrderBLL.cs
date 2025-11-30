@@ -23,7 +23,11 @@ namespace eTactWeb.Data.BLL
         //    return await _PurchaseOrderDAL.GetItemServiceFORPO(ItemSErv);
         //}
 
-        
+        public async Task<PurchaseOrderModel> ItemBelowReOrderLevel(string FromDate, string ToDate, string GroupName, string CatName, int Storeid)
+        {
+            return await _PurchaseOrderDAL.ItemBelowReOrderLevel( FromDate,  ToDate,  GroupName,  CatName,  Storeid);
+        }
+
         public async Task<string> GetItemServiceFORPO(string ItemService)
         {
             return await _PurchaseOrderDAL.GetItemServiceFORPO(ItemService);
