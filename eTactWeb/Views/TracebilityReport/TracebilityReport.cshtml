@@ -127,8 +127,6 @@
             $("#ToDate").datepicker("setDate", currentDate);
             FillSaleBillNoList();
             GetTracebilityReportData();
-            attachTableSearch("upper-search-box", "ReportUpperTable");
-            attachTableSearch("lower-search-box", "ReportLowerTable");
         });
 
         $('#SaleBillNo').change(function () {
@@ -211,6 +209,43 @@
                 var rowText = row.innerText.toLowerCase();
                 row.style.display = rowText.includes(value) ? "" : "none";
             });
+        }
+
+        function exportTraceabilityGrid(gridType) {
+
+            $.ajax({
+                url: '/TraceabilityReport/ExportTraceabilityGrid',
+                type: 'POST',
+                data: { grid: gridType },
+                xhrFields: { responseType: 'blob' },
+
+                success: function (data, status, xhr) {
+
+                    const blob = new Blob([data], {
+                        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    });
+
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+
+                    let filename = (gridType === "upper")
+                        ? "Traceability_Header.xlsx"
+                        : "Traceability_Detail.xlsx";
+
+                    const disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('filename=') !== -1) {
+                        filename = disposition.split('filename=')[1].replace(/"/g, '');
+                    }
+
+                    link.download = filename;
+                    link.click();
+                },
+
+                error: function () {
+                    alert('Failed to export Excel for ' + gridType + ' grid.');
+                }
+            });
+
         }
 
     </script>

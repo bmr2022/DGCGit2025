@@ -888,7 +888,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@DashboardType ", "SALE"));
+                SqlParams.Add(new SqlParameter("@DashboardType ", "SALE"));   
                 SqlParams.Add(new SqlParameter("@FLAG", "SaleOrder Vs Dispatch"));
                 SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
                 SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));

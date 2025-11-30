@@ -6,8 +6,11 @@
         <input type="text" id="upper-search-box" class="form-control" onkeyup="SearchUpperGrid()" placeholder="Search..." style="background-color:#FFFACD">
     </div>
 
-    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcelUpper">
-        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+    <button class="btn btn-sm btn-outline-success"
+            style="padding:3px;height:30px;width:100px;margin-left:20px;"
+            type="button"
+            onclick="exportTraceabilityGrid('upper')">
+        <i class="fa-solid fa-upload fa-fw fa-lg"></i>EXCEL
     </button>
 </div>
 
@@ -66,9 +69,12 @@
         <input type="text" id="lower-search-box" class="form-control" onkeyup="SearchLowerGrid()" placeholder="Search..." style="background-color:#FFFACD">
     </div>
 
-    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcelLower">
-        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
-    </button>
+    <button class="btn btn-sm btn-outline-success"
+            style="padding:3px;height:30px;width:100px;margin-left:20px;"
+            type="button"
+            onclick="exportTraceabilityGrid('lower')">
+        <i class="fa-solid fa-upload fa-fw fa-lg"></i>EXCEL
+    </button>   
 </div>
 
 <!-- ===================== LOWER GRID ====================== -->

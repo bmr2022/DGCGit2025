@@ -28,6 +28,7 @@
     <ProjectReference Include="..\eTactWeb.Data\eTactWeb.Data.csproj" />
     <ProjectReference Include="..\eTactWeb.DOM\eTactWeb.DOM.csproj" />
     <ProjectReference Include="..\eTactWeb.Services\eTactWeb.Services.csproj" />
+    <ProjectReference Include="..\eTactwebBOT\eTactwebBOT.csproj" />
   </ItemGroup>
 
   <ItemGroup>

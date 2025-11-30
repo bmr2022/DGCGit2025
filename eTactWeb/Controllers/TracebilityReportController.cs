@@ -45,7 +45,51 @@ namespace eTactWeb.Controllers
             // Return PartialView based on report type (if required)
             return PartialView("_TraceabilityReportGrid", model);
         }
+        [HttpPost]
+        public IActionResult ExportTraceabilityGrid(string grid)   // grid = upper or lower
+        {
+            var model = _MemoryCache.Get<TracebilityReportModel>("KeyMISTraceabilityReport");
 
+            if (model == null)
+                return BadRequest("Traceability data not found. Please run the report again.");
+
+            DataTable dt = null;
+            string sheetName = "";
+
+            if (grid == "upper")
+            {
+                dt = model.HeaderTable;
+                sheetName = "Traceability_Header";
+            }
+            else if (grid == "lower")
+            {
+                dt = model.DetailTable;
+                sheetName = "Traceability_Detail";
+            }
+            else
+            {
+                return BadRequest("Invalid grid type.");
+            }
+
+            if (dt == null || dt.Rows.Count == 0)
+                return BadRequest("No data found for export.");
+
+            using (var package = new OfficeOpenXml.ExcelPackage())
+            {
+                var ws = package.Workbook.Worksheets.Add(sheetName);
+                ws.Cells["A1"].LoadFromDataTable(dt, true);
+                ws.Cells.AutoFitColumns();
+
+                var excelBytes = package.GetAsByteArray();
+
+                Response.Headers.Add("Content-Disposition", $"attachment; filename=\"{sheetName}.xlsx\"");
+
+                return File(
+                    excelBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                );
+            }
+        }
         public async Task<JsonResult> FillSaleBillNoList(string FromDate, string ToDate)
         {
             var JSON = await _IMISTracebilityReport.FillSaleBillNoList(FromDate, ToDate);
