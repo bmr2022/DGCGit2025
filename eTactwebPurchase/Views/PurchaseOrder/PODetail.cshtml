@@ -3785,6 +3785,196 @@ formData.append("Mode", $('#Mode').val());
 				}
 			}
 		});
+
+
+
+		$('.GridMultiItemBtn').click(function (e) {
+			e.preventDefault();
+			var CheckboxArr = [];
+			var RowCount = $('#MultiItemBody tr').length;
+
+			for (var i = 0; i <= RowCount; i++) {
+				if ($('#MBCheckbox-' + i).prop("checked")) {
+					CheckboxArr.push(i);
+				}
+			}
+
+			if (CheckboxArr.length === 0) {
+				$.notify('Please select any item.', 'error');
+			} else {
+
+
+				var RowCount = $('#MultiItemBody tr').length;
+				for (var i = 0; i < RowCount; i++) {
+					if ($('#MBCheckbox-' + i).prop("checked")) {
+						if ($('#POQty-' + i).val() == 0) {
+							$.notify('Please enter quantity for ' + $('#PartText-' + i).val(), 'error');
+							return;
+						}
+						if ($('#Rate-' + i).val() == 0) {
+							$.notify('Please enter rate for ' + $('#PartText-' + i).val(), 'error');
+							return;
+						}
+						// if ($('#Unit-' + i).val() == '') {
+						// 	$.notify('Please select unit for ' + $('#PartText-' + i).val(), 'error');
+						// 	return;
+						// }
+						// if ($('#HSNNo-' + i).val() == '') {
+						// 	$.notify('Please enter HSN for ' + $('#PartText-' + i).val(), 'error');
+						// 	return;
+						// }
+						if ($('#Amount-' + i).val() == '') {
+							$.notify('amount can not be 0 ' + $('#PartText-' + i).val(), 'error');
+							return;
+						}
+
+
+
+
+					}
+				}
+				var ArrMultiBatch = [];
+				for (var i = 0; i < RowCount; i++) {
+					if ($('#MBCheckbox-' + i).prop("checked")) {
+
+						ArrMultiBatch.push({
+							'PartCode': $('#ItemCode-' + i).val(),
+							'PartText': $('#PartText-' + i).val(),
+
+							'ItemCode': $('#ItemCode-' + i).val(),
+							'ItemText': $('#ItemText-' + i).val(),
+							'HSNNo': $('#HSNNo-' + i).val(),
+							'AdditionalRate': $('#AdditionalRate-' + i).val(),
+							'AltPendQty': $('#AltPendQty-' + i).val(),
+							'AltPOQty': $('#AltPOQty-' + i).val(),
+							'AltUnit': $('#AltUnit-' + i).val(),
+							'AmendmentDate': $('#AmendmentDate-' + i).val(),
+							'AmendmentNo': $('#AmendmentNo-' + i).val(),
+							'AmendmentReason': $('#AmendmentReason-' + i).val(),
+							'Amount': $('#Amount-' + i).val(),
+							'Color': $('#Color-' + i).val(),
+							'CostCenter': $('#CostCenter-' + i).val(),
+							'Description': $('#Description-' + i).val(),
+							'DiscPer': $('#DiscPer-' + i).val(),
+							'DiscRs': $('#DiscRs-' + i).val(),
+							'FirstMonthTentQty': $('#FirstMonthTentQty-' + i).val(),
+							'ItemNetAmount': $('#ItemNetAmount-' + i).val(),
+							'OldRate': $('#OldRate-' + i).val(),
+							'OtherRateCurr': $('#OtherRateCurr-' + i).val(),
+							'PendQty': $('#PendQty-' + i).val(),
+							'PIRemark': $('#Remark-' + i).val(),
+							'PkgStd': $('#PkgStd-' + i).val(),
+							'POQty': $('#POQty-' + i).val(),
+							'Process': $('#Process-' + i).val(),
+							'Rate': $('#Rate-' + i).val(),
+							'SecMonthTentQty': $('#SecMonthTentQty-' + i).val(),
+							'SizeDetail': $('#SizeDetail-' + i).val(),
+							'TolLimitPercent': $('#TolLimitPercent-' + i).val(),
+							'TolLimitQty': $('#TolLimitQty-' + i).val(),
+							'Unit': $('#Unit-' + i).val(),
+							'UnitRate': $('#UnitRate-' + i).val(),
+
+							'Mode': $('#Mode').val() == "U" ? "U" : "INSERT",
+
+							'AmendmentNo': $('#AmmNo-' + i).val(),
+							'AmendmentDate': $('#AmmDate-' + i).val(),
+							'DeliveryDate': $('#DeliveryDate-' + i).val(),
+							'VehicleNo': $('#VehicleNo-' + i).val(),
+							'ItemGroupName': $('#ItemGroupName-' + i).val(),
+							'ItemLocation': $('#ItemLocation-' + i).val(),
+							'SeqNo': $('#SeqNo-' + i).val(),
+						});
+
+
+						
+					}
+				}
+				console.log(ArrMultiBatch);
+				$.ajax({
+					type: "POST",
+					url: '@Url.Action("AddMultipleItemDetail")',
+					data: { "model": ArrMultiBatch },
+					statusCode: {
+						207: function () {
+							$.notify('Duplicate Item...!', "info");
+						}
+					},
+					success: function (result, status, xhr) {
+						if (xhr.status == 200 && xhr.responseText == result) {
+
+
+							$('#divPOItemList').html(result);
+							$('#SaleOrderGroupWiseItem').modal('hide');
+							$.notify('Item Added To Grid.', "success");
+							ClearItem();
+					GetFeaturesOptions();
+						
+						$('#TotalRoundOff').prop('selectedIndex', 0);
+						var INA = parseFloat($('#ItemNetAmount').val());
+						var rowCount = $('#divPOItemList tr').length;
+						var columnCount = $('#divPOItemList tr td').length;
+						var taxRowCount = $('#divTaxGrid tr').length;
+						var sum = 0;
+						var TotalQty = 0;
+
+						//noofitems
+						if (columnCount > 1)
+							$('#lblItemCount').text(rowCount);
+						else
+							$('#lblItemCount').text(0);
+
+						let rowsExist = $(".GridAmount").length > 0;
+						let rowsQtyExist = $(".GridQty").length > 0;
+
+						if (rowsExist) {
+							$(".GridAmount").each(function () {
+								let value = parseFloat($(this).text());
+								sum += isNaN(value) ? 0 : value;
+							});
+						} else {
+							sum = 0;
+						}
+						if (rowsQtyExist) {
+							$(".GridQty").each(function () {
+								let value = parseFloat($(this).text());
+								TotalQty += isNaN(value) ? 0 : value;
+							});
+						} else {
+							TotalQty = 0;
+						}
+						$('#ItemNetAmount').val(sum);
+						var txSum = 0;
+						if ($('#divTaxGrid tr td').length > 1) {
+							for (var i = 1; i <= taxRowCount; i++) {
+								txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+							}
+						}
+						$('#lblItemNetAmount').text(sum.toFixed(2));
+						$('#lblTotalQty').text(TotalQty.toFixed(2));
+
+
+						var txTotal = sum + txSum;
+						$('#NetTotal').val(txTotal.toFixed(2));
+						// $('#TotalDiscountPercentage').val(0);
+						// $('#TotalAmtAftrDiscount').val(0);
+						$('#PartCodeText').focus().autocomplete("search", $('#PartCodeText').val());
+
+
+						}
+					},
+					error: function (result, status, xhr) {
+						$.notify('Something Went Wrong, Please Try Again.', "error");
+					}
+				}).done(function () {
+
+					GetTaxPartItem();
+				});
+			}
+		});
+
+
+
+
 		
 
 

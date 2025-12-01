@@ -1,47 +1,82 @@
 ﻿@model eTactWeb.DOM.Models.PurchaseOrderModel
 
-
 @{
-    var @Cntr = 0;
-    if (Model.ItemDetailGrid == null)
+    if (Model.ItemDetailGrid == null || !Model.ItemDetailGrid.Any())
     {
         <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
     }
     else
     {
-        foreach (var item in Model.ItemDetailGrid)
+        for (int i = 0; i < Model.ItemDetailGrid.Count; i++)
         {
-            Cntr = Cntr + 1;
+            var item = Model.ItemDetailGrid[i];
             <tr>
-                <td>@Cntr</td>
-                <td><input type="checkbox" class="row-select" id="MBCheckbox-@Cntr" value="@item.ItemCode" /></td>
-                <td style="background-color: #e09ef0;"><input type="text" id="PartText-@Cntr" value="@item.PartText" readonly>
-                </input><input id="ItemCode-@Cntr" type="hidden" value="@item.ItemCode" />
-                    <input type="hidden" style="width:50px" id="Amount-@Cntr" value="@item.Amount" readonly>
-                    <input type="hidden" id="VehicleNo-@Cntr" value="@item.VehicleNo" readonly>
-                    <input type="hidden" id="ItemGroupName-@Cntr" value="@item.ItemGroupName" readonly>
-                    <input type="hidden" id="ItemLocation-@Cntr" value="@item.ItemLocation" readonly>
+                <td>@(i + 1)</td>
 
-                    <input type="hidden" id="Unit-@Cntr" value="@item.Unit" readonly>
-                    <input type="hidden" id="HSNNo-@Cntr" value="@item.HSNNo" readonly>
-                
+                <td>
+                    <input type="checkbox" class="row-select"
+                           id="MBCheckbox-@i"
+                           name="model[@i].IsSelected"
+                           value="true" />
                 </td>
-                <td><input type="text" id="ItemText-@Cntr" value="@item.ItemText" style="width:350px" readonly></td>
-                <td><input id="Rate-@Cntr" type="number" style="width:50px" value="@item.Rate" /></td>
-                <td><input id="SORate-@Cntr" type="number" style="width:50px" value="@item.SORate" /></td>
-                <td><input type="number" id="Balance-@Cntr" style="width:50px" value="@item.Balance" /></td>
-                <td><input type="number" id="MinLevel-@Cntr" style="width:50px" value="@item.MinLevel" /></td>
-                <td><input type="number" id="MaxLevel-@Cntr" style="width:50px" value="@item.MaxLevel" /></td>
-                <td><input type="number" id="POQty-@Cntr" style="width:50px" value="@item.POQty" /></td>
-                
-                  
 
-               
+                <td style="background-color:#e09ef0;">
+                    <input type="text" id="PartText-@i"
+                           name="model[@i].PartText"
+                           value="@item.PartText" readonly />
 
-               
+                    <input type="hidden" id="ItemCode-@i" name="model[@i].ItemCode" value="@item.ItemCode" />
+                    <input type="hidden" id="Amount-@i" name="model[@i].Amount" value="@item.Amount" />
+                    <input type="hidden" id="VehicleNo-@i" name="model[@i].VehicleNo" value="@item.VehicleNo" />
+                    <input type="hidden" id="ItemGroupName-@i" name="model[@i].ItemGroupName" value="@item.ItemGroupName" />
+                    <input type="hidden" id="ItemLocation-@i" name="model[@i].ItemLocation" value="@item.ItemLocation" />
+                    <input type="hidden" id="Unit-@i" name="model[@i].Unit" value="@item.Unit" />
+                    <input type="hidden" id="HSNNo-@i" name="model[@i].HSNNo" value="@item.HSNNo" />
+                </td>
 
+                <td>
+                    <input type="text" id="ItemText-@i"
+                           name="model[@i].ItemText"
+                           value="@item.ItemText"
+                           style="width:350px" readonly />
+                </td>
 
+                <td>
+                    <input id="Rate-@i" type="number"
+                           name="model[@i].Rate"
+                           value="@item.Rate" style="width:50px" />
+                </td>
+
+                <td>
+                    <input id="SORate-@i" type="number"
+                           name="model[@i].SORate"
+                           value="@item.SORate" style="width:50px" />
+                </td>
+
+                <td>
+                    <input type="number" id="Balance-@i"
+                           name="model[@i].Balance"
+                           value="@item.Balance" style="width:50px" />
+                </td>
+
+                <td>
+                    <input type="number" id="MinLevel-@i"
+                           name="model[@i].MinLevel"
+                           value="@item.MinLevel" style="width:50px" />
+                </td>
+
+                <td>
+                    <input type="number" id="MaxLevel-@i"
+                           name="model[@i].MaxLevel"
+                           value="@item.MaxLevel" style="width:50px" />
+                </td>
+
+                <td>
+                    <input type="number" id="POQty-@i"
+                           name="model[@i].POQty"
+                           value="@item.POQty" style="width:50px" />
+                </td>
             </tr>
         }
     }
-}                                      
+}
