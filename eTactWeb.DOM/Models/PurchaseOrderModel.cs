@@ -106,6 +106,9 @@ public class PODashBoard : TimeStamp
     public string DeliveryTerms { get; set; }
     public string UpdatedOn { get; set; }
     public string? RateApplicableOnUnit { get; set; }
+    public int TotalRecords { get; set; }
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; }
 
 }
 
