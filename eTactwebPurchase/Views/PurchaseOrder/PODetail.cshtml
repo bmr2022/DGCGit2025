@@ -2545,7 +2545,7 @@ formData.append("Mode", $('#Mode').val());
 		//          });
 		function ValidateForm() {
 			var Err = 0;
-			if ($('#POFor').prop('selectedIndex') == 0) {
+			if ($('#POFor').val() == 0) {
 				AddErrorCls('POFor');
 				$.notify('POFor is required...!', "error");
 				Err = 1;
@@ -4066,7 +4066,7 @@ formData.append("Mode", $('#Mode').val());
 		} else {
 			RemoveErrorCls('PartCodeText');
 		}
-			if ($('#POFor').prop('selectedIndex') == 0) {
+			if ($('#POFor').val() == 0) {
 				AddErrorCls('POFor');
 				IsError = 1;
 			}
