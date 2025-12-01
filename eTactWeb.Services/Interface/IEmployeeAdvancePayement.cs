@@ -15,13 +15,13 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillEmpName();
         Task<ResponseResult> FillDeptName();
         Task<ResponseResult> FillAdvanceType();
-        Task<ResponseResult> DeleteByID(int advEntryId, int advYearCode, int actualEntryBy, string entryByMachineName);
+        Task<ResponseResult> DeleteByID(int advEntryId, int advYearCode, int actualEntryBy, string entryByMachineName,string entryDate);
         Task<ResponseResult> FillPreviousAdanaceLoanDetail(int empId, string requestedDate);
         Task<ResponseResult> FillFinancialEmployeeNameList();
         Task<ResponseResult> FillMgmtEmployeeNameList();
         Task<ResponseResult> FillEmpCode();
         Task<ResponseResult> FillEmployeeDetail(int empId);
         Task<ResponseResult> SaveEmployeeAdvancePayment(HRAdvanceModel model);
-        Task<ResponseResult> GetDashboardData(string fromDate, string toDate,string employeeName = "",string deptName = "");
+        Task<ResponseResult> GetDashboardData(string fromDate, string toDate,string employeeName = "",string deptName = "",string empCode="");
     }
 }

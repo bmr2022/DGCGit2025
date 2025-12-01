@@ -213,7 +213,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetDashboardData(string fromDate,string toDate, string employeeName = "", string deptName = "")
+        public async Task<ResponseResult> GetDashboardData(string fromDate,string toDate, string employeeName = "", string deptName = "", string empCode = "")
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -226,6 +226,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@todate", toDate));
                 SqlParams.Add(new SqlParameter("@EmpName", employeeName));
                 SqlParams.Add(new SqlParameter("@DeptName", deptName));
+                SqlParams.Add(new SqlParameter("@EmpCode", empCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("HRSPAdvanceMain", SqlParams);
             }
             catch (Exception ex)
@@ -237,7 +238,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        internal async Task<ResponseResult> DeleteByID(int advEntryId, int advYearCode, int actualEntryBy, string entryByMachineName)
+        internal async Task<ResponseResult> DeleteByID(int advEntryId, int advYearCode, int actualEntryBy, string entryByMachineName,string entryDate)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -248,6 +249,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@AdvanceYearCode", advYearCode));
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", actualEntryBy));
                 SqlParams.Add(new SqlParameter("@RequestEntryByMachine", entryByMachineName));
+                SqlParams.Add(new SqlParameter("@EntryDate", entryDate));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPAdvanceMain", SqlParams);
 

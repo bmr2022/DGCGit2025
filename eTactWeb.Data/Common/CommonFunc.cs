@@ -1717,6 +1717,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "CategoryName"
                         && typeProperty.PropertyInfo.Name != "DepartmentName"
                         && typeProperty.PropertyInfo.Name != "EmployeeName"
+                        && typeProperty.PropertyInfo.Name != "EmployeeCode"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];

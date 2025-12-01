@@ -99,8 +99,13 @@
 								</div>
 
 								<div class="col-md-1">
+									<label asp-for="EntryDate" class="form-label">Entry Date</label>
+									<input asp-for="EntryDate" class="form-control" readonly/>
+								</div>
+
+								<div class="col-md-1">
 									<label asp-for="AdvanceSlipNo" class="form-label">Adv SlipNo</label>
-									<input asp-for="AdvanceSlipNo" class="form-control" />
+									<input asp-for="AdvanceSlipNo" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-2">
@@ -181,10 +186,6 @@
 									<input asp-for="RequestDate" class="form-control" />
 								</div>
 
-								<div class="col-md-1">
-									<label asp-for="EntryDate" class="form-label">Entry Date</label>
-									<input asp-for="EntryDate" class="form-control" />
-								</div>
 								<div class="col-md-2">
 									<label asp-for="AdvanceType" class="form-label" style="color:red"> Advance Type <span>*</span></label>
 									<select asp-for="AdvanceType" class="form-select">
@@ -197,7 +198,7 @@
 									}
 								</div>
 								<div class="col-md-2">
-									<label asp-for="RequestedAmount" class="form-label">Requested Amount</label>
+									<label asp-for="RequestedAmount" class="form-label" style="color:red"> Advance Type <span>*</span>Requested Amount</label>
 									<input asp-for="RequestedAmount" class="form-control" />
 								</div>
 								<div class="col-md-3">
@@ -600,6 +601,7 @@
 			FillEmpName();
 			FillEmpCode();
 			FillPreviousAdanaceLoanDetail();
+
 
 					$('#AdvanceEntryId').rules("remove", "required");
 					$('#AdvanceYearCode').rules("remove", "required");

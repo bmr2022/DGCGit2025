@@ -295,10 +295,10 @@ namespace eTactwebHR.Controllers
 
         }
 
-        public async Task<IActionResult> GetSearchData(string fromDate,string toDate,string employeeName, string departmentName)
+        public async Task<IActionResult> GetSearchData(string fromDate,string toDate,string employeeName, string departmentName, string empCode)
         {
             var model = new HRAdvanceDashboard();
-            var Result = await _iemployeeAdvancePayement.GetDashboardData(fromDate,toDate,employeeName, departmentName).ConfigureAwait(true);
+            var Result = await _iemployeeAdvancePayement.GetDashboardData(fromDate,toDate,employeeName, departmentName, empCode).ConfigureAwait(true);
             if (Result != null)
             {
                 var _List = new List<TextValue>();
@@ -368,10 +368,11 @@ namespace eTactwebHR.Controllers
             }
             return PartialView("_EAPDashboardGrid", model);
         }
-        public async Task<IActionResult> DeleteByID(int advEntryId, int advYearCode, string entryByMachineName)
+        public async Task<IActionResult> DeleteByID(int advEntryId, int advYearCode, string entryByMachineName, string entryDate, string fromDate, string toDate, string empName,string deptName,string searchBox)
         {
             var actualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-            var Result = await _iemployeeAdvancePayement.DeleteByID(advEntryId, advYearCode, actualEntryBy, entryByMachineName).ConfigureAwait(false);
+            entryDate = ParseFormattedDate(entryDate);
+            var Result = await _iemployeeAdvancePayement.DeleteByID(advEntryId, advYearCode, actualEntryBy, entryByMachineName, entryDate).ConfigureAwait(false);
 
             if (Result.StatusText == "Success" || Result.StatusText == "deleted" || Result.StatusCode == HttpStatusCode.Gone)
             {

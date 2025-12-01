@@ -67,13 +67,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _EmployeeAdvancePayementDAL.SaveEmployeeAdvancePayment(model);
         }
-        public async Task<ResponseResult> GetDashboardData(string fromDate, string toDate, string employeeName ="", string deptName = "")
+        public async Task<ResponseResult> GetDashboardData(string fromDate, string toDate, string employeeName ="", string deptName = "", string empCode = "")
         {
-            return await _EmployeeAdvancePayementDAL.GetDashboardData(fromDate, toDate,employeeName, deptName);
+            return await _EmployeeAdvancePayementDAL.GetDashboardData(fromDate, toDate,employeeName, deptName, empCode);
         }
-        public async Task<ResponseResult> DeleteByID(int advEntryId, int advYearCode, int actualEntryBy, string entryByMachineName)
+        public async Task<ResponseResult> DeleteByID(int advEntryId, int advYearCode, int actualEntryBy, string entryByMachineName, string entryDate)
         {
-            return await _EmployeeAdvancePayementDAL.DeleteByID(advEntryId, advYearCode,actualEntryBy,entryByMachineName);
+            return await _EmployeeAdvancePayementDAL.DeleteByID(advEntryId, advYearCode,actualEntryBy,entryByMachineName,entryDate);
         }
     }
 }
