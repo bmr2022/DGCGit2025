@@ -319,7 +319,82 @@ public class PurchaseOrderController : Controller
 
         return PartialView("_POItemGrid", model);
     }
-    public async Task<JsonResult> GetFormRights()
+
+
+
+	public IActionResult AddMultipleItemDetail(List<POItemDetail> model)
+	{
+		try
+		{
+			var MainModel = new PurchaseOrderModel();
+			var StockGrid = new List<POItemDetail>();
+			var StockAdjustGrid = new List<POItemDetail>();
+
+			var SeqNo = 1;
+			foreach (var item in model)
+			{
+                var sessionJson = HttpContext.Session.GetString("PurchaseOrder");
+
+                
+                if (!string.IsNullOrEmpty(sessionJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(sessionJson);
+                }
+                var ItemDetail = MainModel.ItemDetailGrid;
+
+                //_MemoryCache.TryGetValue("ItemList", out List<ItemDetail> ItemDetail);
+
+
+                if (model != null)
+				{
+					if (ItemDetail == null)
+					{
+						item.SeqNo = SeqNo++;
+						StockGrid.Add(item);
+					}
+					else
+					{
+
+
+						if (ItemDetail.Any(x => x.PartCode == item.PartCode && x.ItemCode == item.ItemCode))
+						{
+							return StatusCode(207, "Duplicate");
+						}
+
+
+						item.SeqNo = ItemDetail.Count + 1;
+						StockGrid = ItemDetail.Where(x => x != null).ToList();
+						StockAdjustGrid.AddRange(StockGrid);
+						StockGrid.Add(item);
+					}
+					MainModel.ItemDetailGrid = StockGrid;
+					MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+					{
+						AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+						SlidingExpiration = TimeSpan.FromMinutes(55),
+						Size = 1024,
+					};
+
+					//_MemoryCache.Set("ItemList", MainModel.ItemDetailGrid, cacheEntryOptions);
+					//HttpContext.Session.SetString("KeyStockMultiBatchAdjustGrid", JsonConvert.SerializeObject(MainModel.StockAdjustModelGrid));
+					HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel));
+				}
+				else
+				{
+					ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
+				}
+			}
+
+
+			return PartialView("_POItemGrid", MainModel);
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public async Task<JsonResult> GetFormRights()
     {
         var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
         var JSON = await IPurchaseOrder.GetFormRights(userID);
