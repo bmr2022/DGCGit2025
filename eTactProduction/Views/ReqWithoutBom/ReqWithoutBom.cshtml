@@ -816,6 +816,11 @@
         });
 
         $(document).ready(function () {
+                          var ErrorMessage = '@TempData["ErrorMessage"]';
+
+                    if (ErrorMessage) {
+                        $.notify(ErrorMessage, "error");
+                }
            var mode = '@Model.Mode';
         var id = parseInt('@Model.EntryId');
 

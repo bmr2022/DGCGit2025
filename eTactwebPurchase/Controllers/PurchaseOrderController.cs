@@ -888,11 +888,27 @@ public class PurchaseOrderController : Controller
         return Json(JsonConvert.SerializeObject(QuotData));
     }
 
-    public async Task<IActionResult> GetSearchData(PODashBoard model)
+    public async Task<IActionResult> GetSearchData(PODashBoard model, int pageNumber = 1, int pageSize = 15)
     {
         model.Mode = "SEARCH";
         model = await IPurchaseOrder.GetSearchData(model);
         model.DashboardType = "Summary";
+        //  Store full list in session 
+        var fullListJson = JsonConvert.SerializeObject(model.PODashboard);
+        HttpContext.Session.SetString("KeyPurchaseOrder", fullListJson);
+        if(model.PODashboard == null)
+        {
+            model.PODashboard = new List<PODashBoard>();
+        }
+        //  Pagination logic
+        model.TotalRecords = model.PODashboard.Count;
+        model.PageNumber = pageNumber;
+        model.PageSize = pageSize;
+
+        model.PODashboard = model.PODashboard
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
         return PartialView("_DashBoardGrid", model);
     }
     public async Task<IActionResult> GetDetailData(PODashBoard model)
