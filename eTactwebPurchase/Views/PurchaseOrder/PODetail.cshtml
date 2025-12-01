@@ -567,10 +567,9 @@
 				<select class="form-select" asp-for="ItemGroupName" id="Group_Code1" style="width:170px">
 					<option value="0">-Select-</option>
 				</select>
-				<label style="margin-left:3px;margin-right:3px" for="PartName">Party Name</label>
-				<input type="text" id="PartyName" style="width:200px" class="form-control" readonly />
-				<label for="PartName" style="margin-left:3px;margin-right:3px">Disc Category</label>
-				<input type="text" id="DiscCategory" style="width:200px" class="form-control" readonly />
+				<select class="form-select" style="width:100px;" id="Storeid">
+					<option value="" disabled selected>-Select-</option>
+				</select>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
@@ -584,12 +583,13 @@
 										<i class="fa fa-check-square" aria-hidden="true"></i>
 										<span style="margin-left: 5px;">Ch/UnCh All</span>
 									</button>
-									<div class="col-md-2 me-3" style="margin-left:50px">
+									<div class="col-md-2 me-3" style="margin-left:100px">
 										<input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
 									</div>
+									<button class="btn btn-sm btn-outline-primary mb-5"type="button"id="Showdata"style="display:flex; align-items:center; margin-left:10px;">	Show
+									</button>
 								</div>
-
-
+							
 								<div class="table-responsive" style="max-height:350px;">
 									<table class="table table-hover table-bordered table-striped mb-0">
 										<thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
@@ -1315,9 +1315,42 @@
 			$('#POFor').trigger("change");
 			FillItems();
 		});///ready even end here
+		$('#Showdata').click(function () {
+			$('#MultiItemBody').empty();
+			ItemBelowReOrderLevel();
 
+		});
+	
+        function FillStoreList() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetStoreList","NRGP")",
+                dataType: "json",
+                success: function (result, status, error) {
 
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#Storeid').empty();
+                        $('#Storeid').append('<option value="0">-Select-</option>');
 
+                        $.each(obj.Result, function (key, val) {
+                            $('#Storeid').append('<option value="' + val.entryid + '" data-type="' + val.Store_Type + '">' + val.store_name + '</option>');
+                        });
+                    }
+
+                    // check AllowToChangeStore
+                    if ($('#AllowToChangeStore').val() == "N") {
+                        // find store where store_type is "Main Store"
+                        var mainStore = $("#Storeid option[data-type='MAIN STORE']").val();
+
+                        if (mainStore) {
+                            $("#Storeid").val(mainStore);   // set selected
+                            $("#Storeid").prop("disabled", true); // make dropdown readonly
+                        }
+                    }
+                }
+            });
+        }
 		function GetMultiItemGroup() {
 
 			$.ajax({
@@ -1397,6 +1430,7 @@
 				{
 					$('#SaleOrderGroupWiseItem').modal('show');
 					GetMultiItemGroup();
+					FillStoreList();
 					$('#MultiItemBody').empty();
 							ItemBelowReOrderLevel();
 				}
