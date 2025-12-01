@@ -1896,7 +1896,7 @@ formData.append("Mode", $('#Mode').val());
 			// Source for PartCodeText
 			const partCodeSource = function (request, response) {
 				$.ajax({
-					url: '@Url.Action("FillItems")',
+					url: '@Url.Action("FillItems", "PurchaseOrder")',
 					type: 'POST',
 					data: {
 						Type: $('#POTypeServItem').val(),
@@ -1910,15 +1910,21 @@ formData.append("Mode", $('#Mode').val());
 						if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
 							let filtered = obj.Result.Table.filter(function (item) {
 								let term = request.term.toLowerCase();
-								return item.PartCode.toLowerCase().includes(term);
+								return (
+									(item.PartCode && item.PartCode.toLowerCase().includes(term)) ||
+									(item.Barcode && item.Barcode.toLowerCase().includes(term)) ||
+									(item.ItemName && item.ItemName.toLowerCase().includes(term))
+								);
 							});
 
 							response($.map(filtered, function (item) {
 								return {
-									label: item.PartCode ,
+									label: item.PartCode,
 									value: item.PartCode,
 									itemName: item.ItemName,
-									itemCode: item.Item_Code
+									itemCode: item.Item_Code,
+									onlyPartCode: item.OnlyPartCode,
+									onlyItemName: item.OnlyItemName,
 								};
 							}));
 						} else {
@@ -1931,7 +1937,7 @@ formData.append("Mode", $('#Mode').val());
 			// Source for ItemNameText
 			const itemNameSource = function (request, response) {
 				$.ajax({
-					url: '@Url.Action("FillItems")',
+					url: '@Url.Action("FillItems", "PurchaseOrder")',
 					type: 'POST',
 					data: {
 						Type: $('#POTypeServItem').val(),
@@ -1950,11 +1956,13 @@ formData.append("Mode", $('#Mode').val());
 
 							response($.map(filtered, function (item) {
 								return {
-									label: item.ItemName ,
+									label: item.ItemName,
 									value: item.Item_Code,
 									itemName: item.ItemName,
 									itemCode: item.Item_Code,
-									partCode: item.PartCode
+									partCode: item.PartCode,
+									onlyPartCode: item.OnlyPartCode,
+									onlyItemName: item.OnlyItemName,
 								};
 							}));
 						} else {
@@ -1968,37 +1976,131 @@ formData.append("Mode", $('#Mode').val());
 			$("#PartCodeText").autocomplete({
 				source: partCodeSource,
 				select: function (event, ui) {
-									$("#PartCodeText").val(ui.item.value).data("itemcode", ui.item.itemCode);
-					$("#ItemNameText").val(ui.item.itemName);
+					$("#PartCodeText").val(ui.item.onlyPartCode).data("itemcode", ui.item.itemCode);
+					$("#ItemNameText").val(ui.item.onlyItemName);
 					$('#ItemCode').val(ui.item.itemCode);
 					$('#PartCode').val(ui.item.itemCode);
 					GetItemPartCode("PartCode");
+					// GetlastSaleOrderDetail();
 					return false;
 				},
 				focus: function (event, ui) {
 					$("#PartCodeText").val(ui.item.value);
 					return false;
 				},
-				minLength:2
+				minLength: 2
+			});
+
+			// 🔹 Focusout event for PartCodeText (manual entry validation)
+			$("#PartCodeText").on("focusout", function () {
+				let entered = $(this).val().trim().toLowerCase();
+				if (entered === "") return;
+
+				$.ajax({
+					url: '@Url.Action("FillItems", "PurchaseOrder")',
+					type: 'POST',
+					data: {
+						Type: $('#POTypeServItem').val(),
+						ShowAllItem: 'N',
+						SearchItemCode: '',
+						SearchPartCode: entered
+					},
+					success: function (result) {
+						let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+						if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+							// 🔹 Partial match: includes()
+							let match = obj.Result.Table.find(item => {
+								let real = (item.RealPartCode || "").toLowerCase();
+								let name = (item.Item_Name || "").toLowerCase();
+								let barcode = (item.Barcode || "").toLowerCase();
+
+								return real.includes(entered) || name.includes(entered) || barcode.includes(entered);
+							});
+
+							if (match) {
+								$("#PartCodeText").val(match.OnlyPartCode).data("itemcode", match.Item_Code);
+								$("#ItemNameText").val(match.OnlyItemName);
+								$("#ItemCode").val(match.Item_Code);
+								$("#PartCode").val(match.Item_Code);
+								GetItemPartCode("PartCode");
+								// GetlastSaleOrderDetail();
+
+							}
+						}
+
+					},
+					error: function (xhr, status, error) {
+						console.error("AJAX Error:", error);
+					}
+				});
 			});
 
 			// Autocomplete for ItemNameText
 			$("#ItemNameText").autocomplete({
 				source: itemNameSource,
 				select: function (event, ui) {
-						   $("#ItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
-					$("#PartCodeText").val(ui.item.partCode);
+					$("#ItemNameText").val(ui.item.onlyItemName).data("itemcode", ui.item.itemCode);
+					$("#PartCodeText").val(ui.item.onlyPartCode);
 					$('#ItemCode').val(ui.item.itemCode);
 					$('#PartCode').val(ui.item.itemCode);
 					GetItemPartCode("ItemCode");
+					// GetlastSaleOrderDetail()
 					return false;
+
 				},
 				focus: function (event, ui) {
 					$("#ItemNameText").val(ui.item.itemName);
 					return false;
 				},
-				minLength:2
+				minLength: 2
 			});
+
+			// // 🔹 Focusout event for ItemNameText (manual entry validation)
+			// $("#ItemNameText").on("focusout", function () {
+			//     let itemName = $(this).val().trim();
+			//     if (itemName !== "") {
+			//         $.ajax({
+			//             url: '@Url.Action("FillItems", "PurchaseOrder")',
+			//             type: 'POST',
+			//             data: {
+			//                 Type: $('#POTypeServItem').val(),
+			//                 ShowAllItem: 'N',
+			//                 SearchItemCode: itemName,
+			//                 SearchPartCode: ''
+			//             },
+			//             success: function (result) {
+			//                 let obj = typeof result === "string" ? JSON.parse(result) : result;
+			//                          alert(JSON.stringify(obj.Result));
+			//                 if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+
+			//                     let match = obj.Result.Table.find(item => {
+			//                         let real = (item.RealPartCode || "").toLowerCase();
+			//                         let name = (item.Item_Name || "").toLowerCase();
+			//                         let barcode = (item.Barcode || "").toLowerCase();
+
+			//                         return real.includes(entered) || name.includes(entered) || barcode.includes(entered);
+			//                     });
+
+			//                     if (match) {
+			//                         $("#ItemNameText").val(match.OnlyItemName).data("itemcode", match.Item_Code);
+			//                         $("#PartCodeText").val(match.OnlyPartCode);
+			//                         $('#ItemCode').val(match.Item_Code);
+			//                         $('#PartCode').val(match.Item_Code);
+			//                         GetItemPartCode("ItemCode");
+			//                         GetlastSaleOrderDetail();
+			//                     } else {
+			//                         alert("Invalid Item Name entered!");
+			//                         $("#ItemNameText").val("").focus();
+			//                     }
+			//                 } else {
+			//                     alert("Invalid Item Name entered!");
+			//                     $("#ItemNameText").val("").focus();
+			//                 }
+			//             }
+			//         });
+			//     }
+			// });
 		}
 
 		// 		function cleanItemName(name) {
