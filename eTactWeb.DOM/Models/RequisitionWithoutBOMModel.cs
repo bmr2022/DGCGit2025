@@ -30,6 +30,7 @@ namespace eTactWeb.DOM.Models
         public string? WODate { get; set; }
         public int MachineId { get; set; }
         public int WorkCenterId { get; set; }
+        public int ToStoreId { get; set; }
         public string Remarks { get; set; }
         public string ReqReason { get; set; }
         public int UID { get; set; }

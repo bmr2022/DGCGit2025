@@ -66,6 +66,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _ReqWithoutBomDAL.FillWorkCenter();
         }
+        public async Task<ResponseResult> FillStore()
+        {
+            return await _ReqWithoutBomDAL.FillStore();
+        }
         public async Task<ResponseResult> AltUnitConversion(int ItemCode, decimal AltQty, decimal UnitQty)
         {
             return await _ReqWithoutBomDAL.AltUnitConversion(ItemCode, AltQty, UnitQty);

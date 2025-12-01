@@ -692,6 +692,12 @@ namespace eTactWeb.Controllers
             var JSON = await _IReqWithoutBOM.FillWorkCenter();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        } 
+        public async Task<JsonResult> FillStore()
+        {
+            var JSON = await _IReqWithoutBOM.FillStore();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
         public async Task<JsonResult> FillTotalStock(int ItemCode, int Store)
         {
