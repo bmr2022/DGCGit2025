@@ -564,9 +564,9 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="staticBackdropLabel">Group Name</h5>
-				@* <select class="form-select" asp-for="Group_Code" id="Group_Code1" style="width:170px">
+				<select class="form-select" asp-for="ItemGroupName" id="Group_Code1" style="width:170px">
 					<option value="0">-Select-</option>
-				</select> *@
+				</select>
 				<label style="margin-left:3px;margin-right:3px" for="PartName">Party Name</label>
 				<input type="text" id="PartyName" style="width:200px" class="form-control" readonly />
 				<label for="PartName" style="margin-left:3px;margin-right:3px">Disc Category</label>
@@ -1316,6 +1316,78 @@
 			FillItems();
 		});///ready even end here
 
+
+
+		function GetMultiItemGroup() {
+
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("GetItemGroup","SaleOrder")",
+				dataType: "json",
+				async: false,
+
+				success: function (result, status, error) {
+
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+							$('#Group_Code1').empty();
+							$('#Group_Code1').append('<option value="0"  selected>-Select-</option>');
+
+
+							$.each(obj.Result, function (index, val) {
+								$('#Group_Code1').append('<option value="' + val.Group_Code + '">' + val.Group_name + '</option>');
+							});
+
+						}
+					}
+				}
+			});
+		}
+
+		$("#search-box1").on("keyup", function () {
+
+			var value = $(this).val().toLowerCase();
+			$("#MultiItemBody tr").filter(function () {
+				if (currentSearchColumn !== null) {
+					// var columnText = $(this).find('input').eq(currentSearchColumn).text().toLowerCase();
+					var columnValue = $(this)
+						.find('td')
+						.eq(currentSearchColumn)
+						.find('input')
+						.val()
+						.toLowerCase();
+					$(this).toggle(columnText.indexOf(value) > -1);
+				} else {
+					// $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+					var rowText = $(this)
+						.find('input')
+						.map(function () {
+							return $(this).val();
+						})
+						.get()
+						.join(" ")
+						.toLowerCase();
+
+					$(this).toggle(rowText.indexOf(value) > -1);
+				}
+			});
+		});
+		$('#CheckAll').click(function () {
+
+			var RowCount = $('#MultiItemBody tr').length;
+			var TotalNoOfRows = 0;
+			for (var i = 0; i <= RowCount; i++) {
+				var checkbox = $('#MBCheckbox-' + i);
+				checkbox.prop("checked", !checkbox.prop("checked"));
+
+				if ($('#MBCheckbox-' + i).prop("checked")) {
+					TotalNoOfRows++;
+				}
+			}
+			$('#lblTotalNoOfItems').text(TotalNoOfRows);
+		});
+
 		//$('#PODate').change(function () {
 		//    if (!$('#AccountCode').is(':focus')) {
 		//        $('#AccountCode').select2('open').select2('focus');
@@ -1324,6 +1396,7 @@
 				function AddMultipleItems()
 				{
 					$('#SaleOrderGroupWiseItem').modal('show');
+					GetMultiItemGroup();
 					$('#MultiItemBody').empty();
 							ItemBelowReOrderLevel();
 				}
@@ -1332,7 +1405,7 @@
 					//var reportType = $('#ReportType').val();
 							var FromDate = $('#FromDate').val();
 					var ToDate = $('#ToDate').val();
-							var GroupName = $('#GroupName').val();
+			var GroupName = $('#Group_Code1').val();
 							var CatName = $('#CatName').val();
 							var Storeid = $('#Storeid').val();
 
