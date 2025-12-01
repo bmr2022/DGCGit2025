@@ -70,11 +70,15 @@
             <option value="Detail">Detail</option>
         </select>
     </div>
-    <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <input type="checkbox" id="ShowOnlyAmendItemcheck" name="ShowOnlyAmendItem" />
-        <input type="hidden" asp-for="ShowOnlyAmendItem" />
-    <label for="ShowOnlyAmendItem">Show Only Amend Item</label>
-   </div>
+    <div class="col-md-1 col-sm-6 col-xs-6">
+        <label for="state" class="control-label">PageSize</label>
+        <select asp-for="PageSize" class="form-control form-control-sm">
+            <option value="15" selected>15</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="150">150</option>
+        </select>
+    </div>
     <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
         <label class="form-label">Global search</label>
         <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
