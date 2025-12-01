@@ -758,6 +758,7 @@
                                         <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
                                         IMPORT FORMAT
                                     </a>
+
                                 </div>
                             </div>
                         </div>
@@ -1767,7 +1768,8 @@
                             $('#MonthlyEntryData').append(html);
                             var Row = $('#MonthlyEntryData tr').length;
 
-                            for (var j = 0; j < distinctItems.length; j++) {
+                            for (var j = 0; j < distinctItems.length; j++) 
+                            {
                                 // for(var u=0;u<Row;u++){
                                 for (var lcount = 0; lcount < dateArr.length; lcount++) {
                                     if (distinctItems[j].Itemcodes == dateArr[lcount].ItemCode) {
@@ -1786,6 +1788,9 @@
                             //}
                             html += '</tr>';
                         }
+                                for (var r = 0; r < distinctItems.length; r++) {
+            calculateRowTotalByRow(r);
+        }
                     }
                 },
                 error: function (result, status, xhr) {
@@ -1978,7 +1983,7 @@
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
                         $('#appendRow-' + Rowcount).append("<td style='width:15px;'> <a class='table-link link-danger removeMonthlyRow' > <span class='fa-stack'><i class='fa fa-square fa-stack-2x'></i><i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i></span></a></td><td style='width:180px;'><select id='SplitPartCode-" + Rowcount + "' class='SplitPC' onchange='ItemcodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td style='width:250px;'><input type='hidden' id='CountDate' value='" + count + "'/><select id='SplitItemName-" + Rowcount + "' class='SplitIN' onchange='PartCodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td><input id='SplitUnit-" + Rowcount + "' class='SplitUnitVal' type='text' style='width:80px;' readonly/></td><td><input id='SplitRate-" + Rowcount + "' class='SplitRateVal' type='text' style='width:80px;' readonly/></td><td><input id='TotalQty-" + Rowcount + "' class='TotalQtyVal' type='text' style='width:80px;' readonly/></td>");
             } else {
-                        $('#appendRow-' + Rowcount).append("<td style='width:15px;'> <a class='table-link link-danger removeMonthlyRow' > <span class='fa-stack'><i class='fa fa-square fa-stack-2x'></i><i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i></span></a></td><td style='width:180px;'><select id='EditPartCode-" + Rowcount + "' class='SplitPC' onchange='ItemcodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td style='width:250px;'><input type='hidden' id='CountDate' value='" + count + "'/><select id='EditSplitItemName-" + Rowcount + "' class='SplitIN' onchange='PartCodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td><input id='EditSplitUnit-" + Rowcount + "' class='EditSplitUnitVal' type='text' style='width:80px;' readonly/></td><td><input id='EditSplitRate-" + Rowcount + "' class='EditSplitRateVal' type='text' style='width:80px;' readonly/></td><td><input id='EditTotalQtyl-" + Rowcount + "' class='TotalQtyVal' type='text' style='width:80px;' readonly/></td>");
+                          $('#appendRow-' + Rowcount).append("<td style='width:15px;'> <a class='table-link link-danger removeMonthlyRow' > <span class='fa-stack'><i class='fa fa-square fa-stack-2x'></i><i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i></span></a></td><td style='width:180px;'><select id='EditPartCode-" + Rowcount + "' class='SplitPC' onchange='ItemcodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td style='width:250px;'><input type='hidden' id='CountDate' value='" + count + "'/><select id='EditSplitItemName-" + Rowcount + "' class='SplitIN' onchange='PartCodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td><input id='EditSplitUnit-" + Rowcount + "' class='EditSplitUnitVal' type='text' style='width:80px;' readonly/></td><td><input id='EditSplitRate-" + Rowcount + "' class='EditSplitRateVal' type='text' style='width:80px;' readonly/></td><td><input id='EditTotalQty-" + Rowcount + "' class='TotalQtyVal' type='text' style='width:80px;' readonly/></td>");
             }
 
             GetSplitItemName(Rowcount);
