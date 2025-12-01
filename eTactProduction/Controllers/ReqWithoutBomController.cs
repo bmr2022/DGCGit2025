@@ -265,6 +265,11 @@ namespace eTactWeb.Controllers
                             _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                             //return View("Error", Result);
                         }
+                        if (Result.StatusCode== System.Net.HttpStatusCode.BadRequest)
+                        {
+                            TempData["ErrorMessage"] = Result.StatusText;
+                        }
+                       
                     }
                     mainmodel2 = await BindModel(mainmodel2);
                     return View(mainmodel2);
