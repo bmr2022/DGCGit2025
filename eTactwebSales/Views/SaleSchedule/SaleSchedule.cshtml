@@ -1821,7 +1821,7 @@
             $('#ScheduleDate').datepicker("option", "minDate", $(this).val());
             $('#DeliveryDate').datepicker("option", "minDate", $(this).val());
             var activeRadioButton = $('input[name="SaleSchGrid"]:checked').val();
-            if (activeRadioButton == "Split" || activeRadioButton == "Month") {
+            if (activeRadioButton == "Split" ) {
                 var SchEffMonth = $('#SchEffFromDate').val().split("/")[1];
                 var SchYear = $('#SchEffFromDate').val().split("/")[2];
 
@@ -1833,9 +1833,30 @@
                 $('#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
                 $('#SchEffTillDate').datepicker("option", "maxDate", new Date(SchYear, SchEffMonth - 1, LastDay));
                 $('#SchEffTillDate').datepicker("setDate", new Date(SchYear, SchEffMonth - 1, LastDay));
-                BuildMonthlyEntryBody();
                 BuildSplitScheduleBody();
-            } else {
+            }
+                 else if ( activeRadioButton == "Month") {
+                        var SchEffMonth = $('#SchEffFromDate').val().split("/")[1];
+                  var SchYear = $('#SchEffFromDate').val().split("/")[2];
+
+                  var LastDay = new Date(SchYear, SchEffMonth, 0).getDate();
+                  var lastDate = new Date(SchYear, SchEffMonth - 1, LastDay);
+                  //$('#SchEffTillDate').datepicker("option", "minDate", $(this).val());
+                  //$('#SchEffTillDate').datepicker("option", "maxDate", lastDate.toDateString());
+                  //$("#SchEffTillDate").datepicker("setDate", lastDate.toDateString());
+                  $('#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
+                  $('#SchEffTillDate').datepicker("option", "maxDate", new Date(SchYear, SchEffMonth - 1, LastDay));
+                  $('#SchEffTillDate').datepicker("setDate", new Date(SchYear, SchEffMonth - 1, LastDay));
+                  if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                          BuildMonthlyEntryBody();
+                      } else {
+
+                          if ($('#ManualMonthSplit').val() == "Month") {
+                              EditBuildBody();
+                          }
+                      }
+              }
+                else {
                 var OneMonthDate = new Date(SchDate.setMonth(SchDate.getMonth() + 1));
                 $('#SchEffTillDate').val($(this).val()).datepicker("option", "minDate", parseDateToFormat(OneMonthDate));
                 $('#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));

@@ -204,6 +204,15 @@
                                     </select>
                                 </div>
                                 <div class="col-lg">
+                                    <label asp-for="ToStoreId" class="form-label">Store</label>
+                                    <select class="form-select" asp-for="ToStoreId" disabled>
+                                        @if (@Model.Mode == "U" || @Model.Mode == "V")
+                                        {
+                                            <input type="hidden" id="hiddenToStoreId" value="@Model.ToStoreId" />
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-lg">
                                     <label asp-for="WODate" class="form-label">WO Date</label>
                                     <input asp-for="WODate" class="form-control" readonly />
                                 </div>
@@ -554,62 +563,130 @@
 </div>
 @section Scripts {
     <script>
-        $('#submitBTN').click(function (e) {
+        // $('#submitBTN').click(function (e) {
+
+        //     e.preventDefault();
+        //     // if ($("WorkCenterId").val()=='' || $("WorkCenterId").val()==0) {
+        //     //     $.notify('Work center is not selected for this ReqNo...!');
+        //     // }
+        //     if ($('#divReqWithoutBomAdded tr td').length <= 1) {
+        //         $.notify('Grid Should Have Atleast 1 Item...!', "error");
+        //     }
+
+        //     else {
+        //                 if (($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("production")|| 
+        //                 ($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("r&d") ) {
+        //             if ($('#WorkCenterId').val() == null) {
+        //                 //$.notify("Please fill Work Center");
+        //                 AddErrorCls('WorkCenterId');
+        //             }
+        //             else {
+        //                 RemoveErrorCls('WorkCenterId');
+        //                 $('#PasswordAllowPopup').modal("show");
+        //             }
+        //         }
+        //         else {
+        //             RemoveErrorCls('WorkCenterId');
+        //             $('#PasswordAllowPopup').modal("show");
+        //         }
+
+
+
+        //     }
+        // });
+                $('#submitBTN').click(function (e) {
 
             e.preventDefault();
-            // if ($("WorkCenterId").val()=='' || $("WorkCenterId").val()==0) {
-            //     $.notify('Work center is not selected for this ReqNo...!');
-            // }
             if ($('#divReqWithoutBomAdded tr td').length <= 1) {
                 $.notify('Grid Should Have Atleast 1 Item...!', "error");
+                return;
             }
 
-            else {
-                        if (($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("production")|| 
-                        ($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("r&d") ) {
-                    if ($('#WorkCenterId').val() == null) {
-                        //$.notify("Please fill Work Center");
-                        AddErrorCls('WorkCenterId');
-                    }
-                    else {
-                        RemoveErrorCls('WorkCenterId');
-                        $('#PasswordAllowPopup').modal("show");
-                    }
-                }
-                else {
+            let deptType = ($('#FromDepartmentId').find(":selected").data('depttype') || "")
+                            .toString().trim().toLowerCase();
+
+            let isProduction = deptType.includes("production") || deptType.includes("r&d");
+            let isStore = deptType.includes("store");
+
+            let hasError = false;
+            if (isProduction) {
+                if (!$('#WorkCenterId').val()) {
+                    AddErrorCls('WorkCenterId');
+                    hasError = true;
+                } else {
                     RemoveErrorCls('WorkCenterId');
-                    $('#PasswordAllowPopup').modal("show");
                 }
-
-
-
             }
+            if (isStore) {
+                    if (!$('#ToStoreId').val()) {
+                        AddErrorCls('ToStoreId');
+                    hasError = true;
+                } else {
+                        RemoveErrorCls('ToStoreId');
+                }
+            }
+            if (hasError) return;
+            $('#PasswordAllowPopup').modal("show");
         });
 
-        $('#UpdateButton').click(function (e) {
+        // $('#UpdateButton').click(function (e) {
+        //     e.preventDefault();
+        //     if (!validateUpdate()) return;
+
+        //     else {
+        //                 if (($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("production")||
+        //                     ($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("r&d") ){
+        //         // if ($('#FromDepartmentId').find(":selected").data('depttype') == "production" || $('#FromDepartmentId').find(":selected").data('depttype') == "R&D") {
+        //             if ($('#WorkCenterId').val() == null) {
+        //                 //$.notify("Please fill Work Center");
+        //                 AddErrorCls('WorkCenterId');
+        //             }
+        //             else {
+        //                 RemoveErrorCls('WorkCenterId');
+        //                 $('#PasswordAllowPopup').modal("show");
+        //             }
+        //         }
+        //         else {
+        //             RemoveErrorCls('WorkCenterId');
+        //             $('#PasswordAllowPopup').modal("show");
+        //         }
+        //     }
+
+        // });
+                $('#UpdateButton').click(function (e) {
+
             e.preventDefault();
             if (!validateUpdate()) return;
 
-            else {
-                        if (($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("production")||
-                            ($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("r&d") ){
-                // if ($('#FromDepartmentId').find(":selected").data('depttype') == "production" || $('#FromDepartmentId').find(":selected").data('depttype') == "R&D") {
-                    if ($('#WorkCenterId').val() == null) {
-                        //$.notify("Please fill Work Center");
-                        AddErrorCls('WorkCenterId');
-                    }
-                    else {
-                        RemoveErrorCls('WorkCenterId');
-                        $('#PasswordAllowPopup').modal("show");
-                    }
-                }
-                else {
+            let deptType = ($('#FromDepartmentId')
+                .find(":selected")
+                .data('depttype') || "")
+                .toString().trim().toLowerCase();
+
+            let isProduction = deptType.includes("production") || deptType.includes("r&d");
+            let isStore = deptType.includes("store");
+
+            let hasError = false;
+            if (isProduction) {
+                if (!$('#WorkCenterId').val()) {
+                    AddErrorCls('WorkCenterId');
+                    hasError = true;
+                } else {
                     RemoveErrorCls('WorkCenterId');
-                    $('#PasswordAllowPopup').modal("show");
                 }
             }
-
+            if (isStore) {
+                    if (!$('#ToStoreId').val()) {
+                        AddErrorCls('ToStoreId');
+                    hasError = true;
+                } else {
+                        RemoveErrorCls('ToStoreId');
+                }
+            }
+            if (hasError) return;
+            $('#PasswordAllowPopup').modal("show");
         });
+
         $('#btnPrint').click(function () {
             $('#ShouldPrint').val('true'); // set flag for printing
             $('#PasswordAllowPopup').modal("hide");
@@ -627,25 +704,60 @@
                 $('form').submit();
             }, 300);
         });
-        function validateUpdate() {
+        // function validateUpdate() {
+
+        //     var Err = 0;
+        //     if (parseInt($('#FromDepartmentId').val()) == 4) {
+        //         if ($('#WorkCenterId').prop('selectedIndex') == 0) {
+        //             AddErrorCls('WorkCenterId');
+        //             Err = 1;
+        //         }
+        //         else {
+        //             RemoveErrorCls('WorkCenterId');
+        //         }
+        //     }
+        //     else {
+        //         RemoveErrorCls('WorkCenterId');
+        //     }
+        //     Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
+        //     if (Err == 1) return false;
+
+        //     return true;
+        // }
+                function validateUpdate() {
 
             var Err = 0;
-            if (parseInt($('#FromDepartmentId').val()) == 4) {
+
+            let deptType = ($('#FromDepartmentId')
+                .find(":selected")
+                .data('depttype') || "")
+                .toString().trim().toLowerCase();
+
+            let isProduction = deptType.includes("production") || deptType.includes("r&d");
+            let isStore      = deptType.includes("store");
+            if (isProduction) {
                 if ($('#WorkCenterId').prop('selectedIndex') == 0) {
                     AddErrorCls('WorkCenterId');
                     Err = 1;
-                }
-                else {
+                } else {
                     RemoveErrorCls('WorkCenterId');
                 }
-            }
-            else {
+            } else {
                 RemoveErrorCls('WorkCenterId');
             }
+            if (isStore) {
+                    if ($('#ToStoreId').prop('selectedIndex') == 0) {
+                        AddErrorCls('ToStoreId');
+                    Err = 1;
+                } else {
+                        RemoveErrorCls('ToStoreId');
+                }
+            } else {
+                    RemoveErrorCls('ToStoreId');
+            }
             Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
-            if (Err == 1) return false;
 
-            return true;
+            return Err === 0;
         }
 
 
@@ -704,6 +816,11 @@
         });
 
         $(document).ready(function () {
+                          var ErrorMessage = '@TempData["ErrorMessage"]';
+
+                    if (ErrorMessage) {
+                        $.notify(ErrorMessage, "error");
+                }
            var mode = '@Model.Mode';
         var id = parseInt('@Model.EntryId');
 
@@ -760,10 +877,16 @@
                         if (($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("production")||
                             ($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("r&d") ){
                 // if ($("#FromDepartmentId").val() != '6') {
-                    $('#WorkCenterId').prop("disabled", true);
+                        $('#WorkCenterId').prop("disabled", false);
                 } else {
-                    $('#WorkCenterId').prop("disabled", false);
+                        $('#WorkCenterId').prop("disabled", true);
                 }
+
+                            if (($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("store")) {
+                    $('#ToStoreId').prop("disabled", false);
+        } else {
+                    $('#ToStoreId').prop("disabled", true);
+        }
             }
 
             //if ($('#FromDepartmentId').val() == 4) {
@@ -811,6 +934,7 @@
             $('#WONo').rules("remove", "required");
             $('#WoYearCode').rules("remove", "required");
             $('#WorkCenterId').rules("remove", "required");
+            $('#ToStoreId').rules("remove", "required");
             $('#ProjectNo').rules("remove", "required");
             $('#ProjectYearCode').rules("remove", "required");
             $('#AltUnit').rules("remove", "required");
@@ -909,6 +1033,7 @@
             AutoFillItems();
             fillWO();
             fillWC();
+            FillStoreName();
             functionFeatureOption();
         });
         $("#EntryDate").on("change", function () {
@@ -1147,6 +1272,11 @@
                                                                 $('#WorkCenterId').prop('selectedIndex', 0);
                                                                 $('#WorkCenterId').prop('disabled', true);
                                                             }
+                                                                if (($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("store")) {
+                                                                                $('#ToStoreId').prop("disabled", false);
+                                                                    } else {
+                                                                                $('#ToStoreId').prop("disabled", true);
+                                                                    }
                             }
 
                         }
@@ -1484,15 +1614,65 @@
                 }
             });
         }
+                  function FillStoreName() {
+                $.ajax({
+                    type: "POST",
+                        url: "@Url.Action("FillStore")",
+                    dataType: "json",
+                    success: function (result, status, error) {
 
-        $('#FromDepartmentId').change(function () {
-                let dept = ($('#FromDepartmentId').find(":selected").data('depttype') || "").toLowerCase();
-        if (dept.includes("production") || dept.includes("r&d")) {
-                $('#WorkCenterId').prop('disabled', false);
+                        if (result != null) {
+
+                            var obj = $.parseJSON(result);
+
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    $('#ToStoreId').empty();
+                                     $('#ToStoreId').append('<option disabled selected>-Select-</option>');
+                                $.each(obj.Result.Table, function (index, val) {
+                                        if ($('#hiddenToStoreId').val() == val.EntryID) {
+                                            $('#ToStoreId').append('<option value="' + val.EntryID +
+                                                '" selected>' + val.Store_Name + '</option>');
+                                    } else {
+                                            $('#ToStoreId').append('<option value="' + val.EntryID +
+                                                '">' + val.Store_Name + '</option>');
+                                    }
+
+                                });
+                            }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error: " + error);
+                    }
+                });
             }
-            else {
-                $('#WorkCenterId').prop('selectedIndex', 0);
+        // $('#FromDepartmentId').change(function () {
+        //         let dept = ($('#FromDepartmentId').find(":selected").data('depttype') || "").toLowerCase();
+        // if (dept.includes("production") || dept.includes("r&d")) {
+        //         $('#WorkCenterId').prop('disabled', false);
+        //     }
+        //     else {
+        //         $('#WorkCenterId').prop('selectedIndex', 0);
+        //         $('#WorkCenterId').prop('disabled', true);
+        //     }
+
+        // });
+                $('#FromDepartmentId').change(function () {
+
+            let dept = ($('#FromDepartmentId')
+                         .find(":selected")
+                         .data('depttype') || "")
+                         .toLowerCase();
+            if (dept.includes("production") || dept.includes("r&d")) {
+                      $('#WorkCenterId').prop('disabled', false);
+            } else {
                 $('#WorkCenterId').prop('disabled', true);
+            }
+            if (dept.includes("store")) {
+                    $('#ToStoreId').prop("disabled", false);
+                $('#ToStoreId').prop("selectedIndex", 0);
+            } else {
+                    $('#ToStoreId').prop("disabled", true);
             }
         });
 
@@ -1578,7 +1758,17 @@
             else {
                 RemoveErrorCls('WorkCenterId');
             }
-
+                    if (($('#FromDepartmentId').find(":selected").data('depttype') || "").toLowerCase().includes("store")) {
+            if ($('#ToStoreId').prop('selectedIndex') == 0) {
+                AddErrorCls('ToStoreId');
+                Err = 1;
+            } else {
+                RemoveErrorCls('ToStoreId');
+            }
+        }
+        else {
+            RemoveErrorCls('ToStoreId');
+        }
             if (convertedExpDate < convertedReqDate) {
                 $.notify("Expected date cannot be less than Requisition date");
                 AddErrorCls('ExpectedDate');

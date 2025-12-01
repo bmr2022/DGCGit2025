@@ -265,6 +265,11 @@ namespace eTactWeb.Controllers
                             _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                             //return View("Error", Result);
                         }
+                        if (Result.StatusCode== System.Net.HttpStatusCode.BadRequest)
+                        {
+                            TempData["ErrorMessage"] = Result.StatusText;
+                        }
+                       
                     }
                     mainmodel2 = await BindModel(mainmodel2);
                     return View(mainmodel2);
@@ -690,6 +695,12 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> FillWorkCenter()
         {
             var JSON = await _IReqWithoutBOM.FillWorkCenter();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        } 
+        public async Task<JsonResult> FillStore()
+        {
+            var JSON = await _IReqWithoutBOM.FillStore();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

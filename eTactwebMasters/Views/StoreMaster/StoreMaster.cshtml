@@ -311,16 +311,16 @@
             });
         }
         function ChkForDuplicate() {
-             
-            var storeName = $('#StoreName').val(); 
+            var StoreName = $('#Store_Name').val();
             $.ajax({
                 url: '@Url.Action("ChkForDuplicate", "StoreMaster")', 
                 type: 'POST',
-                data: { StoreName: storeName },
+                data: { StoreName: StoreName },
                 success: function (data, status, xhr) {
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $.notify('The store name already exists. Please choose another name.', 'error');
+                        $('#Store_Name').val('');
                     }
                     else {
                         $.notify('The store name is available.', 'success');

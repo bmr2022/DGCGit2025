@@ -567,10 +567,9 @@
 				<select class="form-select" asp-for="ItemGroupName" id="Group_Code1" style="width:170px">
 					<option value="0">-Select-</option>
 				</select>
-				<label style="margin-left:3px;margin-right:3px" for="PartName">Party Name</label>
-				<input type="text" id="PartyName" style="width:200px" class="form-control" readonly />
-				<label for="PartName" style="margin-left:3px;margin-right:3px">Disc Category</label>
-				<input type="text" id="DiscCategory" style="width:200px" class="form-control" readonly />
+				<select class="form-select" style="width:100px;" id="Storeid">
+					<option value="" disabled selected>-Select-</option>
+				</select>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
@@ -584,12 +583,13 @@
 										<i class="fa fa-check-square" aria-hidden="true"></i>
 										<span style="margin-left: 5px;">Ch/UnCh All</span>
 									</button>
-									<div class="col-md-2 me-3" style="margin-left:50px">
+									<div class="col-md-2 me-3" style="margin-left:100px">
 										<input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
 									</div>
+									<button class="btn btn-sm btn-outline-primary mb-5"type="button"id="Showdata"style="display:flex; align-items:center; margin-left:10px;">	Show
+									</button>
 								</div>
-
-
+							
 								<div class="table-responsive" style="max-height:350px;">
 									<table class="table table-hover table-bordered table-striped mb-0">
 										<thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
@@ -1315,9 +1315,42 @@
 			$('#POFor').trigger("change");
 			FillItems();
 		});///ready even end here
+		$('#Showdata').click(function () {
+			$('#MultiItemBody').empty();
+			ItemBelowReOrderLevel();
 
+		});
+	
+        function FillStoreList() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetStoreList","NRGP")",
+                dataType: "json",
+                success: function (result, status, error) {
 
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#Storeid').empty();
+                        $('#Storeid').append('<option value="0">-Select-</option>');
 
+                        $.each(obj.Result, function (key, val) {
+                            $('#Storeid').append('<option value="' + val.entryid + '" data-type="' + val.Store_Type + '">' + val.store_name + '</option>');
+                        });
+                    }
+
+                    // check AllowToChangeStore
+                    if ($('#AllowToChangeStore').val() == "N") {
+                        // find store where store_type is "Main Store"
+                        var mainStore = $("#Storeid option[data-type='MAIN STORE']").val();
+
+                        if (mainStore) {
+                            $("#Storeid").val(mainStore);   // set selected
+                            $("#Storeid").prop("disabled", true); // make dropdown readonly
+                        }
+                    }
+                }
+            });
+        }
 		function GetMultiItemGroup() {
 
 			$.ajax({
@@ -1397,6 +1430,7 @@
 				{
 					$('#SaleOrderGroupWiseItem').modal('show');
 					GetMultiItemGroup();
+					FillStoreList();
 					$('#MultiItemBody').empty();
 							ItemBelowReOrderLevel();
 				}
@@ -1896,7 +1930,7 @@ formData.append("Mode", $('#Mode').val());
 			// Source for PartCodeText
 			const partCodeSource = function (request, response) {
 				$.ajax({
-					url: '@Url.Action("FillItems")',
+					url: '@Url.Action("FillItems", "PurchaseOrder")',
 					type: 'POST',
 					data: {
 						Type: $('#POTypeServItem').val(),
@@ -1910,15 +1944,21 @@ formData.append("Mode", $('#Mode').val());
 						if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
 							let filtered = obj.Result.Table.filter(function (item) {
 								let term = request.term.toLowerCase();
-								return item.PartCode.toLowerCase().includes(term);
+								return (
+									(item.PartCode && item.PartCode.toLowerCase().includes(term)) ||
+									(item.Barcode && item.Barcode.toLowerCase().includes(term)) ||
+									(item.ItemName && item.ItemName.toLowerCase().includes(term))
+								);
 							});
 
 							response($.map(filtered, function (item) {
 								return {
-									label: item.PartCode ,
+									label: item.PartCode,
 									value: item.PartCode,
 									itemName: item.ItemName,
-									itemCode: item.Item_Code
+									itemCode: item.Item_Code,
+									onlyPartCode: item.OnlyPartCode,
+									onlyItemName: item.OnlyItemName,
 								};
 							}));
 						} else {
@@ -1931,7 +1971,7 @@ formData.append("Mode", $('#Mode').val());
 			// Source for ItemNameText
 			const itemNameSource = function (request, response) {
 				$.ajax({
-					url: '@Url.Action("FillItems")',
+					url: '@Url.Action("FillItems", "PurchaseOrder")',
 					type: 'POST',
 					data: {
 						Type: $('#POTypeServItem').val(),
@@ -1950,11 +1990,13 @@ formData.append("Mode", $('#Mode').val());
 
 							response($.map(filtered, function (item) {
 								return {
-									label: item.ItemName ,
+									label: item.ItemName,
 									value: item.Item_Code,
 									itemName: item.ItemName,
 									itemCode: item.Item_Code,
-									partCode: item.PartCode
+									partCode: item.PartCode,
+									onlyPartCode: item.OnlyPartCode,
+									onlyItemName: item.OnlyItemName,
 								};
 							}));
 						} else {
@@ -1968,37 +2010,131 @@ formData.append("Mode", $('#Mode').val());
 			$("#PartCodeText").autocomplete({
 				source: partCodeSource,
 				select: function (event, ui) {
-									$("#PartCodeText").val(ui.item.value).data("itemcode", ui.item.itemCode);
-					$("#ItemNameText").val(ui.item.itemName);
+					$("#PartCodeText").val(ui.item.onlyPartCode).data("itemcode", ui.item.itemCode);
+					$("#ItemNameText").val(ui.item.onlyItemName);
 					$('#ItemCode').val(ui.item.itemCode);
 					$('#PartCode').val(ui.item.itemCode);
 					GetItemPartCode("PartCode");
+					// GetlastSaleOrderDetail();
 					return false;
 				},
 				focus: function (event, ui) {
 					$("#PartCodeText").val(ui.item.value);
 					return false;
 				},
-				minLength:2
+				minLength: 2
+			});
+
+			// 🔹 Focusout event for PartCodeText (manual entry validation)
+			$("#PartCodeText").on("focusout", function () {
+				let entered = $(this).val().trim().toLowerCase();
+				if (entered === "") return;
+
+				$.ajax({
+					url: '@Url.Action("FillItems", "PurchaseOrder")',
+					type: 'POST',
+					data: {
+						Type: $('#POTypeServItem').val(),
+						ShowAllItem: 'N',
+						SearchItemCode: '',
+						SearchPartCode: entered
+					},
+					success: function (result) {
+						let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+						if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+							// 🔹 Partial match: includes()
+							let match = obj.Result.Table.find(item => {
+								let real = (item.RealPartCode || "").toLowerCase();
+								let name = (item.Item_Name || "").toLowerCase();
+								let barcode = (item.Barcode || "").toLowerCase();
+
+								return real.includes(entered) || name.includes(entered) || barcode.includes(entered);
+							});
+
+							if (match) {
+								$("#PartCodeText").val(match.OnlyPartCode).data("itemcode", match.Item_Code);
+								$("#ItemNameText").val(match.OnlyItemName);
+								$("#ItemCode").val(match.Item_Code);
+								$("#PartCode").val(match.Item_Code);
+								GetItemPartCode("PartCode");
+								// GetlastSaleOrderDetail();
+
+							}
+						}
+
+					},
+					error: function (xhr, status, error) {
+						console.error("AJAX Error:", error);
+					}
+				});
 			});
 
 			// Autocomplete for ItemNameText
 			$("#ItemNameText").autocomplete({
 				source: itemNameSource,
 				select: function (event, ui) {
-						   $("#ItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
-					$("#PartCodeText").val(ui.item.partCode);
+					$("#ItemNameText").val(ui.item.onlyItemName).data("itemcode", ui.item.itemCode);
+					$("#PartCodeText").val(ui.item.onlyPartCode);
 					$('#ItemCode').val(ui.item.itemCode);
 					$('#PartCode').val(ui.item.itemCode);
 					GetItemPartCode("ItemCode");
+					// GetlastSaleOrderDetail()
 					return false;
+
 				},
 				focus: function (event, ui) {
 					$("#ItemNameText").val(ui.item.itemName);
 					return false;
 				},
-				minLength:2
+				minLength: 2
 			});
+
+			// // 🔹 Focusout event for ItemNameText (manual entry validation)
+			// $("#ItemNameText").on("focusout", function () {
+			//     let itemName = $(this).val().trim();
+			//     if (itemName !== "") {
+			//         $.ajax({
+			//             url: '@Url.Action("FillItems", "PurchaseOrder")',
+			//             type: 'POST',
+			//             data: {
+			//                 Type: $('#POTypeServItem').val(),
+			//                 ShowAllItem: 'N',
+			//                 SearchItemCode: itemName,
+			//                 SearchPartCode: ''
+			//             },
+			//             success: function (result) {
+			//                 let obj = typeof result === "string" ? JSON.parse(result) : result;
+			//                          alert(JSON.stringify(obj.Result));
+			//                 if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+
+			//                     let match = obj.Result.Table.find(item => {
+			//                         let real = (item.RealPartCode || "").toLowerCase();
+			//                         let name = (item.Item_Name || "").toLowerCase();
+			//                         let barcode = (item.Barcode || "").toLowerCase();
+
+			//                         return real.includes(entered) || name.includes(entered) || barcode.includes(entered);
+			//                     });
+
+			//                     if (match) {
+			//                         $("#ItemNameText").val(match.OnlyItemName).data("itemcode", match.Item_Code);
+			//                         $("#PartCodeText").val(match.OnlyPartCode);
+			//                         $('#ItemCode').val(match.Item_Code);
+			//                         $('#PartCode').val(match.Item_Code);
+			//                         GetItemPartCode("ItemCode");
+			//                         GetlastSaleOrderDetail();
+			//                     } else {
+			//                         alert("Invalid Item Name entered!");
+			//                         $("#ItemNameText").val("").focus();
+			//                     }
+			//                 } else {
+			//                     alert("Invalid Item Name entered!");
+			//                     $("#ItemNameText").val("").focus();
+			//                 }
+			//             }
+			//         });
+			//     }
+			// });
 		}
 
 		// 		function cleanItemName(name) {
