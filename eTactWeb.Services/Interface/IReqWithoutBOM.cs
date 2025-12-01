@@ -22,6 +22,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillWorkOrder();
         Task<ResponseResult> CheckFeatureOption();
         Task<ResponseResult> FillWorkCenter();
+        Task<ResponseResult> FillStore();
         Task<ResponseResult> GetNewEntry(string Flag, int YearCode, string SPName);
         Task<ResponseResult> AltUnitConversion(int ItemCode, decimal AltQty, decimal UnitQty);
         Task<ResponseResult> FillTotalStock(int ItemCode, int Store);
