@@ -27,7 +27,12 @@
                     <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3">
-
+                                <div class="col-lg-2">
+                                    <label asp-for="ModuleName" class="form-label">Module Name</label>
+                                    <select id="ModuleName" name="ModuleName" class="form-select">
+                                        <option value="">-- Select Form --</option>
+                                    </select>
+                                </div>
                                 <!-- Form Details -->
                                 <div class="col-lg-2">
                                     <label asp-for="FormName" class="form-label">Form Name</label>
@@ -130,10 +135,44 @@
 {
 <script>
 
+
+        function GetModuleName() {
+            $.ajax({
+                url: '/DeleteTransaction/GetModuleName',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log("ModuleName", data);
+                    const obj = typeof data === "string" ? JSON.parse(data) : data;
+                    const select = $('#ModuleName');
+                    select.empty();
+                    select.append('<option value="">-- Select Form --</option>');
+
+                    if (obj.Result && obj.Result.length > 0) {
+                        $.each(obj.Result, function (i, item) {
+                            select.append($('<option>', {
+                                value: item.ModuleName,
+                                text: item.ModuleName
+                            }));
+                        });
+                    }
+
+                },
+                error: function (err) {
+                    console.error("❌ Error fetching form names:", err);
+                }
+            });
+        }
+
+    $('#ModuleName').change(function () {
+        FillFormName();
+    });
+
         function FillFormName() {
         $.ajax({
             url: '/DeleteTransaction/GetFormName',
             type: 'GET',
+                data: { ModuleName: $('#ModuleName').val() },
             dataType: 'json',
             success: function (data) {
                 console.log("Formdata",data);
@@ -282,7 +321,7 @@
 
         $(document).ready(function () {
         // Load Form list initially
-        FillFormName();
+            GetModuleName();
 
         // On FormName change → load slipnos
         $('#FormName').on('change', function () {
