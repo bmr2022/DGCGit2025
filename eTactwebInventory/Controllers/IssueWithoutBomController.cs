@@ -686,7 +686,7 @@ namespace eTactWeb.Controllers
                 MRGrid.Columns.Add("StdPacking", typeof(float));
                 MRGrid.Columns.Add("ReqNo", typeof(string));
                 MRGrid.Columns.Add("ReqYearCode", typeof(string));
-                MRGrid.Columns.Add("ReqDate", typeof(string));
+                MRGrid.Columns.Add("ReqDate", typeof(DateTime));
                 MRGrid.Columns.Add("ReqEntryId", typeof(int));
                 MRGrid.Columns.Add("CancelReq", typeof(string));
 
