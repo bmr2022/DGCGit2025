@@ -729,6 +729,7 @@ public class ItemMasterController : Controller
         if (model.Mode == "Update")
         {
             model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            model.LastUpdatedDate = DateTime.Now.ToString();
 
             if (model.UploadImage != null)
             {
