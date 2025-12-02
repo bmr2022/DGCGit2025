@@ -295,10 +295,10 @@ namespace eTactwebHR.Controllers
 
         }
 
-        public async Task<IActionResult> GetSearchData(string fromDate,string toDate,string employeeName, string departmentName, string empCode)
+        public async Task<IActionResult> GetSearchData(string fromDate,string toDate,string employeeName, string departmentName, string employeeCode)
         {
             var model = new HRAdvanceDashboard();
-            var Result = await _iemployeeAdvancePayement.GetDashboardData(fromDate,toDate,employeeName, departmentName, empCode).ConfigureAwait(true);
+            var Result = await _iemployeeAdvancePayement.GetDashboardData(fromDate,toDate,employeeName, departmentName, employeeCode).ConfigureAwait(true);
             if (Result != null)
             {
                 var _List = new List<TextValue>();
