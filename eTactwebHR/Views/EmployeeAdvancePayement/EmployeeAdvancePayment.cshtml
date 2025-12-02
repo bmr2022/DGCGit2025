@@ -262,7 +262,7 @@
 
 								<div class="col-md-2">
 									<label asp-for="PaymentVoucherType" class="form-label">Payment VoucherType</label>
-									<select asp-for="PaymentVoucherType" class="form-select">  @* readonly *@
+									<select asp-for="PaymentVoucherType" class="form-select" readonly>  @* readonly *@
 										<option value="">-Select-</option>
 										<option value="Bank Payment">Bank Payment</option>
 										<option value="Cash Payment">Cash Payment</option>
@@ -595,6 +595,11 @@
 				FillEntryID();
 				GetServerDate();
 			}
+			else{
+				$('#RequestDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#RequestDate').val()));
+				$('#StartRecoveryFromMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#StartRecoveryFromMonth').val()));
+			}
+
 			FillAdvanceType();
 			// FillMgmtEmployeeNameList();
 			// FillFinancialEmployeeNameList();

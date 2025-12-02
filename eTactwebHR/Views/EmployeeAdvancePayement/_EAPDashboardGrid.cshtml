@@ -15,12 +15,9 @@
 				<th data-columnno="1" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> AdvanceEntryId </th>
 				<th data-columnno="2" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> AdvanceYearCode </th>
 				<th data-columnno="3" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> AdvanceSlipNo </th>
-				<th data-columnno="4" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> EmpId </th>
 				<th data-columnno="5" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> EmpName </th>
 				<th data-columnno="6" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> EmpCode </th>
-				<th data-columnno="7" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> DesigId </th>
 				<th data-columnno="8" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> DesigName </th>
-				<th data-columnno="9" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> DepId </th>
 				<th data-columnno="10" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> DeptName </th>
 				<th data-columnno="11" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> DOJ </th>
 				<th data-columnno="12" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> BasicSalary </th>
@@ -38,18 +35,14 @@
 				<th data-columnno="24" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> PreviousPendAdvanceAmt </th>
 				<th data-columnno="25" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> PreviousPendLoanAmt </th>
 				<th data-columnno="26" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> MgrApprovaldate </th>
-				<th data-columnno="27" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> MgrApprovedbyEmpid </th>
 				<th data-columnno="28" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> MgrApprovedbyEmpName </th>
 				<th data-columnno="29" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> MgrApprovedbyEmpCode </th>
-				<th data-columnno="30" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> HRApprovedbyEmpid </th>
 				<th data-columnno="31" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> HRApprovedbyEmpName </th>
 				<th data-columnno="32" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> HRApprovedbyEmpCode </th>
 				<th data-columnno="33" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> HRApprovalDate </th>
-				<th data-columnno="34" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> FinanceApprovalEmpid </th>
 				<th data-columnno="35" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> FinanceApprovalEmpName </th>
 				<th data-columnno="36" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> FinanceApprovalEmpCode </th>
 				<th data-columnno="37" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> FinanceApprovalDate </th>
-				<th data-columnno="38" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> CanceledByEmpId </th>
 				<th data-columnno="39" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> CanceledByEmpName </th>
 				<th data-columnno="40" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> CanceledByEmpCode </th>
 				<th data-columnno="41" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> Canceled </th>
@@ -66,7 +59,6 @@
 				<th data-columnno="52" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> FinalRevoveryDate </th>
 				<th data-columnno="53" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> ActualFinalRecoveryDate </th>
 				<th data-columnno="54" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> StatusHoldCancelApproved </th>
-				<th data-columnno="55" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> LastUpdatedBy </th>
 				<th data-columnno="56" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> LastUpdatedByEmpName </th>
 				<th data-columnno="57" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> LastUpdationDate </th>
 				<th data-columnno="58" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> RequestEntryByMachine </th>
@@ -98,8 +90,8 @@
 									<div class="d-flex">
 										<div id="viewCursorDiv-@Cntr">
 											@if ((item.HRApprovedbyEmpid == null || item.HRApprovedbyEmpid == 0)
-																																		&& (item.FinanceApprovalEmpid == null || item.FinanceApprovalEmpid == 0)
-																																		&& (item.CanceledByEmpId == null || item.CanceledByEmpId == 0))
+													&& (item.FinanceApprovalEmpid == null || item.FinanceApprovalEmpid ==0)
+													&& (item.CanceledByEmpId == null || item.CanceledByEmpId == 0))
 											{
 												<a class="table-link link-success"
 												asp-action="EmployeeAdvancePayment"
@@ -185,12 +177,9 @@
 							<td>@item.AdvanceEntryId</td>
 							<td>@item.AdvanceYearCode</td>
 							<td>@item.AdvanceSlipNo</td>
-							<td>@item.EmpId</td>
 							<td>@item.EmpName</td>
 							<td>@item.EmpCode</td>
-							<td>@item.DesigId</td>
 							<td>@item.DesigName</td>
-							<td>@item.DeptId</td>
 							<td>@item.DeptName</td>
 							<td>@item.DOJ</td>
 							<td>@item.BasicSalary</td>
@@ -200,27 +189,23 @@
 							<td>@item.PresentDaysinCurrMonth</td>
 							<td>@item.PresentDaysInCurrYear</td>
 							<td>@item.CategoryId</td>
-							<td>@item.RequestDate</td>
-							<td>@item.EntryDate</td>
+							<td>@(item.RequestDate != null ? item.RequestDate.Split(" ")[0] : item.RequestDate)</td>
+							<td>@(item.EntryDate != null ? item.EntryDate.Split(" ")[0] : item.EntryDate)</td>
 							<td>@item.Purpose</td>
 							<td>@item.RequestedAmount</td>
 							<td>@item.ApprovedAmount</td>
 							<td>@item.PreviousPendAdvanceAmt</td>
 							<td>@item.PreviousPendLoanAmt</td>
-							<td>@item.MgrApprovaldate</td>
-							<td>@item.MgrApprovedbyEmpid</td>
+							<td>@(item.MgrApprovaldate != null ? item.MgrApprovaldate.Split(" ")[0] : item.MgrApprovaldate)</td>
 							<td>@item.MgrApprovedbyEmpName</td>
 							<td>@item.MgrApprovedbyEmpCode</td>
-							<td id="HRApprovedbyEmpid-@Cntr">@item.HRApprovedbyEmpid</td>
-							<td>@item.HRApprovedbyEmpName</td>
+							<td>@item.HRApprovedbyEmpName <input type="hidden" value="@item.HRApprovedbyEmpid" id="HRApprovedbyEmpid-@Cntr" /></td>
 							<td>@item.HRApprovedbyEmpCode</td>
-							<td>@item.HRApprovalDate</td>
-							<td id="FinanceApprovalEmpid-@Cntr">@item.FinanceApprovalEmpid</td>
-							<td>@item.FinanceApprovalEmpName</td>
+							<td>@(item.HRApprovalDate != null ? item.HRApprovalDate.Split(" ")[0] : item.HRApprovalDate)</td>
+							<td>@item.FinanceApprovalEmpName <input type="hidden" value="@item.FinanceApprovalEmpid" id="FinanceApprovalEmpid-@Cntr" /></td>
 							<td>@item.FinanceApprovalEmpCode</td>
-							<td>@item.FinanceApprovalDate</td>
-							<td id="CanceledByEmpId-@Cntr">@item.CanceledByEmpId</td>
-							<td>@item.CanceledByEmpName</td>
+							<td>@(item.FinanceApprovalDate != null ? item.FinanceApprovalDate.Split(" ")[0] : item.FinanceApprovalDate)</td>
+							<td>@item.CanceledByEmpName <input type="hidden" value="@item.CanceledByEmpId" id="CanceledByEmpId-@Cntr" /></td>
 							<td>@item.CanceledByEmpCode</td>
 							<td>@item.Canceled</td>
 							<td>@item.CancelOrApprovalremarks</td>
@@ -233,12 +218,11 @@
 							<td>@item.NoofInstallment</td>
 							<td>@item.StartRecoveryFromMonth</td>
 							<td>@item.AutoDeductionFromSalaryYN</td>
-							<td>@item.FinalRevoveryDate</td>
-							<td>@item.ActualFinalRecoveryDate</td>
+							<td>@(item.FinalRevoveryDate != null ? item.FinalRevoveryDate.Split(" ")[0] : item.FinalRevoveryDate)</td>
+							<td>@(item.ActualFinalRecoveryDate != null ? item.ActualFinalRecoveryDate.Split(" ")[0] : item.ActualFinalRecoveryDate)</td>
 							<td>@item.StatusHoldCancelApproved</td>
-							<td>@item.LastUpdatedBy</td>
 							<td>@item.LastUpdatedByEmpName</td>
-							<td>@item.LastUpdationDate</td>
+							<td>@(item.LastUpdationDate != null ? item.LastUpdationDate.Split(" ")[0] : item.LastUpdationDate)</td>
 							<td>@item.RequestEntryByMachine</td>
 							<td>@item.ApprovedBYMachine</td>
 							<td>@item.CancelByMachine</td>
