@@ -1,0 +1,207 @@
+﻿@model eTactWeb.DOM.Models.HRPolicyAttendanceModel
+@{
+    ViewData["Title"] = "HRPolicyAttendance";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="HRPolicyAttendance" asp-controller="HRPolicyAttendance" method="post" autocomplete="on" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h5>
+                    <strong>HR Policy Attendance</strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACK
+                                </a>
+                            </div>
+
+                            <div class="col-auto">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary btn-sm" >
+                                    <i class="fa-solid fa-chevron-circle-right" aria-hidden="true"></i>
+                                    SAVE
+                                </button>
+                            </div>
+
+
+                        </div>
+                    </span>
+                </h5>
+                <div class="card-body bg-light">
+                    <div class="accordion shadow-lg" id="accordionItemCategory">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                                <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                        aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                    <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> HR Policy Attendance</strong>
+                                    <small class="p-3"></small>
+                                </button>
+                            </h2>
+                            <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                                <div class="row g-4 p-4">
+                                    <input asp-for="PolicyId" hidden />
+
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label asp-for="PolicyName" class="form-label m-0">Policy Name</label>
+                                            <input asp-for="PolicyName" class="form-control" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="IsActive" class="form-label m-0">Is Active</label>
+                                            <select asp-for="IsActive" class="form-select">
+                                                <option value="">-- Select --</option>
+                                                <option value="Y">Yes</option>
+                                                <option value="N">No</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="HalfDayApplicableAfterLateMin" class="form-label m-0">Half Day Applicable After Late Min</label>
+                                            <input asp-for="HalfDayApplicableAfterLateMin" class="form-control" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="MaxGraceMinforlate" class="form-label m-0">Max Grace Min for late</label>
+                                            <input type="number" asp-for="MaxGraceMinforlate" class="form-control" min="0" max="180" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                                            <span class="text-danger" asp-validation-for="MaxGraceMinforlate"></span>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="FullDayAbsentIfPresentLessthenMin" class="form-label m-0">Full Day Absent If Present Less then Min</label>
+                                            <input type="number" asp-for="FullDayAbsentIfPresentLessthenMin" class="form-control" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="OverTimeEligibleYN" class="form-label m-0">Over Time Eligible YN</label>
+                                            <select asp-for="OverTimeEligibleYN" class="form-select">
+                                                <option value="">-- Select --</option>
+                                                <option value="Y">Yes</option>
+                                                <option value="N">No</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="OverTimeRateXBasicRate" class="form-label m-0">Over Time Rate X Basic Rate</label>
+                                            <input type="number" asp-for="OverTimeRateXBasicRate" class="form-control" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label asp-for="OverTimeApplicableAfterExtraHours" class="form-label m-0">Over Time Applicable After Extra Hours</label>
+                                            <select asp-for="OverTimeApplicableAfterExtraHours" class="form-select">
+                                                <option value="">-- Select --</option>
+                                                <option value="Y">Yes</option>
+                                                <option value="N">No</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="WeekOffFixedRotate" class="form-label m-0">Week Off Fixed Rotate</label>
+                                            <select asp-for="WeekOffFixedRotate" class="form-select">
+                                                <option value="">-- Select --</option>
+                                                <option value="Y">Fixed</option>
+                                                <option value="N">Rotate</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="MinNoOfPresentDaysreqForWeekOff" class="form-label m-0">Min No Of Present Days req For Week Off</label>
+                                            <input type="number" asp-for="MinNoOfPresentDaysreqForWeekOff" class="form-control" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                                            <span class="text-danger" asp-validation-for="MinNoOfPresentDaysreqForWeekOff"></span>
+
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="HalfDayCountIfLeftBeforeShiftTime" class="form-label m-0">Half Day Count If Left Before Shift Time</label>
+                                            <input type="number" asp-for="HalfDayCountIfLeftBeforeShiftTime" class="form-control" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label asp-for="FlexibleInOutTimingAllowed" class="form-label m-0">Flexible InOut Timing Allowed</label>
+                                            <select asp-for="FlexibleInOutTimingAllowed" class="form-select">
+                                                <option value="">-- Select --</option>
+                                                <option value="Y">Yes</option>
+                                                <option value="N">No</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="SandwitchWeekoffPolicyApplicable" class="form-label m-0">Sandwitch Week off Policy Applicable</label>
+                                            <select asp-for="SandwitchWeekoffPolicyApplicable" class="form-select">
+                                                <option value="">-- Select --</option>
+                                                <option value="Y">Yes</option>
+                                                <option value="N">No</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+
+                                        <div class="mb-3">
+                                            <label asp-for="SandWitchHolidayPolicyApplicable" class="form-label m-0">SandWitch Holiday Policy Applicable</label>
+                                            <select asp-for="SandWitchHolidayPolicyApplicable" class="form-select">
+                                                <option value="">-- Select --</option>
+                                                <option value="Y">Yes</option>
+                                                <option value="N">No</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="MaxLateIncomingAllowed" class="form-label m-0">Max Late Incoming Allowed</label>
+                                            <input type="number" asp-for="MaxLateIncomingAllowed" class="form-control" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="MaxEarlyLeavingAllowed" class="form-label m-0">Max Early Leaving Allowed</label>
+                                            <input type="number" asp-for="MaxEarlyLeavingAllowed" class="form-control" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label asp-for="LateComingEarlyGoingCountSame" class="form-label m-0">Late Coming Early Going Count Same</label>
+                                            <select asp-for="LateComingEarlyGoingCountSame" class="form-select">
+                                                <option value="">-- Select --</option>
+                                                <option value="Y">Yes</option>
+                                                <option value="N">No</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="MaxNoOfHalfDayInMonth" class="form-label m-0">Max No Of Half Day in Month</label>
+                                            <input type="number" asp-for="MaxNoOfHalfDayInMonth" class="form-control" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="MaxNoOfhourinAWeek" class="form-label m-0">Max No Of Hour in a Week</label>
+                                            <input type="number" asp-for="MaxNoOfhourinAWeek" class="form-control" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        function PressBack() {
+            window.history.back();
+        }
+    </script>
+}

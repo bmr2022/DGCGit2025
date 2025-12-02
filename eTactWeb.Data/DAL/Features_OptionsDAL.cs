@@ -209,7 +209,7 @@ namespace eTactWeb.Data.DAL
                                                                 SaleInvoiceFileName = dr["SaleInvoiceFileName"] != DBNull.Value ? dr["SaleInvoiceFileName"].ToString() : string.Empty,
                                                                 AutoGenItemGroupCode = dr["AutoGenItemGroupCode"] != DBNull.Value ? dr["AutoGenItemGroupCode"].ToString() : string.Empty,
                                                                 AllowMultipleBuyerInSaleOrder = dr["AllowMultipleBuyerInSaleOrder"] != DBNull.Value ? dr["AllowMultipleBuyerInSaleOrder"].ToString() : string.Empty,
-                                                                SaleorderPrintReportName = dr["SaleorderPrintReportName"] != DBNull.Value ? dr["SaleorderPrintReportName"].ToString() : string.Empty,
+                                                                SaleorderPrintReportName = dr[" orderPrintReportName"] != DBNull.Value ? dr["SaleorderPrintReportName"].ToString() : string.Empty,
                                                                 SaleAmendPrintReportName = dr["SaleAmendPrintReportName"] != DBNull.Value ? dr["SaleAmendPrintReportName"].ToString() : string.Empty,
                                                                 SaleSchedulePrintReportName = dr["SaleSchedulePrintReportName"] != DBNull.Value ? dr["SaleSchedulePrintReportName"].ToString() : string.Empty,
                                                                 SaleScheduleAmendPrintReportName = dr["SaleScheduleAmendPrintReportName"] != DBNull.Value ? dr["SaleScheduleAmendPrintReportName"].ToString() : string.Empty,

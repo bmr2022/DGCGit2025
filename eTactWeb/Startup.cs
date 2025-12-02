@@ -300,6 +300,7 @@ namespace eTactWeb
             services.TryAddScoped<IDeleteTransaction, DeleteTransactionBLL>();
             services.TryAddScoped<ILedgerOpeningCarryforward, LedgerOpeningCarryforwardBLL>();
             services.TryAddScoped<ISaleBillApproval, SaleBillApprovalBLL>();
+            services.TryAddScoped<IHRPolicyAttendanceBLL, HRPolicyAttendanceBLL>();
 
             services.TryAddTransient<IMIRRegister, MIRRegisterBLL>();
             services.TryAddTransient<ICreditNote, CreditNoteBLL>();

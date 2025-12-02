@@ -44,6 +44,9 @@ namespace eTactWeb.DOM.Models
         public int UpdatedByEmp { get; set; }
         public string LastUpdatedBy { get; set; }
         public string UpdationDate { get; set; }
+        public string? MachineName { get; set; }
+        public string EffectiveDate { get; set; }
+
         public List<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetails { get; set; } 
     }
 

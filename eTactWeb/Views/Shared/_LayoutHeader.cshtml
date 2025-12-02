@@ -533,7 +533,12 @@
                                 <a class="dropdown-item" id="HR" href="#">HR Master &raquo;</a>
                                 @*    <ul class="submenu dropdown-menu"> *@
                                 <ul class="submenu dropdown-menu" >
-
+                                   <li>
+                                        <a class="dropdown-item" asp-action="HRPolicyAttendance" asp-route-ID="0" asp-controller="HRPolicyAttendance" id="HRPolicyAttendanceDetail">
+                                            <i aria-hidden="true"></i> HR Policy Attendance
+                                        </a>
+                                        <input class="userRightsPermission" type="hidden" value="HR Policy Attendance" />
+                                   </li>
                                     <li>
                                         <a class="dropdown-item" href="#">HRSalary Head Master &raquo; </a>
                                         <ul class="submenu dropdown-menu">

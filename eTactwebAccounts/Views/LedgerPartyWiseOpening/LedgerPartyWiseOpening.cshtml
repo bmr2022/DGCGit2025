@@ -165,7 +165,7 @@
                                                     <label asp-for="Type" class="form-label">Type</label>
                                                     <select class="form-control" id="Type" asp-for="Type" style="width:100px;">
                                                         <option value="">-Select-</option>
-                                                        <option value="DR">DR</option>
+                                                        <option value="DR" selected>DR</option>
                                                         <option value="CR">CR</option>
                                                     </select>
                                                 </div>
@@ -254,9 +254,50 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="OtherGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                            </button>
+                        </h2>
+                        <div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
+                            <div class="accordion-body">
+                                <div class="progress my-2 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="row g-2 gx-3" id="_ItemGrid">
 
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                        <label asp-for="ActualEntryBy" class="form-label">Created By</label>
+                                        <input type="hidden" asp-for="ActualEntryBy" class="form-control" readonly />
+                                        <input asp-for="EntryByEmpName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                        <label asp-for="ActualEntryDate" class="form-label">Created On</label>
+                                        <input asp-for="ActualEntryDate" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                        <label asp-for="LastUpdatedBy" class="form-label" style="width:150px">Updated By</label>
+                                        <input type="hidden" asp-for="UpdatedByEmp" class="form-control" readonly />
+                                        <input asp-for="LastUpdatedBy" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                        <label asp-for="UpdatedOn" class="form-label">Updated On</label>
+                                        <input asp-for="UpdatedOn" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                        <label asp-for="MachineName" class="form-label">Entered by Machine Name</label>
+                                        <input asp-for="MachineName" class="form-control" readonly value="@Environment.MachineName" />
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label asp-for="LastUpdatedDate" class="form-label">Last Updated</label>
+                                        <input asp-for="LastUpdatedDate" class="form-control datepicker" readonly />
+                                    </div>
+                                </div>
 
-
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -390,7 +431,7 @@
                 GetAllDataAccountCodeWise();
             });
 
-            
+
 
         });
 
@@ -400,8 +441,8 @@
             $.ajax({
                 url: '@Url.Action("FillEntryId", "LedgerPartyWiseOpening")',
                 type: 'POST',
-                data:{
-                    YearCode:YearCode,
+                data: {
+                    YearCode: YearCode,
                     EntryDate: EntryDate
                 },
                 async: false,
@@ -421,12 +462,12 @@
         }
 
         $('.submitBTN').click(function (e) {
-            
-                e.preventDefault();
-                if (!validateBalance()) return;
-                $('form').submit();
 
-            
+            e.preventDefault();
+            if (!validateBalance()) return;
+            $('form').submit();
+
+
         });
         function validateBalance() {
 
@@ -541,7 +582,7 @@
         });
 
         $('#BillNo').focusout(function () {
-             ;
+            ;
             var BillNetAmt;
             var TotNetAmt = $('#TotNetAmt').val().trim();
             var Balance = $('#Balance').val().trim();
@@ -751,16 +792,16 @@
             $('#Type').prop('selectedIndex', 0).trigger("change");
             $('#BillNo,#BillDate,#TransactionType,#DueDate').val('');
 
-            
+
 
 
 
         }
 
         $(document).on('click', '#GridButton', function () {
-             ;
+            ;
             console.log('Add to Grid button clicked');
-            
+
             var BillNo = $('#BillNo').val().trim();
             var BillDate = $('#BillDate').val().trim();
             var BillYear = $('#BillYear').val().trim();
@@ -775,11 +816,11 @@
             var TotNetAmt = $('#TotNetAmt').val().trim();
             var Balance = $('#Balance').val().trim();
 
-            if ( !BillDate ) {
+            if (!BillDate) {
                 $.notify('Fill BillDate For Add in Grid', "error");
                 return;
             }
-            if ( !BillYear ) {
+            if (!BillYear) {
                 $.notify('Fill Bill Year For Add in Grid', "error");
                 return;
             }
@@ -787,23 +828,23 @@
                 $.notify('Fill BillNo For Add in Grid', "error");
                 return;
             }
-            if ( !BillNetAmt ) {
+            if (!BillNetAmt) {
                 $.notify('Fill BillNetAmt For Add in Grid', "error");
                 return;
             }
-            if (!PendAmt ) {
+            if (!PendAmt) {
                 $.notify('Fill PendAmt For Add in Grid', "error");
                 return;
             }
-            if ( !Type ) {
+            if (!Type) {
                 $.notify('Fill Type For Add in Grid', "error");
                 return;
             }
-            if (  !TransactionType ) {
+            if (!TransactionType) {
                 $.notify('Fill TransactionType For Add in Grid', "error");
                 return;
             }
-            if (  !DueDate) {
+            if (!DueDate) {
                 $.notify('Fill DueDate For Add in Grid', "error");
                 return;
             }
@@ -811,17 +852,17 @@
                 $.notify('Fill Unit For Add in Grid', "error");
                 return;
             }
-            if ( BillNetAmt == "0" ) {
+            if (BillNetAmt == "0") {
                 $.notify('BillNetAmt can not be 0', "error");
                 return;
             }
-            if ( PendAmt == "0") {
+            if (PendAmt == "0") {
                 $.notify('PendAmt can not be 0', "error");
-                    return;
+                return;
             }
-            
 
-          
+
+
             var seqnoarray = [];
             $('#divStockGrid tr').each(function () {
                 var seqnoText = $(this).find('td[id^=SrNO]').text();
@@ -862,7 +903,7 @@
                         TotalNoOfRows();
                         countAllTotal();
                         ClearItems();
-                       // BillNetAmt = parseFloat(Balance) - parseFloat(BillNetAmt)
+                        // BillNetAmt = parseFloat(Balance) - parseFloat(BillNetAmt)
 
                     } else if (xhr.status == 207) {
                         $.notify('Duplicate Item...!', "info");
@@ -944,7 +985,7 @@
         var EditEachItem = false;
 
         function EditItemRow(SrNO) {
-             
+
             if (EditEachItem) {
                 $.notify('Cannot edit item while another item is being added to the grid!', "error");
                 return;
@@ -958,7 +999,7 @@
                     var obj = $.parseJSON(data);
                     if (obj != null) {
                         EditEachItem = true;
-                         
+
                         $('#BillNo').val(obj[0].BillNo).trigger("change");
                         $('#BillDate').val(obj[0].BillDate).trigger("change");
                         $('#BillYear').val(obj[0].BillYear).trigger("change");
