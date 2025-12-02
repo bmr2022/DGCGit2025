@@ -673,6 +673,7 @@ namespace eTactWeb.Controllers
                 MRGrid.Columns.Add("AltQty", typeof(decimal));
                 MRGrid.Columns.Add("Rate", typeof(decimal));
                 MRGrid.Columns.Add("WCId", typeof(int));
+                MRGrid.Columns.Add("ToStoreId", typeof(int));
                 MRGrid.Columns.Add("IssuedAlternateItem", typeof(string));
                 MRGrid.Columns.Add("OriginalitemCode", typeof(int));
                 MRGrid.Columns.Add("AltItemCode", typeof(int));
@@ -685,7 +686,7 @@ namespace eTactWeb.Controllers
                 MRGrid.Columns.Add("StdPacking", typeof(float));
                 MRGrid.Columns.Add("ReqNo", typeof(string));
                 MRGrid.Columns.Add("ReqYearCode", typeof(string));
-                MRGrid.Columns.Add("ReqDate", typeof(string));
+                MRGrid.Columns.Add("ReqDate", typeof(DateTime));
                 MRGrid.Columns.Add("ReqEntryId", typeof(int));
                 MRGrid.Columns.Add("CancelReq", typeof(string));
 
@@ -720,6 +721,7 @@ namespace eTactWeb.Controllers
                     Item.AltQty == 0 ? 0 : Item.AltQty,
                     Item.Rate == 0? 0:Item.Rate,
                     Item.WCId == 0 ? 0 : Item.WCId,
+                    Item.ToStoreId == 0 ? 0 : Item.ToStoreId,
                     Item.IssuedAlternateItem == null? "":Item.IssuedAlternateItem,//issuedalternateitem
                     Item.OriginalItemCode == 0 ? 0 : Item.OriginalItemCode,//originalitemcode
                     Item.AltItemCode == 0? 0 : Item.AltItemCode,
