@@ -269,6 +269,7 @@
             }
             DayorMonthChange();
             EmpAttDateOnChange();
+            setTimeout(checkHolidayOrWeekoff($('#strEmpAttDate').val(), $("#EmpCatId").val(), $("#GateAttYearCode").val(), handleHolidayWeekoff, false), 800);
             $('#EmployeeCode').select2();
             updateItemCount();
             if($('#IsIncreamented').val().toLowerCase() == 'true') {
@@ -600,7 +601,14 @@
                 $(btn).prop('disabled', false).html('<i class="fa fa-pencil-square fa-fw fa-lg"></i> UPDATE');
             }
         }
-
+        function highlightUnselectedEmployees(rowColor = "#ffe6e6") {
+            document.querySelectorAll("input[name='selectedEmpIds']").forEach(cb => {
+                if (!cb.checked) {
+                    let row = cb.closest("tr");
+                    if (row) row.style.backgroundColor = rowColor;
+                }
+            });
+        }
         function copyToClipboardForDropdown(element) {
             var $temp = $("<input>");
             $("body").append($temp);
@@ -799,6 +807,7 @@
                             }
                         });
                         checkUncheckEmp();
+                        highlightUnselectedEmployees();
                         isallcheckedonmodify = false;
                     }
                 }
@@ -832,6 +841,7 @@
                             }
                         });
                         checkUncheckEmp();
+                        highlightUnselectedEmployees();
                         isallcheckedonmodify = false;
                     }
                 }
@@ -857,6 +867,7 @@
                             }
                         });
                         checkUncheckEmp();
+                        highlightUnselectedEmployees();
                         isallcheckedonmodify = false;
                     }
                 }
@@ -875,6 +886,7 @@
                 console.log("Day:", dayName, "Year:", year);
                 $('#GateAttEntryDay').val(dayName);
             }
+            setTimeout(checkHolidayOrWeekoff(dateStr, $("#EmpCatId").val(), $("#GateAttYearCode").val(), handleHolidayWeekoff, false), 800);
         }
 
     function ShowManualAttandance() {
@@ -911,39 +923,50 @@
                             $("#attendanceItemGrid").html(result);
                             updateItemCount();
                             initTimePickers12();
-                            if(DayOrMonthType.toLowerCase() == "daily")
-                            {
-                                if (($('#isholiday').val() != null && $('#isholiday').val() != undefined && $('#isholiday').val().toLowerCase() == "true") || ($('#isweekoff').val() != null && $('#isweekoff').val() != undefined && $('#isweekoff').val().toLowerCase() == "true")) {
-                                    let message = $('#isholiday').val().toLowerCase() == "true"
-                                        ? "This day is a Holiday. Do you still want to edit attendance?"
-                                        : "This day is a Week-Off. Do you still want to edit attendance?";
-
-                                    if (!confirm(message)) {
-                                                $("#attendanceItemGridbody").html("<input id='rowitemcount' type='hidden' value='0' /><tr id='norecord'><td colspan='8' class='text-center'>No records found.</td></tr>");
-                                                $('#GateAttEntryOffDay').text('');
-                                                $('.dvGateAttEntryOffDay').hide();
-                                    }
-                                    else {
-                                        var textblock = ($('#isholiday').val() != null && $('#isholiday').val() != undefined && $('#isholiday').val().toLowerCase() == "true") ? "Holiday" : "Week-Off";
-                                        var textclass = ($('#isholiday').val() != null && $('#isholiday').val() != undefined && $('#isholiday').val().toLowerCase() == "true") ? "holiday-time lighten" : "weekoff-time lighten";
-                                        $('#GateAttEntryDay').addClass(textclass);
-                                        $('#GateAttEntryOffDay').addClass(textclass);
-                                        $('#GateAttEntryOffDay').text(textblock);
-                                        $('.dvGateAttEntryOffDay').show();
-                                    }
-                                }
-                                else {
-                                    $('#GateAttEntryOffDay').text('');
-                                    $('.dvGateAttEntryOffDay').hide();
-                                }
-                            }
+                            checkHolidayOrWeekoff(document.getElementById("strEmpAttDate").value, $("#EmpCatId").val(), $("#GateAttYearCode").val(), handleHolidayWeekoff, true);
                     },
                     error: function () {
                         console.log("Error loading attendance grid.");
                     }
                 });
             }
-        }
+    }
+    function checkHolidayOrWeekoff(dateVal, empCatId, yearCode, callbackFn, isfromgridload) {
+         if(dateVal) {
+             $.ajax({
+                    url: '/GateAttendance/CheckHolidayWeekoff',
+                    type: 'POST',
+                    data: { date: dateVal, empCatId: empCatId, yearCode: yearCode  },
+                    success: function (result) {
+                            if (callbackFn) callbackFn($("#DayOrMonthType").val(), result, isfromgridload);
+                    },
+                    error: function () {
+                        console.log("Error checking holiday");
+                    }
+              });
+         }
+    }
+    function handleHolidayWeekoff(DayOrMonthType, res, isfromgridload) {
+        const $off = $('#GateAttEntryOffDay'), $day = $('#GateAttEntryDay');
+        // remove all previous classes (one-liner)
+        $day.add($off).removeClass('holiday-time lighten weekoff-time');
+        if (DayOrMonthType.toLowerCase() !== "daily") return;
+        const isHoliday = (res.isHoliday != null && res.isHoliday != undefined && res.isHoliday != "") ? res.isHoliday.toString().toLowerCase() === "true" : false;
+        const isWeekoff = (res.isWeekoff != null && res.isWeekoff != undefined && res.isWeekoff != "") ? res.isWeekoff.toString().toLowerCase() === "true" : false;
+        if (!(isHoliday || isWeekoff)) return $off.text(''), $('.dvGateAttEntryOffDay').hide();
+
+        const msg = isHoliday ? "This day is a Holiday. Do you still want to edit attendance?" : "This day is a Week-Off. Do you still want to edit attendance?";
+        if (isfromgridload && !confirm(msg))
+            return $("#attendanceItemGridbody").html("<input id='rowitemcount' type='hidden' value='0' /><tr id='norecord'><td colspan='8' class='text-center'>No records found.</td></tr>"),
+                   $off.text(''),
+                   $('.dvGateAttEntryOffDay').hide();
+
+        const txt = isHoliday ? "Holiday" : "Week-Off", cls = isHoliday ? "holiday-time lighten" : "weekoff-time lighten";
+        $day.addClass(cls);
+        $off.addClass(cls).text(txt);
+        $('.dvGateAttEntryOffDay').show();
+    }
+
     function updateItemCount() {
         var count = $("#attendanceItemGrid tbody tr").length;
         if($("#norecord").length && count > 0) {

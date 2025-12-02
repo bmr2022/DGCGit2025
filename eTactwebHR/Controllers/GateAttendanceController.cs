@@ -197,6 +197,7 @@ namespace eTactwebHR.Controllers
                 {
                     MainModel = await BindModels(MainModel).ConfigureAwait(false);
                     MainModel.EID = EncryptDecrypt.Encrypt(ID.ToString(CI));
+                    MainModel.Mode = Mode;
                 }
             }
 
@@ -608,6 +609,20 @@ namespace eTactwebHR.Controllers
             string serializedGateAttendance = JsonConvert.SerializeObject(MainModel);
             HttpContext.Session.SetString("GateAttendance", serializedGateAttendance);
             return PartialView("_GateManualAttendance", model);
+        }
+        [HttpPost]
+        public JsonResult CheckHolidayWeekoff(DateTime date, int empCatId, int yearCode)
+        {
+            var holidayData = GetHolidayList(empCatId, date, yearCode);
+            bool isWeekoff = holidayData?.HolidayList?.Any(a => a.HolidayEffFrom == null && a.HolidayEffTill == null && a.DayName.Equals(date.DayOfWeek.ToString(), StringComparison.OrdinalIgnoreCase))  ?? false;
+            bool isHoliday = holidayData?.HolidayList?.Any(a => a.HolidayEffFrom != null && a.HolidayEffTill != null && a.HolidayEffFrom <= date && a.HolidayEffTill >= date) ?? false;
+
+            return Json(new
+            {
+                isHoliday = isHoliday,
+                isWeekoff = isWeekoff,
+                HolidayName = holidayData?.HolidayList?.FirstOrDefault(h => h.HolidayEffFrom <= date  && h.HolidayEffTill >= date)?.HolidayName ?? ""
+            });
         }
         private static DataSet GetItemDetailTable(GateAttendanceModel itemDetailList, string Mode, int? EntryID, int? YearCode)
         {
