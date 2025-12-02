@@ -5,6 +5,7 @@ using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using PdfSharp.Drawing.BarCodes;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
 
@@ -210,7 +211,7 @@ namespace eTactwebHR.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> EAPDashboard(string fromDate, string toDate)
+        public async Task<IActionResult> EAPDashboard(string fromDate, string toDate, string empName, string deptName, string empCode, string searchBox)
         {
             try
             {
@@ -286,6 +287,13 @@ namespace eTactwebHR.Controllers
                         model.HRAdvanceDashboards = CommonFunc.DataTableToList<HRAdvanceDashboard>(DT, "HRAdvanceDashboard");
                     }
                 }
+
+                model.FinFromDate = ParseFormattedDate(fromDate);
+                model.FinToDate = ParseFormattedDate(toDate);
+                model.EmployeeName = empName;
+                model.EmployeeCode = empCode;
+                model.DepartmentName = deptName;
+                model.SearchBox = searchBox;
                 return View(model);
             }
             catch (Exception ex)
@@ -368,7 +376,7 @@ namespace eTactwebHR.Controllers
             }
             return PartialView("_EAPDashboardGrid", model);
         }
-        public async Task<IActionResult> DeleteByID(int advEntryId, int advYearCode, string entryByMachineName, string entryDate, string fromDate, string toDate, string empName,string deptName,string searchBox)
+        public async Task<IActionResult> DeleteByID(int advEntryId, int advYearCode, string entryByMachineName, string entryDate, string fromDate, string toDate, string empName, string empCode,string deptName,string searchBox)
         {
             var actualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             entryDate = ParseFormattedDate(entryDate);
@@ -390,10 +398,9 @@ namespace eTactwebHR.Controllers
             {
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
-
             }
 
-            return RedirectToAction("EAPDashboard");
+            return RedirectToAction("EAPDashboard", new { flag = "False", fromDate = fromDate, toDate = toDate, empName = empName, deptName = deptName, empCode = empCode, searchBox = searchBox });
         }
     }
 }

@@ -196,7 +196,7 @@
 				var linkUrl = $(event.currentTarget).attr("href");
 
 				// int advEntryId, int advYearCode, string entryByMachineName, string entryDate
-				 linkUrl = linkUrl + "&fromDate=" + $('#FinFromDate').val() + "&toDate=" + $('#FinToDate').val() + "&empName=" + $('#EmployeeName').val() + "&deptName=" + $('#DepartmentName').val() + "&searchbox=" + $('#search-box').val();
+				 linkUrl = linkUrl + "&fromDate=" + $('#FinFromDate').val() + "&toDate=" + $('#FinToDate').val() + "&empName=" + $('#EmployeeName').val() + "&empCode=" + $('#EmployeeCode').val() + "&deptName=" + $('#DepartmentName').val() + "&searchbox=" + $('#search-box').val();
 				window.location.href = linkUrl;
 			}
 		}
@@ -277,17 +277,6 @@
 				else if (Cancel) {
 					row.css('color', 'orange');
 				}
-			}
-		}
-
-		function confirmDelete(event) {
-
-				event.preventDefault();
-			   if (confirm("Are you sure you want to delete this entry?")) {
-				var linkUrl = $(event.currentTarget).attr("href");
-				// window.location.href = linkUrl;
-				// linkUrl = linkUrl + "&FromDate=" + $('#FinFromDate').val() + "&ToDate=" + $('#FinToDate').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&AccountName=" + $('#AccountName').val() + "&ProdSchNo=" + $('#ProdSchNo').val() + "&WONo=" + $('#WONo').val() + "&SummaryDetail=" + $('#SummaryDetail').val() + "&Searchbox=" + $('#search-box').val();
-				window.location.href = linkUrl;
 			}
 		}
 
