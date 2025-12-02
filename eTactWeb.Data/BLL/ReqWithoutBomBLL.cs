@@ -66,6 +66,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _ReqWithoutBomDAL.FillWorkCenter();
         }
+        public async Task<ResponseResult> FillStore()
+        {
+            return await _ReqWithoutBomDAL.FillStore();
+        }
         public async Task<ResponseResult> AltUnitConversion(int ItemCode, decimal AltQty, decimal UnitQty)
         {
             return await _ReqWithoutBomDAL.AltUnitConversion(ItemCode, AltQty, UnitQty);
@@ -91,9 +95,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ReqWithoutBomDAL.GetDetailData(REQNo, WCName,WONO, DepName, PartCode, ItemName, BranchName, FromDate, ToDate);
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC,int UpdatedBy)
         {
-            return await _ReqWithoutBomDAL.DeleteByID(ID, YC);
+            return await _ReqWithoutBomDAL.DeleteByID(ID, YC, UpdatedBy);
         }
 
         public async Task<RequisitionWithoutBOMModel> GetViewByID(int ID, int YearCode)

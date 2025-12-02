@@ -191,6 +191,7 @@
                                 <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Color</th>
                                 <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>From Store</th>
                                 <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransDate</th>
+                                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>To Store</th>
 
                             </tr>
                         </thead>
@@ -896,6 +897,7 @@
                                     + '<td class="styled-cell"><input class="styled-input" readonly id="ItemColor' + i + '" value=' + obj.Result.Table[i].ItemColor + ' ></td>'
                                     + '<td class="styled-cell"><input class="styled-input" readonly id="FromStore' + i + '" value=' + FromStore + ' ></td>'
                                     + '<td class="styled-cell"><input class="styled-input" readonly id="TransactionDate' + i + '" value=' + obj.Result.Table[i].TransactionDate + ' ></td>'
+                                    + '<td class="styled-cell"><input readonly class="styled-input" type="hidden" id="ToStoreId' + i + '" value=' + obj.Result.Table[i].ToStoreId + ' /><input readonly class="styled-input" style="width:100px !important" id="ToStoreName' + i + '" value=' + JSON.stringify(obj.Result.Table[i].ToStoreName) + ' ></td>'
 
 
                                     + '</tr>';
@@ -1018,6 +1020,7 @@
                                     + '<td class="styled-cell"><input class="styled-input" readonly id="ItemColor' + i + '" value=' + obj.Result.Table[i].ItemColor + ' ></td>'
                                     + '<td class="styled-cell"><input class="styled-input" readonly id="FromStore' + i + '" value=' + FromStore + ' ></td>'
                                     + '<td class="styled-cell"><input class="styled-input" readonly id="TransactionDate' + i + '" value=' + obj.Result.Table[i].TransactionDate + ' ></td>'
+                                    + '<td class="styled-cell"><input readonly class="styled-input" type="hidden" id="ToStoreId' + i + '" value=' + obj.Result.Table[i].ToStoreId + ' /><input readonly class="styled-input" style="width:100px !important" id="ToStoreName' + i + '" value=' + JSON.stringify(obj.Result.Table[i].ToStoreName) + ' ></td>'
 
                                     + '</tr>';
                             }
@@ -1230,6 +1233,8 @@
                     "ReqDept": $('#ReqDept' + i).val(),
                     "ReqDepartmentID": $('#ReqDeptID' + i).val(),
                     "TransactionDate": $('#TransactionDate' + i).val(),
+                    "ToStoreId": $('#ToStoreId' + i).val(),
+                    "ToStoreName": $('#ToStoreName' + i).val(),
 
                 });
             }

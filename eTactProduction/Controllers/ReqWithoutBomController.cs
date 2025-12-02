@@ -265,6 +265,11 @@ namespace eTactWeb.Controllers
                             _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                             //return View("Error", Result);
                         }
+                        if (Result.StatusCode== System.Net.HttpStatusCode.BadRequest)
+                        {
+                            TempData["ErrorMessage"] = Result.StatusText;
+                        }
+                       
                     }
                     mainmodel2 = await BindModel(mainmodel2);
                     return View(mainmodel2);
@@ -358,7 +363,8 @@ namespace eTactWeb.Controllers
         }
         public async Task<IActionResult> DeleteByID(int ID, int YC,string FromDate, string ToDate, string REQNo, string WCName, string WONo, string DepName, string PartCode, string ItemName)
         {
-            var Result = await _IReqWithoutBOM.DeleteByID(ID, YC);
+            int UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var Result = await _IReqWithoutBOM.DeleteByID(ID, YC, UpdatedBy);
             var CC = HttpContext.Session.GetString("Branch");
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {
@@ -690,6 +696,12 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> FillWorkCenter()
         {
             var JSON = await _IReqWithoutBOM.FillWorkCenter();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        } 
+        public async Task<JsonResult> FillStore()
+        {
+            var JSON = await _IReqWithoutBOM.FillStore();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

@@ -10,7 +10,7 @@
 			<h5>
 				Employee Advance Payment - <strong>Dashboard</strong>
 				<span class="d-flex float-end" style="margin-top:-2px;">
-					<a asp-action="EmployeeAdvancePayement" asp-controller="EmployeeAdvancePayeement" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+					<a asp-action="EmployeeAdvancePayement" asp-controller="EmployeeAdvancePayement" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
 						<i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
 						Add New
 					</a>
@@ -35,6 +35,13 @@
 							<div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
 								<label asp-for="EmployeeName" class="form-label">Employee Name</label>
 								<select asp-for="EmployeeName" class="form-control">
+									<option value="">-Select-</option>
+								</select>
+							</div>
+
+							<div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+								<label asp-for="EmployeeCode" class="form-label">Employee Code</label>
+								<select asp-for="EmployeeCode" class="form-control">
 									<option value="">-Select-</option>
 								</select>
 							</div>
@@ -100,6 +107,9 @@
 				$.notify(deleteMessage, "error");
 			}
 
+			  $('#EmployeeName').select2();
+			  $('#EmployeeCode').select2();
+
 		    var now = new Date();
 		   var firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
@@ -108,10 +118,34 @@
 			
 			FillDeptName();
 			FillEmpName();
+			FillEmpCode();
 			GetSearchData();
 			// ColorGrid();
 
 		});
+
+
+		function FillEmpCode() {
+			$.ajax({
+				url: '@Url.Action("FillEmployeeCode")',
+				type: 'POST',
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#EmployeeCode').empty();
+						$('#EmployeeCode').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#EmployeeCode').append('<option value="' + Val.Emp_Id + '">' + Val.EmpCode + '</option>');
+						});
+
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
+
 
 		function FillEmpName() {
 			$.ajax({
@@ -160,6 +194,9 @@
 			event.preventDefault();
 			   if (confirm("Are you sure you want to delete this entry?")) {
 				var linkUrl = $(event.currentTarget).attr("href");
+
+				// int advEntryId, int advYearCode, string entryByMachineName, string entryDate
+				 linkUrl = linkUrl + "&fromDate=" + $('#FinFromDate').val() + "&toDate=" + $('#FinToDate').val() + "&empName=" + $('#EmployeeName').val() + "&deptName=" + $('#DepartmentName').val() + "&searchbox=" + $('#search-box').val();
 				window.location.href = linkUrl;
 			}
 		}
@@ -293,7 +330,8 @@
 				'fromDate' : $('#FinFromDate').val(),
 				'toDate' : $('#FinToDate').val(),
 				'employeeName': $('#EmployeeName').val(),
-				'DepartmentName' : $('#DepartmentName').val()
+				'DepartmentName' : $('#DepartmentName').val(),
+				'employeeCode' : $('#EmployeeCode').val()
 			};
 
 			$.ajax({

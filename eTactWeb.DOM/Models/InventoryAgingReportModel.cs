@@ -50,15 +50,15 @@ namespace eTactWeb.DOM.Models
         public int WorkCenterId { get; set; }
         public int Itemcode { get; set; }
         public string CurrentDate { get; set; }
-        public int Aging_0_30 { get; set; }
-        public int Aging_31_60 { get; set; }
-        public int Aging_61_90 { get; set; }
-        public int Aging_90_180 { get; set; }
-        public int Aging_180_360 { get; set; }
-        public int Aging_91 { get; set; }
-        public int Aging_Above360 { get; set; }
-        public int StoreStock { get; set; }
-        public int WIPStock { get; set; }
+        public decimal Aging_0_30 { get; set; }
+        public decimal Aging_31_60 { get; set; }
+        public decimal Aging_61_90 { get; set; }
+        public decimal Aging_90_180 { get; set; }
+        public decimal Aging_180_360 { get; set; }
+        public decimal Aging_91 { get; set; }
+        public decimal Aging_Above360 { get; set; }
+        public decimal StoreStock { get; set; }
+        public decimal WIPStock { get; set; }
         public int TotalRecords { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }

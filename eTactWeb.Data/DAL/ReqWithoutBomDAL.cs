@@ -266,6 +266,24 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> FillStore()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillStore"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_RequisitionWithoutBOM", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> FillTotalStock(int ItemCode, int Store)
         {
             var _ResponseResult = new ResponseResult();
@@ -460,7 +478,7 @@ namespace eTactWeb.Data.DAL
             return model;
         }
 
-        internal async Task<ResponseResult> DeleteByID(int ID, int YearCode)
+        internal async Task<ResponseResult> DeleteByID(int ID, int YearCode,int UpdatedBy)
         {
             var _ResponseResult = new ResponseResult();
 
@@ -470,6 +488,7 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@EntryID", ID));
+                SqlParams.Add(new SqlParameter("@UpdatedBy", UpdatedBy));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_RequisitionWithoutBOM", SqlParams);
@@ -544,6 +563,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@WODate", woDt == default ? string.Empty : woDt));
                 SqlParams.Add(new SqlParameter("@MachineId", model.MachineId));
                 SqlParams.Add(new SqlParameter("@WorkcenterId", model.WorkCenterId));
+                SqlParams.Add(new SqlParameter("@ToStoreId", model.ToStoreId));
                 SqlParams.Add(new SqlParameter("@Remarks", model.Remarks));
                 SqlParams.Add(new SqlParameter("@ReqReason", model.ReqReason));
                 SqlParams.Add(new SqlParameter("@UID", model.CreatedBy));
@@ -627,6 +647,7 @@ namespace eTactWeb.Data.DAL
             model.WODate = DS.Tables[0].Rows[0]["WODate"].ToString();
             model.MachineId = Convert.ToInt32(DS.Tables[0].Rows[0]["MachineId"]);
             model.WorkCenterId = Convert.ToInt32(DS.Tables[0].Rows[0]["WorkcenterId"]);
+            model.ToStoreId = Convert.ToInt32(DS.Tables[0].Rows[0]["ToStoreId"]);
             model.RequByEmpId = Convert.ToInt32(DS.Tables[0].Rows[0]["RequByEmpId"]);
             model.REQNo = DS.Tables[0].Rows[0]["REQNo"].ToString();
             model.ReqReason = DS.Tables[0].Rows[0]["ReqReason"].ToString();

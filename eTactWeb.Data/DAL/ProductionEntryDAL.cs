@@ -394,7 +394,7 @@ public class ProductionEntryDAL
         var model = new ProductionEntryModel();
         try
         {
-            DateTime prodDt = DateTime.ParseExact(ProdDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            string prodDt = CommonFunc.ParseFormattedDate(ProdDate);
             using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
             {
                 SqlCommand oCmd = new SqlCommand("SpGetBomitemWithWorkcenterStock", myConnection)
@@ -406,7 +406,7 @@ public class ProductionEntryDAL
                 oCmd.Parameters.AddWithValue("@YearCode", YearCode);
                 oCmd.Parameters.AddWithValue("@TotalFGProdQty", ProdQty);
                 oCmd.Parameters.AddWithValue("@FGItemCode", ItemCode);
-                oCmd.Parameters.AddWithValue("@ProdDate", prodDt.ToString("yyyy/MM/dd"));
+                oCmd.Parameters.AddWithValue("@ProdDate", prodDt);
                 oCmd.Parameters.AddWithValue("@BomNo", BomNo);
                 await myConnection.OpenAsync();
                 using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

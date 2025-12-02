@@ -106,6 +106,9 @@ public class PODashBoard : TimeStamp
     public string DeliveryTerms { get; set; }
     public string UpdatedOn { get; set; }
     public string? RateApplicableOnUnit { get; set; }
+    public int TotalRecords { get; set; }
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; }
 
 }
 
@@ -208,6 +211,12 @@ public class POItemDetail : TaxModel
     public string? ItemLocation { get; set; }
     public string? ItemGroupName { get; set; }
     public string? VehicleNo { get; set; }
+    public string? TotalStock { get; set; }
+    public string? StoreName { get; set; }
+    public int? StoreId { get; set; }
+    public int? WcId { get; set; }
+    public string? WorkCenter { get; set; }
+    public int? WorkStock { get; set; }
     public decimal? SORate    { get; set; }
     public decimal? Balance { get; set; }
     public decimal? MinLevel { get; set; }

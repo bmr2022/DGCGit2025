@@ -98,14 +98,14 @@
 									<div class="d-flex">
 										<div id="viewCursorDiv-@Cntr">
 											@if ((item.HRApprovedbyEmpid == null || item.HRApprovedbyEmpid == 0)
-																		&& (item.FinanceApprovalEmpid == null || item.FinanceApprovalEmpid == 0)
-																		&& (item.CanceledByEmpId == null || item.CanceledByEmpId == 0))
+																																		&& (item.FinanceApprovalEmpid == null || item.FinanceApprovalEmpid == 0)
+																																		&& (item.CanceledByEmpId == null || item.CanceledByEmpId == 0))
 											{
 												<a class="table-link link-success"
-												   asp-action="EmployeeAdvancePayment"
-												   asp-route-Mode="V"
-												   asp-route-ID="@item.AdvanceEntryId"
-												   asp-route-yearCode="@item.AdvanceYearCode">
+												asp-action="EmployeeAdvancePayment"
+												asp-route-Mode="V"
+												asp-route-ID="@item.AdvanceEntryId"
+												asp-route-yearCode="@item.AdvanceYearCode">
 													<span class="fa-stack">
 														<i class="fa fa-square fa-stack-2x"></i>
 														<i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -125,14 +125,14 @@
 
 										<div id="editCursorDiv-@Cntr">
 											@if ((item.HRApprovedbyEmpid == null || item.HRApprovedbyEmpid == 0)
-																		&& (item.FinanceApprovalEmpid == null || item.FinanceApprovalEmpid == 0)
-																		&& (item.CanceledByEmpId == null || item.CanceledByEmpId == 0))
+												&& (item.FinanceApprovalEmpid == null || item.FinanceApprovalEmpid ==0)
+												&& (item.CanceledByEmpId == null || item.CanceledByEmpId == 0))
 											{
 												<a class="table-link link-primary"
-												   asp-action="EmployeeAdvancePayment"
-												   asp-route-Mode="U"
-												   asp-route-ID="@item.AdvanceEntryId"
-												   asp-route-yearCode="@item.AdvanceYearCode">
+												asp-action="EmployeeAdvancePayment"
+												asp-route-Mode="U"
+												asp-route-ID="@item.AdvanceEntryId"
+												asp-route-yearCode="@item.AdvanceYearCode">
 													<span class="fa-stack">
 														<i class="fa fa-square fa-stack-2x"></i>
 														<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -150,18 +150,33 @@
 											}
 										</div>
 										<div id="deleteCursorDiv-@Cntr">
-											<a class="table-link link-danger"
-											   onclick="confirmDelete(event)"
-											   asp-action="DeleteByID"
-											   asp-route-advEntryId="@item.AdvanceEntryId"
-											   asp-route-advYearCode="@item.AdvanceYearCode"
-											   asp-route-entryByMachineName="@Environment.MachineName">
+											@if ((item.HRApprovedbyEmpid == null || item.HRApprovedbyEmpid == 0)
+													&& (item.FinanceApprovalEmpid == null || item.FinanceApprovalEmpid == 0)
+													&& (item.CanceledByEmpId == null || item.CanceledByEmpId == 0))
+											{
+												<a class="table-link link-danger"
+												onclick="confirmDelete(event)"
+												asp-action="DeleteByID"
+												asp-route-advEntryId="@item.AdvanceEntryId"
+												asp-route-advYearCode="@item.AdvanceYearCode"
+												asp-route-entryByMachineName="@Environment.MachineName"
+												asp-route-entryDate="@item.EntryDate">
 
-												<span class="fa-stack">
-													<i class="fa fa-square fa-stack-2x"></i>
-													<i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-												</span>
-											</a>
+													<span class="fa-stack">
+														<i class="fa fa-square fa-stack-2x"></i>
+														<i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+													</span>
+												</a>
+											}
+											else
+											{
+												<a class="table-link link-danger" href="javascript:void(0);">
+													<span class="fa-stack">
+														<i class="fa fa-square fa-stack-2x"></i>
+														<i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+													</span>
+												</a>
+											}
 										</div>
 									</div>
 								</div>

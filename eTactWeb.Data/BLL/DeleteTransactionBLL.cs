@@ -20,10 +20,16 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _DeleteTransactionDAL = new DeleteTransactionDAL(configuration, iDataLogic, connectionStringService);
         }
-        public async Task<ResponseResult> GetFormName(string Flag)
+        public async Task<ResponseResult> GetFormName(string Flag, string ModuleName)
         {
-            return await _DeleteTransactionDAL.GetFormData(Flag);
+            return await _DeleteTransactionDAL.GetFormData(Flag, ModuleName);
         }
+
+        public async Task<ResponseResult> GetModuleName(string Flag)
+        {
+            return await _DeleteTransactionDAL.GetModuleName(Flag);
+        }
+
 
         public async Task<ResponseResult> GetSlipNoData(string Flag, string MainTableName)
         {

@@ -70,7 +70,7 @@
                                 @*Model.Mode = "U";*@
                                 <div class="col-auto">
                                     @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient submitBTN" id="UpdateButton">
                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                         UPDATE
                                     </button>
@@ -214,6 +214,7 @@
                                                 <th style="color:yellow">Batch No*</th>
                                                 <th style="color:yellow">Unique Batch No*</th>
                                                 <th>Work Center</th>
+                                                <th>To Store</th>
                                                 <th>Unit</th>
                                                 <th>Lot Stock</th>
                                                 <th>Total Stock</th>
@@ -287,6 +288,7 @@
                                             <th>Unique Batch No</th>
                                             <th>Issue Qty</th>
                                             <th>Work Center</th>
+                                            <th>To Store</th>
                                             <th>Unit</th>
                                             <th>Lot Stock</th>
                                             <th>Total Stock</th>
@@ -449,7 +451,7 @@
                                             @*Model.Mode = "U";*@
                                             <div class="col-auto">
                                                 @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient submitBTN" id="UpdateButton">
                                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                                     UPDATE
                                                 </button>
@@ -1950,6 +1952,8 @@ function submitForm(shouldPrint, printWindow) {
                     "Remark": $('#MainGridRemark-' + i).val(),
                     "WorkCenter": $('#MainGridWorkCenter-' + i).val(),
                     "WCId": $('#MainGridWCId-' + i).val(),
+                    "ToStoreName": $('#MainGridToStoreName-' + i).val(),
+                   "ToStoreId": $('#MainGridToStoreId-' + i).val(),
                     "AltItemCode": $('#MainGridAltItemName-' + i).val(),
                     "CostCenterId": $('#MainGridCostCenter-' + i).val(),
                     "ItemSize": $('#MainGridItemSize-' + i).val(),
