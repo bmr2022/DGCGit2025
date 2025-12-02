@@ -272,6 +272,26 @@
 															<i class="fa" aria-hidden="true"></i>
 														</span>Pend Qty
 													</th>
+													<th data-columnno="9" data-sortorder="asc" class="sortCol">
+														<span class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Store Name
+													</th>
+													<th data-columnno="9" data-sortorder="asc" class="sortCol">
+														<span class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Total Stock
+													</th>
+														<th data-columnno="9" data-sortorder="asc" class="sortCol">
+														<span class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Work Center
+													</th>
+													<th data-columnno="9" data-sortorder="asc" class="sortCol">
+														<span class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Work Stock
+													</th>
 													<th data-columnno="10" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
 														<span class="sort-icon">
 															<i class="fa" aria-hidden="true"></i>
@@ -567,7 +587,7 @@
 				<select class="form-select" asp-for="ItemGroupName" id="Group_Code1" style="width:170px">
 					<option value="0">-Select-</option>
 				</select>
-				<select class="form-select" style="width:100px;" id="Storeid">
+				<select class="form-select" style="width:100px;" id="Storeid1">
 					<option value="" disabled selected>-Select-</option>
 				</select>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -854,8 +874,6 @@
 		});
 
 		$(document).ready(function () {
-
-
 			if ($('#OrderType').val() == 'Import') {
 				$('#Rate').prop("disabled", true);
 				$('#OtherRateCurr').prop("disabled", false);
@@ -875,7 +893,8 @@
 			// $('#AccountCode').select2();
 			// $('#PartCode').select2();
 			// $('#ItemCode').select2();
-
+			FillStoreList1();
+			FillWorkCenter();
 		    FillVendors();
 			GetFormRights();
 			LockedFinancialYear();
@@ -885,6 +904,7 @@
 			AutoFillPARTYNAMELIST();
 			$('#POTypeServItem').val('Item');
 			FillItems();
+			
 			//add by mayuri
 						if ( $('#Mode').val() == "PAU") {
 								var accountCode = @Html.Raw(Json.Serialize(Model.AccountCode));
@@ -1320,37 +1340,38 @@
 			ItemBelowReOrderLevel();
 
 		});
-	
-        function FillStoreList() {
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("GetStoreList","NRGP")",
-                dataType: "json",
-                success: function (result, status, error) {
 
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
-                        $('#Storeid').empty();
-                        $('#Storeid').append('<option value="0">-Select-</option>');
+		function FillStoreList() {
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("GetStoreList","NRGP")",
+				dataType: "json",
+				success: function (result, status, error) {
 
-                        $.each(obj.Result, function (key, val) {
-                            $('#Storeid').append('<option value="' + val.entryid + '" data-type="' + val.Store_Type + '">' + val.store_name + '</option>');
-                        });
-                    }
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						$('#Storeid').empty();
+						$('#Storeid').append('<option value="0">-Select-</option>');
 
-                    // check AllowToChangeStore
-                    if ($('#AllowToChangeStore').val() == "N") {
-                        // find store where store_type is "Main Store"
-                        var mainStore = $("#Storeid option[data-type='MAIN STORE']").val();
+						$.each(obj.Result, function (key, val) {
+							$('#Storeid').append('<option value="' + val.entryid + '" data-type="' + val.Store_Type + '">' + val.store_name + '</option>');
+						});
+					}
 
-                        if (mainStore) {
-                            $("#Storeid").val(mainStore);   // set selected
-                            $("#Storeid").prop("disabled", true); // make dropdown readonly
-                        }
-                    }
-                }
-            });
-        }
+					// check AllowToChangeStore
+					if ($('#AllowToChangeStore').val() == "N") {
+						// find store where store_type is "Main Store"
+						var mainStore = $("#Storeid option[data-type='MAIN STORE']").val();
+
+						if (mainStore) {
+							$("#Storeid").val(mainStore);   // set selected
+							$("#Storeid").prop("disabled", true); // make dropdown readonly
+						}
+					}
+				}
+			});
+		}
+
 		function GetMultiItemGroup() {
 
 			$.ajax({
@@ -2015,6 +2036,8 @@ formData.append("Mode", $('#Mode').val());
 					$('#ItemCode').val(ui.item.itemCode);
 					$('#PartCode').val(ui.item.itemCode);
 					GetItemPartCode("PartCode");
+					GetTotalStockQty();
+					 GetWorkCenterTotalQty();
 					// GetlastSaleOrderDetail();
 					return false;
 				},
@@ -2058,6 +2081,9 @@ formData.append("Mode", $('#Mode').val());
 								$("#ItemCode").val(match.Item_Code);
 								$("#PartCode").val(match.Item_Code);
 								GetItemPartCode("PartCode");
+								GetTotalStockQty();
+								GetWorkCenterTotalQty();
+
 								// GetlastSaleOrderDetail();
 
 							}
@@ -2079,6 +2105,7 @@ formData.append("Mode", $('#Mode').val());
 					$('#ItemCode').val(ui.item.itemCode);
 					$('#PartCode').val(ui.item.itemCode);
 					GetItemPartCode("ItemCode");
+					GetTotalStockQty();
 					// GetlastSaleOrderDetail()
 					return false;
 
@@ -4323,6 +4350,14 @@ formData.append("Mode", $('#Mode').val());
 					'ItemGroupName': $('#ItemGroupName').val(),
 					'ItemLocation': $('#ItemLocation').val(),
 					'SeqNo': $('#SeqNo').val(),
+					'StoreName' : $('#Storeid option:selected').text(),
+					'StoreId' : $('#Storeid').val(),
+
+					'TotalStock':$('#TotalStock').val(),
+					'WcId': $('#WcId').val(),
+					'WorkCenter': $('#WorkCenter option:selected').text(),
+					// 'WorkCenter': $('select[name="WorkCenter"] option:selected').text(),
+					'WorkStock': $('#WorkStock').val()
 
 
 				}
@@ -4490,12 +4525,18 @@ formData.append("Mode", $('#Mode').val());
 								$('#TolLimitPercent').val(obj[0].TolLimitPercent);
 								$('#TolLimitQty').val(obj[0].TolLimitQty);
 								$('#Unit').val(obj[0].Unit);
-									$('#SeqNo').val(obj[0].SeqNo);
+								$('#SeqNo').val(obj[0].SeqNo);
 								$('#UnitRate').val(obj[0].UnitRate);
 								$('#DeliveryDate').val(obj[0].DeliveryDate);
-									$('#ItemLocation').val(obj[0].ItemLocation);
-									$('#VehicleNo').val(obj[0].VehicleNo);
-									$('#ItemGroupName').val(obj[0].ItemGroupName);
+								$('#ItemLocation').val(obj[0].ItemLocation);
+								$('#VehicleNo').val(obj[0].VehicleNo);
+								$('#ItemGroupName').val(obj[0].ItemGroupName);
+								$('#StoreId').val(obj[0].StoreId);
+								$('#StoreName').val(obj[0].StoreName);
+								$('#TotalStock').val(obj[0].TotalStock);
+								$('#WcId').val(obj[0].WcId);
+								$('#WorkStock').val(obj[0].WorkStock);
+								$('#WorkCenter').val(obj[0].WorkCenter);
 								if ($('#Mode').val() == "POA") {
 									actualRate = $('#Rate').val();
 								}
@@ -4658,7 +4699,7 @@ formData.append("Mode", $('#Mode').val());
 				$('#Remark').val(''), $('#Description').val(''), $('#StoreName').prop('selectedIndex', 0), $('#SizeDetail').val('0'), $('#AmendmentNo').val('0'), $('#AmendmentDate').val(''),
 				$('#AmendmentReason').val(''), $('#Color').val(''), $('#Process').prop('selectedIndex', 0).removeClass('is-invalid'), $('#TolLimitQty').val('0.00'), $('#TolLimitPercent').val('0.00'),
 				$('#OldRate').val('0.00'), $('#AdditionalRate').val('0.00'), $('#FirstMonthTentQty').val('0.00'), $('#SecMonthTentQty').val('0.00'), $('#CostCenter').prop('selectedIndex', 0) , $('#VehicleNo').val(''),
-					$('#ItemGroupName').val(''), $('#ItemLocation').val(''),$('#SeqNo').val('0');
+				$('#ItemGroupName').val(''), $('#ItemLocation').val(''), $('#SeqNo').val('0'), $('#WorkStock').val('0'),$('#TotalStock').val('0');
 		}
 
 
@@ -4825,7 +4866,149 @@ formData.append("Mode", $('#Mode').val());
 				});
 			}
 		}
+		$("#Storeid").change(function () {
+			GetTotalStockQty();
+		});
+		// Autocomplete for PartCodeText
 
+
+
+				function FillStoreList() {
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("GetStoreList", "NRGP")",
+				dataType: "json",
+				success: function (result, status, error) {
+
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						$('#Storeid1').empty();
+						$('#Storeid1').append('<option value="0">-Select-</option>');
+
+						$.each(obj.Result, function (key, val) {
+							$('#Storeid1').append('<option value="' + val.entryid + '" data-type="' + val.Store_Type + '">' + val.store_name + '</option>');
+						});
+					}
+
+					// check AllowToChangeStore
+					if ($('#AllowToChangeStore').val() == "N") {
+						// find store where store_type is "Main Store"
+						var mainStore = $("#Storeid option[data-type='MAIN STORE']").val();
+
+						if (mainStore) {
+							$("#Storeid1").val(mainStore);   // set selected
+							$("#Storeid1").prop("disabled", true); // make dropdown readonly
+						}
+					}
+				}
+			});
+		}
+
+
+		function FillStoreList1() {
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("GetStoreList", "NRGP")",
+				dataType: "json",
+				success: function (result, status, error) {
+
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						$('#Storeid').empty();
+						// $('#Storeid').append('<option value="0">-Select-</option>');
+
+						$.each(obj.Result, function (key, val) {
+							$('#Storeid').append('<option value="' + val.entryid + '" data-type="' + val.Store_Type + '">' + val.store_name + '</option>');
+						});
+					}
+
+					// check AllowToChangeStore
+					if ($('#AllowToChangeStore').val() == "N") {
+						// find store where store_type is "Main Store"
+						var mainStore = $("#Storeid option[data-type='MAIN STORE']").val();
+
+						if (mainStore) {
+							$("#Storeid").val(mainStore);   // set selected
+							$("#Storeid").prop("disabled", true); // make dropdown readonly
+						}
+					}
+				}
+			});
+		}
+
+		function GetTotalStockQty() {
+
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("GetStoreTotalStock", "NRGP")",
+				data: { ItemCode: $('#ItemCode').val(), StoreId: $('#Storeid').val(), TillDate: $('#PODate').val() },
+				dataType: "json",
+				success: function (result, status, error) {
+
+					if (result && result.length > 0) {
+						/*         alert(JSON.stringify(result)); */
+						/* if (result != null) { */
+						/* var obj = $.parseJSON(result); */
+						$('#TotalStock').val($.parseJSON(result).Result[0].STOCK);
+						/*     $('#TotalStock').val(result[0].STOCK); */
+					}
+					// SetminQty();
+				}
+			});
+		}
+
+		 function FillWorkCenter() {
+            $.ajax({
+                type: "POST",
+				url: "@Url.Action("FillWorkCenter", "TransferFromWorkCenter")",
+                dataType: "json",
+                data: {},
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+					console.log(obj)
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+							$('#WorkCenter').empty();
+                            $('#WorkCenter').append('<option>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+								$('#WorkCenter').append('<option selected value="' + val.WCID + '">' + val.WorkCenterDescription + '</option>');
+								$('#WcId').val($('#WorkCenter').val());
+                                // $('#/* IssueToStoreId */').val(0);
+                            })
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+								var FromWc = "@Model.WcId";
+								$('#WorkCenter').val(FromWc).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+		$("#WorkCenter").change(function () {
+			GetWorkCenterTotalQty();
+		});
+
+		    function GetWorkCenterTotalQty() {
+            var dateValue = $('#PODate').val();
+            var [day, month, year] = dateValue.split('/');
+            day = day.padStart(2, '0'); // Ensure day has two digits
+            month = month.padStart(2, '0'); // Ensure month has two digits
+            var formattedDate = `${day}/${month}/${year}`;
+            $.ajax({
+                type: "POST",
+				url: "@Url.Action("GetWorkCenterTotalStock", "TransferFromWorkCenter")",
+				data: { ItemCode: $('#ItemCode').val(), WcId: $('#WorkCenter').val(), TillDate: formattedDate },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#WorkStock').val($.parseJSON(result).Result[0].STOCK);
+                    }
+                }
+            });
+        }
 
 		async function DeleteDeliveryRow(SRNo, DPC) {
 			$.ajax({
@@ -4852,6 +5035,11 @@ formData.append("Mode", $('#Mode').val());
 					$.notify(response.responseText, "error");
 				}
 			});
+			// $(document).ready(function () {
+			// 	FillStoreList();
+			// });
+			
+
 		}
 
 		//window.addEventListener('scroll', function() {

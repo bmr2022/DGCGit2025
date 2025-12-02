@@ -28,6 +28,7 @@ using FastReport.Export.PdfSimple;
 using System.Reflection;
 using DocumentFormat.OpenXml.Math;
 using Org.BouncyCastle.Ocsp;
+using DocumentFormat.OpenXml.Bibliography;
 
 namespace eTactWeb.Controllers;
 
@@ -1760,6 +1761,12 @@ public class PurchaseOrderController : Controller
                 ItemGroupName=model.ItemGroupName,
                 ItemLocation=model.ItemLocation,
                 VehicleNo=model.VehicleNo,
+                StoreName=model.StoreName,
+                StoreId=model.StoreId,
+                TotalStock=model.TotalStock,
+                WcId=model.WcId,
+                WorkStock = model.WorkStock,
+                WorkCenter = model.WorkCenter
             });
 
         if (MainModel.ItemDetailGrid == null)

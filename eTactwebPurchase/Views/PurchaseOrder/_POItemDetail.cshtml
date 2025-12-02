@@ -366,6 +366,27 @@ else
             <label asp-for="VehicleNo" class="form-label" style="color: red;">Vehicle No</label>
             <input asp-for="VehicleNo" tabindex="-1" class="form-control" style="background-color: #FFFACD !important;" readonly />
         </div>
+        <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="StoreName" class="form-label" style="color: red;">Store Name</label>
+            <select asp-for="StoreName" class="form-select" id="Storeid">
+                <option value="" disabled selected>-Select-</option>
+            </select>
+        </div>
+        <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="TotalStock" class="form-label" style="color: red;">Total Stock</label>
+            <input asp-for="TotalStock" tabindex="-1" class="form-control" style="background-color: #FFFACD !important;" readonly />
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
+            <label asp-for="WorkCenter" class="form-label" style="color:red">Work Center*</label>
+            <input asp-for="WcId" class="form-control" type="hidden" />
+            <select class="form-select" asp-for="WorkCenter">
+            </select>
+        </div>
+        <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="WorkStock" class="form-label" style="color: red;">WorkStock</label>
+            <input asp-for="WorkStock" tabindex="-1" class="form-control" style="background-color: #FFFACD !important;" readonly />
+        </div>
+
         <div class="col-xl-12 col-md-12 mt-4 col-auto">
             <div class="d-flex flex-wrap align-items-center gap-3">
                 <button type="button" class="ItemBtn btn btn-sm btn-outline-danger">
