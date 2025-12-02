@@ -257,7 +257,7 @@
                             $.each(obj.Result.Table, function (index, val) {
                                 $('#UnderCategoryId').append("<option value=" + val.Entry_id + " >" + val.Type_Item + "</option>");
                             });
-                                if ($('#Mode').val() == "U") {
+                                if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                     $('#UnderCategoryId').val($('#hiddenUnderCat').val());
                                 }
                         }

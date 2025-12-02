@@ -33,11 +33,27 @@ namespace eTactwebAdmin.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetFormName()
+        public async Task<JsonResult> GetFormName(string ModuleName)
         {
             try
             {
-                var result = await _IDeleteTransaction.GetFormName("GetFormName");
+                var result = await _IDeleteTransaction.GetFormName("GetFormName", ModuleName);
+                string jsonString = JsonConvert.SerializeObject(result);
+                return Json(jsonString);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while Get formname list.");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetModuleName()
+        {
+            try
+            {
+                var result = await _IDeleteTransaction.GetModuleName("GetModuleName");
                 string jsonString = JsonConvert.SerializeObject(result);
                 return Json(jsonString);
             }
