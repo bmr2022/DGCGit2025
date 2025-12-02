@@ -1495,10 +1495,11 @@ namespace eTactWeb.Controllers
 
         public async Task<IActionResult> DeleteByID(int ID, int YC, string GateNo, string FromDate = "", string ToDate = "", string VendorName = "", string PartCode = "", string ItemName = "", string DocName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "")
         {
-            int ActualEnteredBy= Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            int ActualEnteredBy= Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            int EmpId= Convert.ToInt32(HttpContext.Session.GetString("UID"));
             var EntryByMachineName = @Environment.MachineName;
             string IPAddress = HttpContext.Session.GetString("ClientIP");
-            var Result = await _IGateInward.DeleteByID(ID, YC, ActualEnteredBy,  EntryByMachineName, GateNo, IPAddress);
+            var Result = await _IGateInward.DeleteByID(ID, YC, EmpId,  EntryByMachineName, GateNo, IPAddress);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

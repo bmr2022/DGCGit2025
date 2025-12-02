@@ -30,7 +30,7 @@ namespace eTactWeb.Services.Interface
         Task<RWBDashboard> GetDetailData(string REQNo, string WCName,string Wono, string DepName, string PartCode, string ItemName,string BranchName, string FromDate, string Todate);
         Task<ResponseResult> SaveRequisition(RequisitionWithoutBOMModel model, DataTable ReqGrid);
         Task<ResponseResult> GetDashboardData(string Fromdate, string ToDate, string Flag);
-        Task<ResponseResult> DeleteByID(int ID, int YearCode);
+        Task<ResponseResult> DeleteByID(int ID, int YearCode, int UpdatedBy);
         Task<RequisitionWithoutBOMModel> GetViewByID(int ID, int YearCode);
         Task<ResponseResult> GetFormRights(int uId);
 

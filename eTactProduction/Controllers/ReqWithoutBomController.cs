@@ -363,7 +363,8 @@ namespace eTactWeb.Controllers
         }
         public async Task<IActionResult> DeleteByID(int ID, int YC,string FromDate, string ToDate, string REQNo, string WCName, string WONo, string DepName, string PartCode, string ItemName)
         {
-            var Result = await _IReqWithoutBOM.DeleteByID(ID, YC);
+            int UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var Result = await _IReqWithoutBOM.DeleteByID(ID, YC, UpdatedBy);
             var CC = HttpContext.Session.GetString("Branch");
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

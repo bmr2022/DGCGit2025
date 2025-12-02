@@ -1474,7 +1474,8 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
         public async Task<IActionResult> DeleteByID(int ID, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string MrnNo = "", string GateNo = "", string PONo = "", string ItemName = "", string PartCode = "", string Type = "")
         {
             string IPAddress = HttpContext.Session.GetString("ClientIP");
-            var Result = await _IMaterialReceipt.DeleteByID(ID, YC, IPAddress);
+            int EmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            var Result = await _IMaterialReceipt.DeleteByID(ID, YC, IPAddress, EmpId);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {
