@@ -103,8 +103,8 @@ namespace eTactwebAdmin.Controllers
                 if (deleteResult != null)
                 {
                     // 🔹 If DELETE SP returns success
-                    if ((deleteResult.StatusText?.ToLower() == "deleted" || deleteResult.StatusText?.ToLower() == "success") &&
-                        deleteResult.StatusCode == HttpStatusCode.OK)
+                    if ((deleteResult.StatusText?.ToLower() == "deleted" || deleteResult.StatusText?.ToLower() == "success") 
+                        )
                     {
                         // Step 2: Log INSERT
                         model.Flag = "Insert";
@@ -124,6 +124,7 @@ namespace eTactwebAdmin.Controllers
                     {
                         // If SP returned a message (like adjustment error)
                         TempData["ErrorMessage"] = deleteResult.StatusText;
+                        //return View(model);
                     }
                     else
                     {
