@@ -4350,16 +4350,13 @@ formData.append("Mode", $('#Mode').val());
 					'ItemGroupName': $('#ItemGroupName').val(),
 					'ItemLocation': $('#ItemLocation').val(),
 					'SeqNo': $('#SeqNo').val(),
-					'StoreName' : $('#Storeid option:selected').text(),
-					'StoreId' : $('#Storeid').val(),
-
+					'StoreName' : $('#Storeid1 option:selected').text(),
+					'StoreId' : $('#Storeid1').val(),
 					'TotalStock':$('#TotalStock').val(),
 					'WcId': $('#WcId').val(),
 					'WorkCenter': $('#WorkCenter option:selected').text(),
-					// 'WorkCenter': $('select[name="WorkCenter"] option:selected').text(),
+
 					'WorkStock': $('#WorkStock').val()
-
-
 				}
 
 				$.ajax({
@@ -4534,9 +4531,9 @@ formData.append("Mode", $('#Mode').val());
 								$('#StoreId').val(obj[0].StoreId);
 								$('#StoreName').val(obj[0].StoreName);
 								$('#TotalStock').val(obj[0].TotalStock);
-								$('#WcId').val(obj[0].WcId);
+								$('#WcId').val(obj[0].WcId);         
+								$('#WcId').val(obj[0].WorkCenter);   
 								$('#WorkStock').val(obj[0].WorkStock);
-								$('#WorkCenter').val(obj[0].WorkCenter);
 								if ($('#Mode').val() == "POA") {
 									actualRate = $('#Rate').val();
 								}
@@ -4866,7 +4863,7 @@ formData.append("Mode", $('#Mode').val());
 				});
 			}
 		}
-		$("#Storeid").change(function () {
+		$("#Storeid1").change(function () {
 			GetTotalStockQty();
 		});
 		// Autocomplete for PartCodeText
@@ -4914,11 +4911,11 @@ formData.append("Mode", $('#Mode').val());
 
 					if (result != null) {
 						var obj = $.parseJSON(result);
-						$('#Storeid').empty();
+						$('#Storeid1').empty();
 						// $('#Storeid').append('<option value="0">-Select-</option>');
 
 						$.each(obj.Result, function (key, val) {
-							$('#Storeid').append('<option value="' + val.entryid + '" data-type="' + val.Store_Type + '">' + val.store_name + '</option>');
+							$('#Storeid1').append('<option value="' + val.entryid + '" data-type="' + val.Store_Type + '">' + val.store_name + '</option>');
 						});
 					}
 
@@ -4928,8 +4925,8 @@ formData.append("Mode", $('#Mode').val());
 						var mainStore = $("#Storeid option[data-type='MAIN STORE']").val();
 
 						if (mainStore) {
-							$("#Storeid").val(mainStore);   // set selected
-							$("#Storeid").prop("disabled", true); // make dropdown readonly
+							$("#Storeid1").val(mainStore);   // set selected
+							$("#Storeid1").prop("disabled", true); // make dropdown readonly
 						}
 					}
 				}
@@ -4941,7 +4938,7 @@ formData.append("Mode", $('#Mode').val());
 			$.ajax({
 				type: "POST",
 				url: "@Url.Action("GetStoreTotalStock", "NRGP")",
-				data: { ItemCode: $('#ItemCode').val(), StoreId: $('#Storeid').val(), TillDate: $('#PODate').val() },
+				data: { ItemCode: $('#ItemCode').val(), StoreId: $('#Storeid1').val(), TillDate: $('#PODate').val() },
 				dataType: "json",
 				success: function (result, status, error) {
 
