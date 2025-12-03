@@ -211,7 +211,7 @@ namespace eTactwebHR.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> EAPDashboard(string fromDate, string toDate, string empName, string deptName, string empCode, string searchBox)
+        public async Task<IActionResult> EAPDashboard(string fromDate, string toDate, string empName, string deptName, string empCode, string searchBox,string flag = "True")
         {
             try
             {
@@ -287,13 +287,16 @@ namespace eTactwebHR.Controllers
                         model.HRAdvanceDashboards = CommonFunc.DataTableToList<HRAdvanceDashboard>(DT, "HRAdvanceDashboard");
                     }
                 }
-
-                model.FinFromDate = ParseFormattedDate(fromDate);
-                model.FinToDate = ParseFormattedDate(toDate);
-                model.EmployeeName = empName;
-                model.EmployeeCode = empCode;
-                model.DepartmentName = deptName;
-                model.SearchBox = searchBox;
+                if (flag == "False")
+                {
+                    model.FinFromDate = ParseFormattedDate(fromDate);
+                    model.FinToDate = ParseFormattedDate(toDate);
+                    model.EmployeeName = empName;
+                    model.EmployeeCode = empCode;
+                    model.DepartmentName = deptName;
+                    model.SearchBox = searchBox;
+                    model.flag = flag;
+                }
                 return View(model);
             }
             catch (Exception ex)
