@@ -25,6 +25,7 @@
 							<div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
 								<label asp-for="FinFromDate" class="form-label">From Date</label>
 								<input asp-for="FinFromDate" class="form-control" />
+								<input type="hidden" value="@Model.flag" id="hiddenflag"/>
 							</div>
 
 							<div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
@@ -37,6 +38,7 @@
 								<select asp-for="EmployeeName" class="form-control">
 									<option value="">-Select-</option>
 								</select>
+								<input type="hidden" value="@Model.EmployeeName" id="hiddenEmployeeName" />
 							</div>
 
 							<div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
@@ -44,12 +46,15 @@
 								<select asp-for="EmployeeCode" class="form-control">
 									<option value="">-Select-</option>
 								</select>
+								<input type="hidden" value="@Model.EmployeeCode" id="hiddenEmployeeCode" />
 							</div>
 							<div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
 								<label asp-for="DepartmentName" class="form-label">Department Name</label>
 								<select asp-for="DepartmentName" class="form-control">
 									<option value="">-Select-</option>
 								</select>
+
+								<input type="hidden" value="@Model.DepartmentName" id="hiddenDepartmentName" />
 							</div>
 							<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-end mt-3">
 								<div style="margin-bottom:10px;margin-right:20px;">
@@ -113,8 +118,15 @@
 		    var now = new Date();
 		   var firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
+		   debugger
+		   if($('#hiddenflag').val() == "True"){
 			$('#FinFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
 			$('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+		   }else{
+		       console.log( "hidden flag" ,$('#hiddenflag').val());
+			   $('#FinFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#FinFromDate').val()));
+			   $('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#FinToDate').val()));
+		   }
 			
 			FillDeptName();
 			FillEmpName();
@@ -137,6 +149,9 @@
 						$.each(obj.Result, function (index, Val) {
 							$('#EmployeeCode').append('<option value="' + Val.EmpCode + '">' + Val.EmpCode + '</option>');
 						});
+						if($('#hiddenflag').val() == "False"){
+						$('#EmployeeCode').val($('#hiddenEmployeeCode').val());
+						}
 
 					}
 				},
@@ -162,6 +177,10 @@
 							}
 							$('#EmployeeName').append('<option value="' + empname + '">' + Val.EmpName + '</option>');
 						});
+
+						if($('#hiddenflag').val() == "False"){
+							$('#EmployeeName').val($('#hiddenEmployeeName').val());
+						}
 					}
 				},
 				error: function (xhr, status, error) {
@@ -182,6 +201,10 @@
 						$.each(obj.Result, function (index, Val) {
 							$('#DepartmentName').append('<option value="' + Val.DeptName + '">' + Val.DeptName + '</option>');
 						});
+
+						if($('#hiddenflag').val() == "False"){
+							$('#DepartmentName').val($('#hiddenDepartmentName').val());
+						}
 					}
 				},
 				error: function (xhr, status, error) {
