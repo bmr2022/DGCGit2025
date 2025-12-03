@@ -29,8 +29,9 @@
                         <div class="col-auto">
                             <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
                             <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
-                            @* <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
-                            <input asp-for="AttendanceEntryMethodTypeBack" type="hidden" value="@Model.AttendanceEntryMethodTypeBack" /> *@
+                            <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input asp-for="DashAttendStatusBack" type="hidden" value="@Model.DashAttendStatusBack" />
+                            @* <input asp-for="AttendanceEntryMethodTypeBack" type="hidden" value="@Model.AttendanceEntryMethodTypeBack" /> *@
                             <input asp-for="DashDepartmentBack" type="hidden" value="@Model.DashDepartmentBack" />
                             <input asp-for="DashCategoryBack" type="hidden" value="@Model.DashCategoryBack" />
                             <input asp-for="DashDesignationBack" type="hidden" value="@Model.DashDesignationBack" />
@@ -150,8 +151,9 @@
                         <div class="col-auto">
                             <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
                             <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
-                            @* <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
-                            <input asp-for="AttendanceEntryMethodTypeBack" type="hidden" value="@Model.AttendanceEntryMethodTypeBack" /> *@
+                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                             <input asp-for="DashAttendStatusBack" type="hidden" value="@Model.DashAttendStatusBack" />
+                            @*<input asp-for="AttendanceEntryMethodTypeBack" type="hidden" value="@Model.AttendanceEntryMethodTypeBack" /> *@
                             <input asp-for="DashDepartmentBack" type="hidden" value="@Model.DashDepartmentBack" />
                             <input asp-for="DashCategoryBack" type="hidden" value="@Model.DashCategoryBack" />
                             <input asp-for="DashDesignationBack" type="hidden" value="@Model.DashDesignationBack" />
@@ -273,7 +275,7 @@
             $('#EmployeeCode').select2();
             updateItemCount();
             if($('#IsIncreamented').val().toLowerCase() == 'true') {
-                ShowManualAttandance();
+                setTimeout(ShowManualAttandance(), 3000);
             }
             const url = new URL(window.location.href);
              if (url.searchParams.has("IsIncreament")) {
@@ -950,7 +952,12 @@
         const $off = $('#GateAttEntryOffDay'), $day = $('#GateAttEntryDay');
         // remove all previous classes (one-liner)
         $day.add($off).removeClass('holiday-time lighten weekoff-time');
-        if (DayOrMonthType.toLowerCase() !== "daily") return;
+        if (DayOrMonthType.toLowerCase() !== "daily") 
+        { 
+            $off.text(''),
+            $('.dvGateAttEntryOffDay').hide();
+            return; 
+        }
         const isHoliday = (res.isHoliday != null && res.isHoliday != undefined && res.isHoliday != "") ? res.isHoliday.toString().toLowerCase() === "true" : false;
         const isWeekoff = (res.isWeekoff != null && res.isWeekoff != undefined && res.isWeekoff != "") ? res.isWeekoff.toString().toLowerCase() === "true" : false;
         if (!(isHoliday || isWeekoff)) return $off.text(''), $('.dvGateAttEntryOffDay').hide();
@@ -1111,7 +1118,8 @@
     function PressBack() {
         sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
         sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
-        // sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+        sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+        sessionStorage.setItem('DashAttendStatusBack', $('#DashAttendStatusBack').val());
         // sessionStorage.setItem('AttendanceEntryMethodTypeBack', $('#AttendanceEntryMethodTypeBack').val());
         sessionStorage.setItem('DashDepartmentBack', $('#DashDepartmentBack').val());
         sessionStorage.setItem('DashCategoryBack', $('#DashCategoryBack').val());

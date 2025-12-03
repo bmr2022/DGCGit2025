@@ -136,6 +136,7 @@ public class GateAttendanceModel : TimeStamp
     public string ToDateBack { get; set; }
     public string AttendanceEntryMethodTypeBack { get; set; }
     public string DashboardTypeBack { get; set; }
+    public string DashAttendStatusBack { get; set; }
     public string DashDepartmentBack { get; set; }
     public string DashCategoryBack { get; set; }
     public string DashDesignationBack { get; set; }
@@ -155,6 +156,15 @@ public class GateAttDashBoard : TimeStamp
     public string? DailyMonthlyAttendance { get; set; }
     public string? AttendanceEntryMethod { get; set; }
     public string? AttMonthName { get; set; }
+    //for detail
+    public string?  EmpCode { get; set; }
+    public string?  EmpName { get; set; }
+    public string?  AttendStatus { get; set; }
+    public DateTime?  AttendanceDate { get; set; }
+    public DateTime? AttInTime { get; set; }
+    public DateTime? AttOutTime { get; set; }
+    public string?  TotalNoOfHours { get; set; }
+    //end
     public DateTime? ActualEntryDate { get; set; }
     public string? EntryByMachineName { get; set; }
     public string? CC { get; set; }
@@ -175,6 +185,8 @@ public class GateAttDashBoard : TimeStamp
     public string? DashDesignation { get; set; }
     public IList<TextValue>? DashEmployeeList { get; set; }
     public string? DashEmployee { get; set; }
+    public string? DashboardType { get; set; }
+    public string? DashAttendStatus { get; set; }
     public string? Searchbox { get; set; }
     //pagintion
     public int PageNumber { get; set; }

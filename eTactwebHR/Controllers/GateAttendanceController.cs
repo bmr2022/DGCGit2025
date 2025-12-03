@@ -58,7 +58,7 @@ namespace eTactwebHR.Controllers
             return View();
         }
         [HttpGet]
-        public async Task<IActionResult> GateAttendance(int ID, int YearCode, string Mode, string? AttendanceEntryMethodType, string FromDate = "", string ToDate = "", string DashDepartment = "", string DashCategory = "", string DashDesignation = "", string DashEmployee = "", string Searchbox = "", bool IsIncreament = false)
+        public async Task<IActionResult> GateAttendance(int ID, int YearCode, string Mode, string? AttendanceEntryMethodType, string FromDate = "", string ToDate = "", string DashboardType = "", string DashDepartment = "", string DashCategory = "", string DashDesignation = "", string DashEmployee = "",string DashAttendStatus = "", string Searchbox = "", bool IsIncreament = false)
         {
             GateAttendanceModel tMainModel = new();
             if (IsIncreament)
@@ -217,6 +217,8 @@ namespace eTactwebHR.Controllers
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
             //MainModel.AttendanceEntryMethodTypeBack = AttendanceEntryMethodType != null && AttendanceEntryMethodType != "0" && AttendanceEntryMethodType != "undefined" ? AttendanceEntryMethodType : "";
+            MainModel.DashboardTypeBack = DashboardType != null && DashboardType != "0" && DashboardType != "undefined" ? DashboardType : "";
+            MainModel.DashAttendStatusBack = DashAttendStatus != null && DashAttendStatus != "0" && DashAttendStatus != "undefined" ? DashAttendStatus : "";
             MainModel.DashDepartmentBack = DashDepartment != null && DashDepartment != "0" && DashDepartment != "undefined" ? DashDepartment : "";
             MainModel.DashCategoryBack = DashCategory != null && DashCategory != "0" && DashCategory != "undefined" ? DashCategory : "";
             MainModel.DashDesignationBack = DashDesignation != null && DashDesignation != "0" && DashDesignation != "undefined" ? DashDesignation : "";
@@ -853,7 +855,7 @@ namespace eTactwebHR.Controllers
                 return "";
             }
         }
-        public async Task<IActionResult> DashBoard(string FromDate = "", string ToDate = "", string DashDepartment = "", string DashCategory = "", string DashDesignation = "", string DashEmployee = "", string Searchbox = "", string Flag = "True")
+        public async Task<IActionResult> DashBoard(string FromDate = "", string ToDate = "", string DashboardType = "", string DashDepartment = "", string DashCategory = "", string DashDesignation = "", string DashEmployee = "", string DashAttendStatus = "", string Searchbox = "", string Flag = "True")
         {
             HttpContext.Session.Remove("GateAttendance");
             var _List = new List<TextValue>();
@@ -875,6 +877,8 @@ namespace eTactwebHR.Controllers
             {
                 MainModel.FromDate = FromDate;
                 MainModel.ToDate = ToDate;
+                MainModel.DashboardType = DashboardType != null && DashboardType != "0" && DashboardType != "undefined" ? DashboardType : "0";
+                MainModel.DashAttendStatus = DashAttendStatus != null && DashAttendStatus != "0" && DashAttendStatus != "undefined" ? DashAttendStatus : "0";
                 MainModel.DashDepartment = DashDepartment != null && DashDepartment != "0" && DashDepartment != "undefined" ? DashDepartment : "0";
                 MainModel.DashCategory = DashCategory != null && DashCategory != "0" && DashCategory != "undefined" ? DashCategory : "0";
                 MainModel.DashDesignation = DashDesignation != null && DashDesignation != "0" && DashDesignation != "undefined" ? DashDesignation : "0";
@@ -908,8 +912,10 @@ namespace eTactwebHR.Controllers
         public async Task<IActionResult> GetSearchData(GateAttDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
         {
             model.Mode = "SEARCH";
+            model.DashboardType = !string.IsNullOrEmpty(model.DashboardType) ? model.DashboardType : "SUMMARY";
+            var dbtype = model.DashboardType;
             model = await IGateAttendance.GetDashBoardData(model);
-            //model.DashboardType = "Summary";
+            model.DashboardType = dbtype;
             var modelList = model?.GateAttDashboard ?? new List<GateAttDashBoard>();
 
 

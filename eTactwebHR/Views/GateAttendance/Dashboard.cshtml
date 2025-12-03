@@ -109,7 +109,8 @@
             var FromDateBack = sessionStorage.getItem('FromDateBack');
             var ToDateBack = sessionStorage.getItem('ToDateBack');
             //var AttendanceEntryMethodTypeBack = sessionStorage.getItem('AttendanceEntryMethodTypeBack');
-            //var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
+            var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
+            var DashAttendStatusBack = sessionStorage.getItem('DashAttendStatusBack');
             var DashDepartmentBack = sessionStorage.getItem('DashDepartmentBack');
             var DashCategoryBack = sessionStorage.getItem('DashCategoryBack');
             var DashDesignationBack = sessionStorage.getItem('DashDesignationBack');
@@ -120,7 +121,8 @@
                 $('#FromDate').val(FromDateBack).trigger('change');
                 $('#ToDate').val(ToDateBack).trigger('change');
                 //$('#AttendanceEntryMethodTypeBack').val(AttendanceEntryMethodTypeBack).trigger('change');
-                //$('#DashboardType').val(DashboardTypeBack).trigger('change');
+                $('#DashboardType').val(DashboardTypeBack).trigger('change');
+                $('#DashAttendStatus').val(DashAttendStatusBack).trigger('change');
                 $('#DashDepartment').val(DashDepartmentBack).trigger('change');
                 $('#DashCategory').val(DashCategoryBack).trigger('change');
                 $('#DashDesignation').val(DashDesignationBack).trigger('change');
@@ -138,7 +140,8 @@
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
             //sessionStorage.removeItem('AttendanceEntryMethodTypeBack');
-            //sessionStorage.removeItem('DashboardTypeBack');
+            sessionStorage.removeItem('DashboardTypeBack');
+            sessionStorage.removeItem('DashAttendStatusBack');
             sessionStorage.removeItem('DashDepartmentBack');
             sessionStorage.removeItem('DashCategoryBack');
             sessionStorage.removeItem('DashDesignationBack');
@@ -152,14 +155,14 @@
             var urlHref = $(event.currentTarget).attr("href");
             //CheckEditOrDelete(urlHref, EntryId, YearCode);
             var linkUrl = urlHref;
-            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() /* + "&DashboardType=" + $('#DashboardType').val() + "&AttendanceEntryMethodType=" + $('#AttendanceEntryMethodType').val() */ + "&Searchbox=" + $('#search-box').val();
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val()  + "&DashboardType=" + $('#DashboardType').val()   + "&DashAttendStatus=" + $('#DashAttendStatus').val() /*+ "&AttendanceEntryMethodType=" + $('#AttendanceEntryMethodType').val() */ + "&Searchbox=" + $('#search-box').val();
             window.location.href = linkUrl;
         }
         function BackButtonData(event) {
         event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
-            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() /* + "&DashboardType=" + $('#DashboardType').val() + "&AttendanceEntryMethodType=" + $('#AttendanceEntryMethodType').val() */ + "&Searchbox=" + $('#search-box').val();
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val()  + "&DashboardType=" + $('#DashboardType').val()   + "&DashAttendStatus=" + $('#DashAttendStatus').val() /*+ "&AttendanceEntryMethodType=" + $('#AttendanceEntryMethodType').val() */ + "&Searchbox=" + $('#search-box').val();
             window.location.href = linkUrl;
         }
          
@@ -173,7 +176,7 @@
                     if (response != null && response != undefined && response != '') {
                          if (response.message== "" ) {
                             var linkUrl = urlHref;
-                            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() /* + "&DashboardType=" + $('#DashboardType').val() + "&AttendanceEntryMethodType=" + $('#AttendanceEntryMethodType').val() */ + "&Searchbox=" + $('#search-box').val();
+                            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val()  + "&DashboardType=" + $('#DashboardType').val()   + "&DashAttendStatus=" + $('#DashAttendStatus').val() /* + "&AttendanceEntryMethodType=" + $('#AttendanceEntryMethodType').val() */ + "&Searchbox=" + $('#search-box').val();
                             window.location.href = linkUrl;
                         }
                         else{
@@ -359,7 +362,7 @@
 
         function loadPage(pageNumber) {
             //var dashboardType = $('#DashboardType').val();
-            var url = '@Url.Action("GetDetailData", "DirectPurchaseBill")';
+            var url = '@Url.Action("GetSearchData", "GateAttendance")';
             
             var formData = $('#SParam').serializeArray();
             formData.push({ name: 'pageNumber', value: pageNumber });
@@ -370,6 +373,7 @@
                 success: function (result) {
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(result);
+                    CheckApprovedOrNot();
                     $('#totalRows').text($('#gateDashboardtable tr').length);
                     //countAllTotal();
                 }
@@ -385,6 +389,7 @@
                 success: function (data) {
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(data);
+                    CheckApprovedOrNot();
                     $('#totalRows').text($('#gateDashboardtable tr').length);
                     //countAllTotal();
                 },
@@ -405,7 +410,8 @@
         function deleteItem(entryID, yearCode, empId, cnt) {
             sessionStorage.setItem('FromDateBack', $('#FromDate').val());
             sessionStorage.setItem('ToDateBack', $('#ToDate').val());
-            //sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
+            sessionStorage.setItem('DashAttendStatusBack', $('#DashAttendStatus').val());
             //sessionStorage.setItem('AttendanceEntryMethodTypeBack', $('#AttendanceEntryMethodTypeBack').val());
             sessionStorage.setItem('DashDepartmentBack', $('#DashDepartmentType').val());
             sessionStorage.setItem('DashCategoryBack', $('#DashCategoryType').val());

@@ -346,11 +346,13 @@ public class GateAttendanceDAL
                 oCmd.Parameters.AddWithValue("@Flag", "Dashboard");
                 if(model != null)
                 {
-                    //oCmd.Parameters.AddWithValue("@DashCategory", model.DashCategory);
-                    //oCmd.Parameters.AddWithValue("@DashDepartment", model.DashDepartment);
-                    //oCmd.Parameters.AddWithValue("@DashDesignation", model.DashDesignation);
-                    //oCmd.Parameters.AddWithValue("@DashEmployee", model.DashEmployee);
+                    oCmd.Parameters.AddWithValue("@EmpCateid", model.DashCategory ?? "0");
+                    oCmd.Parameters.AddWithValue("@DepId", model.DashDepartment ?? "0");
+                    oCmd.Parameters.AddWithValue("@DesgId", model.DashDesignation ?? "0");
+                    oCmd.Parameters.AddWithValue("@EmpId", model.DashEmployee ?? "0");
+                    oCmd.Parameters.AddWithValue("@AttendStatus", model.AttendStatus ?? "");
                 }
+                oCmd.Parameters.AddWithValue("@ReportType", model != null && !string.IsNullOrEmpty(model.DashboardType) ? model.DashboardType : "SUMMARY");
                 oCmd.Parameters.AddWithValue("@FromDate", firstdayofMonthh);
                 oCmd.Parameters.AddWithValue("@ToDate", today);
                 await myConnection.OpenAsync();
@@ -362,21 +364,53 @@ public class GateAttendanceDAL
 
             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
             {
-                DashBoardData.GateAttDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
-                                              select new GateAttDashBoard
-                                              {
-                                                  GateAttEntryId = !string.IsNullOrEmpty(dr["GateAttEntryId"].ToString()) ? Convert.ToInt32(dr["GateAttEntryId"]) : 0,
-                                                  GateAttYearCode = !string.IsNullOrEmpty(dr["GateAttYearCode"].ToString()) ? Convert.ToInt32(dr["GateAttYearCode"]) : 0,
-                                                  AttendanceEntryDate = string.IsNullOrEmpty(dr["AttendanceEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["AttendanceEntryDate"]),
-                                                  ActualEntryDate = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
-                                                  DailyMonthlyAttendance = dr["DailyMonthlyAttendance"].ToString(),
-                                                  AttendanceEntryMethod  = dr["AttendanceEntryMethod"].ToString(),
-                                                  AttMonthName  = dr["AttMonthName"].ToString(),
-                                                  EntryByMachineName  = dr["EntryByMachineName"].ToString(),
-                                                  CC  = dr["CC"].ToString(),
-                                                  EntryByEmp  = dr["EntryByEmp"].ToString(),
-                                                  UpdatedByEmp  = dr["EntryByEmp1"].ToString(),
-                                              }).OrderBy(a => a.GateAttEntryId).ToList();
+                if(model != null && string.Equals(model.DashboardType, "detail", StringComparison.OrdinalIgnoreCase))
+                {
+                    DashBoardData.GateAttDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                      select new GateAttDashBoard
+                                                      {
+                                                          GateAttEntryId = !string.IsNullOrEmpty(dr["GateAttEntryId"].ToString()) ? Convert.ToInt32(dr["GateAttEntryId"]) : 0,
+                                                          GateAttYearCode = !string.IsNullOrEmpty(dr["GateAttYearCode"].ToString()) ? Convert.ToInt32(dr["GateAttYearCode"]) : 0,
+                                                          AttendanceEntryDate = string.IsNullOrEmpty(dr["AttendanceEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["AttendanceEntryDate"]),
+                                                          ActualEntryDate = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
+                                                          DailyMonthlyAttendance = dr["DailyMonthlyAttendance"].ToString(),
+                                                          AttendanceEntryMethod = dr["AttendanceEntryMethod"].ToString(),
+                                                          AttMonthName = dr["AttMonthName"].ToString(),
+                                                          //start for detail
+                                                          EmpCode = dr["Empcode"].ToString(),
+                                                          EmpName = dr["EmpName"].ToString(),
+                                                          AttendStatus = dr["AttendStatus"].ToString(),
+                                                          AttendanceDate = string.IsNullOrEmpty(dr["AttedanceDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["AttedanceDate"]),
+                                                          AttInTime = string.IsNullOrEmpty(dr["AttInTime"].ToString()) ? null : Convert.ToDateTime(dr["AttInTime"]),
+                                                          AttOutTime = string.IsNullOrEmpty(dr["AttOutTime"].ToString()) ? null : Convert.ToDateTime(dr["AttOutTime"]),
+                                                          TotalNoOfHours = dr["TotalNoOfHours"].ToString(),
+                                                          //end
+                                                          EntryByMachineName = dr["EntryByMachineName"].ToString(),
+                                                          CC = dr["CC"].ToString(),
+                                                          EntryByEmp = dr["EntryByEmp"].ToString(),
+                                                          UpdatedByEmp = dr["EntryByEmp1"].ToString(),
+                                                          UpdatedOn = string.IsNullOrEmpty(dr["LastUpdationdate"].ToString()) ? null : Convert.ToDateTime(dr["LastUpdationdate"]),
+                                                      }).OrderBy(a => a.GateAttEntryId).ThenByDescending(a => a.AttendStatus).ThenBy(a => a.EmpName).ToList();
+                }
+                else
+                {
+                    DashBoardData.GateAttDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                      select new GateAttDashBoard
+                                                      {
+                                                          GateAttEntryId = !string.IsNullOrEmpty(dr["GateAttEntryId"].ToString()) ? Convert.ToInt32(dr["GateAttEntryId"]) : 0,
+                                                          GateAttYearCode = !string.IsNullOrEmpty(dr["GateAttYearCode"].ToString()) ? Convert.ToInt32(dr["GateAttYearCode"]) : 0,
+                                                          AttendanceEntryDate = string.IsNullOrEmpty(dr["AttendanceEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["AttendanceEntryDate"]),
+                                                          ActualEntryDate = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
+                                                          DailyMonthlyAttendance = dr["DailyMonthlyAttendance"].ToString(),
+                                                          AttendanceEntryMethod = dr["AttendanceEntryMethod"].ToString(),
+                                                          AttMonthName = dr["AttMonthName"].ToString(),
+                                                          EntryByMachineName = dr["EntryByMachineName"].ToString(),
+                                                          CC = dr["CC"].ToString(),
+                                                          EntryByEmp = dr["EntryByEmp"].ToString(),
+                                                          UpdatedByEmp = dr["EntryByEmp1"].ToString(),
+                                                          UpdatedOn = string.IsNullOrEmpty(dr["LastUpdationdate"].ToString()) ? null : Convert.ToDateTime(dr["LastUpdationdate"]),
+                                                      }).OrderBy(a => a.GateAttEntryId).ToList();
+                }
             }
         }
         catch (Exception ex)
@@ -464,8 +498,10 @@ public class GateAttendanceDAL
                             MainModel.DayHeaders.Add($"{d}(TotalNoOfHour)");
                         }
                     }
-
-                    foreach (DataRow dr in oDataSet.Tables[1].Rows)
+                    var attCols = oDataSet.Tables[1].Columns.Cast<DataColumn>().Where(c => c.ColumnName.ToLower().Contains("attendstatus")).ToList();
+                    Func<DataRow, int> pri = r => attCols.Any(c => r[c]?.ToString().Trim().ToUpper() == "P") ? 1 : attCols.Any(c => string.IsNullOrWhiteSpace(r[c]?.ToString()) || r[c]?.ToString().Trim().ToUpper() == "A") ? 3 : 2;
+                    var ordered = oDataSet.Tables[1].AsEnumerable().OrderBy(r => pri(r)).ThenBy(r => r["EmployeeName"].ToString());
+                    foreach (DataRow dr in ordered) //oDataSet.Tables[1].Rows)
                     {
                         var detail = new GateAttendanceModel
                         {
