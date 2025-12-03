@@ -649,6 +649,16 @@ namespace eTactWeb.Controllers
                 return DateTime.Parse(dateString);
             }
         }
+        private static object SafeDate(object value)
+        {
+            if (value == null) return DBNull.Value;
+
+            if (DateTime.TryParse(value.ToString(), out DateTime dt))
+                return dt;
+
+            return DBNull.Value; // return null to SQL, not empty string
+        }
+
         private static DataTable GetDetailTable(IList<IssueWithoutBomDetail> DetailList)
         {
             try
@@ -692,8 +702,8 @@ namespace eTactWeb.Controllers
 
                 foreach (var Item in DetailList)
                 {
-                    //DateTime ReqDate = new DateTime();
-                    //ReqDate = ParseDate(Item.ReqDate);
+                    DateTime ReqDate = new DateTime();
+                    ReqDate = ParseDate(Item.ReqDate1);
                     if (Item.AltUnit == "null")
                         Item.AltUnit = "";
                     if (Item.uniqueBatchNo == "null")
@@ -734,7 +744,7 @@ namespace eTactWeb.Controllers
                     Item.StdPacking == 0 ? 0:Item.StdPacking,
                     Item.ReqNo1 == null ? "" : Item.ReqNo1,
                     Item.ReqyearCode1== null?"":Item.ReqyearCode1,
-                    Item.ReqDate1 == null ? "" : Item.ReqDate1,
+                    SafeDate(Item.ReqDate1),
                     Item.ReqEntryId == 0?0:Item.ReqEntryId,
                      Item.ReqItemCancel == null ? "" : Item.ReqItemCancel,
                         });
