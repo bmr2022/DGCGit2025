@@ -355,6 +355,10 @@ else
             <input asp-for="Amount" tabindex="-1" class="form-control" value="0.00" style="background-color: #FFFACD !important;" readonly disabled />
         </div>
         <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Remark" class="form-label">Remark</label>
+            <input asp-for="Remark" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="ItemLocation" class="form-label" style="color: red;">Item Location</label>
             <input asp-for="ItemLocation" tabindex="-1" class="form-control" style="background-color: #FFFACD !important;" readonly />
         </div>
@@ -368,7 +372,7 @@ else
         </div>
         <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="StoreName" class="form-label" style="color: red;">Store Name</label>
-            <select asp-for="StoreName" class="form-select" id="Storeid">
+            <select asp-for="StoreName" class="form-select" id="Storeid1">
                 <option value="" disabled selected>-Select-</option>
             </select>
         </div>
@@ -475,10 +479,6 @@ else
             <div class="AF col-sm-auto">
                 <label asp-for="OldRate" class="form-label">Old Rate</label>
                 <input asp-for="OldRate" class="form-control" />
-            </div>
-            <div class="AF col-sm-auto">
-                <label asp-for="Remark" class="form-label">Remark</label>
-                <input asp-for="Remark" class="form-control" />
             </div>
             <div class="AF col-sm-auto">
                 <label asp-for="Description" class="form-label">Description</label>
