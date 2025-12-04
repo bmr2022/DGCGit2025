@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Account Master";
-     Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 @*<div class="d-flex align-items-center p-3 my-2 text-white rounded shadow-sm bg-gradient" style="background-color:darkcyan;">
     <div class="lh-1">
@@ -38,7 +38,7 @@
                                     REFRESH
                                 </a>
                             </div>
-                            @if (Model.Mode == "U"  )
+                            @if (Model.Mode == "U")
                             {
                                 @*Model.Mode = "U";*@
                                 <div class="col-auto">
@@ -49,7 +49,7 @@
                                     </button>
                                 </div>
                             }
-                            
+
                             else
                             {
                                 <div class="col-auto">
@@ -92,9 +92,9 @@
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="ParentAccountCode" class="form-label">Parent Group</label>
                                     <div class="col-xl-4  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <select asp-for="ParentAccountCode" class="form-select" data-abcd="1"  style="width:200px;" asp-items="@(new SelectList(Model.ParentGroupList,"Value", "Text"))" onchange="OnParentGroup(this.value)">
-                                        <option value="">-Select-</option>
-                                    </select>
+                                        <select asp-for="ParentAccountCode" class="form-select" data-abcd="1" style="width:200px;" asp-items="@(new SelectList(Model.ParentGroupList,"Value", "Text"))" onchange="OnParentGroup(this.value)">
+                                            <option value="">-Select-</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -129,12 +129,10 @@
                                     <label asp-for="DisplayName" class="form-label">Display Name</label>
                                     <input asp-for="DisplayName" class="form-control" />
                                 </div>
-                              
-                                <!-- Region Dropdown (editable) -->
-                           
 
+                                <!-- Region Dropdown (editable) -->
                                 <!-- Discount Category Dropdown (editable) -->
-                             
+
 
 
                             </div>
@@ -171,7 +169,7 @@
                                         <label asp-for="Country" class="form-label"></label>
                                         <input asp-for="Country" class="form-control" onkeypress="AutoComplete(this.id);" />
                                     </div>
-                                  
+
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="State" class="form-label"></label>
                                         <select asp-for="State" class="form-select" asp-items="@(new SelectList(Model.StateList,"Value", "Text"))">
@@ -287,7 +285,7 @@
                                         <input asp-for="MSMENo" minlength="19" maxlength="19" class="form-control" />
                                     </div>
                                 </div>
-                            
+
                             </div>
                         </div>
                     </div>
@@ -359,7 +357,7 @@
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="SalePersonEmpId" class="form-label">Sale Person</label>
                                         <select asp-for="SalePersonEmpId" class="form-select editable-select" style="width:200px;">
-                                                
+
                                             <option value="">-Select-</option>
                                         </select>
                                     </div>
@@ -597,7 +595,7 @@
                                                 REFRESH
                                             </a>
                                         </div>
-                                        @if (Model.Mode == "U"  )
+                                        @if (Model.Mode == "U")
                                         {
                                             @*Model.Mode = "U";*@
                                             <div class="col-auto">
@@ -608,7 +606,7 @@
                                                 </button>
                                             </div>
                                         }
-                                       
+
                                         else
                                         {
                                             <div class="col-auto">
@@ -633,31 +631,33 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-             $('.editable-select').select2({
-            tags: true,                  // Allows typing new values
-            placeholder: "-Select-",
-            allowClear: true,
-            width: 'resolve'            // Adjusts to 200px as set
-        });
+            $('.editable-select').select2({
+                tags: true,                  // Allows typing new values
+                placeholder: "-Select-",
+                allowClear: true,
+                width: 'resolve'            // Adjusts to 200px as set
+            });
             GetSalePersonName();
             GetFormRights();
             RemoveOptionsfromPAC();
             $("#Entry_Date").datepicker({ minDate: 0 });
             $('#Account_Name').keyup(function () { $("#DisplayName").val(this.value).change(); });
             $('#TDS').change();
-              $('#ParentAccountCode').select2();
-                
-        if ("@Model.Mode=='U'") {
-            var parentID = $('#ParentAccountCode').val();
+            $('#ParentAccountCode').select2();
 
-            if (parentID !== "" && parentID !== null) {
-                OnParentGroup(parentID);   // 🔥 FIX → sets HideShow & IsSDSC
+            if ("@Model.Mode=='U'") {
+                var parentID = $('#ParentAccountCode').val();
+
+                if (parentID !== "" && parentID !== null) {
+                    OnParentGroup(parentID);  
+                }
             }
-        }
+            $('#GSTRegistered').val("N").trigger('change');
+            $('#TDS').val("N").trigger('change');
         });
 
         function RemoveOptionsfromPAC() {
-             
+
             var selectElement = document.getElementById("ParentAccountCode");
             var optionToRemove = "6"; // value of the option to be removed
             var optionToRemove2 = "13"; // value of the option to be removed
@@ -683,9 +683,9 @@
         $(function () {
             $("#Account_Name").autocomplete({
                 source: function (request, response) {
-                
+
                     $.ajax({
-                        url: '@Url.Action("AutoComplete","AccountMaster")',
+                        url: '@Url.Action("AutoComplete", "AccountMaster")',
                         type: "POST",
                         data: { "ColumnName": "Account_Name", "prefix": request.term },
                         success: function (data) {
@@ -706,7 +706,7 @@
                     $("#DisplayName").val(i.item.value);
                 },
                 change: function (e, i) {
-                    
+
                     $("#DisplayName").val($("#Account_Name").val());
                 },
                 minLength: 1
@@ -716,11 +716,11 @@
 
         function GetFormRights() {
             $.ajax({
-                url: "@Url.Action("GetFormRights","AccountMaster")",
+                url: "@Url.Action("GetFormRights", "AccountMaster")",
                 type: "POST",
                 success: function (data) {
                     if (data != null) {
-                         
+
                         var obj = $.parseJSON(data);
                         if (obj.Result.Table.length == 0) {
                             $("button[type='submit']").prop("disabled", true);
@@ -748,12 +748,12 @@
             });
         }
 
-        function AutoComplete(ID) {      
-             
+        function AutoComplete(ID) {
+
             $("#" + ID).autocomplete({
                 source: function (request, response) {
                     $.ajax({
-                        url: '@Url.Action("AutoComplete","AccountMaster")',
+                        url: '@Url.Action("AutoComplete", "AccountMaster")',
                         type: "POST",
                         data: { "ColumnName": ID, "prefix": request.term },
                         success: function (data) {
@@ -779,19 +779,19 @@
             else {
                 $.ajax({
                     type: "POST",
-                    url: "@Url.Action("GetParentGroupDetail","AccountMaster")",
+                    url: "@Url.Action("GetParentGroupDetail", "AccountMaster")",
                     data: { ID: ID },
                     datatype: JSON,
                     success: function (response, status, error) {
-                          
+
                         var obj = $.parseJSON(response);
                         if (obj.StatusCode === 200 || obj.StatusText === "Success") {
                             $('#SubGroup').val(obj.Result.Table[0].SubGroup), $('#AccountType').val(obj.Result.Table[0].AccountType),
                                 $('#MainGroup').val(obj.Result.Table[0].MainGroup), $('#SubSubGroup').val(obj.Result.Table[0].SubSubGroup),
                                 $('#UnderGroup').val(obj.Result.Table[0].UnderGroup);
                             HideShow = obj.Result.Table[0].ShowHide, obj.Result.Table[0].ShowHide == 1 ? $('#divDetail').show(500) : $('#divDetail').hide(500);
-                            $('#SubGroup').val() == "Sundry Debtors" || $('#SubGroup').val() == "Sundry Creditors" || $('#SubGroup').val() =="Branch/Division (Assets)" ||  
-                            $('#SubGroup').val() =="Branch/Division (Liabilities)" ? IsSDSC = 1 : IsSDSC = 0;
+                            $('#SubGroup').val() == "Sundry Debtors" || $('#SubGroup').val() == "Sundry Creditors" || $('#SubGroup').val() == "Branch/Division (Assets)" ||
+                                $('#SubGroup').val() == "Branch/Division (Liabilities)" ? IsSDSC = 1 : IsSDSC = 0;
 
                             $(".is-invalid").each(function () {
                                 $(this).removeClass('is-invalid');
@@ -817,7 +817,7 @@
 
         async function CheckDuplicate(n, v) {
             $.ajax({
-                url: "@Url.Action("isDuplicate","AccountMaster")",
+                url: "@Url.Action("isDuplicate", "AccountMaster")",
                 type: "POST",
                 data: { "Colval": $('#' + v).val(), "ColName": n },
                 success: await function (data) {
@@ -862,7 +862,7 @@
             }
         });
 
-        function GetSalePersonName(){
+        function GetSalePersonName() {
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("GetSalePersonName", "AccountMaster")',
@@ -895,7 +895,7 @@
             if ($(this).val() == "Y") {
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("GetTDSPartyList","AccountMaster")',
+                    url: '@Url.Action("GetTDSPartyList", "AccountMaster")',
                     dataType: "json",
                     success: function (data, status, error) {
                         if (data) {
@@ -925,7 +925,7 @@
                 $('#TDSPartyCategery').append('<option>-Select-</option>');
             }
         });
-                      $("button[type='submit']").click(function () {
+        $("button[type='submit']").click(function () {
 
             IsErr = 0;
             $(".valid").removeClass('is-invalid');
@@ -954,11 +954,11 @@
             if (HideShow == 1) {
 
                 if (IsSDSC == 1) {
-                    // validateRequired("ComAddress");
-                    // validateRequired("Country");
-                    // validateRequired("State");
-                    // validateRequired("City");
-                    // validateRequired("PinCode");
+                    validateRequired("ComAddress");
+                    validateRequired("Country");
+                    validateRequired("State");
+                    validateRequired("City");
+                    validateRequired("PinCode");
                     // validateRequired("PhoneNo");
                     // validateRequired("MobileNo");
                     // validateRequired("ContactPerson");
@@ -966,7 +966,23 @@
                     (IsErr == 1) ? ShowErrorFld('H_AddressDetail') : HideErrorFld('H_AddressDetail');
                     validateGST();
                     validateTDS();
-                    (IsErr == 1) ? ShowErrorFld('H_TaxDetail') : HideErrorFld('H_TaxDetail');
+                   // (IsErr == 1) ? ShowErrorFld('H_TaxDetail') : HideErrorFld('H_TaxDetail');
+                    let gst = $('#GSTRegistered').val();
+                    let tds = $('#TDS').val();
+
+                    // CASE 1: GST = N AND TDS = N → always hide
+                    if (gst === "N" && tds === "N") {
+                        HideErrorFld('H_TaxDetail');
+                    }
+                    else {
+                        // CASE 2: Any YES → show only if errors
+                        if (IsErr == 1) {
+                            ShowErrorFld('H_TaxDetail');
+                        } else {
+                            HideErrorFld('H_TaxDetail');
+                        }
+                    }
+
                 }
                 else {
                     if ($('#GSTRegistered').val() == 'Y' || $('#TDS').val() == 'Y') {
@@ -991,6 +1007,7 @@
                 IsErr = 1;
             }
         }
+
         function validateGST() {
 
             let gstReg = $('#GSTRegistered').val();
@@ -999,32 +1016,40 @@
 
                 let gstNo = $('#GSTNO').val().trim();
 
-                if (!gstNo) {
+                // GST NO MANDATORY
+                if (!gstNo || gstNo.length !== 15) {
                     AddErrorCls('GSTNO');
                     IsErr = 1;
-                }
-                else if (gstNo.length !== 15) {
-                    AddErrorCls('GSTNO');
-                    IsErr = 1;
+                } else {
+                    RemoveErrorCls('GSTNO'); 
                 }
 
+                // GST Party Type
                 if (!$('#GSTPartyTypes').val()) {
                     AddErrorCls('GSTPartyTypes');
                     IsErr = 1;
+                } else {
+                    RemoveErrorCls('GSTPartyTypes'); 
                 }
 
+                // GST Tax Type
                 if (!$('#GSTTAXTYPE').val()) {
                     AddErrorCls('GSTTAXTYPE');
                     IsErr = 1;
+                } else {
+                    RemoveErrorCls('GSTTAXTYPE'); 
                 }
+
                 // PAN NO mandatory
-                if (!$('#PANNO').val()) {
-                    AddErrorCls('PANNO');
-                    IsErr = 1;
-                }
+                // if (!$('#PANNO').val()) {
+                //     AddErrorCls('PANNO');
+                //     IsErr = 1;
+                // } else {
+                //     RemoveErrorCls('PANNO');
+                // }
             }
 
-            // GST Registered = NO → clear fields + remove errors
+            // GST Registered = NO → clear fields
             if (gstReg === "N") {
                 $('#GSTNO').val('');
                 RemoveErrorCls('GSTNO');
@@ -1036,6 +1061,55 @@
                 RemoveErrorCls('GSTTAXTYPE');
             }
         }
+
+
+        // function validateGST() {
+
+        //     let gstReg = $('#GSTRegistered').val();
+
+        //     if (gstReg === "Y") {
+
+        //         let gstNo = $('#GSTNO').val().trim();
+
+        //         if (!gstNo) {
+        //             AddErrorCls('GSTNO');
+        //             IsErr = 1;
+        //         }
+        //         else if (gstNo.length !== 15) {
+        //             AddErrorCls('GSTNO');
+        //             IsErr = 1;
+        //         }
+
+        //         if (!$('#GSTPartyTypes').val()) {
+        //             AddErrorCls('GSTPartyTypes');
+        //             IsErr = 1;
+        //         }
+
+        //         if (!$('#GSTTAXTYPE').val()) {
+        //             AddErrorCls('GSTTAXTYPE');
+        //             IsErr = 1;
+        //         }
+        //         // PAN NO mandatory
+        //         if (!$('#PANNO').val()) {
+        //             AddErrorCls('PANNO');
+        //             IsErr = 1;
+        //         }
+        //     }
+
+        // // GST Registered = NO → clear fields + remove errors
+        // if (gstReg === "N") {
+        //     $('#GSTNO').val('');
+        //     RemoveErrorCls('GSTNO');
+
+        //     $('#GSTPartyTypes').prop('selectedIndex', 0);
+        //     RemoveErrorCls('GSTPartyTypes');
+
+        //     $('#GSTTAXTYPE').prop('selectedIndex', 0);
+        //     RemoveErrorCls('GSTTAXTYPE');
+        // }
+        //         }
+
+
         function validateTDS() {
 
             let tds = $('#TDS').val();
@@ -1059,7 +1133,7 @@
                 RemoveErrorCls('TDSPartyCategery');
             }
 
-           
+
         }
 
         // $("button[type='submit']").click(function () {
@@ -1322,7 +1396,7 @@
         //     //});
         // });
 
-      
+
 
     </script>
 }

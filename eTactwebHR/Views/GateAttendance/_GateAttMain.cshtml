@@ -77,7 +77,7 @@
             <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                 <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" />Show All
             </div>
-            <select class="form-select" asp-for="EmployeeCode" tabindex="5" asp-items="@(new SelectList(Model.EmployeeList,"Value","Text"))">
+            <select class="form-select" asp-for="EmployeeCode" tabindex="5" asp-items="@(new SelectList(Model.EmployeeList,"Value","Text"))" onchange="onchangeEmployeeCodedpdwn()">
                 <option value="0">-Select-</option>
             </select>
         </div>
