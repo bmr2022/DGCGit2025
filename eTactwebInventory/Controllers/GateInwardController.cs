@@ -501,6 +501,13 @@ namespace eTactWeb.Controllers
                             ViewBag.isSuccess = false;
                             TempData["2627"] = "2627";
                         }
+                        else if (!string.IsNullOrEmpty(Result.StatusText))
+                        {
+                            ViewBag.isSuccess = false;
+                            // If SP returned a message (like adjustment error)
+                            TempData["ErrorMessage"] = Result.StatusText;
+                            //return View(model);
+                        }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
                             var errNum = Result.Result.Message.ToString().Split(":")[1];
