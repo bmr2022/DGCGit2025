@@ -1963,6 +1963,8 @@
                             $("#SchNo").bind("change", function () { CheckAndFillItem() });
                             $("#SchYearCode").bind("change", function () { CheckAndFillItem() });
                         }
+                        
+                        else{$.notify(obj.StatusText, "error");}
                     }
                 },
             });

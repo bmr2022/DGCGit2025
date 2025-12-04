@@ -879,12 +879,14 @@
                 // if ($("#FromDepartmentId").val() != '6') {
                         $('#WorkCenterId').prop("disabled", false);
                 } else {
+                        $('#WorkCenterId').prop("selectedIndex", 0);
                         $('#WorkCenterId').prop("disabled", true);
                 }
 
                             if (($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("store")) {
                     $('#ToStoreId').prop("disabled", false);
         } else {
+                           $('#ToStoreId').prop("selectedIndex", 0);
                     $('#ToStoreId').prop("disabled", true);
         }
             }
@@ -1275,6 +1277,7 @@
                                                                 if (($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("store")) {
                                                                                 $('#ToStoreId').prop("disabled", false);
                                                                     } else {
+                                                                                 $('#ToStoreId').prop("selectedIndex", 0);
                                                                                 $('#ToStoreId').prop("disabled", true);
                                                                     }
                             }
@@ -1666,12 +1669,13 @@
             if (dept.includes("production") || dept.includes("r&d")) {
                       $('#WorkCenterId').prop('disabled', false);
             } else {
+                     $('#WorkCenterId').prop('selectedIndex', 0);
                 $('#WorkCenterId').prop('disabled', true);
             }
             if (dept.includes("store")) {
                     $('#ToStoreId').prop("disabled", false);
-                $('#ToStoreId').prop("selectedIndex", 0);
             } else {
+                         $('#ToStoreId').prop('selectedIndex', 0);
                     $('#ToStoreId').prop("disabled", true);
             }
         });
