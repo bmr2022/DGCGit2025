@@ -282,6 +282,7 @@ public class PurchaseOrderModel : POItemDetail
     public string? ShowOnlyAmendItem { get; set; }
     public string? UniversalDescription { get; set; }
     public string? FinFromDate { get; set; }
+    public string? ShowAllRequiredFields { get; set; }
     public string? FinToDate { get; set; }
     public string? TypeOfSave { get; set; }
     public string? AccountName { get; set; }

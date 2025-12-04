@@ -30,6 +30,7 @@ using DocumentFormat.OpenXml.Math;
 using Org.BouncyCastle.Ocsp;
 using DocumentFormat.OpenXml.Bibliography;
 using eTactWeb.Services;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace eTactWeb.Controllers;
 
@@ -952,7 +953,22 @@ public class PurchaseOrderController : Controller
         HttpContext.Session.Remove("PurchaseOrder");
         HttpContext.Session.Remove("KeyPendingIndentDetail");
 
+
+
         var MainModel = new PurchaseOrderModel();
+
+        var featuresoptions = IPurchaseOrder.GetFeaturesOptions();
+
+        if (featuresoptions?.Result?.Result != null &&
+            featuresoptions.Result.Result.Rows.Count > 0)
+        {
+            MainModel.ShowAllRequiredFields =
+                featuresoptions.Result.Result.Rows[0]["ShowAllRequiredFields"]?.ToString() ?? "";
+        }
+        else
+        {
+            MainModel.ShowAllRequiredFields = "";
+        }
 
         if (string.IsNullOrEmpty(Mode) && ID == 0)
         {
