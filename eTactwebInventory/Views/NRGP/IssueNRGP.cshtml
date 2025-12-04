@@ -3492,7 +3492,10 @@
          
             $('.GridButton').click(function (e) {
                 e.preventDefault();
-
+                if( $('#divIssueNRGPGrid tr').length>=500){
+                      $.notify('You cannot add more than 500 items in one NRGP challan...!!!', "info");
+                        return;
+                }
                 var seqnoarray = [];
                 $('#divIssueNRGPGrid tr').each(function (index, element) {
                     var currentRow = $(element);
