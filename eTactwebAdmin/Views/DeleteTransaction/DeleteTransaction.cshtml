@@ -35,7 +35,7 @@
                                 </div>
                                 <!-- Form Details -->
                                 <div class="col-lg-2">
-                                    <label asp-for="FormName" class="form-label">Form Name</label>
+                                    <label asp-for="FormName"  class="form-label">Form Name</label>
                                     <select id="FormName" name="FormName" class="form-select">
                                         <option value="">-- Select Form --</option>
                                     </select>
@@ -55,7 +55,7 @@
                                     <div class="row gx-2 gy-1 align-items-center">
 
                                         <div class="col-lg-2">
-                                            <label class="form-label fw-bold">Account Name</label>
+                                            <label id="AccountNameLable" class="form-label fw-bold">Account Name</label>
                                             <input id="AccountName" name="AccountName" class="form-control-plaintext p-0" readonly />
                                             <input type="hidden" id="AccountCode" name="AccountCode" />
                                         </div>
@@ -83,7 +83,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-2">
+                                <div class="col-lg-2" style="display:none">
                                     <label class="form-label fw-bold">New Slip No.</label>
                                     <div class="input-group">
                                         <input type="text" id="NewSlipNo" name="NewSlipNo" class="form-control w-auto" />
@@ -93,7 +93,7 @@
                                 <!-- Buttons + Link + New Slip No -->
                                 <div class="col-12 mt-3 d-flex align-items-center gap-2">
                                     <!-- Update button (frontend now, backend later) -->
-                                    <button type="button" id="btnUpdate" class="btn btn-primary" data-action="UPDATE">Update</button>
+                                    <button style="display:none" type="button" id="btnUpdate" class="btn btn-primary" data-action="UPDATE">Update</button>
 
                                     <!-- Delete button (submits form to backend) -->
                                     <button type="submit" name="Action" value="DELETE" class="btn btn-danger">Delete</button>
@@ -167,6 +167,18 @@
     $('#ModuleName').change(function () {
         FillFormName();
     });
+    $('#FormName').change(function () {
+            if ($('#FormName').val() == "ProductionEntryMain")
+    { 
+        $('#AccountNameLable').text('Item Name')
+    }
+    else
+    {
+        $('#AccountNameLable').text('Account Name')
+    }
+    });
+
+
 
         function FillFormName() {
         $.ajax({

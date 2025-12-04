@@ -1682,10 +1682,14 @@
             else {
                 $('#ItemName,#PartCode').empty();
             }
-            $('#divSaleItemGrid').empty();
+          
             //$('#Rate').prop('disabled', false);
             $('#ItemCheck').prop('disabled', false);
+            if (parseInt($('#docTypeId').val()) != 7) {
+                
             ClearGridAjax();
+                $('#divSaleItemGrid').empty();
+                }
             $('#ItemCheck').prop('checked', false);
             $('#Pono,#PoYear,#PoDate,#SchNo,#SchYearCode').empty();
                     $('#Unit,#Rate,#UnitRate,#AltUnit,#Qty,#AltQty,#AltPendQty,#PendQty').val("");
