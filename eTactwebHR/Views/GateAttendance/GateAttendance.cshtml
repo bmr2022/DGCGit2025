@@ -810,6 +810,7 @@
                         });
                         checkUncheckEmp();
                         highlightUnselectedEmployees();
+                        $('#DayOrMonthType,#strEmpAttDate,#strEmpAttMonth').attr('disabled',true);
                         isallcheckedonmodify = false;
                     }
                 }
@@ -844,6 +845,7 @@
                         });
                         checkUncheckEmp();
                         highlightUnselectedEmployees();
+                        $('#DayOrMonthType,#strEmpAttDate,#strEmpAttMonth').attr('disabled',true);
                         isallcheckedonmodify = false;
                     }
                 }
@@ -870,6 +872,7 @@
                         });
                         checkUncheckEmp();
                         highlightUnselectedEmployees();
+                        $('#DayOrMonthType,#strEmpAttDate,#strEmpAttMonth').attr('disabled',true);
                         isallcheckedonmodify = false;
                     }
                 }
@@ -973,7 +976,10 @@
         $off.addClass(cls).text(txt);
         $('.dvGateAttEntryOffDay').show();
     }
-
+    $('#CategoryCode').on('change input',()=>checkHolidayOrWeekoff(strEmpAttDate.value,$('#EmpCatId').val(),$('#GateAttYearCode').val(),handleHolidayWeekoff,false));
+    function onchangeEmployeeCodedpdwn(){
+        checkHolidayOrWeekoff(strEmpAttDate.value,$('#EmpCatId').val(),$('#GateAttYearCode').val(),handleHolidayWeekoff,false);
+    }
     function updateItemCount() {
         var count = $("#attendanceItemGrid tbody tr").length;
         if($("#norecord").length && count > 0) {
@@ -1110,7 +1116,7 @@
             if (isChecked) {
                 el.removeAttribute("disabled");
             } else {
-                el.setAttribute("disabled", "disabled");
+                el.setAttribute("4 dec", "disabled");
             }
         });
     }
