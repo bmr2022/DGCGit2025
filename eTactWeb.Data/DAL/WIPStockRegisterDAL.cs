@@ -137,7 +137,7 @@ namespace eTactWeb.Data.DAL
                                                             ItemGroup = string.IsNullOrEmpty(dr["itemgroup"].ToString()) ? "" : dr["itemgroup"].ToString(),
                                                             Rate = string.IsNullOrEmpty(dr["Rate"].ToString()) ? 0 : Convert.ToDecimal(dr["Rate"].ToString()),
                                                             Amount = string.IsNullOrEmpty(dr["Rate"].ToString()) ? 0 : Convert.ToDecimal(dr["Rate"].ToString()) * (string.IsNullOrEmpty(dr["TotalStock"].ToString()) ? 0 : Convert.ToDecimal(dr["TotalStock"].ToString())),
-                                                            EntryId = string.IsNullOrEmpty(dr["entryId"].ToString()) ? 0 : Convert.ToInt16(dr["entryId"].ToString()),
+                                                            EntryId = string.IsNullOrEmpty(dr["entryId"].ToString()) ? 0 : Convert.ToInt32(dr["entryId"].ToString()),
 
                                                         }).ToList();
                     }
