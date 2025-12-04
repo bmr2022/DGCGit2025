@@ -135,6 +135,25 @@
 			// ColorGrid();
 
 		});
+		let isSyncing = false;
+
+		$('#EmployeeCode').on('change', function () {
+			if (isSyncing) return;
+			isSyncing = true;
+
+			$('#EmployeeName').val($(this).val()).trigger("change");
+
+			isSyncing = false;
+		});
+
+		$('#EmployeeName').on('change', function () {
+			if (isSyncing) return;
+			isSyncing = true;
+
+			$('#EmployeeCode').val($(this).val()).trigger("change");
+
+			isSyncing = false;
+		});
 
 
 		function FillEmpCode() {
@@ -142,12 +161,12 @@
 				url: '@Url.Action("FillEmployeeCode")',
 				type: 'POST',
 				success: function (data, status, xhr) {
-					var obj = $.parseJSON(data);
+					var obj = $.parseJSON(data);	
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 						$('#EmployeeCode').empty();
 						$('#EmployeeCode').append('<option value="">-Select-</option>');
 						$.each(obj.Result, function (index, Val) {
-							$('#EmployeeCode').append('<option value="' + Val.EmpCode + '">' + Val.EmpCode + '</option>');
+							$('#EmployeeCode').append('<option value="' + Val.Emp_Id + '" data-empId="' + Val.Emp_Id + '">' + Val.EmpCode + '</option>');
 						});
 						if($('#hiddenflag').val() == "False"){
 						$('#EmployeeCode').val($('#hiddenEmployeeCode').val());
@@ -175,7 +194,7 @@
 							if(Val.EmpName != '') {
 								var empname = (Val.EmpName.split("--->")[0]).trim();
 							}
-							$('#EmployeeName').append('<option value="' + empname + '">' + Val.EmpName + '</option>');
+							$('#EmployeeName').append('<option value="' + Val.Emp_Id + '" data-empId="' + Val.Emp_Id + '" data-empName="'+empname+'">' + Val.EmpName + '</option>');
 						});
 
 						if($('#hiddenflag').val() == "False"){
@@ -341,9 +360,9 @@
 			var formData = {
 				'fromDate' : $('#FinFromDate').val(),
 				'toDate' : $('#FinToDate').val(),
-				'employeeName': $('#EmployeeName').val(),
+				'employeeName': $('#EmployeeName option:selected').data('empname') == undefined ? "" : $('#EmployeeName option:selected').data('empname'),
 				'DepartmentName' : $('#DepartmentName').val(),
-				'employeeCode' : $('#EmployeeCode').val()
+				'employeeCode' : $('#EmployeeCode option:selected').text() == "-Select-" ? "" : $('#EmployeeCode option:selected').text()
 			};
 
 			$.ajax({
