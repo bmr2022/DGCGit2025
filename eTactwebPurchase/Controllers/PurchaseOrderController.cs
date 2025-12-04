@@ -29,6 +29,7 @@ using System.Reflection;
 using DocumentFormat.OpenXml.Math;
 using Org.BouncyCastle.Ocsp;
 using DocumentFormat.OpenXml.Bibliography;
+using eTactWeb.Services;
 
 namespace eTactWeb.Controllers;
 
@@ -919,6 +920,9 @@ public class PurchaseOrderController : Controller
         model.DashboardType = "Detail";
         return PartialView("_DashBoardGrid", model);
     }
+
+
+   
     public async Task<IActionResult> GetAmmSearchData(PODashBoard model)
     {
         model.Mode = "SEARCH";
