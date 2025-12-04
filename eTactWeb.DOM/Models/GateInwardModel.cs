@@ -235,7 +235,7 @@ public class GateInwardItemDetail : TimeStamp
     public int PoYear { get; set; }
     public int PoEntryId {  get; set; }
     public string? PoDate {  get; set; }
-    public string POType { get; set; }
+    public string? POType { get; set; }
     public string SchNo { get; set; }
     public int SchYearCode { get; set; }
     public string? SchDate {  get; set; }
@@ -356,7 +356,7 @@ public class GateInwardModel : GateInwardItemDetail
     public string? SupplierBatchNo { get; set; }
     public decimal? ShelfLife { get; set; }
     public int? SeqNo { get; set; }
-    public string POType { get; set; }
+    public string? POType { get; set; }
     public string PartCode { get; set; }
     public string ItemName { get; set; }
     public string VendorNameBack { get; set; }

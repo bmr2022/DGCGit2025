@@ -876,17 +876,19 @@
             fillPONumber();
             fillPendQty();
             if ($('#AccountCode').val() > 0) {
+        if('@Model.Mode' != 'U')
+                {
+                    // Prevent dropdown opening
+                    $('#AccountCode').on('select2:opening select2:unselecting', function (e) {
+                        e.preventDefault(); // stops dropdown open and unselect
+                    });
 
-                // Prevent dropdown opening
-                $('#AccountCode').on('select2:opening select2:unselecting', function (e) {
-                    e.preventDefault(); // stops dropdown open and unselect
-                });
-
-                // Optional: make it look readonly
-                $('#AccountCode').next('.select2').find('.select2-selection').css({
-                    'background-color': '#f5f5f5',
-                    'cursor': 'not-allowed'
-                });
+                    // Optional: make it look readonly
+                    $('#AccountCode').next('.select2').find('.select2-selection').css({
+                        'background-color': '#f5f5f5',
+                        'cursor': 'not-allowed'
+                    });
+                }
             }
 
                     $('#fetchEwayBill').click(function() {
