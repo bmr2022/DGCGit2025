@@ -611,8 +611,8 @@
 								</div>
 							
 								<div class="table-responsive" style="max-height:350px;">
-									<table class="table table-hover table-bordered table-striped mb-0">
-										<thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+									<table class="table table-hover table-bordered table-striped mb-0 auto-adjust">
+										<thead class="bg-gradient card-headerBG text-light small">
 											<tr>
 												<th>Sr#</th>
 												<th>Action</th>
@@ -1386,7 +1386,7 @@
 						var obj = $.parseJSON(result);
 						if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
 							$('#Group_Code1').empty();
-							$('#Group_Code1').append('<option value="0"  selected>-Select-</option>');
+							$('#Group_Code1').append('<option value=""  selected></option>');
 
 
 							$.each(obj.Result, function (index, val) {
@@ -1455,12 +1455,41 @@
 					$('#MultiItemBody').empty();
 							ItemBelowReOrderLevel();
 				}
+		function adjustColumnWidths() {
+			const table = document.querySelector(".auto-adjust");
+			if (!table) return;
+
+			const headerCells = table.querySelectorAll("thead th");
+			const rows = table.querySelectorAll("tbody tr");
+
+			headerCells.forEach((th, columnIndex) => {
+				let maxWidth = th.offsetWidth;
+
+				rows.forEach(row => {
+					const cell = row.children[columnIndex];
+					if (cell) {
+						let width = cell.scrollWidth + 25; // extra px for padding
+						if (width > maxWidth) maxWidth = width;
+					}
+				});
+
+				th.style.width = maxWidth + "px";
+				rows.forEach(row => {
+					const cell = row.children[columnIndex];
+					if (cell) cell.style.width = maxWidth + "px";
+				});
+			});
+		}
+
+		// Run after your partial view loads
+		
+
 								function ItemBelowReOrderLevel() {
 
 					//var reportType = $('#ReportType').val();
-							var FromDate = $('#FromDate').val();
-					var ToDate = $('#ToDate').val();
-			var GroupName = $('#Group_Code1').val();
+			var FromDate = $('#FinFromDate').val();
+			var ToDate = $('#FinToDate').val();
+			var GroupName = $('#Group_Code1 option:selected').text().trim();
 							var CatName = $('#CatName').val();
 							var Storeid = $('#Storeid').val();
 
@@ -1479,8 +1508,7 @@
 							// Clear the existing items in the table body
 							$('#MultiItemBody').empty(); // Clear existing items
 							$('#MultiItemBody').html(response);
-
-
+					
 							var totalRows = $('#MultiItemBody tr').length;
 							$('#lblTotalNoOfItems1').text(totalRows);
 
@@ -4118,6 +4146,8 @@ formData.append("Mode", $('#Mode').val());
 							'VehicleNo': $('#VehicleNo-' + i).val(),
 							'ItemGroupName': $('#ItemGroupName-' + i).val(),
 							'ItemLocation': $('#ItemLocation-' + i).val(),
+							'TotalStock': $('#Balance-' + i).val(),
+
 							'SeqNo': $('#SeqNo-' + i).val(),
 						});
 
@@ -5085,4 +5115,8 @@ formData.append("Mode", $('#Mode').val());
 	.select2-search__field {
 		z-index: 10000 !important; /* Adjust the value as needed */
 	}
+
+	
+
+
 </style>
