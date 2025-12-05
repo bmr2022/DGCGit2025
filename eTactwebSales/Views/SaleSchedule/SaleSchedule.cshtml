@@ -194,7 +194,7 @@
                                         <input asp-for="SchEffFromDate" class="form-control" readonly disabled />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA")
+                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA" || Model.Mode == "SSC")
                                         {
                                             <input type="hidden" value="@Model.SchEffTillDate" id="hiddenSchEffTillDate" />
                                         }
@@ -264,7 +264,7 @@
                                         <input asp-for="SODate" class="form-control" readonly disabled />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA")
+                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA" || Model.Mode == "SSC")
                                         {
                                             <input type="hidden" value="@Model.ScheduleDate" id="hiddenSchDate" />
                                         }
@@ -1039,13 +1039,15 @@
         var EditRowFlag = true;
         var viewMode = false;
         $(document).ready(function () {
-
-            GetServerDate();
+                     if ($('#Mode').val() === "SSC") {
+                    $("button[type='submit']").hide();
+                }
+                    GetServerDate();
             GetFormRights();
             //$('#ScheduleDate').prop('readonly', true);
             var today = new (Date);
             $('#ManualMonthSplit').val('Manual');
-
+                 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
                 NewEntryId();
             }
@@ -1134,9 +1136,9 @@
                 }
              
              
-                hiddenSchDate = formateDashDateToSlashDate(hiddenSchDate.split(" ")[0]);
+               /*  hiddenSchDate = formateDashDateToSlashDate(hiddenSchDate.split(" ")[0]);
                 hiddenSchEffTillDate = formateDashDateToSlashDate(hiddenSchEffTillDate.split(" ")[0]);
-
+ */
                 if ($('#Mode').val() != 'SSA') {
                       $("#SchEffFromDate").datepicker("setDate", (SchEffFromDate.split(" ")[0]));
                       $("#SchEffTillDate").datepicker("setDate", (SchEffTillDate.split(" ")[0]));
@@ -3860,7 +3862,6 @@ obj.Result.Table.forEach(d => {
 
             var rowCount = $('#MonthlyEntryData tr').length;
             $('#ManualMonthSplit').val("Month");
-            // 🔥 Fix column count
             var columnCount = $(`#MonthlyEntryData tr:eq(0) input[id^='SchQue-']`).length;
 
             var arrMonthlyData = [];
@@ -3895,8 +3896,6 @@ obj.Result.Table.forEach(d => {
                     }
                 }
             }
-
-            // ============ SAVE ============ //
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddMonthlyEntryData")',
