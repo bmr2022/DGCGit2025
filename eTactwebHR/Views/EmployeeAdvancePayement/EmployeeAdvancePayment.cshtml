@@ -262,12 +262,14 @@
 
 								<div class="col-md-2">
 									<label asp-for="PaymentVoucherType" class="form-label">Payment VoucherType</label>
-									<select asp-for="PaymentVoucherType" class="form-select" readonly>  @* readonly *@
+									@* <select asp-for="PaymentVoucherType" class="form-select">  
 										<option value="">-Select-</option>
 										<option value="Bank Payment">Bank Payment</option>
 										<option value="Cash Payment">Cash Payment</option>
 										<option value="Journal">Journal</option>
-									</select>
+									</select> *@
+
+									<input asp-for="PaymentVoucherType" class="form-control" readonly />
 								</div>
 
 								<div class="col-md-2">
@@ -389,7 +391,7 @@
 
 								<div class="col-md-2">
 									<label asp-for="StartRecoveryFromMonth" class="form-label">StartRecovery FromMonth</label>
-									<input asp-for="StartRecoveryFromMonth" class="form-control" />  @* Month picker *@
+									<input asp-for="StartRecoveryFromMonth" class="form-control" readonly/>  @* Month picker *@
 								</div>
 								<div class="col-md-2">
 									<label asp-for="FinalRevoveryDate" class="form-label">Final RecoveryDate</label>
