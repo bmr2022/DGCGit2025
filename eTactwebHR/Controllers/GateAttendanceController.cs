@@ -483,10 +483,12 @@ namespace eTactwebHR.Controllers
             if (target == null || source == null) return;
 
             var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-
+            var excludedProps = new HashSet<string> { "AttendanceType", "AttendanceEntryMethodType", "DayOrMonthType", "strEmpAttDate", "strEmpAttMonth", "GateAttEntryDay", "GateAttEntryOffDay", "EmployeeCode", "EmpId", "CategoryCode", "EmpCategoryId" };
             foreach (var prop in properties)
             {
                 if (!prop.CanRead || !prop.CanWrite) continue;
+                if (excludedProps.Contains(prop.Name))
+                    continue; // skip these fields completely  
 
                 var targetValue = prop.GetValue(target);
                 var sourceValue = prop.GetValue(source);
