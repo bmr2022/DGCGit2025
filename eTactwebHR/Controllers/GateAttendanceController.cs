@@ -25,6 +25,7 @@ using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.VariantTypes;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Bibliography;
+using Org.BouncyCastle.Ocsp;
 
 namespace eTactwebHR.Controllers
 {
@@ -542,11 +543,11 @@ namespace eTactwebHR.Controllers
             //}
             return model;
         }
-        public async Task<IActionResult> LoadAttendanceGrid(string DayOrMonthType, DateTime Attdate, int AttMonth, int YearCode, int EmpCatId)
+        public async Task<IActionResult> LoadAttendanceGrid(string DayOrMonthType, DateTime Attdate, int AttMonth, int YearCode, int EmpCatId, int EmpId, bool IsManual = false)
         {
             // Get list from DB based on date
             GateAttendanceModel model = new GateAttendanceModel();
-            model = await IGateAttendance.GetManualAttendance(DayOrMonthType, Attdate, AttMonth, YearCode).ConfigureAwait(false);
+            model = await IGateAttendance.GetManualAttendance(DayOrMonthType, Attdate, AttMonth, YearCode, EmpCatId, EmpId, IsManual).ConfigureAwait(false);
             //model.ShiftList = new List<TextValue>();
             if (string.Equals(DayOrMonthType, "monthly", StringComparison.OrdinalIgnoreCase))
             {
@@ -962,7 +963,51 @@ namespace eTactwebHR.Controllers
                 Size = 1024,
             };
 
-            _MemoryCache.Set("KeyGateAttList", modelList, cacheEntryOptions);
+            _MemoryCache.Set($"KeyGateAttList_{model.DashboardType}", modelList, cacheEntryOptions);
+            return PartialView("_DashBoardGrid", model);
+        }
+        [HttpGet]
+        public IActionResult GlobalSearch(string searchString, string dashboardType = "SUMMARY", int pageNumber = 1, int pageSize = 25)
+        {
+            GateAttDashBoard model = new GateAttDashBoard();
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return PartialView("_DashBoardGrid", new List<GateAttDashBoard>());
+            }
+            string cacheKey = $"KeyGateAttList_{dashboardType}";
+            if (!_MemoryCache.TryGetValue(cacheKey, out IList<GateAttDashBoard> Dashboard) || Dashboard == null)
+            {
+                return PartialView("_DashBoardGrid", new List<GateAttDashBoard>());
+            }
+
+            List<GateAttDashBoard> filteredResults;
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                filteredResults = Dashboard.ToList();
+            }
+            else
+            {
+                filteredResults = Dashboard
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = Dashboard.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.GateAttDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+            model.DashboardType = dashboardType;
             return PartialView("_DashBoardGrid", model);
         }
         public async Task<JsonResult> GetFormRights()

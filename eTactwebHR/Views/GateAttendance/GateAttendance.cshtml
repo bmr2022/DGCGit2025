@@ -270,6 +270,7 @@
                 $('#strEmpAttDate').val('').datepicker("destroy").datepicker({dateFormat: 'dd/M/yy', minDate: minDate, maxDate: maxDate}).datepicker("setDate", defaultDate);
             }
             DayorMonthChange();
+            onchangeAttType();
             EmpAttDateOnChange();
             setTimeout(checkHolidayOrWeekoff($('#strEmpAttDate').val(), $("#EmpCatId").val(), $("#GateAttYearCode").val(), handleHolidayWeekoff, false), 800);
             $('#EmployeeCode').select2();
@@ -817,6 +818,7 @@
                 $('.dvEmpAttMonth').hide();
                 $('#strEmpAttMonth').prop("selectedIndex", 0);
                  $('#CategoryCode').val($('#EmpCategoryId').val());
+                 $('#EmployeeCode').val($('#EmpId').val()).trigger("change");
             }
             else if (obj && obj.toLowerCase() === "monthly") {
                 $('.dvEmpAttMonth').show();
@@ -832,6 +834,7 @@
                         $('#strEmpAttMonth').val($('#strEmpAttMonth').val());
                     }
                     $('#CategoryCode').val($('#EmpCategoryId').val());
+                    $('#EmployeeCode').val($('#EmpId').val()).trigger("change");
                     if(isallcheckedonmodify == true && ($('#Mode').val() == "U" || $('#Mode').val() == "V")) {
                         document.querySelectorAll("input[name='selectedEmpIds']").forEach(cb => {
                             let empId = cb.value;
@@ -859,6 +862,8 @@
                     $('#strEmpAttDate').select(0);
                 }
                 else {
+                    $('#CategoryCode').val($('#EmpCategoryId').val());
+                    $('#EmployeeCode').val($('#EmpId').val()).trigger("change");
                     if(isallcheckedonmodify == true && ($('#Mode').val() == "U" || $('#Mode').val() == "V")) {
                         document.querySelectorAll("input[name='selectedEmpIds']").forEach(cb => {
                             let empId = cb.value;
@@ -879,7 +884,7 @@
                 $('.dvEmpAttMonth').hide();
                 $('#strEmpAttMonth').prop("selectedIndex", 0);
             }
-        }
+    }
 
     function EmpAttDateOnChange() {
             let dateStr = document.getElementById("strEmpAttDate").value;
@@ -892,14 +897,35 @@
                 $('#GateAttEntryDay').val(dayName);
             }
             setTimeout(checkHolidayOrWeekoff(dateStr, $("#EmpCatId").val(), $("#GateAttYearCode").val(), handleHolidayWeekoff, false), 800);
+     }
+    function onchangeAttType(){
+        var selected = $("#AttendanceType :selected").val();
+        if(selected != undefined && selected != null && selected != ""){
+            if(selected.toLowerCase() === "import"){
+                $('#DayOrMonthType').attr('disabled',true);
+            }
+            else {
+                $('#DayOrMonthType').attr('disabled',false);
+            }
         }
-
+    }
     function ShowManualAttandance() {
             var date = $("#strEmpAttDate").val();
             var attmonth = $("#strEmpAttMonth").val();
             var yearcode = $("#GateAttYearCode").val();
             var DayOrMonthType = $("#DayOrMonthType").val();
             var EmpCatId = $("#CategoryCode").val();
+            var EmpId = $("#EmployeeCode").val();
+            var selected = $("#AttendanceType :selected").val();
+            var IsManual = false;
+            if(selected != undefined && selected != null && selected != ""){
+                if(selected.toLowerCase() === "import"){
+                    IsManual = true;
+                }
+                else {
+                    IsManual = false;
+                }
+            }
             var IsErr = 0;
             if (!DayOrMonthType) {
                     $.notify("Please select a Day or Month.", "error");
@@ -923,7 +949,7 @@
                 $.ajax({
                     url: '/GateAttendance/LoadAttendanceGrid',
                     type: 'GET',
-                    data: { DayOrMonthType: DayOrMonthType, Attdate: date, AttMonth: attmonth, YearCode: yearcode, EmpCatId: EmpCatId  },
+                    data: { DayOrMonthType: DayOrMonthType, Attdate: date, AttMonth: attmonth, YearCode: yearcode, EmpCatId: EmpCatId, EmpId: EmpId,  IsManual: IsManual },
                     success: function (result) {
                             $("#attendanceItemGrid").html(result);
                             updateItemCount();
@@ -978,6 +1004,7 @@
     }
     $('#CategoryCode').on('change input',()=>checkHolidayOrWeekoff(strEmpAttDate.value,$('#EmpCatId').val(),$('#GateAttYearCode').val(),handleHolidayWeekoff,false));
     function onchangeEmployeeCodedpdwn(){
+        $('#EmpId').val($('#EmployeeCode').val());
         checkHolidayOrWeekoff(strEmpAttDate.value,$('#EmpCatId').val(),$('#GateAttYearCode').val(),handleHolidayWeekoff,false);
     }
     function updateItemCount() {

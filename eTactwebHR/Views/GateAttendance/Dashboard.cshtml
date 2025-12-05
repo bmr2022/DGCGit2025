@@ -381,11 +381,11 @@
         }
         $("#search-box").on("input", function () {
             var searchString = $(this).val().trim();
-            //var dashboardType = $('#DashboardType').val();
+            var dashboardType = $('#DashboardType').val();
             $.ajax({
                 url: "/GateAttendance/GlobalSearch?searchString=" + searchString,
                 type: "GET",
-                data: { searchString: searchString },/* , dashboardType: dashboardType */
+                data: { searchString: searchString , dashboardType: dashboardType },
                 success: function (data) {
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(data);
