@@ -54,31 +54,56 @@
                                 <div class="col-12 mt-3">
                                     <div class="row gx-2 gy-1 align-items-center">
 
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-2 AccountName">
                                             <label id="AccountNameLable" class="form-label fw-bold">Account Name</label>
                                             <input id="AccountName" name="AccountName" class="form-control-plaintext p-0" readonly />
                                             <input type="hidden" id="AccountCode" name="AccountCode" />
                                         </div>
 
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-2 EntryId">
                                             <label class="form-label fw-bold">Entry Id</label>
                                             <input  id="EntryId" name="EntryId" class="form-control-plaintext p-0" readonly />
                                         </div>
 
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-2 BasicAmount">
                                             <label class="form-label fw-bold">Basic Amount</label>
                                             <input id="BasicAmount" name="BasicAmount" class="form-control-plaintext p-0" readonly />
                                         </div>
 
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-2 NetAmount">
                                             <label class="form-label fw-bold">Net Amount</label>
                                             <input id="NetAmount" name="NetAmount" class="form-control-plaintext p-0" readonly />
                                         </div>
 
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-2 EntryDate">
                                             <label class="form-label fw-bold">Entry Date</label>
                                             <input type="text" id="EntryDate" name="EntryDate" class="form-control-plaintext p-0" readonly />
                                         </div>
+
+                                        <div class="col-lg-2 IssueToStoreName">
+                                            <label class="form-label fw-bold">Issue To Store</label>
+                                            <input type="hidden" id="IssueToStoreId" name="IssueToStoreId" class="form-control-plaintext p-0" readonly />
+                                            <input type="text" id="IssueToStoreName" name="IssueToStoreName" class="form-control-plaintext p-0" readonly />
+                                        </div>
+
+                                        <div class="col-lg-2 IssueFromWCName">
+                                            <label class="form-label fw-bold">Issue From WC</label>
+                                            <input type="hidden" id="IssueFromWCid" name="IssueFromWCid" class="form-control-plaintext p-0" readonly />
+                                            <input type="text" id="IssueFromWCName" name="IssueFromWCName" class="form-control-plaintext p-0" readonly />
+                                        </div>
+
+                                        <div class="col-lg-2 IssueToWCName">
+                                            <label class="form-label fw-bold">Issue TO WC</label>
+                                            <input type="hidden" id="IssueTOWCid" name="IssueTOWCid" class="form-control-plaintext p-0" readonly />
+                                            <input type="text" id="IssueToWCName" name="IssueToWCName" class="form-control-plaintext p-0" readonly />
+                                        </div>
+
+                                        <div class="col-lg-2 IssueToStoreWC">
+                                            <label class="form-label fw-bold">Issue To Store/WC</label>
+                                            <input type="text" id="IssueToStoreWC" name="IssueToStoreWC" class="form-control-plaintext p-0" readonly />
+                                        </div>
+
+                                      
 
                                     </div>
                                 </div>
@@ -176,6 +201,30 @@
     {
         $('#AccountNameLable').text('Account Name')
     }
+        if ($('#FormName').val() == "TransferMaterialFromWcMain") {
+                $('.AccountName').prop('hidden', true);
+                $('.BasicAmount').prop('hidden', true);
+                $('.NetAmount').prop('hidden', true);
+
+                $('.IssueToStoreName').prop('hidden', false);
+                $('.IssueFromWCName').prop('hidden', false);
+                $('.IssueToWCName').prop('hidden', false);
+                $('.IssueToStoreWC').prop('hidden', false);
+
+
+        }
+        else {
+                $('.IssueToStoreName').prop('hidden', true);
+                $('.IssueFromWCName').prop('hidden', true);
+                $('.IssueToWCName').prop('hidden', true);
+                $('.IssueToStoreWC').prop('hidden', true);
+
+
+                $('.AccountName').prop('hidden', false);
+                $('.BasicAmount').prop('hidden', false);
+                $('.NetAmount').prop('hidden', false);
+        }
+
     });
 
 
@@ -235,7 +284,14 @@
                     entryId: item.EntryId,
                     basicAmount: item.BasicAmount,
                     netAmount: item.NetAmount,
-                    entryDate: item.EntryDate
+                    entryDate: item.EntryDate,
+                        issueToStoreId: item.IssueToStoreId,
+                        issueToStoreName: item.IssueToStoreName,
+                        issueFromWCid: item.IssueFromWCid,
+                        issueFromWCName: item.IssueFromWCName,
+                        issueTOWCid: item.IssueTOWCid,
+                        issueToWCName: item.IssueToWCName,
+                        issueToStoreWC: item.IssueToStoreWC
                 }));
 
                 $("#SlipNo").autocomplete({
@@ -261,7 +317,14 @@
         $('#AccountCode').val(item.accountCode);
         $('#EntryId').val(item.entryId);
         $('#BasicAmount').val(item.basicAmount);
-        $('#NetAmount').val(item.netAmount);
+            $('#IssueToStoreId').val(item.issueToStoreId);
+            $('#IssueToStoreName').val(item.issueToStoreName);
+            $('#IssueFromWCid').val(item.issueFromWCid);
+            $('#IssueFromWCName').val(item.issueFromWCName);
+            $('#IssueTOWCid').val(item.issueTOWCid);
+            $('#IssueToWCName').val(item.issueToWCName);
+            $('#IssueToStoreWC').val(item.issueToStoreWC);
+
 
         if (item.entryDate) {
             const d = new Date(item.entryDate);
@@ -339,6 +402,10 @@
         $('#FormName').on('change', function () {
             FillSlipNoAutoSuggest();
         });
+            $('.IssueToStoreName').prop('hidden', true);
+            $('.IssueFromWCName').prop('hidden', true);
+            $('.IssueToWCName').prop('hidden', true);
+            $('.IssueToStoreWC').prop('hidden', true);
 
          const successMsg = '@TempData["SuccessMessage"]';
             const errorMsg = '@TempData["ErrorMessage"]';

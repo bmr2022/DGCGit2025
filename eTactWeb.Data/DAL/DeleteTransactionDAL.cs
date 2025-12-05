@@ -108,6 +108,11 @@ namespace eTactWeb.Data.DAL
             new SqlParameter("@ActionByEmpId", model.ActionByEmpId),
             new SqlParameter("@IPAddress", model.IPAddress),
             new SqlParameter("@MainTableName", model.FormName),
+            new SqlParameter("@IssueFromWCid", model.IssueFromWCid),
+            new SqlParameter("@IssueToStoreWC", model.IssueToStoreWC),
+            new SqlParameter("@IssueTOWCid", model.IssueTOWCid),
+            new SqlParameter("@IssueToStoreId", model.IssueToStoreId),
+            //new SqlParameter("@MainTableName", model.FormName),
 
         };
 

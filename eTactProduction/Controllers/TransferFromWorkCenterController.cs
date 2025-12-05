@@ -344,7 +344,19 @@ namespace eTactWeb.Controllers
                             _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                             return View("Error", Result);
                         }
+                        else if (!string.IsNullOrEmpty(Result.StatusText))
+                        {
+                            // If SP returned a message (like adjustment error)
+                            TempData["ErrorMessage"] = Result.StatusText;
+                            //return View(model);
+                        }
+                        else
+                        {
+                            TempData["ErrorMessage"] = "Error while  transaction.";
+                        }
+
                     }
+                    
                     return RedirectToAction(nameof(TransferFromWorkCenter));
                 }
             }
