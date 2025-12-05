@@ -1809,12 +1809,15 @@ public class SaleOrderController : Controller
 					if (model.Mode != "U" && model.Mode != "SOA" && model.Mode != "SSA")
 					{
 						model.Mode = "Insert";
+						model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+						model.CreatedByName = HttpContext.Session.GetString("EmpName");
 					}
 					else if (model.Mode == "U")
 					{
 						model.Mode = "Update";
-                        model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                        model.CreatedByName = HttpContext.Session.GetString("EmpName");
+                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                        model.UpdatedByName = HttpContext.Session.GetString("EmpName");
+						model.UpdatedOn = DateTime.Now;
                     }
 					else
 					{
@@ -1866,7 +1869,11 @@ public class SaleOrderController : Controller
                                 }
                                 else
 								{
-									TempData["500"] = "500";
+								
+										// If SP returned a message (like adjustment error)
+										TempData["ErrorMessage"] = Result.StatusText;
+										//return View(model);
+									
 								}
 
 							}

@@ -71,10 +71,16 @@
     #MonthlyEntryTable th:nth-child(5),
     #MonthlyEntryTable td:nth-child(5) {
         position: sticky;
-        left: 620px;
+        left: 605px;
         z-index: 30;
     }
 
+    #MonthlyEntryTable th:nth-child(6),
+    #MonthlyEntryTable td:nth-child(6) {
+        position: sticky;
+        left: 670px;
+        z-index: 30;
+    }
     .select2-container--default .select2-selection--single {
         background-color: #e0f2f1;
         border: 1.5px solid #0a0a0a !important;
@@ -188,7 +194,7 @@
                                         <input asp-for="SchEffFromDate" class="form-control" readonly disabled />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA")
+                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA" || Model.Mode == "SSC")
                                         {
                                             <input type="hidden" value="@Model.SchEffTillDate" id="hiddenSchEffTillDate" />
                                         }
@@ -258,7 +264,7 @@
                                         <input asp-for="SODate" class="form-control" readonly disabled />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA")
+                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA" || Model.Mode == "SSC")
                                         {
                                             <input type="hidden" value="@Model.ScheduleDate" id="hiddenSchDate" />
                                         }
@@ -1033,13 +1039,15 @@
         var EditRowFlag = true;
         var viewMode = false;
         $(document).ready(function () {
-
-            GetServerDate();
+                     if ($('#Mode').val() === "SSC") {
+                    $("button[type='submit']").hide();
+                }
+                    GetServerDate();
             GetFormRights();
             //$('#ScheduleDate').prop('readonly', true);
             var today = new (Date);
             $('#ManualMonthSplit').val('Manual');
-
+                 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
                 NewEntryId();
             }
@@ -1065,7 +1073,7 @@
             $('.PartCode').select2();
             $('.ItemCode').select2();
             //$('#SONO').select2();
-
+                
             RowCount();
 
             $('.ManualEntryImportbody').fadeIn();
@@ -1128,9 +1136,9 @@
                 }
              
              
-                hiddenSchDate = formateDashDateToSlashDate(hiddenSchDate.split(" ")[0]);
+               /*  hiddenSchDate = formateDashDateToSlashDate(hiddenSchDate.split(" ")[0]);
                 hiddenSchEffTillDate = formateDashDateToSlashDate(hiddenSchEffTillDate.split(" ")[0]);
-
+ */
                 if ($('#Mode').val() != 'SSA') {
                       $("#SchEffFromDate").datepicker("setDate", (SchEffFromDate.split(" ")[0]));
                       $("#SchEffTillDate").datepicker("setDate", (SchEffTillDate.split(" ")[0]));
@@ -1574,9 +1582,21 @@
                 }
             });
         }
-
+               var isSyncing = false; // Prevent loop
         $(document).on('change', '.SplitPC', function () {
             if ($(this).prop('selectedIndex') != 0) {
+                       if (isSyncing) return;
+           isSyncing = true;
+
+           let row = this.id.split("-")[1];
+                    if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+
+                   $('#SplitItemName-' + row).val($(this).val()).trigger('change.select2'); // change only UI selection
+                    }else{
+                      $('#EditSplitItemName-' + row).val($(this).val()).trigger('change.select2'); // change only UI selection
+                    }
+           isSyncing = false;
+                     
                 var currentval = $(this).closest('tr');
                 $.ajax({
                     url: "@Url.Action("GetSOItem")",
@@ -1624,6 +1644,17 @@
         $(document).on('change', '.SplitIN', function () {
 
             if ($(this).prop('selectedIndex') != 0) {
+                                 if (isSyncing) return;
+           isSyncing = true;
+
+           let row = this.id.split("-")[1];
+             if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+           $('#SplitPartCode-' + row).val($(this).val()).trigger('change.select2'); // change only UI selection
+             }else{
+                                    $('#EditPartCode-' + row).val($(this).val()).trigger('change.select2'); // change only UI selection
+             }
+
+           isSyncing = false;
                 var currentval = $(this).closest('tr');
                 $.ajax({
                     url: "@Url.Action("GetSOItem")",
@@ -1727,11 +1758,36 @@
                             var dateArr = [];
                             var counter = 0;
                             var countRow = $('#MonthlyEntryData tr').length;
+
+                                     let f = $('#SchEffFromDate').val().split("/");
+                   let t = $('#SchEffTillDate').val().split("/");
+
+                   let startGlobal = new Date(f[2],f[1]-1,f[0]);
+                   let endGlobal   = new Date(t[2],t[1]-1,t[0]);
+
+                   // Create single list of all calendar days
+                   let dateList=[];
+                   let temp=new Date(startGlobal);
+                   while(temp<=endGlobal){
+                       dateList.push({
+                           disp: temp.getDate()+"-"+(temp.getMonth()+1)+"-"+temp.getFullYear(),  // mapping key
+                           show: temp.toLocaleString('en',{day:'2-digit',month:'short',year:'numeric'})
+                       });
+                       temp.setDate(temp.getDate()+1);
+                   }
+
+                            var html = '';
+
                             for (var j = 0; j < distinctItems.length; j++) {
                                 var i = 0;
 
                                   html += '<tr><td style="width: 15px;"> <a class="table-link link-danger removeMonthlyRow" > <span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i></span></a></td><td><select id="EditPartCode-' + j + '"  style="height:25px;width:250px;" readonly><option value="" disabled readonly>-Select-</option><option value="' + distinctItems[j].Itemcodes + '" selected>' + distinctItems[j].PartCode + '</option></select><input type="hidden" id="EditSplitItemCode-' + j + '" value=' + distinctItems[j].Itemcodes + '></td><td><input type="hidden" id="CountEditDate" value="' + count + '"/><select id="EditSplitItemName-' + j + '"  style="height:25px;width:250px;" readonly><option value="" disabled readonly>-Select-</option><option value="' + distinctItems[j].Itemcodes + '" selected>' + distinctItems[j].ItemName + '</option></select></td><td><input id="EditSplitUnit-' + j + '" value=' + distinctItems[j].Unit + ' style="width:80px;" readonly ></td><td><input id="EditSplitRate-' + j + '" value=' + distinctItems[j].Rate + ' style="width:80px;" readonly ></td><td><input id="EditTotalQty-' + j + '" class="TotalQtyVal" style="width:80px;" readonly></td>';
-                                for (var k = SchEffFromDate; k <= count + SchEffFromDate; k++) {
+                                         dateList.forEach((d,idx)=>{
+                                                               html += '<td><input style="width:50px;" id="SchQue-' +  j + '-' + idx + '" ><input type="hidden" value="' + d.show + '" id="DelEditDate-' + idx + '"/></td>';
+
+                        
+                       });
+                                /* for (var k = SchEffFromDate; k <= count + SchEffFromDate; k++) {
 
                                     var ress = obj.Result.Table;
 
@@ -1762,22 +1818,50 @@
 
                                     ////StartDate++;
 
-                                }
+                                } */
                             }
                             //$('#MonthlyEntryData').empty();
                             $('#MonthlyEntryData').append(html);
-                            var Row = $('#MonthlyEntryData tr').length;
+                                    for (var j = 0; j < distinctItems.length; j++) {
+            $('#EditPartCode-' + j).select2({
+                width: '250px',
+                placeholder: "Select Part Code"
+            });
 
-                            for (var j = 0; j < distinctItems.length; j++) 
+            $('#EditSplitItemName-' + j).select2({
+                width: '250px',
+                placeholder: "Select Item Name"
+            });
+        }
+                            var Row = $('#MonthlyEntryData tr').length;
+obj.Result.Table.forEach(d => {
+
+    let dt = new Date(d.DeliveryDate); // convert API date
+
+    let key = dt.getDate()+"-"+(dt.getMonth()+1)+"-"+dt.getFullYear(); // same format as dateList.disp
+
+    // find index in dateList (column position)
+    let dateIndex = dateList.findIndex(x => x.disp == key);
+
+    if(dateIndex >= 0){   // valid index
+        let rowIndex = distinctItems.findIndex(x => x.Itemcodes == d.ItemCode);
+
+        if(rowIndex >= 0){
+                                            $("#SchQue-" +rowIndex+ "-" + dateIndex  ).val(d.SchQty);  // << VALUE NOW SHOWS CORRECTLY
+        }
+    }
+});
+
+                           /*  for (var j = 0; j < distinctItems.length; j++) 
                             {
-                                // for(var u=0;u<Row;u++){
                                 for (var lcount = 0; lcount < dateArr.length; lcount++) {
                                     if (distinctItems[j].Itemcodes == dateArr[lcount].ItemCode) {
                                         $('#SchQue-' + dateArr[lcount].deldate + '-' + j).val(dateArr[lcount].schQty);
                                     }
                                 }
-                            }
+                            } */
 
+                                            
                             //for (var l = 0; l < TotalItems.length; l++) {
                             //    if (distinctItems.includes(TotalItems[l].Itemcode)) {
                             //        var rowCount = $('#MonthlyEntryData tr').length;
@@ -1845,7 +1929,7 @@
                   //$('#SchEffTillDate').datepicker("option", "maxDate", lastDate.toDateString());
                   //$("#SchEffTillDate").datepicker("setDate", lastDate.toDateString());
                   $('#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
-                  $('#SchEffTillDate').datepicker("option", "maxDate", new Date(SchYear, SchEffMonth - 1, LastDay));
+                  /* $('#SchEffTillDate').datepicker("option", "maxDate", new Date(SchYear, SchEffMonth - 1, LastDay)); */
                   $('#SchEffTillDate').datepicker("setDate", new Date(SchYear, SchEffMonth - 1, LastDay));
                   if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
                           BuildMonthlyEntryBody();
@@ -1874,6 +1958,14 @@
             if (!viewMode) {
                 ClearGrid();
             }
+                    if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                               BuildMonthlyEntryBody();
+                           } else {
+
+                               if ($('#ManualMonthSplit').val() == "Month") {
+                                   EditBuildBody();
+                               }
+                           }
         });
 
         $('input[type="radio"]').change(function () {
@@ -1918,7 +2010,7 @@
                     $('.ManualEntryImportbody').fadeOut();
                     $('.SplitScheduleBody').fadeOut();
                     $('#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
-                    $('#SchEffTillDate').datepicker("option", "maxDate", new Date(SchYear, SchEffDate - 1, LastDay));
+                    /* $('#SchEffTillDate').datepicker("option", "maxDate", new Date(SchYear, SchEffDate - 1, LastDay)); */
 
                     if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
                         BuildMonthlyEntryBody();
@@ -1931,8 +2023,141 @@
                 }
             }
         });
+                 function BuildMonthlyEntryBody() {
 
-        function BuildMonthlyEntryBody() {
+            $('#MonthlyEntryData').empty();
+            $('#MonthlyEntrythead').empty();
+
+            $('#MonthlyEntrythead').append(
+                "<th>Action</th><th>PartCode</th><th>ItemName</th><th>UNIT</th><th>Rate</th><th>Total Qty</th>"
+            );
+
+            // Get Dates
+            let f = $('#SchEffFromDate').val().split("/");
+            let t = $('#SchEffTillDate').val().split("/");
+
+            let start = new Date(f[2], f[1]-1, f[0]);
+            let end   = new Date(t[2], t[1]-1, t[0]);
+
+            let temp = new Date(start);
+            let index = 0;
+            let monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+            // Build Header Day by Day
+            while(temp <= end){
+                let dd = String(temp.getDate()).padStart(2,'0');
+                let mon = monthNames[temp.getMonth()];
+                $('#MonthlyEntrythead').append(`<th id="Date-${index}">${dd}${mon}</th>`);
+                temp.setDate(temp.getDate()+1);
+                index++;
+            }
+
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V' && $('#Mode').val() != 'SSA' && $('#Mode').val() != 'SSC') {
+                newRowappend();
+            }
+        }
+
+             function newRowappend() {
+
+                         let Rowcount = $('#MonthlyEntryData tr').length;
+                      for (var i = 0; i < Rowcount; i++) {
+                if ($('#SplitItemName-' + i).prop('selectedIndex') === 0) {
+                    AddErrorCls('SplitItemName-' + i);
+                    $.notify('Please select Item...!', 'error');
+                    return;
+                } else {
+                    RemoveErrorCls('SplitItemName-' + i);
+                }
+            }
+                   var SchEffFromDate = parseInt($('#SchEffFromDate').val().split("/")[0]);
+                   var SchEffFromMonth = parseInt($('#SchEffFromDate').val().split("/")[1]); 
+                   var SchEffFromYear = parseInt($('#SchEffFromDate').val().split("/")[2]); 
+                   var SchEffTillDate = parseInt($('#SchEffTillDate').val().split("/")[0]);
+                    var d1 = new Date(SchEffFromYear, SchEffFromMonth - 1, SchEffFromDate);
+        var d2 = new Date(SchEffFromYear, (SchEffFromMonth - 1), SchEffTillDate);
+
+        if (SchEffTillDate < SchEffFromDate) { // Month is different
+            d2 = new Date(SchEffFromYear, SchEffFromMonth, SchEffTillDate);
+        }
+
+        var diffTime = Math.abs(d2 - d1);
+        var count = Math.ceil(diffTime / (1000 * 60 * 60 * 24));  // TOTAL DAYS
+
+            $('#MonthlyEntryData').append("<tr id='appendRow-" + Rowcount + "'>");
+
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                        $('#appendRow-' + Rowcount).append("<td style='width:15px;'> <a class='table-link link-danger removeMonthlyRow' > <span class='fa-stack'><i class='fa fa-square fa-stack-2x'></i><i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i></span></a></td><td style='width:180px;'><select id='SplitPartCode-" + Rowcount + "' class='SplitPC' onchange='ItemcodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td style='width:250px;'><input type='hidden' id='CountDate' value='" + count + "'/><select id='SplitItemName-" + Rowcount + "' class='SplitIN' onchange='PartCodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td><input id='SplitUnit-" + Rowcount + "' class='SplitUnitVal' type='text' style='width:80px;' readonly/></td><td><input id='SplitRate-" + Rowcount + "' class='SplitRateVal' type='text' style='width:80px;' readonly/></td><td><input id='TotalQty-" + Rowcount + "' class='TotalQtyVal' type='text' style='width:80px;' readonly/></td>");
+            } else {
+                          $('#appendRow-' + Rowcount).append("<td style='width:15px;'> <a class='table-link link-danger removeMonthlyRow' > <span class='fa-stack'><i class='fa fa-square fa-stack-2x'></i><i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i></span></a></td><td style='width:180px;'><select id='EditPartCode-" + Rowcount + "' class='SplitPC' onchange='ItemcodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td style='width:250px;'><input type='hidden' id='CountDate' value='" + count + "'/><select id='EditSplitItemName-" + Rowcount + "' class='SplitIN' onchange='PartCodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td><input id='EditSplitUnit-" + Rowcount + "' class='EditSplitUnitVal' type='text' style='width:80px;' readonly/></td><td><input id='EditSplitRate-" + Rowcount + "' class='EditSplitRateVal' type='text' style='width:80px;' readonly/></td><td><input id='EditTotalQty-" + Rowcount + "' class='TotalQtyVal' type='text' style='width:80px;' readonly/></td>");
+            }
+
+        /*     GetSplitItemName(Rowcount);
+
+            let Rowcount = $('#MonthlyEntryData tr').length;
+            $('#MonthlyEntryData').append(`<tr id="appendRow-${Rowcount}">`);
+
+
+            $('#appendRow-' + Rowcount).append(
+                `<td><a class='table-link link-danger removeMonthlyRow'>
+                    <span class='fa-stack'><i class='fa fa-square fa-stack-2x'></i>
+                    <i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i></span></a></td>
+                 <td><select id='SplitPartCode-${Rowcount}' class='SplitPC'
+                     onchange='ItemcodeChange(${Rowcount})' style='width:250px;'></select></td>
+                 <td><select id='SplitItemName-${Rowcount}' class='SplitIN'
+                     onchange='PartCodeChange(${Rowcount})' style='width:250px;'></select></td>
+                 <td><input id='SplitUnit-${Rowcount}' type='text' style='width:80px;' readonly></td>
+                 <td><input id='SplitRate-${Rowcount}' type='text' style='width:80px;' readonly></td>
+                 <td><input id='TotalQty-${Rowcount}' type='text' style='width:80px;' readonly></td>`
+            );
+ */
+            GetSplitItemName(Rowcount); // your existing function
+                    $('#SplitPartCode-' + Rowcount).select2({
+            width: '250px',
+            placeholder: "Select Part Code"
+        });
+        $('#SplitItemName-' + Rowcount).select2({
+            width: '250px',
+            placeholder: "Select Item Name"
+        });
+                           $('#EditPartCode-' + Rowcount).select2({
+                    width: '250px',
+                    placeholder: "Select Part Code"
+                });
+                        $('#EditSplitItemName-' + Rowcount).select2({
+                    width: '250px',
+                    placeholder: "Select Item Name"
+                });
+            // Build Date Inputs Across Months
+            let f = $('#SchEffFromDate').val().split("/");
+            let t = $('#SchEffTillDate').val().split("/");
+
+            let start = new Date(f[2], f[1]-1, f[0]);
+            let end   = new Date(t[2], t[1]-1, t[0]);
+
+            let temp = new Date(start);
+            let i1=0;
+            let monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+            while(temp <= end){
+                let dd = String(temp.getDate()).padStart(2,'0');
+                let Mon = monthNames[temp.getMonth()];
+                let fullDate = `${dd}/${Mon}/${temp.getFullYear()}`;
+
+                $('#appendRow-'+Rowcount).append(
+                    `<td style="width:90px;">
+                        <input id="SchQue-${Rowcount}-${i1}" style="width:50px;">
+                        <input type="hidden" value="${fullDate}" id="DelDate-${i1}">
+                     </td>`
+                );
+
+                temp.setDate(temp.getDate()+1);
+                i1++;
+            }
+
+            $('#MonthlyEntryData').append("</tr>");
+        }
+
+    /*     function BuildMonthlyEntryBody() {
 
             $('#MonthlyEntryData').empty();
             //var SchDate = $('#ScheduleDate').val();
@@ -1978,8 +2203,10 @@
                 newRowappend();
             }
         }
+       */       
+       
 
-        function newRowappend() {
+        /* function newRowappend() {
 
             //  var count = lastDay - DayStart;
             var SchEffFromDate = parseInt($('#SchEffFromDate').val().split("/")[0]);
@@ -2045,7 +2272,7 @@
             }
             $('#MonthlyEntryData').append("</tr>");
         }
-
+ */
         function BuildSplitScheduleBody() {
             $('#SplitScheduleData').empty();
 
@@ -3295,7 +3522,8 @@
         function ItemcodeChange(Row) {
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
                 SetSplitPartCodeItemName('SplitPartCode-' + Row);
-            } else {
+            } 
+            else {
                 SetSplitPartCodeItemName('EditPartCode-' + Row);
             }
         }
@@ -3303,7 +3531,8 @@
         function PartCodeChange(Row) {
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
                 SetSplitPartCodeItemName('SplitItemName-' + Row);
-            } else {
+            } 
+            else {
                 SetSplitPartCodeItemName('EditSplitItemName-' + Row);
             }
         }
@@ -3539,7 +3768,8 @@
 
             e.preventDefault();
             var rowCount = $('#MonthlyEntryData tr').length;
-            var countDate = $('#CountDate').val();
+            /* var countDate = $('#CountDate').val(); */
+            var columnCount = $(`#MonthlyEntryData tr:eq(0) input[id^='SchQue-']`).length;
             $('#ManualMonthSplit').val("Month");
             var arrMonthlyData = [];
 
@@ -3547,8 +3777,11 @@
             var rowCount = $('#MonthlyEntryData tr').length;
             //var Partcode = $(this).find('.PartCode').val();
             for (var j = 0; j < rowCount; j++) {
-                for (var i = 0; i <= countDate; i++) {
-                    if ($('#SchQue-' + j + '-' + i).val() != '') {
+                        for (var i = 0; i <= columnCount; i++) {
+                    /* if ($('#SchQue-' + j + '-' + i).val() != '') { */
+
+                                var qty =$('#SchQue-' + j + '-' + i).val(); // Correct ID 
+                                if (qty !== "" && qty !== undefined) {
                         if ($('#ImportExlData').val() == "ImportExlData") {
                             arrMonthlyData.push({
                                 "ItemCode": parseInt($('#EditSplitItemCode-' + j).val()),
@@ -3624,8 +3857,65 @@
                 }
             });
         }
+                function UpdateDone(e) {
+            e.preventDefault();
 
-        function UpdateDone(e) {
+            var rowCount = $('#MonthlyEntryData tr').length;
+            $('#ManualMonthSplit').val("Month");
+            var columnCount = $(`#MonthlyEntryData tr:eq(0) input[id^='SchQue-']`).length;
+
+            var arrMonthlyData = [];
+            ClearGrid();
+
+            for (var j = 0; j < rowCount; j++) {
+
+                for (var i = 0; i < columnCount; i++) {
+
+                    /* let qty =$('#SchQue-' + i + '-' + j).val();  // Correct ID */
+                              var qty =$('#SchQue-' + j + '-' + i).val(); // Correct ID
+                            if (qty !== "" && qty !== undefined) {
+
+                                    arrMonthlyData.push({
+                                    "ItemCode": parseInt($('#EditPartCode-' + j).val()),
+                                    "PartCode": $('#EditPartCode-' + j).find(':selected').text(),
+                                    "ItemName": $('#EditSplitItemName-' + j).find(':selected').text(),
+                                    "Unit": $('#EditSplitUnit-' + j).val(),
+                                    "SchQty": $('#SchQue-' + j + '-' + i).val(),
+                                    "PendQty": "",
+                                    "AltUnit": "",
+                                    "AltSchQty": "",
+                                    "AltPendQty": "",
+                                    "Rate": $('#EditSplitRate-' + j).val(),
+                                    "RateInOthCurr": $('#EditSplitRate-' + j).val(),
+                                    "DeliveryDate": $('#DelEditDate-' + i).val(),
+                                    "ItemSize": "",
+                                    "ItemColor": "",
+                                    "Remarks": "",
+                                    "CC": $('#CC').val(),
+                                });
+                    }
+                }
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddMonthlyEntryData")',
+                data: { model: arrMonthlyData },
+                statusCode: { 207: ()=> $.notify('Duplicate Item...!',"info") },
+                success: function (result, status, xhr) {
+                    if (xhr.status === 200) {
+                        $.notify('Data Saved Successfully.', "success");
+                        $('#divSaleScheduleGrid').html(result);
+                        BuildMonthlyEntryBody();
+                        RowCount();
+                        TotalSchQty();
+                        ItemGridRemoveVal();
+                    }
+                },
+                error: ()=> $.notify('Something Went Wrong, Please Try Again.', "error")
+            });
+        }
+
+      /*   function UpdateDone(e) {
             e.preventDefault();
             var rowCount = $('#MonthlyEntryData tr').length;
             var SchEffFromDate = parseInt($('#SchEffFromDate').val().split("/")[0]);
@@ -3696,7 +3986,7 @@
                 }
             });
         }
-        //var AddedItemCodes;
+        */
 
         $('#AddItembtnSplitSch').click(function (e) {
             e.preventDefault();
