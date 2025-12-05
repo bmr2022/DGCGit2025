@@ -22,12 +22,18 @@ namespace eTactWeb.DOM.Models
 
         public string SlipNo { get; set; }
         public string? ModuleName { get; set; }
-        public string newSlipNo { get; set; }
-        public string AccountName { get; set; }
-        public long AccountCode { get; set; }
-        public long EntryId { get; set; }
-        public decimal NetAmount { get; set; }
-        public decimal BasicAmount { get; set; }
+        public string? newSlipNo { get; set; }
+        public string? AccountName { get; set; }
+        public string? IssueToStoreWC { get; set; }
+        public long? AccountCode { get; set; }
+        public long? EntryId { get; set; }
+        public long? IssueFromWCid { get; set; }
+        public long? IssueTOWCid { get; set; }
+        public long? IssueToStoreId { get; set; }
+        public decimal? NetAmount { get; set; }
+        public decimal? BasicAmount { get; set; }
+
+
        
         public string Flag { get; set; }
     }

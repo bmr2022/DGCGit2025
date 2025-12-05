@@ -260,6 +260,26 @@ namespace eTactWeb.Controllers
 
                             return View(model);
                         }
+
+                         if (!string.IsNullOrEmpty(Result.StatusText))
+                        {
+                            // If SP returned a message (like adjustment error)
+                            TempData["ErrorMessage"] = Result.StatusText;
+                            model = await BindModel(model);
+                            model.FinFromDate = HttpContext.Session.GetString("FromDate");
+                            model.FinToDate = HttpContext.Session.GetString("ToDate");
+                            model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                            model.CC = HttpContext.Session.GetString("Branch");
+                            //model.PreparedByEmp = HttpContext.Session.GetString("EmpName");
+                            model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                            model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                            model.ItemDetailGrid = JobWorkReceiveDetail;
+
+                            return View(model);
+                            //return View(model);
+                        }
+
+
                     }
                     
                     var model1 = await BindModel(null);
