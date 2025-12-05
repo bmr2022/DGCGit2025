@@ -1104,7 +1104,14 @@ namespace eTactWeb.Data.DAL
                 //DateTime soconDt = new DateTime();
                 //DateTime soDlDt = new DateTime();
                 if (model.Mode == "SOA")
+                {
                     SqlParams.Add(new SqlParameter("@SOAmendYC", model.AmmYearCode));
+                }
+                if (model.Mode == "Update")
+                {
+					SqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));
+					SqlParams.Add(new SqlParameter("@UpdatedOn", model.UpdatedOn));
+				}
 
                 var soDt = CommonFunc.ParseFormattedDate(model.SODate);
                 var wef = CommonFunc.ParseFormattedDate(model.WEF);
