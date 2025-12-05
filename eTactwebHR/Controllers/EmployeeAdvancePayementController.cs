@@ -157,8 +157,8 @@ namespace eTactwebHR.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
-                        var modelUpdate = new HRAdvanceModel();
-                        return RedirectToAction("EmployeeAdvancePayement", modelUpdate);
+                        //var modelUpdate = new HRAdvanceModel();
+                        //return RedirectToAction("EmployeeAdvancePayement", modelUpdate);
                     }
                     if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
