@@ -141,23 +141,31 @@
         </div>
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="vehicleNo" class="form-label">Vehicle No</label>
-            <input asp-for="vehicleNo" id="vehicleNo" class="form-control"  />
-        </div>
-        @* <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="TransporterName" class="form-label" style="color: red;">Transporter#</label>
-            <select asp-for="TransporterName" class="form-control">
-                <option value="0">-Select-</option>
+            <select asp-for="vehicleNo" class="form-control">
+                @*    <option value="0">-select-</option> *@
             </select>
             @if (Model.Mode == "U" || Model.Mode == "V")
             {
-                <input type="hidden" asp-for="TransporterName" id="" />
+                <input type="hidden" asp-for="vehicleNo" id="hiddenvehicleNo" />
             }
-        </div> *@
+          @*   <label asp-for="vehicleNo" class="form-label">Vehicle No</label>
+            <input asp-for="vehicleNo" id="vehicleNo" class="form-control"  /> *@
+        </div>
+         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="TransporterName" class="form-label">TransporterName</label>
+            <select asp-for="TransporterName" class="form-control">
+             @*    <option value="0">-select-</option> *@
+            </select>
+            @if (Model.Mode == "U" || Model.Mode == "V")
+            {
+                <input type="hidden" asp-for="TransporterName" id="hiddenTransporterName" />
+            }
+        </div> 
       
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+      @*   <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="TransporterName" class="form-label">TransporterName</label>
             <input asp-for="TransporterName" class="form-control" />
-        </div>
+        </div> *@
      <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 salebilloncounter">
           <label asp-for="TransportGSTIN" class="form-label">Transport GSTIN</label>
           <input asp-for="TransportGSTIN" class="form-control" />
