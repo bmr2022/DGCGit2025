@@ -32,7 +32,8 @@ namespace eTactWeb.Controllers
             ViewData["Title"] = "Pending MRN to QC Details";
             ViewBag.YearCode = HttpContext.Session.GetString("YearCode");
             //TempData.Clear();
-            _MemoryCache.Remove("KeyPendingMRNToQC");
+            //_MemoryCache.Remove("KeyPendingMRNToQC");
+            HttpContext.Session.Remove("KeyPendingMRNToQC");
             var MainModel = new PendingMRNToQC();
             var model = new IssueWithoutBomDetail();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
@@ -46,7 +47,11 @@ namespace eTactWeb.Controllers
                 SlidingExpiration = TimeSpan.FromMinutes(55),
                 Size = 1024,
             };
-            _MemoryCache.Set("KeyPendingMRNToQC", model, cacheEntryOptions);
+            //_MemoryCache.Set("KeyPendingMRNToQC", model, cacheEntryOptions);
+            string serializedGrid = JsonConvert.SerializeObject(model);
+            HttpContext.Session.SetString("KeyPendingMRNToQC", serializedGrid);
+
+
             return View(MainModel);
         }
 
@@ -146,6 +151,12 @@ namespace eTactWeb.Controllers
             try
             {
                 _MemoryCache.TryGetValue("KeyPendingMRNToQC", out IList<MIRFromPend> MirModel);
+                //string modelJson = HttpContext.Session.GetString("KeyPendingMRNToQC");
+                //List<MIRFromPend> MirModel = new List<MIRFromPend>();
+                //if (!string.IsNullOrEmpty(modelJson))
+                //{
+                //    MirModel = JsonConvert.DeserializeObject<List<MIRFromPend>>(modelJson);
+                //}
 
                 var MainModel = new MirModel();
                 var MIRGrid = new List<MIRFromPend>();
@@ -180,15 +191,39 @@ namespace eTactWeb.Controllers
                         Size = 1024,
                     };
 
-                    _MemoryCache.Set("KeyPendingMRNToQC", MainModel.MIRFromPendDetail, cacheEntryOptions);
+                    //_MemoryCache.Set("KeyPendingMRNToQC", MainModel.MIRFromPendDetail, cacheEntryOptions);
+
+                    string serializedGrid2 = JsonConvert.SerializeObject(MainModel.MIRFromPendDetail);
+                    HttpContext.Session.SetString("KeyPendingMRNToQC", serializedGrid2);
+
+
+                    if (MirModel == null)
+    MirModel = new List<MIRFromPend>();
+
+MirModel.Add(model);
+
+// Serialize as LIST always
+string serialized = JsonConvert.SerializeObject(MirModel);
+HttpContext.Session.SetString("KeyPendingMRNToQC", serialized);
                 }
                 else
                 {
                     ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
                 }
-                _MemoryCache.TryGetValue("KeyPendingMRNToQC", out IList<MIRFromPend> grid);
-                _MemoryCache.Set("KeyMIRGridFromMRN", MainModel.MIRFromPendDetail, cacheEntryOptions1);
+                //_MemoryCache.TryGetValue("KeyPendingMRNToQC", out IList<MIRFromPend> grid);
+                string modelJson1 = HttpContext.Session.GetString("KeyMIRGrid");
+                List<MIRFromPend> grid = new List<MIRFromPend>();
+                if (!string.IsNullOrEmpty(modelJson1))
+                {
+                    grid = JsonConvert.DeserializeObject<List<MIRFromPend>>(modelJson1);
+                }
 
+                //_MemoryCache.Set("KeyMIRGridFromMRN", MainModel.MIRFromPendDetail, cacheEntryOptions1);
+
+                string serializedGrid1 = JsonConvert.SerializeObject(MainModel.MIRFromPendDetail);
+                HttpContext.Session.SetString("KeyMIRGridFromMRN", serializedGrid1);
+
+                
                 MainModel.FromDateBack = FromDate;
                 MainModel.ToDateBack= ToDate;
                 MainModel.VendorNameBack= VendorName;
