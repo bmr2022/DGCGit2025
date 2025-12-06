@@ -1161,20 +1161,20 @@
             // $('#Group_Code1').select2();
             GetItemGroup();
             AutoFillItems();
-              $("#SONO").change(function () {
-            const sonoVal = $(this).val();
+            $("#SONO").change(function () {
+                const sonoVal = $(this).val();
 
-            if (sonoVal && sonoVal !== "0") {
-                // SONO selected → enable Select2 mode
-                enableSelect2Mode();
-            } else {
-                // SONO = 0 or empty → enable Autocomplete mode
-                enableAutocompleteMode();
-            }
+                if (sonoVal && sonoVal !== "0") {
+                    // SONO selected → enable Select2 mode
+                    enableSelect2Mode();
+                } else {
+                    // SONO = 0 or empty → enable Autocomplete mode
+                    enableAutocompleteMode();
+                }
 
-            //defaault distanc km 0
+                //defaault distanc km 0
                 $('#DistanceKM').val(0);
-        });
+            });
 
         // Initialize autocomplete mode by default
         enableAutocompleteMode();
@@ -1213,7 +1213,9 @@
                             text: text
                         }));
                     });
-                  
+                    // FillCurrencyOnOrderType();
+                    // updateSupplyTypeOptions();
+
                 }
 
                 // Set selected SupplyType from Razor model
@@ -3750,7 +3752,6 @@
         });
 
         function ValidateGrid() {
-
             if (!SetminQty()) return;
 
             var Err = 0;
@@ -3834,7 +3835,7 @@
         }
 
 
-            if ($('#Rate').val() == 0) {
+            if (parseInt($('#Rate').val()) == 0) {
                 AddErrorCls('Rate');
                 Err = 1;
             }
@@ -3869,7 +3870,8 @@
                 }
 
 
-                if ($('#Qty').val() == 0) {
+                if (parseInt($('#Qty').val()) == 0)
+                {
                     $.notify('BillQty can not be less then 0...!', "error");
                     AddErrorCls('Qty');
                     Err = 1;
@@ -3880,6 +3882,18 @@
             } else {
                 RemoveErrorCls('Batchno');
                 RemoveErrorCls('Uniquebatchno');
+                RemoveErrorCls('Qty');
+            }
+
+
+
+            if (parseInt($('#Qty').val()) == 0) {
+
+                $.notify('BillQty can not be less then 0...!', "error");
+                AddErrorCls('Qty');
+                Err = 1;
+            }
+            else {
                 RemoveErrorCls('Qty');
             }
 
@@ -4515,7 +4529,7 @@
         var sum = 0;
         var itemBatchArray = [];
         $('.ItemBtn').click(function (e) {
-
+            debugger
             e.preventDefault();
             EditEachItem = false;
             var seqnoarray = [];
@@ -5964,10 +5978,20 @@
                     }
              
                 } else {
- // if ($('#divTaxGrid tr ').length >= 1 && ($('SupplyType').val() == "EXPORT WITHOUT PAYMENT" || "SEZ WITHOUT PAYMENT")) {
- //    $.notify('Please Remove tax for EXPORT WITHOUT PAYMENT or SEZ WITHOUT PAYMENT  ', "error");
- //     return false;
- //  }
+                    // Check if supply type is export-no-tax
+                    let taxRows = $('#divTaxGrid tr');
+                    let supplyType = $('#SupplyType').val();
+
+                    // Check if only 1 row exists AND row text contains 'NO DATA ADDED'
+                    let isNoData = (taxRows.length === 1 && taxRows.first().text().trim().toUpperCase().includes("NO DATA ADDED"));
+
+                    if (!isNoData &&
+                        (supplyType === "EXPORT WITHOUT PAYMENT" || supplyType === "SEZ WITHOUT PAYMENT")) {
+
+                        $.notify('Please Remove tax for EXPORT WITHOUT PAYMENT or SEZ WITHOUT PAYMENT', "error");
+                        return false;
+
+   }
                     if (confirm("Are you sure you want to save this entry?")) {
                         $('#EinvoicePopup').modal('show');
                     }
