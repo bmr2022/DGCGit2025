@@ -163,6 +163,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> FillTransporter()
         {
             return await _SaleBillDAL.FillTransporter();
+        }   
+        public async Task<ResponseResult> FillVehicleNo()
+        {
+            return await _SaleBillDAL.FillVehicleNo();
         }  
          public async Task<ResponseResult> GetInvoiceTypeMain()
         {

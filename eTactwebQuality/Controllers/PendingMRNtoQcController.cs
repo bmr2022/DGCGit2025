@@ -31,7 +31,7 @@ namespace eTactWeb.Controllers
         {
             ViewData["Title"] = "Pending MRN to QC Details";
             ViewBag.YearCode = HttpContext.Session.GetString("YearCode");
-            TempData.Clear();
+            //TempData.Clear();
             _MemoryCache.Remove("KeyPendingMRNToQC");
             var MainModel = new PendingMRNToQC();
             var model = new IssueWithoutBomDetail();

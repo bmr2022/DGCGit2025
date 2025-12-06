@@ -1127,6 +1127,24 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
+        } 
+        public async Task<ResponseResult> FillVehicleNo()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillVehicleNo"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
         }
 
         public async Task<ResponseResult> DisplaySODetail(string accountName, string itemName, string partCode, string sono, int soYearCode, string custOrderNo, string schNo, int schYearCode)
