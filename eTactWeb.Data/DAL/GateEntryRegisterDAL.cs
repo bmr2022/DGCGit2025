@@ -95,6 +95,7 @@ namespace eTactWeb.Data.DAL
                                                          SchNo = string.IsNullOrEmpty(dr["SchNo"].ToString()) ? "" : dr["SchNo"].ToString(),
                                                          PartCode = string.IsNullOrEmpty(dr["PartCode"].ToString()) ? "" : dr["PartCode"].ToString(),
                                                          ItemName = string.IsNullOrEmpty(dr["Item_Name"].ToString()) ? "" : dr["Item_Name"].ToString(),
+                                                         RecUnit = string.IsNullOrEmpty(dr["RecUnit"].ToString()) ? "" : dr["RecUnit"].ToString(),
                                                          Qty = Convert.ToDecimal(dr["Qty"].ToString()),
                                                          Unit = string.IsNullOrEmpty(dr["unit"].ToString()) ? "" : dr["unit"].ToString(),
                                                          Rate = Convert.ToDecimal(dr["Rate"].ToString()),
@@ -135,7 +136,8 @@ namespace eTactWeb.Data.DAL
                         model.GateEntryRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
                                                      select new GateEntryRegisterDetail
                                                      {
-                                                          PartCode = string.IsNullOrEmpty(dr["PartCode"].ToString()) ? "" : dr["PartCode"].ToString(),
+                                                         RecUnit = string.IsNullOrEmpty(dr["RecUnit"].ToString()) ? "" : dr["RecUnit"].ToString(),
+                                                         PartCode = string.IsNullOrEmpty(dr["PartCode"].ToString()) ? "" : dr["PartCode"].ToString(),
                                                          ItemName = string.IsNullOrEmpty(dr["ItemName"].ToString()) ? "" : dr["ItemName"].ToString(),
                                                           Unit = string.IsNullOrEmpty(dr["unit"].ToString()) ? "" : dr["unit"].ToString(),
                                                          Qty = Convert.ToDecimal(dr["Qty"].ToString()),
@@ -152,6 +154,7 @@ namespace eTactWeb.Data.DAL
                         model.GateEntryRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
                                                      select new GateEntryRegisterDetail
                                                      {
+                                                         RecUnit = string.IsNullOrEmpty(dr["RecUnit"].ToString()) ? "" : dr["RecUnit"].ToString(),
                                                          VendorName = string.IsNullOrEmpty(dr["VendorName"].ToString()) ? "" : dr["VendorName"].ToString(),
                                                          PartCode = string.IsNullOrEmpty(dr["PartCode"].ToString()) ? "" : dr["PartCode"].ToString(),
                                                          ItemName = string.IsNullOrEmpty(dr["ItemName"].ToString()) ? "" : dr["ItemName"].ToString(),
@@ -171,6 +174,7 @@ namespace eTactWeb.Data.DAL
                         model.GateEntryRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
                                                      select new GateEntryRegisterDetail
                                                      {
+                                                         RecUnit = string.IsNullOrEmpty(dr["RecUnit"].ToString()) ? "" : dr["RecUnit"].ToString(),
                                                          VendorName = string.IsNullOrEmpty(dr["VendorName"].ToString()) ? "" : dr["VendorName"].ToString(),
                                                          PartCode = string.IsNullOrEmpty(dr["PartCode"].ToString()) ? "" : dr["PartCode"].ToString(),
                                                          ItemName = string.IsNullOrEmpty(dr["ItemName"].ToString()) ? "" : dr["ItemName"].ToString(),
@@ -192,6 +196,7 @@ namespace eTactWeb.Data.DAL
                         model.GateEntryRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
                                                      select new GateEntryRegisterDetail
                                                      {
+                                                         RecUnit = string.IsNullOrEmpty(dr["RecUnit"].ToString()) ? "" : dr["RecUnit"].ToString(),
                                                          GateNo = string.IsNullOrEmpty(dr["GateNo"].ToString()) ? "" : dr["GateNo"].ToString(),
                                                          GDate = string.IsNullOrEmpty(dr["GDate"].ToString()) ? "" : dr["GDate"].ToString(),
                                                          GateEntryId = Convert.ToInt16(dr["GateEntryId"].ToString()),
@@ -229,7 +234,7 @@ namespace eTactWeb.Data.DAL
                                                          GDate = string.IsNullOrEmpty(dr["GDate"].ToString()) ? "" : dr["GDate"].ToString(),
                                                          GateEntryId = Convert.ToInt16(dr["EntryId"].ToString()),
                                                          GateYearCode = Convert.ToInt16(dr["YearCode"].ToString()),
-
+                                                         RecUnit = string.IsNullOrEmpty(dr["RecUnit"].ToString()) ? "" : dr["RecUnit"].ToString(),
                                                          EntryDate = string.IsNullOrEmpty(dr["EntryDate"].ToString()) ? "" : dr["EntryDate"].ToString(),
                                                          VendorName = string.IsNullOrEmpty(dr["VendorName"].ToString()) ? "" : dr["VendorName"].ToString(),
                                                          InvoiceNo = string.IsNullOrEmpty(dr["Invoiceno"].ToString()) ? "" : dr["Invoiceno"].ToString(),

@@ -22,9 +22,9 @@ namespace eTactWeb.Data.BLL
             _GateAttendanceDAL = new GateAttendanceDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
-        async Task<GateAttendanceModel> IGateAttendance.GetManualAttendance(string DayOrMonthType, DateTime Attdate, int AttMonth, int YearCode)
+        async Task<GateAttendanceModel> IGateAttendance.GetManualAttendance(string DayOrMonthType, DateTime Attdate, int AttMonth, int YearCode, int EmpCatCode, int EmpId, bool IsManual = false)
         {
-            return await _GateAttendanceDAL.GetManualAttendance(DayOrMonthType, Attdate, AttMonth, YearCode);
+            return await _GateAttendanceDAL.GetManualAttendance(DayOrMonthType, Attdate, AttMonth, YearCode, EmpCatCode, EmpId, IsManual);
         }
         public async Task<ResponseResult> GetFormRights(int ID)
         {

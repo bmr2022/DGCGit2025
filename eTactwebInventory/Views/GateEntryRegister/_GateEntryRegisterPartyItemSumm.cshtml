@@ -5,7 +5,7 @@
             <tr>
                 <th>Sr#</th>
                 <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
-
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec Unit</th>
                 <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
                 <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
                 <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
@@ -35,6 +35,7 @@
                                   
                             <th>@srNo</th>
                             <td style="background-color: #e09ef0;">@item.VendorName</td>
+                                        <td>@item.RecUnit</td>
                                         <td>@item.PartCode</td>
                                         <td>@item.ItemName</td>
                             <td id="opnStk-@Cntr">@item.Qty</td>

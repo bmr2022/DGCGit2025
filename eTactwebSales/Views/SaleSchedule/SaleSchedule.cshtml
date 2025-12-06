@@ -752,7 +752,7 @@
                                     }
                                     <div class="col-lg-2 col-md-3 col-sm-3 text-center mt-3 ms-auto">
                                         <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;" type="button" id="btnGridExcel">
-                                            <i class="fa-solid fa-upload fa-fw fa-lg "></i> EXCEL
+                                            <i class="fa-solid fa-upload fa-fw fa-lg "></i> Export Grid EXCEL
                                         </button>
                                     </div>
                                     <button type="button" class="btn btn-success mt-2 me-2 btn-sm mr-2 mb-2" onclick='newRowappend()' style="color:white!important; float:right;">
@@ -3448,8 +3448,14 @@ obj.Result.Table.forEach(d => {
             var ssGrid = $('#divSaleScheduleGrid tr td').length;
 
             if (ssGrid <= 1) {
+                 if($('input[name="SaleSchGrid"]:checked').val()=='Month'){
+                $.notify("please click done button", "error");
+                return;
+                }else{
                 $.notify("SS Grid should at least have one item", "error");
                 return;
+                }
+
             } else {
                 $("form").submit();
             }
@@ -3461,8 +3467,14 @@ obj.Result.Table.forEach(d => {
             var ssGrid = $('#divSaleScheduleGrid tr td').length;
 
             if (ssGrid <= 1) {
-                $.notify("SS Grid should at least have one item", "error");
-                return;
+                          if($('input[name="SaleSchGrid"]:checked').val()=='Month'){
+                        $.notify("please click done button", "error");
+                        return;
+                        }else{
+                        $.notify("SS Grid should at least have one item", "error");
+                        return;
+                        }
+
             } else {
                 $("form").submit();
             }
@@ -3474,8 +3486,14 @@ obj.Result.Table.forEach(d => {
             e.preventDefault();
             var ssGrid = $('#divSaleScheduleGrid tr td').length;
             if (ssGrid <= 1) {
-                $.notify("SS Grid should at least have one item", "error");
-                return;
+                      if($('input[name="SaleSchGrid"]:checked').val()=='Month'){
+                        $.notify("please click done button", "error");
+                        return;
+                        }else{
+                        $.notify("SS Grid should at least have one item", "error");
+                        return;
+                        }
+
             } else {
                 $("form").submit();
             }
