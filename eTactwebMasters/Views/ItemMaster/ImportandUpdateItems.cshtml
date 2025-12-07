@@ -523,172 +523,241 @@
          $(document).ready(function () {
             GetFormRights();
          });
-        let excelHeaders = [];
-        document.getElementById('MultiexcelFile').addEventListener('change', function (e) {
-            let file = e.target.files[0];
-            if (!file) return;
+        (function () {
+            const PAGE_SIZE = 500; // UI page size (confirmed)
+            let allExcelData = [];      // full array of row objects
+            let excelHeaders = [];      // header names
+            let currentPreviewPage = 1;
+            let totalPreviewPages = 0;
 
-            let reader = new FileReader();
-            reader.onload = function (event) {
-                let data = new Uint8Array(event.target.result);
-                let workbook = XLSX.read(data, { type: 'array' });
+            // read file & build allExcelData
+            document.getElementById('MultiexcelFile').addEventListener('change', function (e) {
+                let file = e.target.files[0];
+                if (!file) return;
 
-                // Read first sheet
-                let sheetName = workbook.SheetNames[0];
-                let worksheet = workbook.Sheets[sheetName];
+                let reader = new FileReader();
+                reader.onload = function (event) {
+                    let data = new Uint8Array(event.target.result);
+                    let workbook = XLSX.read(data, { type: 'array' });
 
-                // Convert to JSON (header row automatically used)
-                let jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+                    // Read first sheet
+                    let sheetName = workbook.SheetNames[0];
+                    let worksheet = workbook.Sheets[sheetName];
+
+                    // Convert to array rows (header row included)
+                    let jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+
+                    if (!jsonData || jsonData.length === 0) {
+                        $.notify("Excel is empty or not readable", "error");
+                        return;
+                    }
+
+                    // header row
+                    excelHeaders = jsonData[0].map(h => h ? h.toString().trim() : "");
+                    // build allExcelData (list of objects keyed by header)
+                    allExcelData = [];
+                    for (let r = 1; r < jsonData.length; r++) {
+                        let rowArr = jsonData[r];
+                        // ensure row length equals headers length
+                        let obj = {};
+                        for (let c = 0; c < excelHeaders.length; c++) {
+                            obj[excelHeaders[c]] = (rowArr[c] !== undefined && rowArr[c] !== null) ? rowArr[c].toString().trim() : "";
+                        }
+                        allExcelData.push(obj);
+                    }
+
+                    // Calculate preview pages
+                    totalPreviewPages = Math.ceil(allExcelData.length / PAGE_SIZE) || 1;
+                    currentPreviewPage = 1;
+
+                    // populate mapping dropdowns if you have selects with class .multicolumns
+                    populateDropdowns();
+
+                    // render first page preview
+                    renderPreviewPage(currentPreviewPage);
+                };
+                reader.readAsArrayBuffer(file);
+            });
+
+            // populate mapping selects (assumes select.multicolumns are present in DOM)
+            function populateDropdowns() {
+                // Clear existing options and add a blank
+                $('select.multicolumns').each(function () {
+                    const sel = $(this);
+                    sel.empty();
+                    sel.append($('<option>', { value: '', text: '-- Select Column --' }));
+                    excelHeaders.forEach(h => {
+                        sel.append($('<option>', { value: h, text: h }));
+                    });
+                });
+            }
+
+            // render preview table for given page
+            function renderPreviewPage(pageNo) {
+                if (!allExcelData) return;
+                if (pageNo < 1) pageNo = 1;
+                if (pageNo > totalPreviewPages) pageNo = totalPreviewPages;
+
+                const startIndex = (pageNo - 1) * PAGE_SIZE;
+                const endIndex = Math.min(startIndex + PAGE_SIZE, allExcelData.length);
 
                 let table = "<table class='table table-bordered table-striped'>";
                 table += "<thead><tr>";
-                jsonData[0].forEach(cell => {
-                    table += `<th style="background-color:#4CAF50; color:white;">${cell}</th>`;
+                excelHeaders.forEach(h => {
+                    table += `<th style="background-color:#4CAF50; color:white;">${h}</th>`;
                 });
                 table += "</tr></thead>";
-
                 table += "<tbody>";
-                // Start from index 1 to skip header row
-                for (let i = 1; i < jsonData.length; i++) {
-                    let row = jsonData[i];
+                for (let i = startIndex; i < endIndex; i++) {
+                    let row = allExcelData[i];
                     table += "<tr>";
-                    row.forEach(cell => {
-                        table += `<td>${cell}</td>`; // now empty cells stay aligned
+                    excelHeaders.forEach(h => {
+                        table += `<td>${row[h] || ""}</td>`;
                     });
                     table += "</tr>";
                 }
                 table += "</tbody></table>";
 
-                document.getElementById('MultiexcelTable').innerHTML = table;
-            };
-            reader.readAsArrayBuffer(file);
-        });
+                $('#MultiexcelTable').html(table);
 
+                // pagination controls
+                $('#PreviewPagination').remove();
+                let pagerHtml = `<div id="PreviewPagination" class="mt-2">
+                    <button id="prevPage" class="btn btn-sm btn-light">Prev</button>
+                    <span class="mx-2">Page ${pageNo} / ${totalPreviewPages}</span>
+                    <button id="nextPage" class="btn btn-sm btn-light">Next</button>
+                    <span class="ml-4">Rows: ${allExcelData.length}</span>
+                </div>`;
+                $('#MultiexcelTable').after(pagerHtml);
 
-        document.getElementById("MultiexcelFile").addEventListener("change", function (e) {
-            let file = e.target.files[0];
-            let reader = new FileReader();
+                $('#prevPage').prop('disabled', pageNo === 1);
+                $('#nextPage').prop('disabled', pageNo === totalPreviewPages);
 
-            reader.onload = function (event) {
-                let data = new Uint8Array(event.target.result);
-                let workbook = XLSX.read(data, { type: "array" });
-
-                // Get first sheet
-                let sheetName = workbook.SheetNames[0];
-                let worksheet = workbook.Sheets[sheetName];
-
-                // Convert to JSON with header
-                let jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-                // First row = headers
-                excelHeaders = jsonData[0];
-
-                console.log("Excel Headers:", excelHeaders);
-
-                // Now fill all dropdowns
-                populateDropdowns();
-            };
-
-            reader.readAsArrayBuffer(file);
-        });
-
-
-
-        $('#BtnUpdate').click(function () {
-            var flag = $('#Insert_Update').val();
-            // 1. Build mapping object (DB column -> Excel column name)
-            let mapping = {};
-            $('#MappingTable tr').each(function () {
-                let dbColumn = $(this).find('td:first').text().trim();
-                let selectedExcelColumn = $(this).find('select.multicolumns').val();
-                if (selectedExcelColumn) {
-                    mapping[dbColumn] = selectedExcelColumn;
-                }
-            });
-        //          if (!mapping["PartCode"] || mapping["PartCode"].trim() === "") {
-        //     $.notify(" PartCode mapping is mandatory!", "error");
-        //     return; // stop execution
-        // }
-            let mandatoryFields = [];
-            if (flag == "UpdateDataFromExcel") {
-                mandatoryFields = ["PartCode"];
-            }
-            else {
-                mandatoryFields = ["PartCode", "Unit", "HsnNo", "ItemGroup", "ItemCategory", "ItemServAssets"];
-            }
-            
-        let missingFields = [];
-        mandatoryFields.forEach(function (field) {
-            if (!mapping[field] || mapping[field].trim() === "") {
-                missingFields.push(field);
-            }
-        });
-        if (missingFields.length > 0) {
-            $.notify("Please map the following mandatory fields: " + missingFields.join(", "), "error");
-            return;
-        }
-            // 2. Extract Excel Table Headers
-            let excelHeaders = [];
-            $('#MultiexcelTable table thead th').each(function () {
-                excelHeaders.push($(this).text().trim());
-            });
-
-            // 3. Extract Excel Table Data
-            let excelData = [];
-            $('#MultiexcelTable table tbody tr').each(function () {
-                let row = {};
-                $(this).find('td').each(function (i) {
-                    row[excelHeaders[i]] = $(this).text().trim();
+                $('#prevPage').off('click').on('click', function () {
+                    if (currentPreviewPage > 1) {
+                        currentPreviewPage--;
+                        renderPreviewPage(currentPreviewPage);
+                    }
                 });
-                excelData.push(row);
-            });
-
-            // 🟢 Debug: check mapping and extracted data
-            console.log("Mapping object:", mapping);
-            console.log("Excel data array:", excelData);
-
-            // 4. Send AJAX to Controller
-            $.ajax({
-                url: '/ItemMaster/UpdateFromExcel',
-                type: 'POST',
-                contentType: 'application/json',
-                dataType: 'json',
-                data: JSON.stringify({ Mapping: mapping, ExcelData: excelData, Flag: flag }),
-                beforeSend: function () {
-                    $('#ajaxLoader').show(); // ✅ Show loader
-                },
-                  success: function (data, status, xhr) {
-            $('#ajaxLoader').hide();
-            $('#ColumnNameModel').modal('hide');
-
-            let code = data.StatusCode || data.statusCode;
-            let msg = data.StatusText || data.statusText;
-            if (code === 240 ){
-                $.notify(msg, "error");
-                return;
+                $('#nextPage').off('click').on('click', function () {
+                    if (currentPreviewPage < totalPreviewPages) {
+                        currentPreviewPage++;
+                        renderPreviewPage(currentPreviewPage);
+                    }
+                });
             }
 
-            // ✅ If update succeeded
-            if (data && (data.statusCode === 200 || data.statusCode === 202)) {
-                   window.location.href = data.RedirectUrl;
-               }
-            // ✅ If partial success or custom warning
-            else if (code === 200 && msg && msg !== "Data imported successfully") {
-                $.notify(msg, "warn");
+            // Build mapping object from mapping table
+            function buildMapping() {
+                let mapping = {};
+                $('#MappingTable tr').each(function () {
+                    let dbColumn = $(this).find('td:first').text().trim();
+                    let selectedExcelColumn = $(this).find('select.multicolumns').val();
+                    if (selectedExcelColumn) mapping[dbColumn] = selectedExcelColumn;
+                });
+                return mapping;
             }
-            // ✅ Any other error
-            else {
-                $.notify(msg || "Unknown error", "error");
-            }
-        },
 
-                error: function (err) {
-                    alert("Error updating data");
+            // On Update: start auto page-wise sending
+            $('#BtnUpdate').off('click').on('click', function () {
+                if (!allExcelData || allExcelData.length === 0) {
+                    $.notify("No Excel data to send. Upload Excel first.", "error");
+                    return;
                 }
+
+                let mapping = buildMapping();
+
+                let flag = $('#Insert_Update').val();
+
+                // validate mandatory mapping fields
+                let mandatoryFields = (flag === "UpdateDataFromExcel")
+                    ? ["PartCode"]
+                    : ["PartCode", "Unit", "HsnNo", "ItemGroup", "ItemCategory", "ItemServAssets"];
+
+                let missing = mandatoryFields.filter(f => !mapping[f] || mapping[f].trim() === "");
+                if (missing.length) {
+                    $.notify("Please map mandatory fields: " + missing.join(", "), "error");
+                    return;
+                }
+
+                // we will send page-by-page. Start with page=1
+                $('#ajaxLoader').show();
+                processPage(1, mapping, flag);
             });
-        });
 
+            // recursively process pages
+            function processPage(pageNo, mapping, flag) {
+                const pageSize = PAGE_SIZE;
+                const totalPages = Math.ceil(allExcelData.length / pageSize);
+                const startIndex = (pageNo - 1) * pageSize;
+                const endIndex = Math.min(startIndex + pageSize, allExcelData.length);
+                const pageData = allExcelData.slice(startIndex, endIndex);
 
+                // prepare payload: only send the current page rows
+                let payload = {
+                    Mapping: mapping,
+                    ExcelData: pageData,
+                    Flag: flag,
+                    PageNo: pageNo,
+                    PageSize: pageSize,
+                    TotalPages: Math.ceil(allExcelData.length / pageSize)   // ADD THIS
+                };
+
+                console.log("Sending page", pageNo, "of", totalPages, payload);
+
+                $.ajax({
+                    url: '/ItemMaster/UpdateFromExcel',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify(payload),
+                    success: function (resp) {
+                        console.log("Page response:", resp);
+
+                        if (!resp) {
+                            $('#ajaxLoader').hide();
+                            $.notify("Invalid server response", "error");
+                            return;
+                        }
+
+                        if (resp.StatusCode === 240) {
+                            $('#ajaxLoader').hide();
+                            $.notify(resp.StatusText || "Validation error on server", "error");
+                            return;
+                        }
+
+                        // if server returned NextPage, continue, else finish
+                        const nextPage = resp.nextPage || resp.NextPage || 0;
+                        if (nextPage && nextPage > 0) {
+                            // update UI preview to nextPage for user visibility (optional)
+                            currentPreviewPage = nextPage;
+                            renderPreviewPage(currentPreviewPage);
+
+                            // show progress
+                            $.notify(`Processed page ${resp.currentPage} / ${resp.totalPages}`, "info");
+
+                            // small delay to keep UI responsive (optional)
+                            setTimeout(function () {
+                                processPage(nextPage, mapping, flag);
+                            }, 200);
+                        } else {
+                            $('#ajaxLoader').hide();
+                            $.notify(resp.StatusText || "All pages processed", "success");
+
+                            if (resp.RedirectUrl) {
+                                window.location.href = resp.RedirectUrl;
+                            }
+                        }
+                    },
+                    error: function (err) {
+                        $('#ajaxLoader').hide();
+                        console.error(err);
+                        $.notify("Error sending page " + pageNo, "error");
+                    }
+                });
+            }
+
+        })();
 
         // Function to populate all dropdowns
         function populateDropdowns() {

@@ -15,12 +15,13 @@ namespace eTactWeb.DOM.Models
     }
     public class ExcelUpdateRequest
     {
-        // Mapping between DB column and Excel column name
-        public Dictionary<string, string> Mapping { get; set; }
-
-        // Excel rows data (Header -> Value)
-        public List<Dictionary<string, string>> ExcelData { get; set; }
+        public Dictionary<string, string> Mapping { get; set; } = new Dictionary<string, string>();
+        public List<Dictionary<string, string>> ExcelData { get; set; } = new List<Dictionary<string, string>>();
         public string Flag { get; set; }
+        public int PageNo { get; set; } = 1;
+        public int PageSize { get; set; } = 500; // default 50
+        public int TotalPages { get; set; }
+
     }
 
     [Serializable()]
