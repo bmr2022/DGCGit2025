@@ -2011,7 +2011,7 @@ namespace eTactWeb.Controllers
             else
                 MainModel.DPBItemDetails.AddRange(_List);
 
-            MainModel.ItemNetAmount = decimal.Parse(MainModel.DPBItemDetails.Sum(x => x.Amount).ToString("#.#0"));
+            MainModel.ItemNetAmount = decimal.Parse(MainModel.DPBItemDetails.Sum(x => x.Amount).ToString());
 
             return MainModel;
         }

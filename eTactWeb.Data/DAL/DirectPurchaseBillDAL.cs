@@ -1097,7 +1097,7 @@ public class DirectPurchaseBillDAL
                     }
 
                     MainModel.ItemDetailGrid = _ItemList;
-                    MainModel.ItemNetAmount = decimal.Parse(MainModel.ItemDetailGrid.Sum(x => x.Amount).ToString("#.#0"));
+                    MainModel.ItemNetAmount = decimal.Parse(MainModel.ItemDetailGrid.Sum(x => x.Amount).ToString());
                 }
 
                 if (oDataSet.Tables.Count != 0 && oDataSet.Tables[2].Rows.Count > 0)
@@ -1313,23 +1313,23 @@ public class DirectPurchaseBillDAL
             SqlParams.Add(new SqlParameter("@CurrencyId", (model.Currency)));
             SqlParams.Add(new SqlParameter("@ExchangeRate", model.ExchangeRate));
             SqlParams.Add(new SqlParameter("@ConversionFactor", model.ExchangeRate));
-            SqlParams.Add(new SqlParameter("@BillAmt", (float)Math.Round(model.ItemNetAmount, 2)));
-            SqlParams.Add(new SqlParameter("@RoundOffAmt", (float)Math.Round(model.TotalRoundOffAmt, 2)));
+            SqlParams.Add(new SqlParameter("@BillAmt", model.ItemNetAmount));
+            SqlParams.Add(new SqlParameter("@RoundOffAmt", model.TotalRoundOffAmt));
             SqlParams.Add(new SqlParameter("@RoundoffType", model.TotalRoundOff));
             SqlParams.Add(new SqlParameter("@roundoffaccountcode", model.RoundOffAccountCode));
             SqlParams.Add(new SqlParameter("@GSTAmount", 0));
             SqlParams.Add(new SqlParameter("@Taxableamt", (float)Math.Round(model.TxAmount, 2)));
-            SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", (float)Math.Round(model.TotalDiscountPercentage, 2)));
-            SqlParams.Add(new SqlParameter("@TotalDiscountAmount", (float)Math.Round(model.TotalAmtAftrDiscount, 2)));
+            SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", model.TotalDiscountPercentage));
+            SqlParams.Add(new SqlParameter("@TotalDiscountAmount", model.TotalAmtAftrDiscount));
             SqlParams.Add(new SqlParameter("@NetAmt", (float)model.NetTotal));
             SqlParams.Add(new SqlParameter("@Remark", model.Remark));
             SqlParams.Add(new SqlParameter("@CC", model.Branch));
             SqlParams.Add(new SqlParameter("@Uid", model.CreatedBy));
             SqlParams.Add(new SqlParameter("@TaxVariationPOvsBill", string.Empty));
-            SqlParams.Add(new SqlParameter("@PONetAmt", (float)Math.Round(model.NetTotal, 2)));
+            SqlParams.Add(new SqlParameter("@PONetAmt", model.NetTotal));
             SqlParams.Add(new SqlParameter("@BOEDate", EntryDt == default ? string.Empty : EntryDt));
             SqlParams.Add(new SqlParameter("@ModeOfTrans", model.ModeOfTransport));
-            SqlParams.Add(new SqlParameter("@TotalAmtInOtherCurr", (float)Math.Round(model.NetTotal, 2)));
+            SqlParams.Add(new SqlParameter("@TotalAmtInOtherCurr", model.NetTotal));
             SqlParams.Add(new SqlParameter("@boeno", string.Empty));
             SqlParams.Add(new SqlParameter("@Commodity", string.Empty));
             SqlParams.Add(new SqlParameter("@PathOfFile1", model.PathOfFile1URL));
@@ -1415,9 +1415,55 @@ public class DirectPurchaseBillDAL
                     }
                     else
                     {
-                        row[col] = 0.0; 
+                        row[col] = 0.0;
                     }
                 }
         }
     }
+          public async Task<ResponseResult> ShowPendingPurchaseorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode, string PONO, string PartCode, string CompanyType)
+        {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            //StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            //EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            //SqlParams.Add(new SqlParameter("@StartDate", StartDate));
+            //SqlParams.Add(new SqlParameter("@EndDate", EndDate));
+            var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+            var toDt = CommonFunc.ParseFormattedDate(Todate);
+            var InvDate = CommonFunc.ParseFormattedDate(InvoiceDate);
+
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", Flag));
+            //SqlParams.Add(new SqlParameter("@FromDate", fromdt.ToString("yyyy/MM/dd")));
+            //SqlParams.Add(new SqlParameter("@ToDate", todt.ToString("yyyy/MM/dd")));
+            SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+            SqlParams.Add(new SqlParameter("@ToDate", toDt));
+            SqlParams.Add(new SqlParameter("@CurrentYear", CurrentYear));
+            SqlParams.Add(new SqlParameter("@InvoiceDate", InvDate));
+            SqlParams.Add(new SqlParameter("@BillFromStoreId", BillFromStoreId));
+            SqlParams.Add(new SqlParameter("@accountCode", accountCode));
+            SqlParams.Add(new SqlParameter("@PONO", PONO));
+            SqlParams.Add(new SqlParameter("@partcode", PartCode));
+
+            if (CompanyType == "Retailer")
+
+            { 
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingPurchaseOrderForPurchasebillForRetailer", SqlParams); 
+            }
+            else
+            {
+                //_ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingSaleOrderForSalebill", SqlParams);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
 }
+

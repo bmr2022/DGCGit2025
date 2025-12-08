@@ -53,18 +53,17 @@ else
             <td>@item.SeqNo</td>
             <td class="divListDocType">@item.DocTypeText</td>
             <td class="divPOItemListPartCode">
-                @if (!item.PartText.Contains("Select"))
+                @if (!string.IsNullOrEmpty(item.PartText) && !item.PartText.Contains("Select"))
                 {
                     @item.PartText
                 }
-                else { }
             </td>
-            <td>
-                @if (!item.ItemText.Contains("Select"))
+
+            <td class="divPOItemListPartCode">
+                @if (!string.IsNullOrEmpty(item.ItemText) && !item.ItemText.Contains("Select"))
                 {
                     @item.ItemText
                 }
-                else { }
             </td>
             <td class="DirectPurchaseBillScheduleDetail">
                 @if (item.PONo != null && item.PONo != "" && !item.PONo.Contains("Select"))
@@ -74,14 +73,22 @@ else
                 else { }
             </td>
             <td class="DirectPurchaseBillScheduleDetail">@item.POYear</td>
+            @* <td class="DirectPurchaseBillScheduleDetail"> *@
+            @*     @{ *@
+            @*         DateTime parsedDate; *@
+            @*         string formattedDate = DateTime.TryParse(item.PODate, out parsedDate) *@
+            @*         ? parsedDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) *@
+            @*         : string.Empty; *@
+            @*     } *@
+            @*     @formattedDate *@
+            @* </td> *@
             <td class="DirectPurchaseBillScheduleDetail">
                 @{
-                    DateTime parsedDate;
-                    string formattedDate = DateTime.TryParse(item.PODate, out parsedDate)
-                    ? parsedDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
-                    : string.Empty;
+                    DateTime d;
+                    @((DateTime.TryParse(item.PODate, out d) && d.Year != 1900)
+                    ? d.ToString("dd/MM/yyyy")
+                    : "")
                 }
-                @formattedDate
             </td>
             <td class="DirectPurchaseBillScheduleDetail">
                 @if (item.ScheduleNo != null && item.ScheduleNo != "" && !item.ScheduleNo.Contains("Select"))
@@ -91,24 +98,31 @@ else
                 else { }
             </td>
             <td class="DirectPurchaseBillScheduleDetail">@item.ScheduleYear</td>
+            @* <td class="DirectPurchaseBillScheduleDetail"> *@
+            @*     @{ *@
+            @*         DateTime parsedDate1; *@
+            @*         string formattedDate1 = DateTime.TryParse(item.ScheduleDate, out parsedDate1) *@
+            @*         ? parsedDate1.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) *@
+            @*         : string.Empty; *@
+            @*     } *@
+            @*     @formattedDate1 *@
+            @* </td> *@
             <td class="DirectPurchaseBillScheduleDetail">
                 @{
-                    DateTime parsedDate1;
-                    string formattedDate1 = DateTime.TryParse(item.ScheduleDate, out parsedDate1)
-                    ? parsedDate1.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
-                    : string.Empty;
+                    DateTime d1;
+                    @((DateTime.TryParse(item.ScheduleDate, out d1) && d1.Year != 1900)
+                    ? d1.ToString("dd/MM/yyyy")
+                    : "")
                 }
-                @formattedDate1
             </td>
-           
             <td class="DirectPurchaseBillScheduleDetail">@item.DPBQty</td>
 
             <td class="billQty">@item.BillQty</td>
-            <td>@item.Rate.ToString("#.##")</td>
-            <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.OtherRateCurr.ToString("#.##")</td>
+            <td>@item.Rate.ToString()</td>
+            <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.OtherRateCurr.ToString()</td>
             <td>@item.DiscPer</td>
             <td>@item.DiscRs</td>
-            <td id="GridAmount-@item.SeqNo">@item.Amount.ToString("#.##")</td>
+            <td id="GridAmount-@item.SeqNo">@item.Amount.ToString()</td>
             <td>@item.HSNNo</td>
             <td>@item.Unit</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.ProcessName</td>
