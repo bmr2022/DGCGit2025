@@ -151,18 +151,67 @@
 			</div>
 		</div>
 		<div class="card-footer p-3">
-			@* <div class="card-header card-headerBG text-light justify-content-center bg-gradient"> *@
-			<h4>
+			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+				<h4>
+					BOM (Bill Of Material)
+					<span class="d-flex float-end" style="margin-top:-2px;">
+						<a asp-action="Dashboard" asp-controller="Bom" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+							<i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+							Dashboard
+						</a>
 
-				<span class="d-flex float-end" style="margin-top:-2px;">
-					<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
-						<i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
-						Dashboard
-					</a>
-					<partial name="_FormsButton" />
-				</span>
-			</h4>
-			@* </div> *@
+						<div class="row justify-content-between g-2">
+							<div class="col-auto">
+								<input asp-for="FGPartCodeBack" type="hidden" value="@Model.FGPartCodeBack" />
+								<input asp-for="FGItemNameBack" type="hidden" value="@Model.FGItemNameBack" />
+								<input asp-for="RMPartCodeBack" type="hidden" value="@Model.RMPartCodeBack" />
+								<input asp-for="RMItemNameBack" type="hidden" value="@Model.RMItemNameBack" />
+								<input asp-for="BomRevNoBack" type="hidden" value="@Model.BomRevNoBack" />
+								<input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
+								<input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+								@*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+								<a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+									<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+									BACK
+								</a>
+							</div>
+							@* <partial name="_FormsButton" /> *@
+							@if (Model.Mode != "V")
+							{
+								<div class="col-auto">
+									@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+									<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+										@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+										<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+										REFRESH
+									</a>
+								</div>
+								@if (Model.Mode == "U")
+								{
+									@*Model.Mode = "U";*@
+									<div class="col-auto">
+										@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+										<button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+											<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+											UPDATE
+										</button>
+									</div>
+								}
+								else
+								{
+									<div class="col-auto">
+										@*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+										<button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+											<i class="fa-solid fa-chevron-circle-right"></i>
+											SUBMIT
+										</button>
+									</div>
+								}
+							}
+
+					</span>
+				</h4>
+			</div>
 		</div>
 	</form>
 </div>
@@ -760,13 +809,22 @@
 			 }
 
 		 });
-		 function toggleSection() {
-			 if ($("#hideUnhideToggle").is(":checked")) {
-				 $("#B_Measurements").slideDown();
-			 } else {
-				 $("#B_Measurements").slideUp();
-			 }
-		 }
+		function toggleSection() {
+			const checkbox = document.getElementById("hideUnhideToggle");
+			const section = document.getElementById("B_Measurements");
+
+			if (!checkbox || !section) return;
+
+			// LEFT (OFF / gray) → HIDE
+			if (!checkbox.checked) {
+				section.classList.add("d-none");
+			}
+			// RIGHT (ON / blue) → SHOW
+			else {
+				section.classList.remove("d-none");
+			}
+		}
+
 		 function FGCodeChange(ID) {
 			 // $.when(SetPartCodeItem(ID)).done(function () { GetBomNo('FinishItemCode') }).done(function () { GetBomName('FinishedItemName') }).done(function () { GetGridData(ID) });
 			 $.when(SetPartCodeItem(ID)).done(function () { GetBomNo('FinishItemCode') }).done(function () { GetBomName('FinishedItemName') });
