@@ -95,7 +95,7 @@
 
 								<div class="col-md-1">
 									<label asp-for="AdvanceYearCode" class="form-label">Adv YC</label>
-									<input asp-for="AdvanceYearCode" class="form-control" />
+									<input asp-for="AdvanceYearCode" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-1">
@@ -183,7 +183,7 @@
 
 								<div class="col-md-1">
 									<label asp-for="RequestDate" class="form-label">Request Date</label>
-									<input asp-for="RequestDate" class="form-control" />
+									<input asp-for="RequestDate" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-2">
@@ -198,7 +198,7 @@
 									}
 								</div>
 								<div class="col-md-2">
-									<label asp-for="RequestedAmount" class="form-label" style="color:red"> Requested Amount</label>
+									<label asp-for="RequestedAmount" class="form-label" style="color:red"> Requested Amount <span>*</span></label>
 									<input asp-for="RequestedAmount" class="form-control" />
 								</div>
 								<div class="col-md-3">
@@ -606,7 +606,7 @@
 				$('#RequestDate').datepicker("setDate", toDateDDMMYYYY(reqDate));
 				// $('#RequestDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#RequestDate').val()));
 				$('#StartRecoveryFromMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#StartRecoveryFromMonth').val()));
-				$('#RequestDate').datepicker('option', 'minDate', parseDateToFormat($('#RequestDate').val()));
+				$('#RequestDate').datepicker('option', 'minDate', toDateDDMMYYYY($('#RequestDate').val()));
 			}
 
 			FillAdvanceType();
@@ -683,6 +683,10 @@
 					$('#CC').rules("remove", "required");
 					$('#UID').rules("remove", "required");
 
+		});
+
+		$('#RequestDate').change(function(){
+			  $('#StartRecoveryFromMonth').datepicker('option', 'minDate', toDateDDMMYYYY($('#RequestDate').val()));
 		});
 
 		function toDateDDMMYYYY(dateStr) {
@@ -1057,8 +1061,8 @@
 						$('#StartRecoveryFromMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						// $('#PresentDaysinCurrMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						// $('#PresentDaysInCurrYear').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-					$('#RequestDate').datepicker('option', 'minDate', parseDateToFormat($('#EntryDate').val()));
-					$('#StartRecoveryFromMonth').datepicker('option', 'minDate', parseDateToFormat($('#RequestDate').val()));
+					    $('#RequestDate').datepicker('option', 'minDate', toDateDDMMYYYY($('#EntryDate').val()));
+					    $('#StartRecoveryFromMonth').datepicker('option', 'minDate', toDateDDMMYYYY($('#RequestDate').val()));
 						$('#EntryDate').datepicker('option', 'minDate', FinFromDate);
 						$('#EntryDate').datepicker('option', 'maxDate', FinToDate);
 					}
