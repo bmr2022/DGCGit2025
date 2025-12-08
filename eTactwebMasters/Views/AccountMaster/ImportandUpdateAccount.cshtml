@@ -525,7 +525,7 @@
                 // validate mandatory mapping fields
                 let mandatoryFields = (flag === "UpdateDataFromExcel")
                     ? ["Party_Code"]
-                    : ["Party_Code", "Account_Name", "DisplayName", "AccountType"];
+                    : ["Party_Code", "Account_Name", "DisplayName", "AccountType", "ParentAccount"];
 
                 let missing = mandatoryFields.filter(f => !mapping[f] || mapping[f].trim() === "");
                 if (missing.length) {
