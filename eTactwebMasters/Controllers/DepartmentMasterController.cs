@@ -39,6 +39,7 @@ namespace eTactWeb.Controllers
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
+            HttpContext.Session.Remove("DeptName");
             var MainModel = new DepartmentMasterModel();
             MainModel.DeptName = HttpContext.Session.GetString("DeptName");
             MainModel.CC = HttpContext.Session.GetString("CC");
