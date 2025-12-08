@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.EMMA;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
@@ -127,6 +128,31 @@ public class HRAttendanceController : Controller
         MainModel.DashDesignationList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPHRAttendanceMainDetail", dashdesg, false, false);
         MainModel.DashEmployeeList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPHRAttendanceMainDetail", dashemp, false, false);
         return MainModel;
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetFilters(string fromDate, string toDate)
+    {
+        DateTime now = DateTime.Now;
+        DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+        DateTime today = DateTime.Now;
+        var MainModel = new HRAListDataModel();
+        DateTime fDate = DateTime.ParseExact(fromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+        DateTime tDate = DateTime.ParseExact(toDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+        var commonparams = new Dictionary<string, object>()
+        {
+            { "@Fromdate", fromDate != null ? fDate : firstDayOfMonth },
+            { "@ToDate", toDate != null ? tDate : today }
+        };
+        MainModel = await BindPBList(MainModel, commonparams);
+        return null;
+        //return Json(new
+        //{
+        //    department = model.DashDepartmentList,
+        //    category = model.DashCategoryList,
+        //    designation = model.DashDesignationList,
+        //    employee = model.DashEmployeeList
+        //});
     }
     public string GetEmpByMachineName()
     {

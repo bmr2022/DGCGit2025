@@ -998,6 +998,11 @@
             "DEEMED EXPORT",
             "BUSINESS TO BUSINESS"
         ];
+        var domesticSupplyTypes = [
+            "BUSINESS TO BUSINESS"
+        ];
+     
+
         var formRights = {
             sooptView: false,
             sooptUpdate: false
@@ -1124,6 +1129,7 @@
                      FillSONO();
             FillCurrency();
             FillCustomerAddress();
+                    //FillDistance();
 
             if ($('#divTaxGrid tr td').length > 1) {
                 btnClearTax();
@@ -1147,7 +1153,7 @@
 
 
         }
-
+    
         $(document).ready(function () {
             $('.salebilloncounter').hide();
             const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
@@ -1155,17 +1161,20 @@
             // $('#Group_Code1').select2();
             GetItemGroup();
             AutoFillItems();
-              $("#SONO").change(function () {
-            const sonoVal = $(this).val();
+            $("#SONO").change(function () {
+                const sonoVal = $(this).val();
 
-            if (sonoVal && sonoVal !== "0") {
-                // SONO selected → enable Select2 mode
-                enableSelect2Mode();
-            } else {
-                // SONO = 0 or empty → enable Autocomplete mode
-                enableAutocompleteMode();
-            }
-        });
+                if (sonoVal && sonoVal !== "0") {
+                    // SONO selected → enable Select2 mode
+                    enableSelect2Mode();
+                } else {
+                    // SONO = 0 or empty → enable Autocomplete mode
+                    enableAutocompleteMode();
+                }
+
+                //defaault distanc km 0
+                $('#DistanceKM').val(0);
+            });
 
         // Initialize autocomplete mode by default
         enableAutocompleteMode();
@@ -1194,6 +1203,20 @@
                         }));
                     });
                 }
+                else if (domesticExport === "DOMESTIC") {
+                    $supplyType.empty();
+                    $supplyType.append($('<option>', { value: "", text: "-- Select --" }));
+
+                    $.each(domesticSupplyTypes, function (i, text) {
+                        $supplyType.append($('<option>', {
+                            value: text,
+                            text: text
+                        }));
+                    });
+                    // FillCurrencyOnOrderType();
+                    // updateSupplyTypeOptions();
+
+                }
 
                 // Set selected SupplyType from Razor model
                 const supplyTypeFromModel = "@Model.SupplyType";
@@ -1201,9 +1224,17 @@
             }
             else {
                 GetServerDate();
+                updateSupplyTypeOptions();
+                FillCurrency();
+                // ChangeCurrencysign();
             }
 
+                         if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                                 FillCurrency();
+                                 }
+                                        $('#DomesticExportNEPZ').val() == "Domestic" ? $('#CurrencyID').prop('selectedIndex', 0).change() : $('#CurrencyID').prop('selectedIndex', 2).change();
 
+                      FillCurrencyOnOrderType();
 
 
             // Initialize validator only once
@@ -1270,7 +1301,7 @@
                     // }, 300);
                 }
             });
-
+         
             // Handle "E-Invoice + E-Way Bill" click
             $('#btnEwaybill').click(function () {
                 generateEway = 'EwayAndEInvoice';
@@ -2109,9 +2140,14 @@
         });
 
         $('#DomesticExportNEPZ').change(function () {
+            $('#DomesticExportNEPZ').val() == "Domestic" ? $('#CurrencyID').prop('selectedIndex', 0).change() : $('#CurrencyID').prop('selectedIndex', 2).change();
+           
+            FillCurrencyOnOrderType();
+             // ChangeCurrencysign();
             updateSupplyTypeOptions();
         });
 
+      
         function FillSaleBillGridFromMemoryCache() {
 
             $.ajax({
@@ -2662,42 +2698,47 @@
                         text: text
                     }));
                 });
-            } else {
-                $supplyType.append($('<option>', { value: "", text: "-- Select --" }));
+            } else if (selectedValue === "DOMESTIC") {
+                $.each(domesticSupplyTypes, function (i, text) {
+                    $supplyType.append($('<option>', {
+                        value: text,
+                        text: text
+                    }));
+                });
             }
         }
-        $(function () {
-            $("#vehicleNo").autocomplete({
-                source: function (request, response) {
+        // $(function () {
+        //     $("#vehicleNo").autocomplete({
+        //         source: function (request, response) {
 
-                    $.ajax({
-                        url: '@Url.Action("AutoComplete", "SaleInvoice")',
-                        type: "POST",
-                        data: { "ColumnName": "vehicleNo", "prefix": request.term },
-                        success: function (data) {
-                            response($.map(data,
-                                function (key, value) {
-                                    return key.text;
-                                }));
-                        },
-                        error: function (response) {
-                            alert(response.responseText);
-                        },
-                        failure: function (response) {
-                            alert(response.responseText);
-                        }
-                    });
-                },
-                select: function (e, i) {
-                    $("#vehicleNo").val(i.item.value);
-                },
-                change: function (e, i) {
+        //             $.ajax({
+        //                 url: '@Url.Action("AutoComplete", "SaleInvoice")',
+        //                 type: "POST",
+        //                 data: { "ColumnName": "vehicleNo", "prefix": request.term },
+        //                 success: function (data) {
+        //                     response($.map(data,
+        //                         function (key, value) {
+        //                             return key.text;
+        //                         }));
+        //                 },
+        //                 error: function (response) {
+        //                     alert(response.responseText);
+        //                 },
+        //                 failure: function (response) {
+        //                     alert(response.responseText);
+        //                 }
+        //             });
+        //         },
+        //         select: function (e, i) {
+        //             $("#vehicleNo").val(i.item.value);
+        //         },
+        //         change: function (e, i) {
 
-                    //$("#vehicleNo").val($("#vehicleNo").val());
-                },
-                minLength: 1
-            });
-        });
+        //             //$("#vehicleNo").val($("#vehicleNo").val());
+        //         },
+        //         minLength: 1
+        //     });
+        // });
               $('#RoundOffAccountCode').change(function () {
                       CalculateAdjAmt('NetTotal');
                       GetDbCrDetail();
@@ -2814,6 +2855,7 @@
         FillStore();
         FillDistance();
         FillTransporter();
+        FillVehicleNo();
          var dtValue = $('#RDT').prop("checked") == true ? "T" : "F";
 
            FillRoundOffAccount(dtValue);
@@ -2829,11 +2871,11 @@
         // $('#ItemCode').select2();
         // $('#AccountCode').select2();
         $('#DocTypeAccountCode').select2();
-        // $('#TransporterName').select2();
+        //$('#TransporterName').select2();
         $('.AF').fadeOut();
         AutoComplete("DistanceKM", "DistanceKM");
         //  AutoComplete('VIssueAgainstPlanSchMainDetailItem', 'vehicleNo', 'vehicleNo', null);
-        AutoComplete("vehicleNo", "vehicleNo");
+        //AutoComplete("vehicleNo", "vehicleNo");
 
         var InvDate = parseDateToFormat($('#SaleBillDate').val().split(" ")[0]);
 
@@ -3016,12 +3058,14 @@
                 $('.gridHiddenField').show();
                 FillJWCustomerList();
                 $('#SaleBillJobwork').css("background-color", "#fde5fc");
+                $('#TypeItemServAssets').val('S');
 
             } else {
                 $('.jobWorkChalln').hide();
                 $('.gridHiddenField').hide();
                 FillCustomerList($('#PN1').is(":checked"));
                 $('#SaleBillJobwork').css("background-color", "#fff5d5");
+                $('#TypeItemServAssets').val('I');
 
             }
         });
@@ -3714,7 +3758,6 @@
         });
 
         function ValidateGrid() {
-
             if (!SetminQty()) return;
 
             var Err = 0;
@@ -3798,7 +3841,7 @@
         }
 
 
-            if ($('#Rate').val() == 0) {
+            if (parseInt($('#Rate').val()) == 0) {
                 AddErrorCls('Rate');
                 Err = 1;
             }
@@ -3833,7 +3876,8 @@
                 }
 
 
-                if ($('#Qty').val() == 0) {
+                if (parseInt($('#Qty').val()) == 0)
+                {
                     $.notify('BillQty can not be less then 0...!', "error");
                     AddErrorCls('Qty');
                     Err = 1;
@@ -3844,6 +3888,18 @@
             } else {
                 RemoveErrorCls('Batchno');
                 RemoveErrorCls('Uniquebatchno');
+                RemoveErrorCls('Qty');
+            }
+
+
+
+            if (parseInt($('#Qty').val()) == 0) {
+
+                $.notify('BillQty can not be less then 0...!', "error");
+                AddErrorCls('Qty');
+                Err = 1;
+            }
+            else {
                 RemoveErrorCls('Qty');
             }
 
@@ -4479,7 +4535,7 @@
         var sum = 0;
         var itemBatchArray = [];
         $('.ItemBtn').click(function (e) {
-
+            debugger
             e.preventDefault();
             EditEachItem = false;
             var seqnoarray = [];
@@ -5344,10 +5400,10 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200) {
-                            $('#DistanceKM').val("");
-                            $('#DistanceKM').val(obj.Result.Table[0].Column1);
+                            $('#DistanceKM').val(0);
+                            $('#DistanceKM').val(obj.Result.Table[0].DistanceKM);
                         } else {
-                            $('#DistanceKM').val("");
+                            $('#DistanceKM').val(0);
                         }
                     }
                 }
@@ -5400,22 +5456,68 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#TransporterName').empty();
-                        $('#TransporterName').append('<option value="0">-Select-</option>');
+                         $('#TransporterName').append('<option></option>');
                         if (obj.StatusCode != 500) {
                             $.each(obj.Result, function (index, val) {
                                 $('#TransporterName').append(
                                     '<option value="' + val.TransporterName + '">' + val.TransporterName + '</option>'
                                 );
                             });
+                                   if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                                    let saved = $('#hiddenTransporterName').val();
+                                    if ($("#TransporterName option[value='" + saved + "']").length === 0) {
+                                        $('#TransporterName').append('<option value="' + saved + '">' + saved + '</option>');
+                                    }
+                                    $('#TransporterName').val(saved).trigger("change");  // final select
+                                }
+
                         }
                     }
-
-                    // if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                    //     $('#TransporterName').val($('#hiddenTransporterName').val()).trigger("change");
-                    // }
+                          $('#TransporterName').select2({
+                     tags: true,                // allow typing
+                     placeholder: "Select",
+                 });
+               
                 }
             });
         }
+
+                     function FillVehicleNo() {
+                 $.ajax({
+                     type: "POST",
+                     url: "@Url.Action("FillVehicleNo")",
+                     dataType: "json",
+                     success: function (result, status, error) {
+                         if (result != null) {
+                             var obj = $.parseJSON(result);
+                             $('#vehicleNo').empty();
+                              $('#vehicleNo').append('<option></option>');
+                             if (obj.StatusCode != 500) {
+                                 $.each(obj.Result, function (index, val) {
+                                          $('#vehicleNo').append(
+                                              '<option value="' + val.vehicleNo + '">' + val.vehicleNo + '</option>'
+                                     );
+                                 });
+                                        if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                                                   let saved = $('#hiddenvehicleNo').val();
+                                         if ($("#vehicleNo option[value='" + saved + "']").length === 0) {
+                                             $('#vehicleNo').append('<option value="' + saved + '">' + saved + '</option>');
+                                         }
+                                         $('#vehicleNo').val(saved).trigger("change");  // final select
+                                     }
+
+                             }
+                         }
+                               $('#vehicleNo').select2({
+                          tags: true,                // allow typing
+                          placeholder: "Select",
+                      });
+                         
+                     }
+                 });
+             }
 
         $('#Qty').change(function () {
             CalculateAmount();
@@ -5833,7 +5935,7 @@
             //     if (!/^99\d{4}$/.test(hsn)) {
             //         $.notify('For Services, HSN must start with 99 and be 6 digits...', "error");
             //         hsnError = true;
-            //         return false;
+            //         return false;if (errorPartCode.length > 0s) {
             //     }
             // } else {
             //     if (!/^\d{6,8}$/.test(hsn)) {
@@ -5848,13 +5950,17 @@
         // ❗ If any HSN failed → STOP HERE (do not continue)
         if (hsnError) return;
 
-                 if ($('#GSTRegistered').val() == 'Y') {
+                if ($('#GSTRegistered').val() == 'Y' && $('#DomesticExportNEPZ').val() == "DOMESTIC") {
                         if (!checkPartCodeMusthaveAtLeastOneTax()) {
                         return false;
                     }
                     if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() == "DOMESTIC") {
                         $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                    } else {
+                    }
+                 
+
+                    
+                    else {
                         if ($('#divAdjItemList tr td').length <= 1) {
                             $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
                         } else if ($('#divdbCrItemList tr td').length <= 1) {
@@ -5924,6 +6030,20 @@
                     }
              
                 } else {
+                    // Check if supply type is export-no-tax
+                    let taxRows = $('#divTaxGrid tr');
+                    let supplyType = $('#SupplyType').val();
+
+                    // Check if only 1 row exists AND row text contains 'NO DATA ADDED'
+                    let isNoData = (taxRows.length === 1 && taxRows.first().text().trim().toUpperCase().includes("NO DATA ADDED"));
+
+                    if (!isNoData &&
+                        (supplyType === "EXPORT WITHOUT PAYMENT" || supplyType === "SEZ WITHOUT PAYMENT")) {
+
+                        $.notify('Please Remove tax for EXPORT WITHOUT PAYMENT or SEZ WITHOUT PAYMENT', "error");
+                        return false;
+
+   }
                     if (confirm("Are you sure you want to save this entry?")) {
                         $('#EinvoicePopup').modal('show');
                     }
@@ -6232,7 +6352,6 @@
 
 
         function ValidateSubmit() {
-        
                if ($('#AccountCode').val() == 0) {
                 $.notify("Customer Name is mandatory...!", "error");
                 return false;
@@ -6245,6 +6364,14 @@
                         return false;
                     }
                 }
+            }
+            // Either Vehicle No OR Transport Name must be filled
+            var vehicle = $('#vehicleNo').val().trim();
+            var transport = $('#TransporterName').val().trim();
+
+            if (vehicle === '' && transport === '') {
+                $.notify("Either Vehicle No OR Transport Name is mandatory...!", "error");
+                return false;
             }
 
             if ($('#vehicleNo').val() != '') {
@@ -6322,12 +6449,13 @@
             });
         }
 
-        $('#vehicleNo').on('input', function () {
-            var inputValue = $(this).val();
-            if (inputValue.length > 10) {
-                $(this).val(inputValue.substring(0, 10));
-            }
-        });
+        // $('#vehicleNo').on('input', function () {
+        //     var inputValue = $(this).val();
+        //     if (inputValue.length > 10) {
+        //         $(this).val(inputValue.substring(0, 10));
+        //     }
+        // });
+    
 
         $('#DistanceKM').on('change', function () {
             if ($('#DistanceKM').val() > 3000) {
@@ -6340,8 +6468,9 @@
 
         $('#vehicleNo').on('change', function () {
             var inputValue = $(this).val();
-            if (inputValue.length < 10) {
+            if (inputValue!=="" &&  inputValue.length < 10) {
                 $.notify("Please enter at least 10 characters in Vehicle No", "error");
+                      $('#vehicleNo').val("").trigger("change");
             }
         });
 
@@ -6441,8 +6570,40 @@
             }
         });
 
-        function FillCurrency() {
+                function FillCurrencyOnOrderType() {
 
+            var CTRL = $('#DomesticExportNEPZ').val();
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetFillCurrency","SaleOrder")",
+                async: false,
+                data: { "CTRL": CTRL },
+                dataType: "json",
+                success: function (result, status, error) {
+                    console.log(result);
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+
+                        $('#currencyId').empty();
+
+                        $.each(obj.Result, function (index, item) {
+                            $('#currencyId').append($('<option>', {
+                                value: item.entry_id,
+                                text: item.Currency
+                            }));
+                        });
+                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                   $('#currencyId').val(@Model.currencyId).trigger("change");
+                        }
+
+
+                    }
+                }
+            });
+        }
+
+
+        function FillCurrency() {
             var accountCode = $('#AccountCode').val();
             $.ajax({
                 type: "POST",

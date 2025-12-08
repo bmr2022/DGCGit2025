@@ -49,6 +49,7 @@ namespace eTactWeb.DOM.Models
         public string? DocNo { get; set; }
         public string? POTypeServiceItem { get; set; }
         public string? PartCode { get; set; }
+        public string? RecUnit { get; set; }
         public string? ReportType { get; set; }
         public string? ItemName { get; set; }
         public string? PONo { get; set; }

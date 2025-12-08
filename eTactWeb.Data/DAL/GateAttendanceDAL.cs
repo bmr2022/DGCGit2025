@@ -31,7 +31,7 @@ public class GateAttendanceDAL
         _IDataLogic = iDataLogic;
     }
 
-    public async Task<GateAttendanceModel> GetManualAttendance(string DayOrMonthType, DateTime Attdate, int AttMonth, int YearCode)
+    public async Task<GateAttendanceModel> GetManualAttendance(string DayOrMonthType, DateTime Attdate, int AttMonth, int YearCode, int EmpCatCode, int EmpId, bool IsManual = false)
     {
         var Data = new GateAttendanceModel();
         Data.GateAttDetailsList = new List<GateAttendanceModel>();
@@ -49,8 +49,17 @@ public class GateAttendanceDAL
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                oCmd.Parameters.AddWithValue("@flag", "FillEmployeesListForManualAttand");
+                if (IsManual)
+                {
+                    oCmd.Parameters.AddWithValue("@flag", "IMPORTFROMOTHERDATABASE");
+                }
+                else
+                {
+                    oCmd.Parameters.AddWithValue("@flag", "FillEmployeesListForManualAttand");
+                }
                 oCmd.Parameters.AddWithValue("@DailyMonthlyAttendance", DayOrMonthType);
+                oCmd.Parameters.AddWithValue("@EmpCateid", EmpCatCode);
+                oCmd.Parameters.AddWithValue("@EmpId", EmpId);
                 if(string.Equals(DayOrMonthType, "daily", StringComparison.OrdinalIgnoreCase))
                 {
                      oCmd.Parameters.AddWithValue("@AttendanceDate", AttndanceDt);
@@ -453,6 +462,7 @@ public class GateAttendanceDAL
                     MainModel.DayOrMonthType = oDataSet.Tables[0].Rows[0]["DailyMonthlyAttendance"].ToString();
                     MainModel.AttendanceEntryMethodType = oDataSet.Tables[0].Rows[0]["AttendanceEntryMethod"].ToString();
                     MainModel.strEmpAttMonth = oDataSet.Tables[0].Rows[0]["AttMonthName"].ToString();
+                    MainModel.EmpId = !string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["AttOfEmpId"].ToString()) ? Convert.ToInt32(oDataSet.Tables[0].Rows[0]["AttOfEmpId"]) : 0;
                     MainModel.EmpCategory = oDataSet.Tables[0].Rows[0]["EmpCateg"].ToString();
                     MainModel.EmpCategoryId = oDataSet.Tables[0].Rows[0]["EmpcategoryId"].ToString();
                     MainModel.EntryByMachineName = oDataSet.Tables[0].Rows[0]["EntryByMachineName"].ToString();

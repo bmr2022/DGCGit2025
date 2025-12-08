@@ -2240,6 +2240,7 @@ public class ItemMasterController : Controller
     }
 
 
+    
     [HttpPost]
     public async Task<IActionResult> UpdateFromExcel([FromBody] ExcelUpdateRequest request)
     {
@@ -2248,70 +2249,82 @@ public class ItemMasterController : Controller
 
         try
         {
-            DataTable dt = new DataTable();
+            int pageSize = request.PageSize > 0 ? request.PageSize : 500;
+            int pageNo = request.PageNo <= 0 ? 1 : request.PageNo;
 
+            // Calculate total pages from incoming full dataset length if client provided full list
+            int totalPages = request.TotalPages;
+            // Get only the current page rows (client is sending page-wise; but if they send less rows, handle gracefully)
+            //var paginatedData = request.ExcelData != null
+            //    ? request.ExcelData.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList()
+            //    : new List<Dictionary<string, string>>();
+
+            var paginatedData = request.ExcelData ?? new List<Dictionary<string, string>>();
+
+            // Build DataTable with all columns
+            DataTable dt = new DataTable();
             dt.Columns.Add("PartCode", typeof(string));
             dt.Columns.Add("Item_Name", typeof(string));
             dt.Columns.Add("Unit", typeof(string));
             dt.Columns.Add("HsnNo", typeof(string));
-            dt.Columns.Add("ItemGroup", typeof(string));
-            dt.Columns.Add("ItemCategory", typeof(string));
+            dt.Columns.Add("ItemGroup", typeof(long));
+            dt.Columns.Add("ItemCategory", typeof(long));
             dt.Columns.Add("ItemServAssets", typeof(string));
             dt.Columns.Add("EntryDate", typeof(DateTime));
             dt.Columns.Add("LastUpdatedDate", typeof(DateTime));
             dt.Columns.Add("LeadTime", typeof(int));
             dt.Columns.Add("CC", typeof(string));
-            dt.Columns.Add("SalePrice", typeof(decimal));
-            dt.Columns.Add("PurchasePrice", typeof(decimal));
-            dt.Columns.Add("CostPrice", typeof(decimal));
-            dt.Columns.Add("WastagePercent", typeof(decimal));
-            dt.Columns.Add("WtSingleItem", typeof(decimal));
-            dt.Columns.Add("NoOfPcs", typeof(int));
+            dt.Columns.Add("SalePrice", typeof(double));
+            dt.Columns.Add("PurchasePrice", typeof(double));
+            dt.Columns.Add("CostPrice", typeof(double));
+            dt.Columns.Add("WastagePercent", typeof(double));
+            dt.Columns.Add("WtSingleItem", typeof(double));
+            dt.Columns.Add("NoOfPcs", typeof(double));
             dt.Columns.Add("QcReq", typeof(string));
             dt.Columns.Add("UploadItemImage", typeof(string));
             dt.Columns.Add("UploadImage", typeof(string));
-            dt.Columns.Add("UID", typeof(string));
+            dt.Columns.Add("UID", typeof(long));
             dt.Columns.Add("DrawingNo", typeof(string));
-            dt.Columns.Add("MinimumLevel", typeof(int));
-            dt.Columns.Add("MaximumLevel", typeof(int));
-            dt.Columns.Add("ReorderLevel", typeof(int));
-            dt.Columns.Add("YearCode", typeof(string));
+            dt.Columns.Add("MinimumLevel", typeof(double));
+            dt.Columns.Add("MaximumLevel", typeof(double));
+            dt.Columns.Add("ReorderLevel", typeof(double));
+            dt.Columns.Add("YearCode", typeof(double));
             dt.Columns.Add("AlternateUnit", typeof(string));
             dt.Columns.Add("RackID", typeof(string));
             dt.Columns.Add("BinNo", typeof(string));
             dt.Columns.Add("ItemSize", typeof(string));
             dt.Columns.Add("Colour", typeof(string));
             dt.Columns.Add("NeedPO", typeof(string));
-            dt.Columns.Add("StdPacking", typeof(string));
+            dt.Columns.Add("StdPacking", typeof(double));
             dt.Columns.Add("PackingType", typeof(string));
             dt.Columns.Add("ModelNo", typeof(string));
-            dt.Columns.Add("YearlyConsumedQty", typeof(decimal));
+            dt.Columns.Add("YearlyConsumedQty", typeof(double));
             dt.Columns.Add("DispItemName", typeof(string));
-            dt.Columns.Add("PurchaseAccountcode", typeof(string));
-            dt.Columns.Add("SaleAccountcode", typeof(string));
-            dt.Columns.Add("MinLevelDays", typeof(int));
-            dt.Columns.Add("MaxLevelDays", typeof(int));
+            dt.Columns.Add("PurchaseAccountcode", typeof(long));
+            dt.Columns.Add("SaleAccountcode", typeof(long));
+            dt.Columns.Add("MinLevelDays", typeof(long));
+            dt.Columns.Add("MaxLevelDays", typeof(long));
             dt.Columns.Add("EmpName", typeof(string));
-            dt.Columns.Add("DailyRequirment", typeof(decimal));
+            dt.Columns.Add("DailyRequirment", typeof(double));
             dt.Columns.Add("Stockable", typeof(string));
             dt.Columns.Add("WipStockable", typeof(string));
             dt.Columns.Add("Store", typeof(string));
-            dt.Columns.Add("ProductLifeInus", typeof(string));
+            dt.Columns.Add("ProductLifeInus", typeof(double));
             dt.Columns.Add("ItemDesc", typeof(string));
-            dt.Columns.Add("MaxWipStock", typeof(decimal));
+            dt.Columns.Add("MaxWipStock", typeof(double));
             dt.Columns.Add("NeedSo", typeof(string));
             dt.Columns.Add("BomRequired", typeof(string));
             dt.Columns.Add("JobWorkItem", typeof(string));
-            dt.Columns.Add("CreatedBy", typeof(string));
+            dt.Columns.Add("CreatedBy", typeof(long));
             dt.Columns.Add("CreatedOn", typeof(DateTime));
-            dt.Columns.Add("UpdatedBy", typeof(string));
+            dt.Columns.Add("UpdatedBy", typeof(long));
             dt.Columns.Add("UpdatedOn", typeof(DateTime));
             dt.Columns.Add("Active", typeof(string));
             dt.Columns.Add("VendorBatchcodeMand", typeof(string));
             dt.Columns.Add("EntryByMachineName", typeof(string));
             dt.Columns.Add("UniversalPartCode", typeof(string));
             dt.Columns.Add("UniversalDescription", typeof(string));
-            dt.Columns.Add("ProdInWorkcenter", typeof(string));
+            dt.Columns.Add("ProdInWorkcenter", typeof(long));
             dt.Columns.Add("ProdInhouseJW", typeof(string));
             dt.Columns.Add("BatchNO", typeof(string));
             dt.Columns.Add("VoltageValue", typeof(string));
@@ -2320,223 +2333,223 @@ public class ItemMasterController : Controller
             dt.Columns.Add("package", typeof(string));
             dt.Columns.Add("IsCustJWAdjMandatory", typeof(string));
             dt.Columns.Add("Branch", typeof(string));
-            dt.Columns.Add("NoOfCavity", typeof(int));
-            dt.Columns.Add("ProdInMachineGroup", typeof(string));
-            dt.Columns.Add("ProdInMachine1", typeof(string));
-            dt.Columns.Add("ProdInMachine2", typeof(string));
-            dt.Columns.Add("ProdInMachine3", typeof(string));
-            dt.Columns.Add("NoOfshotsHours", typeof(decimal));
-            dt.Columns.Add("ProdInMachine4", typeof(string));
+            dt.Columns.Add("NoOfCavity", typeof(long));
+            dt.Columns.Add("ProdInMachineGroup", typeof(long));
+            dt.Columns.Add("ProdInMachine1", typeof(long));
+            dt.Columns.Add("ProdInMachine2", typeof(long));
+            dt.Columns.Add("ProdInMachine3", typeof(long));
+            dt.Columns.Add("NoOfshotsHours", typeof(long));
+            dt.Columns.Add("ProdInMachine4", typeof(long));
             dt.Columns.Add("ChildBom", typeof(string));
             dt.Columns.Add("usedinMachorVehicle", typeof(string));
             dt.Columns.Add("Barcode", typeof(string));
-            int rowNumber = 1;
-            foreach (var excelRow in request.ExcelData)
-            {
-                List<string> errors = new List<string>(); // 🟢 Added for collecting validation errors
-                var validItemServAssetsOptions = new List<string> { "Item", "Service", "Asset" };
 
+
+            int rowNumber = 1;
+
+            // validations
+            var validItemServAssetsOptions = new List<string> { "Item", "Service", "Asset" };
+
+            // For each row on this page
+            foreach (var excelRow in paginatedData)
+            {
+                List<string> errors = new List<string>();
                 DataRow row = dt.NewRow();
+
+                // Save part code to show in errors
                 string partCodeValue = excelRow.ContainsKey("PartCode") ? excelRow["PartCode"]?.ToString() : "";
 
-
-                foreach (var map in request.Mapping)
+                // mapping keys are DB columns; mapping values are Excel column names
+                if (request.Mapping != null)
                 {
-                    string dbCol = map.Key;          // DB column
-                    string excelCol = map.Value;     // Excel column name
-
-                    object value = DBNull.Value;     // default
-
-                    if (excelRow.ContainsKey(excelCol) && !string.IsNullOrEmpty(excelRow[excelCol]))
+                    foreach (var map in request.Mapping)
                     {
-                        value = excelRow[excelCol];
+                        string dbCol = map.Key;
+                        string excelCol = map.Value;
 
-                        // Convert types for numeric/boolean/date columns if needed
-                        Type columnType = dt.Columns[dbCol].DataType;
+                        object value = DBNull.Value;
 
-                        try
+                        if (excelRow.ContainsKey(excelCol) && !string.IsNullOrEmpty(excelRow[excelCol]))
                         {
-                            if (dbCol == "ItemServAssets")
-                            {
-                                string itemServAssetsValue = value.ToString().Trim();
+                            value = excelRow[excelCol];
 
-                                if (!validItemServAssetsOptions.Contains(itemServAssetsValue, StringComparer.OrdinalIgnoreCase))
+                            // Special validations / lookups
+                            try
+                            {
+                                // ItemServAssets validation
+                                if (dbCol.Equals("ItemServAssets", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    return Json(new
+                                    string itemServAssetsValue = value.ToString().Trim();
+                                    if (!validItemServAssetsOptions.Any(v => string.Equals(v, itemServAssetsValue, StringComparison.OrdinalIgnoreCase)))
                                     {
-                                        StatusCode = 240,
-                                        StatusText = $"Invalid 'ItemServAssets' at Row {rowNumber}, PartCode: {partCodeValue}. " +
-                                         $"Allowed values are: Item, Service, Asset."
-
-                                    });
-                                }
-                            }
-
-                            if (dbCol == "ItemGroup")  // <-- Special handling for ParentCode
-                            {
-                                string groupName = value.ToString().Trim();
-
-                                int ParentCode = 0;
-                                var groupCode =  _IItemMaster.GetItemGroupCode(groupName);
-
-                                if (groupCode.Result.Result != null && groupCode.Result.Result.Rows.Count > 0)
-                                {
-                                    ParentCode = (int)groupCode.Result.Result.Rows[0].ItemArray[0];
-                                }
-                               
-                                else
-                                {
-                                    ParentCode = 0;
+                                        return Json(new
+                                        {
+                                            StatusCode = 240,
+                                            StatusText = $"Invalid 'ItemServAssets' at Row {rowNumber}, PartCode: {partCodeValue}. Allowed values: Item, Service, Asset."
+                                        });
+                                    }
+                                    value = itemServAssetsValue; // normalized string
                                 }
 
-                                if (ParentCode!=0)
-                                    value = ParentCode;   // replace with code
-                                else
+                                // ItemGroup -> code lookup
+                                if (dbCol.Equals("ItemGroup", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    return Json(new
+                                    string groupName = value.ToString().Trim();
+                                    int ParentCode = 0;
+                                    var groupCode = _IItemMaster.GetItemGroupCode(groupName); // keep your existing call
+                                    if (groupCode.Result.Result != null && groupCode.Result.Result.Rows.Count > 0)
                                     {
-                                        StatusCode = 240,
-                                        StatusText = $"Invalid 'ItemGroup' at Row {rowNumber}, PartCode: {partCodeValue}. " +
-                                         $"Group '{groupName}' not found."
+                                        ParentCode = Convert.ToInt32(groupCode.Result.Result.Rows[0].ItemArray[0]);
+                                    }
+                                    else ParentCode = 0;
 
-                                    });
-                                }
-                                   
-                            }
-
-                            if (dbCol == "ItemCategory")  // <-- Special handling for ParentCode
-                            {
-                                string ItemCat = value.ToString().Trim();
-
-                                int ItemType = 0;
-                                var CatCode = _IItemMaster.GetItemCatCode(ItemCat);
-
-                                if (CatCode.Result.Result != null && CatCode.Result.Result.Rows.Count > 0)
-                                {
-                                    ItemType = (int)CatCode.Result.Result.Rows[0].ItemArray[0];
-                                }
-
-                                else
-                                {
-                                    ItemType = 0;
-                                }
-
-                                if (ItemType != 0)
-                                    value = ItemType;   // replace with code
-                                else
-                                {
-                                    return Json(new
+                                    if (ParentCode == 0)
                                     {
-                                        StatusCode = 240,
-                                        StatusText = $"Invalid 'ItemCategory' at Row {rowNumber}, PartCode: {partCodeValue}. " +
-                                         $"Category '{ItemCat}' not found."
-
-                                    });
+                                        return Json(new { StatusCode = 240, StatusText = $"Invalid 'ItemGroup' at Row {rowNumber}, PartCode: {partCodeValue}. Group '{groupName}' not found." });
+                                    }
+                                    value = ParentCode;
                                 }
 
-                            }
-
-
-                            if (dbCol == "StoreId")  // <-- Special handling for ParentCode
-                            {
-                                string StoreId = value.ToString().Trim();
-
-                                int StoreName = 0;
-                                var storeid = _IItemMaster.GetStoreCode(StoreId);
-
-                                if (storeid.Result.Result != null && storeid.Result.Result.Rows.Count > 0)
+                                // ItemCategory -> code lookup
+                                if (dbCol.Equals("ItemCategory", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    StoreName = (int)storeid.Result.Result.Rows[0].ItemArray[0];
-                                }
-
-                                else
-                                {
-                                    StoreName = 0;
-                                }
-
-                                if (StoreName != 0)
-                                    value = StoreName;   // replace with code
-                                else
-                                {
-                                    return Json(new
+                                    string ItemCat = value.ToString().Trim();
+                                    int ItemType = 0;
+                                    var CatCode = _IItemMaster.GetItemCatCode(ItemCat);
+                                    if (CatCode.Result.Result != null && CatCode.Result.Result.Rows.Count > 0)
                                     {
-                                        StatusCode = 240,
-                                        StatusText = $"Invalid 'Store' at Row {rowNumber}, PartCode: {partCodeValue}. " +
-                                         $"Store '{StoreId}' not found."
+                                        ItemType = Convert.ToInt32(CatCode.Result.Result.Rows[0].ItemArray[0]);
+                                    }
+                                    else ItemType = 0;
 
-                                    });
+                                    if (ItemType == 0)
+                                    {
+                                        return Json(new { StatusCode = 240, StatusText = $"Invalid 'ItemCategory' at Row {rowNumber}, PartCode: {partCodeValue}. Category '{ItemCat}' not found." });
+                                    }
+                                    value = ItemType;
                                 }
 
+                                // Store -> code lookup (if your DB column name is "Store" in mapping)
+                                if (dbCol.Equals("Store", StringComparison.OrdinalIgnoreCase) || dbCol.Equals("StoreId", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    string storeName = value.ToString().Trim();
+                                    int StoreCode = 0;
+                                    var storeid = _IItemMaster.GetStoreCode(storeName);
+                                    if (storeid.Result.Result != null && storeid.Result.Result.Rows.Count > 0)
+                                    {
+                                        StoreCode = Convert.ToInt32(storeid.Result.Result.Rows[0].ItemArray[0]);
+                                    }
+                                    else StoreCode = 0;
+
+                                    if (StoreCode == 0)
+                                    {
+                                        return Json(new { StatusCode = 240, StatusText = $"Invalid 'Store' at Row {rowNumber}, PartCode: {partCodeValue}. Store '{storeName}' not found." });
+                                    }
+                                    value = StoreCode;
+                                }
+
+                                // type conversions
+                               var columnType = dt.Columns[dbCol].DataType;
+
+// If NULL or empty → return DB NULL
+if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
+{
+    value = DBNull.Value;
+}
+else if (columnType == typeof(int))
+{
+    int temp;
+    value = int.TryParse(value.ToString(), out temp) ? temp : DBNull.Value;
+}
+else if (columnType == typeof(decimal))
+{
+    decimal temp;
+    value = decimal.TryParse(value.ToString(), out temp) ? temp : DBNull.Value;
+}
+else if (columnType == typeof(bool))
+{
+    string s = value.ToString().Trim().ToLower();
+    value = (s == "1" || s == "true" || s == "yes" || s == "y");
+}
+else if (columnType == typeof(DateTime))
+{
+    DateTime temp;
+    value = DateTime.TryParse(value.ToString(), out temp) ? temp : DBNull.Value;
+}
+else
+{
+    value = value.ToString().Trim();
+}
+
                             }
-
-
-
-                            if (columnType == typeof(int))
-                                value = int.Parse(value.ToString());
-                            else if (columnType == typeof(decimal))
-                                value = decimal.Parse(value.ToString());
-                            else if (columnType == typeof(bool))
+                            catch (Exception)
                             {
-                                // Accept 1/0, true/false, Y/N
-                                string s = value.ToString().Trim().ToLower();
-                                value = (s == "1" || s == "true" || s == "y");
+                                // if conversion fails, keep DBNull
+                                value = DBNull.Value;
                             }
-                            else if (columnType == typeof(DateTime))
-                                value = DateTime.Parse(value.ToString());
-                            else
-                                value = value.ToString();
                         }
-                        catch
-                        {
-                            value = DBNull.Value; // fallback if conversion fails
-                        }
+
+                        // Put into row. If dbCol doesn't exist in dt, ignore it to avoid exception.
+                        if (dt.Columns.Contains(dbCol))
+                            row[dbCol] = value ?? DBNull.Value;
                     }
-                    row[dbCol] = value;
                 }
 
                 dt.Rows.Add(row);
                 rowNumber++;
             }
 
+            // Call your service method to update for this page
             response = await _IItemMaster.UpdateMultipleItemDataFromExcel(dt, flag);
 
-            if (response != null)
+            // Build response
+            if (response != null &&
+                (response.StatusText == "Success" || response.StatusText == "Updated") &&
+                (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Accepted))
             {
-                if ((response.StatusText == "Success" || response.StatusText == "Updated") &&
-                     (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Accepted))
+                // If this was last page, return redirect url, else return next page
+                if (request.PageNo < request.TotalPages)
                 {
                     return Json(new
                     {
                         StatusCode = 200,
-                        StatusText = "Data imported successfully",
-                        RedirectUrl = Url.Action("ImportandUpdateItems", "ItemMaster", new { Flag = "" })
+                        StatusText = "Page saved",
+                        CurrentPage = request.PageNo,
+                        TotalPages = request.TotalPages,
+                        NextPage = request.PageNo + 1
                     });
                 }
                 else
                 {
                     return Json(new
                     {
-
-                        StatusText = response.StatusText,
-                        statusCode = 201,
-                        redirectUrl = ""
+                        StatusCode = 200,
+                        StatusText = "All pages saved successfully",
+                        CurrentPage = request.PageNo,
+                        TotalPages = request.TotalPages,
+                        NextPage = 0
                     });
                 }
             }
-
-            return Json(new
+            else
             {
-                StatusCode = 500,
-                StatusText = "Unknown error occurred"
-            });
-
+                // Partial/custom response from service
+                string txt = response?.StatusText ?? "Service returned failure";
+                return Json(new
+                {
+                    StatusCode = 201,
+                    StatusText = txt,
+                    CurrentPage = pageNo,
+                    TotalPages = totalPages,
+                    NextPage = 0,
+                    RedirectUrl = ""
+                });
+            }
         }
         catch (Exception ex)
         {
-            return Json(new { success = false, message = ex.Message });
+            return Json(new { StatusCode = 500, StatusText = ex.Message, CurrentPage = request.PageNo, TotalPages = 0, NextPage = 0 });
         }
-
-        
     }
 
 
@@ -2642,7 +2655,7 @@ public class ItemMasterController : Controller
     //    }
     //}
 
-   public async Task<IActionResult> AddItemListdata(List<ItemViewModel> model)
+    public async Task<IActionResult> AddItemListdata(List<ItemViewModel> model)
 // public async Task<IActionResult> AddItemListdata([FromBody] List<ItemViewModel> model)
 
     {

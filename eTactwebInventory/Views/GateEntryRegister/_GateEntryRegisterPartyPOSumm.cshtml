@@ -4,6 +4,7 @@
         <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
             <tr>
                 <th>Sr#</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec Unit</th>
                 <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
                 <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
                 <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
@@ -36,6 +37,7 @@
                                     <tr id="SAGridRow-@Cntr">
                                     
                             <th>@srNo</th>
+                            <td>@item.RecUnit</td>
                             <td style="background-color: #e09ef0;">@item.PartCode</td>
                                             <td>@item.ItemName</td>
                             <td id="opnStk-@Cntr">@item.Qty</td>

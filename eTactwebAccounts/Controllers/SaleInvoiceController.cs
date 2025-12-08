@@ -2349,6 +2349,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> FillVehicleNo()
+        {
+            var JSON = await _SaleBill.FillVehicleNo();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> FillSOItemRate(string sono, int soYearCode, int accountCode, string custOrderNo, int itemCode)
         {
             var JSON = await _SaleBill.FillSOItemRate(sono, soYearCode, accountCode, custOrderNo, itemCode);

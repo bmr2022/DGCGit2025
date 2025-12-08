@@ -598,8 +598,15 @@
 				GetServerDate();
 			}
 			else{
-				$('#RequestDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#RequestDate').val()));
+				$('#RequestDate').datepicker({
+					dateFormat: 'dd/mm/yy'
+				});
+
+				let reqDate = $('#RequestDate').val();
+				$('#RequestDate').datepicker("setDate", toDateDDMMYYYY(reqDate));
+				// $('#RequestDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#RequestDate').val()));
 				$('#StartRecoveryFromMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#StartRecoveryFromMonth').val()));
+				$('#RequestDate').datepicker('option', 'minDate', parseDateToFormat($('#RequestDate').val()));
 			}
 
 			FillAdvanceType();
@@ -678,7 +685,14 @@
 
 		});
 
+		function toDateDDMMYYYY(dateStr) {
+			if (!dateStr) return null;
+			const parts = dateStr.split('/');
+			return new Date(parts[2], parts[1] - 1, parts[0]);
+		}
+
 		$('#submitBTN').click(function (e) {
+			debugger
 			e.preventDefault(); // stop default submit
 
 			if ($('#AdvanceType').val() != 'medical') {
@@ -703,6 +717,7 @@
 			// 	$.notify("Employee and Financial approved employee cannot be same..!", "error");
 			// 	return false;
 			// }
+
 			if($('#RequestedAmount').val() == 0){
 				$.notify("Request amt cannot be 0..!", "error");
 				return false;
@@ -1042,6 +1057,8 @@
 						$('#StartRecoveryFromMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						// $('#PresentDaysinCurrMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						// $('#PresentDaysInCurrYear').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+					$('#RequestDate').datepicker('option', 'minDate', parseDateToFormat($('#EntryDate').val()));
+					$('#StartRecoveryFromMonth').datepicker('option', 'minDate', parseDateToFormat($('#RequestDate').val()));
 						$('#EntryDate').datepicker('option', 'minDate', FinFromDate);
 						$('#EntryDate').datepicker('option', 'maxDate', FinToDate);
 					}

@@ -410,95 +410,109 @@ namespace eTactWeb.Controllers
 
             try
             {
+                int pageSize = request.PageSize > 0 ? request.PageSize : 500;
+                int pageNo = request.PageNo <= 0 ? 1 : request.PageNo;
+
+                // Calculate total pages from incoming full dataset length if client provided full list
+                int totalPages = request.TotalPages;
+                // Get only the current page rows (client is sending page-wise; but if they send less rows, handle gracefully)
+                //var paginatedData = request.ExcelData != null
+                //    ? request.ExcelData.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList()
+                //    : new List<Dictionary<string, string>>();
+
+                var paginatedData = request.ExcelData ?? new List<Dictionary<string, string>>();
                 DataTable dt = new DataTable();
-				
-				dt.Columns.Add("Account_Name", typeof(string));
-				dt.Columns.Add("Party_Code", typeof(string));
-				dt.Columns.Add("DisplayName", typeof(string));
-				dt.Columns.Add("AccountType", typeof(string));
-				dt.Columns.Add("MainGroup", typeof(string));
-				dt.Columns.Add("SubGroup", typeof(string));
-				dt.Columns.Add("SubSubGroup", typeof(string));
-				dt.Columns.Add("UnderGroup", typeof(string));
-				dt.Columns.Add("ComAddress", typeof(string));
-				dt.Columns.Add("ComAddress1", typeof(string));
-				dt.Columns.Add("PinCode", typeof(string));
-				dt.Columns.Add("City", typeof(string));
-				dt.Columns.Add("State", typeof(string));
-				dt.Columns.Add("Country", typeof(string));
-				dt.Columns.Add("PhoneNo", typeof(string));
-				dt.Columns.Add("MobileNo", typeof(string));
-				dt.Columns.Add("ContactPerson", typeof(string));
-				dt.Columns.Add("PartyType", typeof(string));
-				dt.Columns.Add("GSTRegistered", typeof(string));
-				dt.Columns.Add("GSTNO", typeof(string));
-				dt.Columns.Add("GSTPartyTypes", typeof(string));
-				dt.Columns.Add("GSTTAXTYPE", typeof(string));
-				dt.Columns.Add("Segment", typeof(string));
-				dt.Columns.Add("SSLNo", typeof(string));
-				dt.Columns.Add("PANNO", typeof(string));
-				dt.Columns.Add("TDS", typeof(string));
-				dt.Columns.Add("TDSRate", typeof(double));
-				dt.Columns.Add("TDSPartyCategery", typeof(string));
-				dt.Columns.Add("ResponsibleEmployee", typeof(string));
-				dt.Columns.Add("ResponsibleEmpContactNo", typeof(string));
-				dt.Columns.Add("SalesPersonName", typeof(string));
-				dt.Columns.Add("SalesPersonEmailId", typeof(string));
-				dt.Columns.Add("SalesPersonMobile", typeof(string));
-				dt.Columns.Add("PurchPersonName", typeof(string));
-				dt.Columns.Add("PurchasePersonEmailId", typeof(string));
-				dt.Columns.Add("PurchMobileNo", typeof(string));
-				dt.Columns.Add("QCPersonEmailId", typeof(string));
-				dt.Columns.Add("WebSite_Add", typeof(string));
-				dt.Columns.Add("EMail", typeof(string));
-				dt.Columns.Add("RANGE", typeof(string));
-				dt.Columns.Add("Division", typeof(string));
-				dt.Columns.Add("Commodity", typeof(string));
-				dt.Columns.Add("WorkingAdd1", typeof(string));
-				dt.Columns.Add("WorkingAdd2", typeof(string));
-				dt.Columns.Add("RateOfInt", typeof(double));
-				dt.Columns.Add("CreditLimit", typeof(double));
-				dt.Columns.Add("CreditDays", typeof(string));
-				dt.Columns.Add("SSL", typeof(string));
-				dt.Columns.Add("BankAccount_No", typeof(string));
-				dt.Columns.Add("BankAddress", typeof(string));
-				dt.Columns.Add("BankIFSCCode", typeof(string));
-				dt.Columns.Add("BankSwiftCode", typeof(string));
-				dt.Columns.Add("InterbranchSaleBILL", typeof(string));
-				dt.Columns.Add("OursalespersonId", typeof(string));
-				dt.Columns.Add("salesemailid", typeof(string));
-				dt.Columns.Add("salesmobileno", typeof(string));
-				dt.Columns.Add("Approved_By", typeof(string));
-				dt.Columns.Add("Approved", typeof(string));
-				dt.Columns.Add("ApprovalDate", typeof(DateTime));
-				dt.Columns.Add("BlackListed", typeof(string));
-				dt.Columns.Add("BlackListed_By", typeof(string));
-				dt.Columns.Add("YearCode", typeof(long));
-				dt.Columns.Add("Uid", typeof(string));
-				dt.Columns.Add("CC", typeof(string));
-				dt.Columns.Add("CreatedBy", typeof(long));
-				dt.Columns.Add("CreatedOn", typeof(DateTime));
-				dt.Columns.Add("UpdatedBy", typeof(long));
-				dt.Columns.Add("UpdatedOn", typeof(DateTime));
-				dt.Columns.Add("Active", typeof(string));
-				dt.Columns.Add("BranchCompany", typeof(string));
-				dt.Columns.Add("trailbalanceGroupid", typeof(long));
-				dt.Columns.Add("SalePersonEmpId", typeof(long));
-				dt.Columns.Add("MSMENo", typeof(string));
-				dt.Columns.Add("MSMEType", typeof(string));
-				dt.Columns.Add("Region", typeof(string));
-				dt.Columns.Add("DiscountCategory", typeof(string));
-				dt.Columns.Add("DiscCategoryEntryId", typeof(long));
-				dt.Columns.Add("GroupDiscountCategory", typeof(long));
-				dt.Columns.Add("Account_Code", typeof(long));
-				dt.Columns.Add("DebCredCode", typeof(string));
-				dt.Columns.Add("Entry_Date", typeof(DateTime));
-				dt.Columns.Add("ParentAccountCode", typeof(long));
+
+                dt.Columns.Add("Account_Name", typeof(string));
+                dt.Columns.Add("Party_Code", typeof(string));
+                dt.Columns.Add("DisplayName", typeof(string));
+                dt.Columns.Add("AccountType", typeof(string));
+                dt.Columns.Add("ParentAccount", typeof(string));
+
+                dt.Columns.Add("MainGroup", typeof(string));
+                dt.Columns.Add("SubGroup", typeof(string));
+                dt.Columns.Add("SubSubGroup", typeof(string));
+                dt.Columns.Add("UnderGroup", typeof(string));
+                dt.Columns.Add("ComAddress", typeof(string));
+                dt.Columns.Add("ComAddress1", typeof(string));
+                dt.Columns.Add("PinCode", typeof(string));
+                dt.Columns.Add("City", typeof(string));
+                dt.Columns.Add("State", typeof(string));
+                dt.Columns.Add("Country", typeof(string));
+                dt.Columns.Add("PhoneNo", typeof(string));
+                dt.Columns.Add("MobileNo", typeof(string));
+                dt.Columns.Add("ContactPerson", typeof(string));
+                dt.Columns.Add("PartyType", typeof(string));
+                dt.Columns.Add("GSTRegistered", typeof(string));
+                dt.Columns.Add("GSTNO", typeof(string));
+                dt.Columns.Add("GSTPartyTypes", typeof(string));
+                dt.Columns.Add("GSTTAXTYPE", typeof(string));
+                dt.Columns.Add("Segment", typeof(string));
+                dt.Columns.Add("SSLNo", typeof(string));
+                dt.Columns.Add("PANNO", typeof(string));
+                dt.Columns.Add("TDS", typeof(string));
+                dt.Columns.Add("TDSRate", typeof(decimal));               // decimal
+                dt.Columns.Add("TDSPartyCategery", typeof(string));
+                dt.Columns.Add("ResponsibleEmployee", typeof(string));
+                dt.Columns.Add("ResponsibleEmpContactNo", typeof(string));
+                dt.Columns.Add("SalesPersonName", typeof(string));
+                dt.Columns.Add("SalesPersonEmailId", typeof(string));
+                dt.Columns.Add("SalesPersonMobile", typeof(string));
+                dt.Columns.Add("PurchPersonName", typeof(string));
+                dt.Columns.Add("PurchasePersonEmailId", typeof(string));
+                dt.Columns.Add("PurchMobileNo", typeof(string));
+                dt.Columns.Add("QCPersonEmailId", typeof(string));
+                dt.Columns.Add("WebSite_Add", typeof(string));
+                dt.Columns.Add("EMail", typeof(string));
+                dt.Columns.Add("RANGE", typeof(string));
+                dt.Columns.Add("Division", typeof(string));
+                dt.Columns.Add("Commodity", typeof(string));
+                dt.Columns.Add("WorkingAdd1", typeof(string));
+                dt.Columns.Add("WorkingAdd2", typeof(string));
+                dt.Columns.Add("RateOfInt", typeof(decimal));             // decimal
+                dt.Columns.Add("CreditLimit", typeof(decimal));           // decimal
+                dt.Columns.Add("CreditDays", typeof(int));                // int
+                dt.Columns.Add("SSL", typeof(string));
+                dt.Columns.Add("BankAccount_No", typeof(string));
+                dt.Columns.Add("BankAddress", typeof(string));
+                dt.Columns.Add("BankIFSCCode", typeof(string));
+                dt.Columns.Add("BankSwiftCode", typeof(string));
+                dt.Columns.Add("InterbranchSaleBILL", typeof(string));
+                dt.Columns.Add("OursalespersonId", typeof(int));          // int
+                dt.Columns.Add("salesemailid", typeof(string));
+                dt.Columns.Add("salesmobileno", typeof(string));
+                dt.Columns.Add("Approved_By", typeof(int));               // int
+                dt.Columns.Add("Approved", typeof(string));
+                dt.Columns.Add("ApprovalDate", typeof(DateTime));
+                dt.Columns.Add("BlackListed", typeof(string));
+                dt.Columns.Add("BlackListed_By", typeof(int));            // int
+                dt.Columns.Add("YearCode", typeof(int));                  // int
+                dt.Columns.Add("Uid", typeof(string));
+                dt.Columns.Add("CC", typeof(string));
+                dt.Columns.Add("CreatedBy", typeof(int));                 // int
+                dt.Columns.Add("CreatedOn", typeof(DateTime));
+                dt.Columns.Add("UpdatedBy", typeof(int));                 // int
+                dt.Columns.Add("UpdatedOn", typeof(DateTime));
+                dt.Columns.Add("Active", typeof(string));
+                dt.Columns.Add("BranchCompany", typeof(string));
+                dt.Columns.Add("trailbalanceGroupid", typeof(int));       // int
+                dt.Columns.Add("SalePersonEmpId", typeof(int));           // int
+                dt.Columns.Add("MSMENo", typeof(string));
+                dt.Columns.Add("MSMEType", typeof(string));
+                dt.Columns.Add("Region", typeof(string));
+                dt.Columns.Add("DiscountCategory", typeof(string));
+                dt.Columns.Add("DiscCategoryEntryId", typeof(int));       // int
+                dt.Columns.Add("GroupDiscountCategory", typeof(int));     // int
+                dt.Columns.Add("Account_Code", typeof(long));             // bigint
+                dt.Columns.Add("DebCredCode", typeof(string));
+                dt.Columns.Add("Entry_Date", typeof(DateTime));
+                dt.Columns.Add("ParentAccountCode", typeof(long));        // bigint
 
 
 
 
-				int rowIndex = 1;
+
+                int rowIndex = 1;
                 foreach (var excelRow in request.ExcelData)
                 {
                     DataRow row = dt.NewRow();
@@ -574,6 +588,7 @@ namespace eTactWeb.Controllers
 
                                         // Example: store in your DataTable
                                         row["MainGroup"] = mainGroup;
+                                        row["ParentAccountCode"] = ParentAccCode;
                                         row["SubGroup"] = subGroup;
                                         row["SubSubGroup"] = subSubGroup;
                                         row["UnderGroup"] = underGroup;
@@ -638,35 +653,48 @@ namespace eTactWeb.Controllers
 
                 response = await _IAccountMaster.UpdateMultipleItemDataFromExcel(dt, flag);
 
-                if (response != null)
+                if (response != null &&
+                (response.StatusText == "Success" || response.StatusText == "Updated") &&
+                (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Accepted))
                 {
-                    if ((response.StatusText == "Success" || response.StatusText == "Updated") &&
-                         (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Accepted))
+                    // If this was last page, return redirect url, else return next page
+                    if (request.PageNo < request.TotalPages)
                     {
                         return Json(new
                         {
                             StatusCode = 200,
-                            StatusText = "Data imported successfully",
-                            RedirectUrl = Url.Action("ImportandUpdateAccount", "AccountMaster", new { Flag = "" })
+                            StatusText = "Page saved",
+                            CurrentPage = request.PageNo,
+                            TotalPages = request.TotalPages,
+                            NextPage = request.PageNo + 1
                         });
                     }
                     else
                     {
                         return Json(new
                         {
-
-                            StatusText = response.StatusText,
-                            statusCode = 201,
-                            redirectUrl = ""
+                            StatusCode = 200,
+                            StatusText = "All pages saved successfully",
+                            CurrentPage = request.PageNo,
+                            TotalPages = request.TotalPages,
+                            NextPage = 0
                         });
                     }
                 }
-
-                return Json(new
+                else
                 {
-                    StatusCode = 500,
-                    StatusText = "Unknown error occurred"
-                });
+                    // Partial/custom response from service
+                    string txt = response?.StatusText ?? "Service returned failure";
+                    return Json(new
+                    {
+                        StatusCode = 201,
+                        StatusText = txt,
+                        CurrentPage = pageNo,
+                        TotalPages = totalPages,
+                        NextPage = 0,
+                        RedirectUrl = ""
+                    });
+                }
 
             }
             catch (Exception ex)
