@@ -496,6 +496,7 @@ public class PurchaseScheduleController : Controller
                 if(model.Mode == "U")
                 {
                     model.Mode = "UPDATE";
+                    model.UpdatedOn = DateTime.Now;
                     model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                     model.UpdatedByName = HttpContext.Session.GetString("EmpName");
                 }
@@ -522,22 +523,27 @@ public class PurchaseScheduleController : Controller
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
                     }
-                    if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                    else if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
                     }
-                    if(Result.Result == null)
+                    else if (Result.Result == null)
                     {
                         ViewBag.isSuccess = false;
                         TempData["500"] = "500";
                     }
-                    if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                    else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         ViewBag.isSuccess = false;
                         TempData["500"] = "500";
                         Logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                         return View("Error", Result);
+                    }
+                    else
+                    {
+                        ViewBag.isSuccess = false;
+                        TempData["ErrorMessage"] = Result.StatusText;
                     }
                 }
             }

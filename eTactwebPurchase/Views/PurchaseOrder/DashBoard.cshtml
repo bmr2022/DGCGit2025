@@ -475,11 +475,16 @@
                     $('#divDashboardGrid').html(result);
                     $('#currentPage').val(pageNumber);
 
-
+                       var dashGrid = $('#PODashboardGrid tr').length - 1;
+            $('#totalRows').text(dashGrid);
                     // Optional functions
-                    GetFeatureOption();
+                     GetFeaturesOptions();
                     GetFormRights();
                     // GetTotalAmounts();
+            LockedFinancialYear();
+            CheckApprovedOrNot();
+
+            PoallowtoprintWithoutApproval();
                 }
             });
         }
