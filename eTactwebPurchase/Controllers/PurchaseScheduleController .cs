@@ -261,6 +261,8 @@ public class PurchaseScheduleController : Controller
 
     public async Task<IActionResult> DeleteByID(int ID, int YC,int createdBy,string entryByMachineName)
     {
+        createdBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+        entryByMachineName = HttpContext.Session.GetString("EmpName");
         var Result = await IPurchaseSchedule.DeleteByID(ID, YC,createdBy,entryByMachineName).ConfigureAwait(false);
 
         if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone)
