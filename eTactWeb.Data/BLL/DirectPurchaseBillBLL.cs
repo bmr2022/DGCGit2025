@@ -175,5 +175,10 @@ namespace eTactWeb.Data.BLL
             throw new NotImplementedException();
         }
 
+        public async Task<ResponseResult> ShowPendingPurchaseorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode, string PONO, string PartCode, string CompanyType)
+        {
+            return await _DirectPurchaseBillDAL.ShowPendingPurchaseorderforBill(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode, PONO, PartCode, CompanyType);
+        }
+
     }
 }
