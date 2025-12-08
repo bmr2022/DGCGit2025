@@ -6468,7 +6468,7 @@
 
         $('#vehicleNo').on('change', function () {
             var inputValue = $(this).val();
-            if (inputValue.length < 10) {
+            if (inputValue!=="" &&  inputValue.length < 10) {
                 $.notify("Please enter at least 10 characters in Vehicle No", "error");
                       $('#vehicleNo').val("").trigger("change");
             }
