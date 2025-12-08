@@ -1580,7 +1580,8 @@
                AutoFillPARTYNAMELIST();
             EditableRateAndDiscountONSaleInvoice();
 
-
+                   FillTransporter();
+               FillVehicleNo();
 
             const domesticExport = $('#DomesticExportNEPZ').val();
             const $supplyType = $('#SupplyType');
@@ -2053,6 +2054,77 @@
                     }
                 });
             }
+                       function FillTransporter() {
+                   $.ajax({
+                       type: "POST",
+                       url: "@Url.Action("FillTransporter")",
+                       dataType: "json",
+                       success: function (result, status, error) {
+                           if (result != null) {
+                               var obj = $.parseJSON(result);
+                               $('#TransporterName').empty();
+                                $('#TransporterName').append('<option></option>');
+                               if (obj.StatusCode != 500) {
+                                   $.each(obj.Result, function (index, val) {
+                                       $('#TransporterName').append(
+                                           '<option value="' + val.TransporterName + '">' + val.TransporterName + '</option>'
+                                       );
+                                   });
+                                          if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                                           let saved = $('#hiddenTransporterName').val();
+                                           if ($("#TransporterName option[value='" + saved + "']").length === 0) {
+                                               $('#TransporterName').append('<option value="' + saved + '">' + saved + '</option>');
+                                           }
+                                           $('#TransporterName').val(saved).trigger("change");  // final select
+                                       }
+
+                               }
+                           }
+                                 $('#TransporterName').select2({
+                            tags: true,                // allow typing
+                            placeholder: "Select",
+                        });
+
+                       }
+                   });
+               }
+
+                            function FillVehicleNo() {
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("FillVehicleNo")",
+                            dataType: "json",
+                            success: function (result, status, error) {
+                                if (result != null) {
+                                    var obj = $.parseJSON(result);
+                                    $('#vehicleNo').empty();
+                                     $('#vehicleNo').append('<option></option>');
+                                    if (obj.StatusCode != 500) {
+                                        $.each(obj.Result, function (index, val) {
+                                                 $('#vehicleNo').append(
+                                                     '<option value="' + val.vehicleNo + '">' + val.vehicleNo + '</option>'
+                                            );
+                                        });
+                                               if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                                                          let saved = $('#hiddenvehicleNo').val();
+                                                if ($("#vehicleNo option[value='" + saved + "']").length === 0) {
+                                                    $('#vehicleNo').append('<option value="' + saved + '">' + saved + '</option>');
+                                                }
+                                                $('#vehicleNo').val(saved).trigger("change");  // final select
+                                            }
+
+                                    }
+                                }
+                                      $('#vehicleNo').select2({
+                                 tags: true,                // allow typing
+                                 placeholder: "Select",
+                             });
+
+                            }
+                        });
+                    }
 
             function sendInvoiceRequest() {
 
@@ -7554,13 +7626,13 @@
             return true;
         });
 
-        $('#vehicleNo').on('change', function () {
-            var inputValue = $(this).val();
-            if (inputValue.length < 10) {
-                $.notify("Please enter at least 10 characters in Vehicle No", "error");
-            }
-        });
-
+                   $('#vehicleNo').on('change', function () {
+                   var inputValue = $(this).val();
+                   if (inputValue!=="" &&  inputValue.length < 10) {
+                       $.notify("Please enter at least 10 characters in Vehicle No", "error");
+                             $('#vehicleNo').val("").trigger("change");
+                   }
+               });
         function FillJWCustomerList() {
             $.ajax({
                 type: "POST",
