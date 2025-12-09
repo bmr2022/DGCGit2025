@@ -49,7 +49,10 @@ public class ItemCategoryBLL : IItemCategory
     {
         return await _ItemCategoryDAL.GetFormRights(ID);
     }
-
+    public async Task<ResponseResult> GetFeatureOption()
+    {
+        return await _ItemCategoryDAL.GetFeatureOption();
+    }
     async Task<IList<TextValue>> IItemCategory.GetDropDownList(string Flag)
     {
         return await _ItemCategoryDAL.GetDropDownList(Flag);

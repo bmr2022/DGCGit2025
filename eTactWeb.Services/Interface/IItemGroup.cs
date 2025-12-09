@@ -16,7 +16,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetUnderCategory(string Mode, string Type);
         Task<ResponseResult> CheckBeforeUpdate(int GroupCode);
         Task<ResponseResult> GetAllItemGroup();
-
+        Task<ResponseResult> GetFeatureOption();
         Task<ResponseResult> SaveItemGroup(ItemGroupModel model);
     }
 }
