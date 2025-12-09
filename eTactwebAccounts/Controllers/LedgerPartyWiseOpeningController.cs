@@ -55,6 +55,8 @@ namespace eTactWeb.Controllers
             MainModel.ActualEntryDate = DateTime.Now;
             MainModel.InvoiceDate = DateTime.Now;
             HttpContext.Session.Remove("KeyLedgerPartyWiseOpeningGrid");
+            MainModel.AccountCode = AccountCode;
+            MainModel.Mode = Mode;
             if (!string.IsNullOrEmpty(Mode) && (Mode == "U" || Mode == "V"))
             {
 

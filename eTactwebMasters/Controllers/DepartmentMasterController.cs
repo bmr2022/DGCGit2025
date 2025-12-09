@@ -91,6 +91,13 @@ namespace eTactWeb.Controllers
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
                     }
+                    else if (Result.StatusText == "Msg No 1.Duplicate Department name not allowed" && Result.StatusCode == HttpStatusCode.Accepted)
+                    {
+                        ViewBag.isSuccess = true;
+                        string message = "Duplicate Department name not allowed";
+                        TempData["ErrorMessage"] = message;
+                      
+                    }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         ViewBag.isSuccess = false;
