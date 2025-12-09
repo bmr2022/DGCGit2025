@@ -137,15 +137,7 @@
                                         <input asp-for="Item_Name" class="form-control" onchange="CheckDuplicate('Item_Name',this.id);" />
                                     </div>
 
-                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="ItemType" class="form-label">Item Category<span style="color:red">*</span></label>
-                                        <div class="col-xl-4  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                            <select asp-for="ItemType" class="form-select" data-abcd="14" style="width:200px;" asp-items="@(new SelectList(Model.ItemTypeList,"Value", "Text"))">
-                                                <option value="">-Select-</option>
-                                            </select>
-                                            <input type="hidden" asp-for="ItemTypeName" />
-                                        </div>
-                                    </div>
+                                  
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="ParentCode" class="form-label">Item Group<span style="color:red">*</span></label>
                                         <div class="col-xl-4  col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -155,6 +147,17 @@
                                             </select>
                                             <input type="hidden" asp-for="ParentName" />
                                         </div>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ItemType" class="form-label">Item Category<span style="color:red">*</span></label>
+                                        @* <div class="col-xl-4  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <select asp-for="ItemType" class="form-select" data-abcd="14" style="width:200px;" asp-items="@(new SelectList(Model.ItemTypeList,"Value", "Text"))">
+                                        <option value="">-Select-</option>
+                                        </select>
+                                        <input type="hidden" asp-for="ItemTypeName" />
+                                        </div> *@
+                                        <input type="hidden" asp-for="ItemType" class="form-control" />
+                                        <input type="text" asp-for="ItemTypeName" class="form-control" readonly />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="HSNNO" class="form-label">HSN No</label>
@@ -461,72 +464,72 @@
                                     @{
                                         if (!string.IsNullOrEmpty(Model.ImageURL))
                                         {
-                                            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
-                                                <div class="row">
-                                                    <div class="col-7">
-                                                        <label class="form-label">Upload Drawing File</label>
-                                                        <button type="button" class='btn btn-sm btn-outline-info mt-3' onclick="ViewFile('@Model.ImageURL')">
-                                                            <i class="fa-solid fa-eye fa-fw fa-lg" style=""></i>
-                                                            View File
-                                                        </button>
-                                                        <div>
-                                                            <span>@Model.ImageURL.Split("/")[3]</span>
+                                                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+                                                    <div class="row">
+                                                        <div class="col-7">
+                                                            <label class="form-label">Upload Drawing File</label>
+                                                            <button type="button" class='btn btn-sm btn-outline-info mt-3' onclick="ViewFile('@Model.ImageURL')">
+                                                                <i class="fa-solid fa-eye fa-fw fa-lg" style=""></i>
+                                                                View File
+                                                            </button>
+                                                            <div>
+                                                                <span>@Model.ImageURL.Split("/")[3]</span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-5">
-                                                        <div class="form-check form-switch pt-4">
-                                                            <input class="form-check-input" type="checkbox" role="switch" id="ReUpload">
-                                                            <label class="form-check-label" for="ReUpload">Re-Upload</label>
+                                                        <div class="col-5">
+                                                            <div class="form-check form-switch pt-4">
+                                                                <input class="form-check-input" type="checkbox" role="switch" id="ReUpload">
+                                                                <label class="form-check-label" for="ReUpload">Re-Upload</label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadFile">
-                                                <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
-                                                <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
-                                            </div>
+                                                <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadFile">
+                                                    <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
+                                                    <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
+                                                </div>
                                         }
                                         else
                                         {
-                                            <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                                <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
-                                                <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
-                                            </div>
+                                                <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                                    <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
+                                                    <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
+                                                </div>
                                         }
                                         if (!string.IsNullOrEmpty(Model.ItemImageURL))
                                         {
-                                            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
-                                                <div class="row">
-                                                    <div class="col-7">
-                                                        <label class="form-label">Upload Item Image</label>
-                                                        <button type="button" class="btn btn-sm btn-outline-info mt-3" onclick="ViewFile('@Model.ItemImageURL')">
-                                                            <i class="fa-solid fa-eye fa-fw fa-lg"></i>
-                                                            View File
-                                                        </button>
-                                                        <div>
-                                                            <span>@Model.ItemImageURL.Split("/")[3]</span>
+                                                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+                                                    <div class="row">
+                                                        <div class="col-7">
+                                                            <label class="form-label">Upload Item Image</label>
+                                                            <button type="button" class="btn btn-sm btn-outline-info mt-3" onclick="ViewFile('@Model.ItemImageURL')">
+                                                                <i class="fa-solid fa-eye fa-fw fa-lg"></i>
+                                                                View File
+                                                            </button>
+                                                            <div>
+                                                                <span>@Model.ItemImageURL.Split("/")[3]</span>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="col-5">
-                                                        <div class="form-check form-switch pt-4">
-                                                            <input class="form-check-input" type="checkbox" role="switch" id="ReUploadItem">
-                                                            <label class="form-check-label" for="ReUploadItem">Re-Upload</label>
+                                                        <div class="col-5">
+                                                            <div class="form-check form-switch pt-4">
+                                                                <input class="form-check-input" type="checkbox" role="switch" id="ReUploadItem">
+                                                                <label class="form-check-label" for="ReUploadItem">Re-Upload</label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadItemFile">
-                                                <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
-                                                <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
-                                            </div>
+                                                <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadItemFile">
+                                                    <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
+                                                    <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
+                                                </div>
                                         }
                                         else
                                         {
-                                            <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                                <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
-                                                <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
-                                            </div>
+                                                <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                                    <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
+                                                    <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
+                                                </div>
                                         }
                                     }
                                
@@ -844,7 +847,7 @@
 
             });
             $('#ParentCode').select2();
-            $('#ItemType').select2();
+            // $('#ItemType').select2();
             $("#Item_Name").autocomplete({
                 source: function (request, response) {
                     $.ajax({
@@ -1172,7 +1175,7 @@
                 $('#ReUploadItem').is(':checked') == true ? $('.ReUploadItemFile').fadeIn() : ($('.ReUploadItemFile').fadeOut(), $('#UploadItemImage').val(''));
             });
                 var selectedText = $("#ItemType").find('option:selected').text().trim();
-            $('#ItemTypeName').val(selectedText);
+            // $('#ItemTypeName').val(selectedText);
         });
 
         $('#ParentCode').on('change', function () {
@@ -1181,7 +1184,7 @@
         });
         $('#ItemType').on('change', function () {
             var selectedText = $(this).find('option:selected').text().trim();
-            $('#ItemTypeName').val(selectedText);
+            // $('#ItemTypeName').val(selectedText);
         });
 
     
@@ -1209,14 +1212,34 @@
         }
         $('#ParentCode').change(function () {
 
-            if ($('#ItemType').prop('selectedIndex') == 0) {
-                // do nothing
-            }
-            else {
+            $.ajax({
+                url: "@Url.Action("GetCategoryFromGroup")",
+                data: { "ParentCode": $('#ParentCode').val() },
+                type: "POST",
+                async: false,
+                success: function (data) {
+
+                    if (data != null) {
+
+                        var obj = $.parseJSON(data);
+                        // alert(obj.Result.Table[0].partcode);
+                        console.log("obj" + obj);
+                        $('#ItemType').val(obj.Result.Table[0].UnderCategoryId);
+                        $('#ItemTypeName').val(obj.Result.Table[0].Type_Item);
+
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+
+           
                 $.ajax({
                     url: "@Url.Action("GetPartCode")",
                     data: { "ParentCode": $('#ParentCode').val(), "ItemType": $('#ItemType').val() },
                     type: "POST",
+                async: false,
                     success: function (data) {
 
                         if (data != null) {
@@ -1235,33 +1258,35 @@
                         $.notify(errMsg, { position: "top center", className: "error" });
                     }
                 });
-            }
+
+               
+            
 
         });
-        $('#ItemType').change(function () {
-            if ($('#ParentCode').prop('selectedIndex') == 0) {
-                // do nothing
-            }
-            else {
-                $.ajax({
-                    url: "@Url.Action("GetPartCode")",
-                    data: { "ParentCode": $('#ParentCode').val(), "ItemType": $('#ItemType').val() },
-                    type: "POST",
-                    success: function (data) {
-                        if (data != null) {
-                            if ("@Model.FeatureOption.AllowPartCode" == true || "@Model.FeatureOption.AllowPartCode" == "True") {
-                                var obj = $.parseJSON(data);
-                                console.log(obj);
-                                $('#PartCode').val(obj.Result.Table[0].partcode);
-                            };
-                        }
-                    },
-                    error: function (errMsg) {
-                        $.notify(errMsg, { position: "top center", className: "error" });
-                    }
-                });
-            }
-        });
+        // $('#ItemType').change(function () {
+        //     if ($('#ParentCode').prop('selectedIndex') == 0) {
+        //         // do nothing
+        //     }
+        //     else {
+        //         $.ajax({
+        //             url: "@Url.Action("GetPartCode")",
+        //             data: { "ParentCode": $('#ParentCode').val(), "ItemType": $('#ItemType').val() },
+        //             type: "POST",
+        //             success: function (data) {
+        //                 if (data != null) {
+        //                     if ("@Model.FeatureOption.AllowPartCode" == true || "@Model.FeatureOption.AllowPartCode" == "True") {
+        //                         var obj = $.parseJSON(data);
+        //                         console.log(obj);
+        //                         $('#PartCode').val(obj.Result.Table[0].partcode);
+        //                     };
+        //                 }
+        //             },
+        //             error: function (errMsg) {
+        //                 $.notify(errMsg, { position: "top center", className: "error" });
+        //             }
+        //         });
+        //     }
+        // });
         $('#confirmSave').click(function () {
              var Err = 0;
         let machine1 = $('#ProdInMachine1').val();
@@ -1352,40 +1377,43 @@
                 var itemType = $("#ItemServAssets").val();
         var hsn = $('#HSNNO').val().trim();
                 var itemTypeName = $("#ItemTypeName").val().trim().toUpperCase();
+            if ("@Model.FeatureOption.HSNNOIsRequired" == true || "@Model.FeatureOption.HSNNOIsRequired" == "True") {
+                if (itemTypeName.includes("FINISHED GOODS")) {
 
-        if (itemTypeName.includes("FINISHED GOODS")) {
+                    if (hsn === "" || hsn === "0") {
+                        $("#HSNNO").addClass("is-invalid");
+                        $.notify("HSN Code is mandatory for Finished Goods!", "error");
+                        Err = 1;
+                    } else {
+                        $("#HSNNO").removeClass("is-invalid").addClass("valid");
+                    }
+                }
 
-            if (hsn === "" || hsn === "0") {
-                $("#HSNNO").addClass("is-invalid");
-                $.notify("HSN Code is mandatory for Finished Goods!", "error");
-                Err = 1;
-            } else {
-                $("#HSNNO").removeClass("is-invalid").addClass("valid");
+                if (itemType === "Service") {
+
+                    // HSN must start with 99 and be exactly 6 digits
+                    if (hsn !== "" && hsn !== "0" && !/^99\d{4}$/.test(hsn)) {
+                        $('#HSNNO').removeClass('valid').addClass('is-invalid');
+                        $.notify("For Service items, HSN must start with 99 and be exactly 6 digits...!", "error");
+                        Err = 1;
+                    } else {
+                        $('#HSNNO').removeClass('is-invalid').addClass('valid');
+                    }
+
+                } else {
+
+                    // For non-service, your old rule: 6–8 digits allowed
+                    if (hsn !== "" && hsn !== "0" && !/^\d{6,8}$/.test(hsn)) {
+                        $('#HSNNO').removeClass('valid').addClass('is-invalid');
+                        $.notify("HSN Code must be 6 to 8 digits for goods...!", "error");
+                        Err = 1;
+                    } else {
+                        $('#HSNNO').removeClass('is-invalid').addClass('valid');
+                    }
+                }
             }
-        }
-
-        if (itemType === "Service") {
-
-            // HSN must start with 99 and be exactly 6 digits
-              if (hsn !== "" && hsn !== "0"&& !/^99\d{4}$/.test(hsn)) {
-                $('#HSNNO').removeClass('valid').addClass('is-invalid');
-                $.notify("For Service items, HSN must start with 99 and be exactly 6 digits...!", "error");
-                Err = 1;
-            } else {
-                $('#HSNNO').removeClass('is-invalid').addClass('valid');
-            }
-
-        } else {
-
-            // For non-service, your old rule: 6–8 digits allowed
-            if (hsn !== "" && hsn !== "0" && !/^\d{6,8}$/.test(hsn)) {
-                $('#HSNNO').removeClass('valid').addClass('is-invalid');
-                $.notify("HSN Code must be 6 to 8 digits for goods...!", "error");
-                Err = 1;
-            } else {
-                $('#HSNNO').removeClass('is-invalid').addClass('valid');
-            }
-        }
+            
+          
 
           if ("@Model.FeatureOption.IsStoreMandatoryInItemMaster" == true || "@Model.FeatureOption.IsStoreMandatoryInItemMaster" == "True") {
          var Store = $('#Store').val().trim();

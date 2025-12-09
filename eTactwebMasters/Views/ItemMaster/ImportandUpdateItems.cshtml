@@ -672,7 +672,7 @@
                 // validate mandatory mapping fields
                 let mandatoryFields = (flag === "UpdateDataFromExcel")
                     ? ["PartCode"]
-                    : ["PartCode", "Unit", "HsnNo", "ItemGroup", "ItemCategory", "ItemServAssets"];
+                    : ["PartCode", "Unit", "ItemGroup","ItemServAssets"];
 
                 let missing = mandatoryFields.filter(f => !mapping[f] || mapping[f].trim() === "");
                 if (missing.length) {

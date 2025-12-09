@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Helpers;
 using eTactWeb.Services.Interface;
@@ -138,8 +139,80 @@ public class AdminController : Controller, IAsyncDisposable
             model.Mode = Mode;
             return View(model);
         }
-    }
+    } 
+    public async Task<IActionResult> ManagePassword(int ID, string Mode)
+    {
+        UserMasterModel model = new();
+        var encrypted = System.IO.File.ReadAllText("license.lic");
+        var plain = LicenseCrypto.Decrypt(encrypted);
+        var lic = System.Text.Json.JsonSerializer.Deserialize<LicenseInfo>(plain);
+        var jsonResult = await GetUserCount();
 
+        var response = jsonResult.Value as ResponseResult;
+        int userCount = 0;
+
+        if (response?.Result is DataTable dt && dt.Rows.Count > 0)
+        {
+            userCount = Convert.ToInt32(dt.Rows[0]["TotalUser"]);
+        }
+        ViewBag.CurrentUserCount = userCount;
+        ViewBag.LicensedUserCount = lic.NumberOfUser;
+        model.ID= HttpContext.Session.GetString("EmpID").ToString() != null ? Convert.ToInt32(HttpContext.Session.GetString("EmpID").ToString()) : 0;
+        model = await _IAdminModule.GetUserByID(model.ID);
+            model.UserTypeList = await _IDataLogic.GetDropDownList("UserTypeTB", "SP_GetDropDownList");
+            model.EmpNameList = await _IDataLogic.GetDropDownList("EmpNameNCode", "SP_GetDropDownList");
+        model.Mode = "U";
+
+        return View(model);
+
+            }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ManagePassword(UserMasterModel model)
+    {
+        //if (ModelState.IsValid)
+        //{
+        var ID = HttpContext.Session.GetString("EmpID").ToString() != null ? Convert.ToInt32(HttpContext.Session.GetString("EmpID").ToString()) : 0;
+        model.Mode = "Update";
+        if (model.Password == model.CnfPass)
+        {
+            model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
+            Result = await _IAdminModule.SaveUserMaster(model);
+            if (Result == null)
+            {
+                ViewBag.isSuccess = false;
+                TempData["Message"] = "Something Went Wrong, Please Try Again.";
+                
+                return RedirectToAction(nameof(ManagePassword), new { ID = ID });
+            }
+            else if (Result != null && Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+            {
+                ViewBag.isSuccess = true;
+                TempData["200"] = "200";
+            }
+            else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["202"] = "202";
+            }
+        }
+        else
+        {
+            ViewBag.isSuccess = false;
+            TempData["Message"] = "Password And Confirm Password aren't same.";
+            return RedirectToAction(nameof(ManagePassword), new { ID = ID });
+        }
+        //}
+        return RedirectToAction(nameof(ManagePassword));
+
+        //else
+        //{
+        //    ViewBag.isSuccess = false;
+        //    TempData["Message"] = "Form Validation Error.";
+        //    return RedirectToAction(nameof(UserMaster), new { ID = 0 });
+        //}
+    }
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UserMaster(UserMasterModel model)
