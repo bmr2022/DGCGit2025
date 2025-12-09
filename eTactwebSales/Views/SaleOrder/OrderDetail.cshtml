@@ -815,6 +815,7 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    
                                 </div>
                                 <div class="progress my-3 mb-3" style="height: 4px;">
                                     <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -949,7 +950,7 @@
                                         <input asp-for="Vehicle" class="form-control" tabindex="-1" readonly disabled />
                                     </div>
                                      <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <label asp-for="Group_Code" class="form-label">Vehicle</label>
+                                        <label asp-for="Group_Code" class="form-label">Group Name</label>
                                         <input asp-for="Group_name" class="form-control" tabindex="-1" readonly disabled />
                                         <input type="hidden" asp-for="Group_Code" class="form-control" tabindex="-1" readonly disabled />
                                     </div>
@@ -1107,6 +1108,12 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="row g-2 gx-3">
+                                    <div id="excelErrorBox" class="alert alert-danger" style="display:none;">
+                                        <ul id="excelErrorList"></ul>
+                                    </div>
+
                                 </div>
                                 <div class="progress my-3 mb-3" style="height: 4px;">
                                     <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -2145,11 +2152,55 @@
                 contentType: false,
                 success: function (result) {
 
-                    $('#divSaleItemGrid').html(result);
-                    GetFeatureOption(); 
+                    // $('#divSaleItemGrid').html(result);
+                    // GetFeatureOption(); 
+                    // calculateTotalAmount();
+                    // GetTaxPartItem();
+
+                            if (result.errorList && result.errorList.length > 0) {
+                                $("#excelErrorList").empty();
+
+                                result.errorList.forEach(function (msg) {
+                                    $("#excelErrorList").append("<li>" + msg + "</li>");
+                                });
+
+                                $("#excelErrorBox").show();
+                            } else {
+                                $("#excelErrorBox").hide();
+                            }
+
+                            // LOAD PARTIAL VIEW
+                            if (result.html) {
+                                $('#divSaleItemGrid').empty();
+                                 $("#divSaleItemGrid").html(result.html);
+                            }
+                                    // var rowCount = $('#divSaleItemGrid tr').length;
+                                    //  var columnCount = $('#divSaleItemGrid tr td').length;
+                                    //  var taxRowCount = $('#divTaxGrid tr').length;
+                                    //  var sum = 0;
+
+                                    //  noofitems
+                                    //  if (columnCount > 1)
+                                    //      $('#lblItemCount').text(rowCount);
+                                    //  else
+                                    //      $('#lblItemCount').text(0);
+
+                                    //  for (var i = 1; i <= rowCount; i++) {
+
+                                    //      sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+                                    //  }
+                                    //  $('#ItemNetAmount').val(sum);
+                                    //  var txSum = 0;
+                                    //  if ($('#divTaxGrid tr td').length > 1) {
+                                    //      for (var i = 1; i <= taxRowCount; i++) {
+                                    //          txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                                    //      }
+                                    //  }
+                                    //  $('#lblItemNetAmount').text(sum.toFixed(2));
+
+                     GetFeatureOption(); 
                     calculateTotalAmount();
                     GetTaxPartItem();
-
                 },
                 error: function (xhr) {
                     if (xhr.status === 400) {
