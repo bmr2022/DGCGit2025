@@ -31,6 +31,8 @@ using Org.BouncyCastle.Ocsp;
 using DocumentFormat.OpenXml.Bibliography;
 using eTactWeb.Services;
 using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Wordprocessing;
+using ClosedXML.Excel;
 
 namespace eTactWeb.Controllers;
 
@@ -814,6 +816,127 @@ public class PurchaseOrderController : Controller
         }
         return PartialView("_POItemGrid", MainModel);
     }
+    private void ExportSummaryForExcel(IXLWorksheet sheet, IList<PODashBoard> list)
+    {
+        string[] headers = {
+        "Sr", "PO No", "PO Date", "VendorName","CreatedBy"
+    };
+
+        // Set Headers
+        for (int i = 0; i < headers.Length; i++)
+            sheet.Cell(1, i + 1).Value = headers[i];
+
+        int row = 2, srNo = 1;
+
+        foreach (var item in list)
+        {
+            sheet.Cell(row, 1).Value = srNo++;
+            sheet.Cell(row, 2).Value = item.PONo;
+            sheet.Cell(row, 3).Value = item.PODate;
+            sheet.Cell(row, 4).Value = item.VendorName;
+            sheet.Cell(row, 5).Value = item.CreatedBy;
+          
+            row++;
+        }
+    }
+    private void ExportDetailForExcel(IXLWorksheet sheet, IList<PODashBoard> list)
+    {
+        string[] headers = {
+        "Sr", "PO No", "PO Date", "SummaryDetail", "VendorName",
+        "POFor", "OrderType", "Amount", "POType", "PartCode","ItemName","HsnNo","POQty","Unit",
+        "AltPOQty","AltUnit","Rate","RateInOtherCurr","DiscPer","DiscRs","PendAltQty","UnitRate","Approved",
+        "ApproveAmm","Approval1Levelapproved","BasicAmount","NetAmount","POCloseDate","VendorAddress"
+        ,"QuotNo","QuotYear","EnteredBy","UpdatedBy","EntryID","YearCode","POComplete"
+    };
+
+        // Set Headers
+        for (int i = 0; i < headers.Length; i++)
+            sheet.Cell(1, i + 1).Value = headers[i];
+
+        int row = 2, srNo = 1;
+
+        foreach (var item in list)
+        {
+            sheet.Cell(row, 1).Value = srNo++;
+            sheet.Cell(row, 2).Value = item.PONo;
+            sheet.Cell(row, 3).Value = item.PODate;
+            sheet.Cell(row, 4).Value = item.SummaryDetail;
+            sheet.Cell(row, 5).Value = item.VendorName;
+            sheet.Cell(row, 6).Value = item.POFor;
+            sheet.Cell(row, 7).Value = item.OrderType;
+            sheet.Cell(row, 8).Value = item.Amount;
+            sheet.Cell(row, 9).Value = item.POType;
+            sheet.Cell(row, 10).Value = item.PartCode;
+            sheet.Cell(row, 11).Value = item.ItemName;
+            sheet.Cell(row, 12).Value = item.HsnNo;
+            sheet.Cell(row, 13).Value = item.POQty;
+            sheet.Cell(row, 14).Value = item.Unit;
+            sheet.Cell(row, 15).Value = item.AltPOQty;
+            sheet.Cell(row, 16).Value = item.AltUnit;
+            sheet.Cell(row, 17).Value = item.Rate;
+            sheet.Cell(row, 18).Value = item.RateInOtherCurr;
+            sheet.Cell(row, 19).Value = item.DiscPer;
+            sheet.Cell(row, 20).Value = item.DiscRs;
+            sheet.Cell(row, 21).Value = item.PendAltQty;
+            sheet.Cell(row, 22).Value = item.UnitRate;
+            sheet.Cell(row, 23).Value = item.Approved;
+            sheet.Cell(row, 24).Value = item.ApproveAmm;
+            sheet.Cell(row, 25).Value = item.Approval1Levelapproved;
+            sheet.Cell(row, 26).Value = item.BasicAmount;
+            sheet.Cell(row, 27).Value = item.NetAmount;
+            sheet.Cell(row, 28).Value = item.POCloseDate;
+            sheet.Cell(row, 29).Value = item.VendorAddress;
+            sheet.Cell(row, 30).Value = item.QuotNo;
+            sheet.Cell(row, 31).Value = item.QuotYear;
+            sheet.Cell(row, 32).Value = item.EnteredBy;
+            sheet.Cell(row, 33).Value = item.UpdatedBy;
+            sheet.Cell(row, 34).Value = item.EntryID;
+            sheet.Cell(row, 35).Value = item.YearCode;
+            sheet.Cell(row, 36).Value = item.POComplete;
+            row++;
+        }
+    }
+    [HttpGet]
+    public IActionResult ExportPurchaseOrderToExcel(string ReportType)
+    {
+        string modelJson = HttpContext.Session.GetString("KeyPurchaseOrder");
+
+        if (string.IsNullOrEmpty(modelJson))
+            return NotFound("No data available to export.");
+
+        var list = JsonConvert.DeserializeObject<List<PODashBoard>>(modelJson);
+
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("PurchaseOrder");
+
+        var reportGenerators = new Dictionary<string, Action<IXLWorksheet, IList<PODashBoard>>>
+    {
+        { "Detail", ExportDetailForExcel },
+        { "Summary", ExportSummaryForExcel }
+    };
+
+        if (reportGenerators.TryGetValue(ReportType, out var generator))
+        {
+            generator(worksheet, list);
+        }
+        else
+        {
+            return BadRequest("Invalid report type.");
+        }
+
+        worksheet.Columns().AdjustToContents();
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        stream.Position = 0;
+
+        string fileName = $"PurchaseOrder_{DateTime.Now:dd-MMM-yyyy}.xlsx";
+
+        return File(stream.ToArray(),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            fileName);
+    }
+
 
     public IActionResult EditItemRow(PurchaseOrderModel model)
     {
@@ -1019,11 +1142,63 @@ public class PurchaseOrderController : Controller
         return PartialView("_DashBoardGrid", model);
     }
 
-    public async Task<IActionResult> GetDetailData(PODashBoard model)
+    public async Task<IActionResult> GetDetailData(PODashBoard model, int  pageNumber = 1, int pageSize = 10, string SearchBox = "")
     {
         model.Mode = "SEARCH";
         model = await IPurchaseOrder.GetDetailData(model);
         model.DashboardType = "Detail";
+        var modelList = model?.PODashboard ?? new List<PODashBoard>();
+
+        if (string.IsNullOrWhiteSpace(SearchBox))
+        {
+            model.TotalRecords = modelList.Count();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+
+            model.PODashboard = modelList
+               .Skip((pageNumber - 1) * pageSize)
+               .Take(pageSize)
+               .ToList();
+        }
+        else
+        {
+            List<PODashBoard> filteredResults;
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                filteredResults = modelList.ToList();
+            }
+            else
+            {
+                filteredResults = modelList
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = modelList.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.PODashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+        }
+        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            string serializedGrid = JsonConvert.SerializeObject(modelList);
+        HttpContext.Session.Remove("KeyPurchaseOrder");
+        HttpContext.Session.SetString("KeyPurchaseOrder", serializedGrid);
         return PartialView("_DashBoardGrid", model);
     }
 

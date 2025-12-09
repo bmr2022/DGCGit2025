@@ -40,6 +40,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Org.BouncyCastle.Crypto.Engines;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml;
 
 
 
@@ -891,11 +892,11 @@ namespace eTactWeb.Controllers
                             continue;
                         }
 
-                        if (!decimal.TryParse(rateStr, out decimal rate))
-                        {
-                            errorList.Add($"Row {row} → Invalid Rate: {rateStr}");
-                            continue;
-                        }
+                        //if (!decimal.TryParse(rateStr, out decimal rate))
+                        //{
+                        //    errorList.Add($"Row {row} → Invalid Rate: {rateStr}");
+                        //    continue;
+                        //}
 
                         if (!decimal.TryParse(disStr, out decimal discountPer))
                             discountPer = 0;
@@ -934,6 +935,19 @@ namespace eTactWeb.Controllers
                         var GroupCode = jsonDetail["Result"][0]["GroupCode"];
                         var Rackid = jsonDetail["Result"][0]["Rackid"]?.ToString();
                         var Group_name = jsonDetail["Result"][0]["Group_name"]?.ToString();
+                        var saleprice = jsonDetail["Result"][0]["saleprice"].ToString();
+
+
+                        decimal rate;
+                        if (!string.IsNullOrEmpty(rateStr) && decimal.TryParse(rateStr, out decimal excelRate))
+                            rate = excelRate;
+                        else if (!string.IsNullOrEmpty(saleprice) && decimal.TryParse(saleprice, out decimal dbRate))
+                            rate = dbRate;
+                        else
+                        {
+                            errorList.Add($"Row {row} → Invalid Rate qty : {qtyStr} Rate:{rateStr}");
+                            continue;
+                        }
 
                         decimal basicAmt = qty * rate;
                         decimal discountAmt = basicAmt * (discountPer / 100);

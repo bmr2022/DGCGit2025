@@ -255,12 +255,17 @@
             });
         }
 
-        $('#sendToExcel').click(function () {
-            $("#PODashboardGrid").table2excel({
-                filename: "PurchaseOrderTable.xls"
-            });
-        });
+        // $('#sendToExcel').click(function () {
+        //     $("#PODashboardGrid").table2excel({
+        //         filename: "PurchaseOrderTable.xls"
+        //     });
+        // });
 
+
+        $('#sendToExcel').click(function () {
+            var reportType = $('#DashboardType').val(); // assuming there's a dropdown or input with id="ReportType"
+            window.location.href = '/PurchaseOrder/ExportPurchaseOrderToExcel?ReportType=' + encodeURIComponent(reportType);
+        });
 
         function GetSearchData() {
             if($('#DashboardType').val()=="Summary"){
@@ -334,6 +339,7 @@
                     var dashGrid = $('#PODashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
                     GetFormRights();
+                    GetFeaturesOptions();
                     //countAllTotal();
                 },
                 error: function () {
@@ -486,29 +492,57 @@
             loadPage(page);
         });
         function loadPage(pageNumber) {
+
+            var dashboardType = $('#DashboardType').val();
+            var url = '';
             var data = $('#SParam').serialize(); // serialize filters
             data += '&pageNumber=' + pageNumber;// match controller default
 
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetSearchData", "PurchaseOrder")',
-                data: data,
-                success: function (result) {
-                    $('#divDashboardGrid').html(result);
-                    $('#currentPage').val(pageNumber);
+            if (dashboardType === "Summary") {
 
-                       var dashGrid = $('#PODashboardGrid tr').length - 1;
-            $('#totalRows').text(dashGrid);
-                    // Optional functions
-                     GetFeaturesOptions();
-                    GetFormRights();
-                    // GetTotalAmounts();
-            LockedFinancialYear();
-            CheckApprovedOrNot();
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetSearchData", "PurchaseOrder")',
+                    data: data,
+                    success: function (result) {
+                        $('#divDashboardGrid').html(result);
+                        $('#currentPage').val(pageNumber);
 
-            PoallowtoprintWithoutApproval();
-                }
-            });
+                        var dashGrid = $('#PODashboardGrid tr').length - 1;
+                        $('#totalRows').text(dashGrid);
+                        // Optional functions
+                        GetFeaturesOptions();
+                        GetFormRights();
+                        // GetTotalAmounts();
+                        LockedFinancialYear();
+                        CheckApprovedOrNot();
+
+                        PoallowtoprintWithoutApproval();
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: '@Url.Action("GetDetailData")',
+                    type: "POST",
+                    data: data,
+                    success: function (data) {
+                        LockedFinancialYear();
+                        $('#divDashboardGrid').empty().append(data);
+                        CheckApprovedOrNot();
+                        var dashGrid = $('#PODashboardGrid tr').length - 1;
+                        $('#totalRows').text(dashGrid);
+                        GetFormRights();
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+         
+
         }
     </script>
     <script src="~/Scripts/table2excel.js"></script>

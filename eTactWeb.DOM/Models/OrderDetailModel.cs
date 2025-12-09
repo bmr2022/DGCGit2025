@@ -269,6 +269,7 @@ namespace eTactWeb.DOM.Models
         };
         //[Required(ErrorMessage = "Party Name is required")]
         public int AccountCode { get; set; }
+        public List<string> ErrorList { get; set; }
         public IList<TextValue>? AccountList { get; set; }
         public IList<SaleOrderBillToShipTo>? SaleOrderBillToShipTo { get; set; }
         public string? Address { get; set; }
