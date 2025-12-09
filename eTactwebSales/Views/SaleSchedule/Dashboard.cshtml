@@ -292,10 +292,10 @@
                 var Approved = $('#hiddenSSApproved-' + i).val();
                 var AmendApproved = $('#hiddenSSAmendApproved-' + i).val();
 
-                if (Approved == "Y" && AmendApproved == "N") {
+                if (Approved == "Y" ) {
                     $('#SSGridRow-' + i).css("color", "green");
                 } else {
-                    if (AmendApproved == "Y" && AmendApproved == "Y") {
+                    if (Approved == "Y" && AmendApproved == "Y") {
                         $('#SSGridRow-' + i).css("color", "blue");
                     } else {
                         $('#SSGridRow-' + i).css("color", "#FF0000");

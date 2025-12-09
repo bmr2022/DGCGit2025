@@ -478,7 +478,7 @@ namespace eTactWeb.Data.DAL
             return model;
         }
 
-        internal async Task<ResponseResult> DeleteByID(int ID, int YearCode,int UpdatedBy)
+        internal async Task<ResponseResult> DeleteByID(int ID, int YearCode,int UpdatedBy,string EntryByMachineName)
         {
             var _ResponseResult = new ResponseResult();
 
@@ -488,6 +488,7 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@EntryID", ID));
+                SqlParams.Add(new SqlParameter("@EntryByMachineName", EntryByMachineName));
                 SqlParams.Add(new SqlParameter("@UpdatedBy", UpdatedBy));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
 

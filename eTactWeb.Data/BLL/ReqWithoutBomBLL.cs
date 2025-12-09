@@ -95,9 +95,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ReqWithoutBomDAL.GetDetailData(REQNo, WCName,WONO, DepName, PartCode, ItemName, BranchName, FromDate, ToDate);
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC,int UpdatedBy)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC,int UpdatedBy, string EntryByMachineName)
         {
-            return await _ReqWithoutBomDAL.DeleteByID(ID, YC, UpdatedBy);
+            return await _ReqWithoutBomDAL.DeleteByID(ID, YC, UpdatedBy, EntryByMachineName);
         }
 
         public async Task<RequisitionWithoutBOMModel> GetViewByID(int ID, int YearCode)
