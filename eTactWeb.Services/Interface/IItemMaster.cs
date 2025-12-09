@@ -19,6 +19,7 @@ namespace eTactWeb.Services.Interface
         int GetisDelete();
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> GetPartCode(int ParentCode, int ItemType);
+        Task<ResponseResult> GetCategoryFromGroup(int ParentCode);
         Task<ResponseResult> GetItemCategory(string ItemServAssets);
         Task<ResponseResult> GetItemGroup(string ItemServAssets);
         Task<ResponseResult> GetItemCode(string PartCode, string ItemName);

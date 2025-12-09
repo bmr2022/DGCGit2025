@@ -30,6 +30,7 @@ using DocumentFormat.OpenXml.EMMA;
 using eTactWeb.Data.DAL;
 using System.Data.SqlClient;
 using OfficeOpenXml.FormulaParsing.ExpressionGraph;
+using OfficeOpenXml.Table.PivotTable;
 
 namespace eTactWeb.Controllers;
 
@@ -502,6 +503,13 @@ public class ItemMasterController : Controller
     public async Task<JsonResult> GetPartCode(int ParentCode, int ItemType)
     {
         var JSON = await _IItemMaster.GetPartCode(ParentCode, ItemType);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+
+    public async Task<JsonResult> GetCategoryFromGroup(int ParentCode)
+    {
+        var JSON = await _IItemMaster.GetCategoryFromGroup(ParentCode);
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
@@ -2396,18 +2404,28 @@ public class ItemMasterController : Controller
                                 {
                                     string groupName = value.ToString().Trim();
                                     int ParentCode = 0;
+                                    int ItemType = 0;
                                     var groupCode = _IItemMaster.GetItemGroupCode(groupName); // keep your existing call
                                     if (groupCode.Result.Result != null && groupCode.Result.Result.Rows.Count > 0)
                                     {
                                         ParentCode = Convert.ToInt32(groupCode.Result.Result.Rows[0].ItemArray[0]);
+                                        ItemType = Convert.ToInt32(groupCode.Result.Result.Rows[0].ItemArray[1]);
                                     }
-                                    else ParentCode = 0;
+                                    else
+                                    {
+                                        ParentCode = 0; ItemType = 0;
+                                    }
 
                                     if (ParentCode == 0)
                                     {
                                         return Json(new { StatusCode = 240, StatusText = $"Invalid 'ItemGroup' at Row {rowNumber}, PartCode: {partCodeValue}. Group '{groupName}' not found." });
                                     }
+                                    if (ItemType == 0)
+                                    {
+                                        return Json(new { StatusCode = 240, StatusText = $"Invalid 'ItemGroup' at Row {rowNumber}, PartCode: {partCodeValue}. Group '{groupName}' not found." });
+                                    }
                                     value = ParentCode;
+                                    row["ItemCategory"] = ItemType;
                                 }
 
                                 // ItemCategory -> code lookup
