@@ -64,7 +64,7 @@
                     {
 
                         Cntr = Cntr + 1;
-                        <tr>
+                        <tr id="purchaseSchDashboardRow-@Cntr">
                             <th>@Cntr</th>
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
@@ -120,7 +120,10 @@
                             </td>
 
                             <td>@item.VendorName</td>
-                            <td>@item.SchNo</td>
+                            <td>@item.SchNo
+                                <input type="hidden" id="approvedOrNot-@Cntr" value="@item.SchApproved" />
+                                <input type="hidden" id="schAmendApproved-@Cntr" value="@item.SchAmendApprove" />
+                            </td>
                             @if (item.Schdate != null)
                             {
                                 <td>@item.Schdate.Split(" ")[0]</td>

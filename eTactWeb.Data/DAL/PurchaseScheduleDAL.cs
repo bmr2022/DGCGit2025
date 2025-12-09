@@ -648,11 +648,13 @@ public class PurchaseScheduleDAL
            var schAmdDt = CommonFunc.ParseFormattedDate(model.SchAmendmentDate);
            var schEffFromDt = CommonFunc.ParseFormattedDate(model.SchEffFromDate);
            var schEffToDate = CommonFunc.ParseFormattedDate(model.SchEffTillDate);
+          // var CreatedOn = CommonFunc.ParseFormattedDate(model.CreatedOn);
             var AmmAppDate = "";
             var AppDate = "";
             if (model.Mode == "UPDATE")
             {
                 SqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));
+                SqlParams.Add(new SqlParameter("@UpdatedOn", model.UpdatedOn));
             }
             SqlParams.Add(new SqlParameter("@EntryDate", entDt == default ? string.Empty : entDt));
             SqlParams.Add(new SqlParameter("@PODate", poDt == default ? string.Empty : poDt));
@@ -661,7 +663,6 @@ public class PurchaseScheduleDAL
             SqlParams.Add(new SqlParameter("@SchAmendDate", schAmdDt == default ? string.Empty : schAmdDt));
             SqlParams.Add(new SqlParameter("@ScheduleEffectiveFromDate", schEffFromDt == default ? string.Empty : schEffFromDt));
             SqlParams.Add(new SqlParameter("@ScheduleEffectiveTillDate", schEffToDate == default ? string.Empty : schEffToDate));
-            
             if (model.Mode == "PSA")
                 SqlParams.Add(new SqlParameter("@PSAmendYC", model.AmmYearCode));
 
@@ -687,7 +688,7 @@ public class PurchaseScheduleDAL
             SqlParams.Add(new SqlParameter("@OrderPriority", model.OrderPriority ?? string.Empty));
             SqlParams.Add(new SqlParameter("@FirstMonthTentRatio", model.FirstMonthTentRatio));
             SqlParams.Add(new SqlParameter("@SecMonthTentRatio", model.SecMonthTentRatio));
-            
+           SqlParams.Add(new SqlParameter("@CreatedOn", model.CreatedOn));
             SqlParams.Add(new SqlParameter("@CC", model.CC));
             if (model.Mode == "PSA")
             {

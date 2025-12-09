@@ -1019,7 +1019,6 @@ public static class CommonFunc
                          && typeProperty.PropertyInfo.Name != "AltSchQty"
                          && typeProperty.PropertyInfo.Name != "AltPendQty"
                          && typeProperty.PropertyInfo.Name != "ItemAmendNo"
-                         && typeProperty.PropertyInfo.Name != "SchApproved"
                          && typeProperty.PropertyInfo.Name != "DeliveryDate"
                          && typeProperty.PropertyInfo.Name != "Canceled"
                          && typeProperty.PropertyInfo.Name != "SchCompleted"

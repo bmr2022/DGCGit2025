@@ -66,7 +66,7 @@ namespace eTactWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DirectPurchaseBill( int ID,  int YearCode, string Mode, string? TypeITEMSERVASSETS, string FromDate = "", string ToDate = "",  string DashboardType = "", string DocumentType = "", string VendorName = "", string PurchVouchNo = "", string InvoiceNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "")
+        public async Task<IActionResult> DirectPurchaseBill( int ID,  int YearCode, string Mode, string? TypeITEMSERVASSETS, string FromDate = "", string ToDate = "",  string DashboardType = "", string DocumentType = "", string VendorName = "", string PurchVouchNo = "", string InvoiceNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "",string PONo="",int AccountCode=0)
         {
             HttpContext.Session.Remove("KeyTaxGrid");
             HttpContext.Session.Remove("KeyTDSGrid");
@@ -80,6 +80,9 @@ namespace eTactWeb.Controllers
              MainModel.PreparedByName = HttpContext.Session.GetString("EmpName");
             MainModel.Branch = HttpContext.Session.GetString("Branch");
 
+            ViewBag.AccountCode = AccountCode;
+            ViewBag.AccountName = VendorName;
+            ViewBag.PONO = PONo;
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await IDirectPurchaseBill.GetViewByID(ID, YearCode, "ViewByID").ConfigureAwait(false);
@@ -748,6 +751,80 @@ namespace eTactWeb.Controllers
 
             return PartialView("_DPBItemGrid", model);
         }
+
+        [HttpPost]
+        public IActionResult AddMultiPurchaseBillDetail([FromBody] List<DPBItemDetail> model)
+        {
+            try
+            {
+                // 🔹 Step 1: Validate input
+                if (model == null || !model.Any())
+                {
+                    ModelState.AddModelError("Error", "Purchase Bill Detail list cannot be empty.");
+                    return BadRequest(ModelState);
+                }
+
+                var mainModel = new DirectPurchaseBillModel();
+                var rcGrid = new List<DPBItemDetail>();
+
+                // 🔹 Step 2: Try to get existing session data
+                string existingSession = HttpContext.Session.GetString("DirectPurchaseBill");
+
+
+                if (!string.IsNullOrEmpty(existingSession))
+                {
+                    var existingModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(existingSession);
+
+                    if (existingModel != null && existingModel.ItemDetailGrid != null)
+                    {
+                        rcGrid = existingModel.ItemDetailGrid.ToList();
+                        mainModel = existingModel;
+                    }
+                }
+
+                // 🔹 Step 3: Determine next sequence number
+                int seqNoStart = (rcGrid != null && rcGrid.Any()) ? rcGrid.Max(x => x.SeqNo) + 1 : 1;
+
+                // 🔹 Step 4: Loop through new items and check for duplicates
+                foreach (var item in model)
+                {
+                    bool isDuplicate = rcGrid.Any(x =>
+                        x.PONo == item.PONo &&
+                        x.ItemCode == item.ItemCode 
+                        
+                    );
+
+                    if (isDuplicate)
+                    {
+                        // Return "Duplicate" with 207 code (like your JS expects)
+                        return StatusCode(207, "Duplicate");
+                    }
+
+                    // Otherwise add new entry
+                    item.SeqNo = seqNoStart++;
+                    rcGrid.Add(item);
+                }
+
+                // 🔹 Step 5: Sort and assign back to model
+                rcGrid = rcGrid.OrderBy(x => x.SeqNo).ToList();
+                //mainModel.saleBillDetails = rcGrid;
+                mainModel.ItemDetailGrid = rcGrid;
+                mainModel.ItemNetAmount = rcGrid.Sum(x => x.Amount);
+                //mainModel = BindItem4Grid(mainModel);
+
+                // 🔹 Step 6: Save back to session
+                //HttpContext.Session.SetString("DirectPurchaseBill", JsonConvert.SerializeObject(rcGrid));
+                HttpContext.Session.SetString("DirectPurchaseBill", JsonConvert.SerializeObject(mainModel));
+
+                // 🔹 Step 7: Return updated partial
+                return PartialView("_DPBItemGrid", mainModel);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error while adding purchase bill details: " + ex.Message);
+            }
+        }
+
         public async Task<JsonResult> GetFormRights()
         {
             var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
@@ -1462,24 +1539,24 @@ namespace eTactWeb.Controllers
                     Item.ItemCode ?? 0,
                     Item.Unit ?? string.Empty,
                     0f, // Item.NoOfCase
-                    Item.BillQty > 0 ? Math.Round(Item.BillQty, 2, MidpointRounding.AwayFromZero) : 0,
-                    Item.DPBQty > 0 ? Math.Round(Item.DPBQty, 2, MidpointRounding.AwayFromZero) : 0,
+                    Item.BillQty > 0 ? Item.BillQty : 0,
+                    Item.DPBQty > 0 ? Item.DPBQty: 0,
                     0f, // Item.RejectedQty
-                    Item.AltQty > 0 ? Math.Round(Item.AltQty, 2, MidpointRounding.AwayFromZero) : 0,
+                    Item.AltQty > 0 ?  Item.AltQty  : 0,
                     Item.AltUnit ?? string.Empty,
                      
-                    Item.Rate > 0 ? Math.Round(Item.Rate, 2, MidpointRounding.AwayFromZero) : 0,
+                    Item.Rate > 0 ? Item.Rate: 0,
                     0f, // Item.MRP
                     Item.UnitRate ?? string.Empty,
                     0f, // Item.RateIncludingTaxes
-                    Item.OtherRateCurr > 0 ? Math.Round(Item.OtherRateCurr, 2, MidpointRounding.AwayFromZero) : 0,
+                    Item.OtherRateCurr > 0 ? Item.OtherRateCurr : 0,
                     0f, // Item.RateConversionFactor
                     Item.CostCenter > 0 ? Item.CostCenter : 0,
                     0f, // Item.AssesRate
                     0f, // Item.AssesAmount
-                    Item.DiscPer > 0 ? Math.Round(Item.DiscPer, 2, MidpointRounding.AwayFromZero) : 0,
-                    Item.DiscRs > 0 ? Math.Round(Item.DiscRs, 2, MidpointRounding.AwayFromZero) : 0,
-                    Item.Amount > 0 ? Math.Round(Item.Amount, 2, MidpointRounding.AwayFromZero) : 0,
+                    Item.DiscPer > 0 ? Item.DiscPer : 0,
+                    Item.DiscRs > 0 ? Item.DiscRs : 0,
+                    Item.Amount > 0 ? Item.Amount : 0,
                     string.Empty, // Item.Itemsize
                     Item.Color ?? string.Empty,
                     string.Empty, // Item.ItemModel
@@ -1708,11 +1785,11 @@ namespace eTactWeb.Controllers
                     MainModel.AccountCode,
                     Item.docTypeId,
                     Item.ItemCode,
-                    Math.Round(Item.BillQty, 2, MidpointRounding.AwayFromZero),
-                    Math.Round(Item.Rate, 2, MidpointRounding.AwayFromZero),
-                    Math.Round(Item.DiscPer, 2, MidpointRounding.AwayFromZero),
-                    Math.Round(Item.DiscRs, 2, MidpointRounding.AwayFromZero),
-                    Math.Round(Item.Amount, 2, MidpointRounding.AwayFromZero),
+                   Item.BillQty,
+                    Item.Rate,
+                    Item.DiscPer,
+                    Item.DiscRs,
+                    Item.Amount,
                     "CR",
                     });
             }
@@ -1808,7 +1885,7 @@ namespace eTactWeb.Controllers
             else
                 MainModel.ItemDetailGrid.AddRange(_List);
 
-            MainModel.ItemNetAmount = decimal.Parse(MainModel.ItemDetailGrid.Sum(x => x.Amount).ToString("#.#0"));
+            MainModel.ItemNetAmount = decimal.Parse(MainModel.ItemDetailGrid.Sum(x => x.Amount).ToString());
 
             return MainModel;
         }
@@ -2220,6 +2297,13 @@ namespace eTactWeb.Controllers
             );
         }
 
+
+        public async Task<JsonResult> ShowPendingPurchaseorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode, string PONO, string PartCode, string CompanyType)
+        {
+            var JSON = await IDirectPurchaseBill.ShowPendingPurchaseorderforBill(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode, PONO, PartCode, CompanyType);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
 
         //[HttpPost]
