@@ -36,6 +36,11 @@ public class ItemMasterBLL : IItemMaster
     {
         return await _ItemMasterDAL.GetPartCode(ParentCode, ItemType);
     }
+
+    public async Task<ResponseResult> GetCategoryFromGroup(int ParentCode)
+    {
+        return await _ItemMasterDAL.GetCategoryFromGroup(ParentCode);
+    }
     public async Task<ResponseResult> GetItemCategory(string ItemServAssets)
     {
         return await _ItemMasterDAL.GetItemCategory(ItemServAssets);

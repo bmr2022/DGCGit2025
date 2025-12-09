@@ -85,6 +85,26 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+
+        public async Task<ResponseResult> GetCategoryFromGroup(int ParentCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetCategoryFromGroup"));
+                SqlParams.Add(new SqlParameter("@ParentCode", ParentCode));
+              
+                _ResponseResult = await _DataLogicDAL.ExecuteDataSet("SP_ItemMasterData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetItemCategory(string ItemServAssets)
         {
             var _ResponseResult = new ResponseResult();
@@ -881,6 +901,7 @@ namespace eTactWeb.Data.DAL
                     FO.AllowPartCode = oDataTable.Rows[0]["AutoGen_PartCode"].ToString() == "Y" ? false : true;
                     FO.DuplicateItemName = oDataTable.Rows[0]["DuplicateItemName"].ToString() == "Y" ? true : false;
                     FO.IsStoreMandatoryInItemMaster = oDataTable.Rows[0]["IsStoreMandatoryInItemMaster"].ToString() == "Y" ? true : false;
+                    FO.HSNNOIsRequired = oDataTable.Rows[0]["HSNNOIsRequired"].ToString() == "Y" ? true : false;
                 }
             }
             catch (Exception e)
@@ -1082,6 +1103,7 @@ namespace eTactWeb.Data.DAL
                         model.NoOfPcs = SafeDecimal(dr["NoOfPcs"]);
                         model.QcReq = SafeToString(dr["QcReq"]);
                         model.ItemType = SafeToInt(dr["ItemType"]);
+                        model.ItemTypeName = SafeToString(dr["ItemTypeName"]);
                         model.ImageURL = SafeToString(dr["UploadImage"]);
                         model.ItemImageURL = SafeToString(dr["UploadItemImage"]);
                         model.UID = SafeToString(dr["UID"]);

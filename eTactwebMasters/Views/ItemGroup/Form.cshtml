@@ -145,6 +145,10 @@
                 }
             }
 
+
+           
+
+
             if ('@Model.Mode' == "U") {
 
                 CheckBeforeUpdate();
@@ -152,6 +156,12 @@
             else if (CheckGroupName) {
                 $.notify("You cannot submit this Group as Item with this group already exists", "error");
             }
+            else if ($('#UnderCategoryId').val() == '' || $('#UnderCategoryId').val() == '0') {
+
+                $.notify("Please select Under Category", "error");
+                return false;
+            }
+
             else {
                 $('form').submit();
             }
@@ -253,7 +263,7 @@
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == "Success") {
                             $('#UnderCategoryId').empty();
-                            $('#UnderCategoryId').append("<option value='' selected disabled>-Select-</option>");
+                            $('#UnderCategoryId').append("<option value='' selected>-Select-</option>");
                             $.each(obj.Result.Table, function (index, val) {
                                 $('#UnderCategoryId').append("<option value=" + val.Entry_id + " >" + val.Type_Item + "</option>");
                             });

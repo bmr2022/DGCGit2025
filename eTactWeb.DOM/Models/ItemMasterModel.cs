@@ -11,6 +11,7 @@ namespace eTactWeb.DOM.Models
         public bool AllowPartCode { get; set; } = true;
         public bool DuplicateItemName { get; set; }
         public bool IsStoreMandatoryInItemMaster { get; set; }
+        public bool HSNNOIsRequired { get; set; }
      
     }
     public class ExcelUpdateRequest

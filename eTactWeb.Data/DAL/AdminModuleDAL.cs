@@ -698,7 +698,7 @@ namespace eTactWeb.Data.DAL
                     };
 
                     oCmd.Parameters.AddWithValue("@Flag", model.Mode);
-                    oCmd.Parameters.AddWithValue("@RowID", model.ID);
+                    //oCmd.Parameters.AddWithValue("@RowID", model.ID);
                     oCmd.Parameters.AddWithValue("@UserType", model.UserType);
                     oCmd.Parameters.AddWithValue("@UserName", model.UserName);
                     oCmd.Parameters.AddWithValue("@EmpID", model.EmpID);
