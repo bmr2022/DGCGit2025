@@ -318,7 +318,29 @@
                 }
             });
         }
+             $("#search-box").on("input", function () {
 
+            var searchString = $(this).val().trim();
+
+            $.ajax({
+                url: "/PurchaseOrder/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString },
+                success: function (data) {
+                     LockedFinancialYear();
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(data);
+                   CheckApprovedOrNot();
+                    var dashGrid = $('#PODashboardGrid tr').length - 1;
+                    $('#totalRows').text(dashGrid);
+                    GetFormRights();
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
 
         var currentSearchColumn = null;
         $("#search-box").on("keyup", function () {

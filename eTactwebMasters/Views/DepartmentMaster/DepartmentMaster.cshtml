@@ -191,6 +191,14 @@
 
         $('.submitBTN').click(function (e) {
             e.preventDefault();
+            if ($("#DeptName").val() == "") {
+                $.notify("Department Name Can not be Blanck", "error");
+                return;
+            }
+            if ($("#DeptType").val() == "") {
+                $.notify("Department Type Can not be Blanck", "error");
+                return;
+            }
             $('form').submit();
         });
 
@@ -206,9 +214,7 @@
 
 
             
-            if ($("#DeptName").val() == "") {
-                $.notify("Department Name Can not be Blanck", "error");
-            }
+          
             var Entry_Date = parseDateToFormat($('#Entry_Date').val().split(" ")[0]);
             $('#Entry_Date').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", Entry_Date);
           
@@ -305,6 +311,7 @@
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $('#DeptId').val(0);
                         $('#DeptId').val(obj.Result[0].DeptId);
+                        $('#departmentcode').val(obj.Result[0].DeptId);
                     }
                 },
                 error: function (xhr, status, error) {
