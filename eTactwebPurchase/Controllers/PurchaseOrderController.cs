@@ -891,29 +891,134 @@ public class PurchaseOrderController : Controller
         return Json(JsonConvert.SerializeObject(QuotData));
     }
 
-    public async Task<IActionResult> GetSearchData(PODashBoard model, int pageNumber = 1, int pageSize = 15)
+    public async Task<IActionResult> GetSearchData(PODashBoard model, int pageNumber = 1, int pageSize = 15, string SearchBox = "")
     {
         model.Mode = "SEARCH";
         model = await IPurchaseOrder.GetSearchData(model);
         model.DashboardType = "Summary";
         //  Store full list in session 
+
+        var modelList = model?.PODashboard ?? new List<PODashBoard>();
+
         var fullListJson = JsonConvert.SerializeObject(model.PODashboard);
-        HttpContext.Session.SetString("KeyPurchaseOrder", fullListJson);
-        if(model.PODashboard == null)
+        if (string.IsNullOrWhiteSpace(SearchBox))
         {
-            model.PODashboard = new List<PODashBoard>();
+            model.TotalRecords = modelList.Count();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+            model.PODashboard = modelList
+            .Skip((pageNumber - 1) * pageSize)
+               .Take(pageSize)
+               .ToList();
         }
-        //  Pagination logic
-        model.TotalRecords = model.PODashboard.Count;
+        else
+        {
+            List<PODashBoard> filteredResults;
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                filteredResults = modelList.ToList();
+            }
+            else
+            {
+                filteredResults = modelList
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = modelList.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.PODashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+        }
+        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+            SlidingExpiration = TimeSpan.FromMinutes(55),
+            Size = 1024,
+        };
+
+        string serializedGrid = JsonConvert.SerializeObject(modelList);
+        HttpContext.Session.SetString("KeyPurchaseOrder", serializedGrid);
+        return PartialView("_DashBoardGrid", model);
+
+        //HttpContext.Session.SetString("KeyPurchaseOrder", fullListJson);
+        //if(model.PODashboard == null)
+        //{
+        //    model.PODashboard = new List<PODashBoard>();
+        //}
+        ////  Pagination logic
+        //model.TotalRecords = model.PODashboard.Count;
+        //model.PageNumber = pageNumber;
+        //model.PageSize = pageSize;
+
+        //model.PODashboard = model.PODashboard
+        //    .Skip((pageNumber - 1) * pageSize)
+        //    .Take(pageSize)
+        //    .ToList();
+        //return PartialView("_DashBoardGrid", model);
+    }
+     
+        [HttpGet]
+    public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 10)
+    {
+        PODashBoard model = new PODashBoard();
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            return PartialView("_DashBoardGrid", new List<PODashBoard>());
+        }
+
+        string modelJson = HttpContext.Session.GetString("KeyPurchaseOrder");
+        List<PODashBoard> Dashboard = new List<PODashBoard>();
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            Dashboard = JsonConvert.DeserializeObject<List<PODashBoard>>(modelJson);
+        }
+        if (Dashboard == null)
+        {
+            return PartialView("_DashBoardGrid", new List<PODashBoard>());
+        }
+
+        List<PODashBoard> filteredResults;
+
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            filteredResults =Dashboard.ToList();
+        }
+        else
+        {
+            filteredResults = Dashboard
+                .Where(i => i.GetType().GetProperties()
+                    .Where(p => p.PropertyType == typeof(string))
+                    .Select(p => p.GetValue(i)?.ToString())
+                    .Any(value => !string.IsNullOrEmpty(value) &&
+                                  value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+
+            if (filteredResults.Count == 0)
+            {
+                filteredResults = Dashboard.ToList();
+            }
+        }
+
+        model.TotalRecords = filteredResults.Count;
+        model.PODashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         model.PageNumber = pageNumber;
         model.PageSize = pageSize;
 
-        model.PODashboard = model.PODashboard
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
         return PartialView("_DashBoardGrid", model);
     }
+
     public async Task<IActionResult> GetDetailData(PODashBoard model)
     {
         model.Mode = "SEARCH";
