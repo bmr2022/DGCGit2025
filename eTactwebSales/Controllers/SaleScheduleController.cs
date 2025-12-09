@@ -325,7 +325,9 @@ public class SaleScheduleController : Controller
 
     public async Task<IActionResult> DeleteByID(int ID, int YC)
     {
-        var Result = await ISaleSchedule.DeleteByID(ID, YC).ConfigureAwait(false);
+        int CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+
+        var Result = await ISaleSchedule.DeleteByID(ID, YC, CreatedBy).ConfigureAwait(false);
 
         if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone)
         {

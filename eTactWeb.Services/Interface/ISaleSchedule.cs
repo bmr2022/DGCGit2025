@@ -7,7 +7,7 @@ public interface ISaleSchedule
 {
     Task<DataSet> BindAllDropDown();
 
-    Task<ResponseResult> DeleteByID(int ID, int YC);
+    Task<ResponseResult> DeleteByID(int ID, int YC,int CreatedBy);
 
     Task<ResponseResult> GetDashboardData();
     Task<ResponseResult> GetAmmDashboardData(string ToDate);
