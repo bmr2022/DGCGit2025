@@ -528,6 +528,8 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
                     {
                         model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                     }
+                    model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IMaterialReceipt.SaveMaterialReceipt(model, MRGrid, BatchGrid);
 
                     if (Result != null)
