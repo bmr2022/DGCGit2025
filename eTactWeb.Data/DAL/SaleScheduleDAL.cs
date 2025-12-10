@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Reflection;
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
+using Microsoft.AspNetCore.Http;
 
 
 namespace eTactWeb.Data.DAL;
@@ -344,17 +345,18 @@ internal class SaleScheduleDAL
         }
         return model;
     }
-    internal async Task<ResponseResult> DeleteByID(int ID, int YC)
+    internal async Task<ResponseResult> DeleteByID(int ID, int YC,int CreatedBy)
     {
         var _ResponseResult = new ResponseResult();
         try
         {
             var SqlParams = new List<dynamic>();
+           var  EntryByMachineName = Environment.MachineName;
             SqlParams.Add(new SqlParameter("@Flag", "DELETEBYID"));
             SqlParams.Add(new SqlParameter("@ID", ID));
             SqlParams.Add(new SqlParameter("@YearCode", YC));
-            SqlParams.Add(new SqlParameter("@EntryByMachineName", "AB"));
-            SqlParams.Add(new SqlParameter("@CreatedBy", "1"));
+            SqlParams.Add(new SqlParameter("@EntryByMachineName", EntryByMachineName));
+            SqlParams.Add(new SqlParameter("@CreatedBy", CreatedBy));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleSchedule", SqlParams);
         }
         catch (Exception ex)

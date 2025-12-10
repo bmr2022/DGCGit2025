@@ -91,6 +91,13 @@ namespace eTactWeb.Controllers
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
                     }
+                    else if (Result.StatusText == "Msg No 1.Duplicate Department name not allowed" && Result.StatusCode == HttpStatusCode.Accepted)
+                    {
+                        ViewBag.isSuccess = true;
+                        string message = "Duplicate Department name not allowed";
+                        TempData["ErrorMessage"] = message;
+                      
+                    }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         ViewBag.isSuccess = false;
@@ -101,7 +108,7 @@ namespace eTactWeb.Controllers
                     else if (Result.StatusText == "Failed" && (int)Result.StatusCode == 400)
                     {
                         ViewBag.isSuccess = false;
-                        TempData["400"] = "Department is already linked to requisitions and cannot be updated";
+                        TempData["400"] = "Department is already linked to requisitions or Employee and cannot be updated";
                         TempData.Keep("400");
                         //return View(model); 
                     }
@@ -170,28 +177,58 @@ namespace eTactWeb.Controllers
             return PartialView("_DepartmentMasterDashBoardGrid", model);
         }
 
+        //public async Task<IActionResult> DeleteByID(int ID)
+        //{
+        //    var Result = await _IDepartmentMaster.DeleteByID(ID);
+
+        //    if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+        //    {
+        //        ViewBag.isSuccess = true;
+        //        TempData["410"] = "410";
+        //        //TempData["Message"] = "Data deleted successfully.";
+        //    }
+        //    else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+        //    {
+        //        ViewBag.isSuccess = true;
+        //        TempData["423"] = "423";
+        //    }
+        //    else if (Result.StatusText == "Failed" && (int)Result.StatusCode == 400)
+        //    {
+        //        ViewBag.isSuccess = false;
+        //        TempData["400"] = "Department is already linked to requisitions or Employee and cannot be Deleted";
+        //        TempData.Keep("400");
+        //        //return View(model); 
+        //    }
+        //    else
+        //    {
+        //        ViewBag.isSuccess = false;
+        //        TempData["500"] = "500";
+        //    }
+
+        //    return RedirectToAction("DepartmentMasterDashBoard");
+
+        //}
+
         public async Task<IActionResult> DeleteByID(int ID)
         {
             var Result = await _IDepartmentMaster.DeleteByID(ID);
 
-            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            TempData["SPMessage"] = Result.StatusText;  // Always send SP message
+
+            // SUCCESS
+            if (Result.StatusText == "Success")
             {
                 ViewBag.isSuccess = true;
-                TempData["410"] = "410";
-                //TempData["Message"] = "Data deleted successfully.";
+                TempData["410"] = "410";   // your existing code
             }
-            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
-            {
-                ViewBag.isSuccess = true;
-                TempData["423"] = "423";
-            }
-            else if (Result.StatusText == "Failed" && (int)Result.StatusCode == 400)
+            // NEW: SP ERROR MESSAGE (Department linked)
+            else if (Result.StatusText != "Success")   // SP error comes with 410
             {
                 ViewBag.isSuccess = false;
-                TempData["400"] = "Department is already linked to requisitions and cannot be Deleted";
+                TempData["400"] = Result.StatusText;  // show exact SP message
                 TempData.Keep("400");
-                //return View(model); 
             }
+            // OTHER ERROR (500)
             else
             {
                 ViewBag.isSuccess = false;
@@ -199,7 +236,7 @@ namespace eTactWeb.Controllers
             }
 
             return RedirectToAction("DepartmentMasterDashBoard");
-
         }
+
     }
 }

@@ -18,6 +18,7 @@ using System.Net;
 using System.Globalization;
 using System.Data;
 using System.Configuration;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace eTactWeb.Controllers
 {
@@ -227,8 +228,9 @@ namespace eTactWeb.Controllers
                         model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                         model.UpdatedByName = HttpContext.Session.GetString("EmpName");
                     }
+                    string IPAddress = HttpContext.Session.GetString("ClientIP");
                     ReqGrid = GetDetailTable(RequisitionDetail,model.Mode);
-                    var Result = await _IReqWithoutBOM.SaveRequisition(model, ReqGrid);
+                    var Result = await _IReqWithoutBOM.SaveRequisition(model, ReqGrid, IPAddress);
 
                     if (Result != null)
                     {
@@ -364,22 +366,28 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> DeleteByID(int ID, int YC,string FromDate, string ToDate, string REQNo, string WCName, string WONo, string DepName, string PartCode, string ItemName)
         {
             int UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-            var Result = await _IReqWithoutBOM.DeleteByID(ID, YC, UpdatedBy);
+           var EntryByMachineName = Environment.MachineName;
+            var IPAddress = HttpContext.Session.GetString("ClientIP");
+            var Result = await _IReqWithoutBOM.DeleteByID(ID, YC, UpdatedBy, EntryByMachineName, IPAddress);
             var CC = HttpContext.Session.GetString("Branch");
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {
                 ViewBag.isSuccess = true;
                 TempData["410"] = "410";
             }
-            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            else if (Result.StatusText == "Error")
             {
                 ViewBag.isSuccess = true;
                 TempData["423"] = "423";
             }
             else
             {
-                ViewBag.isSuccess = false;
-                TempData["500"] = "500";
+            //    ViewBag.isSuccess = false;
+            //    TempData["500"] = "500";
+            //}
+            //if (Result.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            //{
+                TempData["ErrorMessage"] = Result.StatusText;
             }
             DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
             string formattedFromDate = fromDt.ToString("dd/MMM/yyyy 00:00:00");

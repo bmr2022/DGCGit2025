@@ -116,6 +116,13 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
+        public async Task<JsonResult> GetFeatureOption()
+        {
+            var JSON = await _IItemGroup.GetFeatureOption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> GetUnderCategory(string Mode, string Type)
         {
             var JSON = await _IItemGroup.GetUnderCategory(Mode, Type);

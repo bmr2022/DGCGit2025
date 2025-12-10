@@ -44,7 +44,7 @@ namespace eTactWeb.Controllers
             //model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
             model.MrnNo = mrnNo;
             model.Mrnyearcode = mrnYC;
-           // model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+            // model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
             model.SaleRejYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
             model = await _saleRejection.FillSaleRejectionGrid(mrnNo, mrnEntryId, mrnYC, model.SaleRejYearCode);
@@ -81,7 +81,7 @@ namespace eTactWeb.Controllers
         //    string JsonString = JsonConvert.SerializeObject(SAGrid);
         //    return Json(JsonString);
         //}
-     
+
         public async Task<JsonResult> GetFormRights()
         {
             var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
@@ -144,7 +144,7 @@ namespace eTactWeb.Controllers
                 model = await _saleRejection.GetViewByID(ID, Mode, YearCode);
                 model.Mode = Mode;
                 model.ID = ID;
-              
+
                 model.FinFromDate = model.FinFromDate ?? HttpContext.Session.GetString("FromDate");
                 model.FinToDate = model.FinToDate ?? HttpContext.Session.GetString("ToDate");
                 model.SaleRejYearCode = model.SaleRejYearCode != null && model.SaleRejYearCode > 0 ? model.SaleRejYearCode : Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
@@ -169,11 +169,11 @@ namespace eTactWeb.Controllers
             model.CC = HttpContext.Session.GetString("Branch");
 
             HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(model));
-          
+
             string serializedKeyAdjGrid = JsonConvert.SerializeObject(model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel);
             string serializedKeyTaxGrid = JsonConvert.SerializeObject(model.TaxDetailGridd == null ? new List<TaxModel>() : model.TaxDetailGridd);
             HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(model.SaleRejectionDetails));
-           // HttpContext.Session.SetString("KeyAdjGrid", JsonConvert.SerializeObject(model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel));
+            // HttpContext.Session.SetString("KeyAdjGrid", JsonConvert.SerializeObject(model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel));
             HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(model));
             HttpContext.Session.SetString("SaleRejection", JsonConvert.SerializeObject(model));
             string serializedKeyDbCrGrid = JsonConvert.SerializeObject(model.DbCrGrid == null ? new List<DbCrModel>() : model.DbCrGrid);
@@ -428,7 +428,7 @@ namespace eTactWeb.Controllers
         [HttpGet]
         [Route("{controller}/Dashboard")]
         //public async Task<IActionResult> SRDashboard(string summaryDetail, string custInvoiceNo, string custName, string mrnNo, string gateNo, string partCode, string itemName, string againstBillNo, string docName, string voucherNo, string fromdate, string toDate)
-        public async Task<IActionResult> SRDashboard(string fromDate,string toDate,string custInvoiceNo,string accountName,string mrnNo,string gateNo,string partCode,string itemName,string againstBillNo,string voucherNo,string summaryDetail,string searchBox,string Flag="True")
+        public async Task<IActionResult> SRDashboard(string fromDate, string toDate, string custInvoiceNo, string accountName, string mrnNo, string gateNo, string partCode, string itemName, string againstBillNo, string voucherNo, string summaryDetail, string searchBox, string Flag = "True")
         {
             try
             {
@@ -618,7 +618,7 @@ namespace eTactWeb.Controllers
                 {
                     DrCrGrid = JsonConvert.DeserializeObject<List<DbCrModel>>(drCrGridJson);
                 }
-              
+
                 if (saleRejectionDetail == null)
                 {
                     ModelState.Clear();
@@ -670,7 +670,7 @@ namespace eTactWeb.Controllers
                     {
                         AdjDetailDT = CommonController.GetAdjDetailTable(adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.SaleRejEntryId, model.SaleRejYearCode, model.AccountCode);
                     }
-               
+
                     //if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
                     //{
                     //    AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.SaleRejEntryId, model.SaleRejYearCode, model.AccountCode);
@@ -760,7 +760,7 @@ namespace eTactWeb.Controllers
                 //return View(model);
             }
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int accountCode, int createdBy, string machineName, string cc,string fromDate,string toDate,string custInvoiceNo,string accountName,string mrnNo,string gateNo,string partCode,string itemName,string againstBillNo,string voucherNo)
+        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int accountCode, int createdBy, string machineName, string cc, string fromDate, string toDate, string custInvoiceNo, string accountName, string mrnNo, string gateNo, string partCode, string itemName, string againstBillNo, string voucherNo)
         {
             var Result = await _saleRejection.DeleteByID(ID, YearCode, accountCode, createdBy, machineName, cc).ConfigureAwait(false);
 
@@ -792,7 +792,7 @@ namespace eTactWeb.Controllers
             //    ViewBag.isSuccess = false;
             //    TempData["500"] = "500";
             //}
-            return RedirectToAction("SRDashboard",new {fromDate = fromDate,toDate = toDate,custInvoiceNo = custInvoiceNo,accountName = accountName,mrnNo = mrnNo,gateNo = gateNo,partCode = partCode,itemName = itemName,againstBillNo = againstBillNo,voucherNo = voucherNo});
+            return RedirectToAction("SRDashboard", new { fromDate = fromDate, toDate = toDate, custInvoiceNo = custInvoiceNo, accountName = accountName, mrnNo = mrnNo, gateNo = gateNo, partCode = partCode, itemName = itemName, againstBillNo = againstBillNo, voucherNo = voucherNo });
         }
         private static DataTable GetTaxDetailTable(List<TaxModel> TaxDetailList)
         {
@@ -937,6 +937,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> GetTotalAmount(SaleRejectionFilter model)
+        {
+            var JSON = await _saleRejection.GetTotalAmount(model);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> FillCustomerName(string fromDate, string toDate)
         {
             fromDate = ParseFormattedDate(fromDate);
@@ -960,7 +966,7 @@ namespace eTactWeb.Controllers
             var JSON = await _saleRejection.FillPartCode(fromDate, toDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
-        } 
+        }
         public async Task<JsonResult> FillMRNNo(string fromDate, string toDate)
         {
             fromDate = ParseFormattedDate(fromDate);
@@ -968,7 +974,7 @@ namespace eTactWeb.Controllers
             var JSON = await _saleRejection.FillMRNNo(fromDate, toDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
-        } 
+        }
         public async Task<JsonResult> FillGateNo(string fromDate, string toDate)
         {
             fromDate = ParseFormattedDate(fromDate);

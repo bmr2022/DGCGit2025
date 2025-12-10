@@ -61,7 +61,7 @@
 @section Scripts
 {
     <script>
-                      function GetFeatureOption() {
+        function GetFeatureOption() {
             $.ajax({
                 type: "POST",
                 data: {},
@@ -75,7 +75,7 @@
 
                             // New DirectPurchaseBill flags
                             if (feature.allowtoremovedeletedashboard === "N") {
-                               $("[id^='deleteCursorDiv-']").hide();
+                                $("[id^='deleteCursorDiv-']").hide();
                             } else {
                                 $("[id^='deleteCursorDiv-']").show();
                             }
@@ -84,7 +84,7 @@
                             } else {
                                 $('.DirectPurchaseBillEntryDetail').show();
                             }
-                          
+
 
 
                         }
@@ -96,21 +96,21 @@
         function GetTotalAmounts() {
 
 
-        let dataObj = {
-        TypeITEMSERVASSETS: $('#TypeITEMSERVASSETS').val(),
-        DocumentType: $('#DocumentType').val(),
-        PurchVouchNo: $('#PurchVouchNo').val(),
-        InvoiceNo: $('#InvoiceNo').val(),
-        VendorName: $('#VendorName').val(),
-        PartCode: $('#PartCode').val(),
-        ItemName: $('#ItemName').val(),
-        HSNNo: $('#HSNNo').val(),
-        FromDate: $('#FromDate').val(),
-        ToDate: $('#ToDate').val(),
-        DashboardType: $('#DashboardType').val(),
-        };
+            let dataObj = {
+                TypeITEMSERVASSETS: $('#TypeITEMSERVASSETS').val(),
+                DocumentType: $('#DocumentType').val(),
+                PurchVouchNo: $('#PurchVouchNo').val(),
+                InvoiceNo: $('#InvoiceNo').val(),
+                VendorName: $('#VendorName').val(),
+                PartCode: $('#PartCode').val(),
+                ItemName: $('#ItemName').val(),
+                HSNNo: $('#HSNNo').val(),
+                FromDate: $('#FromDate').val(),
+                ToDate: $('#ToDate').val(),
+                DashboardType: $('#DashboardType').val(),
+            };
 
-        console.log("dataforamount",dataObj);
+            console.log("dataforamount", dataObj);
             $.ajax({
                 url: '/DirectPurchaseBill/GetTotalAmount',
                 type: 'GET',
@@ -264,9 +264,9 @@
                 $('#HSNNo').val(HSNNoBack);
                 $('#search-box').val(GlobalSearchBack);
             }
-          
+
             GetSearchData();
-              GetFeatureOption();
+            GetFeatureOption();
             CalculateTotalAmt();
             GetTotalAmounts();
             $("#search-box").val($('#search-box').val()).trigger('keyup');
@@ -297,19 +297,19 @@
             AutoComplete('VDirectPurchaseBillMain', 'HSNNo', 'HSNNO', null);
             AutoComplete('VDirectPurchaseBillMain', 'HSNNo', 'hsnno', null);
         });
-        function  EditButtonData(event,EntryId,YearCode) {
-                  event.preventDefault();
-             var urlHref = $(event.currentTarget).attr("href");
-        CheckEditOrDelete(urlHref, EntryId, YearCode);
+        function EditButtonData(event, EntryId, YearCode) {
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            CheckEditOrDelete(urlHref, EntryId, YearCode);
         }
         function BackButtonData(event) {
-        event.preventDefault();
+            event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
             linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&DashboardType=" + $('#DashboardType').val() + "&TypeITEMSERVASSETS=" + $('#TypeITEMSERVASSETS').val() + "&DocumentType=" + $('#DocumentType').val() + "&VendorName=" + $('#VendorName').val() + "&PurchVouchNo=" + $('#PurchVouchNo').val() + "&InvoiceNo=" + $('#InvoiceNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&HSNNo=" + $('#HSNNo').val() + "&Searchbox=" + $('#search-box').val();
             window.location.href = linkUrl;
         }
-               function CheckEditOrDelete(urlHref, EntryId, YearCode) {
+        function CheckEditOrDelete(urlHref, EntryId, YearCode) {
             $.ajax({
                 url: '@Url.Action("CheckEditOrDelete")',
                 type: "POST",
@@ -317,14 +317,14 @@
                 async: false,
                 success: function (response) {
                     if (response != null && response != undefined && response != '') {
-                         if (response.message== "" ) {
+                        if (response.message == "") {
                             var linkUrl = urlHref;
                             linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&DashboardType=" + $('#DashboardType').val() + "&TypeITEMSERVASSETS=" + $('#TypeITEMSERVASSETS').val() + "&DocumentType=" + $('#DocumentType').val() + "&VendorName=" + $('#VendorName').val() + "&PurchVouchNo=" + $('#PurchVouchNo').val() + "&InvoiceNo=" + $('#InvoiceNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&HSNNo=" + $('#HSNNo').val() + "&Searchbox=" + $('#search-box').val();
                             window.location.href = linkUrl;
                         }
-                        else{
-                               $.notify(response.message, "error");
-                                        return false;
+                        else {
+                            $.notify(response.message, "error");
+                            return false;
                         }
 
                     }
@@ -369,12 +369,12 @@
             }
         }
 
-         function GetFormRights() {
+        function GetFormRights() {
 
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
-                async:false,
+                async: false,
                 success: function (data) {
 
                     if (data != null) {
@@ -384,34 +384,34 @@
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#viewCursorDiv-' + i).empty();
                                 $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
-                                                                                                <span class="fa-stack">
-                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                                                                                </span>
-                                                                                            </a>`);
+                                                                                                        <span class="fa-stack">
+                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                                        </span>
+                                                                                                    </a>`);
                             }
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#editCursorDiv-' + i).empty();
                                 $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
-                                                                                                        <span class="fa-stack">
-                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                                                                        </span>
-                                                                                                    </a>`);
+                                                                                                                <span class="fa-stack">
+                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                                                </span>
+                                                                                                            </a>`);
                             }
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#deleteCursorDiv-' + i).empty();
                                 $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
-                                                                                                        <span class="fa-stack">
-                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                                                                        </span>
-                                                                                                    </a>`);
+                                                                                                                <span class="fa-stack">
+                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                                                </span>
+                                                                                                            </a>`);
                             }
                             $("#divDashboardGrid").css("display", "none");
                             $(".totalrows").css("display", "none");
                             $("#SParam").hide();
-                        }else{
+                        } else {
 
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
@@ -423,7 +423,7 @@
                                 if (!optSave) {
 
                                     $("#savebtn").css("pointer-events", "none");
-                                }else{
+                                } else {
                                     $("#savebtn").css("pointer-events", "");
                                 }
                                 if (!optView) {
@@ -431,33 +431,33 @@
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#viewCursorDiv-' + i).empty();
                                         $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
-                                                                <span class="fa-stack">
-                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                                                </span>
-                                                            </a>`);
+                                                                        <span class="fa-stack">
+                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                        </span>
+                                                                    </a>`);
                                     }
                                 }
                                 if (!optUpdate) {
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#editCursorDiv-' + i).empty();
                                         $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
-                                                                <span class="fa-stack">
-                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                                </span>
-                                                            </a>`);
+                                                                        <span class="fa-stack">
+                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                        </span>
+                                                                    </a>`);
                                     }
                                 }
                                 if (!optDelete) {
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#deleteCursorDiv-' + i).empty();
                                         $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
-                                                                <span class="fa-stack">
-                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                                </span>
-                                                            </a>`);
+                                                                        <span class="fa-stack">
+                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                        </span>
+                                                                    </a>`);
                                     }
                                 }
                                 if (!(optUpdate || optDelete || optView)) {
@@ -481,19 +481,19 @@
         //     });
         // });
 
-         $('#sendToExcel').click(function () {
-                 var dashboardType = $('#DashboardType').val();
-                // Send DashboardType in query string
-        window.location.href = '/DirectPurchaseBill/ExportDPBDashboardToExcel?dashboardType=' + dashboardType;
+        $('#sendToExcel').click(function () {
+            var dashboardType = $('#DashboardType').val();
+            // Send DashboardType in query string
+            window.location.href = '/DirectPurchaseBill/ExportDPBDashboardToExcel?dashboardType=' + dashboardType;
         });
         function GetSearchData() {
             if ($('#DashboardType').val() == "Summary") {
                 GetSummaryData();
 
-               
+
             } else {
                 GetDetailData();
-                 
+
             }
         }
 
@@ -522,7 +522,7 @@
             });
         }
 
-        function GetSummaryData(){
+        function GetSummaryData() {
             var data = $('#SParam').serialize();
             $.ajax({
                 url: '@Url.Action("GetSearchData")',
@@ -534,7 +534,7 @@
                     CheckApprovedOrNot();
                     var dashGrid = $('#DPBDashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
-                      GetFormRights();
+                    GetFormRights();
                     GetFeatureOption();
                     CalculateTotalAmt();
                     GetTotalAmounts();
@@ -548,7 +548,7 @@
                 }
             });
         }
-        function GetDetailData(){
+        function GetDetailData() {
             var data = $('#SParam').serialize();
             $.ajax({
                 url: '@Url.Action("GetDetailData")',
@@ -630,7 +630,7 @@
             });
         });
 
-        function confirmDelete(event,entryID, yearCode, purchVouchNo, invNo, isDetail, cnt) {
+        function confirmDelete(event, entryID, yearCode, purchVouchNo, invNo, isDetail, cnt) {
             event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
             if (confirm("Are you sure you want to delete this entry?")) {
@@ -664,12 +664,12 @@
                 },
                 success: function (response) {
                     if (response != null && response != undefined && response != '') {
-                         if (response.success== true || response.success== 'true') {
+                        if (response.success == true || response.success == 'true') {
                             $.notify("Item Deleted Successfully...!", { className: "success", globalPosition: "top center" });
                             GetSearchData();
                         }
-                        else{
-                               $.notify(response.message, "error");
+                        else {
+                            $.notify(response.message, "error");
                         }
                         // if (response == true || response == 'true') {
                         //     GetSearchData();
@@ -779,24 +779,24 @@
 
                     console.log(result);
                     var obj = $.parseJSON(result);
-                    if (obj.Result != null&& obj.Result.Table != null && obj.Result.Table != undefined && obj.Result.Table[0] != undefined) {
+                    if (obj.Result != null && obj.Result.Table != null && obj.Result.Table != undefined && obj.Result.Table[0] != undefined) {
                         if (obj.Result.Table[0].ClosedForAllusers == 'Y') {
                             var rowCount = $('#divDashboardGrid tr').length;
                             for (var i = 0; i < rowCount; i++) {
                                 $('#editCursorDiv-' + i).empty();
                                 $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
-                                                                                                <span class="fa-stack">
-                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                                                                </span>
-                                                                                            </a>`);
+                                                                                                        <span class="fa-stack">
+                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                                        </span>
+                                                                                                    </a>`);
                                 $('#deleteCursorDiv-' + i).empty();
                                 $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
-                                                                                                <span class="fa-stack">
-                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                                                                </span>
-                                                                                            </a>`);
+                                                                                                        <span class="fa-stack">
+                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                                        </span>
+                                                                                                    </a>`);
                             }
                         }
                     }

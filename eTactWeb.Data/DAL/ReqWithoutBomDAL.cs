@@ -478,7 +478,7 @@ namespace eTactWeb.Data.DAL
             return model;
         }
 
-        internal async Task<ResponseResult> DeleteByID(int ID, int YearCode,int UpdatedBy)
+        internal async Task<ResponseResult> DeleteByID(int ID, int YearCode,int UpdatedBy,string EntryByMachineName,string IPAddress)
         {
             var _ResponseResult = new ResponseResult();
 
@@ -488,7 +488,9 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@EntryID", ID));
+                SqlParams.Add(new SqlParameter("@EntryByMachineName", EntryByMachineName));
                 SqlParams.Add(new SqlParameter("@UpdatedBy", UpdatedBy));
+                SqlParams.Add(new SqlParameter("@IPAddress", IPAddress));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_RequisitionWithoutBOM", SqlParams);
@@ -520,7 +522,7 @@ namespace eTactWeb.Data.DAL
             //    throw new FormatException("Invalid date format. Expected format: dd/MM/yyyy");
 
         }
-        public async Task<ResponseResult> SaveRequisition(RequisitionWithoutBOMModel model, DataTable ReqGrid)
+        public async Task<ResponseResult> SaveRequisition(RequisitionWithoutBOMModel model, DataTable ReqGrid,string IPAddress)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -582,6 +584,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@LineRejYearCode", model.LineRejYearCode));
                 SqlParams.Add(new SqlParameter("@CreatedBy", model.CreatedBy));
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName));
+                SqlParams.Add(new SqlParameter("@IPAddress", IPAddress));
 
                 SqlParams.Add(new SqlParameter("@DTItemGrid", ReqGrid));
 

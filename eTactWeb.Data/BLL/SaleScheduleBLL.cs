@@ -28,9 +28,9 @@ public class SaleScheduleBLL : ISaleSchedule
     {
         return await _SaleScheduleDAL.GetFormRightsAmen(ID);
     }
-    public async Task<ResponseResult> DeleteByID(int ID, int YC)
+    public async Task<ResponseResult> DeleteByID(int ID, int YC, int CreatedBy)
     {
-        return await _SaleScheduleDAL.DeleteByID(ID, YC);
+        return await _SaleScheduleDAL.DeleteByID(ID, YC, CreatedBy);
     }
 
     public async Task<ResponseResult> GetDashboardData()

@@ -26,6 +26,11 @@ public class ItemGroupBLL : IItemGroup
     {
         return await _ItemGroupDAL.GetFormRights(ID);
     }
+    public async Task<ResponseResult> GetFeatureOption()
+    {
+        return await _ItemGroupDAL.GetFeatureOption();
+    }
+
     public async Task<ResponseResult> GetUnderCategory(string Mode, string Type)
     {
         return await _ItemGroupDAL.GetUnderCategory(Mode, Type);
