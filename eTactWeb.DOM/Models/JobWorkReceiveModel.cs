@@ -51,6 +51,9 @@ public class JobWorkReceiveModel : JobWorkReceiveItemDetail
 {
     public string? FinFromDate { get; set; }
     public string? FinToDate { get; set; }
+    public string? IPAddress { get; set; }
+    public string? EntryByMachine { get; set; }
+
     public int EntryId { get; set; }
     public int YearCode { get; set; }
     public string? EntryDate { get; set; }
