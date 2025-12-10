@@ -184,6 +184,8 @@ namespace eTactWeb.Controllers
 
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 GIGrid = GetDetailTable(MaterialConversionGrid);
+                model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 var Result = await _IMaterialConversion.SaveMaterialConversion(model, GIGrid);
                 if (Result != null)
                 {
