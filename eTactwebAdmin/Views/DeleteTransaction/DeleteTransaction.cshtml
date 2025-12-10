@@ -49,10 +49,10 @@
                                     <input type="text" id="SlipNo" name="SlipNo" class="form-control" />
                                 </div>
 
-                                <div class="col-lg-2">
+                                <div class="col-lg-2 BomNo" style="display:none">
                                     <label asp-for="BomNo" class="form-label">Bom No</label>
-                                    <select id="BomNo" name="BomNo" class="form-sel ect">
-                                        <option value="">-- Select Form --</option>
+                                    <select id="BomNo" name="BomNo" class="form-select">
+                                        <option value="">-- Select--</option>
                                     </select>
                                 </div>
 
@@ -220,17 +220,24 @@
 
 
         }
-        else {
+       
+
+            if ($('#FormName').val() == "Bom") {
+                $('.BomNo').show();
+
                 $('.IssueToStoreName').prop('hidden', true);
                 $('.IssueFromWCName').prop('hidden', true);
                 $('.IssueToWCName').prop('hidden', true);
                 $('.IssueToStoreWC').prop('hidden', true);
 
 
-                $('.AccountName').prop('hidden', false);
-                $('.BasicAmount').prop('hidden', false);
-                $('.NetAmount').prop('hidden', false);
-        }
+                $('.AccountName').prop('hidden', true);
+                $('.BasicAmount').prop('hidden', true);
+                $('.NetAmount').prop('hidden', true);
+
+            }
+           
+
 
     });
 
@@ -264,6 +271,35 @@
             }
         });
     }
+
+        function GetBomNo() {
+            $.ajax({
+                url: '/DeleteTransaction/GetBomNo',
+                type: 'GET',
+                data: { BomName: $('#SlipNo').val() },
+                dataType: 'json',
+                success: function (data) {
+                    console.log("Formdata", data);
+                    const obj = typeof data === "string" ? JSON.parse(data) : data;
+                    const select = $('#BomNo');
+                    select.empty();
+                    select.append('<option value="">-- Select Form --</option>');
+
+                    if (obj.Result && obj.Result.length > 0) {
+                        $.each(obj.Result, function (i, item) {
+                            select.append($('<option>', {
+                                value: item.BomNo,
+                                text: item.BomNo
+                            }));
+                        });
+                    }
+
+                },
+                error: function (err) {
+                    console.error("❌ Error fetching form names:", err);
+                }
+            });
+        }
       
         function FillSlipNoAutoSuggest() {
         const mainTableName = $('#FormName').val();
@@ -307,6 +343,7 @@
                     select: function (event, ui) {
                         $("#SlipNo").val(ui.item.value);
                         FillSlipDetails(ui.item);
+                        GetBomNo();
                         return false;
                     }
                 });

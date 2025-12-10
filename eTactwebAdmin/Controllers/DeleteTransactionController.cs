@@ -48,6 +48,21 @@ namespace eTactwebAdmin.Controllers
             }
         }
 
+        public async Task<JsonResult> GetBomNo(string BomName)
+        {
+            try
+            {
+                var result = await _IDeleteTransaction.GetBomNo(BomName);
+                string jsonString = JsonConvert.SerializeObject(result);
+                return Json(jsonString);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while Get formname list.");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
         [HttpGet]
         public async Task<JsonResult> GetModuleName()
         {
@@ -92,7 +107,7 @@ namespace eTactwebAdmin.Controllers
                 // 🔹 Session and system info
                 model.CC = HttpContext.Session.GetString("Branch");
                 model.ActionByEmpId = Convert.ToInt64(HttpContext.Session.GetString("UID") ?? "0");
-                model.MachineName = Environment.MachineName;
+                model.MachineName = HttpContext.Session.GetString("ClientMachineName");
                 model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
