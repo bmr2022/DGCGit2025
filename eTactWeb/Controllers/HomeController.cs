@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using ClosedXML.Excel;
 using eTactWeb.Helpers;
 using Microsoft.AspNetCore.Hosting;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace eTactWeb.Controllers;
 
@@ -385,7 +386,7 @@ public class HomeController : Controller
 
         return model;
     }
-    private string GetClientIpAddress(HttpContext context)
+    private (string Hostname, string IpAddress) GetClientIpAddress(HttpContext context)
     {
         string ip = context.Connection.RemoteIpAddress?.ToString();
 
@@ -430,13 +431,13 @@ public class HomeController : Controller
             }
         }
 
-       
 
 
 
 
 
-        return clientHostname ?? "Unknown";
+
+        return (clientHostname, ip);
     }
 
 
@@ -974,10 +975,13 @@ public class HomeController : Controller
             HttpContext.Session.SetString("DeptName", DepName);
             HttpContext.Session.SetString("DeptId", DepId.ToString());
             HttpContext.Session.SetString("RetailerOrManufacturar", RetailerOrManufacturar);
-            string ipAddress = GetClientIpAddress(HttpContext);
+            var client = GetClientIpAddress(HttpContext);
+            string host = client.Hostname;
+            string ip = client.IpAddress;
 
             // Store in session
-            HttpContext.Session.SetString("ClientIP", ipAddress);
+            HttpContext.Session.SetString("ClientIP", ip);
+            HttpContext.Session.SetString("ClientMachineName", host);
             //Task login = HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }

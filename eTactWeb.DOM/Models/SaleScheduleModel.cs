@@ -129,6 +129,7 @@ public class SaleSubScheduleModel : SaleScheduleGrid
     }
 
     public string? TypeOfSave { get; set; }
+    public string? IPAddress { get; set; }
     public int AccountCode { get; set; }
     public IList<TextValue>? AccountList { get; set; }
     public IList<TextValue>? BranchList { get; set; }

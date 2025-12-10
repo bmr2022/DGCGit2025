@@ -30,6 +30,11 @@ namespace eTactWeb.Data.BLL
             return await _DeleteTransactionDAL.GetModuleName(Flag);
         }
 
+        public async Task<ResponseResult> GetBomNo(string BomName)
+        {
+            return await _DeleteTransactionDAL.GetBomNo(BomName);
+        }
+
 
         public async Task<ResponseResult> GetSlipNoData(string Flag, string MainTableName)
         {

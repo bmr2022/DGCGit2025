@@ -279,6 +279,7 @@ public class PurchaseOrderModel : POItemDetail
 
     //just for display
     public string? UniversalPartCode { get; set; }
+    public string? IpAddress { get; set; }
     public string? ShowOnlyAmendItem { get; set; }
     public string? UniversalDescription { get; set; }
     public string? FinFromDate { get; set; }

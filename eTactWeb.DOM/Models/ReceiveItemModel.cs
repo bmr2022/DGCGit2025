@@ -10,6 +10,7 @@ namespace eTactWeb.DOM.Models
     public class ReceiveItemModel
     {
         public string? Mode {  get; set; }
+        public string? IPAddress {  get; set; }
         public string? FromDate {  get; set; }
         public string? ToDate { get; set; }
         public int RecMatEntryId {  get; set; }

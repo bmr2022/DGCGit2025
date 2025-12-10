@@ -146,7 +146,8 @@ namespace eTactwebInventory.Controllers
                 else
                 {
 
-
+                    model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     ISTGrid = GetDetailTable(ISTDetail);
                     var Result = await _IDeassembleItem.SaveDeassemble(model, ISTGrid);
 

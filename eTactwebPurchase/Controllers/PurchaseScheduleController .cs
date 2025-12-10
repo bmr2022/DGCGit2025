@@ -514,7 +514,10 @@ public class PurchaseScheduleController : Controller
                 }
                 DTSSGrid = GetDetailTable(PurchaseScheduleGrid);
 
-                 var Result = await IPurchaseSchedule.SavePurchSchedule (model, DTSSGrid);
+                model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
+
+                var Result = await IPurchaseSchedule.SavePurchSchedule (model, DTSSGrid);
 
                 if (Result != null)
                 {

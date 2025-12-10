@@ -127,7 +127,9 @@ namespace eTactWeb.Controllers
 					model.UpdationDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
 
 				}
-				GIGrid = GetDetailTable(SalesPersonTransferGrid);
+                model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                GIGrid = GetDetailTable(SalesPersonTransferGrid);
 				var Result = await _ISalesPersonTransfer.SaveSalesPersonTransfer(model, GIGrid);
 				if (Result != null)
 				{

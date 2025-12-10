@@ -1831,9 +1831,11 @@ public class SaleOrderController : Controller
                         model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                         model.CreatedByName = HttpContext.Session.GetString("EmpName");
                     }
-					//model.Mode = model.Mode == "U" ? "Update" : "Insert";
-					//model.CreatedBy = Constants.UserID;
-					Result = await _ISaleOrder.SaveSaleOrder(ItemDetailDT, DelieveryScheduleDT, TaxDetailDT, MultiBuyersDT, model);
+                    //model.Mode = model.Mode == "U" ? "Update" : "Insert";
+                    //model.CreatedBy = Constants.UserID;
+                    model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                    //model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                    Result = await _ISaleOrder.SaveSaleOrder(ItemDetailDT, DelieveryScheduleDT, TaxDetailDT, MultiBuyersDT, model);
 				}
 				_logger.LogInformation("Save SaleOrder Data done", DateTime.UtcNow);
 				if (Result != null)

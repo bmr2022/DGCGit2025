@@ -13,6 +13,7 @@ namespace eTactWeb.DOM.Models
         public int EntryId { get; set; }
         public int Yearcode { get; set; }
         public string Entrydate { get; set; }
+        public string? IPAddress { get; set; }
         public string RetNotRetChallan { get; set; }
         public string ShowOtherReqFields { get; set; }
         public string AgainstMRNNOrGate { get; set; }
