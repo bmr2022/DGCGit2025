@@ -74,15 +74,16 @@
                                 <a class="dropdown-item" href="#">Vendor &raquo; </a>
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-action="VendorUser" asp-controller="VendorUser" asp-route-ID="0" id="Rights">
+                                        <a class="dropdown-item" asp-action="VendorUser" asp-controller="VendorUser" asp-route-ID="0" id="Vendor">
                                             <i class="fa fa-podcast fa-fw fa-lg" aria-hidden="true"></i> New Vendor
                                         </a>
 
                                     </li>
                                     <li>
-                                        <a class="dropdown-item Rights" asp-action="VUDashboard" asp-controller="VendorUser">
+                                        <a class="dropdown-item Vendor" asp-action="VUDashboard" asp-controller="VendorUser">
                                             <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
+                                    <input class="userRightsPermission" type="hidden" value="Vendor" />
                                     </li>
                                 </ul>
                             </li>
@@ -106,22 +107,24 @@
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             
-                            <li>
+
+
+                        <li>
                                 <a class="dropdown-item" href="#">Procurment </a>
                                 <ul class="submenu dropdown-menu">
 
                                     <li>
-                                <a class="dropdown-item" href="#">PO & Amendment Approval &raquo; </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item POandAmendmentApproval" asp-action="POApproval" asp-controller="POApproval" asp-route-ID="0" id="PO&AmendmentApproval">
-                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Approval Form
-                                        </a>
-                                        <input class="userRightsPermission" type="hidden" value="PO and AmendmentApproval" />
+                                        <a class="dropdown-item" href="#">PO & Amendment Approval &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item POandAmendmentApproval" asp-action="POApproval" asp-controller="POApproval" asp-route-ID="0" id="PO&AmendmentApproval">
+                                                    <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Approval Form
+                                                </a>
+                                                <input class="userRightsPermission" type="hidden" value="PO and AmendmentApproval" />
 
+                                            </li>
+                                        </ul>
                                     </li>
-                                </ul>
-                            </li>
 
                                     <li>
                                         <a class="dropdown-item" href="#">Purchase Sch & Amendment Approval &raquo; </a>
@@ -135,38 +138,41 @@
                                             </li>
                                         </ul>
                                     </li>
-                                    <li>
-                                <a class="dropdown-item" href="#">Cancel PO &raquo; </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" asp-action="POCancel" asp-controller="POCancel" asp-route-ID="0" id="CancelPO">
-                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>PO Cancel Form
-                                        </a>
-                                        <input class="userRightsPermission" type="hidden" value="Cancel PO" />
 
+                                    <li>
+                                        <a class="dropdown-item" href="#">Cancel PO &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" asp-action="POCancel" asp-controller="POCancel" asp-route-ID="0" id="CancelPO">
+                                                    <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>PO Cancel Form
+                                                </a>
+                                                <input class="userRightsPermission" type="hidden" value="Cancel PO" />
+
+                                            </li>
+                                        </ul>
                                     </li>
-                                </ul>
-                                    </li>
+
+
                                     <li>
                                         <a class="dropdown-item" href="#">PO Approval Policy &raquo; </a>
                                         <ul class="submenu dropdown-menu">
                                             <li>
                                                 <a class="dropdown-item" asp-action="POApprovalPolicy" asp-controller="POApprovalPolicy" asp-route-ID="0" id="POApprovalPolicy">
-                                                    <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>PO Approva Policy
+                                                    <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>PO Approval Policy
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" asp-action="POApprovalPolicyDashBoard" asp-controller="POApprovalPolicy" asp-route-ID="0" id="POApprovalPolicy">
+                                                <a class="dropdown-item POApprovalPolicy" asp-action="POApprovalPolicyDashBoard" asp-controller="POApprovalPolicy" asp-route-ID="0" id="POApprovalPolicy">
                                                     <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>DashBoard
                                                 </a>
+                                            <input class="userRightsPermission" type="hidden" value="POApprovalPolicy" />
                                             </li>
-                                            <input class="userRightsPermission" type="hidden" value="PO Approval Policy" />
 
                                         </ul>
-                                        </li>
+                                    </li>
 
                                 </ul>
-                    </li>
+                        </li>
 
 
 
@@ -434,9 +440,10 @@
                                     <a class="dropdown-item" href="#">Dashboard Calculation</a>
                                     <ul class="submenu dropdown-menu">
                                         <li>
-                                            <a class="dropdown-item" asp-controller="XONDashboard" asp-action="XONDashboard" id="XONDashboard">
+                                            <a class="dropdown-item DashboardCalculation" asp-controller="XONDashboard" asp-action="XONDashboard" id="XONDashboard">
                                                 <i class="fa fa-circle-user fa-fw fa-lg" aria-hidden="true"></i> Dashboard Calculation
                                             </a>
+                                        <input class="userRightsPermission" type="hidden" value="Dashboard Calculation" />
                                         </li>
                                     </ul>
                                 </li>
@@ -444,12 +451,12 @@
                                     <a class="dropdown-item" href="#">User Right Dashboard</a>
                                     <ul class="submenu dropdown-menu">
                                         <li>
-                                            <a class="dropdown-item" asp-controller="XONUserRightDashboard" asp-action="XONUserRightDashboard" id="XONUserRightDashboard">
+                                        <a class="dropdown-item UserRightDashboard" asp-controller="XONUserRightDashboard" asp-action="XONUserRightDashboard" id="XONUserRightDashboard">
                                                 <i class="fa fa-circle-user fa-fw fa-lg" aria-hidden="true"></i> User Right Dashboard
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item ItemCategory" asp-action="XONUserRightDashboardData" asp-controller="XONUserRightDashboard">
+                                            <a class="dropdown-item UserRightDashboard" asp-action="XONUserRightDashboardData" asp-controller="XONUserRightDashboard">
                                                 <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> User Right Dashboard Data
                                             </a>
                                             <input class="userRightsPermission" type="hidden" value="User Right Dashboard" />
