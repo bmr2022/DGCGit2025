@@ -20,6 +20,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetAllItemCategory();
         Task<IList<TextValue>> GetDropDownList(string Flag);
         Task<ResponseResult> GetFormRights(int uId);
+        Task<ResponseResult> GetFeatureOption();
 
         Task<ResponseResult> SaveItemCategoryMaster(ItemCategoryModel model);
         Task<ResponseResult> UpdateMultipleItemDataFromExcel(DataTable ItemDetailGrid, string flag);
