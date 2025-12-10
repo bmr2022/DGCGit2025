@@ -469,7 +469,8 @@ namespace eTactWeb.Controllers
                     {
                         GIGrid = GetDetailTable(GateInwardItemDetail);
                     }
-
+                    model.EntrybyMachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IGateInward.SaveGateInward(model, GIGrid);
 
                     if (Result != null)
