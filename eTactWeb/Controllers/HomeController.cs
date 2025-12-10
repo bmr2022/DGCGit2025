@@ -405,7 +405,38 @@ public class HomeController : Controller
                     .ToString();
         }
 
-        return ip ?? "Unknown";
+
+        string clientIp = "Unknown";
+        string clientHostname = "Unknown";
+
+        var remoteIp = HttpContext.Connection.RemoteIpAddress;
+        if (remoteIp != null)
+        {
+            clientIp = remoteIp.ToString();
+
+            // Try reverse DNS lookup for hostname
+            if (IPAddress.TryParse(clientIp, out var ipAddress))
+            {
+                try
+                {
+                    var hostEntry = Dns.GetHostEntry(ipAddress);
+                    clientHostname = hostEntry.HostName;
+                }
+                catch (Exception)
+                {
+                    // DNS lookup failed - keep IP as hostname
+                    clientHostname = clientIp;
+                }
+            }
+        }
+
+       
+
+
+
+
+
+        return clientHostname ?? "Unknown";
     }
 
 

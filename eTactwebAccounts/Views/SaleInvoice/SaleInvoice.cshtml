@@ -3841,7 +3841,7 @@
         }
 
 
-            if (parseInt($('#Rate').val()) == 0) {
+            if (parseFloat($('#Rate').val()) == 0) {
                 AddErrorCls('Rate');
                 Err = 1;
             }
@@ -3876,7 +3876,7 @@
                 }
 
 
-                if (parseInt($('#Qty').val()) == 0)
+                if (parseFloat($('#Qty').val()) == 0)
                 {
                     $.notify('BillQty can not be less then 0...!', "error");
                     AddErrorCls('Qty');
@@ -3893,7 +3893,7 @@
 
 
 
-            if (parseInt($('#Qty').val()) == 0) {
+            if (parseFloat($('#Qty').val()) == 0) {
 
                 $.notify('BillQty can not be less then 0...!', "error");
                 AddErrorCls('Qty');
