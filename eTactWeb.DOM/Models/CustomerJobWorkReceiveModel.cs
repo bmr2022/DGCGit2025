@@ -14,6 +14,7 @@ namespace eTactWeb.DOM.Models
         public int EntryId { get; set; }
         public int YearCode { get; set; }
         public string? EntryDate { get; set; }
+        public string? IPAddress { get; set; }
         public string? ChallanNo { get; set; }
         public string? ChallanDate { get; set; }
         public string? GateNo { get; set; } //ask if its int (declared int in database)

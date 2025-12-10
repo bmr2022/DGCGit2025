@@ -176,7 +176,8 @@ namespace eTactWeb.Controllers
                         GIGrid = GetDetailTable(CustJWIDetail);
                         ChallanGrid = GetChallanTable(CWIAdjustDetail);
                     }
-
+                    model.EntryMachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _ICustomerJobWorkIssue.SaveCustomerJWI(model, GIGrid, ChallanGrid);
 
                     if (Result != null)
