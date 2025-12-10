@@ -14,6 +14,7 @@ namespace eTactWeb.DOM.Models
         public string? IssAgtProdSchEntryDate {  get; set; }
         public string? IssAgtProdSchSlipNo {  get; set; }
         public string? IssAgtProdSchSlipDate {  get; set; }
+        public string? IPAddress {  get; set; }
         public string? WorkCenter {  get; set; }
         public int WcId {  get; set; }
         public string? StoreName {  get; set; }

@@ -12,6 +12,7 @@ namespace eTactWeb.DOM.Models
         public string Branch { get; set; }
         public int EntryId { get; set; }
         public int YearCode { get; set; }
+        public string? IPAddress { get; set; }
         public string? EntryDate { get; set; }
         public string? ChallanNo { get; set; }
         public string? ChallanDate { get; set; }

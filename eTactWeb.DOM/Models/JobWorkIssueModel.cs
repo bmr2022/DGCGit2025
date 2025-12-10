@@ -152,6 +152,7 @@ public class JobWorkIssueModel : JobWorkGridDetail
     {
         TaxDetailGrid = new TaxModel();
     }
+    public string? IPAddress { get; set; }
     public string? FinFromDate { get; set; }
     public string? FinToDate { get; set; }
     public string? ChangeEventTriggered { get; set; }

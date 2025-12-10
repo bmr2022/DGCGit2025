@@ -153,7 +153,9 @@ namespace eTactWeb.Controllers
                         model.LastupdatedBy = userID;
 
                     MRGrid = GetDetailTable(IssueGrid);
-
+                    model.MachineCode = HttpContext.Session.GetString("ClientMachineName");
+                    model.MachineCodee = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IIssueWOBOM.SaveIssueWithoutBom(model, MRGrid);
 
                     if (Result != null)

@@ -163,6 +163,7 @@ public class PurchaseSubScheduleModel : PurchaseScheduleGrid
     public string? EntryDate { get; set; }
     [DisplayFormat(DataFormatString = @"{0::dd-mm-yy}", ApplyFormatInEditMode = false)]
     public string? DeliveryDate { get; set; }
+    public string? IPAddress { get; set; }
     public int EntryID { get; set; }
     public string? ModeOfTransport { get; set; }
     public string? OrderPriority { get; set; }
