@@ -78,9 +78,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ReqWithoutBomDAL.FillTotalStock(ItemCode,Store);
         }
-        public async Task<ResponseResult> SaveRequisition(RequisitionWithoutBOMModel model, DataTable ReqGrid)
+        public async Task<ResponseResult> SaveRequisition(RequisitionWithoutBOMModel model, DataTable ReqGrid, string IPAddress)
         {
-            return await _ReqWithoutBomDAL.SaveRequisition(model,ReqGrid);
+            return await _ReqWithoutBomDAL.SaveRequisition(model,ReqGrid,IPAddress);
         }
 
         public async Task<ResponseResult> GetDashboardData(string FromDate, string Todate, string Flag)
@@ -95,9 +95,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ReqWithoutBomDAL.GetDetailData(REQNo, WCName,WONO, DepName, PartCode, ItemName, BranchName, FromDate, ToDate);
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC,int UpdatedBy, string EntryByMachineName)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC,int UpdatedBy, string EntryByMachineName,string IPAddress)
         {
-            return await _ReqWithoutBomDAL.DeleteByID(ID, YC, UpdatedBy, EntryByMachineName);
+            return await _ReqWithoutBomDAL.DeleteByID(ID, YC, UpdatedBy, EntryByMachineName,   IPAddress);
         }
 
         public async Task<RequisitionWithoutBOMModel> GetViewByID(int ID, int YearCode)
