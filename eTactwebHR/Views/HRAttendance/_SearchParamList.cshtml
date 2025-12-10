@@ -17,6 +17,7 @@
         color: #000;
 </style>
 <div class="row">
+    <input asp-for="HRAttYearCode" class="form-control" type="hidden" value="@Model.HRAttYearCode" />
     <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
         <div class="row">
             <div class="col">
@@ -36,12 +37,6 @@
             <option value="0">-Select-</option>
         </select>
     </div>
-    <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="DashCategory" class="form-label">Category</label>
-        <select class="form-select" asp-for="DashCategory" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.DashCategoryList,"Value","Text"))">
-            <option value="0">-Select-</option>
-        </select>
-    </div>
     <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
         <label asp-for="DashDesignation" class="form-label">Designation</label>
         <select class="form-select" asp-for="DashDesignation" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.DashDesignationList,"Value","Text"))">
@@ -51,6 +46,18 @@
     <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
         <label asp-for="DashEmployee" class="form-label">Employee</label>
         <select class="form-select" asp-for="DashEmployee" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.DashEmployeeList,"Value","Text"))">
+            <option value="0">-Select-</option>
+        </select>
+    </div>
+    <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12" style="width: 240px;">
+        <label asp-for="DashAttendanceDate" class="form-label">Attendance Date</label>
+        <select class="form-select" asp-for="DashAttendanceDate" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.DashAttendanceDateList,"Value","Text"))">
+            <option value="0">-Select-</option>
+        </select>
+    </div>
+    <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="DashCategory" class="form-label">Category</label>
+        <select class="form-select" asp-for="DashCategory" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.DashCategoryList,"Value","Text"))">
             <option value="0">-Select-</option>
         </select>
     </div>

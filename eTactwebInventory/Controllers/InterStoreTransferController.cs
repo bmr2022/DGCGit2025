@@ -295,6 +295,9 @@ namespace eTactWeb.Controllers
                     }
 
                     ISTGrid = GetDetailTable(ISTDetail);
+                    model.MachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
+
                     var Result = await IInterStore.SaveInterStore(model, ISTGrid);
 
                     if (Result != null)

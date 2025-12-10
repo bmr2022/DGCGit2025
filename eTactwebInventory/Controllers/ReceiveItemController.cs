@@ -138,7 +138,8 @@ namespace eTactWeb.Controllers
                     {
                         ReceiveItemGrid = GetDetailTable(ReceiveItemDetail);
                     }
-
+                    model.EnteredbyMachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IReceiveItem.SaveInprocessQc(model, ReceiveItemGrid);
 
                     if (Result != null)

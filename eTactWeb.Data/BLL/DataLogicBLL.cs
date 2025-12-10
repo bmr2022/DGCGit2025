@@ -98,8 +98,8 @@ public class DataLogicBLL : IDataLogic
     {
         return await _DataLogicDAL.GetPendVouchBillAgainstRefPopupByID(AC, YC, PayRecEntryId, PayRecYearcode, DRCR, TransVouchType, TransVouchDate, Flag);
     }
-    public async Task<IList<TextValue>> GetDropDownListWithCustomeVar(string SPName, Dictionary<string, object> parameters, bool? IsTextandValueSame = false, bool? IsValueInFirstcolumn = true)
+    public async Task<IList<TextValue>> GetDropDownListWithCustomeVar(string SPName, Dictionary<string, object> parameters, bool? IsTextandValueSame = false, bool? IsValueInFirstcolumn = true, bool? IsExcludeFirstcolumn = false)
     {
-        return await _DataLogicDAL.GetDropDownListWithCustomeVar(SPName, parameters, IsTextandValueSame, IsValueInFirstcolumn);
+        return await _DataLogicDAL.GetDropDownListWithCustomeVar(SPName, parameters, IsTextandValueSame, IsValueInFirstcolumn, IsExcludeFirstcolumn);
     }
 }

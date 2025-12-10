@@ -1,9 +1,11 @@
 ﻿using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Wordprocessing;
 using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -41,29 +43,37 @@ public class HRAttendanceController : Controller
     public IHRAttendance IHRAttendance { get; set; }
     public async Task<IActionResult> HRAttendanceList(string? FromDate, string? ToDate)
     {
+        HttpContext.Session.Remove("HRAttendanceList");
         var _List = new List<TextValue>();
-        HRAListDataModel model = new HRAListDataModel();
-        FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
-
-        ToDate = string.IsNullOrEmpty(model.ToDate) ? DateTime.Now.ToString("dd/MM/yyyy") : model.ToDate;
         var MainModel = new HRAListDataModel();
-        //var MainModel = await IHRAttendance.GetHRAListData(string.Empty, string.Empty, string.Empty, model);
+        MainModel.HRAttYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+
+        FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+        ToDate = string.IsNullOrEmpty(MainModel.ToDate) ? DateTime.Now.ToString("dd/MM/yyyy") : MainModel.ToDate;
 
         DateTime now = DateTime.Now;
         DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
         DateTime today = DateTime.Now;
+        MainModel.FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+        MainModel.ToDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day).ToString("dd/MM/yyyy").Replace("-", "/");
+
+        MainModel.FromDate = new DateTime(DateTime.Today.Year, 3, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+        MainModel.ToDate = new DateTime(DateTime.Today.Year, 3, 30).ToString("dd/MM/yyyy").Replace("-", "/");
+
+        var fromdate = CommonFunc.ParseSafeDate(CommonFunc.ParseDate(MainModel.FromDate).ToString("dd/MM/yyyy"));
+        var todate = CommonFunc.ParseSafeDate(CommonFunc.ParseDate(MainModel.ToDate).ToString("dd/MM/yyyy"));
         var commonparams = new Dictionary<string, object>()
         {
-            { "@Fromdate", firstDayOfMonth },
-            { "@ToDate", today }
+            { "@Fromdate", fromdate == default ? string.Empty : fromdate },
+            { "@ToDate", todate == default ? string.Empty : todate }
         };
         MainModel = await BindPBList(MainModel, commonparams);
-        MainModel.FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
-        MainModel.ToDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day).ToString("dd/MM/yyyy").Replace("-", "/");// Last day in January next year
-
-        return View(MainModel);
+        if (MainModel == null) { MainModel = new HRAListDataModel(); }
+        string serializedGrid = JsonConvert.SerializeObject(MainModel);
+        HttpContext.Session.SetString("HRAttendanceList", serializedGrid);
+         return View(MainModel);
     }
-    public async Task<IActionResult> GetSearchHRAListData(HRAListDataModel model)
+    public async Task<IActionResult> GetSearchHRAListData(HRAListDataModel model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
     {
         var _List = new List<TextValue>();
         DateTime now = DateTime.Now;
@@ -73,7 +83,7 @@ public class HRAttendanceController : Controller
         string fromDate = (model.FromDate);
         string toDate = (model.ToDate);
         var MainModel = new HRAListDataModel();
-       // var MainModel = await IHRAttendance.GetHRAttendanceListData("DisplayPendingData", MRNType, model.DashboardType ?? "SUMMARY", fromDate, toDate, model);
+        MainModel = await IHRAttendance.GetHRAttendanceListData("PendingGateAttendance", fromDate, toDate, model);
 
         //fromDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
         //toDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
@@ -88,25 +98,53 @@ public class HRAttendanceController : Controller
         MainModel.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");// Last day in January next year
 
         //MainModel.DashboardType = "Summary";
-        return PartialView("_HRAListDataGrid", MainModel);
-    }
-    public async Task<IActionResult> GetHRAListDropdownData(HRAListDataModel model)
-    {
-        var _List = new List<TextValue>();
-        DateTime now = DateTime.Now;
-        DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
-        DateTime today = DateTime.Now;
-        var MainModel = model;
-        DateTime fromDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-        DateTime toDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-        var commonparams = new Dictionary<string, object>()
+        var modelList = model?.HRAListData ?? new List<HRAListDataModel>();
+        if (string.IsNullOrWhiteSpace(SearchBox))
         {
-            { "@Fromdate", model.FromDate != null ? fromDate : firstDayOfMonth },
-            { "@ToDate", model.ToDate != null ? toDate : today }
+            model.TotalRecords = modelList.Count();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+            model.HRAListData = modelList
+            .Skip((pageNumber - 1) * pageSize)
+               .Take(pageSize)
+               .ToList();
+        }
+        else
+        {
+            List<HRAListDataModel> filteredResults;
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                filteredResults = modelList.ToList();
+            }
+            else
+            {
+                filteredResults = modelList
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = modelList.ToList();
+                }
+            }
+            model.TotalRecords = filteredResults.Count;
+            model.HRAListData = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+        }
+        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+            SlidingExpiration = TimeSpan.FromMinutes(55),
+            Size = 1024,
         };
-        MainModel = await BindPBList(MainModel, commonparams);
-        return PartialView("_SearchParamList", MainModel);
+
+        //_MemoryCache.Set($"KeyHRAttList_{model.DashboardType}", modelList, cacheEntryOptions);
+        _MemoryCache.Set($"KeyHRAttList", modelList, cacheEntryOptions);
+        return PartialView("_HRAListDataGrid", MainModel);
     }
     public async Task<HRAListDataModel> BindPBList(HRAListDataModel MainModel, Dictionary<string, object> commonparams)
     {
@@ -119,40 +157,101 @@ public class HRAttendanceController : Controller
 
             return p;
         }
-        var dashdep = Build("DashboardFillDepartment");
-        var dashcat = Build("DashboardFillCategory");
-        var dashdesg = Build("DashboardFillDesignation");
-        var dashemp = Build("DashboardFillEmployee");
+        var dashdep = Build("FillDepartment");
+        var dashdesg = Build("FillDesignation");
+        var dashemp = Build("FillEmployee");
+        var dashcat = Build("FillCategory");
         MainModel.DashDepartmentList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPHRAttendanceMainDetail", dashdep, false, false);
-        MainModel.DashCategoryList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPHRAttendanceMainDetail", dashcat, false, true);
         MainModel.DashDesignationList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPHRAttendanceMainDetail", dashdesg, false, false);
         MainModel.DashEmployeeList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPHRAttendanceMainDetail", dashemp, false, false);
+        MainModel.DashCategoryList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPHRAttendanceMainDetail", dashcat, false, true);
+        MainModel.DashAttendanceDateList = new List<TextValue>();
         return MainModel;
     }
-    [HttpGet]
-    public async Task<IActionResult> GetFilters(string fromDate, string toDate)
+    [HttpPost]
+    public async Task<IActionResult> RefreshFilters(int YearCode, string fromDate, string toDate, string employeeId)
     {
-        DateTime now = DateTime.Now;
-        DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
-        DateTime today = DateTime.Now;
-        var MainModel = new HRAListDataModel();
-        DateTime fDate = DateTime.ParseExact(fromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-        DateTime tDate = DateTime.ParseExact(toDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+        var model = new HRAListDataModel();
+        var fromdate = CommonFunc.ParseSafeDate(CommonFunc.ParseDate(fromDate).ToString("dd/MM/yyyy"));
+        var todate = CommonFunc.ParseSafeDate(CommonFunc.ParseDate(toDate).ToString("dd/MM/yyyy"));
 
-        var commonparams = new Dictionary<string, object>()
+        var common = new Dictionary<string, object>()
         {
-            { "@Fromdate", fromDate != null ? fDate : firstDayOfMonth },
-            { "@ToDate", toDate != null ? tDate : today }
+            { "@FromDate", fromdate },
+            { "@ToDate", todate }
         };
-        MainModel = await BindPBList(MainModel, commonparams);
-        return null;
-        //return Json(new
-        //{
-        //    department = model.DashDepartmentList,
-        //    category = model.DashCategoryList,
-        //    designation = model.DashDesignationList,
-        //    employee = model.DashEmployeeList
-        //});
+        if(employeeId != "0")
+        {
+            common.Add("@EmployeeId", employeeId);
+        }
+        // Rebind ONLY the required 2 dropdowns
+        model = await BindPBList(model, common);
+
+        // Bind attendance-date + category list from SP
+        var spParams = new Dictionary<string, object>()
+        {
+            { "@flag", "PendingGateAttendanceSummary" },
+            { "@HRAttYearCode", YearCode },
+            { "@FromDate", fromdate },
+            { "@ToDate", todate }
+        };
+
+        model.DashAttendanceDateList =  await IDataLogic.GetDropDownListWithCustomeVar("HRSPHRAttendanceMainDetail", spParams, false, true);
+        model.DashAttendanceDateList = model.DashAttendanceDateList.GroupBy(a => a.Text).Select(a => new TextValue { Text = a.Key, Value = a.Key }).ToList();
+        var DashCategList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPHRAttendanceMainDetail", spParams, false, false, true);
+        model.DashCategoryList = model.DashCategoryList ?? (DashCategList ?? new List<TextValue>());
+        if (DashCategList != null && DashCategList.Any()) { model.DashCategoryList = model.DashCategoryList.Where(a => DashCategList.Any(d => d?.Text == a?.Value)).ToList(); }
+
+        return Json(new
+        {
+            attendanceDates = model.DashAttendanceDateList,
+            categories = model.DashCategoryList
+        });
+    }
+    [HttpGet]
+    public IActionResult GlobalSearch(string searchString, string dashboardType = "SUMMARY", int pageNumber = 1, int pageSize = 25)
+    {
+        HRAListDataModel model = new HRAListDataModel();
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            return PartialView("_HRAListDataGrid", new List<HRAListDataModel>());
+        }
+        //string cacheKey = $"KeyHRAttList_{dashboardType}";
+        string cacheKey = $"KeyHRAttList";
+        if (!_MemoryCache.TryGetValue(cacheKey, out IList<HRAListDataModel> Dashboard) || Dashboard == null)
+        {
+            return PartialView("_HRAListDataGrid", new List<HRAListDataModel>());
+        }
+
+        List<HRAListDataModel> filteredResults;
+
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            filteredResults = Dashboard.ToList();
+        }
+        else
+        {
+            filteredResults = Dashboard
+                .Where(i => i.GetType().GetProperties()
+                    .Where(p => p.PropertyType == typeof(string))
+                    .Select(p => p.GetValue(i)?.ToString())
+                    .Any(value => !string.IsNullOrEmpty(value) &&
+                                  value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+
+            if (filteredResults.Count == 0)
+            {
+                filteredResults = Dashboard.ToList();
+            }
+        }
+
+        model.TotalRecords = filteredResults.Count;
+        model.HRAListData = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+        model.PageNumber = pageNumber;
+        model.PageSize = pageSize;
+        //model.DashboardType = dashboardType;
+        return PartialView("_HRAListDataGrid", model);
     }
     public string GetEmpByMachineName()
     {
@@ -178,6 +277,12 @@ public class HRAttendanceController : Controller
     public async Task<JsonResult> FillEntryId(int YearCode)
     {
         var JSON = await IHRAttendance.FillEntryId(YearCode);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> CheckLockYear(int YearCode)
+    {
+        var JSON = await IHRAttendance.CheckLockYear(YearCode);
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }

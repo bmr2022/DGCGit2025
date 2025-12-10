@@ -12,6 +12,8 @@ namespace eTactWeb.Services.Interface
     {
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> FillEntryId(int YearCode);
-        Task<HRAListDataModel> GetHRAListData(string? flag, string? AttandanceDate, string? EmpCareg, HRAListDataModel model);
+        Task<HRAListDataModel> GetHRAttendanceListData(string? flag, string? firstdate, string? todate, HRAListDataModel model);
+        Task<ResponseResult> CheckLockYear(int YearCode);
+
     }
 }

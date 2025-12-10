@@ -660,6 +660,8 @@ public class SaleScheduleController : Controller
                 if (SaleScheduleGrid.Count > 0)
                 {
                     model.AmmYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                    model.EnterByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     Result = await ISaleSchedule.SaveSaleSchedule(model, DTSSGrid);
                 }
                 if (!isError)
@@ -782,7 +784,8 @@ public class SaleScheduleController : Controller
                 //DTSSGrid.Columns.Remove("IPAddress");
                 //DTSSGrid.Columns.Remove("UpdatedBy");
                 //DTSSGrid.Columns.Remove("UpdatedOn");
-
+                model.EnterByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 var Result = await ISaleSchedule.SaveSaleSchedule(model, DTSSGrid);
 
                 if (Result != null)

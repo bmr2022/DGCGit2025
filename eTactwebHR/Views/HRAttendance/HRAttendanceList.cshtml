@@ -50,8 +50,7 @@
             const formFields = [
             'FromDate', 'ToDate', 
             // 'DashboardType', 'MRNType',
-            // 'PartyName', 'MRNNo', 'PONO', 'InvoiceNo',
-            // 'GateNo', 'DocumentName', 'ItemName', 'PartCode',
+            'DashDepartment',  'DashDesignation', 'DashEmployee', 'DashAttendanceDate', 'DashCategory',
             'search-box'
         ];
 
@@ -72,55 +71,18 @@
             });
         }
 
-
-        $(function () {
-            // Fields to handle
-            // Save all form field values into sessionStorage
-            GetFormRights();
-            LockedFinancialYear();
-            CheckApprovedOrNot();
-            var dashGrid = $('#HRADashboardGrid tr').length - 1;
-            $('#totalRows').text(dashGrid);
-            setDefaultData();
-            $('#YearCode').val($('#sessionYC').text());
-                      $(document).on('change', '#FromDate', function () {
-            GetPBListDropdownData();
-        });
-             $(document).on('change', '#ToDate', function () {
-            GetPBListDropdownData();
-        });
-                var FromDateBack = sessionStorage.getItem('FromDateBack');
-        if (FromDateBack) {
-            $('#FromDate').val(FromDateBack);
-            if ($('#FromDate').hasClass('hasDatepicker')) {
-                $('#FromDate').datepicker('setDate', FromDateBack);
-            }
+        function formatDate(date) {
+            var day = ("0" + date.getDate()).slice(-2);
+            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            var year = date.getFullYear();
+            return day + "/" + month + "/" + year;
         }
 
-        // ToDate
-        var ToDateBack = sessionStorage.getItem('ToDateBack');
-        if (ToDateBack) {
-            $('#ToDate').val(ToDateBack);
-            if ($('#ToDate').hasClass('hasDatepicker')) {
-                $('#ToDate').datepicker('setDate', ToDateBack);
-            }
+        function parseDateDDMMYYYY(dateStr) {
+            var parts = dateStr.split("/");
+            return new Date(parts[2], parts[1] - 1, parts[0]);
         }
 
-        // // DashboardType
-        // var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
-        // if (DashboardTypeBack) {
-        //     $('#DashboardType').val(DashboardTypeBack).trigger('change'); // select2
-        // }
-
-        // // MRNType
-        // var MRNTypeBack = sessionStorage.getItem('MRNTypeBack');
-        // if (MRNTypeBack) {
-        //     $('#MRNType').val(MRNTypeBack).trigger('change'); // select2
-        // }
-            GetHRAListDropdownData();
-            GetSearchData();
-            clearFormStateFromSession()
-        });
         function setDefaultData() {
             // var currentDate = new Date();
             // var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -139,64 +101,41 @@
             // var ToDate = ($('#ToDate').val() != null && $('#ToDate').val() != undefined) ? $('#ToDate').val().split("-").join("/") : formatDateToDDMMYY(currentDate);
             // ToDate = parseDateToFormat(ToDate.split(" ")[0]);
             // $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDate);
-        var currentDate = new Date();
-        var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
-        function formatDate(date) {
-            var day = ("0" + date.getDate()).slice(-2);
-            var month = ("0" + (date.getMonth() + 1)).slice(-2);
-            var year = date.getFullYear();
-            return day + "/" + month + "/" + year;
-        }
+            // FROM DATE
+            var fromDateVal = $('#FromDate').val();
+            var FromDateStr = (fromDateVal !== null && fromDateVal.trim() !== "")
+                ? fromDateVal.replace(/-/g, "/")
+                : formatDate(firstDayOfMonth);
 
-        function parseDateDDMMYYYY(dateStr) {
-            var parts = dateStr.split("/");
-            return new Date(parts[2], parts[1] - 1, parts[0]);
-        }
+            var FromDateFormatted = parseDateDDMMYYYY(FromDateStr);
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDateFormatted);
 
-        // FROM DATE
-        var fromDateVal = $('#FromDate').val();
-        var FromDateStr = (fromDateVal !== null && fromDateVal.trim() !== "")
-            ? fromDateVal.replace(/-/g, "/")
-            : formatDate(firstDayOfMonth);
+            // TO DATE
+            var toDateVal = $('#ToDate').val();
+            var ToDateStr = (toDateVal !== null && toDateVal.trim() !== "")
+                ? toDateVal.replace(/-/g, "/")
+                : formatDate(currentDate);
 
-        var FromDateFormatted = parseDateDDMMYYYY(FromDateStr);
-        $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDateFormatted);
+            var ToDateFormatted = parseDateDDMMYYYY(ToDateStr);
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDateFormatted);
 
-        // TO DATE
-        var toDateVal = $('#ToDate').val();
-        var ToDateStr = (toDateVal !== null && toDateVal.trim() !== "")
-            ? toDateVal.replace(/-/g, "/")
-            : formatDate(currentDate);
-
-        var ToDateFormatted = parseDateDDMMYYYY(ToDateStr);
-        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDateFormatted);
-
-            // AutoComplete('VDirectPurchaseBillMain', 'ItemName', 'ItemName', null);
+                // AutoComplete('VDirectPurchaseBillMain', 'ItemName', 'ItemName', null);
             // AutoComplete('VDirectPurchaseBillMain', 'PurchVouchNo', 'purvoucherno', null);
 
         //     $('#DashboardType').select2();
-        //     $('#MRNType').select2();
-        //     $('#PartyName').select2();
-        //     $('#MRNNo').select2();
-        //     $('#PONO').select2();
-        //     $('#InvoiceNo').select2();
-        //     $('#GateNo').select2();
-        //     $('#DocumentName').select2();
-        //     $('#ItemName').select2();
-        //     $('#PartCode').select2();
-        //        const selectIds = [
-        //   'PartyName',
-        //     'MRNNo', 'PONO', 'InvoiceNo', 'GateNo',
-        //     'DocumentName', 'ItemName', 'PartCode'
-        // ];
+            const selectIds = [
+              'DashDepartment',  'DashDesignation', 'DashEmployee', 'DashAttendanceDate', 'DashCategory'
+            ];
 
-        selectIds.forEach(function (id) {
-            $('#' + id).select2();
-        });
+            selectIds.forEach(function (id) {
+                //$('#' + id).select2();
+            });
 
-        // Restore previous selections from sessionStorage
-        selectIds.forEach(function (id) {
+            // Restore previous selections from sessionStorage
+            selectIds.forEach(function (id) {
             const storedText = sessionStorage.getItem(id + 'Back');
             if (storedText) {
                 let matched = false;
@@ -222,6 +161,52 @@
             });
         });
         }
+
+        $(function () {
+            // Fields to handle
+            // Save all form field values into sessionStorage
+            GetFormRights();
+            //LockedFinancialYear();
+            CheckApprovedOrNot();
+            var dashGrid = $('#HRADashboardGrid tr').length - 1;
+            $('#totalRows').text(dashGrid);
+            setDefaultData();
+            $('#YearCode').val($('#sessionYC').text());
+            /* Date change triggers */
+            $(document).on('change', '#FromDate, #ToDate', reloadFilters);
+            var FromDateBack = sessionStorage.getItem('FromDateBack');
+            if (FromDateBack) {
+                $('#FromDate').val(FromDateBack);
+                if ($('#FromDate').hasClass('hasDatepicker')) {
+                    $('#FromDate').datepicker('setDate', FromDateBack);
+                }
+            }
+
+            // ToDate
+            var ToDateBack = sessionStorage.getItem('ToDateBack');
+            if (ToDateBack) {
+                $('#ToDate').val(ToDateBack);
+                if ($('#ToDate').hasClass('hasDatepicker')) {
+                    $('#ToDate').datepicker('setDate', ToDateBack);
+                }
+            }
+
+            // // DashboardType
+            // var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
+            // if (DashboardTypeBack) {
+            //     $('#DashboardType').val(DashboardTypeBack).trigger('change'); // select2
+            // }
+
+            // // MRNType
+            // var MRNTypeBack = sessionStorage.getItem('MRNTypeBack');
+            // if (MRNTypeBack) {
+            //     $('#MRNType').val(MRNTypeBack).trigger('change'); // select2
+            // }
+            GetSearchData();
+            clearFormStateFromSession();
+            reloadFilters();
+        });
+
         function CheckApprovedOrNot() {
             var columnLength = $('#divDashboardGrid tr td').length;
             var rowLength = $('#divDashboardGrid tr').length;
@@ -342,53 +327,6 @@
             });
         });
 
-
-        function GetSearchData() {
-            GetListData();
-        }
-
-        function GetListData() {
-            var data = $('#SParam').serialize();
-            $.ajax({
-                url: '@Url.Action("GetSearchHRAListData")',
-                type: "POST",
-                data: $('#SParam').serializeArray(),
-                success: function (data) {
-                    LockedFinancialYear();
-                    $('#divDashboardGrid').empty().append(data);
-                    CheckApprovedOrNot();
-                    var dashGrid = $('#HRADashboardGrid tr').length - 1;
-                    $('#totalRows').text(dashGrid);
-                   // GetPBListDropdownData();
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                }
-            });
-        }
-        function GetHRAListDropdownData() {
-            var data = $('#SParam').serialize();
-            $.ajax({
-                url: '@Url.Action("GetHRAListDropdownData")',
-                type: "POST",
-                data: $('#SParam').serializeArray(),
-                success: function (data) {
-                    LockedFinancialYear();
-                    $('#SParam').empty().append(data);
-                    setDefaultData();
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                }
-            });
-        }
-
         var currentSearchColumn = null;
 
         $(document).on("input", "#search-box", function () {
@@ -501,16 +439,79 @@
                 }
             });
         }
-        function transferDataToEdit(cntr) {
-            saveFormStateToSession()
-              showToTransfer(cntr)
+
+        /* -----------------------------------------
+           AJAX FILTER LOADERS
+        ----------------------------------------- */
+         function reloadFilters() {
+            $.ajax({
+                url: '@Url.Action("RefreshFilters")',
+                type: 'POST',
+                data: {
+                    YearCode: $('#HRAttYearCode').val(),
+                    fromDate: $('#FromDate').val(),
+                    toDate: $('#ToDate').val(),
+                    employeeId: $('#DashEmployee').val()
+                },
+                success: function (res) {
+                    // Attendance Dates
+                    let dateSel = $("#DashAttendanceDate");
+                    dateSel.empty().append(`<option value="0">-Select-</option>`);
+                    res.attendanceDates.forEach(x => {
+                            let onlyDate = x.text.split(" ")[0];   // ⬅ removes time
+                            dateSel.append(`<option value="${x.value}">${onlyDate}</option>`);
+                    });
+
+                    // Category
+                    let catSel = $("#DashCategory");
+                    catSel.empty().append(`<option value="0">-Select-</option>`);
+                    res.categories.forEach(x => {
+                        catSel.append(`<option value="${x.value}">${x.text}</option>`);
+                    });
+                }
+            });
         }
+
+
+        /* -----------------------------------------
+           AJAX LIST LOADERS
+        ----------------------------------------- */
+        function GetSearchData() { GetListData(); }
+
+        function GetListData() {
+            $.ajax({
+                url: '@Url.Action("GetSearchHRAListData")',
+                type: "POST",
+                data: $('#SParam').serializeArray(),
+                success: function (data) {
+                    //LockedFinancialYear();
+                    $('#divDashboardGrid').empty().append(data);
+                    CheckApprovedOrNot();
+                    var rows = $('#HRADashboardGrid tr').length - 1;
+                    $('#totalRows').text(rows);
+                    // reloadFilters();
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+        /* -----------------------------------------
+           TRANSFER TO EDIT PAGE
+        ----------------------------------------- */
+        function transferDataToEdit(i) {
+            saveFormStateToSession();
+            showToTransfer(i);
+        }
+
         function showToTransfer(i) {
-            var mrnYear = $('#HRAttYearCode_' + i).text();
+            var yr = $('#HRAttYearCode_' + i).text();
             //alert('mrnyear '+mrnYear);
             const currentYear = $('#YearCode').val();
-            var FromStoreId = $('#FromStore').val();
-            if (mrnYear == currentYear) {
+            if (yr == currentYear) {
                 var url = '/HRAttendance/Index/?';
                 url += "ID=" + encodeURIComponent(0) +
                     "&YC=" + encodeURIComponent(currentYear) +
@@ -523,15 +524,127 @@
                     "&ToDate=" + encodeURIComponent($('#ToDate').val()) +
                     "&REQNo=" + encodeURIComponent($('#ReqNo').val()) +
                     "&ReqYearCode=" + encodeURIComponent($('#ReqYearCode').val()) +
-                    "&GlobalSearch=" + encodeURIComponent($('#search-box').val()) +
-                    "&FromStoreBack=" + encodeURIComponent(FromStoreId);
+                    "&GlobalSearch=" + encodeURIComponent($('#search-box').val());
 
                 // Redirect to the constructed URL
                 window.location.href = url;
             }
             else {
-                $.notify("Attendance Year is not equals to Current Logged In Fin Year");
+                $.notify("Attendance Year is not equals to Current Logged In current Year");
             }
+        }
+
+        /*----------------------------------------------
+        pagination
+        --------------------------------------------- */
+        function loadPage(pageNumber) {
+            //var dashboardType = $('#DashboardType').val();
+            var url = '@Url.Action("GetSearchHRAListData", "HRAttendance")';
+
+            var formData = $('#SParam').serializeArray();
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(result);
+                    CheckApprovedOrNot();
+                    $('#totalRows').text($('#divDashboardGrid1 tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
+        $("#search-box").on("input", function () {
+            var searchString = $(this).val().trim();
+           // var dashboardType = $('#DashboardType').val();
+            $.ajax({
+                url: "/HRAttendance/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString /* , dashboardType: dashboardType */ },
+                success: function (data) {
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(data);
+                    CheckApprovedOrNot();
+                    $('#totalRows').text($('#divDashboardGrid1 tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
+        var currentSearchColumn = null;
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divDashboardGrid1 tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+        function sortTable(columnIndex, ascending) {
+            var table = $('#HRADashboardGrid');
+            var rows = table.find('#divDashboardGrid1 > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+            $.each(rows, function (index, row) {
+                table.children('#divDashboardGrid1').append(row);
+            });
         }
     </script>
     <script src="~/Scripts/table2excel.js"></script>

@@ -464,6 +464,8 @@ namespace eTactWeb.Controllers
                     }
 
                     RCGrid = GetDetailTable(RCDetail);
+                    model.MachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await IReceiveChallan.SaveReceiveChallan(model, RCGrid);
 
                     if (Result != null)

@@ -14,6 +14,7 @@ namespace eTactWeb.DOM.Models
         public string? FromDate { get; set; }
         public string? ToDate { get; set; }
         public string EntryDate { get; set; }
+        public string? IPAddress { get; set; }
         public string EntryTime { get; set; }
         public string PreFix { get; set; }
         public string IssueSlipNo { get; set; }

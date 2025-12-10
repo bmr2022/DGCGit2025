@@ -163,6 +163,8 @@ namespace eTactWeb.Controllers
                         ChallanGrid = GetChallanTable(JobWorkReceiveDetail);
                     }
                     model = await BindModel(model);
+                    model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IJobWorkReceive.SaveJobReceive(model, JWRGrid, ChallanGrid);
                     if (Result != null)
                     {

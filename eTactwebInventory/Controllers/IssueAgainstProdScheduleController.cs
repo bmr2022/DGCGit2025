@@ -149,6 +149,8 @@ namespace eTactWeb.Controllers
                     {
                         IssueAgainstProductionSchedule = GetDetailTable(IssueAgainstProdScheduleDetail);
                     }
+                    model.MachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
 
                     var Result = await _IIssueAgainstProdSchedule.SaveIssueAgainstProductionSchedule(model, IssueAgainstProductionSchedule);
 

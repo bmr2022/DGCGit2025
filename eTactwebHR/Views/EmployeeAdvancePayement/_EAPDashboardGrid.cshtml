@@ -181,7 +181,7 @@
 							<td>@item.EmpCode</td>
 							<td>@item.DesigName</td>
 							<td>@item.DeptName</td>
-							<td>@item.DOJ</td>
+							<td>@(item.DOJ != null ? item.DOJ.Split(" ")[0] : item.DOJ)</td>
 							<td>@item.BasicSalary</td>
 							<td>@item.GrossSalary</td>
 							<td>@item.NetSalary</td>

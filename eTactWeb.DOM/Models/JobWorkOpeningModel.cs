@@ -14,6 +14,7 @@ namespace eTactWeb.DOM.Models
         public int YearCode { get; set; }
         public string TransactionType { get; set; }
         public string IssJWChallanNo { get; set; }
+        public string? IPAddress { get; set; }
         public int IssChalanEntryId { get; set; }
         public int IssChallanYearcode { get; set; }
         public string Isschallandate { get; set; }

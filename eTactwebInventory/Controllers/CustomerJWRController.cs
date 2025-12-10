@@ -74,6 +74,8 @@ namespace eTactWeb.Controllers
                 {
                     model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 }
+                model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 var Result = await _ICustomerJWR.SaveCustJWR(model, CustJWRGrid);
 
                 if (Result != null)

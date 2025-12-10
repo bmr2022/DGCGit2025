@@ -44,6 +44,26 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetBomNo(string BomName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetBomNo"));
+                SqlParams.Add(new SqlParameter("@BomName", BomName));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable(SP_NAME, SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
 
         public async Task<ResponseResult> GetFormData(string Flag, string ModuleName)
         {
@@ -112,6 +132,7 @@ namespace eTactWeb.Data.DAL
             new SqlParameter("@IssueToStoreWC", model.IssueToStoreWC),
             new SqlParameter("@IssueTOWCid", model.IssueTOWCid),
             new SqlParameter("@IssueToStoreId", model.IssueToStoreId),
+            new SqlParameter("@BomNo", model.BomNo),
             //new SqlParameter("@MainTableName", model.FormName),
 
         };

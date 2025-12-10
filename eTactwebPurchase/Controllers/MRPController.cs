@@ -177,7 +177,8 @@ namespace eTactWeb.Controllers
                         MRPSOGrid = GetSODetailTable(MRPSODetail);
                         MRPFGGrid = GetFGDetailTable(MRPFGDetail);
                     }
-
+                    model.MachineNo = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await IMRP.SaveMRPDetail(model, MRPGrid, MRPSOGrid, MRPFGGrid);
 
                     if (Result != null)

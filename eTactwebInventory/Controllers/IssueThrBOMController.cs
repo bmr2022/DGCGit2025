@@ -189,6 +189,9 @@ namespace eTactWeb.Controllers
                     RMGrid = GetRMDetailTable(IssueGrid);
                     FGGrid = GetFGDetailTable(IssueFGGrid);
 
+                    model.MachineCode = HttpContext.Session.GetString("ClientMachineName");
+                    model.MachineCodee = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IIssueThrBOM.SaveIssueThrBom(model, RMGrid, FGGrid);
 
                     if (Result != null)

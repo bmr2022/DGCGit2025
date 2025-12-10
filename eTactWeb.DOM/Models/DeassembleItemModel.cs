@@ -11,6 +11,7 @@ namespace eTactWeb.DOM.Models
     {
 
         public int DeassEntryID { get; set; }
+        public string? IPAddress { get; set; }
         public string? DeassEntryDate { get; set; }
         public int DeassYearcode { get; set; }
         public string DeassSlipNo { get; set; }

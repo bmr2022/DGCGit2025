@@ -605,6 +605,8 @@ namespace eTactWeb.Controllers
                 {
                     TaxDetailDT = GetTaxDetailTable(TaxGrid);
                 }
+                model.EnterByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 Result = await _IJobWorkIssue.SaveJobWorkIssue(model, JWGrid, TaxDetailDT);
                 if (Result != null)
                 {
