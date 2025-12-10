@@ -768,6 +768,8 @@ namespace eTactWeb.Controllers
                     {
                         TaxDetailDT = GetTaxDetailTable(TaxGrid);
                     }
+                    model.MachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IIssueNRGP.SaveIssueNRGP(model, INGrid, TaxDetailDT);
 
                     if (Result != null)
