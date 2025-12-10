@@ -14,6 +14,7 @@ namespace eTactWeb.DOM.Models
         public string Action { get; set; }
       
         public long YearCode { get; set; }
+        public long BomNo { get; set; }
         public string? EntryDate { get; set; }
         public string CC { get; set; }
         public string MachineName { get; set; }

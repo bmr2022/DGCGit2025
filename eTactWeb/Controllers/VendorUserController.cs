@@ -40,7 +40,7 @@ namespace eTactWeb.Controllers
             MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
 
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U"|| Mode=="V"))
             {
                 MainModel = await _IVendorMater.GetViewByID(ID,Mode).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update

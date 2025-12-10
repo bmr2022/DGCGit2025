@@ -49,16 +49,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li>
-                                <a class="dropdown-item" href="#">Manage Password </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="Admin" asp-action="ManagePassword" asp-route-ID="0" id="User">
-                                            <i class="fa fa-circle-user fa-fw fa-lg" aria-hidden="true"></i> Manage Password
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="#">Rights &raquo; </a>
@@ -177,53 +168,94 @@
                                 </ul>
                     </li>
 
-                            
 
-                        
+
+
 
                             <li>
-                                <a class="dropdown-item" href="#">Sales & Mkt </a>
+                                <a class="dropdown-item" href="#">Sales & Mkt &raquo;</a>
                                 <ul class="submenu dropdown-menu">
+
+                                    <!-- SaleBill Approval -->
                                     <li>
-                                        <a class="dropdown-item" href="#">SaleBill Approval &raquo; </a>
+                                        <a class="dropdown-item" href="#">SaleBill Approval &raquo;</a>
                                         <ul class="submenu dropdown-menu">
                                             <li>
-                                                <a class="dropdown-item SoApproval" asp-action="SaleBillApproval" asp-controller="SaleBillApproval" asp-route-ID="0">
-                                                    <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>SaleBill Approval Form
+                                                <a class="dropdown-item SoApproval"
+                                                   asp-action="SaleBillApproval"
+                                                   asp-controller="SaleBillApproval"
+                                                   asp-route-ID="0">
+                                                    <i class="fa fa-fw fa-table fa-lg"></i> SaleBill Approval Form
                                                 </a>
                                                 <input class="userRightsPermission" type="hidden" value="SaleBill Approval" />
-
                                             </li>
                                         </ul>
                                     </li>
-                                    <li>
-                                <a class="dropdown-item" href="#">Cancel SaleBill &raquo; </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" asp-action="CancelSaleBill" asp-controller="CancelSaleBill" asp-route-ID="0" id="CancelSaleBill">
-                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>Cancel Sale Bill
-                                        </a>
-                                        <input class="userRightsPermission" type="hidden" value="CancelSaleBill" />
 
-                                    </li>
-                                </ul>
-                                    </li>
-                                <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item" href="#">SO & Amendment Approval &raquo; </a>
-                                <ul class="submenu dropdown-menu">
+                                    <!-- Cancel SaleBill -->
                                     <li>
-                                        <a class="dropdown-item SoApproval" asp-action="SOApproval" asp-controller="SOApproval" asp-route-ID="0">
-                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Approval Form
-                                        </a>
-                                        <input class="userRightsPermission" type="hidden" value="So Approval" />
-
+                                        <a class="dropdown-item" href="#">Cancel SaleBill &raquo;</a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item"
+                                                   asp-action="CancelSaleBill"
+                                                   asp-controller="CancelSaleBill"
+                                                   asp-route-ID="0"
+                                                   id="CancelSaleBill">
+                                                    <i class="fa fa-fw fa-table fa-lg"></i> Cancel Sale Bill
+                                                </a>
+                                                <input class="userRightsPermission" type="hidden" value="CancelSaleBill" />
+                                            </li>
+                                        </ul>
                                     </li>
+
+                                    <li><hr class="dropdown-divider"></li>
+
+                                    <!-- SO & Amendment Approval -->
+                                    <li>
+                                        <a class="dropdown-item" href="#">SO & Amendment Approval &raquo;</a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item SoApproval"
+                                                   asp-action="SOApproval"
+                                                   asp-controller="SOApproval"
+                                                   asp-route-ID="0">
+                                                    <i class="fa fa-fw fa-table fa-lg"></i> Approval Form
+                                                </a>
+                                                <input class="userRightsPermission" type="hidden" value="So Approval" />
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <!-- Cancel SO -->
+                                    <li>
+                                        <a class="dropdown-item" href="#">Cancel SO &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item " asp-action="SOCancel" asp-controller="SOCancel" asp-route-ID="0" id="CancelSO">
+                                                    <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Cancel SO
+                                                </a>
+                                                <input class="userRightsPermission" type="hidden" value="Cancel SO" />
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <!-- Sale Sch & Amendment Approval -->
+                                    <li>
+                                        <a class="dropdown-item" href="#">Sale Sch & Amendment Approval &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item SaleScheduleApproval" asp-action="SSApproval" asp-controller="SSApproval">
+                                                    <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Approval Form
+                                                </a>
+                                                <input class="userRightsPermission" type="hidden" value="Sale Schedule Approval" />
+                                            </li>
+                                        </ul>
+                                    </li>
+
                                 </ul>
                             </li>
 
-                            </li>
-                            </ul> 
                            @*  <li>
                                 <a class="dropdown-item" href="#">Cancel Requition &raquo; </a>
                                 <ul class="submenu dropdown-menu">
@@ -239,28 +271,8 @@
 
                            
                          
-                            <li>
-                                <a class="dropdown-item" href="#">Cancel SO &raquo; </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item " asp-action="SOCancel" asp-controller="SOCancel" asp-route-ID="0" id="CancelSO">
-                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Cancel SO
-                                        </a>
-                                        <input class="userRightsPermission" type="hidden" value="Cancel SO" />
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">Sale Sch & Amendment Approval &raquo; </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item SaleScheduleApproval" asp-action="SSApproval" asp-controller="SSApproval">
-                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Approval Form
-                                        </a>
-                                        <input class="userRightsPermission" type="hidden" value="Sale Schedule Approval" />
-                                    </li>
-                                </ul>
-                            </li>
+
+
                             <li>
                                 <a class="dropdown-item" href="#">CloseProductionPlan &raquo; </a>
                                 <ul class="submenu dropdown-menu">
@@ -352,52 +364,53 @@
 
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-action="FeaturesOptionsSaleOrder" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsSaleOrder">
+                                        <a class="dropdown-item FeaturesOptions" asp-action="FeaturesOptionsSaleOrder" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsSaleOrder">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Sale Order Setting
                                         </a>
                                     </li>
                                      <li>
-                                        <a class="dropdown-item" asp-action="Features_Options" asp-route-ID="0" asp-controller="Features_Options" id="Features_Options">
+                                        <a class="dropdown-item  FeaturesOptions" asp-action="Features_Options" asp-route-ID="0" asp-controller="Features_Options" id="Features_Options">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Features_Options
                                         </a>
                                     </li>
 
                                     <li>
-                                        <a class="dropdown-item" asp-action="FeaturesOptionsIssueeChallan" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsIssueChallan">
+                                        <a class="dropdown-item FeaturesOptions" asp-action="FeaturesOptionsIssueeChallan" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsIssueChallan">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Issue Challan Setting
                                         </a>
                                     </li>
 
                                     <li>
-                                        <a class="dropdown-item" asp-action="FeaturesOptionsSaleInvoice" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsSaleInvoice">
+                                        <a class="dropdown-item FeaturesOptions" asp-action="FeaturesOptionsSaleInvoice" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsSaleInvoice">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Sale Invoice Setting
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-action="FeaturesOptionsPurchaseBill" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsPurchaseBill">
+                                        <a class="dropdown-item FeaturesOptions" asp-action="FeaturesOptionsPurchaseBill" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsPurchaseBill">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Purchase Bill Setting
                                         </a>
                                     </li>
                                     <li>
-                                <a class="dropdown-item" asp-action="FeaturesOptionsPurchaseOrder" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsPurchaseOrder">
+                                <a class="dropdown-item FeaturesOptions" asp-action="FeaturesOptionsPurchaseOrder" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsPurchaseOrder">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Purchase Order Setting
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-action="FeaturesOptionsMRN" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsMRN">
+                                        <a class="dropdown-item FeaturesOptions" asp-action="FeaturesOptionsMRN" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsMRN">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> MRN Setting
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-action="FeaturesOptionsItemMaster" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsItemMaster">
+                                        <a class="dropdown-item FeaturesOptions" asp-action="FeaturesOptionsItemMaster" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsItemMaster">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Item Master Setting
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-action="FeaturesOptionsGateEntry" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsGateEntry">
+                                        <a class="dropdown-item FeaturesOptions" asp-action="FeaturesOptionsGateEntry" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsGateEntry">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Gate Entry Setting
                                         </a>
                                     </li>
+                                    <input class="userRightsPermission" type="hidden" value="Features Options" />
                                 </ul>
                             </li>
                                 <li>
@@ -3444,6 +3457,17 @@
                             </ul>
                         </li>
                         <li><hr class="dropdown-divider"></li>
+
+                        <li>
+                            <a class="dropdown-item" href="#">Manage Password </a>
+                            <ul class="submenu dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Admin" asp-action="ManagePassword" asp-route-ID="0" id="User">
+                                        <i class="fa fa-circle-user fa-fw fa-lg" aria-hidden="true"></i> Manage Password
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
 

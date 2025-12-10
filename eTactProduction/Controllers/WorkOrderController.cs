@@ -933,7 +933,7 @@ namespace eTactWeb.Controllers
                             }
                             else
                             {
-                                if (WODetail.Where(x => x.AccountName == item.AccountName && x.SONO == item.SONO && x.SchNo == item.SchNo && x.Itemcode == item.Itemcode && x.CustomerOrderNo == item.CustomerOrderNo).Any())
+                                if (WODetail.Where(x => x.AccountName == item.AccountName && x.SONO == item.SONO && x.SchNo == item.SchNo && x.Itemcode == item.Itemcode && x.CustomerOrderNo == item.CustomerOrderNo &&  x.SCHDATE == item.SCHDATE).Any())
                                 {
                                     return StatusCode(207, "Duplicate");
                                 }
