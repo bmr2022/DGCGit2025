@@ -190,7 +190,7 @@
                                         </select>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="Store" class="form-label">Store<span style="color:red">*</span></label>
+                                        <label asp-for="Store" class="form-label">Store</label>
                                         <select asp-for="Store" class="form-select" data-val="false" asp-items="@(new SelectList(Model.StoreList,"Value", "Text"))">
                                             <option value="">-select-</option>
                                         </select>
@@ -1422,6 +1422,17 @@
             Err = 1;
         }
           }
+
+
+                  // --- ADD THIS UNIT MANDATORY CODE BELOW ---
+        var Unit = $('#Unit').val();
+        if (Unit === "" || Unit === null) {
+            $('#Unit').removeClass('valid').addClass('is-invalid');
+            $.notify("Unit is mandatory!", "error");
+            Err = 1;
+        } else {
+            $('#Unit').removeClass('is-invalid').addClass('valid');
+        }
 
                     if (Err === 1) {
                         return false;
