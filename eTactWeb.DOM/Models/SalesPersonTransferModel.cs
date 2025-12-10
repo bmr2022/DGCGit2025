@@ -17,6 +17,7 @@ namespace eTactWeb.DOM.Models
         public int SalesPersTransfEntryId { get; set; }
         public string? SalesPersTransfEntryDate { get; set; }
         public string SalesPersTransfSlipNo { get; set; } 
+        public string? IPAddress { get; set; } 
         public string EffFrom { get; set; } 
         public int RevNo { get; set; }
         public int NewSalesEmpId { get; set; } 
