@@ -20,21 +20,24 @@ public class HRAListDataModel
     public string? FromDate { get; set; }
     public string? ToDate { get; set; }
     public int? HRAttYearCode { get; set; }
-    public string? AttandanceDate { get; set; }
-    public IList<TextValue>? AttandanceDateList { get; set; }
     public string? EmpCateg { get; set; }
     public IList<TextValue>? EmpCategList { get; set; }
     //filter
     public IList<TextValue>? DashDepartmentList { get; set; }
     public string? DashDepartment { get; set; }
-    public IList<TextValue>? DashCategoryList { get; set; }
-    public string? DashCategory { get; set; }
     public IList<TextValue>? DashDesignationList { get; set; }
     public string? DashDesignation { get; set; }
     public IList<TextValue>? DashEmployeeList { get; set; }
     public string? DashEmployee { get; set; }
+    public IList<TextValue>? DashCategoryList { get; set; }
+    public string? DashCategory { get; set; }
+    public IList<TextValue>? DashAttendanceDateList { get; set; }
+    public string? DashAttendanceDate { get; set; }
     public string? Searchbox { get; set; }
-    public int TotalItemCount { get; set; }
+    //pagintion
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
+    public int TotalRecords { get; set; }
     public IList<HRAListDataModel> HRAListData { get; set; }
     //grid details
     public DateTime? LeaveDate { get; set; }
@@ -43,6 +46,7 @@ public class HRAListDataModel
     public string EmpName { get; set; }
     public string EmpCode { get; set; }
     public int? EmpId { get; set; }
+    public DateTime? AttandanceDate { get; set; }
     public int? GateAttEntryId { get; set; }
     public int? GateAttYearCode { get; set; }
     public string CardOrBiometricId { get; set; }

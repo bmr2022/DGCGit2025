@@ -31,6 +31,6 @@ namespace eTactWeb.Services.Interface
         ResponseResult isDuplicate(string ColumnValue, string ColumnName, string TableName);
         Task<ResponseResult> GetDbCrDataGrid(DataTable DbCrGridd, DataTable TaxDetailDT, DataTable TDSDetailDT, string FormName,int? docAccountCode, int? AccountCode, decimal? ItemNetAmount, decimal? NetTotal, int? RoundOffAccountCode,decimal?  RoundOffAmount);
         Task<AdjustmentModel> GetPendVouchBillAgainstRefPopupByID(int AC, int? YC, int? PayRecEntryId, int? PayRecYearcode, string DRCR, string TransVouchType, string TransVouchDate, string Flag);
-        Task<IList<TextValue>> GetDropDownListWithCustomeVar(string SPName, Dictionary<string, object> parameters, bool? IsTextandValueSame = false, bool? IsValueInFirstcolumn = true);
+        Task<IList<TextValue>> GetDropDownListWithCustomeVar(string SPName, Dictionary<string, object> parameters, bool? IsTextandValueSame = false, bool? IsValueInFirstcolumn = true, bool? IsExcludeFirstcolumn = false);
     }
 }

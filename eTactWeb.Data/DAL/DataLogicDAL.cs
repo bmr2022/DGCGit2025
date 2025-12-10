@@ -1285,7 +1285,7 @@ namespace eTactWeb.Data.DAL
             }
             return ModelList;
         }
-        public async Task<IList<TextValue>> GetDropDownListWithCustomeVar(string SPName, Dictionary<string, object> parameters, bool? IsTextandValueSame = false, bool? IsValueInFirstcolumn = true)
+        public async Task<IList<TextValue>> GetDropDownListWithCustomeVar(string SPName, Dictionary<string, object> parameters, bool? IsTextandValueSame = false, bool? IsValueInFirstcolumn = true, bool? IsExcludeFirstcolumn = false)
         {
             List<TextValue> _List = new List<TextValue>();
             SqlDataReader reader = null;
@@ -1328,6 +1328,14 @@ namespace eTactWeb.Data.DAL
                                     {
                                         Text = reader[0].ToString(),
                                         Value = reader[1].ToString()
+                                    };
+                                }
+                                else if (Convert.ToBoolean(IsExcludeFirstcolumn))
+                                {
+                                    Listval = new TextValue()
+                                    {
+                                        Text = reader[1].ToString(),
+                                        Value = reader[2].ToString()
                                     };
                                 }
                                 else

@@ -23,9 +23,9 @@ namespace eTactWeb.Data.BLL
             _HRAttendanceDAL = new HRAttendanceDAL(configuration, iDataLogic, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
-        async Task<HRAListDataModel> IHRAttendance.GetHRAListData(string? flag, string? AttendanceDate, string? EmpCateg, HRAListDataModel model)
+        async Task<HRAListDataModel> IHRAttendance.GetHRAttendanceListData(string? flag, string? firstdate, string? todate, HRAListDataModel model)
         {
-            throw new NotImplementedException();//return await _HRAttendanceDAL.GetHRAttendanceListData(flag, AttendanceDate, EmpCateg, model);
+            return await _HRAttendanceDAL.GetHRAttendanceListData(flag, firstdate, todate, model);
         }
         public async Task<ResponseResult> GetFormRights(int ID)
         {
@@ -34,6 +34,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> FillEntryId(int YearCode)
         {
             return await _HRAttendanceDAL.FillEntryId(YearCode);
+        }
+        public async Task<ResponseResult> CheckLockYear(int YearCode)
+        {
+            return await _HRAttendanceDAL.CheckLockYear(YearCode);
         }
     }
 }

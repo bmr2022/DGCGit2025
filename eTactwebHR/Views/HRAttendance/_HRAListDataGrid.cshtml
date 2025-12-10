@@ -62,56 +62,51 @@
                                     <input type="hidden" id="fLevelApproved-@Cntr" value="@item.Approval1Levelapproved" />
                                     <input type="hidden" id="AmmApproved-@Cntr" value="@item.ApproveAmm" />*@
                             </td>
-                            @*<td id='MRNNo_@Cntr'><a onclick="transferDataToEdit('@Cntr')">@item.MRNNo</a></td>
-                            <td id='MRNYearCode_@Cntr'>@item.MRNYearCode</td>
-                            <td id='MRNEntryDate_@Cntr'>
-                                @(item.MRNEntryDate.HasValue
-                                ? item.MRNEntryDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                            <td id='EmpId_@Cntr'><a onclick="transferDataToEdit('@Cntr')">@item.EmpId</a></td>
+                            <td id='EmpCode_@Cntr'>@item.EmpCode</td>
+                            <td id='EmpName_@Cntr'>@item.EmpName</td>
+                            <td id='GateAttEntryId_@Cntr'>@item.GateAttEntryId</td>
+                            <td id='GateAttYearCode_@Cntr'>@item.GateAttYearCode</td>
+                            <td id='CardOrBiometricId_@Cntr'>@item.CardOrBiometricId</td>
+                            <td id='HRAttStatus_@Cntr'>@item.HRAttStatus</td>
+                            <td id='AttendStatus_@Cntr'>@item.AttendStatus</td>
+                            <td id='AttandanceDate_@Cntr'>@(item.AttandanceDate.HasValue ? item.AttandanceDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) : string.Empty)</td>
+                            <td id='AttInTime_@Cntr'>
+                                @(item.AttInTime.HasValue
+                                ? item.AttInTime.Value.ToString("hh:mm tt", CultureInfo.InvariantCulture)
                                 : string.Empty)
                             </td>
-                            <td id='PartyName_@Cntr'>@item.PartyName</td>
-                            <td id='InvoiceNo_@Cntr'>@item.InvoiceNo</td>
-                            <td id='InvoiceDate_@Cntr'>
-                                @(item.InvoiceDate.HasValue
-                                ? item.InvoiceDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                            <td id='AttOutTime_@Cntr'>
+                                @(item.AttOutTime.HasValue
+                                ? item.AttOutTime.Value.ToString("hh:mm tt", CultureInfo.InvariantCulture)
                                 : string.Empty)
                             </td>
-                            <td id='GateNo_@Cntr'>@item.GateNo</td>
-                            <td id='GateDate_@Cntr'>
-                                @(item.GateDate.HasValue
-                                ? item.GateDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                            <td id='TotalNoOfHours_@Cntr'>@item.TotalNoOfHours</td>
+                            <td id='TotalNoOfShiftHours_@Cntr'>@item.TotalNoOfShiftHours</td>
+                            <td id='LateEntry_@Cntr'>@item.LateEntry</td>
+                            <td id='EarlyExit_@Cntr'>@item.EarlyExit</td>
+                            <td id='LeaveTypeId_@Cntr'>@item.LeaveTypeId</td>
+                            <td id='AttShiftId_@Cntr'>@item.ShiftName</td>
+                            <td id='_@Cntr'>@item.AttShiftId</td>
+                            <td id='EmpCateg_@Cntr'>@item.EmpCateg</td>
+                            <td id='CategoryCode_@Cntr'>@item.CategoryCode</td>
+                            <td id='CC_@Cntr'>@item.CC</td>
+                            <td id='EmpAttDate_@Cntr'>@item.EmpAttDate</td>
+                            <td id='EmpAttYear_@Cntr'>@item.EmpAttYear</td>
+                            <td id='EmpAttTime_@Cntr'>
+                                @(item.EmpAttTime.HasValue
+                                ? item.EmpAttTime.Value.ToString("hh:mm tt", CultureInfo.InvariantCulture)
                                 : string.Empty)
                             </td>
-                            <td id='DocumentName_@Cntr'>@item.DocumentName</td>*@
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
-                            <td id='@Cntr'></td>
+                            <td id='Designation_@Cntr'>@item.Designation</td>
+                            <td id='DeptName_@Cntr'>@item.DeptName</td>
+                            <td id='LeaveDate_@Cntr'>
+                                @(item.LeaveDate.HasValue
+                                ? item.LeaveDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                                : string.Empty)
+                            </td>
+                            <td id='LeaveEntryId_@Cntr'>@item.LeaveEntryId</td>
+                            <td id='HalfDayFullDay_@Cntr'>@item.HalfDayFullDay</td>
                         </tr>
                     }
                 }
@@ -120,7 +115,58 @@
     </table>
 
 </div>
-<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+@{
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+}
+<center><strong>TOTAL ROWS  : <span>@displayedRows</span></strong></center>
+@{
+    int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+}
+@if (Model.TotalRecords > 0)
+{
+    <ul class="pagination d-flex align-items-center">
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber - 1)); return false;">Previous</a>
+            </li>
+        }
+
+        @if (Model.PageNumber > 3)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(1); return false;">1</a>
+            </li>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+        }
+
+        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link" href="#" onclick="loadPage(@i); return false;">@i</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages - 2)
+        {
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(@totalPages); return false;">@totalPages</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber + 1)); return false;">Next</a>
+            </li>
+        }
+    </ul>
+}
 <style>
     #container {
         display: flex;
@@ -128,7 +174,7 @@
 
         #container > div {
             flex: 1;
-            margin-right: 10px; /* Adjust margin as needed */
+            /* margin-right: 10px; /* Adjust margin as needed */ */
         }
 
     #HRADashboardGrid {
@@ -161,5 +207,51 @@
     .descCol {
         font-size: 15px;
         vertical-align: super;
+    }
+
+    .pagination {
+        display: flex;
+        justify - content: center;
+        align - items: center;
+        list - style: none;
+        padding: 0;
+        margin: 20px auto;
+        gap: 5px; /* Space between buttons */
+        white - space: nowrap; /* Keeps it in a single line */
+    }
+
+    .page - item {
+        display: inline - block;
+    }
+
+    .page - link {
+        display: flex;
+        align - items: center;
+        justify - content: center;
+        width: 40px;
+        height: 40px;
+        text - decoration: none;
+        color: black;
+        border: 1px solid #ddd;
+        font - size: 16px;
+        background - color: white;
+        border - radius: 5px;
+        transition: background 0.3s;
+    }
+
+    .page - item.active.page - link {
+        background - color: #4CAF50;
+        color: white;
+        border: 1px solid #4CAF50;
+    }
+
+    .page - item.disabled.page - link {
+        background - color: #f0f0f0;
+        color: #999;
+        cursor: default;
+    }
+
+    .page - link: hover: not(.disabled): not(.active) {
+        background - color: #ddd;
     }
 </style>
