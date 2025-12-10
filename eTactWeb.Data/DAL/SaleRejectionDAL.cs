@@ -45,7 +45,26 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetTotalAmount(SaleRejectionFilter model)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "getTotalAmount"));
+                SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(model.FromDate)));
+                SqlParams.Add(new SqlParameter("@ToDate", CommonFunc.ParseFormattedDate(model.ToDate)));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpSalerejection", SqlParams);
 
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<SaleRejectionModel> FillSaleRejectionGrid(string mrnNo, int mrnEntryId, int mrnYC,int yearCode)
         {
             var model = new SaleRejectionModel();
@@ -83,7 +102,14 @@ namespace eTactWeb.Data.DAL
                  fromdate = CommonFunc.ParseFormattedDate(fromdate);
                 toDate = CommonFunc.ParseFormattedDate(toDate);
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDSUMMARY"));
+                if(summaryDetail == "Summary")
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDSUMMARY"));
+                }
+                else
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDDETAIL"));
+                }
                 SqlParams.Add(new SqlParameter("@CustInvoiceNo", custInvoiceNo ?? ""));
                 SqlParams.Add(new SqlParameter("@CustomerName", custName ?? ""));
                 SqlParams.Add(new SqlParameter("@MrnNo", mrnNo ?? ""));

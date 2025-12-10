@@ -20,6 +20,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillDocument(string fromDate, string toDate);
         Task<ResponseResult> FillAgainstSaleBillNo(string fromDate, string toDate);
         Task<ResponseResult> NewEntryId(int YearCode);
+        Task<ResponseResult> GetTotalAmount(SaleRejectionFilter model);
         Task<ResponseResult> DeleteByID(int ID, int YC, int accountCode, int createdBy, string machineName, string cc);
     }
 }

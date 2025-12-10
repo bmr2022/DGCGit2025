@@ -767,7 +767,6 @@ public class DirectPurchaseBillDAL
     }
 
     public async Task<ResponseResult> GetTotalAmount(DPBDashBoard model)
-         
     {
         var _ResponseResult = new ResponseResult();
         try

@@ -150,6 +150,10 @@
             FillCustomerInvNO();
             FillPartyName();
             TotalRows();
+            $('#CustInvoiceNo').select2();
+            $('#GateNo').select2();
+            $('#MrnNo').select2();
+            $('#CustomerName').select2();
             var fromDate = parseDateToFormat($('#FromDate').val().split(" ")[0]);
             var toDate = parseDateToFormat($('#ToDate').val().split(" ")[0]);
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", fromDate);

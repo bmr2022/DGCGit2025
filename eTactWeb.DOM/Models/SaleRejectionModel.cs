@@ -141,4 +141,9 @@ namespace eTactWeb.DOM.Models
         public string   ?SearchBox { get; set; }
         public List<SaleRejectionDashboard> saleRejectionDashboard { get; set; }
     }
+    public class SaleRejectionFilter
+    {
+        public string? FromDate { get; set; }
+        public string? ToDate { get; set; }
+    }
 }

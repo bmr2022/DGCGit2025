@@ -182,6 +182,7 @@
             FillGateNo();
             FillMRNNo();
             GetSearchData();
+            GetTotalAmounts();
             $('#CustInvoiceNo').select2();
             $('#Account_Name').select2();
             $('#MrnNo').select2();
@@ -451,6 +452,45 @@
                             }
                         }
                     }
+                }
+            });
+        }
+
+        function GetTotalAmounts() {
+            debugger
+            let dataObj = {
+                FromDate: $('#FinFromDate').val(),
+                ToDate: $('#FinToDate').val(),
+            };
+
+            console.log("dataforamount", dataObj);
+            $.ajax({
+                url: '/SaleRejection/GetTotalAmount',
+                type: 'GET',
+                data: dataObj,
+                traditional: true,
+                dataType: 'json',
+
+                success: function (data) {
+                    console.log("data", data);
+
+                    const obj = typeof data === "string" ? JSON.parse(data) : data;
+
+                    if (obj && obj.Result && obj.Result.length > 0) {
+                        let row = obj.Result[0];
+                        $('#tfootBillAmt').text(row.BasicAmount?.toFixed(2) ?? "0.00");
+                        $('#tfootNetAmt').text(row.NetAmount?.toFixed(2) ?? "0.00");
+                        $('#tfootTaxableAmt').text(row.TaxableAmount?.toFixed(2) ?? "0.00");
+                    } else {
+                        $('#tfootBillAmt').text("0.00");
+                        $('#tfootNetAmt').text("0.00");
+                        $('#tfootTaxableAmt').text("0.00");
+                    }
+                },
+
+
+                error: function (err) {
+                    console.error("❌ Error fetching totals:", err);
                 }
             });
         }

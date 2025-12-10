@@ -1969,6 +1969,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "EID" && typeProperty.PropertyInfo.Name != "Mode"
                         && typeProperty.PropertyInfo.Name != "TxPageName" && typeProperty.PropertyInfo.Name != "UpdatedBy"
                         && typeProperty.PropertyInfo.Name != "UpdatedOn" && typeProperty.PropertyInfo.Name != "ID"
+                         && typeProperty.PropertyInfo.Name != "FromDate" && typeProperty.PropertyInfo.Name != "ToDate"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
