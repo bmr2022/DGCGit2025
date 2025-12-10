@@ -291,6 +291,8 @@ namespace eTactWeb.Controllers
                         model.entryByEmpName = HttpContext.Session.GetString("EmpName");
                         SAGrid = GetDetailTable(StocAdjustmentDetail);
                     }
+                    model.MachineNo = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
 
                     var Result = await IStockAdjust.SaveStockAdjust(model, SAGrid);
 
