@@ -49,16 +49,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li>
-                                <a class="dropdown-item" href="#">Manage Password </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="Admin" asp-action="ManagePassword" asp-route-ID="0" id="User">
-                                            <i class="fa fa-circle-user fa-fw fa-lg" aria-hidden="true"></i> Manage Password
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="#">Rights &raquo; </a>
@@ -177,53 +168,94 @@
                                 </ul>
                     </li>
 
-                            
 
-                        
+
+
 
                             <li>
-                                <a class="dropdown-item" href="#">Sales & Mkt </a>
+                                <a class="dropdown-item" href="#">Sales & Mkt &raquo;</a>
                                 <ul class="submenu dropdown-menu">
+
+                                    <!-- SaleBill Approval -->
                                     <li>
-                                        <a class="dropdown-item" href="#">SaleBill Approval &raquo; </a>
+                                        <a class="dropdown-item" href="#">SaleBill Approval &raquo;</a>
                                         <ul class="submenu dropdown-menu">
                                             <li>
-                                                <a class="dropdown-item SoApproval" asp-action="SaleBillApproval" asp-controller="SaleBillApproval" asp-route-ID="0">
-                                                    <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>SaleBill Approval Form
+                                                <a class="dropdown-item SoApproval"
+                                                   asp-action="SaleBillApproval"
+                                                   asp-controller="SaleBillApproval"
+                                                   asp-route-ID="0">
+                                                    <i class="fa fa-fw fa-table fa-lg"></i> SaleBill Approval Form
                                                 </a>
                                                 <input class="userRightsPermission" type="hidden" value="SaleBill Approval" />
-
                                             </li>
                                         </ul>
                                     </li>
-                                    <li>
-                                <a class="dropdown-item" href="#">Cancel SaleBill &raquo; </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" asp-action="CancelSaleBill" asp-controller="CancelSaleBill" asp-route-ID="0" id="CancelSaleBill">
-                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>Cancel Sale Bill
-                                        </a>
-                                        <input class="userRightsPermission" type="hidden" value="CancelSaleBill" />
 
-                                    </li>
-                                </ul>
-                                    </li>
-                                <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item" href="#">SO & Amendment Approval &raquo; </a>
-                                <ul class="submenu dropdown-menu">
+                                    <!-- Cancel SaleBill -->
                                     <li>
-                                        <a class="dropdown-item SoApproval" asp-action="SOApproval" asp-controller="SOApproval" asp-route-ID="0">
-                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Approval Form
-                                        </a>
-                                        <input class="userRightsPermission" type="hidden" value="So Approval" />
-
+                                        <a class="dropdown-item" href="#">Cancel SaleBill &raquo;</a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item"
+                                                   asp-action="CancelSaleBill"
+                                                   asp-controller="CancelSaleBill"
+                                                   asp-route-ID="0"
+                                                   id="CancelSaleBill">
+                                                    <i class="fa fa-fw fa-table fa-lg"></i> Cancel Sale Bill
+                                                </a>
+                                                <input class="userRightsPermission" type="hidden" value="CancelSaleBill" />
+                                            </li>
+                                        </ul>
                                     </li>
+
+                                    <li><hr class="dropdown-divider"></li>
+
+                                    <!-- SO & Amendment Approval -->
+                                    <li>
+                                        <a class="dropdown-item" href="#">SO & Amendment Approval &raquo;</a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item SoApproval"
+                                                   asp-action="SOApproval"
+                                                   asp-controller="SOApproval"
+                                                   asp-route-ID="0">
+                                                    <i class="fa fa-fw fa-table fa-lg"></i> Approval Form
+                                                </a>
+                                                <input class="userRightsPermission" type="hidden" value="So Approval" />
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <!-- Cancel SO -->
+                                    <li>
+                                        <a class="dropdown-item" href="#">Cancel SO &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item " asp-action="SOCancel" asp-controller="SOCancel" asp-route-ID="0" id="CancelSO">
+                                                    <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Cancel SO
+                                                </a>
+                                                <input class="userRightsPermission" type="hidden" value="Cancel SO" />
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <!-- Sale Sch & Amendment Approval -->
+                                    <li>
+                                        <a class="dropdown-item" href="#">Sale Sch & Amendment Approval &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item SaleScheduleApproval" asp-action="SSApproval" asp-controller="SSApproval">
+                                                    <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Approval Form
+                                                </a>
+                                                <input class="userRightsPermission" type="hidden" value="Sale Schedule Approval" />
+                                            </li>
+                                        </ul>
+                                    </li>
+
                                 </ul>
                             </li>
 
-                            </li>
-                            </ul> 
                            @*  <li>
                                 <a class="dropdown-item" href="#">Cancel Requition &raquo; </a>
                                 <ul class="submenu dropdown-menu">
@@ -239,28 +271,8 @@
 
                            
                          
-                            <li>
-                                <a class="dropdown-item" href="#">Cancel SO &raquo; </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item " asp-action="SOCancel" asp-controller="SOCancel" asp-route-ID="0" id="CancelSO">
-                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Cancel SO
-                                        </a>
-                                        <input class="userRightsPermission" type="hidden" value="Cancel SO" />
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">Sale Sch & Amendment Approval &raquo; </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item SaleScheduleApproval" asp-action="SSApproval" asp-controller="SSApproval">
-                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Approval Form
-                                        </a>
-                                        <input class="userRightsPermission" type="hidden" value="Sale Schedule Approval" />
-                                    </li>
-                                </ul>
-                            </li>
+
+
                             <li>
                                 <a class="dropdown-item" href="#">CloseProductionPlan &raquo; </a>
                                 <ul class="submenu dropdown-menu">
@@ -3444,6 +3456,17 @@
                             </ul>
                         </li>
                         <li><hr class="dropdown-divider"></li>
+
+                        <li>
+                            <a class="dropdown-item" href="#">Manage Password </a>
+                            <ul class="submenu dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Admin" asp-action="ManagePassword" asp-route-ID="0" id="User">
+                                        <i class="fa fa-circle-user fa-fw fa-lg" aria-hidden="true"></i> Manage Password
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
 
