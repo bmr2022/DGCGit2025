@@ -18,6 +18,7 @@ using System.Net;
 using System.Globalization;
 using System.Data;
 using System.Configuration;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace eTactWeb.Controllers
 {
@@ -227,8 +228,9 @@ namespace eTactWeb.Controllers
                         model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                         model.UpdatedByName = HttpContext.Session.GetString("EmpName");
                     }
+                    string IPAddress = HttpContext.Session.GetString("ClientIP");
                     ReqGrid = GetDetailTable(RequisitionDetail,model.Mode);
-                    var Result = await _IReqWithoutBOM.SaveRequisition(model, ReqGrid);
+                    var Result = await _IReqWithoutBOM.SaveRequisition(model, ReqGrid, IPAddress);
 
                     if (Result != null)
                     {
@@ -365,7 +367,8 @@ namespace eTactWeb.Controllers
         {
             int UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
            var EntryByMachineName = Environment.MachineName;
-            var Result = await _IReqWithoutBOM.DeleteByID(ID, YC, UpdatedBy, EntryByMachineName);
+            var IPAddress = HttpContext.Session.GetString("ClientIP");
+            var Result = await _IReqWithoutBOM.DeleteByID(ID, YC, UpdatedBy, EntryByMachineName, IPAddress);
             var CC = HttpContext.Session.GetString("Branch");
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {
