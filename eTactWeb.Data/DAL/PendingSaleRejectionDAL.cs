@@ -76,8 +76,7 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
-        }
-        
+        } 
         public async Task<ResponseResult> FillGateNO(string fromDate, string toDate, string mrnNo, string gateNo)
         {
             var _ResponseResult = new ResponseResult();
@@ -100,7 +99,6 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-
         public async Task<ResponseResult> FillCustomerInvNO(string fromDate, string toDate, string mrnNo, string gateNo)
         {
             var _ResponseResult = new ResponseResult();

@@ -116,7 +116,7 @@
                                 <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency</th>
                                 <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual EntryDate</th>
                                 <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN EntryId</th>
-                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN YearCode</th>    
+                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN YearCode</th>
                             </tr>
                         </thead>
                         <tbody id="divSaleRejectionGrid" style="white-space:nowrap;">
@@ -160,7 +160,7 @@
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", toDate);
         });
 
-        function TotalRows(){
+        function TotalRows() {
             var rowCount = $('#divSaleRejectionGrid tr').length;
             var columnCount = $('#divSaleRejectionGrid tr td').length;
             if (columnCount == 1) {
@@ -170,7 +170,7 @@
             }
         }
 
-        function FillMRNNO(){
+        function FillMRNNO() {
             $.ajax({
                 type: "POST",
                 data: { "fromDate": $('#FromDate').val(), "toDate": $('#ToDate').val(), "mrnNo": $('#MrnNo').val(), "gateNo": $('#GateNo').val() },
@@ -178,7 +178,7 @@
                 dataType: "json",
                 success: function (result, status, error) {
                     if (result != null) {
-                         
+
                         var obj = $.parseJSON(result);
                         $("#MrnNo").empty();
                         $("#MrnNo").append('<option>-Select-</option>');
@@ -189,7 +189,7 @@
                 }
             });
         }
-        function FillPartyName(){
+        function FillPartyName() {
             $.ajax({
                 type: "POST",
                 data: { "fromDate": $('#FromDate').val(), "toDate": $('#ToDate').val() },
@@ -197,7 +197,7 @@
                 dataType: "json",
                 success: function (result, status, error) {
                     if (result != null) {
-                         
+
                         var obj = $.parseJSON(result);
                         $("#CustomerName").empty();
                         $("#CustomerName").append('<option>-Select-</option>');
@@ -216,7 +216,7 @@
                 dataType: "json",
                 success: function (result, status, error) {
                     if (result != null) {
-                         
+
                         var obj = $.parseJSON(result);
                         $("#GateNo").empty();
                         $("#GateNo").append('<option>-Select-</option>');
@@ -236,7 +236,7 @@
                 dataType: "json",
                 success: function (result, status, error) {
                     if (result != null) {
-                          
+
                         var obj = $.parseJSON(result);
                         $("#CustInvoiceNo").empty();
                         $("#CustInvoiceNo").append('<option>-Select-</option>');
@@ -249,7 +249,7 @@
         }
 
         function PendingMRNForSaleRejection() {
-             
+            debugger
             var YearCode = $('#YearCode').val();
             $.ajax({
                 type: "POST",
@@ -264,35 +264,35 @@
                         $('#divSaleRejectionGrid').empty();
                         var i = 1;
                         $.each(obj.Result, function (index, val) {
-                                    html += '<tr id="DisplayBomRow">' +
-            '<td id="srNo">' + i + '</td>';
+                            html += '<tr id="DisplayBomRow">' +
+                                '<td id="srNo">' + i + '</td>';
 
-        if (val.QCCompleted === "Y") {
-            // ✅ Allow navigation if QC completed
-            html += '<td><a href="/SaleRejection/Index?mrnNo=' + val.MRNNo +
-                '&mrnEntryId=' + val.MRNEntryId +
-                '&mrnYC=' + val.MRNYearCode + '" class="text-primary fw-bold">' + val.MRNNo + '</a></td>';
-        } else {
-            // ⚠️ Disable navigation, show notify message
-            html += '<td><a href="javascript:void(0);" onclick="$.notify(\'Please complete QC first!\', \'error\');" class="text-danger fw-bold">' + val.MRNNo + '</a></td>';
-        }
+                            if (val.QCCompleted === "Y") {
+                                // ✅ Allow navigation if QC completed
+                                html += '<td><a href="/SaleRejection/Index?mrnNo=' + val.MRNNo +
+                                    '&mrnEntryId=' + val.MRNEntryId +
+                                    '&mrnYC=' + val.MRNYearCode + '" class="text-primary fw-bold">' + val.MRNNo + '</a></td>';
+                            } else {
+                                // ⚠️ Disable navigation, show notify message
+                                html += '<td><a href="javascript:void(0);" onclick="$.notify(\'Please complete QC first!\', \'error\');" class="text-danger fw-bold">' + val.MRNNo + '</a></td>';
+                            }
 
-        html +=
-            '<td>' + val.Account_Name + '</td>' +
-            '<td>' + val.MRNEntryDate.split("T")[0] + '</td>' +
-            '<td>' + val.GateNo + '</td>' +
-            '<td>' + val.GateDate.split("T")[0] + '</td>' +
-            '<td>' + val.InvNo + '</td>' +
-            '<td>' + val.InvDate.split("T")[0] + '</td>' +
-            '<td>' + val.TotalAmt + '</td>' +
-            '<td>' + val.NetAmt + '</td>' +
-            '<td>' + val.CheckQc + '</td>' +
-            '<td>' + val.QCCompleted + '</td>' +
-            '<td>' + val.Currency + '</td>' +
-            '<td>' + val.ActualEntryDate.split("T")[0] + '</td>' +
-            '<td>' + val.MRNEntryId + '</td>' +
-            '<td>' + val.MRNYearCode + '</td>' +
-        '</tr>';
+                            html +=
+                                '<td>' + val.Account_Name + '</td>' +
+                                '<td>' + val.MRNEntryDate.split("T")[0] + '</td>' +
+                                '<td>' + val.GateNo + '<input type="hidden" class="GateEntryId" value="' + val.GateEntryId + '"/></td>' +
+                                '<td>' + val.GateDate.split("T")[0] + '</td>' +
+                                '<td>' + val.InvNo + '</td>' +
+                                '<td>' + val.InvDate.split("T")[0] + '</td>' +
+                                '<td>' + val.TotalAmt + '</td>' +
+                                '<td>' + val.NetAmt + '</td>' +
+                                '<td>' + val.CheckQc + '</td>' +
+                                '<td>' + val.QCCompleted + '</td>' +
+                                '<td>' + val.Currency + '</td>' +
+                                '<td>' + val.ActualEntryDate.split("T")[0] + '</td>' +
+                                '<td>' + val.MRNEntryId + '</td>' +
+                                '<td>' + val.MRNYearCode + '</td>' +
+                                '</tr>';
 
                             i++;
                         });
@@ -425,12 +425,12 @@
 
 
     /*.styled-cell {
-                        border: 1px solid #ccc;
-                        padding: 8px;
-                        max-width: 100%;
-                        white-space: nowrap;
+                            border: 1px solid #ccc;
+                            padding: 8px;
+                            max-width: 100%;
+                            white-space: nowrap;
 
-                    }*/
+                        }*/
 
 
 

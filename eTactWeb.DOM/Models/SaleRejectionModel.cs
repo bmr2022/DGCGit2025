@@ -10,6 +10,7 @@ namespace eTactWeb.DOM.Models
 {
     public class SaleRejectionModel : SaleRejectionDetail
     {
+        public int GateEntryId {  get; set; }
         public int SaleRejEntryId { get; set; }
         public int SaleRejYearCode { get; set; }
        public string ? AgainstVoucherNo { get; set; }

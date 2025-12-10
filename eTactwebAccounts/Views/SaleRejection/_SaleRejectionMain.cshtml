@@ -25,6 +25,7 @@
 
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:140px">
             <label asp-for="GateNo" class="form-label" style="color: red;">Gate No*</label>
+            <input asp-for="GateEntryId" type="hidden"/>
             <input asp-for="GateNo" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:80px">
@@ -32,24 +33,24 @@
             <input asp-for="Gateyearcode" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <label asp-for="GateDate" class="form-label" style="color: red;">Gate Date</label>
+            <label asp-for="GateDate" class="form-label" style="color: red;">Gate Date*</label>
             <input asp-for="GateDate" tabindex="7" class="form-control" readonly />
         </div>
 
         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="MrnNo" class="form-label" style="color: red;">MRN No</label>
+            <label asp-for="MrnNo" class="form-label" style="color: red;">MRN No*</label>
             <input asp-for="MrnNo" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="MRNEntryId" class="form-label" style="color: red;">MRN EntryId</label>
+            <label asp-for="MRNEntryId" class="form-label" style="color: red;">MRN EntryId*</label>
             <input asp-for="MRNEntryId" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="MRNDate" class="form-label" style="color: red;">MRN Date</label>
+            <label asp-for="MRNDate" class="form-label" style="color: red;">MRN Date*</label>
             <input asp-for="MRNDate" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="Mrnyearcode" class="form-label" style="color: red;">MRN YC</label>
+            <label asp-for="Mrnyearcode" class="form-label" style="color: red;">MRN YC*</label>
             <input asp-for="Mrnyearcode" class="form-control" readonly />
         </div>
         @*   <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
@@ -71,14 +72,14 @@
         </div>
 
         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="AccountCode" class="form-label" style="color: red;">Customer Name</label>
+            <label asp-for="AccountCode" class="form-label" style="color: red;">Customer Name*</label>
             <input asp-for="AccountCode" class="form-control"  readonly type="hidden" />
             <input asp-for="AccountCode" class="form-control" id="hiddenAccountCode" readonly type="hidden" />
             <input asp-for="Account_Name" class="form-control" readonly />
         </div>
 
         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="DocTypeAccountCode" class="form-label" style="color: red;">Doc Type Name</label>
+            <label asp-for="DocTypeAccountCode" class="form-label" style="color: red;">Doc Type Name*</label>
             <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                 <input asp-for="DT" class="form-check-input" type="checkbox" role="switch" />Show All
             </div>
@@ -123,7 +124,7 @@
 
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="CurrencyId" class="form-label">Currency Id</label>
-            <input asp-for="CurrencyId" class="form-control" />
+            <input asp-for="CurrencyId" class="form-control"  readonly/>
         </div>
 
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
