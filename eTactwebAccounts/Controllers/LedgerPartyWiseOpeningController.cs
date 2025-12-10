@@ -132,7 +132,14 @@ namespace eTactWeb.Controllers
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
-                        TempData["202"] = "202";
+                        var msg=Result.StatusText.ToString();
+                        TempData["202"] = msg;
+                    }
+                    else if (Result.StatusText != "Success"&& Result.StatusText!= "Error" && Result.StatusCode == HttpStatusCode.Accepted)
+                    {
+                        ViewBag.isSuccess = true;
+                        var msg = Result.StatusText.ToString();
+                        TempData["ErrorMessage"] = msg;
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {

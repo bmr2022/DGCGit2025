@@ -165,7 +165,7 @@
                                                     <label asp-for="Type" class="form-label">Type</label>
                                                     <select class="form-control" id="Type" asp-for="Type" style="width:100px;">
                                                         <option value="">-Select-</option>
-                                                        <option value="DR" selected>DR</option>
+                                                        <option value="DR" >DR</option>
                                                         <option value="CR">CR</option>
                                                     </select>
                                                 </div>
@@ -460,6 +460,7 @@
             });
         }
 
+
         $('.submitBTN').click(function (e) {
 
             e.preventDefault();
@@ -483,7 +484,12 @@
                 return false;
             }
 
-            if (balance !== totNetAmt) {
+
+            // if (balance !== totNetAmt) {
+            //     $.notify("Balance must be equal to Total Adjustment Amt.", "error");
+            //     return false;
+            // }
+            if (balance !== Math.abs(totNetAmt)) {
                 $.notify("Balance must be equal to Total Adjustment Amt.", "error");
                 return false;
             }
@@ -556,7 +562,7 @@
                 $.notify("Please enter a valid amount", "error");
                 $(this).val("");
             } else {
-                $('#PendAmt').val(parseFloat(billNetAmt));
+                 $('#PendAmt').val(parseFloat(billNetAmt));
             }
         });
         $('#PendAmt').on('input', function () {
@@ -829,9 +835,6 @@
             $('#BillNo,#BillDate,#TransactionType,#DueDate').val('');
 
 
-
-
-
         }
 
         $(document).on('click', '#GridButton', function () {
@@ -976,6 +979,7 @@
             $('#TotNetAmt').val(isNaN(TotNetAmt) ? '0.00' : TotNetAmt.toFixed(2));
             $('#TotDrAmt').val(isNaN(TotDrAmt) ? '0.00' : TotDrAmt.toFixed(2));
             $('#TotCrAmt').val(isNaN(TotCrAmt) ? '0.00' : TotCrAmt.toFixed(2));
+
         }
 
 
