@@ -198,6 +198,8 @@ namespace eTactWeb.Data.DAL
                     //sqlParams.Add(new SqlParameter("@CC", model.CC));
                     //sqlParams.Add(new SqlParameter("@AccountNarration", model.AccountNarration));
                     //sqlParams.Add(new SqlParameter("@Unit", model.Unit));
+                    sqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
+                    sqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));
                     sqlParams.Add(new SqlParameter("@dt", GIGrid));
                 }
 
