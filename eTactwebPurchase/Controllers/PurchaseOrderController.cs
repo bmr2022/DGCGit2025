@@ -1654,6 +1654,8 @@ public class PurchaseOrderController : Controller
                         //model.PreparedByEmp = HttpContext.Session.GetString("EmpName");
                         //model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                         model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IpAddress = HttpContext.Session.GetString("ClientIP");
                     Result = await IPurchaseOrder.SavePurchaseOrder(ItemDetailDT, DelieveryScheduleDT, TaxDetailDT, IndentDetailDT, model);
                 }
 
