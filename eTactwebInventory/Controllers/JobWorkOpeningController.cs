@@ -115,7 +115,8 @@ namespace eTactWeb.Controllers
                         }
                     }
 
-
+                    model.MachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IJobWorkOpening.SaveJobWorkOpening(model, JOGrid);
 
                     if (Result != null)
