@@ -333,7 +333,8 @@ namespace eTactWeb.Controllers
                         }
                     }
 
-
+                    model.MachineName = HttpContext.Session.GetString("ClientMachineName");
+                   // model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _purchRej.SavePurchaseRejection(model, PRGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT, DTAgainstBillDetail);
 
                     if (Result != null)

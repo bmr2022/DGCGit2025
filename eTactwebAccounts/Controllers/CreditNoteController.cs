@@ -295,7 +295,8 @@ namespace eTactWeb.Controllers
                     {
                         Directory.CreateDirectory(serverFolderPath);
                     }
-
+                    model.MachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _creditNote.SaveCreditNote(model, CNGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT, DTAgainstBillDetail);
 
                     if (Result != null)

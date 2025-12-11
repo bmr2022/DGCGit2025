@@ -7,6 +7,7 @@ namespace eTactWeb.DOM.Models
     {
         public int CreditNoteEntryId { get; set; }
         public int CreditNoteYearCode { get; set; }
+        public string? IPAddress {  get; set; }
         public string CreditNoteInvoiceNo { get; set; } = string.Empty;
         public string CreditNoteInvoiceDate { get; set; }
         public string SubVoucherName { get; set; } = string.Empty;
