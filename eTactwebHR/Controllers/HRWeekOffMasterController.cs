@@ -128,6 +128,8 @@ namespace eTactWeb.Controllers
                         model.UpdatedBy = 0;
 
                     }
+                    model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IHRWeekOffMaster.SaveData(model, HREmployeeTable).ConfigureAwait(false);
 
                     if (Result != null)
