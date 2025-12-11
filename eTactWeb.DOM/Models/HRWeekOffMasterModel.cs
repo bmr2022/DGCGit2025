@@ -16,6 +16,7 @@ namespace eTactWeb.DOM.Models
         public string? DeptName { get; set; }
         public string? EmpCateName { get; set; }
         public List<string> EmpCateg { get; set; }
+        public string? IPAddress { get; set; }
         public IList<HRWeekOffMasterEmpCateDetailModel>? EmployeeCategoryDetailList { get; set; }
         public IList<TextValue>? EmployeeCategoryList { get; set; }
         public string EmpCategoryId { get; set; }
