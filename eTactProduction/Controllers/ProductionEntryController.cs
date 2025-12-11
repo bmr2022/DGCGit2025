@@ -349,7 +349,8 @@ namespace eTactWeb.Controllers
                         ScrapGrid = GetScrapDetailTable(ProductionEntryScrapDetail);
                         ProductGrid = GetProductDetailTable(ProductionEntryProductDetail);
                     }
-
+                    model.MachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IProductionEntry.SaveProductionEntry(model, GIGrid, BreakDownGrid, OperatorGrid, ScrapGrid, ProductGrid);
 
                     if (Result != null)
