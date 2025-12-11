@@ -167,6 +167,7 @@ public class MirDetail : TimeStamp
 public class MirModel : MirDetail
 {
     public string? EntryByMachineName { get; set; }
+    public string? IPAddress { get; set; }
     public string? ActualEnteredByName { get; set; }
     public string? FinFromDate { get; set; }
     public string? UpdatedByName { get; set; }
