@@ -405,6 +405,7 @@ public class DirectPurchaseBillModel : DPBItemDetail
     public List<string> ErrorList { get; set; }  // ← ADD THIS
     //just for display
     public string? UniversalPartCode { get; set; }
+    public string? IPAddress { get; set; }
     public string? PurchaseFromDatabase { get; set;}
     public string? BranchSaleBillNo { get; set;}
     public int? BranchSaleBillEntryId { get; set;}
