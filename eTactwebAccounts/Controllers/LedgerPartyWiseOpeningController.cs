@@ -517,9 +517,9 @@ namespace eTactWeb.Controllers
             model = await _ILedgerPartyWiseOpening.GetDashboardDetailData(LedgerName, BillNo);
             return PartialView("_LedgerPartyWiseOpeningDashBoardGrid", model);
         }
-        public async Task<IActionResult> DeleteByID(string EntryByMachine, int OpeningYearCode, int LedgerOpnEntryId, int AccountCode)
+        public async Task<IActionResult> DeleteByID(string EntryByMachine, int OpeningYearCode, int LedgerOpnEntryId, int AccountCode, int ActualEntryBy)
         {
-            var Result = await _ILedgerPartyWiseOpening.DeleteByID(EntryByMachine, OpeningYearCode, LedgerOpnEntryId, AccountCode);
+            var Result = await _ILedgerPartyWiseOpening.DeleteByID(EntryByMachine, OpeningYearCode, LedgerOpnEntryId, AccountCode,ActualEntryBy);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

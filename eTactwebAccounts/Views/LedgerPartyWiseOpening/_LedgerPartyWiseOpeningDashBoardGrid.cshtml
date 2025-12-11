@@ -41,7 +41,7 @@
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="LedgerPartyWiseOpening" asp-route-Mode="V" asp-route-LedgerOpnEntryId="@item.EntryId"
+                                        <a class="table-link link-success" asp-route-ID="@item.EntryId" asp-action="LedgerPartyWiseOpening" asp-route-Mode="V" asp-route-LedgerOpnEntryId="@item.EntryId"
                                            asp-route-OpeningYearCode="@item.OpeningYearCode"
                                            asp-route-AccBookTransEntryId="@item.AccBookTransEntryId"
                                            asp-route-AccBookTransYearCode="@item.AccBookTransYearCode"
@@ -71,7 +71,7 @@
 
                                     <div id="editCursorDiv-@Cntr">
                                         <a class="table-link link-primary"
-                                           asp-route-ID="@Cntr"
+                                           asp-route-ID="@item.EntryId"
                                            asp-action="LedgerPartyWiseOpening"
                                            asp-controller="LedgerPartyWiseOpening"
                                            asp-route-Mode="U"
@@ -110,7 +110,8 @@
                                            asp-route-EntryByMachine="@item.EntryByMachine"
                                            asp-route-OpeningYearCode="@item.OpeningYearCode"
                                            asp-route-LedgerOpnEntryId="@item.EntryId"
-                                           asp-route-AccountCode="@item.AccountCode">
+                                           asp-route-AccountCode="@item.AccountCode"
+                                           asp-route-ActualEntryBy="@item.ActualEntryBy">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
