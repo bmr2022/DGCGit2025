@@ -38,7 +38,7 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> PendingMaterialToIssueThrBOM()
         {
             ViewData["Title"] = "Pending Requisition to Issue Details";
-            TempData.Clear();
+            //TempData.Clear();
             HttpContext.Session.Remove("KeyPendingToIssueThrBOM");
             var MainModel = new PendingMaterialToIssueThrBOMModel();
             var model = new IssueWithoutBomDetail();
