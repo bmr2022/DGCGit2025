@@ -137,6 +137,8 @@ namespace eTactwebAccounts.Controllers
                 {
                     GIGrid = GetDetailTable(CashPaymentGrid);
                 }
+                model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 var Result = await _ICashPayment.SaveCashPayment(model, GIGrid);
                 if (Result != null)
                 {

@@ -184,7 +184,6 @@ namespace eTactWeb.Controllers
 		[HttpPost]
 
 		public async Task<IActionResult> InProcessInspection(InProcessInspectionModel model)
-		
 		{
 			try
 			{
@@ -209,8 +208,9 @@ namespace eTactWeb.Controllers
 				model.InspectedAfterLotChange = selectedKeys.Contains("AfterMaterialLotChange");
 				model.InspectedAfterMachinIdel = selectedKeys.Contains("AfterMachineIdel");
 				model.InspectedEndOfProd = selectedKeys.Contains("EndOfProduction");
-
-				var Result = await _IInProcessInspection.SaveInprocessInspection(model, GIGrid);
+                model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                var Result = await _IInProcessInspection.SaveInprocessInspection(model, GIGrid);
 
 				if (Result != null)
 				{

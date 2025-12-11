@@ -124,6 +124,8 @@ namespace eTactWeb.Controllers
                 {
                     GIGrid = GetDetailTable(BankReceiptGrid);
                 }
+                model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 var Result = await _IBankReceipt.SaveBankReceipt(model, GIGrid);
                 if (Result != null)
                 {

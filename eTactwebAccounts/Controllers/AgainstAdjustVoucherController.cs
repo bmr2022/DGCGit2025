@@ -159,6 +159,8 @@ namespace eTactwebAccounts.Controllers
                 {
                     GIGrid = GetDetailTable(AgainstAdjustVoucherGrid);
                 }
+                model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 var Result = await _IAgainstAdjustVoucher.SaveAgainstAdjustVoucher(model, GIGrid);
                 if (Result != null)
                 {

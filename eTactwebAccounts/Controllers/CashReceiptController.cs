@@ -135,6 +135,8 @@ namespace eTactwebAccounts.Controllers
                 {
                     GIGrid = GetDetailTable(CashReceiptGrid);
                 }
+                model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 var Result = await _ICashReceipt.SaveCashReceipt(model, GIGrid);
                 if (Result != null)
                 {

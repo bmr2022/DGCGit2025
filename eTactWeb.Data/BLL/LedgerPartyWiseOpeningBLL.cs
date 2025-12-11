@@ -65,9 +65,9 @@ namespace eTactWeb.Data.BLL
             return await _LedgerPartyWiseOpeningDAL.GetViewByID( OpeningYearCode,  LedgerOpnEntryId);
 
         }
-        public async Task<ResponseResult> DeleteByID(string EntryByMachine, int OpeningYearCode, int LedgerOpnEntryId, int AccountCode)
+        public async Task<ResponseResult> DeleteByID(string EntryByMachine, int OpeningYearCode, int LedgerOpnEntryId, int AccountCode, int ActualEntryBy)
         {
-            return await _LedgerPartyWiseOpeningDAL.DeleteByID( EntryByMachine,  OpeningYearCode,  LedgerOpnEntryId,  AccountCode);
+            return await _LedgerPartyWiseOpeningDAL.DeleteByID( EntryByMachine,  OpeningYearCode,  LedgerOpnEntryId,  AccountCode, ActualEntryBy);
         }
         public Task<LedgerPartyWiseOpeningModel> GetAllDataAccountCodeWise(int OpeningYearCode, int AccountCode)
         {

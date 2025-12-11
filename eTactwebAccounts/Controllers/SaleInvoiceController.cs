@@ -565,7 +565,8 @@ namespace eTactWeb.Controllers
                 {
                     model.AttachmentFilePath2 = MainModel.AttachmentFilePath2;
                 }
-
+                model.MachineName = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 var Result = await _SaleBill.SaveSaleBill(model, SBGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT, AdjChallanDetailDT);
 
                 if (Result != null)

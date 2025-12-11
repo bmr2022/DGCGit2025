@@ -137,6 +137,8 @@ namespace eTactwebAccounts.Controllers
                 {
                     GIGrid = GetDetailTable(JournalVoucherGrid);
                 }
+                model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 var Result = await _IJournalVoucher.SaveBankReceipt(model, GIGrid);
                 if (Result != null)
                 {
