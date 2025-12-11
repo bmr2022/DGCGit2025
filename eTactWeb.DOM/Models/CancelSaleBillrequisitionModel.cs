@@ -10,6 +10,7 @@ namespace eTactWeb.DOM.Models
     public class CancelSaleBillrequisitionModel : TimeStamp
     {
         public string Flag { get; set; }
+        public string? IPAddress { get; set; }
         public int YearCode { get; set; }
         public string FromDate { get; set; }
         public string ToDate { get; set; }
