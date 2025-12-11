@@ -102,7 +102,9 @@ namespace eTactwebAccounts.Controllers
 				model.ForClosingOfFinancialYear = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                 model.LastUpdatedDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
                 var GIGrid = GetDetailTable(DepriciationCalculationdetail,  model.DepriciationEntryId,model.DepriciationYearCode,model.ForClosingOfFinancialYear);
-				var Result = await _IAccDepriciationCalculationdetail.SaveDepriciationCalculationdetail(model, GIGrid);
+                model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                var Result = await _IAccDepriciationCalculationdetail.SaveDepriciationCalculationdetail(model, GIGrid);
 
 				if (Result != null)
 				{
