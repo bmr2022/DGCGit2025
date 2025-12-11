@@ -264,6 +264,8 @@ namespace eTactwebMasters.Controllers
                         model.UpdatedBy = 0;
 
                     }
+                    model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IHRLeaveMaster.SaveData(model, HREmpLeaveMasterTable, HRSalaryMasterDeptWiseDT, HRLocationDT).ConfigureAwait(false);
 
                     if (Result != null)

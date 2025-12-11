@@ -70,8 +70,9 @@ namespace eTactWeb.DOM.Models
         public IList<string>? RestrictedToEmployeeCategory { get; set; }
         public IList<LeaveEmpCategDetail>? EmpCategDetailList { get; set; }      
         public IList<TextValue>? EmpCategList { get; set; }
+        public string? IPAddress { get; set; }
 
-        
+
         //public string RestrictedToDepartment { get; set; } // Example: IT, HR, Finance
         public IList<string>? RestrictedToDepartment { get; set; }
         public IList<string>? EmpCateg { get; set; }
