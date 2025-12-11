@@ -10,6 +10,7 @@ namespace eTactWeb.DOM.Models
         public class ContraVoucherModel : TimeStamp
     {
         public string? FromDateBack { get; set; }
+        public string? IPAddress { get; set; }
         public string? ToDateBack { get; set; }
         public string? LedgerNameBack { get; set; }
         public string? VoucherNoBack { get; set; }

@@ -130,6 +130,8 @@ namespace eTactwebAccounts.Controllers
                 {
                     GIGrid = GetDetailTable(ContraVoucherGrid);
                 }
+                model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 var Result = await _IContraVoucher.SaveContraVoucher(model, GIGrid);
                 if (Result != null)
                 {
