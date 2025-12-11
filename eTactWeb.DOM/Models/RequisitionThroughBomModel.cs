@@ -13,6 +13,7 @@ namespace eTactWeb.DOM.Models
         public string? EntryByMachineName { get; set; }
         public int EntryId { get; set; }
         public int YearCode { get; set; }
+        public string? IPAddress {  get; set; }
         public string? FinFromDate {  get; set; }
         public string? FinToDate {  get; set; }
         public string? Prefix { get; set; } 

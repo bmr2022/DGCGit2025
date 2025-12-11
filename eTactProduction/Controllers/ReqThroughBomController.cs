@@ -151,6 +151,8 @@ namespace eTactWeb.Controllers
                         model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                         model.UpdatedByName = HttpContext.Session.GetString("EmpName");
                     }
+                    model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     ReqGrid = GetDetailTable(RequisitionDetail);
                     var Result = await _IReqThruBom.SaveRequisition(model, ReqGrid);
 
