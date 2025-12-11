@@ -11,6 +11,7 @@ namespace eTactWeb.DOM.Models
     {
         public string? FromDate { get; set; }
         public string? FinFromDate {  get; set; }
+        public string? IPAddress {  get; set; }
         public string? FinToDate {  get; set; }
         public string? ToDate { get; set; }
         public string? CC { get; set; }

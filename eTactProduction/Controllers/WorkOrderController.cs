@@ -113,6 +113,8 @@ namespace eTactWeb.Controllers
                         model.LastUpdateByEmpName = HttpContext.Session.GetString("EmpName");
                         model.LastUpdateBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                     }
+                    model.MachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IworkOrder.SaveWorkOrder(model, WorkOrderDetail);
 
                     if (Result != null)
