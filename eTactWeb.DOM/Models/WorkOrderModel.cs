@@ -12,6 +12,7 @@ namespace eTactWeb.DOM.Models
     {
         public int Entryid { get; set; }
         public string Entrydate { get; set; }
+        public string? IPAddress { get; set; }
         public int YearCode { get; set; }
         public string EffectiveFrom { get; set; }
         public string EffectiveTill { get; set; }
