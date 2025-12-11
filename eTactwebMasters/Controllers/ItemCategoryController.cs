@@ -5,6 +5,7 @@ using eTactWeb.DOM.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Data;
+using Newtonsoft.Json.Linq;
 
 namespace eTactWeb.Controllers
 {
@@ -160,10 +161,188 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> ImportandUpdateItemCategory()
         { 
             var model = new ItemCategoryModel();
-           
+            int yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            model.Year_code = yearcode;
 
             return View(model);
         }
+        //public async Task<IActionResult> UpdateFromExcel([FromBody] ExcelUpdateRequest request)
+        //{
+        //    var response = new ResponseResult();
+        //    var flag = request.Flag;
+
+        //    try
+        //    {
+        //        DataTable dt = new DataTable();
+
+
+        //        dt.Columns.Add("Entry_id", typeof(long));
+        //        dt.Columns.Add("Entry_Date", typeof(DateTime));
+        //        dt.Columns.Add("Year_code", typeof(long));
+        //        dt.Columns.Add("Type_Item", typeof(string));
+        //        dt.Columns.Add("Main_Category_Type", typeof(string));
+        //        dt.Columns.Add("CC", typeof(string));
+        //        dt.Columns.Add("Uid", typeof(long));
+        //        dt.Columns.Add("Category_Code", typeof(string));
+
+
+        //        int rowIndex = 1;
+        //        foreach (var excelRow in request.ExcelData)
+        //        {
+        //            DataRow row = dt.NewRow();
+
+        //            foreach (var map in request.Mapping)
+        //            {
+        //                string dbCol = map.Key;          // DB column
+        //                string excelCol = map.Value;     // Excel column name
+
+        //                object value = DBNull.Value;     // default
+
+        //                if (excelRow.ContainsKey(excelCol) && !string.IsNullOrEmpty(excelRow[excelCol]))
+        //                {
+        //                    value = excelRow[excelCol];
+
+        //                    // Convert types for numeric/boolean/date columns if needed
+        //                    Type columnType = dt.Columns[dbCol].DataType;
+
+        //                    try
+        //                    {
+
+
+
+
+
+        //                                int yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+
+        //                                int Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+        //                                string CC = HttpContext.Session.GetString("Branch");
+
+
+
+        //                                row["Year_code"] = yearcode;
+
+        //                                row["Uid"] = Uid;
+        //                                row["CC"] = CC;
+
+
+
+        //                        if (dbCol == "Main_Category_Type")
+        //                        {
+        //                            string itemCat = value?.ToString().Trim() ?? string.Empty;
+
+        //                            // ✅ Fetch category dataset
+        //                            var catCodeResponse = await _IItemCategory.GetAllItemCategory();
+        //                            var categoryDataSet = catCodeResponse?.Result as DataSet;
+
+        //                            // ✅ Validate that dataset and table exist
+        //                            if (categoryDataSet == null || categoryDataSet.Tables.Count == 0)
+        //                            {
+        //                                return Json(new
+        //                                {
+        //                                    StatusCode = 500,
+        //                                    StatusText = "Error: Could not fetch main category list from database."
+        //                                });
+        //                            }
+
+        //                            var categoryTable = categoryDataSet.Tables[0];
+
+        //                            // ✅ Extract allowed category names
+        //                            var allowedTypes = categoryTable.AsEnumerable()
+        //                                .Select(r => r["Main_Category_Type"].ToString().Trim())
+        //                                .Where(s => !string.IsNullOrEmpty(s))
+        //                                .Distinct(StringComparer.OrdinalIgnoreCase)
+        //                                .ToList();
+
+        //                            // ✅ Check if input matches any allowed type
+        //                            bool isValid = allowedTypes.Any(t =>
+        //                                t.Equals(itemCat, StringComparison.OrdinalIgnoreCase));
+
+        //                            if (!isValid)
+        //                            {
+        //                                return Json(new
+        //                                {
+        //                                    StatusCode = 201,
+        //                                    StatusText = $"Invalid Main_Category_Type '{itemCat}' at Row {rowIndex}. " +
+        //                                                 $"Allowed types: {string.Join(", ", allowedTypes)}"
+        //                                });
+        //                            }
+        //                        }
+
+        //                        if (columnType == typeof(long))
+        //                            value = long.Parse(value.ToString());
+        //                        else
+
+
+
+        //                        if (columnType == typeof(int))
+        //                            value = int.Parse(value.ToString());
+        //                        else if (columnType == typeof(decimal))
+        //                            value = decimal.Parse(value.ToString());
+        //                        else if (columnType == typeof(bool))
+        //                        {
+        //                            // Accept 1/0, true/false, Y/N
+        //                            string s = value.ToString().Trim().ToLower();
+        //                            value = (s == "1" || s == "true" || s == "y");
+        //                        }
+        //                        else if (columnType == typeof(DateTime))
+        //                            value = DateTime.Parse(value.ToString());
+        //                        else
+        //                            value = value.ToString();
+        //                    }
+        //                    catch
+        //                    {
+        //                        value = DBNull.Value; // fallback if conversion fails
+        //                    }
+        //                }
+        //                row[dbCol] = value;
+        //            }
+
+        //            dt.Rows.Add(row);
+        //        }
+
+        //        response = await _IItemCategory.UpdateMultipleItemDataFromExcel(dt, flag);
+
+        //        if (response != null)
+        //        {
+        //            if ((response.StatusText == "Success" || response.StatusText == "Updated") &&
+        //                 (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Accepted))
+        //            {
+        //                return Json(new
+        //                {
+        //                    StatusCode = 200,
+        //                    StatusText = "Data imported successfully",
+        //                    RedirectUrl = Url.Action("ImportandUpdateAccount", "AccountMaster", new { Flag = "" })
+        //                });
+        //            }
+        //            else
+        //            {
+        //                return Json(new
+        //                {
+
+        //                    StatusText = response.StatusText,
+        //                    statusCode = 201,
+        //                    redirectUrl = ""
+        //                });
+        //            }
+        //        }
+
+        //        return Json(new
+        //        {
+        //            StatusCode = 500,
+        //            StatusText = "Unknown error occurred"
+        //        });
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = ex.Message });
+        //    }
+
+
+        //}
+
+
+
         public async Task<IActionResult> UpdateFromExcel([FromBody] ExcelUpdateRequest request)
         {
             var response = new ResponseResult();
@@ -182,8 +361,27 @@ namespace eTactWeb.Controllers
                 dt.Columns.Add("CC", typeof(string));
                 dt.Columns.Add("Uid", typeof(long));
                 dt.Columns.Add("Category_Code", typeof(string));
-               
 
+                // ⭐ Fetch feature options once
+                var featureResponse = await GetFeatureOption();
+
+                // Parse the JSON string
+                JObject json = JObject.Parse(featureResponse.Value.ToString());
+
+                // Check if Result exists and has at least one item
+                var resultArray = json["Result"] as JArray;
+                if (resultArray == null || resultArray.Count == 0)
+                {
+                    // Handle missing data
+                    return Json(new { StatusCode = 500, StatusText = "Feature options not found." });
+                }
+
+                var featureObj = resultArray[0];
+
+                string catMandatory = featureObj["CatcodeMandatory"]?.ToString() ?? "N";
+                int maxCatLen = featureObj["MaxLengthOfCatcode"] != null
+                    ? Convert.ToInt32(featureObj["MaxLengthOfCatcode"])
+                    : 0;
                 int rowIndex = 1;
                 foreach (var excelRow in request.ExcelData)
                 {
@@ -205,24 +403,15 @@ namespace eTactWeb.Controllers
 
                             try
                             {
+                                int yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
+                                int Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                                string CC = HttpContext.Session.GetString("Branch");
 
+                                row["Year_code"] = yearcode;
 
-
-                              
-                                        int yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                                       
-                                        int Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                                        string CC = HttpContext.Session.GetString("Branch");
-
-                                       
-                                      
-                                        row["Year_code"] = yearcode;
-                                       
-                                        row["Uid"] = Uid;
-                                        row["CC"] = CC;
-
-
+                                row["Uid"] = Uid;
+                                row["CC"] = CC;
 
                                 if (dbCol == "Main_Category_Type")
                                 {
@@ -266,13 +455,54 @@ namespace eTactWeb.Controllers
                                     }
                                 }
 
+
+                                if (dbCol == "Category_Code")
+                                {
+                                    string cat = value?.ToString().Trim() ?? "";
+
+                                    // ⭐ Case 2: Mandatory Y → cannot be blank
+                                    if (catMandatory == "Y" && string.IsNullOrWhiteSpace(cat))
+                                    {
+                                        return Json(new
+                                        {
+                                            StatusCode = 201,
+                                            StatusText = $"Category_Code is mandatory at Row {rowIndex}"
+                                        });
+                                    }
+
+                                    // ⭐ Case 3: Not mandatory → blank allowed
+                                    if (catMandatory == "N" && string.IsNullOrWhiteSpace(cat))
+                                    {
+                                        row["Category_Code"] = DBNull.Value;
+                                        continue;
+                                    }
+
+                                    // ⭐ Case 4: MaxLength = 0 → accept any length
+                                    if (maxCatLen == 0)
+                                    {
+                                        row["Category_Code"] = cat;
+                                        continue;
+                                    }
+
+                                    // ⭐ Case 5: MaxLength > 0 → must match exactly length
+                                    if (cat.Length != maxCatLen)
+                                    {
+                                        return Json(new
+                                        {
+                                            StatusCode = 201,
+                                            StatusText = $"Category_Code must be exactly {maxCatLen} characters at Row {rowIndex}, found '{cat}'"
+                                        });
+                                    }
+
+                                    // If all good → assign
+                                    row["Category_Code"] = cat;
+                                    continue;
+                                }
+
+
                                 if (columnType == typeof(long))
                                     value = long.Parse(value.ToString());
-                                else
-
-
-
-                                if (columnType == typeof(int))
+                                else if (columnType == typeof(int))
                                     value = int.Parse(value.ToString());
                                 else if (columnType == typeof(decimal))
                                     value = decimal.Parse(value.ToString());

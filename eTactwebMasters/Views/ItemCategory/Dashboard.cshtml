@@ -306,71 +306,107 @@
             });
         }
 
-        $("#sendToExcel").click(function () {
-            $("#ItemCatTable").table2excel({
-                filename: "ItemCatTable.xls"
+        // $("#sendToExcel").click(function () {
+        //     $("#ItemCatTable").table2excel({
+        //         filename: "ItemCatTable.xls"
+        //     });
+        // });
+
+            $("#sendToExcel").click(function () {
+            // Get the table
+            var table = document.getElementById("ItemCatTable");
+
+            // Clone table so we don't affect original HTML
+            var clonedTable = table.cloneNode(true);
+
+            // Remove "Entry_id" hidden column (first column)
+            clonedTable.querySelectorAll("thead th")[0].remove();
+            clonedTable.querySelectorAll("tbody tr").forEach(function (row) {
+                if (row.children.length > 0) {
+                    row.children[0].remove(); // first column = hidden Entry_id
+                }
             });
+
+            // Remove "Action" column (now it's first visible column, originally second)
+            clonedTable.querySelectorAll("thead th")[0].remove();
+            clonedTable.querySelectorAll("tbody tr").forEach(function (row) {
+                if (row.children.length > 0) {
+                    row.children[0].remove(); // first column after Entry_id removed = Action
+                }
+            });
+
+            // Convert table to worksheet
+            var ws = XLSX.utils.table_to_sheet(clonedTable);
+
+            // Create a new workbook
+            var wb = XLSX.utils.book_new();
+
+            // Append worksheet
+            XLSX.utils.book_append_sheet(wb, ws, "ItemCategory");
+
+            // Save as Excel
+            XLSX.writeFile(wb, "ItemCategoryTable.xlsx");
         });
 
-        // $(document).on("click", ".ascCol", function () {
-        //     var $column = $(this).parent().closest("th");
-        //     var colno = $column.data('columnno');
-        //     $('.ascCol').css('color', 'white');
-        //     $('.descCol').css('color', 'white');
-        //     sortTable(colno, true);
-        //     $(this).css('color', 'yellow');
-        // });
+        $(document).on("click", ".ascCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $column.data('columnno');
+            $('.ascCol').css('color', 'white');
+            $('.descCol').css('color', 'white');
+            sortTable(colno, true);
+            $(this).css('color', 'yellow');
+        });
 
-        // $(document).on("click", ".descCol", function () {
-        //     var $column = $(this).parent().closest("th");
-        //     var colno = $column.data('columnno');
-        //     $('.ascCol').css('color', 'white');
-        //     $('.descCol').css('color', 'white');
-        //     sortTable(colno, false);
-        //     $(this).css('color', 'yellow');
-        // });
+        $(document).on("click", ".descCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $column.data('columnno');
+            $('.ascCol').css('color', 'white');
+            $('.descCol').css('color', 'white');
+            sortTable(colno, false);
+            $(this).css('color', 'yellow');
+        });
 
-        // function sortTable(columnIndex, ascending) {
-        //     var table = $('#ItemCatTable');
-        //     var rows = table.find('#ItemcatBody > tr').toArray();
+        function sortTable(columnIndex, ascending) {
+            var table = $('#ItemCatTable');
+            var rows = table.find('#ItemcatBody > tr').toArray();
 
-        //     rows.sort(function (a, b) {
-        //         var aValue = $(a).find('td').eq(columnIndex).text().trim();
-        //         var bValue = $(b).find('td').eq(columnIndex).text().trim();
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text().trim();
+                var bValue = $(b).find('td').eq(columnIndex).text().trim();
 
-        //         var aIntValue = 0;
-        //         var bIntValue = 0;
-        //         if (/^\d+$/.test(aValue) && /^\d+$/.test(bValue)) {
-        //             aIntValue = parseInt(aValue, 10);
-        //             bIntValue = parseInt(bValue, 10);
-        //         }
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d+$/.test(aValue) && /^\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
 
-        //         if (aIntValue > 0) {
-        //             if (ascending) {
-        //                 return aValue - bValue;
-        //             } else {
-        //                 return bValue - aValue;
-        //             }
-        //         }
-        //         else {
-        //             if (ascending) {
-        //                 return aValue.localeCompare(bValue);
-        //             } else {
-        //                 return bValue.localeCompare(aValue);
-        //             }
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                }
+                else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
 
-        //         }
+                }
 
-        //     });
-            //if (!ascending) {
-            //    rows.reverse();
-            //}
+            });
+            if (!ascending) {
+               rows.reverse();
+            }
 
             $.each(rows, function (index, row) {
                 table.children('#ItemcatBody').append(row);
             });
        
-
+            
         function GetSearchData() {
             var data = $('#SParam').serialize();
             $.ajax({
@@ -392,9 +428,11 @@
                 }
             });
         }
+        }
     </script>
     <script src="~/Scripts/table2excel.js"></script>
     <script src="~/Scripts/CheckUserRights.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
 }
 

@@ -420,14 +420,18 @@
                                 }
 
                                 // ⭐ Case 3: If user typed something → must match exact length
-                                if (value.length !== maxLen) {
+                                // ⭐ Case 3: maxLen > 0 → must match exact length
+                                if (maxLen > 0 && value.length !== maxLen) {
                                     e.preventDefault();
                                     $.notify("Category Code must be exactly " + maxLen + " characters",
                                         { position: "top center", className: "error" });
                                     return false;
                                 }
 
+                                // ⭐ Case 4: maxLen == 0 → allow anything user typed
                                 return true;
+
+                                
                             });
                         }
                     }

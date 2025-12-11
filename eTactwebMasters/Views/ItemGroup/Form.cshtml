@@ -446,33 +446,35 @@
                             }
 
 
-                                $('form').off('submit').on('submit', function (e) {
+                            $('form').off('submit').on('submit', function (e) {
 
-                                    let value = $('#GroupPrefix').val().trim();
+                                let value = $('#GroupPrefix').val().trim();
 
-                                    // ⭐ Case 1: Mandatory = Y → must not be blank
-                                    if (mandatory === "Y" && value === "") {
-                                        e.preventDefault();
-                                        $.notify("Group Code is mandatory",
-                                            { position: "top center", className: "error" });
-                                        return false;
-                                    }
+                                // Case 1: Mandatory = Y → must not be blank
+                                if (mandatory === "Y" && value === "") {
+                                    e.preventDefault();
+                                    $.notify("Group Code is mandatory",
+                                        { position: "top center", className: "error" });
+                                    return false;
+                                }
 
-                                    // ⭐ Case 2: Not mandatory → allow blank safely
-                                    if (mandatory === "N" && value === "") {
-                                        return true; // allow submit
-                                    }
-
-                                    // ⭐ Case 3: If user typed something → must match exact length
-                                    if (value.length !== maxLen) {
-                                        e.preventDefault();
-                                        $.notify("Group Code must be exactly " + maxLen + " characters",
-                                            { position: "top center", className: "error" });
-                                        return false;
-                                    }
-
+                                // Case 2: Not mandatory → allow blank safely
+                                if (mandatory === "N" && value === "") {
                                     return true;
-                                });
+                                }
+
+                                // ⭐ Case 3: maxLen > 0 → must match exact length
+                                if (maxLen > 0 && value.length !== maxLen) {
+                                    e.preventDefault();
+                                    $.notify("Group Code must be exactly " + maxLen + " characters",
+                                        { position: "top center", className: "error" });
+                                    return false;
+                                }
+
+                                // ⭐ Case 4: maxLen == 0 → allow anything user typed
+                                return true;
+                            });
+
                         }
                     }
                 }

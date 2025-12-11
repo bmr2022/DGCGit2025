@@ -83,7 +83,33 @@
                             </div>
                         </div>
                     </div>
+
+                   
+
                 </div>
+
+            </div>
+            <!-- Excel Instructions -->
+            <div class="p-2 mb-3">
+                <h5 class="mb-2"> Excel Format Instructions:</h5>
+
+                <p>Please prepare your Excel file with the following fields:</p>
+
+                <ul>
+                    <li id="info_Category_Code"><strong>Category Code</strong> — Required (maps to <em>Category_Code</em>  <span id="info_MaxLen"></span>)</li>
+                    <li><strong>Item Category Name</strong> — Required (maps to <em>Type_Item</em>)</li>
+                    <li><strong>Main Category</strong> — Required (maps to <em>Main_Category_Type</em>)</li>
+                </ul>
+
+
+                <p><strong>Update Instructions:</strong></p>
+                <ul>
+                    <li>Go to <strong>Item Category Dashboard</strong> and export the current data to Excel.</li>
+                    <li>Make the changes you need in the Excel file.</li>
+                    <li>When uploading the Excel file here, ensure that you <strong>map the <code>Entry_id</code> column</strong> in the mapping table. This is required to correctly update existing records.</li>
+                </ul>
+
+                <p><strong>Note:</strong> Excel column names can be anything — you will map them during upload.</p>
 
             </div>
             <div class="card-footer p-3">
@@ -183,13 +209,13 @@
                                             <tbody id="ColumnNameBody">
 
                                                 <tr><td>Entry_id</td><td><select class="multicolumns"></select></td></tr>
-                                                <tr><td>Entry_Date</td><td><select class="multicolumns"></select></td></tr>
-                                                <tr><td>Year_code</td><td><select class="multicolumns"></select></td></tr>
+                                                @* <tr><td>Entry_Date</td><td><select class="multicolumns"></select></td></tr> *@
+                                                @* <tr><td>Year_code</td><td><select class="multicolumns"></select></td></tr> *@
                                                 <tr><td>Type_Item</td><td><select class="multicolumns"></select></td></tr>
                                                 <tr><td>Main_Category_Type</td><td><select class="multicolumns"></select></td></tr>
-                                                <tr><td>CC</td><td><select class="multicolumns"></select></td></tr>
-                                                <tr><td>Uid</td><td><select class="multicolumns"></select></td></tr>
-                                                <tr><td>Category_Code</td><td><select class="multicolumns"></select></td></tr>
+                                                @* <tr><td>CC</td><td><select class="multicolumns"></select></td></tr> *@
+                                                @* <tr><td>Uid</td><td><select class="multicolumns"></select></td></tr> *@
+                                                <tr id="row_Category_Code"><td>Category_Code</td><td><select class="multicolumns"></select></td></tr>
                                               
 
                                             </tbody>
@@ -228,8 +254,11 @@
 @section Scripts
 {
     <script>
+            let mappingModal;
         $(document).ready(function () {
             GetFormRights();
+            GetFeatureOptions();
+            mappingModal = new bootstrap.Modal(document.getElementById('ColumnNameModel'));
         });
        
         let excelHeaders = [];
@@ -332,8 +361,20 @@
                     mapping[dbColumn] = selectedExcelColumn;
                 }
             });
-            if (!mapping["Category_Code"] ) {
-                $.notify(" Category_Code mapping is mandatory!", "error");
+
+        if (CategoryFeature.mandatory && !mapping["Category_Code"]) {
+            mappingModal.hide();
+            $.notify("Category_Code mapping is mandatory!", "error");
+            return;
+        }
+            if (!mapping["Main_Category_Type"] ) {
+                mappingModal.hide();
+                $.notify(" Main_Category_Type mapping is mandatory!", "error");
+                return; // stop execution
+            }
+            if (!mapping["Type_Item"] ) {
+                mappingModal.hide();
+                $.notify(" Type_Item mapping is mandatory!", "error");
                 return; // stop execution
             }
             // 2. Extract Excel Table Headers
@@ -371,15 +412,19 @@
                 },
                 success: function (data, status, xhr) {
                     $('#ajaxLoader').hide();
-                    $.notify("Data Update Successfully!!", "info");
                     if (data && (data.statusCode === 200 || data.statusCode === 202)) {
-                        window.location.href = data.RedirectUrl;
+                    $.notify("Data Update Successfully!!", "info");
+                        // window.location.href = data.RedirectUrl;
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
                     }
                     else if (data && (data.statusCode === 205 || data.statusCode === 205)) {
+                        mappingModal.hide();
                         $.notify(data.statusText, "error");
                     }
                     else {
-                       
+                       mappingModal.hide();
                         $.notify(data.statusText, "error");
                     }
                    
@@ -421,8 +466,8 @@
             // check if excel table has rows (excluding header)
             if ($('#MultiexcelTable table tr').length > 1) {
                 // Bootstrap 5 way to open modal
-                let myModal = new bootstrap.Modal(document.getElementById('ColumnNameModel'));
-                myModal.show();
+                // let myModal = new bootstrap.Modal(document.getElementById('ColumnNameModel'));
+                mappingModal.show();
             } else {
                 
             }
@@ -430,6 +475,60 @@
 
 
 
+            function GetFeatureOptions() {
+            $.ajax({
+                url: "/ItemCategory/GetFeatureOption",
+                type: "POST",
+                data: {},
+                dataType: "json",
+                success: function (result, status, error) {
+                    
+                    var isMandatory ;
+                    var maxLen;
+                     if (result != null) {
+                          var obj = $.parseJSON(result);
+                           if (obj.Result != null) {
+                             isMandatory = obj.Result[0].CatcodeMandatory === "Y";
+                             maxLen = parseInt(obj.Result[0].MaxLengthOfCatcode);
+                           }
+                     }
+
+                    //  1. Show/Hide mapping row
+                    $("#row_Category_Code").toggle(isMandatory);
+
+                    //  2. Show/Hide instruction list
+                    $("#info_Category_Code").toggle(isMandatory);
+
+                    //  3. Update max length information text
+                   
+                        if (isMandatory && maxLen > 0) {
+                            $("#info_MaxLen").text("And Length: " + maxLen);
+                        } else {
+                            $("#info_MaxLen").text(""); // hide if maxLen is 0 or not mandatory
+                        }
+
+                    //  4. Apply maxlength attribute to textbox (if exists)
+                    $("#Category_Code").attr("maxlength", maxLen);
+
+                    //  5. Add/remove required star
+                    if (isMandatory) {
+                        if ($("#Category_Code_Label span").length === 0) {
+                            $("#Category_Code_Label").append(
+                                "<span class='text-danger'> *</span>"
+                            );
+                        }
+                    } else {
+                        $("#Category_Code_Label span").remove();
+                    }
+
+                    //6. Store global variable for submit validation
+                    window.CategoryFeature = {
+                        mandatory: isMandatory,
+                        maxLen: maxLen
+                    };
+                }
+            });
+        }
 
         
         function GetFormRights() {
