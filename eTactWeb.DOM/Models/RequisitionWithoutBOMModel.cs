@@ -11,6 +11,7 @@ namespace eTactWeb.DOM.Models
     public class RequisitionWithoutBOMModel : RequisitionDetail
     {
         public string? EntryByMachineName { get; set; }
+        public string? IPAddress { get; set; }
         public string? CreatedByName { get; set; }
         public string? UpdatedByName { get; set; }
         public string? FinFromDate { get; set; }
