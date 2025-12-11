@@ -404,6 +404,8 @@ namespace eTactwebInventory.Controllers
                 {
                     GIGrid = GetDetailTable(HRLeaveOpeningDetail);
                 }
+                model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 var Result = await _IHRLeaveOpeningMaster.SaveMainData(model, GIGrid);
                 if (Result != null)
                 {
