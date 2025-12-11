@@ -11,6 +11,7 @@ namespace eTactWeb.DOM.Models
     {
 
         public int? LeaveAppEntryId { get; set; }
+        public string? IPAddress { get; set; }
         public int LeaveAppYearCode { get; set; }
         public string? BranchCC { get; set; }
         public string? LeaveAppEntryDate { get; set; }
