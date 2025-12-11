@@ -308,7 +308,7 @@ namespace eTactWeb.Controllers
                     Item.PrefMachineId3,
                     Item.ApproxStartDate == null ? string.Empty : CommonFunc.ParseFormattedDate(Item.ApproxStartDate),
                     Item.ApproxEndDate == null ? string.Empty : CommonFunc.ParseFormattedDate(Item.ApproxEndDate),
-                    Item.WIPStoreId, //StoreId
+                    Item.StoreId, //StoreId
                     Item.OrderType ?? "",
                     Item.OrderWEF == null ? string.Empty : CommonFunc.ParseFormattedDate(Item.OrderWEF),
                     Item.AmendNo,
