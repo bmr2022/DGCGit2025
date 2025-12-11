@@ -177,7 +177,7 @@ namespace eTactWeb.DOM.Models
         public string? AllowToAddNegativeStockInStore { get; set; }
         public string? SaleBillEntryFrom { get; set; }
         public string? SubInvoicetype { get; set; }
-       
+       public string? IPAddress { get; set; }
         public string? PurchaseBillBookedinBranch { get; set; }
 
 
