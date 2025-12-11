@@ -324,6 +324,8 @@ namespace eTactwebHR.Controllers
                             model.NFromDate = model.strEmpAttDate;
                             model.NToDate = model.strEmpAttDate;
                         }
+                        model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                        model.IPAddress = HttpContext.Session.GetString("ClientIP");
                         Result = await IGateAttendance.SaveGateAtt(model, ItemDetailDT);
                     }
                     string message = string.Empty;
