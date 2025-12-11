@@ -319,7 +319,8 @@ namespace eTactWeb.Controllers
                     {
                         TransferGrid = GetDetailTable(TransferFromWorkCenterDetail);
                     }
-
+                    model.EntryByMachineNo = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _ITransferFromWorkCenter.SaveTransferFromWorkCenter(model, TransferGrid);
 
                     if (Result != null)
