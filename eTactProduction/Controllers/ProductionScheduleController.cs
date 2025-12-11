@@ -306,6 +306,9 @@ namespace eTactWeb.Controllers
                         model.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                         model.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                     }
+
+                    model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IProductionSchedule.SaveProductionSchedule(model, ProductionScheduleDetail, prodPlanDetail, BomChildDetailDT, BomSummaryDetailDT);
 
                     if (Result != null)

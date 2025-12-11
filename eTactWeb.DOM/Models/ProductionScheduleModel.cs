@@ -11,6 +11,7 @@ namespace eTactWeb.DOM.Models
     {
         public int? EntryID { get; set; }
         public int? YearCode { get; set; }
+        public string? IPAddress { get; set; }
         public string? EntryDate{ get; set; }
         public int? WCID{ get; set; }
         public string? ProdSchNo{ get; set; }
