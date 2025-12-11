@@ -10,6 +10,7 @@ namespace eTactWeb.DOM.Models
     public class HRHolidaysMasterModel: TimeStamp
     {
         public int HolidayId {  get; set; }
+        public string? IPAddress { get; set; }
         public int HolidayYear {  get; set; }
         public string HolidayName { get; set; }
 
