@@ -125,6 +125,8 @@ namespace eTactwebInventory.Controllers
 
 
                     ISTGrid = GetDetailTable(ISTDetail);
+                    model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IReofferItem.SaveReoffer(model, ISTGrid);
 
                     if (Result != null)

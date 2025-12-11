@@ -467,6 +467,8 @@ namespace eTactWeb.Controllers
                         model.Branch = HttpContext.Session.GetString("Branch");
                         model.EntryByMachineName = HttpContext.Session.GetString("EmpName");
                         model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                        model.IPAddress = HttpContext.Session.GetString("ClientIP");
                         Result = await IDirectPurchaseBill.SaveDirectPurchaseBILL(ItemDetailDT, TaxDetailDT, TDSDetailDT, model, DrCrDetailDT, AdjDetailDT);
                     }
 

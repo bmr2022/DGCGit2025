@@ -1575,6 +1575,8 @@ public class PurchaseBillController : Controller
                     model.EntryByMachineName = GetEmpByMachineName();
                     model.PreparedByName = GetEmpByMachineName();
                     model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     Result = await IPurchaseBill.SavePurchaseBILL(ItemDetailDT, TaxDetailDT, TDSDetailDT, model, DrCrDetailDT, AdjDetailDT);
                 }
 

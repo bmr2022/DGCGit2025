@@ -20,7 +20,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetDashboardData();
         Task<LedgerPartyWiseOpeningDashBoardModel> GetDashboardDetailData(string LedgerName, string BillNo);
         Task<LedgerPartyWiseOpeningModel> GetViewByID(int OpeningYearCode, int LedgerOpnEntryId);
-        Task<ResponseResult> DeleteByID(string EntryByMachine,int OpeningYearCode,int LedgerOpnEntryId,int AccountCode);
+        Task<ResponseResult> DeleteByID(string EntryByMachine,int OpeningYearCode,int LedgerOpnEntryId,int AccountCode, int ActualEntryBy);
         Task<LedgerPartyWiseOpeningModel> GetAllDataAccountCodeWise(int OpeningYearCode, int AccountCode);
     }
 }

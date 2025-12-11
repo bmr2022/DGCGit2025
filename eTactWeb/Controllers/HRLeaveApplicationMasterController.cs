@@ -426,7 +426,8 @@ namespace eTactWeb.Controllers
                     {
                         GIGrid = GetDetailTable(HRLeaveApplicationDetail);
                     }
-
+                    model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IHRLeaveApplicationMaster.SaveData(model, GIGrid);
 
                     if (Result != null)

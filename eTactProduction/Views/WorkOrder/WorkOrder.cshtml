@@ -1269,7 +1269,9 @@
                                     '<td><input id="CustOrderNo' + i + '" value=' + JSON.stringify(val.CustOrderNo) + ' readonly style="width:80px;" class="textbox"></td>' +
                                     '<td><input id="SOCloseDate' + i + '" value=' + val.SOCloseDate.split("T")[0] + ' readonly style="width:90px;" class="textbox"></td>' +
                                     '<td><input id="SchEffTillDate' + i + '" value=' + val.ScheduleEffectiveTillDate.split("T")[0] + ' readonly style="width:90px;" class="textbox"></td>' +
-                                    '<td><input id="FGStoreName' + i + '" value=' + JSON.stringify(val.FGStoreName) + ' readonly class="textbox" style="width:90px;"></td>' +
+                                     '<td>'  + '<input id="FGStoreName' + i + '" value=' + JSON.stringify(val.FGStoreName) + ' readonly class="textbox" style="width:90px;">'  + '<input type="hidden" id="FGStoreId' + i + '" value=' + JSON.stringify(val.FGStoreId) + '>'   + '</td>'
+
+                                    // '<td><input id="FGStoreName' + i + '" value=' + JSON.stringify(val.FGStoreName) + ' readonly class="textbox" style="width:90px;"></td>' +
                                     '<td><input id="FGStock' + i + '" value=' + val.FGStock + ' style="width: 60px;" readonly class="textbox"></td>' +
                                     '</tr>';
                                 i++;
@@ -2233,11 +2235,11 @@
                         "Sequence": i,
                         "Accountcode": $('#Accountcode' + i).val(),
                         "Itemcode": $('#Itemcode' + i).val(),
-                        "FGStoreId": $('#Store' + i).val(),
+                                "FGStoreId": $('#FGStoreId' + i).val(),
                         "FGStore": $('#FGStoreName' + i).val(),
                         "FGStock": $('#FGStock' + i).val(),
-                        "WIPStoreId": $('#WIPStock' + i).val(),
-                        "WIPStore": $('#WIPStock' + i).val(),
+                            "WIPStoreId": $('#WIPStore' + i).val(),
+                          "WIPStore": $('#WIPStore' + i).find(':selected').text() == "-Select-" ? "" : $('#WIPStore' + i).find(':selected').text(),
                         "WIPStock": $('#WIPStock' + i).val(),
                         "StoreId": $('#Store' + i).val(),
                         "StoreName": $('#Store' + i).find(':selected').text() == "-Select-" ? "" : $('#Store' + i).find(':selected').text(),

@@ -21,10 +21,11 @@ namespace eTactWeb.Data.DAL
         {
             //configuration = config;
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
-            DBConnectionString = _connectionStringService.GetConnectionString();
+            //DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
             _connectionStringService = connectionStringService;
-            DBConnectionString = _connectionStringService.GetConnectionString();
+            //_connectionStringService = connectionStringService;
+            //DBConnectionString = _connectionStringService.GetConnectionString();
         }
 
 

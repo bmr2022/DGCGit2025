@@ -45,6 +45,7 @@ public class GateAttendanceModel : TimeStamp
     public string CardOrBiometricId { get; set; }
     public string AttendStatus { get; set; }
     public int EmpId { get; set; }
+    public string? IPAddress { get; set; }
     public DateTime? AttInTime { get; set; }
     public DateTime? AttOutTime { get; set; }
     [Column(TypeName = "decimal(5, 2)")]

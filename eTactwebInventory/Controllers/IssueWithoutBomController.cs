@@ -175,19 +175,26 @@ namespace eTactWeb.Controllers
                             }
                             HttpContext.Session.Remove("KeyIssWOBomGrid");
                         }
-                        if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                        else if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
                             HttpContext.Session.Remove("KeyIssWOBomGrid");
                         }
-                        if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                        else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
                             ViewBag.isSuccess = false;
                             TempData["500"] = "500";
                             _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                             return View("Error", Result);
                         }
+                        else if (!string.IsNullOrEmpty(Result.StatusText))
+                        {
+                            // If SP returned a message (like adjustment error)
+                            TempData["ErrorMessage"] = Result.StatusText;
+                            //return View(model);
+                        }
+
                     }
                     //return RedirectToAction("PendingRequisitionToIssue", "PendingRequisitionToIssue");
                     return Json(new { status = "Success" });

@@ -892,7 +892,7 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail" style="">
                                         <label asp-for="OtherRateCurr" class="form-label">Rate In FX</label>
-                                        <input asp-for="OtherRateCurr" type="number" tabindex="-1" step="any" min="0" class="form-control" />
+                                        <input asp-for="OtherRateCurr" type="number" step="any" min="0" class="form-control" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
                                         <label asp-for="DiscPer" class="form-label">Disc %</label>
@@ -2022,32 +2022,16 @@
 
         });
 
-        $('#OtherRateCurr').on('change', function () {
+        $('#OtherRateCurr').on('input', function () {
 
-            var Currency = $('#CurrencyID Option:selected').text().trim();
-            $.ajax({
-                type: "POST",
-                data: { "Currency": Currency },
-                url: "@Url.Action("GetCurrency")",
-                dataType: "json",
-                success: function (result, status, error) {
-
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
-                        $('#Rate').val("");
-                        $('#Rate').val(obj.Result[0].Rate);
-                        if ($('#OtherRateCurr').val() == "") {
-                            $('#Amount').val(0.00);
-                        }
-                        else {
+        
+                           // $('#Rate').val(parseFloat($('#OtherRateCurr').val()));
                             var rate = parseFloat($('#OtherRateCurr').val());
                             var qty = parseFloat($('#Qty').val());
+                            $('#Rate').val(rate);
                             var amount = rate * qty;
-                            $('#Amount').val(amount.toFixed(2));
-                        }
-                    }
-                }
-            });
+                           $('#Amount').val(amount.toFixed(6));
+                      
         });
 
         $('.btnClearTax').click(function (e) {

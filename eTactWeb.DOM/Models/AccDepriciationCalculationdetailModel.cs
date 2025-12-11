@@ -9,7 +9,8 @@ namespace eTactWeb.DOM.Models
     public class AccDepriciationCalculationdetailModel
     {
 		public int DepriciationEntryId { get; set; }
-		public int DepriciationYearCode { get; set; }
+		public string? IPAddress { get; set; }
+        public int DepriciationYearCode { get; set; }
 		public int ForClosingOfFinancialYear { get; set; }
 		public string? DepriciationDate { get; set; }
 		public string DepriciationSlipNo { get; set; }

@@ -230,6 +230,8 @@ namespace eTactWeb.Controllers
                     }
                     string IPAddress = HttpContext.Session.GetString("ClientIP");
                     ReqGrid = GetDetailTable(RequisitionDetail,model.Mode);
+                    model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IReqWithoutBOM.SaveRequisition(model, ReqGrid, IPAddress);
 
                     if (Result != null)

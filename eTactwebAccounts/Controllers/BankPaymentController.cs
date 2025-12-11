@@ -110,6 +110,8 @@ namespace eTactwebAccounts.Controllers
                 {
                     GIGrid = GetDetailTable(BankPaymentGrid);
                 }
+                model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 var Result = await _IBankPayment.SaveBankPayment(model, GIGrid);
                 if (Result != null)
                 {

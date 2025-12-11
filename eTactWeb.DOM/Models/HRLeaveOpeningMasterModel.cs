@@ -12,6 +12,7 @@ namespace eTactWeb.DOM.Models
         public int? LeaveOpnEntryId {  get; set; }
         public int? LeaveOpnYearCode {  get; set; }
         public string? EntryDate {  get; set; }
+        public string? IPAddress { get; set; }
         public int? EmpId {  get; set; }
         public string? EmpName { get; set; }
 
