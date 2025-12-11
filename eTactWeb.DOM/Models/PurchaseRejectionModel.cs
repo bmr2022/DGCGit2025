@@ -7,6 +7,7 @@ namespace eTactWeb.DOM.Models
     {
         public int PurchaseRejEntryId { get; set; }
         public int PurchaseRejYearCode { get; set; }
+        public string? IPAddress { get; set; }
         public string SubVoucherName { get; set; } = string.Empty;
         public string DebitNotePurchaseRejection { get; set; } = string.Empty;
         public string PurchaseRejEntryDate { get; set; }
