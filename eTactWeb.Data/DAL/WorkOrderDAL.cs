@@ -549,8 +549,9 @@ namespace eTactWeb.Data
                         ApproxEndDate = row["ApproxEndDate"] != DBNull.Value ? row["ApproxEndDate"].ToString() : string.Empty,
                         SchEffTillDate = row["SchEffTillDate"] != DBNull.Value ? row["SchEffTillDate"].ToString() : string.Empty,
                         AltQty = row["AltQty"] != DBNull.Value ? Convert.ToSingle(row["AltQty"]) : 0,
-                        ItemDescription = row["ItemDescription"] != DBNull.Value ? row["ItemDescription"].ToString() : string.Empty
-                        //WIPStoreId = row["WIPStoreId"] != DBNull.Value ? Convert.ToInt32(row["WIPStoreId"]) : 0
+                        ItemDescription = row["ItemDescription"] != DBNull.Value ? row["ItemDescription"].ToString() : string.Empty,
+                        WIPStoreId = row["WIPStoreId"] != DBNull.Value ? Convert.ToInt32(row["WIPStoreId"]) : 0,
+                        WIPStore= row["WIPStoreName"] != DBNull.Value ? row["WIPStoreName"].ToString() : string.Empty
 
                     });
                 } 
