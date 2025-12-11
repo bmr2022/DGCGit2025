@@ -97,7 +97,8 @@ namespace eTactWeb.Controllers
             try
             {
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-
+                model.MachineName = HttpContext.Session.GetString("ClientMachineName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 var Result = await _ICancelSaleBillrequisition.SaveCancelSaleBillRequisition(model);
                 if (Result != null)
                 {

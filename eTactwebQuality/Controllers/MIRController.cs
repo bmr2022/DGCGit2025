@@ -155,6 +155,8 @@ namespace eTactWeb.Controllers
                         model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                         model.UpdatedByName = HttpContext.Session.GetString("EmpName");
                     }
+                    model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     model = await BindModel(model);
                     var Result = await _IMirModule.SaveMIR(model, MIRGrid);
                     if (Result != null)

@@ -147,7 +147,8 @@ namespace eTactWeb.Controllers
                     {
                         InProcessQcGrid = GetDetailTable(InProcessQcDetail);
                     }
-
+                    model.EnteredbyMachineName = HttpContext.Session.GetString("ClientMachineName");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     var Result = await _IInProcessQc.SaveInprocessQc(model, InProcessQcGrid);
 
                     if (Result != null)

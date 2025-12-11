@@ -13,6 +13,7 @@ namespace eTactWeb.DOM.Models
         public string? FromDate { get; set; }
         public string? ToDate { get; set; }
         public string? CC {  get; set; }
+        public string? IPAddress {  get; set; }
         public int ActualEnteredBy {  get; set; }
         public string? ActualEnteredByName {  get; set; }
         public string ActualEntrydate { get; set; }

@@ -17,6 +17,7 @@ namespace eTactWeb.DOM.Models
 
             
             public string? ReofferNo { get; set; }
+          public string? IPAddress { get; set; }
 
             public string? ReofferEntrydate { get; set; }
 

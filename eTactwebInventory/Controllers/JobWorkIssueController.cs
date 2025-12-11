@@ -530,7 +530,7 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> JobWorkIssue()
         {
             ViewData["Title"] = "Job Work Details";
-            TempData.Clear();
+            //TempData.Clear();
             HttpContext.Session.Remove("KeyJobWorkIssue");
             HttpContext.Session.Remove("JobWorkIssue");
             HttpContext.Session.Remove("KeyTaxGrid");
@@ -645,7 +645,7 @@ namespace eTactWeb.Controllers
                         return Json(new { status = "Success" });
 
                     }
-                    if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                    else if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
@@ -679,7 +679,7 @@ namespace eTactWeb.Controllers
                         return Json(new { status = "Success" });
 
                     }
-                    if (Result.StatusText == "TransDate" || Result.StatusCode == HttpStatusCode.InternalServerError)
+                    else if (Result.StatusText == "TransDate")
                     {
                         ViewBag.isSuccess = false;
                         var input = "";
@@ -706,7 +706,7 @@ namespace eTactWeb.Controllers
                         //model.IsError = "true";
                         //return View("Error", Result);
                     }
-                    if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                    else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         ViewBag.isSuccess = false;
                         TempData["500"] = "500";
@@ -750,6 +750,12 @@ namespace eTactWeb.Controllers
                         //return View(MainModel);
                         return Json(new { status = "Success" });
                     }
+                    else if (!string.IsNullOrEmpty(Result.StatusText))
+                    {
+                        // If SP returned a message (like adjustment error)
+                        TempData["ErrorMessage"] = Result.StatusText;
+                        //return View(model);
+                    }
                 }
                 //return View(model);
                 return Json(new { status = "Success" });
@@ -782,7 +788,7 @@ namespace eTactWeb.Controllers
         public async Task<ActionResult> JobWorkIssue(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string ChallanNo = "", string PartCode = "", string ItemName = "", string DashboardType = "")//, ILogger logger)
         {
             _logger.LogInformation("\n \n ********** Page Jobwork Issue ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
-            TempData.Clear();
+            //TempData.Clear();
             var MainModel = new JobWorkIssueModel();
             var TaxModel = new TaxModel();
 

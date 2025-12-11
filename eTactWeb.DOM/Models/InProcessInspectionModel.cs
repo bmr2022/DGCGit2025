@@ -13,6 +13,7 @@ namespace eTactWeb.DOM.Models
         public string ToDate { get; set; }
         public int YearCode { get; set; }
         public string CC { get; set; }
+        public string? IPAddress { get; set; }
         public string Mode { get; set; }
         public string Entry_Date { get; set; }
         public string Control_PlanNo { get; set; }

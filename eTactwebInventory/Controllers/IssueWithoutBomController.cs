@@ -188,11 +188,13 @@ namespace eTactWeb.Controllers
                             _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                             return View("Error", Result);
                         }
-                        else
+                        else if (!string.IsNullOrEmpty(Result.StatusText))
                         {
+                            // If SP returned a message (like adjustment error)
                             TempData["ErrorMessage"] = Result.StatusText;
-                            return View("Error", Result);
+                            //return View(model);
                         }
+
                     }
                     //return RedirectToAction("PendingRequisitionToIssue", "PendingRequisitionToIssue");
                     return Json(new { status = "Success" });

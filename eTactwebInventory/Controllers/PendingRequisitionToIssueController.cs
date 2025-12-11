@@ -32,7 +32,7 @@ namespace eTactWeb.Controllers
         {
            
             ViewData["Title"] = "Pending Requisition to Issue Details";
-            TempData.Clear();
+            //TempData.Clear();
             HttpContext.Session.Remove("KeyPendingToIssue");
             var MainModel = new PendingRequisitionToIssue();
             var model = new IssueWithoutBomDetail();
