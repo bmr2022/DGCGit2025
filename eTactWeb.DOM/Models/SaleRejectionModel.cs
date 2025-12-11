@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
@@ -11,6 +12,7 @@ namespace eTactWeb.DOM.Models
     public class SaleRejectionModel : SaleRejectionDetail
     {
         public int GateEntryId {  get; set; }
+        public string? IPAddress {  get; set; }
         public int SaleRejEntryId { get; set; }
         public int SaleRejYearCode { get; set; }
        public string ? AgainstVoucherNo { get; set; }
