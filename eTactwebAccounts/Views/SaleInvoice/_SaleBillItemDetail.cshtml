@@ -142,16 +142,16 @@
         <label asp-for="LotStock" class="form-label" style="color: blue;">Lot Stock*</label>
         <input asp-for="LotStock" class="form-control" readonly />
     </div>
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 AllowToChangeStoreOrNot">
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
         <label asp-for="TotalStock" class="form-label" style="color: blue;">Total Stock*</label>
-        <input asp-for="TotalStock" class="form-control" readonly />
+        <input asp-for="TotalStock" class="form-control" tabindex="-1" readonly />
     </div>
 
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 ">
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 AllowToChangeStoreOrNot ">
         <label asp-for="SOPendQty" class="form-label" style="color: blue;">Pend Qty</label>
         <input asp-for="SOPendQty" class="form-control" readonly tabindex="-1" />
     </div>
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 ">
         <label asp-for="Qty" class="form-label" style="color: red;">Bill Qty*</label>
         <input asp-for="Qty" class="form-control" style="background-color:#FFFACD" />
     </div>

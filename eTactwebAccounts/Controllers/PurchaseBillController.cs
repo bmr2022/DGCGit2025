@@ -2071,7 +2071,7 @@ public class PurchaseBillController : Controller
         TaxGridd = GetTaxDetailTable(TaxGrid);
         TdsGridd = GetTDSDetailTable(TdsGrid, MainModel);
 
-        var JSON = await IDataLogic.GetDbCrDataGrid(DbCrGridd, TaxGridd, TdsGridd, "PurchaseBill", MainModel.DocTypeID, MainModel.AccountCode, MainModel.ItemNetAmount, MainModel.NetTotal,MainModel.RoundOffAccountCode,MainModel.TotalRoundOffAmt);
+        var JSON = await IDataLogic.GetDbCrDataGrid(DbCrGridd, TaxGridd, TdsGridd, "PurchaseBill", MainModel.DocTypeID, MainModel.AccountCode, MainModel.ItemNetAmount, MainModel.NetTotal,MainModel.RoundOffAccountCode,MainModel.TotalRoundOffAmt,0,0);
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
