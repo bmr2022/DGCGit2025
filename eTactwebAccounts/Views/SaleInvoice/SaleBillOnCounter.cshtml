@@ -3490,6 +3490,18 @@
             //         return;
             //     }
             // }
+             var PackingCharges = parseFloat($('#PackingCharges').val());
+            var forwardingCharges = parseFloat($('#ForwardingCharges').val());
+            var curierCharges = parseFloat($('#CourieerCharges').val());
+            var GSTCharges = parseFloat($('#GST').val());
+            var AdditionalDiscountAmt = parseFloat($('#AdditionalDiscount').val());
+            var CashDiscountAmt = parseFloat($('#CashDisRs').val());
+
+            if (PackingCharges>0 || forwardingCharges>0|| curierCharges>0 || GSTCharges>0)
+            {
+                               $.notify('Please remove Packing / Forwarding / Courier / GST charges before adding items.', 'error');
+                return;
+            }
 
 
 
@@ -5294,6 +5306,18 @@
             e.preventDefault();
             var CheckboxArr = [];
             var RowCount = $('#MultiItemBody tr').length;
+            var PackingCharges = parseFloat($('#PackingCharges').val());
+            var forwardingCharges = parseFloat($('#ForwardingCharges').val());
+            var curierCharges = parseFloat($('#CourieerCharges').val());
+            var GSTCharges = parseFloat($('#GST').val());
+            var AdditionalDiscountAmt = parseFloat($('#AdditionalDiscount').val());
+            var CashDiscountAmt = parseFloat($('#CashDisRs').val());
+
+            if (PackingCharges>0 || forwardingCharges>0|| curierCharges>0 || GSTCharges>0)
+            {
+                               $.notify('Please remove Packing / Forwarding / Courier / GST charges before adding items from Multi Item Selection.', 'error');
+                return;
+            }
 
             for (var i = 1; i <= RowCount; i++) {
                 if ($('#MBCheckbox-' + i).prop("checked")) {
@@ -5528,6 +5552,18 @@
                         } else {
                             partCodeVal = partCodeTextVal; // fallback if no separator
                         }
+            }
+
+            var PackingCharges = parseFloat($('#PackingCharges').val());
+            var forwardingCharges = parseFloat($('#ForwardingCharges').val());
+            var curierCharges = parseFloat($('#CourieerCharges').val());
+            var GSTCharges = parseFloat($('#GST').val());
+            var AdditionalDiscountAmt = parseFloat($('#AdditionalDiscount').val());
+            var CashDiscountAmt = parseFloat($('#CashDisRs').val());
+
+            if (PackingCharges > 0 || forwardingCharges > 0 || curierCharges > 0 || GSTCharges > 0) {
+                $.notify('Please remove Packing / Forwarding / Courier / GST charges before adding items', 'error');
+                return;
             }
 
             if ($("#ItemCode").is("select")) {
@@ -7415,6 +7451,19 @@
             var BatchNo = $('#GridBatchNo-' + SeqNo).text();
 
             var allowDeletion = true;
+             var PackingCharges = parseFloat($('#PackingCharges').val());
+            var forwardingCharges = parseFloat($('#ForwardingCharges').val());
+            var curierCharges = parseFloat($('#CourieerCharges').val());
+            var GSTCharges = parseFloat($('#GST').val());
+            var AdditionalDiscountAmt = parseFloat($('#AdditionalDiscount').val());
+            var CashDiscountAmt = parseFloat($('#CashDisRs').val());
+
+            if (PackingCharges>0 || forwardingCharges>0|| curierCharges>0 || GSTCharges>0)
+            {
+                               $.notify('Please remove Packing / Forwarding / Courier / GST charges before delete items.', 'error');
+                return;
+            }
+
             // if (!EditDeleteBatchValidation) {
             //     for (var j = 0; j < itemBatchArray.length; j++) {
             //         if (itemBatchArray[j].SeqNo > SeqNo && itemBatchArray[j].itemCodee == IC) {
