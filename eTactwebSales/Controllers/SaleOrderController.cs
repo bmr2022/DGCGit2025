@@ -586,6 +586,15 @@ public class SaleOrderController : Controller
 		string JsonString = JsonConvert.SerializeObject(JSON);
 		return Json(JsonString);
 	}
+
+	public async Task<JsonResult> GetDiscAccountGroupWise(int AccountCode, int itemcode)
+	{
+		var JSON = await _ISaleOrder.GetDiscAccountGroupWise( AccountCode,  itemcode);
+		string JsonString = JsonConvert.SerializeObject(JSON);
+		return Json(JsonString);
+	}
+
+
 	public async Task<JsonResult> GetTotalBYSp(SaleOrderDashboard model)
 	{
 		var JSON = await _ISaleOrder.GetTotalBYSp(model);

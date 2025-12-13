@@ -1404,6 +1404,7 @@
                     FillSONO();
             FillCurrency();
             FillCustomerAddress();
+            GetDiscAccountGroupWise();
 
                     // $('#PendSOForSaleBill').modal('show');
                     showDetail();
@@ -1432,6 +1433,27 @@
             });
 
 
+        }
+
+        function GetDiscAccountGroupWise() {
+
+            var AccountCode = $('#AccountCode').val();
+            var itemcode = $('#ItemCode').val();
+            $.ajax({
+                type: "POST",
+                data: { "AccountCode": AccountCode, "itemcode": itemcode },
+                url: "@Url.Action("GetDiscAccountGroupWise","SaleOrder")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#DiscountPer').val(0);
+                        $('#DiscountPer').val(obj.Result[0].SaleDiscount);
+
+                    }
+                }
+            });
         }
         function GetSONoFormRights() {
             $.ajax({
@@ -6150,6 +6172,7 @@
                     $('#PartCode').val(ui.item.itemCode);
                     onItemSelected("ItemCode");
                     FillSOItemRate();
+                    GetDiscAccountGroupWise();
                     return false;
                 },
                 focus: function (event, ui) {
@@ -6193,6 +6216,7 @@
                                 $("#PartCode").val(match.Item_Code);
                                 onItemSelected("ItemCode");
                                 FillSOItemRate();
+                                GetDiscAccountGroupWise();
 
                             }
                             else
@@ -6222,6 +6246,7 @@
                     $('#ItemCode').val(ui.item.itemCode);
                     $('#PartCode').val(ui.item.itemCode);
                     onItemSelected("ItemCode");
+                    GetDiscAccountGroupWise();
                     return false;
 
                 },

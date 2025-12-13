@@ -43,6 +43,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormRights(int userID);
         Task<ResponseResult> GetFormRightsAmm(int userID);
         Task<ResponseResult> NewEntryId(int YearCode);
+        Task<ResponseResult> GetDiscAccountGroupWise(int AccountCode,int itemcode);
         Task<ResponseResult> NewAmmEntryId(int YearCode);
         Task<ResponseResult> GetFeatureOption();
 

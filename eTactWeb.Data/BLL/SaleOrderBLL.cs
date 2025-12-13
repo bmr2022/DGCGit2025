@@ -88,7 +88,12 @@ public class SaleOrderBLL : ISaleOrder
     {
         return await _SaleOrderDAL.NewEntryId(YearCode);
     }
-    public async Task<ResponseResult> NewAmmEntryId(int YearCode)
+
+	public async Task<ResponseResult> GetDiscAccountGroupWise(int AccountCode, int itemcode)
+	{
+		return await _SaleOrderDAL.GetDiscAccountGroupWise( AccountCode,  itemcode);
+	}
+	public async Task<ResponseResult> NewAmmEntryId(int YearCode)
     {
         return await _SaleOrderDAL.NewAmmEntryId(YearCode);
     }

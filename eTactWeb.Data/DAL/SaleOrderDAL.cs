@@ -287,7 +287,29 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<SaleOrderModel> ShowGroupWiseItems(int Group_Code,int AccountCode)
+		public async Task<ResponseResult> GetDiscAccountGroupWise(int AccountCode, int itemcode)
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "GetDiscAccountGroupWise"));
+				
+				SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+				SqlParams.Add(new SqlParameter("@itemcode", itemcode));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleOrder", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+
+			return _ResponseResult;
+		}
+
+		public async Task<SaleOrderModel> ShowGroupWiseItems(int Group_Code,int AccountCode)
         {
             var resultList = new SaleOrderModel();
             DataSet oDataSet = new DataSet();

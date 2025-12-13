@@ -1849,6 +1849,28 @@
                 }
             });
         }
+
+
+         function GetDiscAccountGroupWise() {
+
+            var AccountCode = $('#AccountCode').val();
+            var itemcode = $('#ItemCode').val();
+            $.ajax({
+                type: "POST",
+                data: { "AccountCode": AccountCode,"itemcode":itemcode },
+                url: "@Url.Action("GetDiscAccountGroupWise")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#DiscPer').val(0);
+                        $('#DiscPer').val(obj.Result[0].SaleDiscount);
+                    
+                    }
+                }
+            });
+        }
         function NewAmmEntryId() {
 
             $.ajax({
@@ -2902,6 +2924,7 @@ $('#PendingPOFromOtherBranchModel').modal('hide');
                     $('#PartCode').val(ui.item.itemCode);
                     GetItemPartCode("PartCode");
                     GetlastSaleOrderDetail();
+                    GetDiscAccountGroupWise();
                     return false;
                 },
                 focus: function (event, ui) {
@@ -2945,6 +2968,7 @@ $('#PendingPOFromOtherBranchModel').modal('hide');
                                 $("#PartCode").val(match.Item_Code);
                                 GetItemPartCode("PartCode");
                                 GetlastSaleOrderDetail();
+                                GetDiscAccountGroupWise();
 
                             }
                         }
@@ -2965,7 +2989,8 @@ $('#PendingPOFromOtherBranchModel').modal('hide');
                     $('#ItemCode').val(ui.item.itemCode);
                     $('#PartCode').val(ui.item.itemCode);
                     GetItemPartCode("ItemCode");
-                    GetlastSaleOrderDetail()
+                    GetlastSaleOrderDetail();
+                    GetDiscAccountGroupWise();
                     return false;
 
                 },
@@ -3071,6 +3096,7 @@ $('#PendingPOFromOtherBranchModel').modal('hide');
                     CheckOrderNo();
                     onchangeaccountcode();
                     GetlastSaleOrderDetail();
+                    GetDiscAccountGroupWise();
                   
                 
                     return false;
