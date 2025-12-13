@@ -476,7 +476,7 @@
                         <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TaxDetail" aria-expanded="true" aria-controls="B_TaxDetail">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Tax Detail</strong>
                             <div class="d-flex justify-content-center align-items-center flex-grow-1">
-                                <strong> NetTotal : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="NetTotal1"></span></strong>
+                                <strong> NetTotal : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i> <input asp-for="NetTotal" class="" readonly /></strong>
                             </div>
                         </button>
                           
@@ -1700,9 +1700,10 @@
                 }
                 var txTotal = sum + txSum + TotalRoundOffAmt;
                 $('#NetTotal').val(txTotal.toFixed(2));
+                $('#NetTotal1').html(txTotal.toFixed(2));
                 $('#BaseNetTotal').val(txTotal.toFixed(2));
                 $('#AdjPendAmt').val($('#NetTotal').val());
-                $('#NetTotal1').html($('#NetTotal').val());
+                // $('#NetTotal1').html($('#NetTotal').val());
             }
             calculatetotalqty();
 
@@ -3228,9 +3229,10 @@
 
                     var txTotal = sum + txSum;
                     $('#NetTotal').val(txTotal.toFixed(2));
+                    $('#NetTotal1').html(txTotal.toFixed(2));
                     $('#BaseNetTotal').val(txTotal.toFixed(2));
                     $('#AdjPendAmt').val($('#NetTotal').val());
-                    $('#NetTotal1').html($('#NetTotal').val());
+                    // $('#NetTotal1').html($('#NetTotal').val());
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
 
@@ -3431,10 +3433,11 @@
                     }
 
                     var txTotal = sum + txSum;
+                    $('#NetTotal1').html(txTotal.toFixed(2));
                     $('#NetTotal').val(txTotal.toFixed(2));
                     $('#BaseNetTotal').val(txTotal.toFixed(2));
                     $('#AdjPendAmt').val($('#NetTotal').val());
-                           $('#NetTotal1').html($('#NetTotal').val());
+                           // $('#NetTotal1').html($('#NetTotal').val());
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
 
@@ -5449,9 +5452,10 @@
 
                             var txTotal = sum + txSum;
                             $('#NetTotal').val(txTotal.toFixed(6));
+                            ('#NetTotal1').html(txTotal.toFixed(6));
                             $('#BaseNetTotal').val(txTotal.toFixed(6));
                             $('#AdjPendAmt').val($('#NetTotal').val());
-                            $('#NetTotal1').html($('#NetTotal').val());
+                            // $('#NetTotal1').html($('#NetTotal').val());
                             $('#TotalDiscountPercentage').val(0);
                             $('#TotalAmtAftrDiscount').val(0);
 
@@ -5680,10 +5684,11 @@
 
                         var txTotal = sum + txSum;
                         $('#NetTotal').val(txTotal.toFixed(2));
+                        ('#NetTotal1').html(txTotal.toFixed(2));
                         $('#BaseNetTotal').val(txTotal.toFixed(2));
 
                         $('#AdjPendAmt').val($('#NetTotal').val());
-                        $('#NetTotal1').html($('#NetTotal').val());
+                        // $('#NetTotal1').html($('#NetTotal').val());
                         $('#TotalDiscountPercentage').val(0);
                         $('#TotalAmtAftrDiscount').val(0);
 
@@ -5770,9 +5775,13 @@
                     $('#divTaxGrid').html(NoData);
                     var txAmt = $('#lblItemNetAmount').text();
                     $('#NetTotal').val(txAmt);
+                    $('#NetTotal1').html(txAmt);
+
+
+
                     $('#BaseNetTotal').val(txAmt);
                     $('#AdjPendAmt').val($('#NetTotal').val());
-                    $('#NetTotal1').html($('#NetTotal').val());
+                    // $('#NetTotal1').html($('#NetTotal').val());
                                 $("#TotalRoundOff").val("N").trigger('change');
                     // $('#AdjNewRefNo').val($('#NetTotal').val());
 
@@ -7146,10 +7155,54 @@
         function EditItemRows(SeqNo) {
 
             var RowCount = $('#divSaleBillList tr').length;
+            var PackingCharges = parseFloat($('#PackingCharges').val());
+            var forwardingCharges = parseFloat($('#ForwardingCharges').val());
+            var curierCharges = parseFloat($('#CourieerCharges').val());
+            var GSTCharges = parseFloat($('#GST').val());
+            var AdditionalDiscountAmt = parseFloat($('#AdditionalDiscount').val());
+            var CashDiscountAmt = parseFloat($('#CashDisRs').val());
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
                 $('#editButton-' + RowCount).prop("disabled", true);
+            
             }
+
+            
+           else if (PackingCharges > 0) {
+                $.notify('Cannot Edit item while Packing Charges is added!!!', "error");
+                $('#editButton-' + RowCount).prop("disabled", true);
+            }
+
+           
+            else if (forwardingCharges > 0) {
+                $.notify('Cannot Edit item while Forwarding Charges is added!!!', "error");
+                $('#editButton-' + RowCount).prop("disabled", true);
+            }
+
+           
+            else if (curierCharges > 0) {
+                $.notify('Cannot Edit item while Courier Charges is added!!!', "error");
+                $('#editButton-' + RowCount).prop("disabled", true);
+            }
+            
+           else  if (GSTCharges > 0) {
+                $.notify('Cannot Edit item while GST Charges is added!!!', "error");
+                $('#editButton-' + RowCount).prop("disabled", true);
+            }
+
+           
+            else if (CashDiscountAmt > 0) {
+                $.notify('Cannot Edit item while Cash Discount is added!!!', "error");
+                $('#editButton-' + RowCount).prop("disabled", true);
+            }
+
+           
+            else if (AdditionalDiscountAmt > 0) {
+                $.notify('Cannot Edit item while Additional Discount is added!!!', "error");
+                $('#editButton-' + RowCount).prop("disabled", true);
+            }
+
+
             else {
                 $.ajax({
                            url: '/SaleInvoice/EditItemRow',
@@ -7523,14 +7576,14 @@
                 return false;
             }
             var salebillRowCount = $('#divTaxGrid tr').length;
-            if ($('#divTaxGrid tr td').length > 1) {
-                for (var i = 1; i < salebillRowCount; i++) {
-                    if ($('#txGridAmount-' + i).text() == 0) {
-                        $.notify("Please enter Tax Amount first..!", "error");
-                        return false;
-                    }
-                }
-            }
+            // if ($('#divTaxGrid tr td').length > 1) {
+            //     for (var i = 1; i < salebillRowCount; i++) {
+            //         if ($('#txGridAmount-' + i).text() == 0) {
+            //             $.notify("Please enter Tax Amount first..!", "error");
+            //             return false;
+            //         }
+            //     }
+            // }
 
             if ($('#vehicleNo').val() != '') {
                 var inputValue = $('#vehicleNo').val();

@@ -29,7 +29,7 @@ namespace eTactWeb.Services.Interface
         int IsDelete(int ID, string Type);
 
         ResponseResult isDuplicate(string ColumnValue, string ColumnName, string TableName);
-        Task<ResponseResult> GetDbCrDataGrid(DataTable DbCrGridd, DataTable TaxDetailDT, DataTable TDSDetailDT, string FormName,int? docAccountCode, int? AccountCode, decimal? ItemNetAmount, decimal? NetTotal, int? RoundOffAccountCode,decimal?  RoundOffAmount);
+        Task<ResponseResult> GetDbCrDataGrid(DataTable DbCrGridd, DataTable TaxDetailDT, DataTable TDSDetailDT, string FormName,int? docAccountCode, int? AccountCode, decimal? ItemNetAmount, decimal? NetTotal, int? RoundOffAccountCode,decimal?  RoundOffAmount, decimal? CashDis, decimal? AdditionalDis);
         Task<AdjustmentModel> GetPendVouchBillAgainstRefPopupByID(int AC, int? YC, int? PayRecEntryId, int? PayRecYearcode, string DRCR, string TransVouchType, string TransVouchDate, string Flag);
         Task<IList<TextValue>> GetDropDownListWithCustomeVar(string SPName, Dictionary<string, object> parameters, bool? IsTextandValueSame = false, bool? IsValueInFirstcolumn = true, bool? IsExcludeFirstcolumn = false);
     }

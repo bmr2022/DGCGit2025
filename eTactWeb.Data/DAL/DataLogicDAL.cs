@@ -1160,7 +1160,7 @@ namespace eTactWeb.Data.DAL
             }
             return Result;
         }
-        public async Task<ResponseResult> GetDbCrDataGrid(DataTable DbCrGridd, DataTable TaxDetailDT, DataTable TDSDetailDT, string FormName,int? docAccountCode, int? AccountCode, decimal? ItemNetAmount, decimal? NetTotal ,int? RoundOffAccountCode, decimal? RoundOffAmount)
+        public async Task<ResponseResult> GetDbCrDataGrid(DataTable DbCrGridd, DataTable TaxDetailDT, DataTable TDSDetailDT, string FormName,int? docAccountCode, int? AccountCode, decimal? ItemNetAmount, decimal? NetTotal ,int? RoundOffAccountCode, decimal? RoundOffAmount, decimal? CashDis, decimal? AdditionalDis)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -1174,6 +1174,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@RoundOffAmount", RoundOffAmount ?? 0)); //ItemTotal + TaxAmount
                 SqlParams.Add(new SqlParameter("@BillAmt", ItemNetAmount ?? 0)); //TotalItemNetAmount
                 SqlParams.Add(new SqlParameter("@Formname", FormName));
+                SqlParams.Add(new SqlParameter("@CashDis", CashDis));
+                SqlParams.Add(new SqlParameter("@AdditionalDis", AdditionalDis));
 
                 SqlParams.Add(new SqlParameter("@DTTaxGrid", TaxDetailDT));
                 SqlParams.Add(new SqlParameter("@DTGrid", DbCrGridd));

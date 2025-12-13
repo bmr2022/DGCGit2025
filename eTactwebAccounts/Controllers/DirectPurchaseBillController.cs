@@ -1826,7 +1826,7 @@ namespace eTactWeb.Controllers
             TaxGridd = GetTaxDetailTable(TaxGrid);
             TdsGridd = GetTDSDetailTable(TdsGrid, MainModel);
 
-            var JSON = await IDataLogic.GetDbCrDataGrid(DbCrGridd, TaxGridd, TdsGridd, "DIRECTPURCHASEBILL", MainModel.docTypeId, MainModel.AccountCode, MainModel.ItemNetAmount, MainModel.NetTotal,MainModel.RoundOffAccountCode, Convert.ToDecimal(MainModel.TotalRoundOff));
+            var JSON = await IDataLogic.GetDbCrDataGrid(DbCrGridd, TaxGridd, TdsGridd, "DIRECTPURCHASEBILL", MainModel.docTypeId, MainModel.AccountCode, MainModel.ItemNetAmount, MainModel.NetTotal,MainModel.RoundOffAccountCode, Convert.ToDecimal(MainModel.TotalRoundOff),0,0);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
