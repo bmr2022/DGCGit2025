@@ -295,7 +295,7 @@ namespace eTactWeb.Data.DAL
                                 Listval = new TextValue()
                                 {
                                     Text = Reader["DiscountCategory"].ToString(),
-                                    Value = Reader["DiscountCategory"].ToString()
+                                    Value = Reader["CategoryId"].ToString()
                                 };
                             } 
                             else if (Flag == "GetGroupDiscountCategory")

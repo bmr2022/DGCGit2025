@@ -110,13 +110,7 @@
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-										<label asp-for="CategoryCode" class="form-label">Category Code</label>
-										<input type="hidden" asp-for="CategoryId" />
-										<select class="form-select" asp-for="CategoryCode">
-											<option value="">-Select-</option>
-										</select>
-									</div>
+									
 									
 								</div>
 							</div>
@@ -328,7 +322,7 @@
 			}
 			FillPartyName();
 			FillCategoryName();
-			FillCategoryCode();
+			
 			FillGroupName();
 			FillGroupCode();
 			$('#DiscountCustCatEntryId').rules("remove", "required");
@@ -585,7 +579,7 @@
 
 
 					$.each(obj.Result, function (index, Val) {
-						Dropdown.append('<option value="' + Val.DiscCategoryEntryId + '">' + Val.DiscCategoryName + '</option>');
+						Dropdown.append('<option value="' + Val.CategoryId + '">' + Val.DiscountCategoryName + '</option>');
 					});
 					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 						var CategoryId = '@Model.CategoryId';
@@ -600,34 +594,7 @@
 			});
 		}
 
-		function FillCategoryCode() {
-			$.ajax({
-				url: '@Url.Action("FillCategoryCode", "PartyItemGroupDiscount")', // Action that returns FillGroup data
-				type: 'POST',
-				async: false,
-				success: function (response, status, error) {
-
-					var Dropdown = $('#CategoryCode');
-					var obj = $.parseJSON(response);
-					Dropdown.empty();
-					Dropdown.append('<option value="">--Select--</option>');
-
-
-					$.each(obj.Result, function (index, Val) {
-						Dropdown.append('<option value="' + Val.DiscCategoryEntryId + '">' + Val.DiscCategoryCode + '</option>');
-					});
-					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var CategoryId = '@Model.CategoryId';
-						$('#CategoryCode').val(CategoryId).trigger("change");
-
-					}
-
-				},
-				error: function (xhr, status, error) {
-					alert('Failed to load groups.');
-				}
-			});
-		}
+		
 
 		$(document).on('select2:select', '#CategoryName,#CategoryCode', function (e) {
 			var cntId = e.target.id;
