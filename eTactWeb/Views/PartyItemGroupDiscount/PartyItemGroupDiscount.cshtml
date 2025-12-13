@@ -94,14 +94,14 @@
 										<input asp-for="EntryDate" class="form-control" />
 									</div>
 									
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;" >
+									@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;" >
 										<label asp-for="AccountName" class="form-label" style="color:red;">Party Name*</label>
 										<input type="hidden" asp-for="AccountCode" />
 										<select class="form-select" asp-for="AccountName" style="width:230px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									
+									 *@
 
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
 										<label asp-for="CategoryName" class="form-label" style="color:red;">Category Name</label>
@@ -373,7 +373,10 @@
 			
 
 		});
-
+		$("#GroupName").change(function () {
+			var selectedGroupCode = $(this).val();
+			$("#GroupCode").val(selectedGroupCode).trigger("change");
+		});
 
 		$(function () {
 			$('#SaleDiscount, #PurchaseDiscount').on('input', function () {
