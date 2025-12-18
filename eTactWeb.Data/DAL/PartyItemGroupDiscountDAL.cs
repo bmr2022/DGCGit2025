@@ -251,6 +251,7 @@ namespace eTactWeb.Data.DAL
 				SqlParams.Add(new SqlParameter("@EntryDate", entDate));
 				SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
 				SqlParams.Add(new SqlParameter("@DiscCategoryEntryId", model.CategoryId ));
+				SqlParams.Add(new SqlParameter("@DiscCategoryName", model.CategoryName ));
 				//SqlParams.Add(new SqlParameter("@SeqNo", model.SeqNo ));
 				//SqlParams.Add(new SqlParameter("@GroupId", model.GroupId));
 				//SqlParams.Add(new SqlParameter("@SaleDiscount", model.SaleDiscount));
