@@ -2867,7 +2867,7 @@ public class SaleOrderController : Controller
                         discPer = Math.Round((discRs / (rate * qty)) * 100, 2);
                     }
 
-                    if (discRs == 0 && discPer > 0 && rate > 0 && qty > 0)
+                    if (discRs == 0 &&  (discPer > 0 || discPer < 0) && rate > 0 && qty > 0)
                     {
                         discRs = Math.Round(((rate * qty) * discPer) / 100, 2);
                     }

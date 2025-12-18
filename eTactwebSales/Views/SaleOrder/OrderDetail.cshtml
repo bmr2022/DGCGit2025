@@ -2951,34 +2951,38 @@ $('#PendingPOFromOtherBranchModel').modal('hide');
                     success: function (result) {
                         let obj = typeof result === "string" ? JSON.parse(result) : result;
 
-                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
-                            // 🔹 Partial match: includes()
+                        if (
+                            obj.StatusCode === 200 &&
+                            obj.StatusText === 'Success' &&
+                            Array.isArray(obj.Result.Table)
+                        ) {
+                            // 🔹 ONLY RealPartCode match
                             let match = obj.Result.Table.find(item => {
                                 let real = (item.RealPartCode || "").toLowerCase();
-                                let name = (item.Item_Name || "").toLowerCase();
-                                let barcode = (item.Barcode || "").toLowerCase();
-
-                                return real.includes(entered) || name.includes(entered) || barcode.includes(entered);
+                                return real.includes(entered); // or === entered if you want exact match
                             });
 
                             if (match) {
-                                $("#PartCodeText").val(match.OnlyPartCode).data("itemcode", match.Item_Code);
+                                $("#PartCodeText")
+                                    .val(match.OnlyPartCode)
+                                    .data("itemcode", match.Item_Code);
+
                                 $("#ItemNameText").val(match.OnlyItemName);
                                 $("#ItemCode").val(match.Item_Code);
                                 $("#PartCode").val(match.Item_Code);
+
                                 GetItemPartCode("PartCode");
                                 GetlastSaleOrderDetail();
                                 GetDiscAccountGroupWise();
-
                             }
                         }
-
                     },
                     error: function (xhr, status, error) {
                         console.error("AJAX Error:", error);
                     }
                 });
             });
+
 
             // Autocomplete for ItemNameText
             $("#ItemNameText").autocomplete({
