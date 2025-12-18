@@ -742,10 +742,10 @@
                             }, 200);
                         } else {
                             $('#ajaxLoader').hide();
-                            $.notify(resp.StatusText || "All pages processed", "success");
+                            $.notify(resp.statusText || "All pages processed", "success");
 
                             if (resp.RedirectUrl) {
-                                window.location.href = resp.RedirectUrl;
+                                window.location.href = resp.redirectUrl;
                             }
                         }
                     },
