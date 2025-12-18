@@ -2934,7 +2934,6 @@ $('#PendingPOFromOtherBranchModel').modal('hide');
                 minLength: 2
             });
 
-            // 🔹 Focusout event for PartCodeText (manual entry validation)
             $("#PartCodeText").on("focusout", function () {
                 let entered = $(this).val().trim().toLowerCase();
                 if (entered === "") return;
@@ -2951,16 +2950,22 @@ $('#PendingPOFromOtherBranchModel').modal('hide');
                     success: function (result) {
                         let obj = typeof result === "string" ? JSON.parse(result) : result;
 
-                        if (
-                            obj.StatusCode === 200 &&
-                            obj.StatusText === 'Success' &&
-                            Array.isArray(obj.Result.Table)
-                        ) {
-                            // 🔹 ONLY RealPartCode match
-                            let match = obj.Result.Table.find(item => {
-                                let real = (item.RealPartCode || "").toLowerCase();
-                                return real.includes(entered); // or === entered if you want exact match
-                            });
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+
+                            let list = obj.Result.Table.map(item => ({
+                                ...item,
+                                real: (item.RealPartCode || "").trim().toLowerCase()
+                            }));
+
+                            // 1️⃣ Exact match
+                            let match =
+                                list.find(i => i.real === entered) ||
+
+                                // 2️⃣ Starts with (space-safe)
+                                list.find(i => i.real.startsWith(entered + " ")) ||
+
+                                // 3️⃣ Fallback (optional)
+                                list.find(i => i.real.startsWith(entered));
 
                             if (match) {
                                 $("#PartCodeText")
@@ -2977,8 +2982,8 @@ $('#PendingPOFromOtherBranchModel').modal('hide');
                             }
                         }
                     },
-                    error: function (xhr, status, error) {
-                        console.error("AJAX Error:", error);
+                    error: function (xhr) {
+                        console.error(xhr);
                     }
                 });
             });
