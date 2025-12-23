@@ -22,8 +22,10 @@
         <input type="hidden" asp-for="MaxSaleInvoiceEntryDate" />
         <input type="hidden" asp-for="AllowBackDateSALEBILL" />
         <input type="hidden" asp-for="AllowToAdjZeroAmt" />
+        <input type="hidden" asp-for="SaleBillEntryFrom" value="EntryFromCounter" />
         <input type="hidden" id="TypeOfSave"/>
         <input type="hidden" id="Companytype" />
+
         @*   <input type="hidden" asp-for="ShowHideSaleBillEntryDetail" />
         <input type="hidden" asp-for="ShowHideSaleBillCustomerDetail" />
         <input type="hidden" asp-for="ShowHideSaleBillOtherRequiredDetail" />
@@ -83,7 +85,7 @@
                             <input asp-for="DomesticExportNEPZBack" type="hidden" value="@Model.DomesticExportNEPZBack" />
                             <input asp-for="SearchBoxBack" type="hidden" value="@Model.SearchBoxBack" />
                             <input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
-                            <input asp-for="AllowToAddNegativeStockInStore" type="hidden" value="Y" />
+                            <input asp-for="AllowToAddNegativeStockInStore" type="hidden" value="" />
                             <input type="hidden" id="ShouldEinvoice" name="ShouldEinvoice" />
 
                             @if (Model.Mode == "U" || Model.Mode == "V")
@@ -3145,50 +3147,67 @@
 
 
 
-
             var selectedData = [];
+            var hasError = false;
 
             $('#GateDataTable tbody tr').each(function (rowIndex) {
                 var $row = $(this);
                 var checkbox = $row.find('input[type="checkbox"]');
 
-                if (checkbox.is(':checked')) {
-                    var i = rowIndex + 1;
-                    var rowData = {
+                if (!checkbox.is(':checked')) return true; // continue loop
 
-                        AccountName: $("#CustomerName" + i).val(),   // we created CustomerNameX
-                        AccountCode: $("#Accountcode" + i).val(),
-                        SONO: $("#SONo" + i).val(),
-                        SOYearCode: $("#SOYearCode" + i).val(),
-                        CustOrderNo: $("#CustorderNo" + i).val(),
-                        SchNo: $("#SchNo" + i).val(),
-                        SaleSchYearCode: $("#SchYearCode" + i).val(),
-                        ItemCode: $("#ItemCode" + i).val(),
-                        PartCode: $("#PartCode" + i).val(),
-                        ItemName: $("#ItemName" + i).val(),
-                        Unit: $("#Unit" + i).val(),
-                        HSNNo: $("#HSNNO" + i).val(),
-                        Qty: $("#SaleBillQty" + i).val(),
-                        SOPendQty: $("#OrderPendQty" + i).val(),
-                        Rate: $("#SOItemRate" + i).val(),
-                        SOType: $("#SOType" + i).val(),
-                        Batchno: $("#BatchNo" + i).val(),
-                        Uniquebatchno: $("#UniqueBatchNo" + i).val(),
-                        DiscountPer: $("#DisPer" + i).val(),
-                        DiscountAmt: $("#DisAmt" + i).val(),
-                        Amount: $("#ItemAmount" + i).val(),
-                        AltQty: $("#AltQty" + i).val(),
-                        StoreId: $("#Storeid" + i).val(),
-                        StoreName: $("#Store_Name" + i).val(),
-                        RackID: $("#RackID" + i).val()
+                var i = rowIndex + 1;
 
+                if ($('#AllowToAddNegativeStockInStore').val() !== 'Y') {
+                    var saleQty = parseFloat($('#SaleBillQty' + i).val()) || 0;
+                    var stockQty = parseFloat($('#TotalStock' + i).val()) || 0;
 
-                    };
-                    selectedData.push(rowData);
+                    if (saleQty > stockQty) {
+                        $.notify('Qty should not be greater than Stock', 'error');
+                        hasError = true;
+                        return false; // ❌ stop loop immediately
+                    }
                 }
+
+                selectedData.push({
+                    AccountName: $("#CustomerName" + i).val(),
+                    AccountCode: $("#Accountcode" + i).val(),
+                    SONO: $("#SONo" + i).val(),
+                    SOYearCode: $("#SOYearCode" + i).val(),
+                    CustOrderNo: $("#CustorderNo" + i).val(),
+                    SchNo: $("#SchNo" + i).val(),
+                    SaleSchYearCode: $("#SchYearCode" + i).val(),
+                    ItemCode: $("#ItemCode" + i).val(),
+                    PartCode: $("#PartCode" + i).val(),
+                    ItemName: $("#ItemName" + i).val(),
+                    Unit: $("#Unit" + i).val(),
+                    HSNNo: $("#HSNNO" + i).val(),
+                    Qty: $("#SaleBillQty" + i).val(),
+                    SOPendQty: $("#OrderPendQty" + i).val(),
+                    Rate: $("#SOItemRate" + i).val(),
+                    SOType: $("#SOType" + i).val(),
+                    Batchno: $("#BatchNo" + i).val(),
+                    Uniquebatchno: $("#UniqueBatchNo" + i).val(),
+                    DiscountPer: $("#DisPer" + i).val(),
+                    DiscountAmt: $("#DisAmt" + i).val(),
+                    Amount: $("#ItemAmount" + i).val(),
+                    AltQty: $("#AltQty" + i).val(),
+                    StoreId: $("#Storeid" + i).val(),
+                    StoreName: $("#Store_Name" + i).val(),
+                    RackID: $("#RackID" + i).val(),
+                    TotalStock: $("#TotalStock" + i).val(),
+                    LotStock: $("#BatchStock" + i).val()
+
+
+                });
+
+                return true; // continue loop
             });
+
+            if (hasError) return;
+
             if (selectedData.length === 0) {
-                notify("Please check at least one checkbox before proceeding.", "error");
+                $.notify("Please check at least one checkbox before proceeding.", "error");
                 return;
             }
 
@@ -3498,11 +3517,8 @@
             // for (var i = 1; i <= RowCount; i++) {
             //     if ($('#AcceptedQtySHA-' + i).prop("checked") == false) continue;
             //     var Partcode= $('#PartCode-' + i).val();
-            //     if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#BatchWisePendQty-' + i).val()) )
-            //     {
-            //         $.notify('Qty should not be greater than Pending Qty or Stock for partcode:' + Partcode, "info");
-            //         return;
-            //     }
+
+           
             //     if (parseFloat($('#Rate-' + i).val()) <=0 || ($('#Rate-' + i).val()) =='') {
             //         $.notify('Please Enter valid rate for :' + Partcode, "info");
             //         return;
@@ -3549,9 +3565,11 @@
                             $.notify('Please enter quantity for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
-                        if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#LotStock-' + i).val())) {
-                            $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
-                            return;
+                        if ($('#AllowToAddNegativeStockInStore').val() != 'Y') {
+                            if (parseFloat($('#SaleBillQty' + i).val()) > parseFloat($('#TotalStock' + i).val())) {
+                                $.notify('Qty should not be greater than Pending Qty or Stock for partcode:' + Partcode, "error");
+                                return;
+                            }
                         }
 
                         if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#SOPendQty-' + i).val())) {
@@ -4792,6 +4810,9 @@
         }
 
 
+
+
+
             if ($('#SaleBillJobwork').val() == "J") {
                 if ($('#BOMInd').prop('selectedIndex') == 0) {
                     AddErrorCls('BOMInd');
@@ -4900,6 +4921,17 @@
                 RemoveErrorCls('Uniquebatchno');
                 RemoveErrorCls('Qty');
             }
+
+
+            if ($('#AllowToAddNegativeStockInStore').val() == 'N') {
+
+
+                if (parseFloat($('#Qty').val()) > parseFloat($('#TotalStock').val())) {
+                    $.notify('Qty can not be greater then Stock', 'error');
+                    return;
+                }
+            }
+
 
             if ($('#SONO').val() != '' && $('#CustOrderNo').val() != '0') {
                 if (AllowedToDispatchQtyMoreThenCloseSOPendQty != 'Y') {
@@ -5335,6 +5367,7 @@
             var AdditionalDiscountAmt = parseFloat($('#AdditionalDiscount').val());
             var CashDiscountAmt = parseFloat($('#CashDisRs').val());
 
+
             if (PackingCharges>0 || forwardingCharges>0|| curierCharges>0 || GSTCharges>0)
             {
                                $.notify('Please remove Packing / Forwarding / Courier / GST charges before adding items from Multi Item Selection.', 'error');
@@ -5359,10 +5392,15 @@
                             $.notify('Please enter quantity for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
-                        // if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#LotStock-' + i).val())) {
-                        //     $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
-                        //     return;
-                        // }
+
+                        if ($('#AllowToAddNegativeStockInStore').val() == 'N') {
+                            
+
+                            if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#TotalStock-' + i).val())) {
+                                $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
+                                return;
+                            }
+                        }
                         if ($('#Rate-' + i).val() == 0) {
                             $.notify('Please enter rate for ' + $('#PartCode-' + i).val(), 'error');
                             return;
@@ -6634,7 +6672,7 @@
                             $('#AllowToChangeSaleBillStoreName').val("");
                             $('#HideOtherFieldOFSaleBillDetailTable').val("");
                             $('#ApproveSOForGenerateSaleInvoiceOrNot').val("");
-
+                            $('#AllowToAddNegativeStockInStore').val(obj.Result[0].AllowToAddNagativeStockOnSaleBill);
                             $('#AllowBackDateSALEBILL').val(obj.Result[0].AllowBackDateSALEBILL);
                             $('#AllowToAdjZeroAmt').val(obj.Result[0].AllowToAdjZeroAmt);
                             AllowedToDispatchQtyMoreThenCloseSOPendQty=obj.Result[0].AllowedToDispatchQtyMoreThenCloseSOPendQty;
@@ -6708,6 +6746,8 @@
                             } else {
                                 $('.SaleBillOtherDetail').show();
                             }
+
+                            
 
 
                         }
@@ -7053,15 +7093,15 @@
             });
         }
 
-        $('#SubmitButton').click(function () {
-            if ($('#divAdjItemList tr td').length > 1) {
-                $.notify('Adjustgrid is manadatory...!', "error");
-            }
-            else {
-                $("form").submit();
-                $('#SubmitionForm').modal("show");
-            }
-        })
+        // $('#SubmitButton').click(function () {
+        //     if ($('#divAdjItemList tr td').length > 1) {
+        //         $.notify('Adjustgrid is manadatory...!', "error");
+        //     }
+        //     else {
+        //         $("form").submit();
+        //         $('#SubmitionForm').modal("show");
+        //     }
+        // })
         // $('#btnPrint').click(function () {
         //     const printWindow = window.open('', '_blank', 'width=900,height=700,toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
 
@@ -7737,10 +7777,10 @@
             let TotalAmount = parseFloat($('#AdjTotalAmt1').text());
             let NetAmount = parseFloat($('#NetTotal').val());
 
-            if (AdjustAmount !== TotalAmount || TotalAmount !== NetAmount) {
-                $.notify("AdjustAmount, TotalAmount, and NetAmount must all be equal....!", "error");
-                return false;
-            }
+            // if (AdjustAmount !== TotalAmount || TotalAmount !== NetAmount) {
+            //     $.notify("AdjustAmount, TotalAmount, and NetAmount must all be equal....!", "error");
+            //     return false;
+            // }
 
             if ($('#DistanceKM').val() > 3000) {
                 $('#DistanceKM').val(0);
@@ -7777,10 +7817,10 @@
                 crAmt += $('#drcrRow-' + i + ' .cramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .cramt').text());
             }
 
-            if (drAmt.toFixed(2) != crAmt.toFixed(2)) {
-                $.notify("Debit and Credit are not maintained...!", "error");
-                return false;
-            }
+            // if (drAmt.toFixed(2) != crAmt.toFixed(2)) {
+            //     $.notify("Debit and Credit are not maintained...!", "error");
+            //     return false;
+            // }
 
             return true;
         }

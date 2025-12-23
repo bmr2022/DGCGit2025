@@ -859,10 +859,9 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@GRNo", model.GRNo));
                 SqlParams.Add(new SqlParameter("@AllowToAddNegativeStockInStore", model.AllowToAddNegativeStockInStore));
                 SqlParams.Add(new SqlParameter("@SubInvoicetype", model.SubInvoicetype));
-                if (model.AllowToAddNegativeStockInStore == "Y")
-                {
-                    SqlParams.Add(new SqlParameter("@SaleBillEntryFrom", "EntryFromCounter"));
-                }
+               
+                    SqlParams.Add(new SqlParameter("@SaleBillEntryFrom", model.SaleBillEntryFrom));
+                
                 SqlParams.Add(new SqlParameter("@GRDate",CommonFunc.ParseFormattedDate( model.GRDate)));
                 SqlParams.Add(new SqlParameter("@SaleQuotDate", SaleQuotDate == default ? string.Empty : SaleQuotDate));
                 //SqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.SaleBillEntryId));
