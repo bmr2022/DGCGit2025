@@ -1507,6 +1507,22 @@ namespace eTactWeb.Controllers
                     var fullData = model.SaleBillDataDashboard.ToList();  // full list before paging
                     HttpContext.Session.SetString("KeySBDashboard",
                         JsonConvert.SerializeObject(fullData));
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+                    if (summaryDetail == "Summary")
+                    {
+                        _MemoryCache.Set("KeySaleBillList_Summary", fullData, cacheEntryOptions);
+
+                    }
+                    else
+                    {
+                        _MemoryCache.Set("KeySaleBillList_Detail", fullData, cacheEntryOptions);
+
+                    }
 
                     model.TotalRecords = model.SaleBillDataDashboard.Count;
                     model.PageNumber = pageNumber;
@@ -1524,22 +1540,8 @@ namespace eTactWeb.Controllers
                     model.PageNumber = pageNumber;
                     model.PageSize = pageSize;
                 }
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                if (summaryDetail == "Summary")
-                {
-                    _MemoryCache.Set("KeySaleBillList_Summary", model.SaleBillDataDashboard, cacheEntryOptions);
-
-                }
-                else
-                {
-                    _MemoryCache.Set("KeySaleBillList_Detail", model.SaleBillDataDashboard, cacheEntryOptions);
-
-                }
+               
+                
                 //HttpContext.Session.SetString("KeySBDashboard", JsonConvert.SerializeObject(model.SaleBillDataDashboard));
 
                 model.SummaryDetail = summaryDetail;
