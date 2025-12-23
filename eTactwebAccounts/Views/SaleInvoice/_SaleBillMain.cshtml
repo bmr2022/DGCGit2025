@@ -100,12 +100,12 @@
                                         </select> *@
             @if (Model.Mode != "U" && Model.Mode != "V")
             {
-            <input type="text" asp-for="AccountName" id="AccountCodeText" class="form-control" value="@ViewBag.AccountName" placeholder="Type Item Name..." />
+            <input type="text" asp-for="AccountName" id="AccountCodeText" class="form-control" value="@ViewBag.AccountName" placeholder="Type Customer Name..." />
             <input type="hidden" asp-for="AccountCode" value="@ViewBag.AccountCode" id="AccountCode" />
             }
             else
             {
-            <input type="text" asp-for="AccountName" id="AccountCodeText" class="form-control" value="@Model.AccountName" placeholder="Type Item Name..." />
+            <input type="text" asp-for="AccountName" id="AccountCodeText" class="form-control" value="@Model.AccountName" placeholder="Type Customer Name..." />
             <input type="hidden" asp-for="AccountCode" value="@Model.AccountCode" id="AccountCode" />
             }
 
@@ -284,7 +284,7 @@
             <label asp-for="ExchangeRate" class="form-label">FX Rate</label>
             <input asp-for="ExchangeRate" class="form-control" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillOtherRequiredDetail">
             <label asp-for="TypeItemServAssets" class="form-label">Item Type</label>
             <select asp-for="TypeItemServAssets" class="form-control">
                 <option value="0">-Select-</option>
@@ -292,6 +292,15 @@
                 <option value="S">Service</option>
                 <option value="A">Assets</option>
             </select>
+        </div>
+
+        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="VarifiedSaleBill" class="form-label" style="color:  red;">Varified SaleBill</label>
+
+
+            <input type="text" asp-for="VarifiedSaleBill" id="VarifiedSaleBill" class="form-control" value="@Model.VarifiedSaleBill" />
+            
+           
         </div>
         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillOtherRequiredDetail">
             <label asp-for="dispatchLocation" class="form-label">Dispatch Location</label>

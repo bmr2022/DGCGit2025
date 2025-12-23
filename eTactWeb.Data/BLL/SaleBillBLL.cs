@@ -34,6 +34,11 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.FILLPendingSONO();
         }
+
+        public async Task<ResponseResult> AutoFillVerifiedSaleBill(string Search)
+        {
+            return await _SaleBillDAL.AutoFillVerifiedSaleBill(Search);
+        }
         public async Task<ResponseResult> FillPendingPartCOde()
         {
             return await _SaleBillDAL.FillPendingPartCOde();

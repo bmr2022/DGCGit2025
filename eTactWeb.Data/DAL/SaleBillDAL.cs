@@ -118,6 +118,28 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+
+        public async Task<ResponseResult> AutoFillVerifiedSaleBill(string Search)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "AutoFillVerifiedSaleBill"));
+
+                SqlParams.Add(new SqlParameter("@SearchAccount", Search ?? ""));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_GetDropDownList", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> AutoFillitem(string Flag, string SearchPartCode)
         {
             var Result = new ResponseResult();
@@ -859,6 +881,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@GRNo", model.GRNo));
                 SqlParams.Add(new SqlParameter("@AllowToAddNegativeStockInStore", model.AllowToAddNegativeStockInStore));
                 SqlParams.Add(new SqlParameter("@SubInvoicetype", model.SubInvoicetype));
+                SqlParams.Add(new SqlParameter("@VarifiedSaleBill", model.VarifiedSaleBill));
                
                     SqlParams.Add(new SqlParameter("@SaleBillEntryFrom", model.SaleBillEntryFrom));
                 
@@ -1520,6 +1543,7 @@ namespace eTactWeb.Data.DAL
                 model.InvoiceTime = DS.Tables[0].Rows[0]["InvoiceTime"]?.ToString();
                 model.ExportInvoiceNo = DS.Tables[0].Rows[0]["ExportInvoiceNo"]?.ToString();
                 model.PerformaInvNo = DS.Tables[0].Rows[0]["PerformaInvNo"]?.ToString();
+                model.VarifiedSaleBill = DS.Tables[0].Rows[0]["varifiedSaleBill"]?.ToString();
                 model.PerformaInvDate = DS.Tables[0].Rows[0]["PerformaInvDate"]?.ToString();
                 model.PerformaInvYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["PerformaInvYearCode"]);
                 model.BILLAgainstWarrenty = DS.Tables[0].Rows[0]["BILLAgainstWarrenty"]?.ToString();

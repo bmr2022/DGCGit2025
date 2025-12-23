@@ -179,6 +179,7 @@ namespace eTactWeb.DOM.Models
         public string? SubInvoicetype { get; set; }
        public string? IPAddress { get; set; }
         public string? PurchaseBillBookedinBranch { get; set; }
+        public string? VarifiedSaleBill { get; set; }
 
 
         public string? InvPrefix { get; set; }

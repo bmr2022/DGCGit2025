@@ -1742,6 +1742,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "CurrencyId" && typeProperty.PropertyInfo.Name != "Shippingdate" && typeProperty.PropertyInfo.Name != "Cancelreason"
                         && typeProperty.PropertyInfo.Name != "BankName"
                         && typeProperty.PropertyInfo.Name != "IPAddress"
+                        && typeProperty.PropertyInfo.Name != "VarifiedSaleBill"
                         && typeProperty.PropertyInfo.Name != "UnitRate"
                         && typeProperty.PropertyInfo.Name != "UnitRateList"
                         && typeProperty.PropertyInfo.Name != "ItemLocation"

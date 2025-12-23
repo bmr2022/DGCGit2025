@@ -100,6 +100,14 @@ namespace eTactWeb.Controllers
 
         }
 
+
+        public async Task<JsonResult> AutoFillVerifiedSaleBill(string Search)
+       {
+            var JSON = await _SaleBill.AutoFillVerifiedSaleBill(Search);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
         public async Task<IActionResult> GetlastBillDetail(string invoicedate, int currentYearcode, int AccountCode, int ItemCode)
         {
 
