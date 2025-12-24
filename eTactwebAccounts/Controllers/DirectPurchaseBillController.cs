@@ -32,6 +32,12 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Org.BouncyCastle.Crypto.Engines;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.VariantTypes;
+using OfficeOpenXml.Style;
+using System.Data.SqlClient;
+using ClosedXML.Excel;
+using DocumentFormat.OpenXml;
+using System.Drawing;
+
 
 namespace eTactWeb.Controllers
 {
@@ -1262,6 +1268,285 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("KeyDPBDashboardType", model.DashboardType);
             return PartialView("_DashBoardGrid", model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ExportToExcel(string PurchVouchNo)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(PurchVouchNo))
+                    return Content("Purch Vouch No is required.");
+
+                string FromDate = HttpContext.Session.GetString("FromDate");
+                string ToDate = HttpContext.Session.GetString("ToDate");
+
+
+
+                // ✅ Prepare SQL parameters (same as your GetDashboardData method)
+                var sqlParams = new List<dynamic>();
+
+                sqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
+                sqlParams.Add(new SqlParameter("@SummDetail", "Detail"));
+                sqlParams.Add(new SqlParameter("@PurchVoucherNo", PurchVouchNo));
+                sqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(FromDate)));
+                sqlParams.Add(new SqlParameter("@ToDate", CommonFunc.ParseFormattedDate(ToDate)));
+
+
+                // ✅ Execute stored procedure
+                var result = await IDataLogic.ExecuteDataSet("SP_DirectPurchaseBillMainDetail", sqlParams);
+                if (result == null || result.Result == null || result.Result.Tables.Count == 0)
+                    return Content($"No data found for purch vouch No: {PurchVouchNo}");
+
+                DataTable dt = result.Result.Tables[0];
+                if (dt.Rows.Count == 0)
+                    return Content($"No data found for purch vouch No: {PurchVouchNo}");
+
+                // ✅ Configure EPPlus license
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+                using (var package = new ExcelPackage())
+                {
+                    var ws = package.Workbook.Worksheets.Add("PurchVouchNo");
+
+                    // ✅ Define headers (same as “Detail” grid from GetSearchData)
+                    string[] headers = {
+    "Invoice No",
+    "Invoice Date",
+    "Invoice Time",
+    "Pur Voucher No",
+    "Voucher Date",
+    "Vendor Name",
+    "Vendor Address",
+    "State Name",
+    "GST Type",
+    "Currency",
+    "Payment Term",
+    "Transporter",
+    "Vehicle No",
+    "Purchase Head",
+    "Part Code",
+    "Item Name",
+    "HSN No",
+    "Unit",
+    "No Of Case",
+    "Bill Qty",
+    "Received Qty",
+    "Rate",
+    "Discount %",
+    "Discount Amount",
+    "Amount",
+    "PO No",
+    "PO Date",
+    "Schedule No",
+    "Schedule Date",
+    "Item Size",
+    "Other Detail",
+    "Bill Amount",
+    "Round Off Amount",
+    "Round Off Type",
+    "GST Amount",
+    "Taxable Amount",
+    "Total Discount %",
+    "TDS Amount",
+    "Net Amount",
+    "Remark",
+    "Branch",
+    "Approved",
+    "Approved Date",
+    "Approved By",
+    "Tax Variation PO vs Bill",
+    "PO Net Amount",
+    "Block Rate Variation",
+    "Block Rework Debit Note",
+    "BOE Date",
+    "Mode Of Transport",
+    "Total Amount In Other Currency",
+    "Commodity",
+    "File Path 1",
+    "File Path 2",
+    "File Path 3",
+    "File Path 4",
+    "File Path 5",
+    "Balance Sheet Closed",
+    "Actual Entry By",
+    "Actual Entry Date",
+    "Updated By",
+    "Last Updated Date",
+    "Entry By Machine",
+    "Last QC Date",
+    "PO Remarks",
+    "MRP",
+    "Rate Unit",
+    "Rate Including Taxes",
+    "Amount In Other Currency",
+    "Rate Conversion Factor",
+    "Cost Center Name",
+    "Item Color",
+    "Item Model",
+    "PO Year Code",
+    "Schedule Year Code",
+    "PO Amendment No",
+    "PO Rate",
+    "PO Type",
+    "Project No",
+    "Project Date",
+    "Project Year Code",
+    "Against Import Account Code",
+    "Against Import Invoice No",
+    "Against Import Year Code",
+    "Against Import Invoice Date",
+    "Purchase Bill Entry Id",
+    "Purchase Bill Year Code",
+    "Purchase Bill Direct PB",
+    "Item / Service / Asset Type",
+    "Purchase Bill Type MRN/JW/Challan",
+    "Domestic / Import",
+    "UID",
+    "Against Invoice No",
+    "Against Voucher No",
+    "Against Voucher Date"
+};
+
+
+                    // ✅ Add headers to worksheet
+                    for (int i = 0; i < headers.Length; i++)
+                    {
+                        ws.Cells[1, i + 1].Value = headers[i];
+                        ws.Cells[1, i + 1].Style.Font.Bold = true;
+                        ws.Cells[1, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        ws.Cells[1, i + 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                        ws.Cells[1, i + 1].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    }
+
+                    // ✅ Fill data rows
+                    int row = 2;
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        int col = 1;
+
+                        void AddCell(string columnName)
+                        {
+                            if (dt.Columns.Contains(columnName))
+                                ws.Cells[row, col].Value = dr[columnName]?.ToString();
+                            col++;
+                        }
+
+                        AddCell("InvoiceNo");
+                        AddCell("InvoiceDate");
+                        AddCell("InvoiceTime");
+                        AddCell("purvoucherno");
+                        AddCell("VoucherDate");
+                        AddCell("VendorName");
+                        AddCell("VendorAddress");
+                        AddCell("StateName");
+                        AddCell("GSTType");
+                        AddCell("Currency");
+                        AddCell("PaymentTerm");
+                        AddCell("Transporter");
+                        AddCell("Vehicleno");
+                        AddCell("PurchasetHead");
+                        AddCell("PartCode");
+                        AddCell("ItemName");
+                        AddCell("HSNNO");
+                        AddCell("Unit");
+                        AddCell("NoOfCase");
+                        AddCell("BillQty");
+                        AddCell("RecQty");
+                        AddCell("Rate");
+                        AddCell("DiscountPer");
+                        AddCell("DiscountAmt");
+                        AddCell("Amount");
+                        AddCell("PONo");
+                        AddCell("PODate");
+                        AddCell("SchNo");
+                        AddCell("SchDate");
+                        AddCell("Itemsize");
+                        AddCell("OtherDetail");
+                        AddCell("BillAmt");
+                        AddCell("RoundOffAmt");
+                        AddCell("RoundoffType");
+                        AddCell("GSTAmount");
+                        AddCell("Taxableamt");
+                        AddCell("ToatlDiscountPercent");
+                        AddCell("TDSAmount");
+                        AddCell("NetAmt");
+                        AddCell("Remark");
+                        AddCell("Branch");
+                        AddCell("Approved");
+                        AddCell("ApprovedDate");
+                        AddCell("Approvedby");
+                        AddCell("TaxVariationPOvsBill");
+                        AddCell("PONetAmt");
+                        AddCell("BlockRateVariation");
+                        AddCell("BlockReworkDebitNote");
+                        AddCell("BOEDate");
+                        AddCell("ModeOfTrans");
+                        AddCell("TotalAmtInOtherCurr");
+                        AddCell("Commodity");
+                        AddCell("PathOfFile1");
+                        AddCell("pathoffile2");
+                        AddCell("pathoffile3");
+                        AddCell("pathoffile4");
+                        AddCell("pathoffile5");
+                        AddCell("BalanceSheetClosed");
+                        AddCell("ActualEntryBy");
+                        AddCell("ActualEntryDate");
+                        AddCell("UpdatedBy");
+                        AddCell("LastUpdatedDate");
+                        AddCell("EntryByMachine");
+                        AddCell("LastQcDate");
+                        AddCell("PORemarks");
+                        AddCell("MRP");
+                        AddCell("RateUnit");
+                        AddCell("RateIncludingTaxes");
+                        AddCell("AmtinOtherCurr");
+                        AddCell("RateConversionFactor");
+                        AddCell("CostCenterName");
+                        AddCell("ItemColor");
+                        AddCell("ItemModel");
+                        AddCell("POYearCode");
+                        AddCell("SchYearCode");
+                        AddCell("POAmmNo");
+                        AddCell("PoRate");
+                        AddCell("POType");
+                        AddCell("ProjectNo");
+                        AddCell("ProjectDate");
+                        AddCell("ProjectYearCode");
+                        AddCell("AgainstImportAccountCode");
+                        AddCell("AgainstImportInvoiceNo");
+                        AddCell("AgainstImportYearCode");
+                        AddCell("AgainstImportInvDate");
+                        AddCell("PurchBillEntryId");
+                        AddCell("PurchBillYearCode");
+                        AddCell("PurchaseBillDirectPB");
+                        AddCell("TypeITEMSERVASSETS");
+                        AddCell("PurchaseBillTypeMRNJWChallan");
+                        AddCell("DomesticImport");
+                        AddCell("Uid");
+                        AddCell("AgainstInvNo");
+                        AddCell("AgainstVoucherNo");
+                        AddCell("AgainstVoucherDate");
+
+
+                        row++;
+                    }
+
+                    ws.Cells.AutoFitColumns();
+
+                    var excelBytes = package.GetAsByteArray();
+                    return File(excelBytes,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        $"DirectPurchaseBill_{PurchVouchNo}.xlsx");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content($"Error generating Excel: {ex.Message}");
+            }
+        }
+
+
+
         public async Task<IActionResult> GetDetailData(DPBDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
         {
             model.Mode = "SEARCH";
