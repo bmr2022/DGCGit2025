@@ -2941,6 +2941,7 @@
                         }
                         else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
                             $('#Unit').val(obj.Result[0].Unit);
+                            $('#Rate').val(obj.Result[0].PurchasePrice);
                             $('#ItemLocation').val(obj.Result[0].Location);
                             $('#GroupName').val(obj.Result[0].Group_name);
                             $('#HSNNo').val((obj.Result[0].HSNNo != null && parseInt(obj.Result[0].HSNNo) >= 0) ? parseInt(obj.Result[0].HSNNo) : 0);
