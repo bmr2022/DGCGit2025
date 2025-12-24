@@ -141,87 +141,7 @@
             <label asp-for="DistanceKM" class="form-label">Distance KM</label>
             <input asp-for="DistanceKM" class="form-control" readonly  value="0" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="vehicleNo" class="form-label">Vehicle No</label>
-            <select asp-for="vehicleNo" class="form-control">
-                @*    <option value="0">-select-</option> *@
-            </select>
-            @if (Model.Mode == "U" || Model.Mode == "V")
-            {
-                <input type="hidden" asp-for="vehicleNo" id="hiddenvehicleNo" />
-            }
-          @*   <label asp-for="vehicleNo" class="form-label">Vehicle No</label>
-            <input asp-for="vehicleNo" id="vehicleNo" class="form-control"  /> *@
-        </div>
-         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="TransporterName" class="form-label">TransporterName</label>
-            <select asp-for="TransporterName" class="form-control">
-             @*    <option value="0">-select-</option> *@
-            </select>
-            @if (Model.Mode == "U" || Model.Mode == "V")
-            {
-                <input type="hidden" asp-for="TransporterName" id="hiddenTransporterName" />
-            }
-        </div> 
-      
-      @*   <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="TransporterName" class="form-label">TransporterName</label>
-            <input asp-for="TransporterName" class="form-control" />
-        </div> *@
-     <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 salebilloncounter">
-          <label asp-for="TransportGSTIN" class="form-label">Transport GSTIN</label>
-          <input asp-for="TransportGSTIN" class="form-control" />
-      </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="TransportModeBYRoadAIR" class="form-label"> Mode</label>
-            <input asp-for="TransportModeBYRoadAIR" class="form-control" />
-          @*   <select asp-for="TransportModeBYRoadAIR" class="form-control">
-                <option value="0">-Select-</option>
-                <option value="Road">Road</option>
-                <option value="Air">Air</option>
-            </select> *@
-        </div>
-
-         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="PrivateMark" class="form-label">PrivateMark</label>
-            <input asp-for="PrivateMark" class="form-control" />
-        </div>
-         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="GRNo" class="form-label">GRNo</label>
-            <input asp-for="GRNo" class="form-control" />
-        </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="GRDate" class="form-label">GRDate</label>
-            <input asp-for="GRDate" class="form-control" />
-        </div>
-         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 salebilloncounter">
-            <label asp-for="CourierNo" class="form-label">Courier No</label>
-            <input asp-for="CourierNo" class="form-control" />
-        </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 salebilloncounter">
-            <label asp-for="CourierDate" class="form-label">Courier Date</label>
-            <input asp-for="CourierDate" class="form-control" />
-        </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 salebilloncounter">
-            <label asp-for="DocThrough" class="form-label">Doc Through</label>
-            <input asp-for="DocThrough" class="form-control" />
-        </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 salebilloncounter">
-            <label asp-for="DriverName" class="form-label">Driver Name</label>
-            <input asp-for="DriverName" class="form-control" />
-        </div>  
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 salebilloncounter">
-            <label asp-for="DriverContactNo" class="form-label">Driver ContactNo</label>
-            <input asp-for="DriverContactNo" class="form-control" />
-        </div>  
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 salebilloncounter">
-            <label asp-for="PermitNo" class="form-label">Permit No</label>
-            <input asp-for="PermitNo" class="form-control" />
-        </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 salebilloncounter">
-            <label asp-for="MobileNo" class="form-label">Mobile No</label> 
-            <input asp-for="MobileNo" class="form-control" /> 
-        </div>
+       
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillOtherRequiredDetail">
             <label asp-for="DispatchTo" class="form-label">Dispatch To</label>
             <input asp-for="DispatchTo" class="form-control" />
@@ -295,7 +215,7 @@
         </div>
 
         <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="VarifiedSaleBill" class="form-label" style="color:  red;">Varified SaleBill</label>
+            <label asp-for="VarifiedSaleBill" class="form-label" style="color:  red;">Tax Category</label>
 
 
             <input type="text" asp-for="VarifiedSaleBill" id="VarifiedSaleBill" class="form-control" value="@Model.VarifiedSaleBill" />

@@ -1687,7 +1687,7 @@
             EditableRateAndDiscountONSaleInvoice();
 
                    FillTransporter();
-               FillVehicleNo();
+               // FillVehicleNo();
 
             const domesticExport = $('#DomesticExportNEPZ').val();
             const $supplyType = $('#SupplyType');
@@ -2188,10 +2188,10 @@
 
                                }
                            }
-                                 $('#TransporterName').select2({
-                            tags: true,                // allow typing
-                            placeholder: "Select",
-                        });
+                            //      $('#TransporterName').select2({
+                            // tags: true,                // allow typing
+                            // placeholder: "Select",
+                        // });
 
                        }
                    });
@@ -2224,10 +2224,10 @@
 
                                     }
                                 }
-                                      $('#vehicleNo').select2({
-                                 tags: true,                // allow typing
-                                 placeholder: "Select",
-                             });
+                                 //      $('#vehicleNo').select2({
+                                 // tags: true,                // allow typing
+                                 // placeholder: "Select",
+                             // });
 
                             }
                         });
@@ -8799,8 +8799,8 @@
                         $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "maxDate", FinToDate);
                         $('#SaleBillDate').prop("disabled", false);
                         $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                        $('#GRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                               $('#CourierDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        $('#GRDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                        $('#CourierDate').datepicker({ dateFormat: 'dd/mm/yy' });
                     } else {
                         // let d = $('#SaleBillEntryDate').val().split(" ")[0].split("-");
                         // // $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' })
