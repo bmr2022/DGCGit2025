@@ -3133,6 +3133,11 @@ namespace eTactWeb.Controllers
                 if (string.IsNullOrEmpty(saleBillno))
                     return Content("Sale Bill No is required.");
 
+                string FromDate = HttpContext.Session.GetString("FromDate");
+                string ToDate = HttpContext.Session.GetString("ToDate");
+
+
+
                 // ✅ Prepare SQL parameters (same as your GetDashboardData method)
                 var sqlParams = new List<dynamic>();
 
@@ -3149,8 +3154,8 @@ namespace eTactWeb.Controllers
                 sqlParams.Add(new SqlParameter("@PerformaInvNo", ""));
                 sqlParams.Add(new SqlParameter("@SaleQuotNo", ""));
                 sqlParams.Add(new SqlParameter("@DomesticExportNEPZ", ""));
-                sqlParams.Add(new SqlParameter("@FromDate", "01/Apr/2025"));
-                sqlParams.Add(new SqlParameter("@ToDate", "31/Mar/2026"));
+                sqlParams.Add(new SqlParameter("@FromDate",CommonFunc.ParseFormattedDate(FromDate)));
+                sqlParams.Add(new SqlParameter("@ToDate", CommonFunc.ParseFormattedDate(ToDate)));
                 sqlParams.Add(new SqlParameter("@SubInvoicetype", ""));
 
                 // ✅ Execute stored procedure
