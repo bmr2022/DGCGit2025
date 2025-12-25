@@ -97,7 +97,7 @@
                                 </div>
                                 <div class="col-lg-2">
                                     <label asp-for="EmpCode" class="form-label" style="color:red">EmpCode*</label>
-                                    <input asp-for="EmpCode" class="form-control" readonly />
+                                    <input asp-for="EmpCode" class="form-control"  />
                                 </div>
                                 <div class="col-lg-2">
                                     <label asp-for="Name" class="form-label" style="color:red">Name</label>
@@ -105,14 +105,14 @@
                                 </div>
                                 <div class="col-lg-3">
                                     <label asp-for="Designation" class="form-label" style="color:red">Designation*</label>
-                                    <select asp-for="Designation" class="form-select" asp-items="@(new SelectList(Model.DesignationList,"Value", "Text"))" onchange="GetEmpIdandEmpCode()" required>
+                                    <select asp-for="Designation" class="form-select" asp-items="@(new SelectList(Model.DesignationList,"Value", "Text"))" required>
                                         <option value="">-Select-</option>
                                     </select>
                                     <input type="hidden" asp-for="DesignationName" />
                                 </div>
                                 <div class="col-lg-3">
                                     <label asp-for="Department" class="form-label" style="color:red">Department*</label>
-                                    <select asp-for="Department" class="form-select" asp-items="@(new SelectList(Model.DepartmentList,"Value", "Text"))" onchange="GetEmpIdandEmpCode()" required>
+                                    <select asp-for="Department" class="form-select" asp-items="@(new SelectList(Model.DepartmentList,"Value", "Text"))" required>
                                         <option value="">-Select-</option>
                                     </select>
                                     <input type="hidden" asp-for="DepartmentName" />
@@ -1136,6 +1136,7 @@
                 width: '100%'
             });
             GetBranchList();
+            GetEmpIdandEmpCode();
 
             function getFormattedToday() {
                 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
