@@ -976,7 +976,7 @@ namespace eTactWeb.Controllers
                             Qty = (float)qty,
                             Rate = (float)rate,
                             DiscountPer = (float)discountPer,
-                            Amount = basicAmt,
+                            Amount = netAmt,
                             DiscountAmt = discountAmt,
                             ItemNetAmount = netAmt,
                             StoreName = StoreName,
