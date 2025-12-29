@@ -982,7 +982,10 @@ namespace eTactWeb.Controllers
                             StoreName = StoreName,
                             StoreId = StoreId,
                             Batchno = "1",
-                            Uniquebatchno = "1"
+                            Uniquebatchno = "1",
+                           
+
+
                         });
                     }
                     catch (Exception ex)
@@ -2212,7 +2215,7 @@ namespace eTactWeb.Controllers
                     new object[]
                     {
                     Item.SeqNo,
-                    Item.SONO,
+                    Item.SONO ??  "0" ,
                     Item.CustOrderNo ?? string.Empty,
                     Item.SOYearCode,
                     //Item.SODate == null ? string.Empty : (Item.SODate.Split(" ")[0]),
