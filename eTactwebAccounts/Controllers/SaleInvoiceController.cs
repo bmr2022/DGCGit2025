@@ -2422,6 +2422,7 @@ namespace eTactWeb.Controllers
             var ReportName = _SaleBill.GetReportName();
             string reportPath = "";
 
+
             if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
             {
                 reportPath = webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0];
@@ -2438,40 +2439,40 @@ namespace eTactWeb.Controllers
             masterReport.Report.SetParameterValue("entryparam", EntryId);
             masterReport.Report.SetParameterValue("yearparam", YearCode);
 
-            // Clear existing pages first
-            masterReport.Report.Pages.Clear();
+            //// Clear existing pages first
+            //masterReport.Report.Pages.Clear();
 
-            int pageCounter = 0;
+            //int pageCounter = 0;
 
-            foreach (var copyType in copyTypes)
-            {
-                var tempReport = new Report();
-                if (!string.IsNullOrEmpty(reportPath))
-                {
-                    tempReport.Load(reportPath);
-                }
+            //foreach (var copyType in copyTypes)
+            //{
+            //    var tempReport = new Report();
+            //    if (!string.IsNullOrEmpty(reportPath))
+            //    {
+            //        tempReport.Load(reportPath);
+            //    }
 
-                // Set parameters
-                tempReport.SetParameterValue("entryparam", EntryId);
-                tempReport.SetParameterValue("yearparam", YearCode);
-                tempReport.SetParameterValue("copyType", copyType);
-                tempReport.SetParameterValue("MyParameter", my_connection_string);
+            //    // Set parameters
+            //    tempReport.SetParameterValue("entryparam", EntryId);
+            //    tempReport.SetParameterValue("yearparam", YearCode);
+            //    tempReport.SetParameterValue("copyType", copyType);
+            //    tempReport.SetParameterValue("MyParameter", my_connection_string);
 
-                tempReport.Dictionary.Connections[0].ConnectionString = my_connection_string;
-                tempReport.Dictionary.Connections[0].ConnectionStringExpression = "";
+            //    tempReport.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            //    tempReport.Dictionary.Connections[0].ConnectionStringExpression = "";
 
-                // Prepare the temp report
-                tempReport.Prepare();
-                tempReport.Refresh();
+            //    // Prepare the temp report
+            //    tempReport.Prepare();
+            //    tempReport.Refresh();
 
-                // Add pages to master report
-                for (int i = 0; i < tempReport.Pages.Count; i++)
-                {
-                    PageBase page = tempReport.Pages[i];
-                    masterReport.Report.Pages.Add(page);
-                    pageCounter++;
-                }
-            }
+            //    // Add pages to master report
+            //    for (int i = 0; i < tempReport.Pages.Count; i++)
+            //    {
+            //        PageBase page = tempReport.Pages[i];
+            //        masterReport.Report.Pages.Add(page);
+            //        pageCounter++;
+            //    }
+            //}
 
             // Now modify ALL text objects in the master report to show correct copy types
             ApplyCopyTypesToMasterReport(masterReport.Report, copyTypes);
