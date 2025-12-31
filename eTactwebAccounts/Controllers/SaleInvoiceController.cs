@@ -623,7 +623,7 @@ namespace eTactWeb.Controllers
                         HttpContext.Session.Remove("SaleBillModel");
                         //return RedirectToAction(nameof(SaleInvoice), new { Id = 0, Mode = "", YC = 0 });
                     }
-                    if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                    else if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
@@ -679,7 +679,7 @@ namespace eTactWeb.Controllers
                         HttpContext.Session.Remove("KeySaleBillGrid");
                         HttpContext.Session.Remove("SaleBillModel");
                     }
-                    if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                   else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         var errNum = Result.Result.Message.ToString().Split(":")[1];
                         model.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
@@ -699,7 +699,7 @@ namespace eTactWeb.Controllers
                         // return View("Error", Result);
                         return View(model);
                     }
-                    if (Result.StatusText == "SaveValidation" || Result.StatusCode == HttpStatusCode.InternalServerError)
+                    else if (Result.StatusText == "SaveValidation" )
                     {
                         ViewBag.isSuccess = false;
                         var input = "";
@@ -729,6 +729,22 @@ namespace eTactWeb.Controllers
                         {
                             status = "Error",
                             message = input,
+                            EntryId = model.SaleBillEntryId,
+                            InvoiceNo = model.SaleBillNo,
+                            YearCode = model.SaleBillYearCode,
+                            saleBillType = model.SupplyType,
+                            AccountCode = model.AccountCode
+
+                        });
+                    }
+                    else if (!string.IsNullOrEmpty(Result.StatusText))
+                    {
+                        // If SP returned a message (like adjustment error)
+                        TempData["ErrorMessage"] = Result.StatusText;
+                        return Json(new
+                        {
+                            status = "Error",
+                            message = Result.StatusText,
                             EntryId = model.SaleBillEntryId,
                             InvoiceNo = model.SaleBillNo,
                             YearCode = model.SaleBillYearCode,

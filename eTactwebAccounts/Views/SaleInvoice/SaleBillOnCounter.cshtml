@@ -1312,6 +1312,7 @@
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
                     $('#TotalRoundOffAmt').val(0.00);
+                    calculateroundoffnettotal();
 
                     // Call helper functions
                     calculatetotalqty();
@@ -1809,6 +1810,7 @@
                 $('#NetTotal1').html(txTotal.toFixed(2));
                 $('#BaseNetTotal').val(txTotal.toFixed(2));
                 $('#AdjPendAmt').val($('#NetTotal').val());
+                calculateroundoffnettotal();
                 // $('#NetTotal1').html($('#NetTotal').val());
             }
             calculatetotalqty();
@@ -3358,6 +3360,7 @@
                     // $('#NetTotal1').html($('#NetTotal').val());
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
+                    calculateroundoffnettotal();
 
                     // ClearGrid();
                     $('.PendingItem').hide();
@@ -3563,6 +3566,7 @@
                            // $('#NetTotal1').html($('#NetTotal').val());
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
+                    calculateroundoffnettotal();
 
                     // ClearGrid();
                     $('.PendingItem').hide();
@@ -3806,6 +3810,7 @@
                     $('#NetTotal1').html($('#NetTotal').val());
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
+                    calculateroundoffnettotal();
 
                     // ClearGrid();
                     $('.PendingItem').hide();
@@ -3927,6 +3932,7 @@
                }
                    var txTotal = sum + txSum+TotalRoundOffAmt;
             $('#NetTotal').val(txTotal.toFixed(2));
+            calculateroundoffnettotal();
             $('#BaseNetTotal').val(txTotal.toFixed(2));
             $('#AdjPendAmt').val($('#NetTotal').val());
                    $('#NetTotal1').html($('#NetTotal').val());
@@ -5188,6 +5194,7 @@
 
             $('#NetTotal').val(newNet.toFixed(2));
             $('#NetTotal1').val(newNet.toFixed(2));
+            calculateroundoffnettotal();
         }
 
         function addPackingExpenceInNetAmount() {
@@ -5403,6 +5410,7 @@
 
             $('#NetTotal').val(net.toFixed(2));
             $('#NetTotal1').html(net.toFixed(2));
+            calculateroundoffnettotal();
         }
 
         function NetAmountAfterDiscount() {
@@ -5429,6 +5437,7 @@
             $('#NetTotal').val(netAmt.toFixed(2));
             $('#NetTotal1').html(netAmt.toFixed(2));
             $('#AdjPendAmt').val(netAmt.toFixed(2));
+            calculateroundoffnettotal();
 
             // GetDbCrDetail();
 
@@ -5624,6 +5633,7 @@
                             // $('#NetTotal1').html($('#NetTotal').val());
                             $('#TotalDiscountPercentage').val(0);
                             $('#TotalAmtAftrDiscount').val(0);
+                            calculateroundoffnettotal();
 
 
 
@@ -5869,6 +5879,7 @@
                         // $('#NetTotal1').html($('#NetTotal').val());
                         $('#TotalDiscountPercentage').val(0);
                         $('#TotalAmtAftrDiscount').val(0);
+                        calculateroundoffnettotal();
 
                         var Seqno = $('#SeqNo-' + rowCount).val();
                         itemBatchArray.push({
@@ -5960,7 +5971,7 @@
                     $('#BaseNetTotal').val(txAmt);
                     $('#AdjPendAmt').val($('#NetTotal').val());
                     // $('#NetTotal1').html($('#NetTotal').val());
-                                $("#TotalRoundOff").val("N").trigger('change');
+                    calculateroundoffnettotal();
                     // $('#AdjNewRefNo').val($('#NetTotal').val());
 
                 },
@@ -7745,6 +7756,7 @@
                 $('#AdjPendAmt').val($('#NetTotal').val());
                 $('#TotalDiscountPercentage').val(0);
                 $('#TotalAmtAftrDiscount').val(0);
+                        calculateroundoffnettotal();
 
                 // ClearGrid();
                 $('.PendingItem').hide();
@@ -7840,6 +7852,8 @@
             //     }
             // }
 
+
+
             if ($('#vehicleNo').val() != '') {
                 var inputValue = $('#vehicleNo').val();
                 if (inputValue.length > 10) {
@@ -7863,6 +7877,12 @@
             //     $.notify("AdjustAmount, TotalAmount, and NetAmount must all be equal....!", "error");
             //     return false;
             // }
+
+            if(NetAmount<0)
+            {
+                $.notify("Net Amount should not be negative...!", "error");
+                return false;
+            }
 
             if ($('#DistanceKM').val() > 3000) {
                 $('#DistanceKM').val(0);
