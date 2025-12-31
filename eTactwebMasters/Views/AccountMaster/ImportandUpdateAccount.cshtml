@@ -335,6 +335,14 @@
     <script>
          $(document).ready(function () {
             GetFormRights();
+            // Common Notify Defaults
+            $.notifyDefaults({
+                className: "info",             // default style (can be overridden per notify)
+                globalPosition: "top right",   // default position for all notifications
+                autoHide: true,                // hide automatically
+                autoHideDelay: 3000,           // 3 seconds
+                clickToHide: true              // click to hide
+            });
          });
        // let excelHeaders = [];
         // document.getElementById('MultiexcelFile').addEventListener('change', function (e) {
@@ -575,12 +583,12 @@
 
                         if (resp.StatusCode === 240) {
                             $('#ajaxLoader').hide();
-                            $.notify(resp.StatusText || "Validation error on server", "error");
+                            $.notify(resp.statusText || "Validation error on server", "error");
                             return;
                         }
 
                         // if server returned NextPage, continue, else finish
-                        const nextPage = resp.nextPage || resp.NextPage || 0;
+                        const nextPage = resp.nextPage || resp.nextPage || 0;
                         if (nextPage && nextPage > 0) {
                             // update UI preview to nextPage for user visibility (optional)
                             currentPreviewPage = nextPage;
@@ -595,10 +603,10 @@
                             }, 200);
                         } else {
                             $('#ajaxLoader').hide();
-                            $.notify(resp.StatusText || "All pages processed", "success");
+                            $.notify(resp.statusText || "All pages processed", "success");
 
-                            if (resp.RedirectUrl) {
-                                window.location.href = resp.RedirectUrl;
+                            if (resp.redirectUrl) {
+                                window.location.href = resp.redirectUrl;
                             }
                         }
                     },
