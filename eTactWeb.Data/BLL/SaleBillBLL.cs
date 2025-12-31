@@ -173,9 +173,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.FillVehicleNo();
         }  
-         public async Task<ResponseResult> GetInvoiceTypeMain()
+         public async Task<ResponseResult> GetInvoiceTypeMain(int EmpId)
         {
-            return await _SaleBillDAL.GetInvoiceTypeMain();
+            return await _SaleBillDAL.GetInvoiceTypeMain(EmpId);
         }  
 
         public async Task<ResponseResult> DisplaySODetail(string accountName, string itemName, string partCode, string sono, int soYearCode, string custOrderNo, string schNo, int schYearCode)
@@ -243,9 +243,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.FillStoreList();
         }
-        public async Task<DataSet> GetInvoiceType()
+        public async Task<DataSet> GetInvoiceType(int EmpId)
         {
-            return await _SaleBillDAL.GetInvoiceType();
+            return await _SaleBillDAL.GetInvoiceType(EmpId);
         }
         public async Task<ResponseResult> FillCustomerListForPending()
         {

@@ -67,9 +67,9 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FILLPendingSONO();
         Task<ResponseResult> FillPendingPartCOde();
         Task<ResponseResult> GetFeatureOption();
-        Task<ResponseResult> GetInvoiceTypeMain();
+        Task<ResponseResult> GetInvoiceTypeMain(int EmpId);
         Task<ResponseResult> GetTotalAmount(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string SubInvoicetype, string fromdate, string toDate, string SaleBillEntryFrom);
-        Task<DataSet> GetInvoiceType();
+        Task<DataSet> GetInvoiceType(int EmpId);
         public Task<ResponseResult> AutoFillitem(string Flag, string SearchPartCode);
 
         Task<ResponseResult> InsertInAdminDeleteLog(int EntryId,string slipno, int Accountcode, string EntryDate, decimal netAmount, decimal Basicamount, string IPAddress,int ActionById,string Action,int Yearcode, string CC, string machine);

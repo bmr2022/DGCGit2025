@@ -1197,13 +1197,14 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetInvoiceTypeMain()
+        public async Task<ResponseResult> GetInvoiceTypeMain(int EmpId)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "getInvoiceType"));
+                SqlParams.Add(new SqlParameter("@EmpId", EmpId));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
             }
             catch (Exception ex)
@@ -2128,7 +2129,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<DataSet> GetInvoiceType()
+        public async Task<DataSet> GetInvoiceType(int EmpId)
         {
             var oDataSet = new DataSet();
 
@@ -2136,6 +2137,8 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@flag", "getInvoiceType"));
+                SqlParams.Add(new SqlParameter("@EmpId", EmpId));
+
                 var _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
                 if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
                 {

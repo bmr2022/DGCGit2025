@@ -1166,7 +1166,9 @@ namespace eTactWeb.Controllers
         {
             var oDataSet = new DataSet();
             var _List = new List<TextValue>();
-            oDataSet = await _SaleBill.GetInvoiceType().ConfigureAwait(true);
+
+            var EmpId= Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            oDataSet = await _SaleBill.GetInvoiceType(EmpId).ConfigureAwait(true);
 
             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
             {
@@ -1442,7 +1444,8 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> GetInvoiceTypeMain()
         {
-            var JSON = await _SaleBill.GetInvoiceTypeMain();
+            var EmpId= Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _SaleBill.GetInvoiceTypeMain(EmpId);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
