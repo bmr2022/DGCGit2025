@@ -14,6 +14,11 @@ namespace eTactWeb.DOM.Models
         public bool HSNNOIsRequired { get; set; }
      
     }
+    public class ExcelRowError
+    {
+        public string PartCode { get; set; }
+        public string Message { get; set; }
+    }
     public class ExcelUpdateRequest
     {
         public Dictionary<string, string> Mapping { get; set; } = new Dictionary<string, string>();

@@ -63,218 +63,7 @@
         @*<div asp-validation-summary="All" class="text-danger"></div>*@
         <div class="card rounded shadow-lg">
             <div class="card-body bg-light">
-                <div class="accordion shadow-lg" id="SelectedParameter">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="H1_BasicParameter">
-                            <button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B1_BasicParameter" aria-expanded="true" aria-controls="B1_BasicParameter">
-                                <strong style="text-transform:uppercase">
-                                    <i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Update Selected Parameter
-                                </strong>
-
-                               
-                            </button>
-                            <div class="d-flex gap-2 align-items-center ms-3">
-                                <select id="columnSelector" class="form-select form-select-sm w-auto" onchange="toggleColumn()">
-                                    <option value="">-- Select Column --</option>
-                                    <option value="">-- Show All --</option>
-                                    <option value="price">Price</option>
-                                    <option value="hsncode">HSNCODE</option>
-                                    <option value="store">Store</option>
-                                    <option value="minmaxlevel">Min & Max Level</option>
-                                    <option value="workcenter">Workcenter</option>
-                                    <option value="productiondetail">ProductionDetail</option>
-                                </select>
-                                </div>
-                           
-                        </h2>
-                        <div id="B1_BasicParameter" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H1_BasicParameter">
-                            <div class="accordion-body">
-                                <div class="card">
-                                    <div class="card-body overflow-auto pb-0">
-                                        <div class="table-responsive" style="max-height:350px;">
-                                            <table class="table table-hover table-bordered table-striped" style=""id="selecteditemtable" border="1">
-                                                <thead class="bg-gradient card-headerBG text-light small" style="background-color:#2E7D32" id="ItemHead1" style="white-space:nowrap;position: sticky;top: 0;z-index: 10;">
-                                                    <tr id="headerRow">
-                                                        <th>Sr</th>
-                                                        <th>Item_Code</th>
-                                                        <th>PartCode</th>
-                                                        <th>Item_Name</th>
-                                                        <th class="col-hsncode">HSNCODE</th>
-                                                        <th class="col-workcenter">WorkCenter</th>
-                                                        <th class="" style="display: none;">WorkCenterId</th>
-                                                        <th class="col-store">StoreName</th>
-                                                        <th class="" style="display: none;">StoreId</th>
-                                                        <th class="col-price">SalePrice</th>
-                                                        <th class="col-price">PurchasePrice</th>
-                                                        <th class="col-price">CostPrice</th>
-                                                        <th class="col-minmaxlevel">MaximumLevel</th>
-                                                        <th class="col-minmaxlevel">MinimumLevel</th>
-                                                        <th class="col-productiondetail">NoOfCavity</th>
-                                                        <th class="col-productiondetail">NoOfshotsHours</th>
-                                                        <th class="" style="display: none;">ProdInMachineGroupId</th>
-                                                        <th class="col-productiondetail">ProdInMachineGroup</th>
-                                                        <th class="" style="display: none;">ProdInMachine1Id</th>
-                                                        <th class="col-productiondetail">ProdInMachine1</th>
-                                                        <th class="" style="display: none;">ProdInMachine2Id</th>
-                                                        <th class="col-productiondetail">ProdInMachine2</th>
-                                                        <th class="" style="display: none;">ProdInMachine3Id</th>
-                                                        <th class="col-productiondetail">ProdInMachine3</th>
-                                                        <th class="" style="display: none;">ProdInMachine4Id</th>
-                                                        <th class="col-productiondetail">ProdInMachine4</th>
-                                                       
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="divItemList1">
-                                                    <partial name="_DisplayExcelselectedItemData" />
-                                                </tbody>
-                                             
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-3 mb-3">
-                                        <div>
-                                            <button type="button" class="btn btn-secondary btn-sm" onclick="exportTableToExcel()">
-                                                <i class="fa-solid fa-upload me-1"></i> Export Excel
-                                            </button>
-                                        </div>
-                                        <!-- File input -->
-                                        <div>
-                                            <input type="file" class="form-control form-control-sm" id="ExcelFile1" />
-                                        </div>
-                                        <div class="col-auto">
-                                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                                            <a class="btn btn-secondary btn-sm" onclick="UploadButton();">
-                                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
-                                                <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
-                                                IMPORT FORMAT
-                                            </a>
-                                        </div>
-                                        <!-- Upload button -->
-                                     
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body bg-light">
-                <div class="accordion shadow-lg" id="accordionAccountMaster">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="H_BasicParameter">
-                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BasicParameter" aria-expanded="true" aria-controls="B_BasicParameter">
-                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Update All Parameter</strong>
-                            </button>
-                        </h2>
-                        <div id="B_BasicParameter" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_BasicParameter">
-                            <div class="accordion-body">
-                                <div class="card">
-                                    <div class="card-body overflow-auto pb-0">
-                                        <div class="table-responsive" style="max-height:350px;">
-                                            <table class="table table-hover table-bordered table-striped" id="itemtable">
-                                                <thead class="bg-gradient card-headerBG text-light small" id="ItemHead" style="white-space:nowrap;position: sticky;top: 0;z-index: 10;">
-                                                  
-                                                    <tr id="headerRow">
-                                                        <th>Sr</th>
-                                                        <th>Item_Code</th>
-                                                        <th>PartCode</th>
-                                                        <th>Item_Name</th>
-                                                        <th>ItemGroup</th>
-                                                        <th style="display:none">ItemGroupCode</th>
-                                                        <th>ItemCategory</th>
-                                                        <th style="display:none">ItemCategoryCode</th>
-                                                        <th>Unit</th>
-                                                        <th>AlternateUnit</th>
-                                                        <th>HSNNO</th>
-                                                        <th>MinimumLevel</th>
-                                                        <th>MaximumLevel</th>
-                                                        <th>StdPacking</th>
-                                                        <th>ProdWorkCenterDescription</th>
-                                                        <th style="display:none">ProdWorkCenterId</th>
-                                                        <th>ProdInhouseJW</th>
-                                                        <th>BatchNO</th>
-                                                        <th>OldPartCode</th>
-                                                        <th>VoltageValue</th>
-                                                        <th>SerialNo</th>
-                                                        <th>Package</th>
-                                                        <th>LeadTime</th>
-                                                        <th>SalePrice</th>
-                                                        <th>PurchasePrice</th>
-                                                        <th>CostPrice</th>
-                                                        <th>WastagePercent</th>
-                                                        <th>WtSingleItem</th>
-                                                        <th>NoOfPcs</th>
-                                                        <th>QcReq</th>
-                                                        <th>ImageURL</th>
-                                                        <th>DrawingNo</th>
-                                                        <th>ReorderLevel</th>
-                                                        <th>YearCode</th>
-                                                        <th>RackID</th>
-                                                        <th>BinNo</th>
-                                                        <th>ItemSize</th>
-                                                        <th>Colour</th>
-                                                        <th>NeedPO</th>
-                                                        <th>PackingType</th>
-                                                        <th>ModelNo</th>
-                                                        <th>YearlyConsumedQty</th>
-                                                        <th>DispItemName</th>
-                                                        <th style="display:none">PurchaseAccountcode</th>
-                                                        <th style="display:none">SaleAccountcode</th>
-                                                        <th >PurchaseAccountName</th>
-                                                        <th>SaleAccountName</th>
-                                                        <th>MinLevelDays</th>
-                                                        <th>MaxLevelDays</th>
-                                                        <th>DailyRequirment</th>
-                                                        <th>Stockable</th>
-                                                        <th>WipStockable</th>
-                                                        <th>StoreName</th>
-                                                        <th  style="display:none">StoreId</th>
-                                                        <th>ProductLifeInus</th>
-                                                        <th>ItemDesc</th>
-                                                        <th>MaxWipStock</th>
-                                                        <th>NeedSo</th>
-                                                        <th>BomRequired</th>
-                                                        <th>UniversalPartCode</th>
-                                                        <th>UniversalDescription</th>
-                                                        <th>IsCustJWAdjMandatory</th>
-                                                        <th>Active</th>
-                                                        <th>JobWorkItem</th>
-                                                        <th>ItemServAssets</th>
-                                                        <th>NoOfCavity</th>
-                                                        <th>NoOfshotsHours</th>
-                                                        <th>ChildBom</th>
-                                                        <th>ProdInMachineGroup</th>
-                                                        <th>ProdInMachine1</th>
-                                                        <th>ProdInMachine2</th>
-                                                        <th>ProdInMachine3</th>
-                                                        <th>ProdInMachine4</th>
-                                                        <th>Branch</th>
-                                                    </tr>
-                                                </thead>
-
-                                                <tbody id="divItemList">
-                                                    <partial name="_DisplayExcelItemData" />
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-3 mb-3">
-                                        <input class="form-control" type="file" id="ExcelFile" />
-                                        <div class="col-auto">
-                                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                                            <a class="btn btn-secondary btn-sm" onclick="UploadButton();">
-                                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
-                                                <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
-                                                IMPORT
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+             
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_BasicParameter">
                         <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BasicParameter" aria-expanded="true" aria-controls="B_UpdateMultiItem">
@@ -513,6 +302,9 @@
     </div>
 </div>
 
+<div id="excelErrorDiv" style="color:red; max-height:200px; overflow:auto;"></div>
+
+
 
 <!-- In HTML -->
 <div class="spinner"></div>
@@ -659,20 +451,117 @@
             }
 
             // On Update: start auto page-wise sending
+            // $('#BtnUpdate').off('click').on('click', function () {
+            //     if (!allExcelData || allExcelData.length === 0) {
+            //         $.notify("No Excel data to send. Upload Excel first.", "error");
+            //         return;
+            //     }
+
+            //     let mapping = buildMapping();
+
+            //     let flag = $('#Insert_Update').val();
+
+            //     // validate mandatory mapping fields
+            //     let mandatoryFields = (flag === "UpdateDataFromExcel")
+            //         ? ["PartCode"]
+            //         : ["PartCode", "Unit", "ItemGroup","ItemServAssets"];
+
+            //     let missing = mandatoryFields.filter(f => !mapping[f] || mapping[f].trim() === "");
+            //     if (missing.length) {
+            //         $.notify("Please map mandatory fields: " + missing.join(", "), "error");
+            //         return;
+            //     }
+
+            //     // we will send page-by-page. Start with page=1
+            //     $('#ajaxLoader').show();
+            //     processPage(1, mapping, flag);
+            // });
+
+            // // recursively process pages
+            // function processPage(pageNo, mapping, flag) {
+            //     const pageSize = PAGE_SIZE;
+            //     const totalPages = Math.ceil(allExcelData.length / pageSize);
+            //     const startIndex = (pageNo - 1) * pageSize;
+            //     const endIndex = Math.min(startIndex + pageSize, allExcelData.length);
+            //     const pageData = allExcelData.slice(startIndex, endIndex);
+
+            //     // prepare payload: only send the current page rows
+            //     let payload = {
+            //         Mapping: mapping,
+            //         ExcelData: pageData,
+            //         Flag: flag,
+            //         PageNo: pageNo,
+            //         PageSize: pageSize,
+            //         TotalPages: Math.ceil(allExcelData.length / pageSize)   // ADD THIS
+            //     };
+
+            //     console.log("Sending page", pageNo, "of", totalPages, payload);
+
+            //     $.ajax({
+            //         url: '/ItemMaster/UpdateFromExcel',
+            //         type: 'POST',
+            //         contentType: 'application/json',
+            //         dataType: 'json',
+            //         data: JSON.stringify(payload),
+            //         success: function (resp) {
+            //             console.log("Page response:", resp);
+
+            //             if (!resp) {
+            //                 $('#ajaxLoader').hide();
+            //                 $.notify("Invalid server response", "error");
+            //                 return;
+            //             }
+
+            //             if (resp.StatusCode === 240) {
+            //                 $('#ajaxLoader').hide();
+            //                 $.notify(resp.StatusText || "Validation error on server", "error");
+            //                 return;
+            //             }
+
+            //             // if server returned NextPage, continue, else finish
+            //             const nextPage = resp.nextPage || resp.NextPage || 0;
+            //             if (nextPage && nextPage > 0) {
+            //                 // update UI preview to nextPage for user visibility (optional)
+            //                 currentPreviewPage = nextPage;
+            //                 renderPreviewPage(currentPreviewPage);
+
+            //                 // show progress
+            //                 $.notify(`Processed page ${resp.currentPage} / ${resp.totalPages}`, "info");
+
+            //                 // small delay to keep UI responsive (optional)
+            //                 setTimeout(function () {
+            //                     processPage(nextPage, mapping, flag);
+            //                 }, 200);
+            //             } else {
+            //                 $('#ajaxLoader').hide();
+            //                 $.notify(resp.statusText || "All pages processed", "success");
+
+            //                 if (resp.RedirectUrl) {
+            //                     window.location.href = resp.redirectUrl;
+            //                 }
+            //             }
+            //         },
+            //         error: function (err) {
+            //             $('#ajaxLoader').hide();
+            //             console.error(err);
+            //             $.notify("Error sending page " + pageNo, "error");
+            //         }
+            //     });
+            // }
+
             $('#BtnUpdate').off('click').on('click', function () {
+
                 if (!allExcelData || allExcelData.length === 0) {
                     $.notify("No Excel data to send. Upload Excel first.", "error");
                     return;
                 }
 
                 let mapping = buildMapping();
-
                 let flag = $('#Insert_Update').val();
 
-                // validate mandatory mapping fields
                 let mandatoryFields = (flag === "UpdateDataFromExcel")
                     ? ["PartCode"]
-                    : ["PartCode", "Unit", "ItemGroup","ItemServAssets"];
+                    : ["PartCode", "Unit", "ItemGroup", "ItemServAssets"];
 
                 let missing = mandatoryFields.filter(f => !mapping[f] || mapping[f].trim() === "");
                 if (missing.length) {
@@ -680,27 +569,27 @@
                     return;
                 }
 
-                // we will send page-by-page. Start with page=1
                 $('#ajaxLoader').show();
                 processPage(1, mapping, flag);
             });
 
-            // recursively process pages
             function processPage(pageNo, mapping, flag) {
+
                 const pageSize = PAGE_SIZE;
                 const totalPages = Math.ceil(allExcelData.length / pageSize);
+
                 const startIndex = (pageNo - 1) * pageSize;
                 const endIndex = Math.min(startIndex + pageSize, allExcelData.length);
+
                 const pageData = allExcelData.slice(startIndex, endIndex);
 
-                // prepare payload: only send the current page rows
                 let payload = {
                     Mapping: mapping,
                     ExcelData: pageData,
                     Flag: flag,
                     PageNo: pageNo,
                     PageSize: pageSize,
-                    TotalPages: Math.ceil(allExcelData.length / pageSize)   // ADD THIS
+                    TotalPages: totalPages
                 };
 
                 console.log("Sending page", pageNo, "of", totalPages, payload);
@@ -711,7 +600,9 @@
                     contentType: 'application/json',
                     dataType: 'json',
                     data: JSON.stringify(payload),
+
                     success: function (resp) {
+
                         console.log("Page response:", resp);
 
                         if (!resp) {
@@ -720,35 +611,52 @@
                             return;
                         }
 
-                        if (resp.StatusCode === 240) {
-                            $('#ajaxLoader').hide();
-                            $.notify(resp.StatusText || "Validation error on server", "error");
-                            return;
+                        // 🔴🔴🔴 CHANGE #1: REMOVE STOPPING ON StatusCode 240
+                        // ❌ DO NOT STOP EXECUTION FOR ROW ERRORS
+
+                        // 🔴🔴🔴 CHANGE #2: HANDLE ROW-LEVEL ERRORS
+                        if (resp.failedRows && resp.failedRows.length > 0) {
+
+                            resp.failedRows.forEach(err => {
+
+                                // show error message with PartCode
+                                $('#excelErrorDiv').append(
+                                    `<div>❌ PartCode: <b>${err.partCode}</b> - ${err.message}</div>`
+                                );
+
+                                // remove failed row so it is not re-processed
+                                allExcelData = allExcelData.filter(r => r.partCode !== err.partCode);
+                            });
                         }
 
-                        // if server returned NextPage, continue, else finish
-                        const nextPage = resp.nextPage || resp.NextPage || 0;
+                        // 🔴 CHANGE #3: SAFE NEXT PAGE READ
+                        const nextPage = resp.NextPage || resp.nextPage || 0;
+
                         if (nextPage && nextPage > 0) {
-                            // update UI preview to nextPage for user visibility (optional)
+
                             currentPreviewPage = nextPage;
                             renderPreviewPage(currentPreviewPage);
 
-                            // show progress
-                            $.notify(`Processed page ${resp.currentPage} / ${resp.totalPages}`, "info");
+                            $.notify(
+                                `Processed page ${resp.currentPage} / ${resp.totalPages}`,
+                                "info"
+                            );
 
-                            // small delay to keep UI responsive (optional)
                             setTimeout(function () {
                                 processPage(nextPage, mapping, flag);
                             }, 200);
+
                         } else {
+
                             $('#ajaxLoader').hide();
-                            $.notify(resp.statusText || "All pages processed", "success");
+                            $.notify("All valid rows processed successfully", "success");
 
                             if (resp.RedirectUrl) {
                                 window.location.href = resp.redirectUrl;
                             }
                         }
                     },
+
                     error: function (err) {
                         $('#ajaxLoader').hide();
                         console.error(err);
@@ -756,6 +664,8 @@
                     }
                 });
             }
+
+
 
         })();
 

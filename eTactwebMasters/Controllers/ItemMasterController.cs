@@ -31,6 +31,7 @@ using eTactWeb.Data.DAL;
 using System.Data.SqlClient;
 using OfficeOpenXml.FormulaParsing.ExpressionGraph;
 using OfficeOpenXml.Table.PivotTable;
+using PdfSharp.Drawing.BarCodes;
 
 namespace eTactWeb.Controllers;
 
@@ -2254,6 +2255,7 @@ public class ItemMasterController : Controller
     {
         var response = new ResponseResult();
         var flag = request.Flag;
+        List<ExcelRowError> failedRows = new List<ExcelRowError>();
 
         try
         {
@@ -2363,7 +2365,7 @@ public class ItemMasterController : Controller
             {
                 List<string> errors = new List<string>();
                 DataRow row = dt.NewRow();
-
+                bool rowHasError = false;
                 // Save part code to show in errors
                 string partCodeValue = excelRow.ContainsKey("PartCode") ? excelRow["PartCode"]?.ToString() : "";
 
@@ -2374,6 +2376,7 @@ public class ItemMasterController : Controller
                     {
                         string dbCol = map.Key;
                         string excelCol = map.Value;
+                       
 
                         object value = DBNull.Value;
 
@@ -2390,11 +2393,18 @@ public class ItemMasterController : Controller
                                     string itemServAssetsValue = value.ToString().Trim();
                                     if (!validItemServAssetsOptions.Any(v => string.Equals(v, itemServAssetsValue, StringComparison.OrdinalIgnoreCase)))
                                     {
-                                        return Json(new
+                                        //return Json(new
+                                        //{
+                                        //    StatusCode = 240,
+                                        //    StatusText = $"Invalid 'ItemServAssets' at Row {rowNumber}, PartCode: {partCodeValue}. Allowed values: Item, Service, Asset."
+                                        //});
+                                        rowHasError = true;
+                                        failedRows.Add(new ExcelRowError
                                         {
-                                            StatusCode = 240,
-                                            StatusText = $"Invalid 'ItemServAssets' at Row {rowNumber}, PartCode: {partCodeValue}. Allowed values: Item, Service, Asset."
+                                            PartCode = partCodeValue,
+                                            Message = "Invalid ItemServAssets (Allowed: Item, Service, Asset)"
                                         });
+                                        continue;
                                     }
                                     value = itemServAssetsValue; // normalized string
                                 }
@@ -2418,11 +2428,25 @@ public class ItemMasterController : Controller
 
                                     if (ParentCode == 0)
                                     {
-                                        return Json(new { StatusCode = 240, StatusText = $"Invalid 'ItemGroup' at Row {rowNumber}, PartCode: {partCodeValue}. Group '{groupName}' not found." });
+                                        rowHasError = true;
+                                        failedRows.Add(new ExcelRowError
+                                        {
+                                            PartCode = partCodeValue,
+                                            Message = $"Invalid 'ItemGroup'. Group '{groupName}' not found."
+                                        });
+                                        continue; // 🔴 IMPORTANT
+                                        //return Json(new { StatusCode = 240, StatusText = $"Invalid 'ItemGroup' at Row {rowNumber}, PartCode: {partCodeValue}. Group '{groupName}' not found." });
                                     }
                                     if (ItemType == 0)
                                     {
-                                        return Json(new { StatusCode = 240, StatusText = $"Invalid 'ItemGroup' at Row {rowNumber}, PartCode: {partCodeValue}. Group '{groupName}' not found." });
+                                        rowHasError = true;
+                                        failedRows.Add(new ExcelRowError
+                                        {
+                                            PartCode = partCodeValue,
+                                            Message = $"Invalid 'Category'. Group '{groupName}' not found."
+                                        });
+                                        continue; // 🔴 IMPORTANT
+                                        //return Json(new { StatusCode = 240, StatusText = $"Invalid 'ItemGroup' at Row {rowNumber}, PartCode: {partCodeValue}. Group '{groupName}' not found." });
                                     }
                                     value = ParentCode;
                                     row["ItemCategory"] = ItemType;
@@ -2442,7 +2466,15 @@ public class ItemMasterController : Controller
 
                                     if (ItemType == 0)
                                     {
-                                        return Json(new { StatusCode = 240, StatusText = $"Invalid 'ItemCategory' at Row {rowNumber}, PartCode: {partCodeValue}. Category '{ItemCat}' not found." });
+                                        rowHasError = true;
+                                        failedRows.Add(new ExcelRowError
+                                        {
+                                            PartCode = partCodeValue,
+                                            Message = $"Invalid 'ItemCategory'. Category '{ItemCat}' not found."
+                                        });
+                                        continue; // 🔴 IMPORTANT
+
+                                        //return Json(new { StatusCode = 240, StatusText = $"Invalid 'ItemCategory' at Row {rowNumber}, PartCode: {partCodeValue}. Category '{ItemCat}' not found." });
                                     }
                                     value = ItemType;
                                 }
@@ -2461,7 +2493,14 @@ public class ItemMasterController : Controller
 
                                     if (StoreCode == 0)
                                     {
-                                        return Json(new { StatusCode = 240, StatusText = $"Invalid 'Store' at Row {rowNumber}, PartCode: {partCodeValue}. Store '{storeName}' not found." });
+                                        rowHasError = true;
+                                        failedRows.Add(new ExcelRowError
+                                        {
+                                            PartCode = partCodeValue,
+                                            Message = $"Invalid 'Store'. Store '{storeName}' not found."
+                                        });
+                                        continue; // 🔴 IMPORTANT
+                                        //return Json(new { StatusCode = 240, StatusText = $"Invalid 'Store' at Row {rowNumber}, PartCode: {partCodeValue}. Store '{storeName}' not found." });
                                     }
                                     value = StoreCode;
                                 }
@@ -2512,13 +2551,30 @@ else
                             row[dbCol] = value ?? DBNull.Value;
                     }
                 }
+                if (!rowHasError)
+                {
 
-                dt.Rows.Add(row);
+                    dt.Rows.Add(row);
+                }
                 rowNumber++;
             }
 
             // Call your service method to update for this page
-            response = await _IItemMaster.UpdateMultipleItemDataFromExcel(dt, flag);
+            //response = await _IItemMaster.UpdateMultipleItemDataFromExcel(dt, flag);
+            if (dt.Rows.Count > 0)
+            {
+                response = await _IItemMaster.UpdateMultipleItemDataFromExcel(dt, flag);
+            }
+            else
+            {
+                response = new ResponseResult
+                {
+                    StatusCode = System.Net.HttpStatusCode.OK,
+                    StatusText = "No valid rows to process"
+                };
+            }
+
+
 
             // Build response
             if (response != null &&
@@ -2534,7 +2590,10 @@ else
                         StatusText = "Page saved",
                         CurrentPage = request.PageNo,
                         TotalPages = request.TotalPages,
-                        NextPage = request.PageNo + 1
+                        NextPage = request.PageNo + 1,
+                        // 🔴 CHANGE
+                        FailedRows = failedRows,
+                        
                     });
                 }
                 else
@@ -2545,7 +2604,9 @@ else
                         StatusText = "All pages saved successfully",
                         CurrentPage = request.PageNo,
                         TotalPages = request.TotalPages,
-                        NextPage = 0
+                        NextPage = 0,
+                        // 🔴 CHANGE
+                        FailedRows = failedRows
                     });
                 }
             }
@@ -2560,7 +2621,9 @@ else
                     CurrentPage = pageNo,
                     TotalPages = totalPages,
                     NextPage = 0,
-                    RedirectUrl = ""
+                    RedirectUrl = "",
+                    // 🔴 CHANGE
+                    FailedRows = failedRows
                 });
             }
         }

@@ -32,6 +32,14 @@
                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                             PRINT INVOICE
                         </a>
+
+                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintBarcode"
+                       asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PurchVouchNo="@Model.PurchVouchNo">
+                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                        PRINT BARCODE
+                    </a>
+
+
                     @if (Model.Mode == "U" && Model.Mode != "POC" && Model.Mode != "V")
                     {
                     }
