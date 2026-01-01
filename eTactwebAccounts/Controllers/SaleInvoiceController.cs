@@ -2163,7 +2163,7 @@ namespace eTactWeb.Controllers
             var DTSSGrid = new DataTable();
 
             DTSSGrid.Columns.Add("SeqNo", typeof(int));
-            DTSSGrid.Columns.Add("SONO", typeof(int));
+            DTSSGrid.Columns.Add("SONO", typeof(string));
             DTSSGrid.Columns.Add("CustOrderNo", typeof(string));
             DTSSGrid.Columns.Add("SOYearCode", typeof(int));
             DTSSGrid.Columns.Add("SODate", typeof(string));

@@ -1906,7 +1906,7 @@ namespace eTactWeb.Data.DAL
                             model.DeliveryAddress = oDataSet.Tables[0].Rows[0]["DeliveryAddress"].ToString();
                             model.OrderType = oDataSet.Tables[0].Rows[0]["OrderType"].ToString();
                             model.CustOrderNo = oDataSet.Tables[0].Rows[0]["CustOrderNo"].ToString();
-                            model.SONo = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["SONo"]);
+                            model.SONo = (oDataSet.Tables[0].Rows[0]["SONo"].ToString());
                             model.PackingCharges = oDataSet.Tables[0].Rows[0]["PackingCharges"] == DBNull.Value
     ? 0
     : Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["PackingCharges"]);
@@ -2136,7 +2136,7 @@ namespace eTactWeb.Data.DAL
                             model.DeliveryAddress = oDataSet.Tables[0].Rows[0]["DeliveryAddress"].ToString();
                             model.OrderType = oDataSet.Tables[0].Rows[0]["OrderType"].ToString();
                             model.CustOrderNo = oDataSet.Tables[0].Rows[0]["CustOrderNo"].ToString();
-                            model.SONo = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["SONo"]);
+                            model.SONo = oDataSet.Tables[0].Rows[0]["SONo"].ToString();
                             model.SODate = oDataSet.Tables[0].Rows[0]["SODate"].ToString();
                             model.WEF = oDataSet.Tables[0].Rows[0]["WEF"].ToString();
                             model.SOCloseDate = oDataSet.Tables[0].Rows[0]["SOCloseDate"].ToString();

@@ -633,7 +633,7 @@ public class SaleOrderController : Controller
 			{
 				YearCode = Constants.FinincialYear,
 				EntryID = _IDataLogic.GetEntryID("SaleOrderMain", Constants.FinincialYear, "SOEntryID", "SOyearcode"),
-				SONo = _IDataLogic.GetEntryID("SaleOrderMain", Constants.FinincialYear, "SOEntryID", "SOyearcode"),
+				//SONo = _IDataLogic.GetEntryID("SaleOrderMain", Constants.FinincialYear, "SOEntryID", "SOyearcode"),
 				EntryDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/"),
 				WEF = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/"),
 				QDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/"),
@@ -3002,7 +3002,7 @@ public class SaleOrderController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> ExportToExcel(int SONo, string YearCode)
+    public async Task<IActionResult> ExportToExcel(string SONo, string YearCode)
     {
         try
         {

@@ -58,7 +58,7 @@ namespace eTactWeb.Controllers
                     SODeliveryDate = CurrentDate,
                     SOFor = "For Saleorder"
                 };
-                model.SONo = model.EntryID;
+                //model.SONo = model.EntryID;
             }
 
             model.SOForList = await _IDataLogic.GetDropDownList("SOFOR", "SP_GetDropDownList").ConfigureAwait(false);

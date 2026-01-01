@@ -94,7 +94,7 @@ namespace eTactWeb.DOM.Models
     public class SaleOrderDashboard
     {
         // === Primary Order Information ===
-        public int SONo { get; set; }
+        public string? SONo { get; set; }
         public string SODate { get; set; }
         public string? SOFor { get; set; }
         public string? SOType { get; set; }
@@ -383,7 +383,7 @@ namespace eTactWeb.DOM.Models
         public string? SOFor { get; set; }
         public IList<TextValue>? SOForList { get; set; }
         public int SOItemCode { get; set; }
-        public int SONo { get; set; }
+        public string? SONo { get; set; }
         public string? SORemark { get; set; }
         public string EntryByMachineName { get; set; }
         //[Required(ErrorMessage = "SO FOR CAN NOT BE BLANK")]

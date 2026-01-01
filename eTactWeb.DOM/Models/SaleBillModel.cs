@@ -20,7 +20,7 @@ namespace eTactWeb.DOM.Models
         
         public string CustomerName { get; set; }
         public string AccountCode { get; set; }
-        public int SONo { get; set; }
+        public string SONo { get; set; }
         public int SOYearCode { get; set; }
         public string CustOrderNo { get; set; }
         public string SchNo { get; set; }
