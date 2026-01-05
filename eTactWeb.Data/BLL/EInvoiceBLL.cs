@@ -132,6 +132,41 @@ namespace eTactWeb.Data.BLL
 
             return result;
         }
+        public async Task<bool> Generate1DBarcodeCodeAsync(string barcodeValue, string invoiceNo, int yearCode)
+        {
+            try
+            {
+                string filePath = @"D:\pdf.txt";
+                await File.WriteAllTextAsync(filePath, barcodeValue);
+
+                string zintPath = @"C:\Program Files (x86)\Zint\zint.exe";
+                string outputFilePath = @"D:\output.png";
+
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = zintPath,
+                        Arguments = $"-b 20 -o {outputFilePath} -i {filePath}",
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                };
+
+                process.Start();
+                await process.WaitForExitAsync();
+
+                var imgBytes = await File.ReadAllBytesAsync(outputFilePath);
+                await _EInvoiceDAL.Update1DBarcodeCodeImageAsync(invoiceNo, yearCode, imgBytes);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
 
         public async Task<bool> GenerateQRCodeAsync(string barcodeValue, string invoiceNo, int yearCode)
         {

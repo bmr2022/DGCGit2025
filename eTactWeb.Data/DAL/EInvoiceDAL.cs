@@ -505,6 +505,26 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> Update1DBarcodeCodeImageAsync(string invoiceNo, int yearCode, byte[] image)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@InvoiceNo", invoiceNo));
+                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
+                SqlParams.Add(new SqlParameter("@img", image));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("insPurchaseBarcode", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<string> PostDataAsync(
      Dictionary<string, object> dictData,
      string invoicenumber,
