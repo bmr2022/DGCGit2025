@@ -659,6 +659,32 @@ namespace eTactWeb.Controllers
 
           
         }
+
+        public IActionResult GenerateBarCode(int EntryId = 0, int YearCode = 0, string PONO = "")
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
+            var webReport = new WebReport();
+
+
+            webReport.Report.Load(webRootPath + "\\DirectPurchaseBillReport.frx"); // default report
+
+            webReport.Report.SetParameterValue("entryparam", EntryId);
+            webReport.Report.SetParameterValue("yearparam", YearCode);
+            //webReport.Report.SetParameterValue("ponoparam", PONO);
+
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+
+
+        }
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0, string PONO = "")
         {
             using (Report report = new Report())
