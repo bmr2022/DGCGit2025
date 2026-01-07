@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NuGet.Packaging;
 using OfficeOpenXml;
+using System;
 using System.Diagnostics;
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
@@ -37,6 +38,9 @@ using System.Data.SqlClient;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml;
 using System.Drawing;
+using System.Dynamic;
+using eTactWeb.Data.DAL;
+using System.IO;
 
 
 namespace eTactWeb.Controllers
@@ -44,6 +48,8 @@ namespace eTactWeb.Controllers
 
     public class DirectPurchaseBillController : Controller
     {
+        private readonly IDataLogic _IDataLogic;
+        public readonly IEinvoiceService _IEinvoiceService;
         private readonly IMemoryCacheService _iMemoryCacheService;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration iconfiguration;
@@ -56,8 +62,9 @@ namespace eTactWeb.Controllers
         public IDataLogic IDataLogic { get; private set; }
         public IDirectPurchaseBill IDirectPurchaseBill { get; set; }
 
-        public DirectPurchaseBillController(IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService, ICompositeViewEngine viewEngine)
+        public DirectPurchaseBillController(IEinvoiceService IEinvoiceService, IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService, ICompositeViewEngine viewEngine)
         {
+            _IEinvoiceService = IEinvoiceService;
             _iMemoryCacheService = iMemoryCacheService;
             IDirectPurchaseBill = iDirectPurchaseBill;
             IDataLogic = iDataLogic;
@@ -634,16 +641,23 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "")
+        public async Task<IActionResult> BarcodePrintReportAsync(int EntryId = 0, int YearCode = 0, string PartCode = "")
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
             //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
             var webReport = new WebReport();
-
-           
-           webReport.Report.Load(webRootPath + "\\DirectPurchaseBillReport.frx"); // default report
+            string partcodedata =PartCode; string outputPath = "";
+            string qrResult = Generate1DCodeImage(partcodedata, outputPath).Result;
+            if (qrResult != "")
+                return BadRequest("QR generation failed");
+             EntryId = 0;
+            int yearCode=0;
+            byte[] imgBytes = await System.IO.File.ReadAllBytesAsync(qrResult);
+     
+            Update1DBarcodeCodeImageAsync(EntryId, yearCode, imgBytes);
+            webReport.Report.Load(webRootPath + "\\DirectPurchaseBillBarcode.frx"); // default report
 
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
@@ -657,18 +671,16 @@ namespace eTactWeb.Controllers
             webReport.Report.Refresh();
             return View(webReport);
 
-          
-        }
 
-        public IActionResult GenerateBarCode(int EntryId = 0, int YearCode = 0, string PONO = "")
+        }
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "")
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
             //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
             var webReport = new WebReport();
-
-
+           
             webReport.Report.Load(webRootPath + "\\DirectPurchaseBillReport.frx"); // default report
 
             webReport.Report.SetParameterValue("entryparam", EntryId);
@@ -683,7 +695,7 @@ namespace eTactWeb.Controllers
             webReport.Report.Refresh();
             return View(webReport);
 
-
+          
         }
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0, string PONO = "")
         {
