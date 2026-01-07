@@ -42,7 +42,6 @@ using System.Dynamic;
 using eTactWeb.Data.DAL;
 using System.IO;
 
-
 namespace eTactWeb.Controllers
 {
 
@@ -56,6 +55,8 @@ namespace eTactWeb.Controllers
         private readonly IMemoryCache _MemoryCache;
         private readonly ConnectionStringService _connectionStringService;
         private readonly ICompositeViewEngine _viewEngine;
+
+        //private readonly IEinvoiceService _iEinvoiceService;
         public ILogger<DirectPurchaseBillModel> _Logger { get; set; }
         public CultureInfo CI { get; private set; }
         public EncryptDecrypt EncryptDecrypt { get; private set; }
@@ -641,7 +642,7 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> BarcodePrintReportAsync(int EntryId = 0, int YearCode = 0, string PartCode = "")
+        public async Task<IActionResult> BarcodePrintReport(int EntryId = 0, int YearCode = 0, string PartCode = "",decimal Qty=0,string Remark="")
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
@@ -655,8 +656,8 @@ namespace eTactWeb.Controllers
              EntryId = 0;
             int yearCode=0;
             byte[] imgBytes = await System.IO.File.ReadAllBytesAsync(qrResult);
-     
-            Update1DBarcodeCodeImageAsync(EntryId, yearCode, imgBytes);
+
+            //_IEinvoiceService.Update1DBarcodeCodeImageAsync(EntryId, yearCode, imgBytes);
             webReport.Report.Load(webRootPath + "\\DirectPurchaseBillBarcode.frx"); // default report
 
             webReport.Report.SetParameterValue("entryparam", EntryId);

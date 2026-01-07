@@ -343,7 +343,99 @@
             </div>
         </div>
 
-        
+
+        <div class="modal fade" id="GenerateBarcodeModel"
+             data-bs-backdrop="static" data-bs-keyboard="false"
+             tabindex="-1" aria-hidden="true">
+
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content shadow-lg">
+
+                    <!-- HEADER -->
+                    <div class="modal-header bg-light">
+                        <h5 class="modal-title fw-bold">
+                            <i class="fa-solid fa-barcode me-2"></i> Generate Barcode
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- BODY -->
+                    <div class="modal-body">
+
+                      
+                        <!-- ITEM DETAILS -->
+                        <div class="card border-0 shadow-sm mb-3">
+                            <div class="card-body">
+
+                                <div class="row g-3">
+
+                                    <div class="col-md-2">
+                                        <label class="form-label fw-semibold">Part Code</label>
+                                        <input id="BPartCode" class="form-control form-control-sm" readonly>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="form-label fw-semibold">Location</label>
+                                        <input id="BLocation" class="form-control form-control-sm" readonly>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="form-label fw-semibold">Unit</label>
+                                        <input id="BUnit" class="form-control form-control-sm" readonly>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="form-label fw-semibold">Rate</label>
+                                        <input id="BRate" class="form-control form-control-sm" readonly>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="form-label fw-semibold">Qty</label>
+                                        <input id="BQty" class="form-control form-control-sm">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label fw-semibold">Remark</label>
+                                        <textarea id="BRemark" class="form-control form-control-sm"></textarea>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- PROGRESS -->
+                        <div class="progress mb-2" style="height:4px;">
+                            <div class="progress-bar progress-bar-striped bg-danger" style="width:100%"></div>
+                        </div>
+
+                        <!-- TOTAL -->
+                        <div class="text-center fw-bold">
+                            Total No Of Items :
+                            <span id="lblTotalNoOfItemsPendSO" class="text-primary"></span>
+                        </div>
+
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-sm btn-outline-success"
+                                onclick="GenerateBarCodeBtn(event)">
+                            <i class="fa-solid fa-angles-down me-1"></i> Generate BarCode
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-sm btn-outline-danger"
+                                data-bs-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
 
         @* ---------------------*@
 
@@ -960,6 +1052,57 @@
                  }
              });
          }
+
+        function OpenBarcodeModel(el) {
+
+            // get current row
+            var $row = $(el).closest('tr');
+
+            // read values from row
+            var partCode = $row.find('.GridPartCode').text().trim();
+            var location = $row.find('.item-location').val();
+            var unit = $row.find('.GridUnit').text().trim();     // adjust index if needed
+            var rate = $row.find('.GridRate').text().trim();
+            var qty = $row.find('.billQty').text().trim();
+
+            // set modal values
+            $('#BPartCode').val(partCode);
+            $('#BLocation').val(location);
+            $('#BUnit').val(unit);
+            $('#BRate').val(rate);
+            $('#BQty').val(qty);
+
+            // show modal
+            $('#GenerateBarcodeModel').modal('show');
+        }
+
+        function GenerateBarCodeBtn(e) {
+            e.preventDefault();
+
+            // collect values from modal
+            var entryId = $('#EntryID').val() || 0;
+            var yearCode = $('#YearCode').val() || 0;
+            var partCode = $('#BPartCode').val();
+            var Qty = $('#BQty').val();
+            var Remark = $('#BRemark').val();
+
+            // // build URL
+            // var url = '/DirectPurchaseBill/BarcodePrintReportAsync'
+            //     + '?EntryId=' + entryId
+            //     + '&YearCode=' + yearCode
+            //     + '&PartCode=' + encodeURIComponent(partCode);
+
+            var url = '@Url.Action("BarcodePrintReport", "DirectPurchaseBill")'
+                + '?EntryId=' + entryId
+                + '&YearCode=' + yearCode
+                + '&PartCode=' + encodeURIComponent(partCode)
+                + '&Qty=' + Qty
+                + '&Remark=' + Remark;
+
+            // redirect
+            window.location.href = url;
+        }
+
 
         $(document).ready(function () {
             if ($('#DPBType').val() == 'Import') {

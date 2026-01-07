@@ -33,6 +33,12 @@ else
                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                         </span>
                     </a>
+                    <a class="table-link link-danger" onclick="OpenBarcodeModel(this)">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-barcode fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
                 }
                 else
                 {
@@ -48,18 +54,25 @@ else
                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                         </span>
                     </a>
+
+                    <a class="table-link link-danger" onclick="OpenBarcodeModel(this)">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x text-dark"></i>
+                            <i class="fa-solid fa-barcode fa-stack-1x text-white"></i>
+                        </span>
+                    </a>
                 }
             </td>
             <td>@item.SeqNo</td>
             <td class="divListDocType">@item.DocTypeText</td>
-            <td class="divPOItemListPartCode">
+            <td class="divPOItemListPartCode GridPartCode">
                 @if (!string.IsNullOrEmpty(item.PartText) && !item.PartText.Contains("Select"))
                 {
                     @item.PartText
                 }
             </td>
 
-            <td class="divPOItemListPartCode">
+            <td class="divPOItemListPartCode GridItemName">
                 @if (!string.IsNullOrEmpty(item.ItemText) && !item.ItemText.Contains("Select"))
                 {
                     @item.ItemText
@@ -115,16 +128,16 @@ else
                     : "")
                 }
             </td>
-            <td class="DirectPurchaseBillScheduleDetail">@item.DPBQty</td>
+            <td class="DirectPurchaseBillScheduleDetail GridQty">@item.DPBQty</td>
 
             <td class="billQty">@item.BillQty</td>
-            <td>@item.Rate.ToString()</td>
+            <td class="GridRate">@item.Rate.ToString()</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.OtherRateCurr.ToString()</td>
             <td>@item.DiscPer</td>
             <td>@item.DiscRs</td>
             <td id="GridAmount-@item.SeqNo">@item.Amount.ToString()</td>
             <td>@item.HSNNo</td>
-            <td>@item.Unit</td>
+            <td class="GridUnit">@item.Unit</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.ProcessName</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.Description</td>
             <td>
