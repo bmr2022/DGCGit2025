@@ -2934,21 +2934,22 @@ namespace eTactWeb.Controllers
                 return "Error";
             }
         }
-
+        //GENERATING EINVOICE STEP BY STEP
         public async Task<IActionResult> GenerateInvoice([FromBody] EInvoiceItemModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest("Invalid input");
-
+                //CHECK DUPLICATE IRN
                 var duplicateIRNResult = await _IEinvoiceService.CheckDuplicateIRN(
                     input.EntryId,
                     input.InvoiceNo,
                     input.YearCode
                 );
+                //GENERATING TOKEN  STEP BY STEP
                 var token = await _IEinvoiceService.GetAccessTokenAsync();
-
+                //GENERATING IRN STEP BY STEP
                 var result = await _IEinvoiceService.CreateIRNAsync(
                     token,
                     input.EntryId,
@@ -2998,7 +2999,8 @@ namespace eTactWeb.Controllers
 
                 string fileName = $"{Guid.NewGuid()}.png";
                 string outputPath = Path.Combine(uploadsFolder, fileName);
-
+                
+                //GENERATING QRCODE STEP BY STEP
                 var qrResult = await GenerateQRCodeImage(signedQrText, outputPath);
                 if (qrResult != "Success")
                     return BadRequest("QR generation failed");
@@ -3042,6 +3044,8 @@ namespace eTactWeb.Controllers
                         rawEWayBill = rawResponse["eWayBillResponse"]?.ToString()
                     });
                 }
+
+                //GENERATING EWAYBILL PDF  STEP BY STEP
                 string ewbPdfUrl = eInvoiceObj1["results"]?["message"]?["EwaybillPdf"]?.ToString() ?? "";
 
                 //  string ewbPdfUrl = rawResponse["PDF"]?.ToString() ?? "";

@@ -11,11 +11,13 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using static eTactWeb.DOM.Models.Common;
 using eTactWeb.DOM.Models;
 using Microsoft.AspNetCore.Http;
+using System.Diagnostics;
 
 namespace eTactWeb.Data.Common;
 
 public static class CommonFunc
 {
+
     public static List<T> ConvertDataTable<T>(DataTable dt)
     {
         List<T> data = new List<T>();
@@ -26,6 +28,83 @@ public static class CommonFunc
         }
         return data;
     }
+    public static async Task<string> Generate1DCodeImage(string qrText, string filePath)
+    {
+        try
+        {
+            string tempInputPath = Path.GetTempFileName();
+
+            await File.WriteAllTextAsync(tempInputPath, qrText);
+
+            string zintPath = @"C:\Program Files (x86)\Zint\zint.exe";
+            if (!File.Exists(zintPath))
+                return "Zint not found";
+
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = zintPath,
+                    Arguments = $"-b 8 -o \"{filePath}\" -i \"{tempInputPath}\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+
+            process.Start();
+            await process.WaitForExitAsync();
+
+            if (!File.Exists(filePath))
+                return "Failed";
+
+            return filePath;
+        }
+        catch (Exception ex)
+        {
+            return $"Error: {ex.Message}";
+        }
+    }
+    public static async Task<string> GenerateQRCodeImage(string qrText, string filePath)
+    {
+        try
+        {
+            string tempInputPath = Path.GetTempFileName();
+
+            await File.WriteAllTextAsync(tempInputPath, qrText);
+
+            string zintPath = @"C:\Program Files (x86)\Zint\zint.exe";
+            if (!File.Exists(zintPath))
+                return "Zint not found";
+
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = zintPath,
+                    Arguments = $"-b 58 -o \"{filePath}\" -i \"{tempInputPath}\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+
+            process.Start();
+            await process.WaitForExitAsync();
+
+            if (!File.Exists(filePath))
+                return "Failed";
+
+            return filePath;
+        }
+        catch (Exception ex)
+        {
+            return $"Error: {ex.Message}";
+        }
+    }
+
     public static List<T> ConvertDataTable2<T>(DataTable dt)
     {
         List<T> data = new List<T>();
