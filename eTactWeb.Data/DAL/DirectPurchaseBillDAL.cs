@@ -1464,5 +1464,37 @@ public class DirectPurchaseBillDAL
         }
         return _ResponseResult;
     }
+
+    public async Task<ResponseResult> GenerateBarCodedata(int EntryId, int YearCode , int ItemCode , decimal Qty , string Remark )
+    {
+        var _ResponseResult = new ResponseResult();
+
+        try
+        {
+
+          
+
+            var sqlParams = new List<dynamic>();
+            sqlParams.Add(new SqlParameter("@FormName", "DIRECTPURCHASEBILL"));
+            
+            sqlParams.Add(new SqlParameter("@PurchBillEntryid", EntryId));
+            sqlParams.Add(new SqlParameter("@PurchBillYearCode", YearCode));
+            sqlParams.Add(new SqlParameter("@ItemCode", ItemCode));
+           
+            sqlParams.Add(new SqlParameter("@BarcodeQty", Qty));
+            sqlParams.Add(new SqlParameter("@FooterRemark", Remark));
+            
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SPGenerateDirectBarCode", sqlParams);
+
+        }
+        catch (Exception ex)
+        {
+            _ResponseResult.StatusCode = HttpStatusCode.InternalServerError;
+            _ResponseResult.StatusText = "Error";
+            _ResponseResult.Result = new { ex.Message, ex.StackTrace };
+        }
+
+        return _ResponseResult;
+    }
 }
 

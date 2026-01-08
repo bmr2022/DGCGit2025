@@ -180,5 +180,9 @@ namespace eTactWeb.Data.BLL
             return await _DirectPurchaseBillDAL.ShowPendingPurchaseorderforBill(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode, PONO, PartCode, CompanyType);
         }
 
+        public async Task<ResponseResult> GenerateBarCodedata(int EntryId, int YearCode, int ItemCode, decimal Qty, string Remark)
+        {
+            return await _DirectPurchaseBillDAL.GenerateBarCodedata(EntryId, YearCode, ItemCode, Qty, Remark);
+        }
     }
 }

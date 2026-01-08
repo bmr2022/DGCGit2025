@@ -375,6 +375,13 @@
                                     </div>
 
                                     <div class="col-md-2">
+                                        <label class="form-label fw-semibold">Part Code</label>
+                                        <input id="BItemName" class="form-control form-control-sm" readonly>
+                                        <input type="hidden" id="BItemCode" class="form-control form-control-sm" readonly>
+
+
+                                    </div>
+                                    <div class="col-md-2">
                                         <label class="form-label fw-semibold">Location</label>
                                         <input id="BLocation" class="form-control form-control-sm" readonly>
                                     </div>
@@ -404,16 +411,7 @@
                             </div>
                         </div>
 
-                        <!-- PROGRESS -->
-                        <div class="progress mb-2" style="height:4px;">
-                            <div class="progress-bar progress-bar-striped bg-danger" style="width:100%"></div>
-                        </div>
-
-                        <!-- TOTAL -->
-                        <div class="text-center fw-bold">
-                            Total No Of Items :
-                            <span id="lblTotalNoOfItemsPendSO" class="text-primary"></span>
-                        </div>
+                      
 
                     </div>
 
@@ -1060,6 +1058,8 @@
 
             // read values from row
             var partCode = $row.find('.GridPartCode').text().trim();
+            var itemName = $row.find('.GridItemName').text().trim();
+            var itemCode = $row.find('.GridItemCode').val();
             var location = $row.find('.item-location').val();
             var unit = $row.find('.GridUnit').text().trim();     // adjust index if needed
             var rate = $row.find('.GridRate').text().trim();
@@ -1067,6 +1067,9 @@
 
             // set modal values
             $('#BPartCode').val(partCode);
+            $('#BItemCode').val(itemCode);
+            $('#BItemName').val(itemName);
+
             $('#BLocation').val(location);
             $('#BUnit').val(unit);
             $('#BRate').val(rate);
@@ -1083,6 +1086,8 @@
             var entryId = $('#EntryID').val() || 0;
             var yearCode = $('#YearCode').val() || 0;
             var partCode = $('#BPartCode').val();
+            var itemCode = $('#BItemCode').val();
+            
             var Qty = $('#BQty').val();
             var Remark = $('#BRemark').val();
 
@@ -1092,11 +1097,13 @@
             //     + '&YearCode=' + yearCode
             //     + '&PartCode=' + encodeURIComponent(partCode);
 
-            var url = '@Url.Action("BarcodePrintReport", "DirectPurchaseBill")'
+            var url = '@Url.Action("GenerateBarcode", "DirectPurchaseBill")'
                 + '?EntryId=' + entryId
                 + '&YearCode=' + yearCode
+                + '&ItemCode=' + itemCode
                 + '&PartCode=' + encodeURIComponent(partCode)
                 + '&Qty=' + Qty
+               
                 + '&Remark=' + Remark;
 
             // redirect

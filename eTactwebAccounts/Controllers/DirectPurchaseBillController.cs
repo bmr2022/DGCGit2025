@@ -41,6 +41,7 @@ using System.Drawing;
 using System.Dynamic;
 using eTactWeb.Data.DAL;
 using System.IO;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace eTactWeb.Controllers
 {
@@ -642,7 +643,20 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> BarcodePrintReport(int EntryId = 0, int YearCode = 0, string PartCode = "",decimal Qty=0,string Remark="")
+
+
+        public async Task<IActionResult> GenerateBarcode(int EntryId = 0, int YearCode = 0, int ItemCode = 0, string PartCode = "", decimal Qty = 0, string Remark = "")
+        {
+
+            var Result = await IDirectPurchaseBill.GenerateBarCodedata(EntryId, YearCode, ItemCode, Qty, Remark);
+            return  RedirectToAction("BarcodePrintReport", new { EntryId = EntryId, YearCode = YearCode, ItemCode = ItemCode, PartCode = PartCode, Qty = Qty, Remark = Remark });
+        }
+
+
+
+
+
+            public async Task<IActionResult> BarcodePrintReport(int EntryId = 0, int YearCode = 0,int ItemCode=0, string PartCode = "",decimal Qty=0,string Remark="")
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
@@ -651,6 +665,7 @@ namespace eTactWeb.Controllers
             var webReport = new WebReport();
             string partcodedata =PartCode; string outputPath = "\\\\server1\\imagepath";
             string qrResult = Generate1DCodeImage(partcodedata, outputPath).Result;
+
             //if (qrResult = "")
             //    return BadRequest("QR generation failed");
              EntryId = 0;

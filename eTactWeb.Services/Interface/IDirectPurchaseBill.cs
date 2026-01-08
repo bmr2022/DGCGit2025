@@ -10,6 +10,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, string PurchVoucherNo, string InvNo, int EntryBy, string EntryByMachineName, DateTime EntryDate);
         Task<ResponseResult> CheckLockYear(int YearCode);
         Task<ResponseResult> ListOfPendingSaleBillFromOtherBranch(int AccountCode, string fromdate, string todate);
+
         Task<ResponseResult> PendingSaleBillItemDetailFromOtherBranch(int AccountCode,
     int salebillEntryId,
     int salebillYearCode,
@@ -48,5 +49,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> CheckDuplicateEntry(int YearCode, int AccountCode, string InvNo, int EntryId);
         Task<ResponseResult> SaveDirectPurchaseBILL(DataTable itemDetailDt, DataTable taxDetailDt, DataTable TDSDetailDT, DirectPurchaseBillModel model, DataTable DrCrDetailDT, DataTable AdjDetailDT);
         Task<ResponseResult> ShowPendingPurchaseorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode, string PONO, string PartCode, string CompanyType);
+
+        Task<ResponseResult> GenerateBarCodedata(int EntryId, int YearCode, int ItemCode, decimal Qty, string Remark);
     }
 }

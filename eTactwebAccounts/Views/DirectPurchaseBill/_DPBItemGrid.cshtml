@@ -72,7 +72,7 @@ else
                 }
             </td>
 
-            <td class="divPOItemListPartCode GridItemName">
+            <td class="divPOItemListPartCode GridItemName"><input type="hidden" class="GridItemCode" value="@item.ItemCode"></input>
                 @if (!string.IsNullOrEmpty(item.ItemText) && !item.ItemText.Contains("Select"))
                 {
                     @item.ItemText
