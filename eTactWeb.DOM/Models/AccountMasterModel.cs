@@ -2,6 +2,12 @@
 
 namespace eTactWeb.DOM.Models
 {
+    public class AccountExcelRowError
+    {
+        public int RowNo { get; set; }
+        public string ColumnName { get; set; }
+        public string Message { get; set; }
+    }
     public class AccountMasterModel : TimeStamp
     {
         public int Account_Code { get; set; }

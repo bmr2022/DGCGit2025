@@ -45,7 +45,8 @@ public static class CommonFunc
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = zintPath,
-                    Arguments = $"-b 8 -o \"{filePath}\" -i \"{tempInputPath}\"",
+                    // Arguments = $"-b 8 -o \"{filePath}\" -i \"{tempInputPath}\"",
+                    Arguments = $"-b 8 -o  d:\\output.png -i d:/pdf.txt",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -56,10 +57,11 @@ public static class CommonFunc
             process.Start();
             await process.WaitForExitAsync();
 
-            if (!File.Exists(filePath))
-                return "Failed";
+            //if (!File.Exists(filePath))
+            //return "Failed";
 
-            return filePath;
+            //return filePath;
+            return "d:\\output.png";
         }
         catch (Exception ex)
         {

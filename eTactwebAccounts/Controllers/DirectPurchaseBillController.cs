@@ -649,10 +649,10 @@ namespace eTactWeb.Controllers
             string webRootPath = _IWebHostEnvironment.WebRootPath;
             //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
             var webReport = new WebReport();
-            string partcodedata =PartCode; string outputPath = "";
+            string partcodedata =PartCode; string outputPath = "\\\\server1\\imagepath";
             string qrResult = Generate1DCodeImage(partcodedata, outputPath).Result;
-            if (qrResult != "")
-                return BadRequest("QR generation failed");
+            //if (qrResult = "")
+            //    return BadRequest("QR generation failed");
              EntryId = 0;
             int yearCode=0;
             byte[] imgBytes = await System.IO.File.ReadAllBytesAsync(qrResult);

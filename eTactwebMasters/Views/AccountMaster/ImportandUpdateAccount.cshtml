@@ -155,7 +155,7 @@
 
 
 
-<div class="modal fade" style="display:none" id="ColumnNameModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" style="display:none;padding-top:50px" id="ColumnNameModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -325,6 +325,7 @@
         </div>
     </div>
 </div>
+<div id="excelErrorDiv" style="color:red; max-height:200px; overflow:auto;"></div>
 
 
 <!-- In HTML -->
@@ -518,19 +519,18 @@
                 });
                 return mapping;
             }
+            let allErrors = [];
 
-            // On Update: start auto page-wise sending
             $('#BtnUpdate').off('click').on('click', function () {
+
                 if (!allExcelData || allExcelData.length === 0) {
                     $.notify("No Excel data to send. Upload Excel first.", "error");
                     return;
                 }
 
                 let mapping = buildMapping();
-
                 let flag = $('#Insert_Update').val();
 
-                // validate mandatory mapping fields
                 let mandatoryFields = (flag === "UpdateDataFromExcel")
                     ? ["Party_Code"]
                     : ["Party_Code", "Account_Name", "DisplayName", "AccountType", "ParentAccount"];
@@ -541,30 +541,30 @@
                     return;
                 }
 
-                // we will send page-by-page. Start with page=1
+                allErrors = [];
+                $('#errorDiv').hide().html('');
                 $('#ajaxLoader').show();
+
                 processPage(1, mapping, flag);
             });
 
-            // recursively process pages
             function processPage(pageNo, mapping, flag) {
+
                 const pageSize = PAGE_SIZE;
                 const totalPages = Math.ceil(allExcelData.length / pageSize);
+
                 const startIndex = (pageNo - 1) * pageSize;
                 const endIndex = Math.min(startIndex + pageSize, allExcelData.length);
                 const pageData = allExcelData.slice(startIndex, endIndex);
 
-                // prepare payload: only send the current page rows
                 let payload = {
                     Mapping: mapping,
                     ExcelData: pageData,
                     Flag: flag,
                     PageNo: pageNo,
                     PageSize: pageSize,
-                    TotalPages: Math.ceil(allExcelData.length / pageSize)   // ADD THIS
+                    TotalPages: totalPages
                 };
-
-                console.log("Sending page", pageNo, "of", totalPages, payload);
 
                 $.ajax({
                     url: '/AccountMaster/UpdateFromExcel',
@@ -572,7 +572,9 @@
                     contentType: 'application/json',
                     dataType: 'json',
                     data: JSON.stringify(payload),
+
                     success: function (resp) {
+
                         console.log("Page response:", resp);
 
                         if (!resp) {
@@ -581,35 +583,56 @@
                             return;
                         }
 
-                        if (resp.StatusCode === 240) {
-                            $('#ajaxLoader').hide();
-                            $.notify(resp.statusText || "Validation error on server", "error");
-                            return;
+                        // 🔴🔴🔴 CHANGE #1: REMOVE STOPPING ON StatusCode 240
+                        // ❌ DO NOT STOP EXECUTION FOR ROW ERRORS
+
+                        // 🔴🔴🔴 CHANGE #2: HANDLE ROW-LEVEL ERRORS
+                        if (resp.failedRows && resp.failedRows.length > 0) {
+
+                            resp.failedRows.forEach(err => {
+
+                                // show error message with PartCode
+                                $('#excelErrorDiv').append(
+                                    `<div>❌  ${err.message}</div>`
+                                );
+
+                                // remove failed row so it is not re-processed
+                                allExcelData = allExcelData.filter(r => r.partCode !== err.partCode);
+                              
+
+                            });
                         }
 
-                        // if server returned NextPage, continue, else finish
-                        const nextPage = resp.nextPage || resp.nextPage || 0;
+                        // 🔴 CHANGE #3: SAFE NEXT PAGE READ
+                        const nextPage = resp.NextPage || resp.nextPage || 0;
+
                         if (nextPage && nextPage > 0) {
-                            // update UI preview to nextPage for user visibility (optional)
+
                             currentPreviewPage = nextPage;
                             renderPreviewPage(currentPreviewPage);
 
-                            // show progress
-                            $.notify(`Processed page ${resp.currentPage} / ${resp.totalPages}`, "info");
+                            $.notify(
+                                `Processed page ${resp.currentPage} / ${resp.totalPages}`,
+                                "info"
+                            );
 
-                            // small delay to keep UI responsive (optional)
                             setTimeout(function () {
                                 processPage(nextPage, mapping, flag);
                             }, 200);
+
                         } else {
+
                             $('#ajaxLoader').hide();
-                            $.notify(resp.statusText || "All pages processed", "success");
+
+                            $.notify(resp.statusText, "success");
 
                             if (resp.redirectUrl) {
                                 window.location.href = resp.redirectUrl;
                             }
                         }
                     },
+
+
                     error: function (err) {
                         $('#ajaxLoader').hide();
                         console.error(err);
@@ -617,6 +640,7 @@
                     }
                 });
             }
+
 
         })();
 
