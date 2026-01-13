@@ -1982,14 +1982,18 @@
                         let obj = typeof result === "string" ? JSON.parse(result) : result;
 
                         if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
-                            let filtered = obj.Result.Table.filter(function (item) {
-                                let term = request.term.toLowerCase();
-                                return (
-                                    (item.PartCode && item.PartCode.toLowerCase().includes(term)) ||
-                                    (item.Barcode && item.Barcode.toLowerCase().includes(term)) ||
-                                    (item.ItemName && item.ItemName.toLowerCase().includes(term))
-                                );
-                            });
+                            // let filtered = obj.Result.Table.filter(function (item) {
+                            //     let term = request.term.toLowerCase();
+                            //     return (
+                            //         (item.PartCode && item.PartCode.toLowerCase().includes(term)) ||
+                            //         (item.Barcode && item.Barcode.toLowerCase().includes(term)) ||
+                            //         (item.ItemName && item.ItemName.toLowerCase().includes(term))
+                            //     );
+                            // });
+
+                            let filtered = obj.Result.Table.filter(item =>
+                                googleMatch(request.term, item)
+                            );
 
                             response($.map(filtered, function (item) {
                                 return {
@@ -2023,10 +2027,14 @@
                         let obj = typeof result === "string" ? JSON.parse(result) : result;
 
                         if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
-                            let filtered = obj.Result.Table.filter(function (item) {
-                                let term = request.term.toLowerCase();
-                                return item.ItemName.toLowerCase().includes(term);
-                            });
+                            // let filtered = obj.Result.Table.filter(function (item) {
+                            //     let term = request.term.toLowerCase();
+                            //     return item.ItemName.toLowerCase().includes(term);
+                            // });
+
+                            let filtered = obj.Result.Table.filter(item =>
+								googleMatch(request.term, item)
+							);  
 
                             response($.map(filtered, function (item) {
                                 return {
@@ -2083,13 +2091,18 @@
 
                         if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
                             // 🔹 Partial match: includes()
-                            let match = obj.Result.Table.find(item => {
-                                let real = (item.RealPartCode || "").toLowerCase();
-                                let name = (item.Item_Name || "").toLowerCase();
-                                let barcode = (item.Barcode || "").toLowerCase();
+                            // let match = obj.Result.Table.find(item => {
+                            //     let real = (item.RealPartCode || "").toLowerCase();
+                            //     let name = (item.Item_Name || "").toLowerCase();
+                            //     let barcode = (item.Barcode || "").toLowerCase();
 
-                                return real.includes(entered) || name.includes(entered) || barcode.includes(entered);
-                            });
+                            //     return real.includes(entered) || name.includes(entered) || barcode.includes(entered);
+                            // });
+
+                            let match = obj.Result.Table.find(item =>
+                                googleMatch(entered, item)
+                            );
+
 
                             if (match) {
                                 $("#PartCodeText").val(match.OnlyPartCode).data("itemcode", match.Item_Code);
