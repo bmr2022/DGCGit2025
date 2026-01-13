@@ -6208,6 +6208,25 @@
         // }
         // var sonoItems = [];
 
+        function googleMatch(searchText, item) {
+            if (!searchText) return true;
+
+            let words = searchText.toLowerCase().split(/\s+/);
+
+            let partCode = (item.PartCode || "").toLowerCase();
+            let realPartCode = (item.RealPartCode || "").toLowerCase();
+            let itemName = (item.ItemName || item.Item_Name || "").toLowerCase();
+            let barcode = (item.Barcode || "").toLowerCase();
+
+            // ALL words must match at least one field
+            return words.every(word =>
+                partCode.includes(word) ||
+                realPartCode.includes(word) ||
+                itemName.includes(word) ||
+                barcode.includes(word)
+            );
+        }
+
         function AutoFillItems() {
             // Source for PartCodeText
             const partCodeSource = function (request, response) {
@@ -6224,14 +6243,18 @@
                         let obj = typeof result === "string" ? JSON.parse(result) : result;
 
                         if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
-                            let filtered = obj.Result.Table.filter(function (item) {
-                                let term = request.term.toLowerCase();
-                                return (
-                                    (item.PartCode && item.PartCode.toLowerCase().includes(term)) ||
-                                    (item.Barcode && item.Barcode.toLowerCase().includes(term)) ||
-                                    (item.ItemName && item.ItemName.toLowerCase().includes(term))
-                                );
-                            });
+                            // let filtered = obj.Result.Table.filter(function (item) {
+                            //     let term = request.term.toLowerCase();
+                            //     return (
+                            //         (item.PartCode && item.PartCode.toLowerCase().includes(term)) ||
+                            //         (item.Barcode && item.Barcode.toLowerCase().includes(term)) ||
+                            //         (item.ItemName && item.ItemName.toLowerCase().includes(term))
+                            //     );
+                            // });
+
+                            let filtered = obj.Result.Table.filter(item =>
+                                googleMatch(request.term, item)
+                            );
 
                             response($.map(filtered, function (item) {
                                 return {
@@ -6268,10 +6291,14 @@
                         let obj = typeof result === "string" ? JSON.parse(result) : result;
 
                         if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
-                            let filtered = obj.Result.Table.filter(function (item) {
-                                let term = request.term.toLowerCase();
-                                return item.ItemName.toLowerCase().includes(term);
-                            });
+                            // let filtered = obj.Result.Table.filter(function (item) {
+                            //     let term = request.term.toLowerCase();
+                            //     return item.ItemName.toLowerCase().includes(term);
+                            // });
+
+                            let filtered = obj.Result.Table.filter(item =>
+                                googleMatch(request.term, item)
+                            );
 
                             response($.map(filtered, function (item) {
                                 return {
@@ -6387,20 +6414,24 @@
 
                         if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
 
-                            let list = obj.Result.Table.map(item => ({
-                                ...item,
-                                real: (item.RealPartCode || "").trim().toLowerCase()
-                            }));
+                            // let list = obj.Result.Table.map(item => ({
+                            //     ...item,
+                            //     real: (item.RealPartCode || "").trim().toLowerCase()
+                            // }));
 
-                            // 1️⃣ Exact match
-                            let match =
-                                list.find(i => i.real === entered) ||
+                            // // 1️⃣ Exact match
+                            // let match =
+                            //     list.find(i => i.real === entered) ||
 
-                                // 2️⃣ Starts with (space-safe)
-                                list.find(i => i.real.startsWith(entered + " ")) ||
+                            //     // 2️⃣ Starts with (space-safe)
+                            //     list.find(i => i.real.startsWith(entered + " ")) ||
 
-                                // 3️⃣ Fallback (optional)
-                                list.find(i => i.real.startsWith(entered));
+                            //     // 3️⃣ Fallback (optional)
+                            //     list.find(i => i.real.startsWith(entered));
+
+                            let match = obj.Result.Table.find(item =>
+                                googleMatch(entered, item)
+                            );
 
                             if (match) {
                                 $("#PartCodeText")
