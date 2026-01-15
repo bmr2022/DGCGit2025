@@ -944,6 +944,25 @@ namespace eTactWeb.Data.DAL
         {
             return value == DBNull.Value || value == null || string.IsNullOrEmpty(value.ToString()) ? 0 : Convert.ToDecimal(value);
         }
+        private static bool SafeBool(object value)
+        {
+            if (value == null || value == DBNull.Value)
+                return false;
+
+            var str = value.ToString().Trim();
+
+            if (string.IsNullOrEmpty(str))
+                return false;
+
+            if (str == "1" || str.Equals("true", StringComparison.OrdinalIgnoreCase) || str.Equals("y", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (str == "0" || str.Equals("false", StringComparison.OrdinalIgnoreCase) || str.Equals("n", StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            return Convert.ToBoolean(value);
+        }
+
         private static double SafeDouble(object value)
         {
             return value == DBNull.Value || value == null || string.IsNullOrEmpty(value.ToString()) ? 0 : Convert.ToDouble(value);
@@ -1106,6 +1125,7 @@ namespace eTactWeb.Data.DAL
                         model.ItemTypeName = SafeToString(dr["ItemTypeName"]);
                         model.ImageURL = SafeToString(dr["UploadImage"]);
                         model.ItemImageURL = SafeToString(dr["UploadItemImage"]);
+                        model.HidePartCodeOnReport = SafeBool(dr["HidePartCodeOnReport"]);
                         model.UID = SafeToString(dr["UID"]);
                         model.DrawingNo = SafeToString(dr["DrawingNo"]);
                         model.MinimumLevel = SafeDecimal(dr["MinimumLevel"]);
@@ -1233,6 +1253,7 @@ namespace eTactWeb.Data.DAL
                             oCmd.Parameters.AddWithValue("@LeadTime", model.LeadTime);
                             oCmd.Parameters.AddWithValue("@CC", model.CC);
                             oCmd.Parameters.AddWithValue("@Unit", model.Unit);
+                            oCmd.Parameters.AddWithValue("@HidePartCodeOnReport", model.HidePartCodeOnReport);
                             oCmd.Parameters.AddWithValue("@SalePrice", model.SalePrice);
                             oCmd.Parameters.AddWithValue("@PurchasePrice", model.PurchasePrice);
                             oCmd.Parameters.AddWithValue("@CostPrice", model.CostPrice);
@@ -1348,6 +1369,7 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@LeadTime", model.LeadTime);
                         oCmd.Parameters.AddWithValue("@CC", model.CC);
                         oCmd.Parameters.AddWithValue("@Unit", model.Unit);
+                        oCmd.Parameters.AddWithValue("@HidePartCodeOnReport", model.HidePartCodeOnReport);
                         oCmd.Parameters.AddWithValue("@SalePrice", model.SalePrice);
                         oCmd.Parameters.AddWithValue("@PurchasePrice", model.PurchasePrice);
                         oCmd.Parameters.AddWithValue("@CostPrice", model.CostPrice);

@@ -65,6 +65,7 @@ namespace eTactWeb.DOM.Models
         public int PageSize { get; set; }
         public string? EntryByMachineName { get;set; }
         public string? Act { get; set; }
+        public bool HidePartCodeOnReport { get; set; }
         public string? BatchWiseInventory { get; set; }
         public string? VoltageVlue { get; set; }
         public string? SerialNo { get; set; }
