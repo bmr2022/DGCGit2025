@@ -391,7 +391,8 @@ namespace eTactWeb.Controllers
         }
         public async Task<IActionResult> DeleteByID(int EntryId, int AccountCode, string EntryDate)
         {
-            var Result = await _IPartyItemGroupDiscount.DeleteByID(EntryId, AccountCode, EntryDate);
+			var EntryBy= Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var Result = await _IPartyItemGroupDiscount.DeleteByID(EntryId, EntryDate, EntryBy);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

@@ -386,7 +386,7 @@ namespace eTactWeb.Data.DAL
             return model;
         }
 
-        public async Task<ResponseResult> DeleteByID(int EntryId, int AccountCode, string EntryDate)
+        public async Task<ResponseResult> DeleteByID(int EntryId, string EntryDate,int EntryBy)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -394,10 +394,11 @@ namespace eTactWeb.Data.DAL
                 var entrydate = CommonFunc.ParseFormattedDate(EntryDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
-                SqlParams.Add(new SqlParameter("@EntryBy", EntryId));
-                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+                SqlParams.Add(new SqlParameter("@EntryBy", EntryBy));
+                SqlParams.Add(new SqlParameter("@PartyWIseGrpDiscEntryId", EntryId));
+                
                
-                SqlParams.Add(new SqlParameter("@EntryDate", entrydate));
+                SqlParams.Add(new SqlParameter("@EntryDate", CommonFunc.ParseFormattedDate(DateTime.Now.ToString())));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPPartyWiseItemGroupDiscountDetail", SqlParams);
             }
             catch (Exception ex)

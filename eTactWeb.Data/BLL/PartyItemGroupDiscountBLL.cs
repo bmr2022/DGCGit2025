@@ -82,9 +82,9 @@ namespace eTactWeb.Data.BLL
             return await _PartyItemGroupDiscountDAL.GetDashboardDetailData(FromDate, ToDate, ReportType, AccountCode, CategoryId, GroupName);
         }
 
-        public async Task<ResponseResult> DeleteByID(int EntryId, int AccountCode, string EntryDate)
+        public async Task<ResponseResult> DeleteByID(int EntryId, string EntryDate,int EntryBy)
         {
-            return await _PartyItemGroupDiscountDAL.DeleteByID(EntryId, AccountCode, EntryDate);
+            return await _PartyItemGroupDiscountDAL.DeleteByID(EntryId, EntryDate, EntryBy);
         }
 		public async Task<PartyItemGroupDiscountModel> GetViewByID(int ID)
 		{
