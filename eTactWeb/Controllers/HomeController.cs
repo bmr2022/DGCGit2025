@@ -15,6 +15,7 @@ using ClosedXML.Excel;
 using eTactWeb.Helpers;
 using Microsoft.AspNetCore.Hosting;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Serilog;
 
 namespace eTactWeb.Controllers;
 
@@ -33,7 +34,7 @@ public class HomeController : Controller
     private string sql = string.Empty;
     private string year_code;
     private readonly IWebHostEnvironment _IWebHostEnvironment;
-    public HomeController(IWebHostEnvironment iWebHostEnvironment, IConfiguration config, ILogger<HomeController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IConnectionStringHelper connectionStringHelper, UserContextService userContextService, ConnectionStringService connectionStringService,IDashboard IDashboard)
+    public HomeController(IWebHostEnvironment iWebHostEnvironment, IConfiguration config, ILogger<HomeController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IConnectionStringHelper connectionStringHelper, UserContextService userContextService, ConnectionStringService connectionStringService, IDashboard IDashboard)
     {
         _logger = logger;
         this._IDataLogic = iDataLogic;
@@ -58,7 +59,7 @@ public class HomeController : Controller
     [HttpGet]
     public async Task<IActionResult> Dashboard()
     {
-       
+
         return View();
     }
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -321,7 +322,7 @@ public class HomeController : Controller
             // Construct the path to your text file
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             //string webRootPath1 = _IWebHostEnvironment.WebRootPath;
-            string filePath = Path.Combine(webRootPath,  "servername.txt");
+            string filePath = Path.Combine(webRootPath, "servername.txt");
 
             // Check if the file exists
             if (!System.IO.File.Exists(filePath))
@@ -336,11 +337,18 @@ public class HomeController : Controller
             serverName = serverName.Trim();
 
             string lines = serverName;
-            return Ok(new { Lines = lines });
+            // return Ok(new { Lines = lines });
+            return Json(new { Lines = lines });
         }
+        //catch (Exception ex)
+        //{
+        //    return StatusCode(500, $"An error occurred: {ex.Message}");
+        //}
         catch (Exception ex)
         {
-            return StatusCode(500, $"An error occurred: {ex.Message}");
+            // Log full details
+            _logger.LogError(ex, $"GetServerName failed: {ex.Message}\nStack: {ex.StackTrace}");
+            return Json(new { error = ex.Message, lines = new string[0] });
         }
     }
     static string GetServerNameFromConnectionString(string connectionString)
@@ -517,7 +525,7 @@ public class HomeController : Controller
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         LoginModel model = GeteDTRModel();
-        
+
         if (!System.IO.File.Exists("license.lic"))
             return Content("No license found. Contact admin.");
         var encrypted = System.IO.File.ReadAllText("license.lic");
@@ -553,10 +561,11 @@ public class HomeController : Controller
         string RetailerOrManufacturar = string.Empty;
         string empName = "";
         var userRole = "";
+        var empCode = "";
         Constants.FinincialYear = model.YearCode;
         ClaimsIdentity identity = null;
         bool isAuthenticate = false;
-       
+
         #region dynamicConnection
 
         //string dbNameSql = "SELECT DataBase_Name FROM Company_Detail WHERE Company_Name = @CompanyName";
@@ -577,7 +586,7 @@ public class HomeController : Controller
         //}
         //string connectionstring = GetConnectionString(databaseName);
         #endregion
-       string baseConnectionString = _configuration.GetConnectionString("eTactDB1");
+        string baseConnectionString = _configuration.GetConnectionString("eTactDB1");
         // Step 2: Read server name from file
         string serverName = System.IO.File.ReadAllText(
             Path.Combine(_IWebHostEnvironment.WebRootPath, "servername.txt")
@@ -632,6 +641,8 @@ public class HomeController : Controller
             }
         }
         var dbName = detail[0].ToString();
+        HttpContext.Session.SetString("DatabaseName", dbName);
+
         if (IsDrOpen == true)
         {
             IsDrOpen = false;
@@ -646,6 +657,10 @@ public class HomeController : Controller
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Flag", "INSERT");
                 cmd.Parameters.AddWithValue("@EntryByMachine", Environment.MachineName); // or HttpContext.Connection.RemoteIpAddress?.ToString()
+                                                                                         //string clientIP = HttpContext.Connection.RemoteIpAddress?.ToString()
+                                                                                         //   ?? "Unknown";
+                                                                                         //string clientMachineName = Dns.GetHostEntry(clientIP).HostName;
+                                                                                         // cmd.Parameters.AddWithValue("@EntryByMachine", clientMachineName);
                 cmd.Parameters.AddWithValue("@CompanyName", model.CompanyName);
                 cmd.Parameters.AddWithValue("@FinYear", yearCode);
                 cmd.Parameters.AddWithValue("@UserName", model.UserName);
@@ -656,9 +671,11 @@ public class HomeController : Controller
                 await cmd.ExecuteReaderAsync();
             }
         }
+        dbName = HttpContext.Session.GetString("DatabaseName");
         finalConnStr = $"Data Source={model.ServerName};Initial Catalog={dbName};;User Id=web;Password=bmr2401;Integrated Security=False";
-       // finalConnStr = GetConnectionString(dbName);
+        // finalConnStr = GetConnectionString(dbName);
         _connectionStringService.SetConnectionString(finalConnStr);
+        ViewBag.DatabaseName = dbName;
         conn = new(finalConnStr);
         try
         {
@@ -783,7 +800,7 @@ public class HomeController : Controller
                 }
                 conn.Close();
                 conn.Open();
-                
+
 
                 sql = "SELECT isnull(RetailerOrManufacturar,'')  RetailerOrManufacturar  FROM Company_Detail";
 
@@ -858,7 +875,7 @@ public class HomeController : Controller
                 conn.Open();
                 //sql = "exec [GetUserDetail]   @Flage = 'GetEmpName',@EmpiD ='" + EmpId + "'";
 
-                sql = "select Emp_Name+'--->'+Emp_Code 'EmpName',dm.deptid Department_Id,dm.DeptName from Employee_Master em join UserMaster um on em.Emp_Id = um.EmpID join DepartmentMaster dm on em.DeptId = dm.DeptId where EmpID='" + EmpId + "'";
+                sql = "select Emp_Name+'--->'+Emp_Code 'EmpName',dm.deptid Department_Id,dm.DeptName,Emp_Code from Employee_Master em join UserMaster um on em.Emp_Id = um.EmpID join DepartmentMaster dm on em.DeptId = dm.DeptId where EmpID='" + EmpId + "'";
 
                 //sql = "select Emp_Name+'--->'+Emp_Code 'EmpName',em.deptId ,dm.DeptName from Employee_Master em join UserMaster um on em.Emp_Id = um.EmpID join DepartmentMaster dm on em.deptId  = dm.DeptId where EmpID='" + EmpId+"'";
 
@@ -877,6 +894,7 @@ public class HomeController : Controller
                         EMPNAME = rdrAccount.GetString(0);
                         DepId = Convert.ToInt32(rdrAccount.GetInt64(1));
                         DepName = rdrAccount.GetString(2);
+                        empCode = rdrAccount.GetString(3);
                     }
                 }
                 userRole = detail[0];
@@ -967,6 +985,7 @@ public class HomeController : Controller
             HttpContext.Session.SetString("CompanyName", model.CompanyName); //done CompanyName
             HttpContext.Session.SetString("YearCode", yearCode.ToString());//done
             HttpContext.Session.SetString("EmpID", EmpId.ToString());//use this everywhere
+            HttpContext.Session.SetString("EmpCode", empCode.ToString());//use this everywhere
             HttpContext.Session.SetString("UID", EmpId.ToString());//done there is no UID it will be same as EMpid
             HttpContext.Session.SetString("EmpName", EMPNAME); // done
             HttpContext.Session.SetString("FromDate", frmDt);//done
@@ -1003,10 +1022,10 @@ public class HomeController : Controller
             return View(model);
         }
 
-        
+
 
         return RedirectToAction("Dashboard", "Home");
-        
+
 
     }
     public async Task<IActionResult> Logout()
@@ -1105,8 +1124,8 @@ public class HomeController : Controller
         var JSON = await _IDashboard.FillInventoryDashboardData();
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
-    }  
-  
+    }
+
     public async Task<JsonResult> FillInventoryDashboardForPendingData()
     {
         var JSON = await _IDashboard.FillInventoryDashboardForPendingData();

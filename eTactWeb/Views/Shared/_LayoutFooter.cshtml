@@ -6,6 +6,7 @@
     string CompanyName = HttpContextAccessor.HttpContext.Session.GetString("CompanyName");
     string empName = HttpContextAccessor.HttpContext.Session.GetString("EmpName");
     string yearCode =  HttpContextAccessor.HttpContext.Session.GetString("YearCode");
+    string DBNAME = HttpContextAccessor.HttpContext.Session.GetString("DatabaseName");
     string FinFromDate =CommonFunc.ParseFormattedDate( HttpContextAccessor.HttpContext.Session.GetString("FromDate"));
     // .Split(" ")[0];
     string FinToDate =CommonFunc.ParseFormattedDate( HttpContextAccessor.HttpContext.Session.GetString("ToDate"));
@@ -30,7 +31,8 @@
                     Branch:  <b style="color:yellow"> @branchName,</b>
                     FinancialYear: <b id="sessionYC" style="color:yellow">@yearCode</b>,<br />
                     Fin From Date: @FinFromDate,
-                    Fin To Date: @FinToDate
+                    Fin To Date: @FinToDate<br/>
+                    <span>Database :@DBNAME</span>
                 </label>
             </div>
         </section>
