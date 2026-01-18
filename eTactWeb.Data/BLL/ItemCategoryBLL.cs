@@ -2,6 +2,7 @@
 using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using static eTactWeb.DOM.Models.Common;
 
@@ -11,11 +12,15 @@ public class ItemCategoryBLL : IItemCategory
 {
     private ItemCategoryDAL _ItemCategoryDAL;
     private readonly IDataLogic _DataLogicDAL;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public ItemCategoryBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
+
+    public ItemCategoryBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService, IHttpContextAccessor httpContextAccessor)
     {
-        _ItemCategoryDAL = new ItemCategoryDAL(config, dataLogicDAL, connectionStringService);
+        _httpContextAccessor = httpContextAccessor;
+        _ItemCategoryDAL = new ItemCategoryDAL(config, dataLogicDAL, connectionStringService, _httpContextAccessor);
         _DataLogicDAL = dataLogicDAL;
+       
     }
 
     public async Task<ResponseResult> DeleteByID(int ID)

@@ -423,7 +423,7 @@ public class AccountController : Controller
         conn.Close();
         //connectionstring = $"Data Source={model.ServerName};Initial Catalog={dbName};;User Id=web;Password=bmr2401;Integrated Security=False";
         connectionstring = GetConnectionString(dbName);
-        _connectionStringService.SetConnectionString(connectionstring);
+        //_connectionStringService.SetConnectionString(connectionstring);
         conn = new(connectionstring);
         try
         {

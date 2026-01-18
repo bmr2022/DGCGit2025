@@ -18,7 +18,9 @@ public class DataLogicBLL : IDataLogic
     public DataLogicBLL(IConfiguration configuration, IConnectionStringHelper connectionStringHelper, UserContextService userContextService, IHttpContextAccessor httpContextAccessor, ConnectionStringService connectionStringService)
     {
         _connectionStringHelper = connectionStringHelper;
-        _DataLogicDAL = new DataLogicDAL(configuration, _connectionStringHelper,connectionStringService);
+        _httpContextAccessor = httpContextAccessor;
+        _DataLogicDAL = new DataLogicDAL(configuration, _connectionStringHelper,connectionStringService, _httpContextAccessor);
+
         _userContextService = userContextService;
         _httpContextAccessor = httpContextAccessor;
     }

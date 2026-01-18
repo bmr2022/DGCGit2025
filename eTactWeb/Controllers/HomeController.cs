@@ -19,6 +19,8 @@ using Serilog;
 
 namespace eTactWeb.Controllers;
 
+
+
 public class HomeController : Controller
 {
     private readonly IDataLogic _IDataLogic;
@@ -45,6 +47,19 @@ public class HomeController : Controller
         _connectionStringService = connectionStringService;
         _IDashboard = IDashboard;
         _IWebHostEnvironment = iWebHostEnvironment;
+    }
+
+    private string GetDatabaseSessionKey()
+    {
+        var sessionKey = HttpContext.Session.GetString("SessionKey");
+
+        if (string.IsNullOrEmpty(sessionKey))
+        {
+            sessionKey = Guid.NewGuid().ToString();
+            HttpContext.Session.SetString("SessionKey", sessionKey);
+        }
+
+        return sessionKey;
     }
     [HttpPost]
     public JsonResult AutoComplete(string Schema, string ColName, string prefix, string FromDate = "", string ToDate = "", int ItemCode = 0, int Storeid = 0)
@@ -592,6 +607,8 @@ public class HomeController : Controller
             Path.Combine(_IWebHostEnvironment.WebRootPath, "servername.txt")
         ).Trim();
 
+        HttpContext.Session.SetString("serverName", serverName);
+
         // Step 3: Replace placeholder
         string finalConnStr = baseConnectionString.Replace("{ServerName}", serverName);
         SqlConnection conn = new(finalConnStr);
@@ -641,6 +658,9 @@ public class HomeController : Controller
             }
         }
         var dbName = detail[0].ToString();
+        //monika
+
+       
         HttpContext.Session.SetString("DatabaseName", dbName);
 
         if (IsDrOpen == true)
@@ -671,8 +691,11 @@ public class HomeController : Controller
                 await cmd.ExecuteReaderAsync();
             }
         }
-        dbName = HttpContext.Session.GetString("DatabaseName");
+        dbName = HttpContext.Session.GetString("DatabaseName"); 
+        HttpContext.Session.SetString("Servername", dbName);
         finalConnStr = $"Data Source={model.ServerName};Initial Catalog={dbName};;User Id=web;Password=bmr2401;Integrated Security=False";
+
+        HttpContext.Session.SetString("DB_CONN", finalConnStr);
         // finalConnStr = GetConnectionString(dbName);
         _connectionStringService.SetConnectionString(finalConnStr);
         ViewBag.DatabaseName = dbName;

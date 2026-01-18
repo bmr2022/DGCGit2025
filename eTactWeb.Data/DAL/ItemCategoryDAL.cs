@@ -1,6 +1,7 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
 using System.Reflection.Metadata;
@@ -15,15 +16,27 @@ namespace eTactWeb.Data.DAL
 
         private readonly IDataLogic _DataLogicDAL;
         private readonly ConnectionStringService _connectionStringService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         //private readonly IConfiguration configuration;
 
-        public ItemCategoryDAL(IConfiguration configuration, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
+        public ItemCategoryDAL(IConfiguration configuration, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService, IHttpContextAccessor httpContextAccessor)
         {
             //configuration = config;
             // DBConnectionString = configuration.GetConnectionString("eTactDB");
+
             _connectionStringService = connectionStringService;
-            DBConnectionString = _connectionStringService.GetConnectionString();
+            //DBConnectionString = _connectionStringService.GetConnectionString();
             _DataLogicDAL = dataLogicDAL;
+            _httpContextAccessor = httpContextAccessor;
+            _httpContextAccessor = httpContextAccessor;
+
+            DBConnectionString =
+        _httpContextAccessor.HttpContext?
+        .Session
+        .GetString("DB_CONN");
+
+          
+
         }
 
         public async Task<ResponseResult> GetFormRights(int userId)

@@ -1,6 +1,7 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
 using System.Reflection;
@@ -18,7 +19,9 @@ namespace eTactWeb.Data.DAL
         private IDataReader? Reader;
         private readonly ConnectionStringService _connectionStringService;
         private readonly IConnectionStringHelper _connectionStringHelper;
-        public DataLogicDAL(IConfiguration configuration, IConnectionStringHelper connectionStringHelper, ConnectionStringService connectionStringService)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public DataLogicDAL(IConfiguration configuration, IConnectionStringHelper connectionStringHelper, ConnectionStringService connectionStringService, IHttpContextAccessor httpContextAccessor)
         {
             _connectionStringHelper = connectionStringHelper;
             //configuration = config;
@@ -27,7 +30,17 @@ namespace eTactWeb.Data.DAL
 
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
             _connectionStringService = connectionStringService;
-            DBConnectionString = _connectionStringService.GetConnectionString();
+
+            //DBConnectionString = _connectionStringService.GetConnectionString();
+
+            _httpContextAccessor = httpContextAccessor;
+
+            DBConnectionString =
+        _httpContextAccessor.HttpContext?
+        .Session
+        .GetString("DB_CONN");
+            _httpContextAccessor = httpContextAccessor;
+
             //DBConnectionString = _connectionStringService.GetConnectionString();
 
             //DBConnectionString = _connectionStringHelper.GetConnectionStringForCompany();
