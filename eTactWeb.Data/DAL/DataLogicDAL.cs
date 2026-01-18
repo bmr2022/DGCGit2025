@@ -35,13 +35,13 @@ namespace eTactWeb.Data.DAL
 
             _httpContextAccessor = httpContextAccessor;
 
-            DBConnectionString =
-        _httpContextAccessor.HttpContext?
-        .Session
-        .GetString("DB_CONN");
-            _httpContextAccessor = httpContextAccessor;
+        //    DBConnectionString =
+        //_httpContextAccessor.HttpContext?
+        //.Session
+        //.GetString("DB_CONN");
+        //    _httpContextAccessor = httpContextAccessor;
 
-            //DBConnectionString = _connectionStringService.GetConnectionString();
+            DBConnectionString = _connectionStringService.GetConnectionString();
 
             //DBConnectionString = _connectionStringHelper.GetConnectionStringForCompany();
         }

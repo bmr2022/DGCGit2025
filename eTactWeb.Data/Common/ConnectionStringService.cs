@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace eTactWeb.Data.Common
 {
@@ -11,6 +12,7 @@ namespace eTactWeb.Data.Common
     {
         public string DBConnectionString { get; private set; }
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor = new HttpContextAccessor();
 
         public ConnectionStringService(IConfiguration configuration)
         {
@@ -24,7 +26,18 @@ namespace eTactWeb.Data.Common
 
         public string GetConnectionString()
         {
-            return DBConnectionString;
+            // 1️⃣ Try from Session (per user)
+            var connStr = _httpContextAccessor.HttpContext?
+                                .Session
+                                .GetString("DB_CONN");
+
+            // 2️⃣ Fallback (optional safety)
+            if (string.IsNullOrEmpty(connStr))
+            {
+                connStr = _configuration.GetConnectionString("eTactDB");
+            }
+
+            return connStr;
         }
     }
 }
