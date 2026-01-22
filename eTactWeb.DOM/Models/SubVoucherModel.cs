@@ -33,6 +33,7 @@ namespace eTactWeb.DOM.Models
         public string ActualEntryDate { get; set; }
         public List<int>? EmployeeName { get; set; }
         public string? SelectedEmployeeIds { get; set; }
+        public string? GetPriceFrom { get; set; }
         public string VoucherInvoice { get; set; }
         public int UpdatedBy { get; set; }
         public string UpdationDate { get; set; }

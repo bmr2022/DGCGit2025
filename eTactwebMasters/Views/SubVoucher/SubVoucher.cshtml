@@ -308,10 +308,17 @@
                                     </div> *@
                                 }
 
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-3">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label for="EmployeeName" class="form-label fw-bold">Employee Name</label>
                                     <select asp-for="EmployeeName" class="form-control select2" id="EmployeeName" multiple>
                                         <!-- Options will be dynamically populated -->
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:170px">
+                                    <label for="GetPriceFrom" class="form-label">Get Price From</label>
+                                    <select asp-for="GetPriceFrom"  class="form-control">
+                                        <option value="">-Select-</option>
                                     </select>
                                 </div>
                                @*  <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
@@ -441,12 +448,14 @@
             $('#ToYearPreFix').select2();
             $('#MonthPrefix').select2();
             $('#DayPrefix').select2();
+            $('#GetPriceFrom').select2();
             getMainVoucherNames();
             $('#EmployeeName').select2({
                 placeholder: "-Select Employees-",
                 width: '100%'
             });
             GetEmployeeList();
+            GetPriceFrom();
             //getPrefixEntryId();
              
             $('#MainVoucherName').change(function () {
@@ -519,6 +528,31 @@
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                         var MainVoucherName = '@Model.MainVoucherName';
                         $('#MainVoucherName').val(MainVoucherName);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('AJAX error: ', textStatus, errorThrown);
+                    alert('Error loading voucher names: ' + textStatus);
+                }
+            });
+        }
+        function GetPriceFrom() {
+            $.ajax({
+                url: '@Url.Action("GetPriceFrom", "SubVoucher")',
+                type: 'GET',
+                success: function (response) {
+                     ;
+                    var dropdown = $('#GetPriceFrom');
+                    var obj = $.parseJSON(response);
+                    dropdown.empty();
+                    dropdown.append('<option value="">-Select-</option>'); 
+                     
+                    $.each(obj.Result, function (index, value) {
+                        dropdown.append('<option value="' + value.GetPriceFrom + '">' + value.GetPriceFrom + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var GetPriceFrom = '@Model.GetPriceFrom';
+                        $('#GetPriceFrom').val(GetPriceFrom);
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {

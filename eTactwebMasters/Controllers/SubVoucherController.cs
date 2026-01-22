@@ -151,6 +151,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> GetPriceFrom()
+        {
+            var JSON = await _ISubVoucher.GetPriceFrom();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> GetTableName(string MainVoucherName)
         {
             var JSON = await _ISubVoucher.GetTableName(MainVoucherName);

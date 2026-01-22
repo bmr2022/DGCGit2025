@@ -32,6 +32,11 @@ namespace eTactWeb.Data.BLL
         {
             return await _SubVoucherDAL.GetEmployeeList();
         }
+
+        public async Task<ResponseResult> GetPriceFrom()
+        {
+            return await _SubVoucherDAL.GetPriceFrom();
+        }
         public async Task<ResponseResult> GetTableName(string MainVoucherName)
         {
             return await _SubVoucherDAL.GetTableName(MainVoucherName);
