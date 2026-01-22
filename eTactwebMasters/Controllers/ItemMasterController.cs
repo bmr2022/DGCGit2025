@@ -2353,6 +2353,7 @@ public class ItemMasterController : Controller
             dt.Columns.Add("ChildBom", typeof(string));
             dt.Columns.Add("usedinMachorVehicle", typeof(string));
             dt.Columns.Add("Barcode", typeof(string));
+            dt.Columns.Add("HidePartCodeOnReport", typeof(bool));
 
 
             int rowNumber = 1;
