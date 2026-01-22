@@ -50,6 +50,27 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+        public async Task<ResponseResult> GetEmployeeList()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "EmpNameWithCode"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GetDropDownList", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetTableName(string MainVoucherName)
         {
             var _ResponseResult = new ResponseResult();
@@ -212,6 +233,8 @@ namespace eTactWeb.Data.DAL
                 model.Separator = DS.Tables[0].Rows[0]["Separator"].ToString();
                 model.TotalLength = Convert.ToInt32(DS.Tables[0].Rows[0]["TotalLength"].ToString());
                 model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"].ToString();
+                //model.GetPriceFrom = DS.Tables[0].Rows[0]["GetPriceFrom"].ToString();
+                model.SelectedEmployeeIds = DS.Tables[0].Rows[0]["UserRightsList"].ToString();
                 model.ActualEntryBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());
                 //model.UpdatedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["UpdatedBy"].ToString());
                 //model.UpdationDate = DS.Tables[0].Rows[0]["UpdationDate"].ToString();
@@ -293,6 +316,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Separator", model.Separator ?? ""));
                 SqlParams.Add(new SqlParameter("@TotalLength", model.TotalLength == 0 ? 0 : model.TotalLength));
                 SqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine ?? ""));
+                SqlParams.Add(new SqlParameter("@UserRightsList", model.SelectedEmployeeIds ?? ""));
                 SqlParams.Add(new SqlParameter("@VoucherInvoice", "Voucher"));
 
                

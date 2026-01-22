@@ -49,6 +49,17 @@ namespace eTactWeb.Controllers
                 MainModel.ID = PrefixEntryId;
                 MainModel.MainVoucherName = MainVoucherName;
                 MainModel.MainVoucherTableName = MainVoucherTableName;
+                if (!string.IsNullOrWhiteSpace(MainModel.SelectedEmployeeIds))
+                {
+                    MainModel.EmployeeName = MainModel.SelectedEmployeeIds
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(x => Convert.ToInt32(x))
+                        .ToList();
+                }
+                else
+                {
+                    MainModel.EmployeeName = new List<int>();
+                }
                 MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
                 MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("ID"));
@@ -77,6 +88,16 @@ namespace eTactWeb.Controllers
                 //_MemoryCache.TryGetValue("KeyLedgerOpeningEntryGrid", out List<LedgerOpeningEntryGridModel> LedgerOpeningEntryGrid);
 
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
+                if (model.EmployeeName != null && model.EmployeeName.Count > 0)
+                {
+                    model.SelectedEmployeeIds = string.Join(",", model.EmployeeName);
+                }
+                else
+                {
+                    model.SelectedEmployeeIds = null;
+                }
+
 
 
                 var Result = await _ISubVoucher.SaveSubVoucher(model);
@@ -120,6 +141,13 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> GetMainVoucherNames()
         {
             var JSON = await _ISubVoucher.GetMainVoucherNames();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GetEmployeeList()
+        {
+            var JSON = await _ISubVoucher.GetEmployeeList();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

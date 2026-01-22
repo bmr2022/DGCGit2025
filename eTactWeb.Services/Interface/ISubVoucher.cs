@@ -12,6 +12,7 @@ namespace eTactWeb.Services.Interface
     public interface  ISubVoucher
     {
       public  Task<ResponseResult> GetMainVoucherNames();
+      public  Task<ResponseResult> GetEmployeeList();
       public  Task<ResponseResult> GetTableName(string MainVoucherName);
       public Task<ResponseResult> SaveSubVoucher(SubVoucherModel model);
       public  Task<ResponseResult> GetDashboardData();

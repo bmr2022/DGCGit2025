@@ -9,6 +9,40 @@
     <div class="lh-1">
     </div>
     </div>*@
+    <style>
+    .select2-container .select2-selection--multiple {
+        background-color: #fff;
+        border: 1px solid #ced4da; /* Bootstrap gray border */
+        border-radius: 0.375rem; /* Bootstrap rounded corners */
+        min-height: 38px;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: #0d6efd; /* Bootstrap primary color */
+        border: 1px solid #0d6efd;
+        color: white;
+        padding: 0 5px;
+        margin-top: 4px;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        color: white;
+        margin-left: 5px;
+    }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+            color: #ffc107; /* Yellow remove hover */
+        }
+
+    .select2-container--default .select2-selection--multiple:focus,
+    .select2-container--default .select2-selection--multiple:hover {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13,110,253,0.25);
+    }
+    </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <form asp-action="SubVoucher" asp-controller="SubVoucher" method="post" autocomplete="on" class="form-horizontal">
@@ -273,6 +307,13 @@
                                         <input asp-for="UpdatedOn" class="form-control" readonly />
                                     </div> *@
                                 }
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-3">
+                                    <label for="EmployeeName" class="form-label fw-bold">Employee Name</label>
+                                    <select asp-for="EmployeeName" class="form-control select2" id="EmployeeName" multiple>
+                                        <!-- Options will be dynamically populated -->
+                                    </select>
+                                </div>
                                @*  <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
                                     <label asp-for="CC" class="form-label">CC</label>
                                     <input asp-for="CC" class="form-control" readonly />
@@ -401,6 +442,11 @@
             $('#MonthPrefix').select2();
             $('#DayPrefix').select2();
             getMainVoucherNames();
+            $('#EmployeeName').select2({
+                placeholder: "-Select Employees-",
+                width: '100%'
+            });
+            GetEmployeeList();
             //getPrefixEntryId();
              
             $('#MainVoucherName').change(function () {
@@ -481,6 +527,51 @@
                 }
             });
         }
+
+
+        function GetEmployeeList() {
+            $.ajax({
+                url: '@Url.Action("GetEmployeeList", "SubVoucher")',
+                type: 'GET',
+                success: function (response) {
+                    var dropdown = $('#EmployeeName');
+                    var obj = $.parseJSON(response);
+
+                    // Clear existing options
+                    dropdown.empty();
+
+                    // Add options
+                    $.each(obj.Result, function (index, value) {
+                        dropdown.append('<option value="' + value.Emp_Id + '">' + value.EmpNameCode + '</option>');
+                    });
+
+                    // Pre-select values in Update/View mode
+                    // ✅ REFILL in Update / View mode
+                    if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+
+                        // 👇 this comes from controller as comma-separated string
+                        var selectedValues = '@Model.SelectedEmployeeIds';
+
+                        if (selectedValues) {
+                            selectedValues.split(',').forEach(function (val) {
+                                dropdown.find('option[value="' + val.trim() + '"]')
+                                    .prop('selected', true);
+                            });
+                        }
+                    }
+
+
+                    // Refresh Select2 to apply pre-selected values
+                    dropdown.trigger('change');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('AJAX error: ', textStatus, errorThrown);
+                    alert('Error loading employee names: ' + textStatus);
+                }
+            });
+        }
+
+
         $('#MainVoucherName').change(function () {
             var mainVoucherName = $('#MainVoucherName').val();
             getPrefixEntryId(mainVoucherName);
