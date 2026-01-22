@@ -1306,13 +1306,14 @@
 
                     var txTotal = sum + txSum;
                     $('#NetTotal').val(txTotal.toFixed(2));
+                   
+                    calculateroundoffnettotal();
                     $('#NetTotal1').val(txTotal.toFixed(2));
 
                     // Reset discount & rounding
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
                     $('#TotalRoundOffAmt').val(0.00);
-                    calculateroundoffnettotal();
 
                     // Call helper functions
                     calculatetotalqty();
@@ -1807,10 +1808,11 @@
                 }
                 var txTotal = sum + txSum + TotalRoundOffAmt;
                 $('#NetTotal').val(txTotal.toFixed(2));
+                
+                calculateroundoffnettotal();
                 $('#NetTotal1').html(txTotal.toFixed(2));
                 $('#BaseNetTotal').val(txTotal.toFixed(2));
                 $('#AdjPendAmt').val($('#NetTotal').val());
-                calculateroundoffnettotal();
                 // $('#NetTotal1').html($('#NetTotal').val());
             }
             calculatetotalqty();
@@ -3354,13 +3356,14 @@
 
                     var txTotal = sum + txSum;
                     $('#NetTotal').val(txTotal.toFixed(2));
+                    
+                    calculateroundoffnettotal();
                     $('#NetTotal1').html(txTotal.toFixed(2));
                     $('#BaseNetTotal').val(txTotal.toFixed(2));
                     $('#AdjPendAmt').val($('#NetTotal').val());
                     // $('#NetTotal1').html($('#NetTotal').val());
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
-                    calculateroundoffnettotal();
 
                     // ClearGrid();
                     $('.PendingItem').hide();
@@ -3561,12 +3564,13 @@
                     var txTotal = sum + txSum;
                     $('#NetTotal1').html(txTotal.toFixed(2));
                     $('#NetTotal').val(txTotal.toFixed(2));
+                    
+                    calculateroundoffnettotal();
                     $('#BaseNetTotal').val(txTotal.toFixed(2));
                     $('#AdjPendAmt').val($('#NetTotal').val());
-                           // $('#NetTotal1').html($('#NetTotal').val());
+                    // $('#NetTotal1').html($('#NetTotal').val());
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
-                    calculateroundoffnettotal();
 
                     // ClearGrid();
                     $('.PendingItem').hide();
@@ -3805,13 +3809,13 @@
 
                     var txTotal = sum + txSum;
                     $('#NetTotal').val(txTotal.toFixed(2));
+                    
+                    calculateroundoffnettotal();
                     $('#BaseNetTotal').val(txTotal.toFixed(2));
                     $('#AdjPendAmt').val($('#NetTotal').val());
                     $('#NetTotal1').html($('#NetTotal').val());
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
-                    calculateroundoffnettotal();
-
                     // ClearGrid();
                     $('.PendingItem').hide();
                     $('.newitems').show();
@@ -5435,9 +5439,10 @@
                 + PackingCharges + ForwardingCharges + CourieerCharges + GST;
 
             $('#NetTotal').val(netAmt.toFixed(2));
+            
+            calculateroundoffnettotal();
             $('#NetTotal1').html(netAmt.toFixed(2));
             $('#AdjPendAmt').val(netAmt.toFixed(2));
-            calculateroundoffnettotal();
 
             // GetDbCrDetail();
 
@@ -5627,13 +5632,14 @@
 
                             var txTotal = sum + txSum;
                             $('#NetTotal').val(txTotal.toFixed(6));
+                           
+                            calculateroundoffnettotal();
                             ('#NetTotal1').html(txTotal.toFixed(6));
                             $('#BaseNetTotal').val(txTotal.toFixed(6));
                             $('#AdjPendAmt').val($('#NetTotal').val());
                             // $('#NetTotal1').html($('#NetTotal').val());
                             $('#TotalDiscountPercentage').val(0);
                             $('#TotalAmtAftrDiscount').val(0);
-                            calculateroundoffnettotal();
 
 
 
@@ -5872,6 +5878,8 @@
 
                         var txTotal = sum + txSum;
                         $('#NetTotal').val(txTotal.toFixed(2));
+                       
+                        calculateroundoffnettotal();
                         // ('#NetTotal1').html(txTotal.toFixed(2));
                         $('#BaseNetTotal').val(txTotal.toFixed(2));
 
@@ -5879,7 +5887,6 @@
                         // $('#NetTotal1').html($('#NetTotal').val());
                         $('#TotalDiscountPercentage').val(0);
                         $('#TotalAmtAftrDiscount').val(0);
-                        calculateroundoffnettotal();
 
                         var Seqno = $('#SeqNo-' + rowCount).val();
                         itemBatchArray.push({
@@ -5964,6 +5971,8 @@
                     $('#divTaxGrid').html(NoData);
                     var txAmt = $('#lblItemNetAmount').text();
                     $('#NetTotal').val(txAmt);
+                   
+                    calculateroundoffnettotal();
                     $('#NetTotal1').html(txAmt);
 
 
@@ -5971,7 +5980,6 @@
                     $('#BaseNetTotal').val(txAmt);
                     $('#AdjPendAmt').val($('#NetTotal').val());
                     // $('#NetTotal1').html($('#NetTotal').val());
-                    calculateroundoffnettotal();
                     // $('#AdjNewRefNo').val($('#NetTotal').val());
 
                 },
@@ -7782,12 +7790,13 @@
 
                 var txTotal = sum + txSum;
                 $('#NetTotal').val(txTotal.toFixed(2));
-                $('#NetTotal1').val(txTotal.toFixed(2));
-                $('#BaseNetTotal').val(txTotal.toFixed(2));
-                $('#AdjPendAmt').val($('#NetTotal').val());
-                $('#TotalDiscountPercentage').val(0);
-                $('#TotalAmtAftrDiscount').val(0);
+               
                         calculateroundoffnettotal();
+                        $('#NetTotal1').val(txTotal.toFixed(2));
+                        $('#BaseNetTotal').val(txTotal.toFixed(2));
+                        $('#AdjPendAmt').val($('#NetTotal').val());
+                        $('#TotalDiscountPercentage').val(0);
+                        $('#TotalAmtAftrDiscount').val(0);
 
                 // ClearGrid();
                 $('.PendingItem').hide();
