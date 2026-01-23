@@ -47,19 +47,27 @@
                 <td>@item.ItemName<input type="hidden" value="@item.StoreWorkCenter" id="hiddenSW"></td>
                 <td>@item.Unit</td>
                 <td>@item.TotalStock</td>
-                <td>@item.LotStock</td>
-                <td>@item.altUnit</td>
-                <td>@item.AltQty</td>
                 <td>@item.ActualStockQty</td>
                 <td>@item.AdjQty</td>
                 <td>@item.AdjType</td>
+               
+                <td>@item.reasonOfAdjustment<input type="hidden" id="StockAdjustExcelDate-@Cntr" value="@item.StockAdjustmentDate"></td>
+
+                <td>@item.ItemLocation</td>
+                <td>@item.VahicleName</td>
+                <td>@item.GroupName</td>
+                <td>@item.LotStock</td>
+
+                <td>@item.altUnit</td>
+                <td>@item.AltQty</td>
+              
                 <td>@item.StoreName</td>
                 <td>@item.WCName</td>
                 <td>@item.Rate.ToString("#.#0")</td>
                 <td>@item.Amount.ToString("#.#0")</td>
                 <td>@item.batchno</td>
                 <td>@item.uniqbatchno</td>
-                <td>@item.reasonOfAdjustment<input type="hidden" id="StockAdjustExcelDate-@Cntr" value="@item.StockAdjustmentDate"></td>
+             
             </tr>
 
         }
@@ -113,19 +121,27 @@ else
                 <td>@item.ItemName</td>
                 <td>@item.Unit</td>
                 <td>@item.TotalStock</td>
-                <td>@item.LotStock</td>
-                <td>@item.altUnit</td>
-                <td>@item.AltQty</td>
                 <td>@item.ActualStockQty</td>
                 <td>@item.AdjQty</td>
                 <td>@item.AdjType</td>
+
+                <td>@item.reasonOfAdjustment</td>
+
+                <td>@item.ItemLocation</td>
+                <td>@item.VahicleName</td>
+                <td>@item.GroupName</td>
+                <td>@item.LotStock</td>
+
+                <td>@item.altUnit</td>
+                <td>@item.AltQty</td>
+
                 <td>@item.StoreName</td>
                 <td>@item.WCName</td>
                 <td>@item.Rate.ToString("#.#0")</td>
                 <td>@item.Amount.ToString("#.#0")</td>
                 <td>@item.batchno</td>
                 <td>@item.uniqbatchno</td>
-                <td>@item.reasonOfAdjustment</td>
+              
             </tr>
 
         }

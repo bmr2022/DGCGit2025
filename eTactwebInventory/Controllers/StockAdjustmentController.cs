@@ -105,6 +105,7 @@ namespace eTactWeb.Controllers
             MainModel.WorkCenterBack = WCName;
             MainModel.SummaryDetailBack = SummaryDetail;
             MainModel.GlobalSearchBack = Searchbox;
+            MainModel.StoreWorkCenter = "S";
             HttpContext.Session.SetString("KeyStockAdjustGrid", JsonConvert.SerializeObject(MainModel.StockAdjustModelGrid));
             return View(MainModel);
         }
@@ -626,6 +627,7 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("batchno", typeof(string));
             DTSSGrid.Columns.Add("uniquebatchno", typeof(string));
             DTSSGrid.Columns.Add("reasonOfAdjustment", typeof(string));
+            DTSSGrid.Columns.Add("ItemLocation", typeof(string));
             //DateTime DeliveryDt = new DateTime();
             foreach (var Item in DetailList)
             {
@@ -652,6 +654,7 @@ namespace eTactWeb.Controllers
                     Item.batchno,
                     Item.uniqbatchno == null ? "" : Item.uniqbatchno, // this is uniqbatchno
                     Item.reasonOfAdjustment,
+                    Item.ItemLocation,
                     });
             }
             DTSSGrid.Dispose();

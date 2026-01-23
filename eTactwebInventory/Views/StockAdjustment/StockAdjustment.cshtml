@@ -129,11 +129,11 @@
                                     <label asp-for="SlipNo" class="form-label" style="color: blue;">Slip No</label>
                                     <input asp-for="SlipNo" class="form-control" readonly />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="display:none">
                                     <label asp-for="StoreWorkCenter" class="form-label" style="color: red;">Store / WorkCenter*</label>
                                     <select class="form-select" asp-for="StoreWorkCenter" onchange="StoreWorkcenterVal(); ClearGrid();">
                                         <option value="">-Select-</option>
-                                        <option value="S">Store</option>
+                                        <option value="S" selected>Store</option>
                                         <option value="W">WorkCenter</option>
                                     </select>
                                 </div>
@@ -158,12 +158,7 @@
                                     </button>
 
                                 </div>
-                                <div class="col-sm-auto py-2 text-center enterBackDatePass" style="display:block;">
-                                    <button type="button" class="btn btn-sm btn-outline-primary btnBackDatePass" style="margin-top:10px;">
-                                        <i class="fa-solid fa-money-bill-trend-up fa-fw fa-lg"></i>
-                                        Enter Password
-                                    </button>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -179,7 +174,7 @@
                     <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
-                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display:none">
                                     <label asp-for="Storeid" class="control-label" style="color: red;">Store Name*</label>
                                     @*<select class="form-select" asp-for="Storeid" style="width:100%;height:30%;" onchange="FillCurrentBatchINStore(); FillTotalStock(); FillAmount();">
                                     <option value="">-Select-</option>
@@ -188,7 +183,7 @@
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display:none">
                                     <label asp-for="Wcid" class="control-label" style="color: red;">WorkCenter Name*</label>
                                     <select class="form-select" asp-for="Wcid" style="width:100%;height:30%;" onchange="FillCurrentWIPBatchINStore(); FillWIPStock(); GetWIPStockBatchWise();">
                                         <option value="">-Select-</option>
@@ -204,44 +199,44 @@
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="ItemCode" class="form-label" style="color: red;">Item Name*</label>
                                     <input asp-for="ItemCode" id="ItemCode"  readonly type="hidden" class="form-control" />
-                                    <input asp-for="ItemName" id="ItemName"  class="form-control" />
+                                    <input asp-for="ItemName" id="ItemName" tabindex="-1"  class="form-control" />
                                   @*  <select class="form-select" asp-for="ItemCode" style="width:100%;height:30%;">
                                         <option value="">-Select-</option>
                                     </select>*@
                                 </div>
-                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display:none">
                                     <label asp-for="batchno" class="form-label" style="color: red;">Batch No*</label>
                                     @*<select class="form-select batchnoselect" asp-for="batchno">
                                     <option value="">-Select-</option>
                                     </select>*@
-                                    <input asp-for="batchno" class="form-control batchnoinput" />
+                                    <input asp-for="batchno" value="1" class="form-control batchnoinput" />
                                 </div>
-                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display:none">
                                     <label asp-for="uniqbatchno" class="form-label">Unique Batch No</label>
                                     @* <select class="form-select uniqbatchnoselect" asp-for="uniqbatchno" onchange="FillLotStock();">
                                     <option value="">-Select-</option>
                                     </select>*@
-                                    <input asp-for="uniqbatchno" class="form-control uniqbatchnoinput" readonly />
+                                    <input asp-for="uniqbatchno" value="1" class="form-control uniqbatchnoinput" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="Unit" class="control-label">Unit</label>
-                                    <input asp-for="Unit" class="form-control" readonly />
+                                    <input asp-for="Unit" class="form-control" tabindex="-1" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     @* <label asp-for="Qty" class="control-label">Stock Qty</label>
                                     <input asp-for="Qty" class="form-control" type="number" onchange="ChangeAltQty();" /> *@
                                     <label asp-for="TotalStock" class="control-label" style="color: blue;">Total Stock</label>
-                                    <input asp-for="TotalStock" class="form-control" type="number" readonly />
+                                    <input asp-for="TotalStock" class="form-control" tabindex="-1" type="number" readonly />
                                 </div>
-                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display:none">
                                     <label asp-for="LotStock" class="control-label" style="color: blue;">Lot Stock</label>
                                     <input asp-for="LotStock" class="form-control" type="number" readonly />
                                 </div>
-                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display:none">
                                     <label asp-for="altUnit" class="control-label">Alt Unit</label>
                                     <input asp-for="altUnit" class="form-control" readonly />
                                 </div>
-                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display:none">
                                     <label asp-for="AltQty" class="control-label">Alt Qty</label>
                                     <input asp-for="AltQty" class="form-control" type="number" step="any" min=0 value="0" />
                                 </div>
@@ -252,11 +247,11 @@
 
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="AdjQty" class="form-label" style="color: blue;">Adj Qty</label>
-                                    <input asp-for="AdjQty" class="form-control" type="number" readonly />
+                                    <input asp-for="AdjQty" tabindex="-1" class="form-control" type="number" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="AdjType" class="control-label">Adj Type</label>
-                                    <select class="form-select" asp-for="AdjType" disabled>
+                                    <select class="form-select" asp-for="AdjType" tabindex="-1" disabled>
                                         <option value="" selected readonly disabled>-select-</option>
                                         <option value="+">+</option>
                                         <option value="-">-</option>
@@ -265,15 +260,27 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="Rate" class="control-label">Rate</label>
-                                    <input asp-for="Rate" class="form-control" readonly />
+                                    <input asp-for="Rate" tabindex="-1" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="Amount" class="control-label">Amount</label>
-                                    <input asp-for="Amount" class="form-control" readonly />
+                                    <input asp-for="Amount" tabindex="-1" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="reasonOfAdjustment" class="control-label">Reason</label>
-                                    <input asp-for="reasonOfAdjustment" class="form-control" />
+                                    <input asp-for="reasonOfAdjustment"  class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemLocation" class="control-label">ItemLocation</label>
+                                    <input asp-for="ItemLocation"   class="form-control" />
+                                </div>
+                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="GroupName" class="control-label">GroupName</label>
+                                    <input asp-for="GroupName" tabindex="-1" readonly class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="VahicleName" class="control-label">VahicleName</label>
+                                    <input asp-for="VahicleName" tabindex="-1" readonly class="form-control" />
                                 </div>
 
                                 <div class=" col-6 col-auto">
@@ -309,19 +316,24 @@
                                                     <th>ItemName</th>
                                                     <th>Unit</th>
                                                     <th>Total Stock</th>
-                                                    <th>Lot Stock</th>
-                                                    <th>AltUnit</th>
-                                                    <th>Alt Qty</th>
                                                     <th>Actual Stock Qty</th>
                                                     <th>AdjQty</th>
                                                     <th>AdjType</th>
+                                                    <th>Reason Of Adjustment</th>
+                                                    <th>Item Location</th>
+                                                    <th>Vehicle Name</th>
+                                                    <th>Group Name</th>
+                                                    <th>Lot Stock</th>
+                                                    <th>AltUnit</th>
+                                                    <th>Alt Qty</th>
+                                                   
                                                     <th>Store Name</th>
                                                     <th>Work Center Name</th>
                                                     <th>Rate</th>
                                                     <th>Amount</th>
                                                     <th>Batch No</th>
                                                     <th>Uniq Batch No</th>
-                                                    <th>Reason Of Adjustment</th>
+                                                   
                                                 </tr>
                                             </thead>
                                             <tbody id="divStockGrid">
@@ -476,7 +488,7 @@
                  
                 NewEntryId();
                 $('#Remark').val("");
-                $('#StoreWorkCenter').val("");
+                /* $('#StoreWorkCenter').val(""); */
                 GetServerDate();
             } else {
                  
@@ -493,64 +505,20 @@
                /*  $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val().split(" ")[0]));
                 $('#StockAdjustmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#StockAdjustmentDate').val().split(" ")[0])); */
             }
-            /* var finFromDate = $('#FinFromDate').val();
-            var finToDate = $('#FinToDate').val();
-
-            var dateParts1 = finFromDate.split("/");
-            var monthNames = {
-                "Jan": "01",
-                "Feb": "02",
-                "Mar": "03",
-                "Apr": "04",
-                "May": "05",
-                "Jun": "06",
-                "Jul": "07",
-                "Aug": "08",
-                "Sep": "09",
-                "Oct": "10",
-                "Nov": "11",
-                "Dec": "12"
-            };
-            var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
-            var dateParts2 = finToDate.split("/");
-
-            var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
-            //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-
-           
-
-            //$('#StockAdjustmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            $('#StockAdjustmentDate').datepicker("option", "maxDate", 'now');
-            var CurrentStockDate = $('#StockAdjustmentDate').val();
-            $('#StockAdjustmentDate').datepicker("option", "minDate", formattedDate1);
-            $('#StockAdjustmentDate').datepicker("option", "maxDate",CurrentStockDate);
-
-            $('#Entrydate').datepicker("option", "maxDate", 'now');
-            var Entrydate = $('#Entrydate').val();
-            $('#Entrydate').datepicker("option", "minDate", formattedDate1);
-            $('#Entrydate').datepicker("option", "maxDate", CurrentStockDate);
- */
             FillStore();
             FillWorkCenter();
             StockAdjustByFeaturesOptions();
             TotalNoOfRows();
            fillItems();
 
-          /*   $('#PartCode').select2();
-            $('#ItemCode').select2();    */
+         
             $('#Storeid').select2();
             $('#Wcid').select2();
 
-            //if ($('#StoreWorkCenter').prop('selectedIndex') != 0) {
-            //    if ($('#StoreWorkCenter').val() == 'S') {
-            //        FillStore();
-            //    } else {
-            //        FillWorkCenter();
-            //    }
-            //}
+            
 
-            $('#Storeid').val("").trigger("change");
-            $('#Wcid').val("").trigger("change");
+            /* $('#Storeid').val("").trigger("change");
+            $('#Wcid').val("").trigger("change"); */
             if ($('#StoreWorkCenter').val() == 'S') {
                 $("#Storeid").prop("disabled", false);
                 $("#Wcid").prop("disabled", true);
@@ -1219,7 +1187,7 @@
                             $('#Amount').val(obj[0].Amount);
                             $('#batchno').val(obj[0].batchno);
                             $('#uniqbatchno').val(obj[0].uniqbatchno);
-                            $('#reasonofAdjustment').val(obj[0].reasonOfAdjustment);
+                            $('#reasonOfAdjustment').val(obj[0].reasonOfAdjustment);
                             $('#divStockGrid tr#' + SeqNo).remove();
                             if (obj[0].Storeid == 0) {
                                 $('#Wcid').val(obj[0].Wcid).trigger("change");
@@ -1275,8 +1243,8 @@
         });
  */
          function handleItemSelection(fieldId) {
-            $('#batchno').val('');
-            $('#uniqbatchno').val('');
+            /* $('#batchno').val('');
+            $('#uniqbatchno').val(''); */
             FillRateAmount();
             GetmaxStockAdjustDate();
 
@@ -1423,6 +1391,9 @@
                         $('#RecScrapQty').val(obj[0].RecScrapQty);
                         $('#AltQTy').val(obj[0].AltQTy);
                         $('#AltUnit').val(obj[0].AltUnit);
+                        $('#ItemLocation').val(obj[0].ItemLocation);
+                        $('#GroupName').val(obj[0].GroupName);
+                        $('#VahicleName').val(obj[0].VahicleName);
                         $('#RecPartCode').val(obj[0].RecItemCode);
                         $('#RecItemCode').val(obj[0].RecItemCode);
                         $('#RecItemName').val(obj[0].RecItemName);
@@ -1558,8 +1529,8 @@
                         $('#EntryId').val(obj.Result[0].EntryId);
                         $('#SlipNo').val("");
                         $('#SlipNo').val(obj.Result[0].slipno);
-                        $('#batchno').val("");
-                        $('#batchno').val(obj.Result[0].slipno);
+                        /* $('#batchno').val("");
+                        $('#batchno').val(obj.Result[0].slipno); */
                     }
                 }
             });
@@ -1801,6 +1772,20 @@
             }
             else {
                 RemoveErrorCls('batchno');
+            }
+            if ($('#reasonOfAdjustment').val() == '') {
+                AddErrorCls('reasonOfAdjustment');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('reasonOfAdjustment');
+            }
+            if ($('#ItemLocation').val() == '') {
+                AddErrorCls('ItemLocation');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('ItemLocation');
             }
 
             if ($('#Unit').val() == '') {
@@ -2051,11 +2036,20 @@
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#Storeid').empty();
-                            $('#Storeid').append('<option value="" disabled selected>-Select-</option>');
+                            $('#Storeid').append('<option value="" disabled >-Select-</option>');
 
                             $.each(obj.Result, function (index, val) {
                                 $('#Storeid').append('<option value="' + val.StoreId + '">' + val.Store_Name + '</option>');
                             });
+
+                            // ✅ Find MAIN STORE
+                            var mainStore = obj.Result.find(x =>
+                                x.Store_type &&
+                                x.Store_type.trim().toUpperCase() === "MAIN STORE"
+                            );
+                            if (mainStore) {
+                                $('#Storeid').val(mainStore.StoreId).trigger('change');
+                            }
                         }
 
                     }
@@ -2085,8 +2079,211 @@
                 }
             });
         }
+
+
+        function fillItems() {
+            // Source for PartCodeText
+            const partCodeSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("FillItems", "PurchaseOrder")',
+                    type: 'POST',
+                    data: {
+                        Type: $('#POTypeServItem').val(),
+                        ShowAllItem: 'N',
+                        SearchItemCode: '',
+                        SearchPartCode: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            // let filtered = obj.Result.Table.filter(function (item) {
+                            //     let term = request.term.toLowerCase();
+                            //     return (
+                            //         (item.PartCode && item.PartCode.toLowerCase().includes(term)) ||
+                            //         (item.Barcode && item.Barcode.toLowerCase().includes(term)) ||
+                            //         (item.ItemName && item.ItemName.toLowerCase().includes(term))
+                            //     );
+                            // });
+
+                            let filtered = obj.Result.Table.filter(item =>
+                                googleMatch(request.term, item)
+                            );
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.PartCode,
+                                    value: item.PartCode,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code,
+                                    onlyPartCode: item.OnlyPartCode,
+                                    onlyItemName: item.OnlyItemName,
+                                };
+                            }));
+                        } else {
+                            /* AddMultipleItems();
+
+                            ShowGroupWiseItems(); */
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // Source for ItemNameText
+            const itemNameSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("FillItems", "PurchaseOrder")',
+                    type: 'POST',
+                    data: {
+                        Type: $('#POTypeServItem').val(),
+                        ShowAllItem: 'N',
+                        SearchItemCode: request.term,
+                        SearchPartCode: ''
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            // let filtered = obj.Result.Table.filter(function (item) {
+                            //     let term = request.term.toLowerCase();
+                            //     return item.ItemName.toLowerCase().includes(term);
+                            // });
+
+                            let filtered = obj.Result.Table.filter(item =>
+                                googleMatch(request.term, item)
+                            );
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.ItemName,
+                                    value: item.Item_Code,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code,
+                                    partCode: item.PartCode,
+                                    onlyPartCode: item.OnlyPartCode,
+                                    onlyItemName: item.OnlyItemName,
+                                };
+                            }));
+                        } else {
+                           /*  AddMultipleItems();
+                            ShowGroupWiseItems(); */
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // Autocomplete for PartCodeText
+            $("#PartCode").autocomplete({
+                source: partCodeSource,
+                select: function (event, ui) {
+                    $("#PartCode").val(ui.item.onlyPartCode).data("itemcode", ui.item.itemCode);
+                    $("#ItemName").val(ui.item.onlyItemName);
+                    $('#ItemCode').val(ui.item.itemCode);
+                    /* $('#PartCode').val(ui.item.itemCode); */
+                    SetPartCodeItemName("PartCode");
+                    GetItemPartCode("PartCode");
+                    handleItemSelection();
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#PartCode").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+
             
-       function fillItems() {
+
+            $("#PartCode").on("focusout", function () {
+                let entered = $(this).val().trim().toLowerCase();
+                if (entered === "") return;
+
+                $.ajax({
+                    url: '@Url.Action("FillItems", "PurchaseOrder")',
+                    type: 'POST',
+                    data: {
+                        Type: $('#POTypeServItem').val(),
+                        ShowAllItem: 'N',
+                        SearchItemCode: '',
+                        SearchPartCode: entered
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+
+                            // let list = obj.Result.Table.map(item => ({
+                            //     ...item,
+                            //     real: (item.RealPartCode || "").trim().toLowerCase()
+                            // }));
+
+                            // // 1️⃣ Exact match
+                            let match =
+                                list.find(i => i.real === entered) ||
+
+                                // 2️⃣ Starts with (space-safe)
+                                list.find(i => i.real.startsWith(entered + " ")) ||
+
+                                // 3️⃣ Fallback (optional)
+                                list.find(i => i.real.startsWith(entered));
+
+                            // let match = obj.Result.Table.find(item =>
+                            //     googleMatch(entered, item)
+                            // );
+
+                            if (match) {
+                                $("#PartCode")
+                                    .val(match.OnlyPartCode)
+                                    .data("itemcode", match.Item_Code);
+
+                                $("#ItemName").val(match.OnlyItemName);
+                                $("#ItemCode").val(match.Item_Code);
+                                $("#PartCode").val(match.Item_Code);
+
+                                SetPartCodeItemName("PartCode");
+                                GetItemPartCode("PartCode");
+                                handleItemSelection();
+
+                            }
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error(xhr);
+                    }
+                });
+            });
+
+
+
+
+            // Autocomplete for ItemNameText
+            $("#ItemName").autocomplete({
+                source: itemNameSource,
+                select: function (event, ui) {
+                    $("#ItemName").val(ui.item.onlyItemName).data("itemcode", ui.item.itemCode);
+                    $("#PartCode").val(ui.item.onlyPartCode);
+                    $('#ItemCode').val(ui.item.itemCode);
+                    /* $('#PartCode').val(ui.item.itemCode); */
+                    SetPartCodeItemName("PartCode");
+                  GetItemPartCode("PartCode");
+                         handleItemSelection()
+                    return false;
+
+                },
+                focus: function (event, ui) {
+                    $("#ItemName").val(ui.item.itemName);
+                    return false;
+                },
+                minLength: 2
+            });
+
+            
+        }
+
+            
+/*        function fillItems() {
            // PartCode Autocomplete
            $("#PartCode").autocomplete({
                source: function (request, response) {
@@ -2162,7 +2359,7 @@
                minLength: 1
            });
        }
-
+ */
        function SetPartCodeItemName(ID) {
            if (!ID) return;
 
@@ -2300,6 +2497,12 @@
                         else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
                             $('#Unit').val(obj.Result[0].Unit);
                             $('#altUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
+                            $('#ItemLocation').val("");
+                            $('#ItemLocationItemLocation').val(obj.Result[0].Location);
+                            $('#VahicleName').val("");
+                            $('#VahicleName').val(obj.Result[0].Vehicle);
+                            $('#GroupName').val("");
+                            $('#GroupName').val(obj.Result[0].Group_name);
                         }
                     }
                 },
@@ -2336,6 +2539,9 @@
                 "AdjType": $('#AdjType').val(),
                 "Rate": $('#Rate').val(),
                 "Amount": $('#Amount').val(),
+                "ItemLocation": $('#ItemLocation').val(),
+                "GroupName": $('#GroupName').val(),
+                "VahicleName": $('#VahicleName').val(),
                 "reasonOfAdjustment": $('#reasonOfAdjustment').val(),
                 "CC": $('.CC').val(),
 

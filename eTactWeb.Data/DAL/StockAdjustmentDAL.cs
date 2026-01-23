@@ -479,6 +479,9 @@ namespace eTactWeb.Data.DAL
                         batchno = row["batchno"].ToString(),
                         uniqbatchno = row["uniquebatchno"].ToString(),
                         reasonOfAdjustment = row["reasonOfAdjutment"].ToString(),
+                        ItemLocation = row["ItemLocation"].ToString(),
+                        VahicleName = row["VehicleName"].ToString(),
+                        GroupName = row["GroupName"].ToString(),
                     });
                 }
                 model.StockAdjustModelGrid = ItemList;
