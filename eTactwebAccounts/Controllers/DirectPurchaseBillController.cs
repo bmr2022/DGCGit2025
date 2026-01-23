@@ -216,6 +216,7 @@ namespace eTactWeb.Controllers
                         DiscRs = Convert.ToDecimal(dr["DiscountAmt"]),
                         Amount = Convert.ToDecimal(dr["ItemAmount"]),
                         ItemLocation = dr["ItemLocation"].ToString(),
+                        GroupName = dr["GroupName"].ToString(),
                         HSNNo = Convert.ToInt32(dr["HSNNo"]),
                         Unit = dr["unit"].ToString()
                     });

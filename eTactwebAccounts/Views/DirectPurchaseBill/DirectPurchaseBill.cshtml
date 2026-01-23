@@ -27,7 +27,7 @@
                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                             PRINT VOUCHER
                         </a>
-                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
+                    @*     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
                            asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PurchVouchNo="@Model.PurchVouchNo">
                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                             PRINT INVOICE
@@ -37,7 +37,7 @@
                        asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PurchVouchNo="@Model.PurchVouchNo">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         PRINT BARCODE1
-                    </a>
+                    </a> *@
 
 
                     @if (Model.Mode == "U" && Model.Mode != "POC" && Model.Mode != "V")
@@ -733,9 +733,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class=" btn btn-sm btn-outline-success me-2" onclick="AddPendSOToGrid(event)">
+                   @*  <button type="button" class=" btn btn-sm btn-outline-success me-2" onclick="AddPendSOToGrid(event)">
                         <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
-                    </button>
+                    </button> *@
 
                     <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
                 </div>
