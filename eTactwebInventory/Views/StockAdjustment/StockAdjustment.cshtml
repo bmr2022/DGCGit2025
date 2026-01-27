@@ -2498,7 +2498,9 @@
                             $('#Unit').val(obj.Result[0].Unit);
                             $('#altUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
                             $('#ItemLocation').val("");
-                            $('#ItemLocationItemLocation').val(obj.Result[0].Location);
+                            $('#ItemLocation').val(obj.Result[0].Location);
+                            $('#reasonOfAdjustment').val("");
+                            $('#reasonOfAdjustment').val(obj.Result[0].stockAdjReason);
                             $('#VahicleName').val("");
                             $('#VahicleName').val(obj.Result[0].Vehicle);
                             $('#GroupName').val("");
