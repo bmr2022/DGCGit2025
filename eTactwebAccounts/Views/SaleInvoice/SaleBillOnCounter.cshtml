@@ -8161,7 +8161,7 @@
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillSOItemRate")",
-                data: { "sono": sono, "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "custOrderNo": $('#CustOrderNo').val(), "itemCode": $('#ItemCode').val() },
+                data: { "sono": sono, "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "custOrderNo": $('#CustOrderNo').val(), "itemCode": $('#ItemCode').val(), "SubInvoicetype": $('#SubInvoicetype').val() },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {

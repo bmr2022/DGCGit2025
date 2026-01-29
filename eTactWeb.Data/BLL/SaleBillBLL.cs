@@ -145,9 +145,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.FillSOSchedule(sono,accountCode,soYearCode,ItemCode);
         }    
-        public async Task<ResponseResult> FillSOItemRate(string sono, int soYearCode, int accountCode, string custOrderNo, int itemCode)
+        public async Task<ResponseResult> FillSOItemRate(string sono, int soYearCode, int accountCode, string custOrderNo, int itemCode,string SubInvoicetype)
         {
-            return await _SaleBillDAL.FillSOItemRate(sono,soYearCode,accountCode,custOrderNo,itemCode);
+            return await _SaleBillDAL.FillSOItemRate(sono,soYearCode,accountCode,custOrderNo,itemCode, SubInvoicetype);
         }       
         public async Task<ResponseResult> FillItems(string showAll, string typeItemServAssets, string sbJobWork, string SearchItemCode, string SearchPartCode)
         {

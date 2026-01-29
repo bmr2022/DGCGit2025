@@ -1387,6 +1387,8 @@ namespace eTactWeb.Controllers
     "Bill Qty",
     "Received Qty",
     "Rate",
+    "Master Rate",
+    "Rate Difference",
     "Discount %",
     "Discount Amount",
     "Amount",
@@ -1508,6 +1510,8 @@ namespace eTactWeb.Controllers
                         AddCell("BillQty");
                         AddCell("RecQty");
                         AddCell("Rate");
+                        AddCell("MasterRate");
+                        AddCell("RateDiffrence");
                         AddCell("DiscountPer");
                         AddCell("DiscountAmt");
                         AddCell("Amount");

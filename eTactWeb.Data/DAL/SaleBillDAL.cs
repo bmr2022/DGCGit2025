@@ -1089,7 +1089,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> FillSOItemRate(string sono, int soYearCode, int accountCode, string custOrderNo, int itemCode)
+        public async Task<ResponseResult> FillSOItemRate(string sono, int soYearCode, int accountCode, string custOrderNo, int itemCode, string SubInvoicetype)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -1102,6 +1102,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@accountcode", accountCode));
                 SqlParams.Add(new SqlParameter("@custOrderNo", custOrderNo));
                 SqlParams.Add(new SqlParameter("@itemcode", itemCode));
+                SqlParams.Add(new SqlParameter("@SubInvoicetype", SubInvoicetype));
+
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
             }
             catch (Exception ex)

@@ -51,7 +51,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillSOPendQty(int saleBillEntryId, string saleBillNo, int saleBillYearCode,string sono, int soYearcode, string custOrderNo, int itemCode, int accountCode, string schNo, int schYearCode);
         Task<ResponseResult> SaveSaleBill(SaleBillModel model, DataTable SBGrid,DataTable TaxDetailDT,DataTable DrCrDetailDT,DataTable AdjDetailDT ,DataTable AdjChallanDetailDT);
         Task<ResponseResult> FILLSOScheduleDate(string sono, int accountCode, int soYearCode, string schNo, int schYearCode);
-        Task<ResponseResult> FillSOItemRate(string sono, int soYearCode, int accountCode, string custOrderNo, int itemCode);
+        Task<ResponseResult> FillSOItemRate(string sono, int soYearCode, int accountCode, string custOrderNo, int itemCode, string SubInvoicetype);
         Task<ResponseResult> FILLCustomerOrderAndSPDate(string billDate, int accountCode, string sono, int soYearCode);
         Task<ResponseResult> FillSOSchedule(string sono,string accountCode, int soYearCode, int ItemCode); 
         Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ,string SubInvoicetype, string fromdate, string toDate,string SaleBillEntryFrom);
