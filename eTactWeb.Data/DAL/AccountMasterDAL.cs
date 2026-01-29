@@ -387,6 +387,7 @@ namespace eTactWeb.Data.DAL
                                                    {
                                                        Account_Code = Convert.ToInt32(dr["Account_Code"]),
                                                        Account_Name = dr["Account_Name"].ToString(),
+                                                       Party_Code = dr["Party_Code"].ToString(),
                                                        ParentAccountName = dr["ParentAccount"].ToString(),
                                                        ParentAccountCode = Convert.ToInt32(dr["ParentAccountCode"]),
                                                        SubGroup = dr["SubGroup"].ToString(),

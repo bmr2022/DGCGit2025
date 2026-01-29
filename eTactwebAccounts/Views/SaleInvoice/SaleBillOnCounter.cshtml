@@ -6427,19 +6427,19 @@
                             //     real: (item.RealPartCode || "").trim().toLowerCase()
                             // }));
 
-                            // // 1️⃣ Exact match
-                            let match =
-                                list.find(i => i.real === entered) ||
+                            // // // 1️⃣ Exact match
+                            // let match =
+                            //     list.find(i => i.real === entered) ||
 
-                                // 2️⃣ Starts with (space-safe)
-                                list.find(i => i.real.startsWith(entered + " ")) ||
+                            //     // 2️⃣ Starts with (space-safe)
+                            //     list.find(i => i.real.startsWith(entered + " ")) ||
 
-                                // 3️⃣ Fallback (optional)
-                                list.find(i => i.real.startsWith(entered));
+                            //     // 3️⃣ Fallback (optional)
+                            //     list.find(i => i.real.startsWith(entered));
 
-                            // let match = obj.Result.Table.find(item =>
-                            //     googleMatch(entered, item)
-                            // );
+                            let match = obj.Result.Table.find(item =>
+                                googleMatch(entered, item)
+                            );
 
                             if (match) {
                                 $("#PartCodeText")
