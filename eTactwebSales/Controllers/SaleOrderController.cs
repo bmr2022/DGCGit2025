@@ -1860,11 +1860,11 @@ public class SaleOrderController : Controller
 						{
 							var saleOrderModel = new SaleOrderModel();
 							saleOrderModel = await BindModels(null);
-							HttpContext.Session.Remove("ItemList");
-							_MemoryCache.Remove("ItemList");
-							HttpContext.Session.Remove("TaxGrid");
-							_MemoryCache.Remove("KeyTaxGrid");
-							_MemoryCache.Remove("KeySaleBillToShipTo");
+							//HttpContext.Session.Remove("ItemList");
+							//_MemoryCache.Remove("ItemList");
+							//HttpContext.Session.Remove("TaxGrid");
+							//_MemoryCache.Remove("KeyTaxGrid");
+							//_MemoryCache.Remove("KeySaleBillToShipTo");
 							if (Result.StatusCode == HttpStatusCode.InternalServerError)
 							{
 								ViewBag.isSuccess = false;
@@ -1894,22 +1894,10 @@ public class SaleOrderController : Controller
 								}
 
 							}
-							else if (model.Mode == "Update")
-							{
+                            else if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                            {
 								ViewBag.isSuccess = true;
 								TempData["202"] = "202";
-							}
-							else
-							{
-								ViewBag.isSuccess = true;
-								TempData["200"] = "200";
-							}
-
-							if (model.Mode == "SOA") {
-								return RedirectToAction("SOAmendmentList");
-							}
-							else
-							{
                                 if (ShouldPrint == "true")
                                 {
                                     return Json(new
@@ -1917,12 +1905,46 @@ public class SaleOrderController : Controller
                                         status = "Success",
                                         entryId = model.EntryID,
                                         yearCode = model.YearCode,
-										Sono = model.CustOrderNo
+                                        Sono = model.CustOrderNo
                                     });
                                 }
+                            }
+                            else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                            {
+								ViewBag.isSuccess = true;
+								TempData["200"] = "200";
+                                if (ShouldPrint == "true")
+                                {
+                                    return Json(new
+                                    {
+                                        status = "Success",
+                                        entryId = model.EntryID,
+                                        yearCode = model.YearCode,
+                                        Sono = model.CustOrderNo
+                                    });
+                                }
+                            }
+
+							else if (model.Mode == "SOA") {
+								return RedirectToAction("SOAmendmentList");
+							}
+                            else if (!string.IsNullOrEmpty(Result.StatusText))
+                            {
+                                // If SP returned a message (like adjustment error)
+                                TempData["ErrorMessage"] = Result.StatusText;
+                                return Json(new
+                                {
+                                    status = "Error",
+                                    message = Result.StatusText,
+                                    
+
+                                });
+                            }
+                            
+                               
                                 return Json(new { status = "Success" });
                                 //return RedirectToAction("OrderDetail", new { ID = 0, YC = 0, Mode = "" });
-                            }
+                            
 
                         }
 						else
