@@ -1134,6 +1134,7 @@ namespace eTactWeb.Data.DAL
                         model.YearCode = SafeToInt(dr["YearCode"]);
                         model.AlternateUnit = SafeToString(dr["AlternateUnit"]);
                         model.RackID = SafeToString(dr["RackID"]);
+                        model.stockAdjReason = SafeToString(dr["stockAdjReason"]);
                         model.BinNo = SafeToString(dr["BinNo"]);
                         model.ItemSize = SafeToString(dr["ItemSize"]);
                         model.Colour = SafeToString(dr["Colour"]);
@@ -1274,6 +1275,7 @@ namespace eTactWeb.Data.DAL
                             oCmd.Parameters.AddWithValue("@YearCode", model.YearCode);
                             oCmd.Parameters.AddWithValue("@AlternateUnit", model.AlternateUnit);
                             oCmd.Parameters.AddWithValue("@RackID", model.RackID);
+                            oCmd.Parameters.AddWithValue("@stockAdjReason", model.stockAdjReason);
                             oCmd.Parameters.AddWithValue("@BinNo", model.BinNo);
                             oCmd.Parameters.AddWithValue("@ItemSize", model.ItemSize);
                             oCmd.Parameters.AddWithValue("@Colour", model.Colour);
@@ -1390,6 +1392,7 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@YearCode", model.YearCode);
                         oCmd.Parameters.AddWithValue("@AlternateUnit", model.AlternateUnit);
                         oCmd.Parameters.AddWithValue("@RackID", model.RackID);
+                        oCmd.Parameters.AddWithValue("@stockAdjReason", model.stockAdjReason);
                         oCmd.Parameters.AddWithValue("@BinNo", model.BinNo);
                         oCmd.Parameters.AddWithValue("@ItemSize", model.ItemSize);
                         oCmd.Parameters.AddWithValue("@Colour", model.Colour);

@@ -167,6 +167,7 @@ namespace eTactWeb.DOM.Models
         public string? QcReq { get; set; }
 
         public string? RackID { get; set; }
+        public string? stockAdjReason { get; set; }
 
         public decimal ReorderLevel { get; set; }
 
