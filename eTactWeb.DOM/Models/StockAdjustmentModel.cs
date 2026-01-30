@@ -20,6 +20,7 @@ namespace eTactWeb.DOM.Models
         public string? ItemLocation { get; set; }
         public string? GroupName { get; set; }
         public string? VahicleName { get; set; }
+        public string? Minimumlevel { get; set; }
         public string CC { get; set; }
         public int Uid { get; set; }
         public string Remark { get; set; }
@@ -61,6 +62,7 @@ namespace eTactWeb.DOM.Models
         public string GroupName { get; set; }
         public string Unit { get; set; }
         public float LotStock { get; set; }
+        public float Minimumlevel { get; set; }
         public float TotalStock { get; set; }
         public string altUnit { get; set; }
         public float AltQty { get; set; }

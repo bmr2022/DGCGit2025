@@ -476,6 +476,7 @@ namespace eTactWeb.Data.DAL
                         WCName = row["WorkCenter"].ToString(),
                         Rate = Convert.ToSingle(row["rate"]),
                         Amount = Convert.ToSingle(row["Amount"].ToString()),
+                        Minimumlevel = Convert.ToSingle(row["MinimumLevel"].ToString()),
                         batchno = row["batchno"].ToString(),
                         uniqbatchno = row["uniquebatchno"].ToString(),
                         reasonOfAdjustment = row["reasonOfAdjutment"].ToString(),

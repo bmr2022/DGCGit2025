@@ -283,6 +283,11 @@
                                     <input asp-for="VahicleName" tabindex="-1" readonly class="form-control" />
                                 </div>
 
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="Minimumlevel" class="control-label">Minimum level</label>
+                                    <input asp-for="Minimumlevel" tabindex="-1" readonly class="form-control" />
+                                </div>
+
                                 <div class=" col-6 col-auto">
                                     <div class="row justify-content-around">
                                         <div class="col-auto">
@@ -1185,9 +1190,13 @@
                             $('#AdjQty').val(obj[0].AdjQty);
                             $('#AdjType').val(obj[0].AdjType);
                             $('#Amount').val(obj[0].Amount);
+                            $('#Minimumlevel').val(obj[0].Minimumlevel);
                             $('#batchno').val(obj[0].batchno);
                             $('#uniqbatchno').val(obj[0].uniqbatchno);
                             $('#reasonOfAdjustment').val(obj[0].reasonOfAdjustment);
+                            $('#ItemLocation').val(obj[0].ItemLocation);
+                            $('#VahicleName').val(obj[0].VahicleName);
+                            $('#GroupName').val(obj[0].GroupName);
                             $('#divStockGrid tr#' + SeqNo).remove();
                             if (obj[0].Storeid == 0) {
                                 $('#Wcid').val(obj[0].Wcid).trigger("change");
@@ -2220,18 +2229,18 @@
                             // }));
 
                             // // 1️⃣ Exact match
-                            let match =
+                           /*  let match =
                                 list.find(i => i.real === entered) ||
 
                                 // 2️⃣ Starts with (space-safe)
                                 list.find(i => i.real.startsWith(entered + " ")) ||
 
                                 // 3️⃣ Fallback (optional)
-                                list.find(i => i.real.startsWith(entered));
+                                list.find(i => i.real.startsWith(entered)); */
 
-                            // let match = obj.Result.Table.find(item =>
-                            //     googleMatch(entered, item)
-                            // );
+                            let match = obj.Result.Table.find(item =>
+                                googleMatch(entered, item)
+                             );
 
                             if (match) {
                                 $("#PartCode")
@@ -2505,6 +2514,8 @@
                             $('#VahicleName').val(obj.Result[0].Vehicle);
                             $('#GroupName').val("");
                             $('#GroupName').val(obj.Result[0].Group_name);
+                            $('#Minimumlevel').val("");
+                            $('#Minimumlevel').val(obj.Result[0].Minimumlevel);
                         }
                     }
                 },
@@ -2533,6 +2544,7 @@
                 "uniqbatchno": $('.uniqbatchnoinput').val(),
                 "Unit": $('#Unit').val(),
                 "TotalStock": $('#TotalStock').val(),
+                "Minimumlevel": $('#Minimumlevel').val(),
                 "LotStock": $('#LotStock').val(),
                 "altUnit": $('#altUnit').val(),
                 "AltQty": $('#AltQty').val(),
@@ -2568,7 +2580,7 @@
                $('#ItemName').val('').removeData('itemcode');
                         $('#batchno,#uniqbatchno,#AdjType,#reasonOfAdjustment').val("");
                         $('#Unit,#altUnit').val("");
-                        $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Rate,#Amount').val(0);
+                        $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Rate,#Amount,#Minimumlevel').val(0);
                         //$('#Storeid,#Wcid').prop("disabled", false);
 
                         if ($('#StoreWorkCenter').val() == 'S') {
