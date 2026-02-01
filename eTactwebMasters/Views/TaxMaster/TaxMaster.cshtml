@@ -7,14 +7,13 @@
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <form asp-action="TaxMaster" method="post" autocomplete="off" class="form-horizontal">
-        <input type="hidden" asp-for="Mode" />
-        <input type="hidden" asp-for="TaxTypeName" />
+
         <div class="card border-light bg-gradient rounded shadow-lg">
             <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
                 <h4>
                     @ViewData["Title"]
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <a asp-action="Dashboard" class="btn btn-sm btn-outline-light bg-gradient">
                             <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
                             Dashboard
                         </a>
@@ -66,7 +65,7 @@
             </div>
         </div>
         <div class="card-body bg-light pt-0">
-            <div asp-validation-summary="All" class="text-danger pt-1"></div>
+            @* <div asp-validation-summary="All" class="text-danger pt-1"></div> *@
             <div class="accordion shadow-lg">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_Panel1">
@@ -78,16 +77,18 @@
                     <div id="B_Panel1" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_Panel1">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3">
+                                <input asp-for="Mode" value="@Model.Mode" class="form-control" type="hidden" />
+                                <input asp-for="ID" value="@Model.ID" class="form-control" type="hidden" />
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="EntryID" class="form-label">Entry ID</label>
                                     <input asp-for="EntryID" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="TaxName" class="form-label">Tax Name</label>
+                                    <label asp-for="TaxName" class="form-label" style="color:red">Tax Name *</label>
                                     <input asp-for="TaxName" class="form-control" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="ParentGroup" class="control-label">Parent Group</label>
+                                    <label asp-for="ParentGroup" class="control-label" style="color:red">Parent Group *</label>
                                     <select class="form-select" asp-for="ParentGroup" asp-items="@(new SelectList(Model.ParentGroupList,"Value","Text"))" onchange="OnParentGroup(this.value)">
                                         <option value="0">-Select-</option>
                                     </select>
@@ -97,37 +98,38 @@
                                     <input asp-for="DisplayName" class="form-control" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="TaxType" class="control-label">Tax Type</label>
+                                    <label asp-for="TaxType" class="control-label" style="color:red">Tax Type *</label>
                                     <select class="form-select" asp-for="TaxType" asp-items="@(new SelectList(Model.TaxTypeList,"Value","Text"))">
-                                        <option value="0">-Select-</option>
+                                        <option value="">-Select-</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="AddInTaxable" class="control-label">Add In Taxable</label>
-                                    <select class="form-select" asp-for="AddInTaxable" asp-items="@(new SelectList(Model.AddInTaxableList,"Value","Text"))">
-                                        <option value="0">-Select-</option>
+                                    <label asp-for="AddInTaxable" class="control-label" style="color:red">Add In Taxable *</label>
+                                    <select class="form-select" asp-for="AddInTaxable" asp-items="@(new SelectList(Model.AddInTaxableList,"Value","Text", Model.AddInTaxable))">
+                                        <option value="">-Select-</option>
                                     </select>
+
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="TaxPercent" class="form-label">Tax %</label>
                                     <input asp-for="TaxPercent" class="form-control" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="TaxCategory" class="control-label">Tax Category</label>
+                                    <label asp-for="TaxCategory" class="control-label" id="lblTaxCategory">Tax Category  <span id="taxCategoryStar" style="color:red; display:none">*</span></label>
                                     <select class="form-select" asp-for="TaxCategory" asp-items="@(new SelectList(Model.TaxCategoryList,"Value","Text"))">
                                         <option value="0">-Select-</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="TaxApplicable" class="control-label">Tax Applicable</label>
+                                    <label asp-for="TaxApplicable" class="control-label" style="color:red">Tax Applicable *</label>
                                     <select class="form-select" asp-for="TaxApplicable" asp-items="@(new SelectList(Model.TaxApplicableList,"Value","Text"))">
                                         <option value="0">-Select-</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="Refundable" class="control-label">Refundable</label>
+                                    <label asp-for="Refundable" class="control-label" style="color:red">Refundable *</label>
                                     <select class="form-select" asp-for="Refundable" asp-items="@(new SelectList(Model.RefundableList,"Value","Text"))">
-                                        <option value="0">-Select-</option>
+                                        <option value="">-Select-</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -135,14 +137,15 @@
                                     <input asp-for="EffectiveDate" class="form-control" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="TaxAppliedOn" class="control-label">Tax Applied On</label>
+                                    <label asp-for="TaxAppliedOn" class="control-label" style="color:red">Tax Applied On *</label>
                                     <select class="form-select" asp-for="TaxAppliedOn" asp-items="@(new SelectList(Model.TaxAppliedOnList,"Value","Text"))">
                                         <option value="0">-Select-</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" id="sgst-head-wrapper">
-                                    <label asp-for="SGSTHead" class="control-label">SGST Head</label>
-                                    <select class="form-select" asp-for="SGSTHead" asp-items="@(new SelectList(Model.SGSTHeadList,"Value","Text"))">
+                                    <label asp-for="SGSTHead" class="control-label" id="lblSGSTHead">SGST Head <span id="sgstStar" style="color:red; display:none">*</span></label>
+                                    <input type="hidden" id="SelectedSGSTHead" value="@Model.SGSTHead" />
+                                    <select class="form-select" asp-for="SGSTHead" id="SGSTHead">
                                         <option value="0">-Select-</option>
                                     </select>
                                 </div>
@@ -171,7 +174,7 @@
                                     <br />
                                     <select class="form-select" multiple="multiple" asp-for="HSN" asp-items="@(new SelectList(Model.HSNList,"Value","Text"))"></select>
                                 </div>
-                               
+
                             </div>
                         </div>
                     </div>
@@ -221,7 +224,7 @@
                             <h4>
                                 @ViewData["Title"]
                                 <span class="d-flex float-end" style="margin-top:-2px;">
-                                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                    <a asp-action="Dashboard" class="btn btn-sm btn-outline-light bg-gradient">
                                         <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
                                         Dashboard
                                     </a>
@@ -283,6 +286,8 @@
 {
     <script>
         $(document).ready(function () {
+
+
             $('#EffectiveDate').datepicker({ dateFormat: 'mm/dd/yy' }).datepicker("setDate", 'now');
             if ('@Model.Mode' == "U") {
                 $('#TaxTypeName').val($("#TaxType option:selected").text());
@@ -290,6 +295,7 @@
             }
             toggleSGSTHead();
             GetFormRights();
+            handleTaxCategoryMandatory();
             //$("#EffectiveDate").datepicker({ dateFormat: 'dd/mm/yy' });
             $('.hasDatepicker').datepicker("option", "showAnim", "clip");
 
@@ -317,8 +323,11 @@
                 //        return 'odd';
                 //    }
                 //}
+
+
             });
 
+            toggleHSNByTaxType();
             $('#TaxName').keyup(function () { $("#DisplayName").val(this.value); });
 
             //$('form').submit(function (event) {
@@ -329,8 +338,50 @@
         });
 
 
-       
 
+        function loadHSN() {
+
+            var taxName = $('#TaxName').val();
+            var taxPercent = $('#TaxPercent').val();
+
+            if (taxName === '' || taxPercent === '')
+                return;
+
+            $.ajax({
+                url: '@Url.Action("GetHSNByTax", "TaxMaster")',
+                type: 'GET',
+                data: {
+                    taxName: taxName,
+                    taxPercent: taxPercent
+                },
+                success: function (data) {
+
+                    var $hsn = $('#HSN');
+
+                    // 1️⃣ Clear select
+                    $hsn.empty();
+
+                    // 2️⃣ Append options
+                    $.each(data, function (i, item) {
+                        $hsn.append(
+                            $('<option/>', {
+                                value: item.value,
+                                text: item.text
+                            })
+                        );
+                    });
+
+                    // 3️⃣ Rebuild multiselect (🔥 IMPORTANT)
+                    $hsn.multiselect('rebuild');
+                }
+
+            });
+        }
+
+        // Trigger on focusout
+        $('#TaxName, #TaxPercent').on('focusout', function () {
+            loadHSN();
+        });
         function GetFormRights() {
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
@@ -361,30 +412,125 @@
                 }
             });
         }
-        function toggleSGSTHead() {
-            var taxCategory = $('#TaxCategory').val();
 
-            if (taxCategory === 'SGST' || taxCategory === 'IGST') {
-                // Hide and remove required attribute
-                $('#sgst-head-wrapper').hide();
-                $('#SGSTHead').prop('required', false);
-            } else if (taxCategory === 'CGST') {
-                // Show and make required
-                $('#sgst-head-wrapper').show();
-                $('#SGSTHead').prop('required', true);
-            } else {
-                // Default: Show but not mandatory
-                $('#sgst-head-wrapper').show();
-                $('#SGSTHead').prop('required', false);
+        function toggleHSNByTaxType() {
+
+            var taxType = $('#TaxType').val();
+
+            if (taxType === "25") {   // GST
+                $('#HSN').multiselect('enable');
+            }
+            else {
+                // Disable & clear
+                $('#HSN').multiselect('disable');
+                $('#HSN').multiselect('deselectAll', false);
+                $('#HSN').multiselect('updateButtonText');
             }
         }
+
+        function toggleSGSTHead() {
+            var taxCategory = $('#TaxCategory').val();
+            var taxPercent = $('#TaxPercent').val();
+
+            if (taxCategory === 'CGST') {
+
+                // Tax % must exist
+                if (!taxPercent || parseFloat(taxPercent) <= 0) {
+                    $.notify('Please enter Tax % first', {
+                        position: "top center",
+                        className: "error"
+                    });
+
+                    $('#TaxCategory').val('0');
+                    $('#TaxPercent').focus();
+                    return;
+                }
+
+                // 🔴 CHECK SGST EXISTENCE
+                checkSGSTExist(taxPercent);
+            }
+            else {
+                $('#sgst-head-wrapper').hide();
+                $('#SGSTHead').prop('required', false).val('0');
+                $('#sgstStar').hide();
+                $('#lblSGSTHead').css('color', '');
+            }
+        }
+
+        function checkSGSTExist(taxPercent) {
+
+            $.ajax({
+                url: '@Url.Action("FillSGST", "TaxMaster")',
+                type: 'POST',
+                data: { taxPercent: taxPercent },
+                success: function (data) {
+
+                    if (!data || data.length === 0) {
+
+                        $.notify(
+                            'Please create SGST ' + taxPercent + '% first, then Make CGST',
+                            { position: "top center", className: "error" }
+                        );
+
+                        $('#TaxCategory').val('0');
+                        $('#sgst-head-wrapper').hide();
+                        return;
+                    }
+
+                    // ✅ SGST exists → allow CGST
+                    $('#sgst-head-wrapper').show();
+                    $('#SGSTHead').prop('required', true);
+                    $('#sgstStar').show();
+                    $('#lblSGSTHead').css('color', 'red');
+
+                    loadSGSTHead(taxPercent);
+                }
+            });
+        }
+
         $('#TaxCategory').change(function () {
             toggleSGSTHead();
         });
+        $('#TaxPercent').keyup(function () {
+            if ($('#TaxCategory').val() === 'CGST') {
+                loadSGSTHead($(this).val());
+            }
+        });
+        function loadSGSTHead(taxPercent) {
+
+
+            $.ajax({
+                url: '@Url.Action("FillSGST", "TaxMaster")',
+                type: 'POST',
+                data: { taxPercent: taxPercent },
+                success: function (data) {
+
+                    var $sgst = $('#SGSTHead');
+                    $sgst.empty().append('<option value="0">-Select-</option>');
+
+                    $.each(data, function (i, item) {
+                        var option = $('<option>', {
+                            value: item.value,
+                            text: item.text
+                        });
+
+                        $sgst.append(option);
+                    });
+
+                    // Optional: set a default value after populating
+                    var defaultValue = data.length > 0 ? data[0].value : 0; // choose first item or 0
+                    $sgst.val(defaultValue);
+
+                }
+            });
+        }
+
+
 
         $('#TaxType').on('change', function () {
 
             $('#TaxTypeName').val($("#TaxType option:selected").text());
+            toggleHSNByTaxType();
 
             if ($(this).val() == "25") {
                 $('#AddInTaxable').val('N').css('pointer-events', "none");
@@ -398,7 +544,26 @@
             }
         });
 
+        function handleTaxCategoryMandatory() {
+            var taxTypeText = $("#TaxType option:selected").text().toUpperCase();
 
+            if (taxTypeText === "GST") {
+                // Make mandatory
+                $('#TaxCategory').prop('required', true);
+                $('#taxCategoryStar').show();
+                $('#lblTaxCategory').css('color', 'red');
+            } else {
+                // Remove mandatory
+                $('#TaxCategory').prop('required', false);
+                $('#taxCategoryStar').hide();
+                $('#lblTaxCategory').css('color', '');
+                $('#TaxCategory').val('0');
+            }
+        }
+
+        $('#TaxType').on('change', function () {
+            handleTaxCategoryMandatory();
+        });
         $('#HSN').on('change', function () {
 
         });
@@ -430,5 +595,61 @@
                 });
             }
         }
+
+        $('form').on('submit', function (e) {
+
+            let isValid = true;
+            let msg = '';
+
+            const taxName = $('#TaxName').val().trim();
+            const parentGroup = $('#ParentGroup').val();
+            const taxType = $('#TaxType').val();
+            const taxTypeText = $("#TaxType option:selected").text().toUpperCase();
+            const taxCategory = $('#TaxCategory').val();
+            const taxApplicable = $('#TaxApplicable').val();
+            const TaxAppliedOn = $('#TaxAppliedOn').val();
+
+            if (taxName === '') {
+                msg = 'Tax Name is required';
+                $('#TaxName').focus();
+                isValid = false;
+            }
+            else if (parentGroup === '0' || parentGroup === '' || parentGroup === null) {
+                msg = 'Please select Parent Group';
+                $('#ParentGroup').focus();
+                isValid = false;
+            }
+            else if (taxType === '' || taxType === null) {
+                msg = 'Please select Tax Type';
+                $('#TaxType').focus();
+                isValid = false;
+            }
+            else if (taxTypeText === 'GST' && (taxCategory === '0' || taxCategory === '' || taxCategory === null)) {
+                msg = 'Tax Category is required for GST';
+                $('#TaxCategory').focus();
+                isValid = false;
+            }
+            else if (taxApplicable === '0' || taxApplicable === '' || taxApplicable === null) {
+                msg = 'Tax Applicable is mandatory';
+                $('#TaxApplicable').focus();
+                isValid = false;
+            }
+            else if (TaxAppliedOn === '0' || TaxAppliedOn === '' || TaxAppliedOn === null) {
+                msg = 'Tax Applied On is mandatory';
+                $('#TaxAppliedOn').focus();
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault();   // 🔴 STOP SUBMIT
+                $.notify(msg, {
+                    position: "top center",
+                    className: "error"
+                });
+
+                return false;
+            }
+        });
+
     </script>
 }

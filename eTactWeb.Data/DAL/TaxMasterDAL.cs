@@ -23,7 +23,10 @@ namespace eTactWeb.Data.DAL
 
         private string DBConnectionString { get; }
 
-        internal async Task<DataSet> BindAllDropDown()
+
+        
+
+        internal async Task<DataSet> BindAllDropDown(string TaxName,decimal TaxPercent)
         {
             var oDataSet = new DataSet();
 
@@ -31,13 +34,15 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "BINDALLDROPDOWN"));
+                SqlParams.Add(new SqlParameter("@TaxName", TaxName));
+                SqlParams.Add(new SqlParameter("@TaxPercent", TaxPercent));
                 var _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_TaxMaster", SqlParams);
                 if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
                 {
                     _ResponseResult.Result.Tables[0].TableName = "TaxTypeList";
                     _ResponseResult.Result.Tables[1].TableName = "HSNList";
                     _ResponseResult.Result.Tables[2].TableName = "ParentGroupList";
-                    _ResponseResult.Result.Tables[3].TableName = "SGSTHeadList";
+                    //_ResponseResult.Result.Tables[3].TableName = "SGSTHeadList";
                     oDataSet = _ResponseResult.Result;
                 }
             }
@@ -58,10 +63,10 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
                 SqlParams.Add(new SqlParameter("@EmpId", userId));
-                SqlParams.Add(new SqlParameter("@MainMenu", "Tax"));
+                SqlParams.Add(new SqlParameter("@MainMenu", "TAX"));
                 //SqlParams.Add(new SqlParameter("@SubMenu", "Purchase order"));
 
-                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_TaxMaster", SqlParams);
             }
             catch (Exception ex)
             {
@@ -71,7 +76,49 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        internal async Task<ResponseResult> DeleteByID(int ID)
+        public async Task<ResponseResult> FillHSN(string taxCategory)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FILLHSN"));
+                SqlParams.Add(new SqlParameter("@TaxCategory", taxCategory));
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_TaxMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
+
+        public async Task<ResponseResult> GetSGSTByTaxPercent(decimal taxPercent)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FILLSGST"));
+                SqlParams.Add(new SqlParameter("@TaxPercent", taxPercent));
+                //SqlParams.Add(new SqlParameter("@SubMenu", "Purchase order"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_TaxMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        internal async Task<ResponseResult> DeleteByID(int ID, int CreatedBy)
         {
             var _ResponseResult = new ResponseResult();
 
@@ -81,6 +128,7 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@Flag", "DELETEBYID"));
                 SqlParams.Add(new SqlParameter("@EntryID", ID));
+                SqlParams.Add(new SqlParameter("@CreatedBy", CreatedBy));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_TaxMaster", SqlParams);
             }
@@ -93,7 +141,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<IList<TaxMasterDashboard>> GetSearchData(string TaxName, string TaxType, string HSNNo)
+        public async Task<IList<TaxMasterDashboard>> GetSearchData(string TaxName, string TaxType, string HSNNo, int userID)
         {
             var DashBoard = new List<TaxMasterDashboard>();
 
@@ -105,6 +153,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@TaxName", TaxName));
                 SqlParams.Add(new SqlParameter("@TaxTypeName", TaxType));
                 SqlParams.Add(new SqlParameter("@HSNNo", HSNNo));
+                SqlParams.Add(new SqlParameter("@CreatedBy", userID));
 
                 var _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_TaxMaster", SqlParams);
                 if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
@@ -125,13 +174,14 @@ namespace eTactWeb.Data.DAL
             return DashBoard;
         }
 
-        internal async Task<IList<TaxMasterDashboard>> GetDashBoardData()
+        internal async Task<IList<TaxMasterDashboard>> GetDashBoardData(int userID)
         {
             var DashBoard = new List<TaxMasterDashboard>();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
+                SqlParams.Add(new SqlParameter("@CreatedBy", userID));
                 var _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_TaxMaster", SqlParams);
                 if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
                 {
@@ -159,6 +209,8 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
 
+                model.Mode = model.Mode == "U" ? "UPDATE" : "INSERT";
+
                 SqlParams.Add(new SqlParameter("@Flag", model.Mode));
                 SqlParams.Add(new SqlParameter("@EntryID", model.EntryID));
                 SqlParams.Add(new SqlParameter("@TaxName", model.TaxName));
@@ -181,6 +233,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@UnderGroup", model.UnderGroup));
                 SqlParams.Add(new SqlParameter("@DTHSNDetail", TaxMasterDT));
                 SqlParams.Add(new SqlParameter("@CreatedBY", model.CreatedBy));
+                SqlParams.Add(new SqlParameter("@IPAddress", model.IPAddress));
+                SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName));
                 if (model.Mode == "UPDATE")
                 {
                     SqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));

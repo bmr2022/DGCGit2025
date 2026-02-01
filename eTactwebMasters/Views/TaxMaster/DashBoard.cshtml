@@ -11,7 +11,7 @@
             <h5>
                 Tax Master - <strong>Dashboard</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="TaxMaster" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="TaxMaster" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                         Add New
                     </a>
@@ -72,58 +72,117 @@
 </div>
 
 @section Scripts
-    {
+{
     <script>
+
+        $(document).ready(function () {
+
+            $("#HSNNo").autocomplete({
+                minLength: 2,
+                delay: 300,
+
+                source: function (request, response) {
+
+                    $.ajax({
+                        url: '@Url.Action("FillHSN", "TaxMaster")',
+                        type: 'POST',
+                        dataType: "json",     // 🔥 VERY IMPORTANT
+                        data: {
+                            TaxCategory: 'GST',
+                            term: request.term
+                        },
+                        success: function (res) {
+
+                            // 🔥 backend double-serialized hai
+                            let obj = typeof res === "string"
+                                ? JSON.parse(res)
+                                : res;
+
+                            if (obj.StatusCode === 200 &&
+                                obj.Result &&
+                                obj.Result.Table &&
+                                obj.Result.Table.length > 0) {
+
+                                response($.map(obj.Result.Table, function (item) {
+                                    return {
+                                        label: item.HsnNo || item.HSNNO, // 🔥 CASE SAFE
+                                        value: item.HsnNo || item.HSNNO
+                                    };
+                                }));
+
+                            } else {
+                                response([]);
+                            }
+                        },
+                        error: function () {
+                            response([]);
+                        }
+                    });
+                },
+
+                select: function (event, ui) {
+                    $("#HSNNo").val(ui.item.value);
+                    return false;
+                }
+            });
+
+        });
+
+
+
         $(function () {
             GetFormRights();
             var dashGrid = $('#divDashboardGridbody tr').length;
             $('#totalRows').text(dashGrid);
             AutoComplete('Tax_Master', 'TaxName', 'Tax_Name', null);
             AutoComplete('Tax_Master', 'TaxType', 'TaxType', null);
-            AutoComplete('TaxMasterHSNDetail', 'HSNNo', 'HSNNO', null);
+            //AutoComplete('TaxMasterHSNDetail', 'HSNNo', 'HSNNO', null);
         });
 
         function GetFormRights() {
+
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
                 async: false,
                 success: function (data) {
-                     
+
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.Result.Table.length == 0) {
                             var rowCounter = $('#divDashboardGrid tr').length;
-                            for (var i = 1; i < rowCounter; i++) {
+                            for (var i = 0; i < rowCounter; i++) {
                                 $('#viewCursorDiv-' + i).empty();
                                 $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
-                                                                                <span class="fa-stack">
-                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                                                                </span>
-                                                                            </a>`);
+                                                                                                        <span class="fa-stack">
+                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                                        </span>
+                                                                                                    </a>`);
                             }
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#editCursorDiv-' + i).empty();
                                 $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
-                                                                                        <span class="fa-stack">
-                                                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                                                        </span>
-                                                                                    </a>`);
+                                                                                                                <span class="fa-stack">
+                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                                                </span>
+                                                                                                            </a>`);
                             }
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#deleteCursorDiv-' + i).empty();
                                 $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
-                                                                                        <span class="fa-stack">
-                                                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                                                        </span>
-                                                                                    </a>`);
+                                                                                                                <span class="fa-stack">
+                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                                                </span>
+                                                                                                            </a>`);
                             }
-
+                            $("#divDashboardGrid").css("display", "none");
+                            $(".totalrows").css("display", "none");
+                            $("#SParam").hide();
                         } else {
-                            console.log(obj);
+
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -131,39 +190,50 @@
                             var optView = obj.Result.Table[0].OptView;
                             var rowCounter = $('#divDashboardGrid tr').length;
                             if (!optAll) {
+                                if (!optSave) {
+
+                                    $("#savebtn").css("pointer-events", "none");
+                                } else {
+                                    $("#savebtn").css("pointer-events", "");
+                                }
                                 if (!optView) {
 
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#viewCursorDiv-' + i).empty();
                                         $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
-                                                                                <span class="fa-stack">
-                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                                                                </span>
-                                                                            </a>`);
+                                                                        <span class="fa-stack">
+                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                        </span>
+                                                                    </a>`);
                                     }
                                 }
                                 if (!optUpdate) {
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#editCursorDiv-' + i).empty();
                                         $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
-                                                                                <span class="fa-stack">
-                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                                                </span>
-                                                                            </a>`);
+                                                                        <span class="fa-stack">
+                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                        </span>
+                                                                    </a>`);
                                     }
                                 }
                                 if (!optDelete) {
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#deleteCursorDiv-' + i).empty();
                                         $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
-                                                                                <span class="fa-stack">
-                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                                                </span>
-                                                                            </a>`);
+                                                                        <span class="fa-stack">
+                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                        </span>
+                                                                    </a>`);
                                     }
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $("#divDashboardGrid").css("display", "none");
+                                    $(".totalrows").css("display", "none");
+                                    $("#SParam").hide();
                                 }
                             }
                         }
@@ -174,9 +244,19 @@
                 }
             });
         }
+        function confirmEdit(event) {
+            event.preventDefault();
+
+            if (confirm("Are you sure you want to Edit this entry?")) {
+                var linkUrl = $(event.currentTarget).attr("href");
+
+                // Redirect without appending additional parameters manually
+                window.location.href = linkUrl;
+            }
+        }
 
         function confirmDelete(event) {
-             
+
             // Prevent the default behavior (navigating to the URL defined in "asp-action" attribute) initially
             event.preventDefault();
 
@@ -187,7 +267,7 @@
                 var linkUrl = $(event.currentTarget).attr("href");
                 window.location.href = linkUrl;
             }
-            }
+        }
 
         var currentSearchColumn = null;
         $("#search-box").on("keyup", function () {
@@ -201,15 +281,41 @@
                 }
             });
         });
+        $("#sendToExcel").click(function () {
+            // Get the table
+            var table = document.getElementById("TaxmasterData");
 
+            // Clone table so we don't affect original HTML
+            var clonedTable = table.cloneNode(true);
+
+            // Remove "Action" column (now it's first visible column, originally second)
+            clonedTable.querySelectorAll("thead th")[0].remove();
+            clonedTable.querySelectorAll("tbody tr").forEach(function (row) {
+                if (row.children.length > 0) {
+                    row.children[0].remove();
+                }
+            });
+
+            // Convert table to worksheet
+            var ws = XLSX.utils.table_to_sheet(clonedTable);
+
+            // Create a new workbook
+            var wb = XLSX.utils.book_new();
+
+            // Append worksheet
+            XLSX.utils.book_append_sheet(wb, ws, "TaxMaster");
+
+            // Save as Excel
+            XLSX.writeFile(wb, "TaxMasterTable.xlsx");
+        });
 
         $(document).on("click", "th[data-columnno]", function () {
             currentSearchColumn = $(this).data('columnno');
-            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+            $("#search-box").val('').trigger('keyup');
         });
 
         $(document).on("click", ".sortCol", function () {
-             ;
+            ;
             var $column = $(this).parent().closest("th");
             var colno = $(this).data('columnno');
             var currentOrder = $(this).data('sortorder');
@@ -232,7 +338,7 @@
             }
         });
         function sortTable(columnIndex, ascending) {
-             
+
             var table = $('#TaxmasterData');
             var rows = table.find('#divDashboardGridbody > tr').toArray();
 
@@ -268,7 +374,7 @@
         }
 
 
-        function GetSearchData() {            
+        function GetSearchData() {
             //var data = $('#SParam').serialize();
             $.ajax({
                 url: '@Url.Action("GetSearchData")',
@@ -279,7 +385,7 @@
                     $('#divDashboardGrid').empty().append(data);
                     var dashGrid = $('#divDashboardGridbody tr').length;
                     $('#totalRows').text(dashGrid);
-                     
+
                     GetFormRights();
                 },
                 error: function (response) {
@@ -290,5 +396,9 @@
                 }
             });
         }
+
     </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+
 }

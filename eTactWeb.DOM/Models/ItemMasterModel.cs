@@ -216,6 +216,9 @@ namespace eTactWeb.DOM.Models
         public IFormFile? ItemImage { get; set; }
         public string? ItemImageURL { get; set; }
         public decimal WastagePercent { get; set; }
+        public decimal IGST { get; set; }
+        public decimal CGST { get; set; }
+        public decimal SGST { get; set; }
         public string? WipStockable { get; set; }
 
         //[Column(TypeName = "decimal(10, 4)")]

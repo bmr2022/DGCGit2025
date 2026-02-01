@@ -11,8 +11,8 @@ public class TaxMasterDashboard
     public IList<TextValue>? AddInTaxableList { get; set; }
     public string? DisplayName { get; set; }
     public string? Refundable { get; set; }
-    
-    
+
+
     public IList<TextValue>? RefundableList { get; set; }
     public string? TaxCategory { get; set; }
     public IList<TextValue>? TaxCategoryList { get; set; }
@@ -32,7 +32,11 @@ public class TaxMasterModel : TimeStamp
         new() { Value = "Y", Text = "YES" },
         new() { Value = "N", Text = "NO" }
     };
-
+    private IList<SelectListItem> _AddInTaxable = new List<SelectListItem>()
+    {
+        new() { Value = "Y", Text = "YES" },
+        new() { Value = "N", Text = "NO" }
+    };
     private IList<SelectListItem> _TaxApplicable = new List<SelectListItem>()
     {
         new() { Value = "EXPORT", Text = "EXPORT" },
@@ -61,8 +65,8 @@ public class TaxMasterModel : TimeStamp
 
     public IList<SelectListItem> AddInTaxableList
     {
-        get => _Refundable;
-        set => _Refundable = value;
+        get => _AddInTaxable;
+        set => _AddInTaxable = value;
     }
 
     public string? DisplayName { get; set; }
@@ -92,7 +96,8 @@ public class TaxMasterModel : TimeStamp
 
     public string? SGSTHead { get; set; }
 
-    public IList<TextValue>? SGSTHeadList { get; set; }
+    public IList<TextValue> SGSTHeadList { get; set; } = new List<TextValue>();
+
 
     public string? SubGroup { get; set; }
 
@@ -138,6 +143,8 @@ public class TaxMasterModel : TimeStamp
     public int UpdatedBy { get; set; }
     public string? UpdatedByName { get; set; }
     public DateTime? UpdatedOn { get; set; }
+    public string? IPAddress { get; set; }
+    public string? EntryByMachineName { get; set; }
 }
 
 [Serializable()]

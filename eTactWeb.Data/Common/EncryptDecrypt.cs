@@ -13,6 +13,7 @@ namespace eTactWeb.Data.Common
             configuration = config;
         }
 
+        //change from history to solve error by MONIKA
         public string Decrypt(string DecryptText)
         {
             var SrctArray = Encoding.UTF8.GetBytes(configuration["Cipher:Key"]);
@@ -30,6 +31,7 @@ namespace eTactWeb.Data.Common
             return Encoding.UTF8.GetString(resArray);
         }
 
+
         public string Encrypt(string Encryptval)
         {
             var SrctArray = Encoding.UTF8.GetBytes(configuration["Cipher:Key"]);
@@ -45,6 +47,27 @@ namespace eTactWeb.Data.Common
             var resArray = crptotrns.TransformFinalBlock(EnctArray, 0, EnctArray.Length);
             objt.Clear();
             return Convert.ToBase64String(resArray, 0, resArray.Length);
+        }
+        public static string EncodeID(int id)
+        {
+            int obfuscated = id * 12345 + 6789; // simple obfuscation
+            var bytes = BitConverter.GetBytes(obfuscated);
+            string base64 = Convert.ToBase64String(bytes);
+            return base64.TrimEnd('=').Replace('+', '-').Replace('/', '_');
+        }
+
+        // Decode URL-safe Base64 back to int
+        public static int DecodeID(string encoded)
+        {
+            string padded = encoded.Replace('-', '+').Replace('_', '/');
+            switch (padded.Length % 4)
+            {
+                case 2: padded += "=="; break;
+                case 3: padded += "="; break;
+            }
+            var bytes = Convert.FromBase64String(padded);
+            int obfuscated = BitConverter.ToInt32(bytes, 0);
+            return (obfuscated - 6789) / 12345;
         }
     }
 }

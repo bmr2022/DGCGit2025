@@ -1194,6 +1194,9 @@ namespace eTactWeb.Data.DAL
                         model.UpdatedBy = SafeToInt(dr["UpdatedBy"]);
                         model.UpdatedOn = SafeToDateTime(dr["UpdatedOn"]);
                         model.Hardness = SafeToString(dr["Hardness"]);
+                        model.IGST = SafeDecimal(dr["IGST"]);
+                        model.CGST = SafeDecimal(dr["CGST"]);
+                        model.SGST = SafeDecimal(dr["SGST"]);
 
 
                         // Optional: Handle ItemServAssets specific mapping
@@ -1328,6 +1331,9 @@ namespace eTactWeb.Data.DAL
                             oCmd.Parameters.AddWithValue("@Hardness", model.Hardness);
                             oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
                             oCmd.Parameters.AddWithValue("@BatchWiseInventory", model.BatchWiseInventory);
+                            oCmd.Parameters.AddWithValue("@IGST", model.IGST);
+                            oCmd.Parameters.AddWithValue("@CGST", model.CGST);
+                            oCmd.Parameters.AddWithValue("@SGST", model.SGST);
                             if (model.Mode == "Update")
                             {
                                 oCmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy);
@@ -1446,6 +1452,9 @@ namespace eTactWeb.Data.DAL
 
                         oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
                         oCmd.Parameters.AddWithValue("@BatchWiseInventory", model.BatchWiseInventory);
+                        oCmd.Parameters.AddWithValue("@IGST", model.IGST);
+                        oCmd.Parameters.AddWithValue("@CGST", model.CGST);
+                        oCmd.Parameters.AddWithValue("@SGST", model.SGST);
                         if (model.Mode == "Update")
                         {
                             oCmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy);

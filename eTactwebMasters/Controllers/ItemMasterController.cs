@@ -2287,6 +2287,9 @@ public class ItemMasterController : Controller
             dt.Columns.Add("SalePrice", typeof(double));
             dt.Columns.Add("PurchasePrice", typeof(double));
             dt.Columns.Add("CostPrice", typeof(double));
+            dt.Columns.Add("IGST", typeof(decimal));
+            dt.Columns.Add("SGST", typeof(decimal));
+            dt.Columns.Add("CGST", typeof(decimal));
             dt.Columns.Add("WastagePercent", typeof(double));
             dt.Columns.Add("WtSingleItem", typeof(double));
             dt.Columns.Add("NoOfPcs", typeof(double));

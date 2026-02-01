@@ -1,4 +1,7 @@
-﻿@model eTactWeb.DOM.Models.TaxMasterDashboard
+﻿@using eTactWeb.Data.Common
+@model eTactWeb.DOM.Models.TaxMasterDashboard
+@inject EncryptDecrypt encryptDecrypt
+
 <div class="card-body table-responsive" style="max-height:350px;">
     <table class="table table-bordered TbCss text-nowrap mb-0" id="TaxmasterData">
         <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashThead">
@@ -12,9 +15,9 @@
                 <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tax Category</th>
                 <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Refundable</th>
                 <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Add In Taxable</th>
-                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSNNO44444</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSNNO</th>
 
-               
+
 
             </tr>
         </thead>
@@ -37,7 +40,8 @@
 
                                     <div id="viewCursorDiv-@Cntr">
 
-                                        <a class="table-link link-success" asp-action="TaxMaster" asp-route-Mode="V" asp-route-ID="@item.AccountCode">
+                                        <a class="table-link link-success" asp-action="TaxMaster" asp-route-Mode="@encryptDecrypt.Encrypt("V")" asp-route-ID="@EncryptDecrypt.EncodeID(item.AccountCode)">
+
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -46,7 +50,8 @@
                                     </div>
                                     <div id="editCursorDiv-@Cntr">
 
-                                        <a class="table-link link-primary" asp-action="TaxMaster" asp-route-Mode="U" asp-route-ID="@item.AccountCode">
+                                        <a class="table-link link-primary" asp-action="TaxMaster" asp-route-Mode="@encryptDecrypt.Encrypt("U")" asp-route-ID="@EncryptDecrypt.EncodeID(item.AccountCode)" onclick="confirmEdit(event)">
+
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -65,13 +70,13 @@
                             </td>
                             <td>@item.TaxName</td>
                             <td>@item.DisplayName</td>
-                             <td>@item.TaxPercent</td>
+                            <td>@item.TaxPercent</td>
                             <td>@item.TaxType</td>
                             <td>@item.TaxCategory</td>
-                            <td>@item.AddInTaxable</td>
                             <td>@item.Refundable</td>
+                            <td>@item.AddInTaxable</td>
                             <td>@item.HSNNo</td>
-                            
+
                         </tr>
                     }
                 }
