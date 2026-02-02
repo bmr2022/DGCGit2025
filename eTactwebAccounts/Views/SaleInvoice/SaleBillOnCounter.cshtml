@@ -1533,8 +1533,11 @@
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
+
                         $('#DiscountPer').val(0);
+                         if (result && result.Result && result.Result.length > 0) {
                         $('#DiscountPer').val(obj.Result[0].SaleDiscount);
+                         }
 
                     }
                 }
@@ -4697,7 +4700,7 @@
             }
         });
         var isAccountCodeClear = false;
-        $('#AccountCode').change(function () {
+        $('#AccountCodeText').focusout(function () {
          //   $('#PartyName').val($('#AccountCode option:selected').text());
               $('#PartyName').val($("#AccountCodeText").val());
 
