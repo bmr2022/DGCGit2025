@@ -2091,6 +2091,14 @@
 
                         if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
                             // 🔹 Partial match: includes()
+
+
+                            let list = obj.Result.Table.map(item => ({
+                                ...item,
+                                real: (item.RealPartCode || "").trim().toLowerCase()
+                            }));
+
+                            // 1️⃣ Exact match
                             let match =
                                 list.find(i => i.real === entered) ||
 
@@ -2099,6 +2107,14 @@
 
                                 // 3️⃣ Fallback (optional)
                                 list.find(i => i.real.startsWith(entered));
+                            // let match =
+                            //     list.find(i => i.real === entered) ||
+
+                            //     // 2️⃣ Starts with (space-safe)
+                            //     list.find(i => i.real.startsWith(entered + " ")) ||
+
+                            //     // 3️⃣ Fallback (optional)
+                            //     list.find(i => i.real.startsWith(entered));
 
                             // let match = obj.Result.Table.find(item =>
                             //     googleMatch(entered, item)

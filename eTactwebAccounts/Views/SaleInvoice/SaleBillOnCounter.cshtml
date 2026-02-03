@@ -528,14 +528,14 @@
                                     <input asp-for="TotalRoundOffAmt" class="form-control" readonly />
                                     <input id="TotalRoundOffAmt1" class="form-control" type="hidden" readonly />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                               @*  <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="NetTotal" class="form-label">Net Total</label>
                                     <input asp-for="NetTotal" class="form-control" readonly />
                                     @if (Model.Mode == "U")
                                     {
                                         <input type="hidden" asp-for="AttachmentFile1" value="@Model.AttachmentFile1" id="hiddenAttachmentFile1" />
                                     }
-                                </div>
+                                </div> *@
                             </div>
                         </div>
                     </div>
@@ -1472,20 +1472,23 @@
 
     $("#divSaleBillList tr").each(function () {
         let sono = $(this).find("td[id^='GridSONO-']").text().trim();
+        console.log('sono' + sono);
         if (sono !== "" && sono !== "0") {
+            console.log('Go inside');
+
             hasSONO = true;
             return false; // break loop
         }
 
     });
 
-    if (hasSONO) {
-        ClearGrid();
-        btnClearTax();
-        ClearAdjustmentGrid();
+    // if (hasSONO) {
+    //      ClearGrid();
+    //     btnClearTax();
+    //     ClearAdjustmentGrid();
       
-        ClearCustomerJWGrid();
-    }
+    //     ClearCustomerJWGrid();
+    // }
                     FillSONO();
             FillCurrency();
             FillCustomerAddress();
@@ -1760,7 +1763,7 @@
                 var currentYear = getFinancialYear();
                 if ($('#SaleBillYearCode', '').val() == currentYear) {
                     $('#SaleBillDate').prop("disabled", false);
-                             GetDbCrDetail();
+                             // GetDbCrDetail();
                 } else {
                     $('#SaleBillDate').prop("disabled", true);
                 }
@@ -1792,7 +1795,7 @@
                 // FillItems($('#TypeItemServAssets').val());
             } else {
                 SetminQty();
-                BasicTotal();
+                // BasicTotal();
                 $('#DT').prop("checked", true);
                 $('#PN1').prop("checked", true);
                 // FillCustomerList("Y");
@@ -1810,13 +1813,15 @@
                     TotalRoundOffAmt = parseFloat($('#TotalRoundOffAmt').val());
                 }
                 var txTotal = sum + txSum + TotalRoundOffAmt;
-                $('#NetTotal').val(txTotal.toFixed(2));
+                // $('#NetTotal').val(txTotal.toFixed(2));
                 
-                calculateroundoffnettotal();
-                $('#NetTotal1').html(txTotal.toFixed(2));
-                $('#BaseNetTotal').val(txTotal.toFixed(2));
-                $('#AdjPendAmt').val($('#NetTotal').val());
+                // calculateroundoffnettotal();
+                // $('#NetTotal1').html(txTotal.toFixed(2));
+                // $('#BaseNetTotal').val(txTotal.toFixed(2));
+                // $('#AdjPendAmt').val($('#NetTotal').val());
                 // $('#NetTotal1').html($('#NetTotal').val());
+
+                // alert($('#NetTotal').val());
             }
             calculatetotalqty();
 
@@ -1894,7 +1899,19 @@
                             // alert('Store Name: ' + store.Store_Name);
                         });
 
+                        if ($('#Mode').val() === 'U' || $('#Mode').val() === 'V') {
+                            var SubInvoicetype = '@(Model.SubInvoicetype ?? "")';
+                            $('#SubInvoicetype')
+                                .val(SubInvoicetype)
+                                .prop('disabled', true);
+                        }
+
+
+
                     },
+
+                   
+
                     error: function (xhr, status, error) {
                         alert('Failed to load groups.');
                     }
@@ -2343,10 +2360,13 @@
             //         });
             //     }
             // }
-
-            FillSaleBillGridFromMemoryCache();
+             // alert($('#NetTotal').val());
+           
+            // alert($('#NetTotal').val());
             var rowCounter = $('#divMultiItemGrid tr').length;
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+                 // alert('inside'+ $('#NetTotal').val());
+                FillSaleBillGridFromMemoryCache();
                 if (rowCounter > 0) {
                     $('.PendingItem').show();
                     $('.newitems').hide();
@@ -2359,16 +2379,17 @@
                     // FillWorkCenter();
                 }
             } else {
-
+                 // alert($('#NetTotal').val());
                 $('.PendingItem').hide();
                 $('.newitems').show();
                 // FillWorkCenter();
 
             }
+            // alert($('#NetTotal').val());
         });
 
 
-
+        //readyend here
 
 
 
@@ -4722,11 +4743,11 @@
             FillDistance();
             FillSONO();
 
-            ClearGrid();
-            btnClearTax();
-            ClearAdjustmentGrid();
-            ClearDRCRGrid();
-            ClearCustomerJWGrid();
+            // ClearGrid();
+            // btnClearTax();
+            // ClearAdjustmentGrid();
+            // ClearDRCRGrid();
+            // ClearCustomerJWGrid();
         });
 
         $("#PaymentTerm").on("input", function (e) {
@@ -6425,24 +6446,24 @@
 
                         if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
 
-                            // let list = obj.Result.Table.map(item => ({
-                            //     ...item,
-                            //     real: (item.RealPartCode || "").trim().toLowerCase()
-                            // }));
+                            let list = obj.Result.Table.map(item => ({
+                                ...item,
+                                real: (item.RealPartCode || "").trim().toLowerCase()
+                            }));
 
-                            // // // 1️⃣ Exact match
-                            // let match =
-                            //     list.find(i => i.real === entered) ||
+                            // // 1️⃣ Exact match
+                            let match =
+                                list.find(i => i.real === entered) ||
 
-                            //     // 2️⃣ Starts with (space-safe)
-                            //     list.find(i => i.real.startsWith(entered + " ")) ||
+                                // 2️⃣ Starts with (space-safe)
+                                list.find(i => i.real.startsWith(entered + " ")) ||
 
-                            //     // 3️⃣ Fallback (optional)
-                            //     list.find(i => i.real.startsWith(entered));
+                                // 3️⃣ Fallback (optional)
+                                list.find(i => i.real.startsWith(entered));
 
-                            let match = obj.Result.Table.find(item =>
-                                googleMatch(entered, item)
-                            );
+                            // let match = obj.Result.Table.find(item =>
+                            //     googleMatch(entered, item)
+                            // );
 
                             if (match) {
                                 $("#PartCodeText")
@@ -6853,7 +6874,7 @@
                                 $('.HideShowOtherDiscount').hide();
                             } else {
                                 $('.HideShowOtherDiscount').show();
-                                recalcNetTotal();
+                                // recalcNetTotal();
                             }
 
 

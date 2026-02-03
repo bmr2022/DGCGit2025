@@ -943,13 +943,13 @@
             let sg = $('#SubGroup').val();
             let cd = $('#CreditDays').val();
 
-            if ((sg === "Sundry Debtors" || sg === "Sundry Creditors") &&
-                (!cd || cd === "" || cd === "0")) {
+            // if ((sg === "Sundry Debtors" || sg === "Sundry Creditors") &&
+            //     (!cd || cd === "" || cd === "0")) {
 
-                $.notify("Credit Days is required for Sundry Debtors or Sundry Creditors!", "error");
-                AddErrorCls('CreditDays');
-                IsErr = 1;
-            }
+            //     $.notify("Credit Days is required for Sundry Debtors or Sundry Creditors!", "error");
+            //     AddErrorCls('CreditDays');
+            //     IsErr = 1;
+            // }
 
             if (HideShow == 1) {
 
@@ -958,7 +958,7 @@
                     validateRequired("Country");
                     validateRequired("State");
                     validateRequired("City");
-                    validateRequired("PinCode");
+                    // validateRequired("PinCode");
                     // validateRequired("PhoneNo");
                     // validateRequired("MobileNo");
                     // validateRequired("ContactPerson");

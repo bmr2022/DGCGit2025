@@ -36,7 +36,7 @@ else
                 }
             </td>
             <td>@item.TxSeqNo</td>
-            <td>@item.TxType</td>
+            <td class="TxType">@item.TxType</td>
             @if (@item.TxPartName == "-Select-")
             {
                 <td>NA</td>
@@ -72,7 +72,7 @@ else
             {
                 <td>NO</td>
             }
-            <td id="txGridAmount-@item.TxSeqNo">@item.TxAmount.ToString("F6")</td>
+            <td id="txGridAmount-@item.TxSeqNo" class="txGridAmount">@item.TxAmount.ToString("F6")</td>
             @if (@item.TxRefundable == "Y")
             {
                 <td>YES</td>
