@@ -2158,6 +2158,12 @@ public class TaxController : Controller
             case "DirectPurchaseBill":
                 HttpContext.Session.Get(TxPageName);
                 _MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
+
+                modelJson = HttpContext.Session.GetString("DirectPurchaseBill");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJson);
+                }
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
