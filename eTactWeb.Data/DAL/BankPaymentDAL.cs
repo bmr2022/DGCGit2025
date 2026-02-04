@@ -183,7 +183,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> FillPONO( string accountcode, string VoucherDate)
+        public async Task<ResponseResult> FillPONO(string accountcode, string VoucherDate)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -194,7 +194,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));
                 SqlParams.Add(new SqlParameter("@accountcode", accountcode));
                 SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
-                
+
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
@@ -283,7 +283,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "NEWENTRY"));
                 SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Payment"));
                 SqlParams.Add(new SqlParameter("@yearcode", YearCode));
-                SqlParams.Add(new SqlParameter("@VoucherDate", ParseFormattedDate(VoucherDate))); 
+                SqlParams.Add(new SqlParameter("@VoucherDate", ParseFormattedDate(VoucherDate)));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -350,8 +350,10 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@intrument", model.Intrument));
                 sqlParams.Add(new SqlParameter("@intrumentdate", InsDate));
                 sqlParams.Add(new SqlParameter("@UID", model.UID));
+                sqlParams.Add(new SqlParameter("@IpAddress", model.IPAddress));
                 sqlParams.Add(new SqlParameter("@cc", model.CC));
                 sqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryby));
+                sqlParams.Add(new SqlParameter("@EneterdBy", model.ActualEntryby));
                 sqlParams.Add(new SqlParameter("@DTbooktrans", GIGrid));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", sqlParams);
@@ -472,7 +474,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<BankPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank ,string VoucherNo, string AgainstVoucherNo, string PONo, string AgainstBillno)
+        public async Task<BankPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PONo, string AgainstBillno)
         {
             DataSet? oDataSet = new DataSet();
             var model = new BankPaymentModel();
@@ -609,8 +611,8 @@ namespace eTactWeb.Data.DAL
                                                  VoucherDate = dr["VoucherDate"].ToString() ?? "",
                                                  DueDate = dr["DueDate"].ToString() ?? "",
                                                  Balance = string.IsNullOrEmpty(dr["BalanceAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["BalanceAmt"].ToString()),
-												 NetAmount = string.IsNullOrEmpty(dr["TotalAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["TotalAmt"].ToString()),
-												 DRCR = dr["DrCrType"].ToString() ?? "",
+                                                 NetAmount = string.IsNullOrEmpty(dr["TotalAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["TotalAmt"].ToString()),
+                                                 DRCR = dr["DrCrType"].ToString() ?? "",
                                                  AdjustmentAmt = string.IsNullOrEmpty(dr["AdjAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["AdjAmt"].ToString()),
                                                  Adjusted = dr["Adjusted"].ToString() ?? "",
                                                  DrAmt = string.IsNullOrEmpty(dr["DrAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["DrAmt"].ToString()),
@@ -672,7 +674,7 @@ namespace eTactWeb.Data.DAL
             int cnt = 1;
             model.AccEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["AccEntryId"].ToString());
             model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccYearCode"].ToString());
-           
+
             if (DateTime.TryParse(DS.Tables[0].Rows[0]["EntryDate"].ToString(), out DateTime EntryDate))
                 model.EntryDate = EntryDate.ToString("dd/MM/yyyy");
             if (DateTime.TryParse(DS.Tables[0].Rows[0]["VoucherDocdate"].ToString(), out DateTime VoucherDocdate))
@@ -752,7 +754,7 @@ namespace eTactWeb.Data.DAL
                         ActualEntryby = Convert.ToInt32(row["ActualEntryBy"].ToString()),
                         BankType = row["UnderGroup"].ToString(),
                         DRCR = row["CRDDR"].ToString(),
-                        Balance =  Convert.ToDecimal(row["BalanceAmt"].ToString()),
+                        Balance = Convert.ToDecimal(row["BalanceAmt"].ToString()),
                         Type = row["DRCRTYPE"].ToString(),
 
                     });

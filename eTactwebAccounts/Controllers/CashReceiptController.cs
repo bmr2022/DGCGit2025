@@ -21,11 +21,13 @@ namespace eTactwebAccounts.Controllers
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
         private readonly ConnectionStringService _connectionStringService;
+        public EncryptDecrypt EncryptDecrypt { get; }
         public CashReceiptController(ILogger<CashReceiptController> logger, IDataLogic iDataLogic, ICashReceipt ICashReceipt, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ICashReceipt = ICashReceipt;
+            EncryptDecrypt = encryptDecrypt;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
             _connectionStringService = connectionStringService;
@@ -65,7 +67,59 @@ namespace eTactwebAccounts.Controllers
         {
             HttpContext.Session.Remove("KeyCashReceiptGrid");
             HttpContext.Session.Remove("KeyCashReceiptGridEdit");
-            TempData.Clear();
+            //TempData.Clear();
+            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var rights = await _ICashReceipt.GetFormRights(userID);
+            if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+            {
+                return RedirectToAction("Dashboard", "Home");
+            }
+
+
+            string encID = Request.Query["ID"].ToString();
+            string encYC = Request.Query["YearCode"].ToString();
+
+            if (!string.IsNullOrEmpty(encID) || !string.IsNullOrEmpty(encYC))
+            {
+                int decryptedID = EncryptDecrypt.DecodeID(encID);
+                int decryptedYC = EncryptDecrypt.DecodeID(encYC);
+                string decryptedMode = EncryptDecrypt.Decrypt(Mode);
+                //string decryptedVoucherNo = EncryptDecrypt.Decrypt(VoucherNo);
+                ID = decryptedID;
+                YearCode = decryptedYC;
+                Mode = decryptedMode;
+                //VoucherNo = decryptedVoucherNo;
+            }
+            var table = rights.Result.Tables[0];
+            bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+            bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+            bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+            bool optSave = Convert.ToBoolean(table.Rows[0]["OptSave"]);
+
+
+            if (Mode == "U")
+            {
+                if (!(optUpdate))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+            }
+            if (Mode == "V")
+            {
+                if (!(optView))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+            }
+            if (ID <= 0)
+            {
+                if (!optSave)
+                {
+                    return RedirectToAction("BankPaymentDashBoard", "BankPayment");
+                }
+            }
+
+
             var MainModel = new CashReceiptModel();
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
@@ -81,6 +135,7 @@ namespace eTactwebAccounts.Controllers
                 MainModel = await _ICashReceipt.GetViewByID(ID, YearCode, VoucherNo).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.ID = ID;
+                MainModel.YearCode = YearCode;
                 MainModel.VoucherNo = VoucherNo;
 
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.CashReceiptGrid);
@@ -159,6 +214,14 @@ namespace eTactwebAccounts.Controllers
                         _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
                         return View("Error", Result);
                     }
+                    else if (!string.IsNullOrEmpty(Result.StatusText))
+                    {
+                        // If SP returned a message (like adjustment error)
+                        TempData["ErrorMessage"] = Result.StatusText;
+                        HttpContext.Session.Remove("KeyCashReceiptGrid");
+                        HttpContext.Session.Remove("KeyCashReceiptGridEdit");
+                        //return View(model);
+                    }
                 }
 
                 return RedirectToAction(nameof(CashReceipt));
@@ -176,12 +239,12 @@ namespace eTactwebAccounts.Controllers
                 var GIGrid = new DataTable();
                 GIGrid.Columns.Add("AccEntryId", typeof(int));
                 GIGrid.Columns.Add("AccYearCode", typeof(int));
-                GIGrid.Columns.Add("EntryDate", typeof(DateTime));
+                GIGrid.Columns.Add("EntryDate", typeof(string));
                 GIGrid.Columns.Add("DocEntryId", typeof(int));
                 GIGrid.Columns.Add("VoucherDocNo", typeof(string));
                 GIGrid.Columns.Add("BillVouchNo", typeof(string));
-                GIGrid.Columns.Add("VoucherDocDate", typeof(DateTime));
-                GIGrid.Columns.Add("BillInvoiceDate", typeof(DateTime));
+                GIGrid.Columns.Add("VoucherDocDate", typeof(string));
+                GIGrid.Columns.Add("BillInvoiceDate", typeof(string));
                 GIGrid.Columns.Add("BillYearCode", typeof(int));
                 GIGrid.Columns.Add("VoucherRefNo", typeof(string));
                 GIGrid.Columns.Add("SeqNo", typeof(int));
@@ -194,8 +257,8 @@ namespace eTactwebAccounts.Controllers
                 GIGrid.Columns.Add("CrAmt", typeof(decimal));
                 GIGrid.Columns.Add("entryBankCash", typeof(string));
                 GIGrid.Columns.Add("Vouchertype", typeof(string));
-                GIGrid.Columns.Add("chequeDate", typeof(DateTime));
-                GIGrid.Columns.Add("chequeClearDate", typeof(DateTime));
+                GIGrid.Columns.Add("chequeDate", typeof(string));
+                GIGrid.Columns.Add("chequeClearDate", typeof(string));
                 GIGrid.Columns.Add("UID", typeof(int));
                 GIGrid.Columns.Add("CC", typeof(string));
                 GIGrid.Columns.Add("TDSNatureOfPayment", typeof(string));
@@ -208,14 +271,14 @@ namespace eTactwebAccounts.Controllers
                 GIGrid.Columns.Add("AgainstVoucherNo", typeof(string));
                 GIGrid.Columns.Add("AgainstBillno", typeof(string));
                 GIGrid.Columns.Add("PONo", typeof(string));
-                GIGrid.Columns.Add("PoDate", typeof(DateTime));
+                GIGrid.Columns.Add("PoDate", typeof(string));
                 GIGrid.Columns.Add("POYear", typeof(int));
                 GIGrid.Columns.Add("SONo", typeof(int));
                 GIGrid.Columns.Add("CustOrderNo", typeof(string));
-                GIGrid.Columns.Add("SoDate", typeof(DateTime));
+                GIGrid.Columns.Add("SoDate", typeof(string));
                 GIGrid.Columns.Add("SOYear", typeof(int));
                 GIGrid.Columns.Add("ApprovedBy", typeof(int));
-                GIGrid.Columns.Add("ApprovedDate", typeof(DateTime));
+                GIGrid.Columns.Add("ApprovedDate", typeof(string));
                 GIGrid.Columns.Add("Approved", typeof(string));
                 GIGrid.Columns.Add("AccountNarration", typeof(string));
                 GIGrid.Columns.Add("CurrencyId", typeof(int));
@@ -228,14 +291,14 @@ namespace eTactwebAccounts.Controllers
                 GIGrid.Columns.Add("EmpCode", typeof(int));
                 GIGrid.Columns.Add("DeptCode", typeof(int));
                 GIGrid.Columns.Add("MRNNO", typeof(string));
-                GIGrid.Columns.Add("MRNDate", typeof(DateTime));
+                GIGrid.Columns.Add("MRNDate", typeof(string));
                 GIGrid.Columns.Add("MRNYearCode", typeof(int));
                 GIGrid.Columns.Add("CostCenterId", typeof(int));
                 GIGrid.Columns.Add("PaymentMode", typeof(string));
                 GIGrid.Columns.Add("EntryTypebankcashLedger", typeof(string));
                 GIGrid.Columns.Add("TDSApplicable", typeof(string));
                 GIGrid.Columns.Add("TDSChallanNo", typeof(string));
-                GIGrid.Columns.Add("TDSChallanDate", typeof(DateTime));
+                GIGrid.Columns.Add("TDSChallanDate", typeof(string));
                 GIGrid.Columns.Add("PreparedByEmpId", typeof(int));
                 GIGrid.Columns.Add("CGSTAccountCode", typeof(int));
                 GIGrid.Columns.Add("CGSTPer", typeof(decimal));
@@ -251,11 +314,11 @@ namespace eTactwebAccounts.Controllers
                 GIGrid.Columns.Add("BalanceSheetClosed", typeof(string));
                 GIGrid.Columns.Add("ProjectNo", typeof(string));
                 GIGrid.Columns.Add("ProjectYearcode", typeof(int));
-                GIGrid.Columns.Add("ProjectDate", typeof(DateTime));
+                GIGrid.Columns.Add("ProjectDate", typeof(string));
                 GIGrid.Columns.Add("ActualEntryBy", typeof(int));
-                GIGrid.Columns.Add("ActualEntryDate", typeof(DateTime));
+                GIGrid.Columns.Add("ActualEntryDate", typeof(string));
                 GIGrid.Columns.Add("UpdatedBy", typeof(int));
-                GIGrid.Columns.Add("LastUpdatedDate", typeof(DateTime));
+                GIGrid.Columns.Add("LastUpdatedDate", typeof(string));
                 GIGrid.Columns.Add("EntryByMachine", typeof(string));
                 GIGrid.Columns.Add("OursalespersonId", typeof(int));
                 GIGrid.Columns.Add("SubVoucherName", typeof(string));
@@ -860,6 +923,22 @@ namespace eTactwebAccounts.Controllers
                 var model = new CashReceiptModel();
                 FromDate = HttpContext.Session.GetString("FromDate");
                 ToDate = HttpContext.Session.GetString("ToDate");
+                int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                var rights = await _ICashReceipt.GetFormRights(userID);
+                if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+                var table = rights.Result.Tables[0];
+
+                bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+                bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+                bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+                bool optDelete = Convert.ToBoolean(table.Rows[0]["OptDelete"]);
+                if (!(optAll || optView || optUpdate || optDelete))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
                 var Result = await _ICashReceipt.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
                 if (Result != null)
                 {
@@ -877,20 +956,20 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName,string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno)
+        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno)
         {
             HttpContext.Session.Remove("KeyCashReceiptGrid");
             HttpContext.Session.Remove("KeyCashReceiptGridEdit");
             var model = new CashReceiptModel();
-            model = await _ICashReceipt.GetDashBoardDetailData(FromDate, ToDate, LedgerName,Bank, VoucherNo, AgainstVoucherNo, SoNo,AgainstBillno);
+            model = await _ICashReceipt.GetDashBoardDetailData(FromDate, ToDate, LedgerName, Bank, VoucherNo, AgainstVoucherNo, SoNo, AgainstBillno);
             return PartialView("_CashReceiptDashBoardDetailGrid", model);
         }
-        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName,string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno)
+        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno)
         {
             HttpContext.Session.Remove("KeyCashReceiptGrid");
             HttpContext.Session.Remove("KeyCashReceiptGridEdit");
             var model = new CashReceiptModel();
-            model = await _ICashReceipt.GetDashBoardSummaryData(FromDate, ToDate, LedgerName,Bank, VoucherNo, AgainstVoucherNo, SoNo,AgainstBillno);
+            model = await _ICashReceipt.GetDashBoardSummaryData(FromDate, ToDate, LedgerName, Bank, VoucherNo, AgainstVoucherNo, SoNo, AgainstBillno);
             return PartialView("_CashReceiptDashBoardGrid", model);
         }
         public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)

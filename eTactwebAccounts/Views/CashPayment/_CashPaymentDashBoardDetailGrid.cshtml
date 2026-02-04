@@ -1,6 +1,8 @@
 ﻿@model eTactWeb.DOM.Models.CashPaymentModel;
 @using Microsoft.AspNetCore.Http
 @using System.Reflection.PortableExecutable
+@using eTactWeb.Data.Common
+@inject EncryptDecrypt encryptDecrypt
 @inject IHttpContextAccessor HttpContextAccessor
 @{
     var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
@@ -64,7 +66,7 @@
                                         </a>
                                     </div>
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success"id="viewCursor-@Cntr" asp-action="CashPayment" onclick="BackButtonData(event);"  asp-controller="CashPayment" asp-route-Mode="V" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode" asp-route-VoucherNo="@item.VoucherNo">
+                                        <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="CashPayment" asp-route-Mode=@encryptDecrypt.Encrypt("V") onclick="BackButtonData(event);" asp-controller="CashPayment" asp-route-ID="@EncryptDecrypt.EncodeID(@item.AccEntryId)" asp-route-YearCode="@EncryptDecrypt.EncodeID(@item.YearCode)" asp-route-VoucherNo="@item.VoucherNo">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -74,7 +76,7 @@
                                     @if (item.YearCode == yearCode)
                                     {
                                         <div id="editCursorDiv-@Cntr">
-                                            <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="CashPayment" onclick="confirmEdit(event)" asp-controller="CashPayment" asp-route-Mode="U" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode" asp-route-VoucherNo="@item.VoucherNo">
+                                            <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="CashPayment" onclick="confirmEdit(event)" asp-controller="CashPayment" asp-route-Mode=@encryptDecrypt.Encrypt("U") asp-route-ID="@EncryptDecrypt.EncodeID(@item.AccEntryId)" asp-route-YearCode="@EncryptDecrypt.EncodeID(@item.YearCode)" asp-route-VoucherNo="@item.VoucherNo">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>

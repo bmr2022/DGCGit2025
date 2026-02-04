@@ -12,7 +12,7 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL
 {
-    public class BankPaymentBLL:IBankPayment
+    public class BankPaymentBLL : IBankPayment
     {
         private BankPaymentDAL _BankPaymentDAL;
         private readonly IDataLogic _DataLogicDAL;
@@ -59,15 +59,15 @@ namespace eTactWeb.Data.BLL
         {
             return await _BankPaymentDAL.FillCurrency();
         }
-        public async Task<ResponseResult> FillPONO( string accountcode, string VoucherDate)
+        public async Task<ResponseResult> FillPONO(string accountcode, string VoucherDate)
         {
-            return await _BankPaymentDAL.FillPONO( accountcode, VoucherDate);
+            return await _BankPaymentDAL.FillPONO(accountcode, VoucherDate);
         }
-        public async Task<ResponseResult> GetPOYearCode(string PONO,string accountcode, string VoucherDate)
+        public async Task<ResponseResult> GetPOYearCode(string PONO, string accountcode, string VoucherDate)
         {
-            return await _BankPaymentDAL.GetPOYearCode(PONO, accountcode,  VoucherDate);
+            return await _BankPaymentDAL.GetPOYearCode(PONO, accountcode, VoucherDate);
         }
-        public async Task<ResponseResult> GetPODate(string PONO, string accountcode, string VoucherDate,string POYearCode)
+        public async Task<ResponseResult> GetPODate(string PONO, string accountcode, string VoucherDate, string POYearCode)
         {
             return await _BankPaymentDAL.GetPODate(PONO, accountcode, VoucherDate, POYearCode);
         }
@@ -85,13 +85,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _BankPaymentDAL.GetDashBoardData(FromDate, ToDate);
         }
-        public async Task<BankPaymentModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName,string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
+        public async Task<BankPaymentModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
         {
-            return await _BankPaymentDAL.GetDashBoardDetailData(FromDate, ToDate,LedgerName,Bank,VoucherNo, AgainstVoucherNo, PoNo,AgainstBillno);
+            return await _BankPaymentDAL.GetDashBoardDetailData(FromDate, ToDate, LedgerName, Bank, VoucherNo, AgainstVoucherNo, PoNo, AgainstBillno);
         }
-        public async Task<BankPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank,string VoucherNo, string AgainstVoucherNo, string PoNo,string AgainstBillno)
+        public async Task<BankPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
         {
-            return await _BankPaymentDAL.GetDashBoardSummaryData(FromDate, ToDate, LedgerName,Bank, VoucherNo, AgainstVoucherNo, PoNo,AgainstBillno);
+            return await _BankPaymentDAL.GetDashBoardSummaryData(FromDate, ToDate, LedgerName, Bank, VoucherNo, AgainstVoucherNo, PoNo, AgainstBillno);
         }
         public async Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate)
         {

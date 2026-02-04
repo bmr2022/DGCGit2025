@@ -85,21 +85,10 @@
                                 <input asp-for="FromDate" value="@Model.FromDate" class="form-control" type="hidden" />
                                 <input asp-for="ToDate" value="@Model.ToDate" class="form-control" type="hidden" />
                                 <input type="hidden" asp-for="SrNO" />
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="CC" class="form-label">Branch</label>
-                                    <input asp-for="CC" class="form-control" readonly />
-                                </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="AccEntryId" class="form-label">Entry Id</label>
-                                    <input asp-for="AccEntryId" class="form-control" readonly />
-                                </div>
+
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="EntryDate" class="form-label">Entry Date</label>
                                     <input asp-for="EntryDate" class="form-control" readonly />
-                                </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="YearCode" class="form-label">YearCode</label>
-                                    <input asp-for="YearCode" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
                                     <label asp-for="SubVoucherName" class="form-label" style="width:130px;color:red;">SubVoucher Name*</label>
@@ -292,6 +281,19 @@
                             </div>
                             <div class="accordion-body">
                                 <div class="row g-2 gx-3" id="_ItemGrid">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="CC" class="form-label">Branch</label>
+                                        <input asp-for="CC" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="AccEntryId" class="form-label">Entry Id</label>
+                                        <input asp-for="AccEntryId" class="form-control" readonly />
+                                    </div>
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="YearCode" class="form-label">YearCode</label>
+                                        <input asp-for="YearCode" class="form-control" readonly />
+                                    </div>
                                     <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="ActualEntryDate" class="form-label">Actual Entry Date </label>
                                         <input asp-for="ActualEntryDate" class="form-control" readonly />
@@ -394,19 +396,19 @@
                 <div class="d-flex align-items-center gap-3" style="margin-left:70px">
                     <button type="button" class="btn btn-sm btn-primary" onclick="AdjustButton()">Adjust</button>
                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD;" placeholder="Search...">
-                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
                         <label asp-for="AdjustAmount" class="form-label me-2">Total Adjst Amt</label>
                         <input asp-for="AdjustAmount" class="form-control" onchange="ChangeAdjustAmount()" type="number" min="0" />
                     </div>
-                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <label asp-for="PopUpBalance" class="form-label me-2">Total Pending Amount to Adjust</label>
+                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
+                        <label asp-for="PopUpBalance" class="form-label me-2">Total Pending Amt</label>
                         <input asp-for="PopUpBalance" class="form-control" readonly />
                     </div>
-                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
                         <label asp-for="TotalPopDrAmt" class="form-label me-2">Total DrAmt</label>
                         <input asp-for="TotalPopDrAmt" class="form-control" readonly />
                     </div>
-                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
                         <label asp-for="TotalPopCrAmt" class="form-label me-2">Total CrAmt</label>
                         <input asp-for="TotalPopCrAmt" class="form-control" readonly />
                     </div>
@@ -417,31 +419,31 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row g-2 gx-3">
-                            <div class="card-body text-center overflow-auto pb-0">
-                                <div class="table-responsive" style="max-height:350px;">
+                            <div class="card-body text-center overflow-auto pb-0" style="padding-top:0px">
+                                <div class="table-responsive" style="max-height:400px;">
                                     <table class="table table-hover table-bordered table-striped mb-0 BomDetailtable" id="GateDataTable">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
                                             <tr>
                                                 <th>Action</th>
                                                 <th>Add <input id="CheckUnCheckAll" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
-                                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sr#</th>
-                                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Type</th>
-                                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher No</th>
-                                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice No</th>
-                                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Date</th>
-                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Due Date</th>
-                                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Balance</th>
-                                                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Type</th>
-                                                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Adj Amt</th>
-                                                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Adjusted</th>
-                                                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dr Amt</th>
-                                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cr Amt</th>
-                                                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
-                                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BillNet Amt</th>
-                                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>>New RefNo</th>
-                                                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Mode Of Adjust</th>
-                                                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Acc EntryId</th>
-                                                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual DrCr Type</th>
+                                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sr#</th>
+                                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Type</th>
+                                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher No</th>
+                                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice No</th>
+                                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Date</th>
+                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Due Date</th>
+                                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Balance</th>
+                                                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Type</th>
+                                                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Adj Amt</th>
+                                                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Adjusted</th>
+                                                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dr Amt</th>
+                                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cr Amt</th>
+                                                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
+                                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BillNet Amt</th>
+                                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>>New RefNo</th>
+                                                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Mode Of Adjust</th>
+                                                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Acc EntryId</th>
+                                                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual DrCr Type</th>
                                             </tr>
                                         </thead>
                                         <tbody id="divDisplayPopupForPendingVouchersDetail">
@@ -934,10 +936,10 @@
                 const drcr = $(`#Type-${i}`).text().trim();
                 const AdjAmt = parseFloat($(`#AdjAmtG-${i}`).text().trim()) || 0;
 
-                if (drcr === "DR") {   
+                if (drcr === "DR") {
                     // if (drcr.toLowerCase() === "dr") {
                     drTotal += AdjAmt;
-                // } else if (drcr.toLowerCase() === "cr") {   
+                    // } else if (drcr.toLowerCase() === "cr") {
                 } else if (drcr === "CR") {
                     crTotal += AdjAmt;
                 }
@@ -972,10 +974,10 @@
         function BindModeOfAdjust() {
             $('#ModeOfAdjustment').empty();
             $('#ModeOfAdjustment').append(`
-                                                    <option selected value="New Ref">New Ref</option>
-                                                    <option value="Advance">Advance</option>
-                                                    <option value="Against Ref">Against Ref</option>
-                                                `);
+                                                            <option selected value="New Ref">New Ref</option>
+                                                            <option value="Advance">Advance</option>
+                                                            <option value="Against Ref">Against Ref</option>
+                                                        `);
         }
 
         $('#LedgerName').change(function () {
@@ -1532,10 +1534,11 @@
                                 });
                             }
                             else {
-                                if ($('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
-                                    $('#DisplayRoutingDetailModal').modal('show');
-                                    PopUpForPendingVouchers("AddMode");
-                                }
+                                //commentbymonika
+                                // if ($('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
+                                //     $('#DisplayRoutingDetailModal').modal('show');
+                                //     PopUpForPendingVouchers("AddMode");
+                                // }
                                 $('#Type option').filter(function () {
                                     return $(this).val() === "DR";
                                 }).prop('selected', true);
@@ -1680,7 +1683,7 @@
 
         function ChangeAdjustAmt(i) {
             let adjustAmtInput = $('#AdjustAmt-' + i);
-            let balanceText = $('#BalanceText-' + i);
+            let balanceText = $('#BalanceAmt-' + i);
             let netBalanceHidden = $('#NetBalance-' + i);
             let originalBalanceHidden = $('#OriginalBalance-' + i);
             let errorSpan = $('#AdjustAmtError-' + i);
@@ -1735,9 +1738,15 @@
 
         function AdjustButton() {
 
-            if (!Validate_AdjustButton()) return;
+            // if (!Validate_AdjustButton()) return;
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var ItemData = [];
+
+            //Monika
+            if ($('#divDisplayPopupForPendingVouchersDetail input[type="checkbox"]:checked').length === 0) {
+                $.notify("Please check at least one row to adjust", "error");
+                return; // ❌ Stop execution here
+            }
             for (var i = 1; i <= rowCount + 1; i++) {
 
                 if ($('#CheckUnCheck-' + i).is(':checked') == true) {
@@ -1753,43 +1762,43 @@
                         DrAmt = adjAmt.toFixed(2);
                     }
                     ItemData.push({
-                        "LedgerName": $('#LedgerName').find(":selected").text() == '--Select--' ? '' : $('#LedgerName').find(":selected").text(),
-                        "AccountCode": $('#AccountCode').val(),
-                        "Type": $('#PopUpType-' + i).text(),
-                        "Balance": $('#BalanceAmt-' + i).text(),
-                        "DRCR": $('#PopUpType-' + i).text(),
+                        "LedgerName": $('#LedgerName').find(":selected").text() == '--Select--' ? '' : $('#LedgerName').find(":selected").text().trim(),
+                        "AccountCode": $('#AccountCode').val().trim(),
+                        "Type": $('#PopUpType-' + i).text().trim(),
+                        "Balance": $('#BalanceAmt-' + i).text().trim(),
+                        "DRCR": $('#PopUpType-' + i).text().trim(),
                         "DrAmt": DrAmt,
                         "CrAmt": CrAmt,
                         "ActualEntryby": parseInt($('#ActualEntryby').val()),
                         "UID": parseInt($('#UID').val()),
-                        "EntryByMachine": $('#EntryByMachine').val(),
-                        "AgainstVoucherNo": $('#PopUpVoucherNo-' + i).text(),
-                        "AgainstVoucheryearCode": $('#PopUpYearCode-' + i).text(),
-                        "AgainstVoucherDate": $('#popUpVoucherDate-' + i).text(),
-                        "AgainstVoucherType": $('#PopUpVoucherType-' + i).text(),
-                        "AgainstVoucherEntryId": $('#PopUpAccEntryId-' + i).text(),
-                        "VoucherBillAmt": $('#ActualBalance-' + i).text(),
-                        "InVoiceNo": $('#PopUpInVoiceNo-' + i).text(),
-                        "PendBillAmt": $('#BalanceAmt-' + i).text(),
-                        "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text(),
-                        "InsNo": $('#InsNo').val(),
-                        "InsDate": $('#InsDate').val(),
+                        "EntryByMachine": $('#EntryByMachine').val().trim(),
+                        "AgainstVoucherNo": $('#PopUpVoucherNo-' + i).text().trim(),
+                        "AgainstVoucheryearCode": $('#PopUpYearCode-' + i).text().trim(),
+                        "AgainstVoucherDate": $('#popUpVoucherDate-' + i).text().trim(),
+                        "AgainstVoucherType": $('#PopUpVoucherType-' + i).text().trim(),
+                        "AgainstVoucherEntryId": $('#PopUpAccEntryId-' + i).text().trim(),
+                        "VoucherBillAmt": $('#ActualBalance-' + i).text().trim(),
+                        "InVoiceNo": $('#PopUpInVoiceNo-' + i).text().trim(),
+                        "PendBillAmt": $('#BalanceAmt-' + i).text().trim(),
+                        "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text().trim(),
+                        "InsNo": $('#InsNo').val().trim(),
+                        "InsDate": $('#InsDate').val().trim(),
                         "SeqNo": $('#SeqNo').val(),
                         "CustOrderNo": $('#CustOrderNo').val(),
                         "SoDate": $('#SoDate').val(),
                         "SOYear": $('#SOYear').val(),
-                        "PONo": $('#PONo').val(),
+                        "PONo": $('#PONo').val().trim(),
                         "POYear": $('#POYear').val(),
                         "PODate": $('#PoDate').val(),
                         "CurrencyId": parseInt($('#CurrencyId').val()),
-                        "EntryByMachine": $('#EntryByMachine').val(),
-                        "ActualEntryDate": $('#ActualEntryDate').val(),
-                        "Mode": $('#Mode').val(),
-                        "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
+                        "EntryByMachine": $('#EntryByMachine').val().trim(),
+                        "ActualEntryDate": $('#ActualEntryDate').val().trim(),
+                        "Mode": $('#Mode').val().trim(),
+                        "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text().trim(),
                         "AdjustmentAmt": $('#AdjustAmt-' + i).val(),
                         "AdjustmentAmtOthCur": $('#AdjustmentAmtOthCur').val(),
-                        "PartyWiseNaration": $('#PartyWiseNaration').val(),
-                        "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
+                        "PartyWiseNaration": $('#PartyWiseNaration').val().trim(),
+                        "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text().trim(),
                         "CostCenterId": $('#CostCenterId').val(),
                     })
                 }
@@ -1972,11 +1981,11 @@
 
             const adjAmt = parseFloat(SchData.AdjustmentAmt) || 0;
             if (SchData.Type === "DR") {
-            // if (SchData.Type.toLowerCase() === "dr") {
+                // if (SchData.Type.toLowerCase() === "dr") {
                 SchData.DrAmt = adjAmt.toFixed(2);
                 SchData.CrAmt = "0.00";
-            // } else if (SchData.Type.toLowerCase() === "cr") {
-            } else if (SchData.Type=== "CR") {
+                // } else if (SchData.Type.toLowerCase() === "cr") {
+            } else if (SchData.Type === "CR") {
                 SchData.CrAmt = adjAmt.toFixed(2);
                 SchData.DrAmt = "0.00";
             }
@@ -2021,16 +2030,16 @@
                     }
                 }
                 else {
-                    if ($('#Type-' + i).text()== "DR") {
-                          if ($('#Type').val() == "CR") {
-                        // if ($('#Type').val().toLowerCase() == "cr") {
+                    if ($('#Type-' + i).text() == "DR") {
+                        if ($('#Type').val() == "CR") {
+                            // if ($('#Type').val().toLowerCase() == "cr") {
                             $('#AdjustmentAmt').val(difference)
                         }
                     }
                     // if ($('#Type-' + i).text().toLowerCase() == "cr") {
-                    //     if ($('#Type').val().toLowerCase() == "dr") {   
-                            if ($('#Type-' + i).text()== "CR") {
-                        if ($('#Type').val()== "DR") {
+                    //     if ($('#Type').val().toLowerCase() == "dr") {
+                    if ($('#Type-' + i).text() == "CR") {
+                        if ($('#Type').val() == "DR") {
                             $('#AdjustmentAmt').val(difference)
                         }
                     }
@@ -2138,7 +2147,7 @@
 
         function CheckUnCheckCheck(i) {
             var isChecked = $('#CheckUnCheck-' + i).is(':checked');
-            var balanceText = $('#BalanceText-' + i);
+            var balanceText = $('#BalanceAmt-' + i);
             var adjustInput = $('#AdjustAmt-' + i);
             var netBalance = parseFloat($('#NetBalance-' + i).val()) || 0;
             var originalBalance = parseFloat($('#OriginalBalance-' + i).val()) || 0;
@@ -2186,16 +2195,19 @@
             for (let i = 1; i <= RowCount; i++) {
                 let voucherId = $('#AgainstVoucherEntryId-' + i).text().trim();
                 let amount = parseFloat($('#AdjAmtG-' + i).text());
-                let accountCode = $('#LedgerName').val();
                 let balance = parseFloat($('#BalanceG-' + i).text());
+                let accountCode = $('#LedgerName').val();
 
                 let key = voucherId + '_' + accountCode;
-                existingVoucherIds.set(key, { amount, balance });
+                existingVoucherIds.set(voucherId, { amount, balance });
             }
+
+
 
             var selectedRows = $('#divDisplayPopupForPendingVouchersDetail tr').has('input[type="checkbox"]:checked').length;
 
             if (selectedRows === RowCount) {
+
                 $('#CheckUnCheckAll').prop('checked', true);
             }
             else {
@@ -2217,7 +2229,6 @@
             AdjustAmount();
             $('#lblcheckitem').text(selectedRows);
         }
-
         var currentSearchColumn = null;
 
         $("#search-box").on("keyup", function () {

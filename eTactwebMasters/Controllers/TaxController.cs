@@ -2838,7 +2838,10 @@ public class TaxController : Controller
             {
                 HSNTAXParam.HSNNo = (MainModel != null && MainModel.TxPageName == "PurchaseBill") ? item.HSNNO : (item.HSNNo != null && !string.IsNullOrEmpty(item.HSNNo.ToString()) ? Convert.ToInt32(item.HSNNo) : 0);
                 HSNTAXParam.AC = MainModel.AccountCode;
-                if (MainModel.TxPageName == "PurchaseBill")
+                HSNTAXParam.ItemCode = item.ItemCode;
+
+
+				if (MainModel.TxPageName == "PurchaseBill")
                 {
                     MainModel.HSNNO = item.HSNNO;
                 }

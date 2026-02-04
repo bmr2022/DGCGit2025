@@ -35,7 +35,7 @@
                                 </div>
                                 <!-- Form Details -->
                                 <div class="col-lg-2">
-                                    <label asp-for="FormName"  class="form-label">Form Name</label>
+                                    <label asp-for="FormName" class="form-label">Form Name</label>
                                     <select id="FormName" name="FormName" class="form-select">
                                         <option value="">-- Select Form --</option>
                                     </select>
@@ -45,7 +45,7 @@
                                     <input asp-for="YearCode" id="YearCode" class="form-control-plaintext" readonly />
                                 </div>
                                 <div class="col-lg-2">
-                                    <label asp-for="SlipNo" class="form-label">Slip No</label>
+                                    <label asp-for="SlipNo" id="SlipNolable" class="form-label">Slip No</label>
                                     <input type="text" id="SlipNo" name="SlipNo" class="form-control" />
                                 </div>
 
@@ -69,7 +69,7 @@
 
                                         <div class="col-lg-2 EntryId">
                                             <label class="form-label fw-bold">Entry Id</label>
-                                            <input  id="EntryId" name="EntryId" class="form-control-plaintext p-0" readonly />
+                                            <input id="EntryId" name="EntryId" class="form-control-plaintext p-0" readonly />
                                         </div>
 
                                         <div class="col-lg-2 BasicAmount">
@@ -110,7 +110,22 @@
                                             <input type="text" id="IssueToStoreWC" name="IssueToStoreWC" class="form-control-plaintext p-0" readonly />
                                         </div>
 
-                                      
+                                        <div class="col-lg-2 FromStoreName">
+                                            <label class="form-label fw-bold">From Store Name</label>
+                                            <input type="text" id="FromStoreName" name="FromStoreName" class="form-control-plaintext p-0" readonly />
+                                        </div>
+                                        <div class="col-lg-2 ToStoreName">
+                                            <label class="form-label fw-bold">To Store Name</label>
+                                            <input type="text" id="ToStoreName" name="ToStoreName" class="form-control-plaintext p-0" readonly />
+                                        </div>
+
+                                        <div class="col-lg-2 ToWCName">
+                                            <label class="form-label fw-bold">To WC Name</label>
+                                            <input type="text" id="ToWCName" name="ToWCName" class="form-control-plaintext p-0" readonly />
+                                        </div>
+
+
+
 
                                     </div>
                                 </div>
@@ -133,7 +148,7 @@
                                     <!-- Reset button (frontend) -->
                                     <button type="button" id="btnReset" class="btn btn-secondary">Reset</button>
 
-                                    <button type="button" id="muldelete" class="btn btn-danger">Multiple Delete</button>
+                                    @*     <button type="button" id="muldelete" class="btn btn-danger">Multiple Delete</button> *@
 
 
                                     <!-- Update Existing Slip No (frontend now, backend later) -->
@@ -154,18 +169,18 @@
                                 </div>
 
 
-                            </div> 
-                        </div> 
-                    </div> 
-                </div> 
-            </div> 
-        </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    </form> 
+    </form>
 </div>
 @section Scripts
 {
-<script>
+    <script>
 
 
         function GetModuleName() {
@@ -196,19 +211,18 @@
             });
         }
 
-    $('#ModuleName').change(function () {
-        FillFormName();
-    });
-    $('#FormName').change(function () {
-            if ($('#FormName').val() == "ProductionEntryMain")
-    { 
-        $('#AccountNameLable').text('Item Name')
-    }
-    else
-    {
-        $('#AccountNameLable').text('Account Name')
-    }
-        if ($('#FormName').val() == "TransferMaterialFromWcMain") {
+        $('#ModuleName').change(function () {
+            FillFormName();
+        });
+        $('#FormName').change(function () {
+            $('#SlipNolable').text('Slip No');
+            if ($('#FormName').val() == "ProductionEntryMain" || $('#FormName').val() == "Item_Master") {
+                $('#AccountNameLable').text('Item Name')
+            }
+            else {
+                $('#AccountNameLable').text('Account Name')
+            }
+            if ($('#FormName').val() == "TransferMaterialFromWcMain") {
                 $('.AccountName').prop('hidden', true);
                 $('.BasicAmount').prop('hidden', true);
                 $('.NetAmount').prop('hidden', true);
@@ -219,12 +233,12 @@
                 $('.IssueToStoreWC').prop('hidden', false);
 
 
-        }
-       
+            }
 
-            if ($('#FormName').val() == "Bom") {
+
+            else if ($('#FormName').val() == "Bom") {
                 $('.BomNo').show();
-
+                $('#SlipNolable').text('Bom Name');
                 $('.IssueToStoreName').prop('hidden', true);
                 $('.IssueFromWCName').prop('hidden', true);
                 $('.IssueToWCName').prop('hidden', true);
@@ -236,21 +250,61 @@
                 $('.NetAmount').prop('hidden', true);
 
             }
-           
 
 
-    });
+
+            else if ($('#FormName').val() == "Item_Master" || $('#FormName').val() == "Account_Head_Master") {
+
+                // slipno text change
+                if ($('#FormName').val() == "Item_Master") {
+                    $('#SlipNolable').text('PartCode');
+                }
+                else {
+                    $('#SlipNolable').text('Account Name');
+                }
+                $('.BomNo').hide();
+
+
+                $('.IssueToStoreName').prop('hidden', true);
+                $('.IssueFromWCName').prop('hidden', true);
+                $('.IssueToWCName').prop('hidden', true);
+                $('.IssueToStoreWC').prop('hidden', true);
+
+
+                $('.AccountName').prop('hidden', false);
+                $('.BasicAmount').prop('hidden', true);
+                $('.NetAmount').prop('hidden', true);
+            }
+
+            else {
+                $('.BomNo').hide();
+
+                $('.IssueToStoreName').prop('hidden', true);
+                $('.IssueFromWCName').prop('hidden', true);
+                $('.IssueToWCName').prop('hidden', true);
+                $('.IssueToStoreWC').prop('hidden', true);
+                $('.AccountName').prop('hidden', false);
+                $('.BasicAmount').prop('hidden', false);
+                $('.NetAmount').prop('hidden', false);
+            }
+
+
+
+
+
+
+        });
 
 
 
         function FillFormName() {
-        $.ajax({
-            url: '/DeleteTransaction/GetFormName',
-            type: 'GET',
+            $.ajax({
+                url: '/DeleteTransaction/GetFormName',
+                type: 'GET',
                 data: { ModuleName: $('#ModuleName').val() },
-            dataType: 'json',
-            success: function (data) {
-                console.log("Formdata",data);
+                dataType: 'json',
+                success: function (data) {
+                    console.log("Formdata", data);
                     const obj = typeof data === "string" ? JSON.parse(data) : data;
                     const select = $('#FormName');
                     select.empty();
@@ -264,13 +318,13 @@
                             }));
                         });
                     }
-                    
-            },
-            error: function (err) {
-                console.error("❌ Error fetching form names:", err);
-            }
-        });
-    }
+
+                },
+                error: function (err) {
+                    console.error("❌ Error fetching form names:", err);
+                }
+            });
+        }
 
         function GetBomNo() {
             $.ajax({
@@ -300,34 +354,38 @@
                 }
             });
         }
-      
+
+        $('#SlipNo').focus(function () {
+            $('#AccountName, #AccountCode, #EntryId, #BasicAmount, #NetAmount, #EntryDate, #NewSlipNo,#NewSlipPrefix').val('');
+        });
+
         function FillSlipNoAutoSuggest() {
-        const mainTableName = $('#FormName').val();
-        if (!mainTableName) {
-            $('#SlipNo').val('');
-            return;
-        }
+            const mainTableName = $('#FormName').val();
+            if (!mainTableName) {
+                $('#SlipNo').val('');
+                return;
+            }
 
-        $.ajax({
-            url: '/DeleteTransaction/GetSlipNoData',
-            type: 'GET',
-            data: { MainTableName: mainTableName },
-            dataType: 'json',
-            success: function (data) {
-                const obj = typeof data === "string" ? JSON.parse(data) : data;
-                const result = obj.Result || [];
+            $.ajax({
+                url: '/DeleteTransaction/GetSlipNoData',
+                type: 'GET',
+                data: { MainTableName: mainTableName },
+                dataType: 'json',
+                success: function (data) {
+                    const obj = typeof data === "string" ? JSON.parse(data) : data;
+                    const result = obj.Result || [];
 
-                if (result.length === 0) return;
+                    if (result.length === 0) return;
 
-                const slipList = result.map(item => ({
-                    label: item.SlipNo,
-                    value: item.SlipNo,
-                    accountName: item.Account_Name, // match SP output
-                    accountCode: item.AccountCode,
-                    entryId: item.EntryId,
-                    basicAmount: item.BasicAmount,
-                    netAmount: item.NetAmount,
-                    entryDate: item.EntryDate,
+                    const slipList = result.map(item => ({
+                        label: item.SlipNo,
+                        value: item.SlipNo,
+                        accountName: item.Account_Name, // match SP output
+                        accountCode: item.AccountCode,
+                        entryId: item.EntryId,
+                        basicAmount: item.BasicAmount,
+                        netAmount: item.NetAmount,
+                        entryDate: item.EntryDate,
                         issueToStoreId: item.IssueToStoreId,
                         issueToStoreName: item.IssueToStoreName,
                         issueFromWCid: item.IssueFromWCid,
@@ -335,32 +393,38 @@
                         issueTOWCid: item.IssueTOWCid,
                         issueToWCName: item.IssueToWCName,
                         issueToStoreWC: item.IssueToStoreWC
-                }));
+                    }));
 
-                $("#SlipNo").autocomplete({
-                    source: slipList,
-                    minLength: 1,
-                    select: function (event, ui) {
-                        $("#SlipNo").val(ui.item.value);
-                        FillSlipDetails(ui.item);
-                        GetBomNo();
-                        return false;
-                    }
-                });
-            },
-            error: function (err) {
-                console.error("❌ Error fetching slip numbers:", err);
-            }
-        });
-    }
+                    $("#SlipNo").autocomplete({
+                        source: slipList,
+                        minLength: 1,
+                        select: function (event, ui) {
+                            $("#SlipNo").val(ui.item.value);
+                            FillSlipDetails(ui.item);
+                            GetBomNo();
+                            return false;
+                        }
+                    });
+                },
+                error: function (err) {
+                    console.error("❌ Error fetching slip numbers:", err);
+                }
+            });
+        }
 
 
 
-    function FillSlipDetails(item) {
-        $('#AccountName').val(item.accountName);
-        $('#AccountCode').val(item.accountCode);
-        $('#EntryId').val(item.entryId);
-        $('#BasicAmount').val(item.basicAmount);
+        function FillSlipDetails(item) {
+
+
+            $('#AccountName, #AccountCode, #EntryId, #BasicAmount, #NetAmount, #EntryDate, #NewSlipNo,#NewSlipPrefix').val('');
+
+            $('#NetAmount').val(item.netAmount);
+
+            $('#AccountName').val(item.accountName);
+            $('#AccountCode').val(item.accountCode);
+            $('#EntryId').val(item.entryId);
+            $('#BasicAmount').val(item.basicAmount);
             $('#IssueToStoreId').val(item.issueToStoreId);
             $('#IssueToStoreName').val(item.issueToStoreName);
             $('#IssueFromWCid').val(item.issueFromWCid);
@@ -370,88 +434,108 @@
             $('#IssueToStoreWC').val(item.issueToStoreWC);
 
 
-        if (item.entryDate) {
-            const d = new Date(item.entryDate);
-            const formattedDate = ('0' + d.getDate()).slice(-2) + '/' +
-                                  ('0' + (d.getMonth() + 1)).slice(-2) + '/' +
-                                  d.getFullYear();
-            $('#EntryDate').val(formattedDate);
-        } else {
-            $('#EntryDate').val('');
-        }
+            if (item.entryDate) {
+                const d = new Date(item.entryDate);
+                const formattedDate = ('0' + d.getDate()).slice(-2) + '/' +
+                    ('0' + (d.getMonth() + 1)).slice(-2) + '/' +
+                    d.getFullYear();
+                $('#EntryDate').val(formattedDate);
+            } else {
+                $('#EntryDate').val('');
+            }
 
-        $('#NewSlipNo').val('');
-    }
+            $('#NewSlipNo').val('');
+        }
 
 
         // Reset form fields
-    $('#btnReset').click(function() {
-        $('#deleteTrtansaction')[0].reset();
+        $('#btnReset').click(function () {
+            $('#deleteTrtansaction')[0].reset();
             $('#AccountName, #AccountCode, #EntryId, #BasicAmount, #NetAmount, #EntryDate, #NewSlipNo,#NewSlipPrefix').val('');
-    });
-
-
-    $('#btnUpdateExisting').click(function () {
-
-        let newSlipNo = $('#NewSlipNo').val().trim();
-
-        var formData = {
-            FormName: $('#FormName').val(),
-            SlipNo: $('#SlipNo').val(),
-            newSlipNo: newSlipNo,
-            AccountCode: $('#AccountCode').val(),
-            EntryId: $('#EntryId').val(),
-            BasicAmount: $('#BasicAmount').val(),
-            NetAmount: $('#NetAmount').val(),
-            EntryDate: $('#EntryDate').val()
-        };
-
-        // Validate required fields
-        if (!formData.FormName || !formData.SlipNo || !formData.newSlipNo) {
-            $.notify("Please select Form, enter Slip No and New Slip No.", {
-                className: 'error',
-                globalPosition: 'top center'
-            });
-            return;
-        }
-
-        // Call backend
-        $.ajax({
-            url: '/DeleteTransaction/UpdateExistingSlipNo',
-            type: 'POST',
-            data: formData,
-            success: function (res) {
-                if (res.success) {
-                    $.notify(res.message, { className: 'success', globalPosition: 'top center' });
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1500);
-                } else {
-                    $.notify(res.message, { className: 'error', globalPosition: 'top center' });
-                }
-            },
-            error: function () {
-                $.notify("Something went wrong.", { className: 'error', globalPosition: 'top center' });
-            }
         });
-    });
+
+
+        $('#btnUpdateExisting').click(function () {
+
+            let newSlipNo = $('#NewSlipNo').val().trim();
+
+            var formData = {
+                FormName: $('#FormName').val(),
+                SlipNo: $('#SlipNo').val(),
+                newSlipNo: newSlipNo,
+                AccountCode: $('#AccountCode').val(),
+                EntryId: $('#EntryId').val(),
+                BasicAmount: $('#BasicAmount').val(),
+                NetAmount: $('#NetAmount').val(),
+                EntryDate: $('#EntryDate').val()
+            };
+
+            // Validate required fields
+            if (!formData.FormName || !formData.SlipNo || !formData.newSlipNo) {
+                $.notify("Please select Form, enter Slip No and New Slip No.", {
+                    className: 'error',
+                    globalPosition: 'top center'
+                });
+                return;
+            }
+
+            // Call backend
+            $.ajax({
+                url: '/DeleteTransaction/UpdateExistingSlipNo',
+                type: 'POST',
+                data: formData,
+                success: function (res) {
+                    if (res.success) {
+                        $.notify(res.message, { className: 'success', globalPosition: 'top center' });
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        $.notify(res.message, { className: 'error', globalPosition: 'top center' });
+                    }
+                },
+                error: function () {
+                    $.notify("Something went wrong.", { className: 'error', globalPosition: 'top center' });
+                }
+            });
+        });
 
 
 
         $(document).ready(function () {
-        // Load Form list initially
+            // Load Form list initially
             GetModuleName();
 
-        // On FormName change → load slipnos
-        $('#FormName').on('change', function () {
-            FillSlipNoAutoSuggest();
-        });
+            // On FormName change → load slipnos
+            $('#FormName').on('change', function () {
+                $('#NetAmount').val('');
+
+                $('#AccountName').val('');
+                $('#AccountCode').val('');
+                $('#EntryId').val('');
+                $('#BasicAmount').val('');
+                $('#IssueToStoreId').val('');
+                $('#IssueToStoreName').val('');
+                $('#IssueFromWCid').val('');
+                $('#IssueFromWCName').val('');
+                $('#IssueTOWCid').val('');
+                $('#IssueToWCName').val('');
+                $('#IssueToStoreWC').val('');
+                $('#EntryDate').val('');
+                $('#SlipNo').val('');
+
+                FillSlipNoAutoSuggest();
+            });
             $('.IssueToStoreName').prop('hidden', true);
             $('.IssueFromWCName').prop('hidden', true);
             $('.IssueToWCName').prop('hidden', true);
             $('.IssueToStoreWC').prop('hidden', true);
+            $('.FromStoreName').prop('hidden', true);
+            $('.ToStoreName').prop('hidden', true);
+            $('.ToWCName').prop('hidden', true);
 
-         const successMsg = '@TempData["SuccessMessage"]';
+
+            const successMsg = '@TempData["SuccessMessage"]';
             const errorMsg = '@TempData["ErrorMessage"]';
 
             if (successMsg) {
@@ -461,7 +545,7 @@
                     autoHideDelay: 2000
                 });
 
-              
+
                 setTimeout(() => location.reload(), 2200);
             }
 
@@ -484,7 +568,7 @@
                 // If user clicks OK → form submits normally
             });
 
-        $("#muldelete").click(function () {
+            $("#muldelete").click(function () {
                 let formName = $("#FormName").val();
 
                 if (!formName) {
@@ -500,9 +584,9 @@
                     $.notify("Multiple delete is only available for Sale Bill form!", { className: "error", globalPosition: "top center" });
                 }
             });
-    });
+        });
 
-</script>
+    </script>
 }
 <style>
     /* Make readonly inputs look like plain info */

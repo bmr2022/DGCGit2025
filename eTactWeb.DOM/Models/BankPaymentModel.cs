@@ -7,7 +7,7 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models
 {
-    public class BankPaymentModel: TimeStamp
+    public class BankPaymentModel : TimeStamp
     {
         public string? FromDateBack { get; set; }
         public string? IPAddress { get; set; }
@@ -83,7 +83,7 @@ namespace eTactWeb.DOM.Models
         public string Description { get; set; }
         public string VoucherRemark { get; set; }
         public string EntryBankCash { get; set; }
-        public string?   ChequeDate { get; set; }
+        public string? ChequeDate { get; set; }
         public string? ChequeClearDate { get; set; }
         public int UID { get; set; }
         public string CC { get; set; }
@@ -153,8 +153,8 @@ namespace eTactWeb.DOM.Models
         public string? DashboardType { get; set; }
         public decimal PopUpBalance { get; set; }
         public decimal AdjustAmount { get; set; }
-        public decimal TotalPopDrAmt {  get; set; }
-        public decimal TotalPopCrAmt {  get; set; }
+        public decimal TotalPopDrAmt { get; set; }
+        public decimal TotalPopCrAmt { get; set; }
         public decimal PopDrAmt { get; set; }
         public decimal PopCrAmt { get; set; }
         public decimal PopAdjustmentAmt { get; set; }

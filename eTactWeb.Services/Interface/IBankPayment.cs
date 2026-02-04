@@ -19,13 +19,13 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillCurrency();
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> FillPONO(string accountcode, string VoucherDate);
-        Task<ResponseResult> GetPOYearCode(string PONO,string accountcode,string VoucherDate);
-        Task<ResponseResult> GetPODate(string PONO, string accountcode, string VoucherDate,string POYearCode);
+        Task<ResponseResult> GetPOYearCode(string PONO, string accountcode, string VoucherDate);
+        Task<ResponseResult> GetPODate(string PONO, string accountcode, string VoucherDate, string POYearCode);
         Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate);
         Task<ResponseResult> SaveBankPayment(BankPaymentModel model, DataTable GIGrid);
         Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate);
         Task<BankPaymentModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PONo, string AgainstBillno);
-        Task<BankPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName,string Bank, string VoucherNo, string AgainstVoucherNo, string PONo,string AgainstBillno);
+        Task<BankPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PONo, string AgainstBillno);
         Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate);
         Task<ResponseResult> FillBankType(int AccountCode);
         Task<BankPaymentModel> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable);

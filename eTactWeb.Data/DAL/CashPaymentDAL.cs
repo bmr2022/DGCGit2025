@@ -360,7 +360,9 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@intrumentdate", InsDate));
                 sqlParams.Add(new SqlParameter("@UID", model.UID));
                 sqlParams.Add(new SqlParameter("@cc", model.CC));
+                sqlParams.Add(new SqlParameter("@IPAddress", model.IPAddress));
                 sqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryby));
+                sqlParams.Add(new SqlParameter("@EneterdBy", model.ActualEntryby));
                 sqlParams.Add(new SqlParameter("@DTbooktrans", GIGrid));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", sqlParams);
@@ -558,7 +560,7 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-               
+
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DELETEBYID"));
                 SqlParams.Add(new SqlParameter("@AccEntryId", ID));
@@ -621,8 +623,8 @@ namespace eTactWeb.Data.DAL
                                                  VoucherDate = dr["VoucherDate"].ToString() ?? "",
                                                  DueDate = dr["DueDate"].ToString() ?? "",
                                                  Balance = string.IsNullOrEmpty(dr["BalanceAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["BalanceAmt"].ToString()),
-												 NetAmount = string.IsNullOrEmpty(dr["TotalAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["TotalAmt"].ToString()),
-												 DRCR = dr["DrCrType"].ToString() ?? "",
+                                                 NetAmount = string.IsNullOrEmpty(dr["TotalAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["TotalAmt"].ToString()),
+                                                 DRCR = dr["DrCrType"].ToString() ?? "",
                                                  AdjustmentAmt = string.IsNullOrEmpty(dr["AdjAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["AdjAmt"].ToString()),
                                                  Adjusted = dr["Adjusted"].ToString() ?? "",
                                                  DrAmt = string.IsNullOrEmpty(dr["DrAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["DrAmt"].ToString()),

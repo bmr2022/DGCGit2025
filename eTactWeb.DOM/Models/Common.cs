@@ -32,6 +32,7 @@ public class Common
     {
         public int AC { get; set; }
         public int HSNNo { get; set; }
+        public int ItemCode { get; set; }
     }
 
     public class HSNTAXInfo

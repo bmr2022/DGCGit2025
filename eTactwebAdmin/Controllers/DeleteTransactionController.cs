@@ -118,7 +118,7 @@ namespace eTactwebAdmin.Controllers
                 if (deleteResult != null)
                 {
                     // 🔹 If DELETE SP returns success
-                    if ((deleteResult.StatusText?.ToLower() == "deleted" || deleteResult.StatusText?.ToLower() == "success") 
+                    if ((deleteResult.StatusText?.ToLower() == "deleted" || deleteResult.StatusText?.ToLower() == "success")
                         )
                     {
                         // Step 2: Log INSERT

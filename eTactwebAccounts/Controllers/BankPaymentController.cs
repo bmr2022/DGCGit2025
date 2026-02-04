@@ -25,11 +25,13 @@ namespace eTactwebAccounts.Controllers
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
         private readonly ConnectionStringService _connectionStringService;
+        public EncryptDecrypt EncryptDecrypt { get; }
         public BankPaymentController(ILogger<BankPaymentController> logger, IDataLogic iDataLogic, IBankPayment iBankPayment, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IBankPayment = iBankPayment;
+            EncryptDecrypt = encryptDecrypt;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
             _connectionStringService = connectionStringService;
@@ -40,7 +42,61 @@ namespace eTactwebAccounts.Controllers
         {
             HttpContext.Session.Remove("KeyBankPaymentGrid");
             HttpContext.Session.Remove("KeyBankPaymentGridEdit");
-            TempData.Clear();
+            //TempData.Clear();
+            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var rights = await _IBankPayment.GetFormRights(userID);
+            if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+            {
+                return RedirectToAction("Dashboard", "Home");
+            }
+
+
+            string encID = Request.Query["ID"].ToString();
+            string encYC = Request.Query["YearCode"].ToString();
+
+            if (!string.IsNullOrEmpty(encID) || !string.IsNullOrEmpty(encYC))
+            {
+                int decryptedID = EncryptDecrypt.DecodeID(encID);
+                int decryptedYC = EncryptDecrypt.DecodeID(encYC);
+                string decryptedMode = EncryptDecrypt.Decrypt(Mode);
+                //string decryptedVoucherNo = EncryptDecrypt.Decrypt(VoucherNo);
+                ID = decryptedID;
+                YearCode = decryptedYC;
+                Mode = decryptedMode;
+                //VoucherNo = decryptedVoucherNo;
+            }
+            var table = rights.Result.Tables[0];
+            bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+            bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+            bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+            bool optSave = Convert.ToBoolean(table.Rows[0]["OptSave"]);
+
+
+            if (Mode == "U")
+            {
+                if (!(optUpdate))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+            }
+            if (Mode == "V")
+            {
+                if (!(optView))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+            }
+            if (ID <= 0)
+            {
+                if (!optSave)
+                {
+                    return RedirectToAction("BankPaymentDashBoard", "BankPayment");
+                }
+            }
+
+
+
+
             var MainModel = new BankPaymentModel();
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
@@ -50,6 +106,9 @@ namespace eTactwebAccounts.Controllers
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+
+
+
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U" || Mode == "V")
             {
@@ -135,6 +194,14 @@ namespace eTactwebAccounts.Controllers
                         TempData["500"] = "500";
                         _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
                         return View("Error", Result);
+                    }
+                    else if (!string.IsNullOrEmpty(Result.StatusText))
+                    {
+                        // If SP returned a message (like adjustment error)
+                        TempData["ErrorMessage"] = Result.StatusText;
+                        HttpContext.Session.Remove("KeyBankPaymentGrid");
+                        HttpContext.Session.Remove("KeyBankPaymentGridEdit");
+                        //return View(model);
                     }
                 }
                 return RedirectToAction(nameof(BankPayment));
@@ -349,29 +416,29 @@ namespace eTactwebAccounts.Controllers
                 throw;
             }
         }
-		public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string VoucherName = "")
-		{
-			string my_connection_string;
-			string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-			string webRootPath = _IWebHostEnvironment.WebRootPath;
-			var webReport = new WebReport();
-			webReport.Report.Clear();
-			webReport.Report.Dispose();
-			webReport.Report = new Report();
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string VoucherName = "")
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
 
-			webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
+            webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
             my_connection_string = _connectionStringService.GetConnectionString();
-			//my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-			webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-			webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
-			webReport.Report.SetParameterValue("vouchernameparam", VoucherName);
-			webReport.Report.SetParameterValue("yearcodeparam", YearCode);
-			webReport.Report.SetParameterValue("entryidparam", EntryId);
-			webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-			webReport.Report.Refresh();
-			return View(webReport);
-		}
-		public async Task<JsonResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate)
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("vouchernameparam", VoucherName);
+            webReport.Report.SetParameterValue("yearcodeparam", YearCode);
+            webReport.Report.SetParameterValue("entryidparam", EntryId);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+        }
+        public async Task<JsonResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate)
         {
             var JSON = await _IBankPayment.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
@@ -776,7 +843,7 @@ namespace eTactwebAccounts.Controllers
                 }
                 string JsonString = JsonConvert.SerializeObject(SSGrid);
                 return Json(JsonString);
-            } 
+            }
         }
         public IActionResult DeleteItemRow(int SeqNo, string Mode, string PopUpData)
         {
@@ -789,7 +856,7 @@ namespace eTactwebAccounts.Controllers
                 {
                     BankPaymentGrid = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelJson);
                 }
-               
+
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (BankPaymentGrid != null && BankPaymentGrid.Count > 0)
@@ -821,7 +888,7 @@ namespace eTactwebAccounts.Controllers
                     {
                         BankPaymentGrid = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelJson);
                     }
-                    
+
                     int Indx = Convert.ToInt32(SeqNo) - 1;
 
                     if (BankPaymentGrid != null && BankPaymentGrid.Count > 0)
@@ -849,7 +916,7 @@ namespace eTactwebAccounts.Controllers
                     {
                         BankPaymentGrid = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelJson);
                     }
-                    
+
                     int Indx = Convert.ToInt32(SeqNo) - 1;
 
                     if (BankPaymentGrid != null && BankPaymentGrid.Count > 0)
@@ -867,7 +934,7 @@ namespace eTactwebAccounts.Controllers
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
                         HttpContext.Session.SetString("KeyBankPaymentGridEdit", serializedGrid);
                     }
-                }   
+                }
                 return PartialView("_BankPaymentGrid", MainModel);
             }
         }
@@ -878,6 +945,22 @@ namespace eTactwebAccounts.Controllers
                 HttpContext.Session.Remove("KeyBankPaymentGrid");
                 HttpContext.Session.Remove("KeyBankPaymentGridEdit");
                 var model = new BankPaymentModel();
+                int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                var rights = await _IBankPayment.GetFormRights(userID);
+                if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+                var table = rights.Result.Tables[0];
+
+                bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+                bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+                bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+                bool optDelete = Convert.ToBoolean(table.Rows[0]["OptDelete"]);
+                if (!(optAll || optView || optUpdate || optDelete))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
                 var Result = await _IBankPayment.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
                 if (Result != null)
                 {
@@ -909,16 +992,16 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName,string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
+        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
         {
             var model = new BankPaymentModel();
-            model = await _IBankPayment.GetDashBoardDetailData(FromDate, ToDate,LedgerName,Bank,VoucherNo, AgainstVoucherNo, PoNo,AgainstBillno);
+            model = await _IBankPayment.GetDashBoardDetailData(FromDate, ToDate, LedgerName, Bank, VoucherNo, AgainstVoucherNo, PoNo, AgainstBillno);
             return PartialView("_BankPaymentDashBoardDetailGrid", model);
         }
         public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PONo, string AgainstBillno)
         {
             var model = new BankPaymentModel();
-            model = await _IBankPayment.GetDashBoardSummaryData(FromDate, ToDate, LedgerName, Bank,VoucherNo, AgainstVoucherNo, PONo,AgainstBillno);
+            model = await _IBankPayment.GetDashBoardSummaryData(FromDate, ToDate, LedgerName, Bank, VoucherNo, AgainstVoucherNo, PONo, AgainstBillno);
             return PartialView("_BankPaymentDashBoardGrid", model);
         }
         public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
@@ -958,12 +1041,12 @@ namespace eTactwebAccounts.Controllers
                 }
             }
 
-            return RedirectToAction("BankPaymentDashBoard", new {EntryByMachine = EntryByMachine,ActualEntryDate = ActualEntryDate, Flag = "False", FromDate = FromDate, ToDate = ToDate,LedgerName = LedgerName, Bank=Bank,VoucherNo = VoucherNo, AgainstVoucherRefNo = AgainstVoucherRefNo, AgainstVoucherNo = AgainstVoucherNo, Searchbox = Searchbox, DashboardType = DashboardType});
+            return RedirectToAction("BankPaymentDashBoard", new { EntryByMachine = EntryByMachine, ActualEntryDate = ActualEntryDate, Flag = "False", FromDate = FromDate, ToDate = ToDate, LedgerName = LedgerName, Bank = Bank, VoucherNo = VoucherNo, AgainstVoucherRefNo = AgainstVoucherRefNo, AgainstVoucherNo = AgainstVoucherNo, Searchbox = Searchbox, DashboardType = DashboardType });
 
         }
         public async Task<JsonResult> FillLedgerInDashboard(string FromDate, string ToDate, string VoucherType)
         {
-            var JSON = await _IBankPayment.FillLedgerInDashboard(FromDate,ToDate,VoucherType);
+            var JSON = await _IBankPayment.FillLedgerInDashboard(FromDate, ToDate, VoucherType);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

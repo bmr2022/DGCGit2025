@@ -12,7 +12,7 @@ namespace eTactWeb.DOM.Models
     {
         public string FormName { get; set; }
         public string Action { get; set; }
-      
+
         public long YearCode { get; set; }
         public long BomNo { get; set; }
         public string? EntryDate { get; set; }
@@ -26,6 +26,9 @@ namespace eTactWeb.DOM.Models
         public string? newSlipNo { get; set; }
         public string? AccountName { get; set; }
         public string? IssueToStoreWC { get; set; }
+        public string? FromStoreName { get; set; }
+        public string? ToStoreName { get; set; }
+        public string? ToWCName { get; set; }
         public long? AccountCode { get; set; }
         public long? EntryId { get; set; }
         public long? IssueFromWCid { get; set; }
@@ -35,7 +38,7 @@ namespace eTactWeb.DOM.Models
         public decimal? BasicAmount { get; set; }
 
 
-       
+
         public string Flag { get; set; }
     }
 

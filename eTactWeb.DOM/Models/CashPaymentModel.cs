@@ -10,7 +10,7 @@ namespace eTactWeb.DOM.Models
     public class CashPaymentModel : TimeStamp
     {
         public string? FromDateBack { get; set; }
-        public string? IPAddress {  get; set; }
+        public string? IPAddress { get; set; }
         public string? ToDateBack { get; set; }
         public string? LedgerNameBack { get; set; }
         public string? VoucherNoBack { get; set; }
@@ -152,8 +152,8 @@ namespace eTactWeb.DOM.Models
         public string? DashboardType { get; set; }
         public decimal PopUpBalance { get; set; }
         public decimal AdjustAmount { get; set; }
-        public decimal TotalPopDrAmt {  get; set; }
-        public decimal TotalPopCrAmt {  get; set; }
+        public decimal TotalPopDrAmt { get; set; }
+        public decimal TotalPopCrAmt { get; set; }
         public decimal PopDrAmt { get; set; }
         public decimal PopCrAmt { get; set; }
         public decimal PopAdjustmentAmt { get; set; }

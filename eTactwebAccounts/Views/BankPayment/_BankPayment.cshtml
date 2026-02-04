@@ -52,10 +52,10 @@
     <td>
         <input type="hidden" asp-for="CostCenterId" />
         <select class="form-control" asp-for="CostCenterName" style="width:140px;">
-           
+
             @if (Model.Mode == "U" || Model.Mode == "V")
             {
-                <option value="@Model.CostCenterId" >@Model.CostCenterName</option>
+                <option value="@Model.CostCenterId">@Model.CostCenterName</option>
             }
         </select>
     </td>
@@ -66,7 +66,7 @@
     <td><input asp-for="AgainstVoucherType" class="form-control" readonly /></td>
     <td><input asp-for="AgainstVoucherEntryId" class="form-control" readonly /></td>
     <td>
-       
+
         <select class="form-control" asp-for="PONo" style="width:140px;">
             <option value="@Model.PONo">-Select-</option>
             @if (Model.Mode == "U" || Model.Mode == "V")

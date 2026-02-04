@@ -65,8 +65,9 @@ public class TaxModuleDAL
 
             SqlParams.Add(new SqlParameter("@HSNNO", HSNTaxParam.HSNNo));
             SqlParams.Add(new SqlParameter("@Account_code", HSNTaxParam.AC));
+            SqlParams.Add(new SqlParameter("@ItemCode", HSNTaxParam.ItemCode));
 
-            _ResponseResult = await _IDataLogic.ExecuteDataTable("GetHSNTAX", SqlParams);
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("GetHSNTAX1", SqlParams);
         }
         catch (Exception ex)
         {
