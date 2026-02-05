@@ -1462,8 +1462,11 @@ public class TaxController : Controller
         decimal TaxOnExp = 0;
         decimal BasicTotal = 0;
         dynamic ListOfItems = null;
-
-        if (SN == "ItemList")
+        if (SN.StartsWith("ItemList_"))
+        {
+            ListOfItems = new ItemDetail();
+        }
+        else if (SN == "ItemList")
         {
             ListOfItems = new ItemDetail();
         }
@@ -1504,11 +1507,21 @@ public class TaxController : Controller
             ListOfItems = new JobWorkIssueModel();
         }
 
-        if (HttpContext.Session.GetString(SN) != null)
+        //  if (HttpContext.Session.GetString(SN) != null || )  by mayuri
+        if (HttpContext.Session.Keys.Contains(SN) != null)
         {
             if (SN == "ItemList")
             {
-                ListOfItems = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
+                var itemListSessionKey = HttpContext.Session.Keys
+        .FirstOrDefault(k => k.StartsWith("ItemList_"));
+
+                if (!string.IsNullOrEmpty(itemListSessionKey))
+                {
+                    ListOfItems = JsonConvert.DeserializeObject<List<ItemDetail>>(
+                        HttpContext.Session.GetString(itemListSessionKey)
+                    );
+                }
+                // ListOfItems = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
             }
             else if (SN == "PurchaseOrder")
             {
@@ -1594,7 +1607,7 @@ public class TaxController : Controller
                 }
 
                 ListOfItems = MainModel.ItemDetailGrid;
-                
+
             }
             else if (SN == "IssueNRGP")
             {
@@ -1735,7 +1748,7 @@ public class TaxController : Controller
                         //Tax Amount
                         Amt = TaxOnExp + Amt;
 
-                        //Amt = Amt * Convert.ToDecimal(TP) / 100;
+                        Amt = Amt * Convert.ToDecimal(TP) / 100;
                     }
                     else
                     {
@@ -1748,7 +1761,7 @@ public class TaxController : Controller
             //    Amt = Amt * Convert.ToDecimal(TP) / 100;
             //}
 
-           // Amt = Amt * ToDecimal(TP) / 100;
+            // Amt = Amt * ToDecimal(TP) / 100;
         }
 
         return Json(new { Amt, TaxOnExp });
@@ -2125,9 +2138,12 @@ public class TaxController : Controller
         switch (TxPageName)
         {
             case "ItemList":
+
                 HttpContext.Session.Get(TxPageName);
+                var itemListSessionKey = HttpContext.Session.Keys.FirstOrDefault(k => k.StartsWith("ItemList_"));
+
                 MainModel = new SaleOrderModel();
-                MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(TxPageName));
+                MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(itemListSessionKey));
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 MainModel.TxRoundOff = RF;
@@ -2158,12 +2174,6 @@ public class TaxController : Controller
             case "DirectPurchaseBill":
                 HttpContext.Session.Get(TxPageName);
                 _MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
-
-                modelJson = HttpContext.Session.GetString("DirectPurchaseBill");
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJson);
-                }
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
@@ -2173,7 +2183,7 @@ public class TaxController : Controller
             case "PurchaseBill":
                 HttpContext.Session.Get(TxPageName);
                 _MemoryCache.TryGetValue("PurchaseBill", out MainModel);
-                 modelJson = HttpContext.Session.GetString("PurchaseBill");
+                modelJson = HttpContext.Session.GetString("PurchaseBill");
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJson);
@@ -2301,6 +2311,195 @@ public class TaxController : Controller
 
         return PartialView("_TaxGrid", MainModel);
     }
+
+    //public async Task<IActionResult> GetHsnTaxInfo(int AC, string TxPageName, string RF)
+    //{
+    //    var isSuccess = string.Empty;
+
+    //    dynamic MainModel = null;
+
+    //    var TaxGrid = new List<TaxModel>();
+    //    var IssueTaxGrid = new List<IssueNRGPTaxDetail>();
+
+    //    switch (TxPageName)
+    //    {
+    //        case "ItemList":
+    //            HttpContext.Session.Get(TxPageName);
+    //            MainModel = new SaleOrderModel();
+    //            MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(TxPageName));
+    //            MainModel.AccountCode = AC;
+    //            MainModel.TxPageName = TxPageName;
+    //            MainModel.TxRoundOff = RF;
+    //            isSuccess = ValidateHsnTax(MainModel);
+    //            if (isSuccess != "SuccessFull")
+    //            {
+    //                return Content(isSuccess);
+    //            }
+    //            TaxGrid = await GetHSNTaxList(MainModel);
+    //            if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+    //                return Content(TaxGrid[0].Message);
+    //            break;
+
+    //        case "PurchaseOrder":
+    //            HttpContext.Session.Get(TxPageName);
+    //            _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+    //            string modelJson = HttpContext.Session.GetString("PurchaseOrder");
+    //            if (!string.IsNullOrEmpty(modelJson))
+    //            {
+    //                MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
+    //            }
+    //            MainModel.AccountCode = AC;
+    //            MainModel.TxPageName = TxPageName;
+    //            TaxGrid = await GetHSNTaxList(MainModel);
+    //            if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+    //                return Content(TaxGrid[0].Message);
+    //            break;
+    //        case "DirectPurchaseBill":
+    //            HttpContext.Session.Get(TxPageName);
+    //            _MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
+
+    //            modelJson = HttpContext.Session.GetString("DirectPurchaseBill");
+    //            if (!string.IsNullOrEmpty(modelJson))
+    //            {
+    //                MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJson);
+    //            }
+    //            MainModel.AccountCode = AC;
+    //            MainModel.TxPageName = TxPageName;
+    //            TaxGrid = await GetHSNTaxList(MainModel);
+    //            if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+    //                return Content(TaxGrid[0].Message);
+    //            break;
+    //        case "PurchaseBill":
+    //            HttpContext.Session.Get(TxPageName);
+    //            _MemoryCache.TryGetValue("PurchaseBill", out MainModel);
+    //             modelJson = HttpContext.Session.GetString("PurchaseBill");
+    //            if (!string.IsNullOrEmpty(modelJson))
+    //            {
+    //                MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJson);
+    //            }
+    //            MainModel.AccountCode = AC;
+    //            MainModel.TxPageName = TxPageName;
+    //            TaxGrid = await GetHSNTaxList(MainModel);
+    //            if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+    //                return Content(TaxGrid[0].Message);
+    //            break;
+    //        case "SaleInvoice":
+    //            HttpContext.Session.Get(TxPageName);
+    //            //_MemoryCache.TryGetValue("SaleBillModel", out MainModel);
+    //            string modelSaleInvoiceJson = HttpContext.Session.GetString("SaleBillModel");
+    //            if (!string.IsNullOrEmpty(modelSaleInvoiceJson))
+    //            {
+    //                MainModel = JsonConvert.DeserializeObject<SaleBillModel>(modelSaleInvoiceJson);
+    //            }
+
+    //            MainModel.AccountCode = AC;
+    //            MainModel.TxPageName = TxPageName;
+    //            TaxGrid = await GetHSNTaxList(MainModel);
+    //            if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+    //                return Content(TaxGrid[0].Message);
+    //            break;
+    //        case "CreditNote":
+    //            HttpContext.Session.Get(TxPageName);
+    //            //_MemoryCache.TryGetValue("CreditNoteModel", out MainModel);
+    //            string modelCreditNoteJson = HttpContext.Session.GetString("CreditNoteModel");
+    //            if (!string.IsNullOrEmpty(modelCreditNoteJson))
+    //            {
+    //                MainModel = JsonConvert.DeserializeObject<AccCreditNoteModel>(modelCreditNoteJson);
+    //            }
+
+    //            MainModel.AccountCode = AC;
+    //            MainModel.TxPageName = TxPageName;
+    //            TaxGrid = await GetHSNTaxList(MainModel);
+    //            if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+    //                return Content(TaxGrid[0].Message);
+    //            break;
+    //        case "PurchaseRejection":
+    //            HttpContext.Session.Get(TxPageName);
+    //            _MemoryCache.TryGetValue("PurchaseRejectionModel", out MainModel);
+    //            string modelPRJson = HttpContext.Session.GetString("PurchaseRejectionModel");
+    //            AccPurchaseRejectionModel purchaseRejectionModel = new AccPurchaseRejectionModel();
+    //            if (!string.IsNullOrEmpty(modelPRJson))
+    //            {
+    //                MainModel = JsonConvert.DeserializeObject<AccPurchaseRejectionModel>(modelPRJson);
+    //            }
+    //            MainModel.AccountCode = AC;
+    //            MainModel.TxPageName = TxPageName;
+    //            TaxGrid = await GetHSNTaxList(MainModel);
+    //            if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+    //                return Content(TaxGrid[0].Message);
+    //            break;
+    //        case "SaleRejection":
+    //            HttpContext.Session.Get(TxPageName);
+    //            //_MemoryCache.TryGetValue("SaleBillModel", out MainModel);
+    //            string modelSaleInvoiceJson1 = HttpContext.Session.GetString("SaleRejectionModel");
+    //            if (!string.IsNullOrEmpty(modelSaleInvoiceJson1))
+    //            {
+    //                MainModel = JsonConvert.DeserializeObject<SaleRejectionModel>(modelSaleInvoiceJson1);
+    //            }
+
+    //            MainModel.AccountCode = AC;
+    //            MainModel.TxPageName = TxPageName;
+    //            TaxGrid = await GetHSNTaxList(MainModel);
+    //            if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+    //                return Content(TaxGrid[0].Message);
+
+    //            //HttpContext.Session.Get(TxPageName);
+    //            //_MemoryCache.TryGetValue("SaleRejectionModel", out MainModel);
+    //            //MainModel.AccountCode = AC;
+    //            //MainModel.TxPageName = TxPageName;
+    //            //TaxGrid = await GetHSNTaxList(MainModel);
+    //            break;
+    //        case "IssueNRGP":
+    //            HttpContext.Session.Get(TxPageName);
+    //            _MemoryCache.TryGetValue("IssueNRGP", out MainModel);
+
+    //            string modelICJson = HttpContext.Session.GetString("IssueNRGP");
+    //            if (!string.IsNullOrEmpty(modelICJson))
+    //            {
+    //                MainModel = JsonConvert.DeserializeObject<dynamic>(modelICJson);
+    //            }
+    //            MainModel.AccountCode = AC;
+    //            MainModel.TxPageName = TxPageName;
+    //            IssueTaxGrid = await GetHSNIssueTaxList(MainModel);
+
+    //            break;
+    //        case "JobWorkIssue":
+    //            HttpContext.Session.Get(TxPageName);
+    //            _MemoryCache.TryGetValue("JobWorkIssue", out MainModel);
+    //            MainModel.AccountCode = AC;
+    //            MainModel.TxPageName = TxPageName;
+    //            TaxGrid = await GetHSNTaxList(MainModel);
+    //            if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+    //                return Content(TaxGrid[0].Message);
+    //            break;
+
+    //        default:
+    //            Console.WriteLine("No Page Defined.");
+    //            break;
+    //    }
+    //    if (TxPageName == "IssueNRGP")
+    //    {
+    //        MainModel.IssueNRGPTaxGrid = IssueTaxGrid;
+    //        //StoreInCache("KeyIssueNRGPTaxGrid", MainModel.IssueNRGPTaxGrid);
+    //        //return PartialView("_IssueTaxGrid", MainModel);
+
+    //        string serializedGrid = JsonConvert.SerializeObject(MainModel.IssueNRGPTaxGrid);
+    //        HttpContext.Session.SetString("KeyTaxGrid", serializedGrid);
+
+    //        return PartialView("_IssueTaxGrid", MainModel);
+
+    //    }
+    //    else
+    //    {
+    //        MainModel.TaxDetailGridd = TaxGrid;
+    //        StoreInCache("KeyTaxGrid", MainModel.TaxDetailGridd);
+
+    //        string serializedGrid = JsonConvert.SerializeObject(MainModel.TaxDetailGridd);
+    //        HttpContext.Session.SetString("KeyTaxGrid", serializedGrid);
+    //    }
+
+    //    return PartialView("_TaxGrid", MainModel);
+    //}
 
     public async Task<IActionResult> GetTaxByType(string TxType)
     {
@@ -2845,9 +3044,7 @@ public class TaxController : Controller
                 HSNTAXParam.HSNNo = (MainModel != null && MainModel.TxPageName == "PurchaseBill") ? item.HSNNO : (item.HSNNo != null && !string.IsNullOrEmpty(item.HSNNo.ToString()) ? Convert.ToInt32(item.HSNNo) : 0);
                 HSNTAXParam.AC = MainModel.AccountCode;
                 HSNTAXParam.ItemCode = item.ItemCode;
-
-
-				if (MainModel.TxPageName == "PurchaseBill")
+                if (MainModel.TxPageName == "PurchaseBill")
                 {
                     MainModel.HSNNO = item.HSNNO;
                 }
@@ -2871,11 +3068,11 @@ public class TaxController : Controller
                     //if(TaxGrid.TxPartName == item.PartCode)
 
                     var paramResult = await ITaxModule.GetHSNTaxInfo(HSNTAXParam);
-                    
-                    if ( paramResult.Result != null && paramResult.Result?.Rows.Count > 0)
+
+                    if (paramResult.Result != null && paramResult.Result?.Rows.Count > 0)
                     {
                         if (paramResult.Result.Rows[0]["Status"] != "SuccessFull")
-                       return new List<TaxModel> { new TaxModel { Message = $"Error: {paramResult.Result.Rows[0]["Status"]}" } };
+                            return new List<TaxModel> { new TaxModel { Message = $"Error: {paramResult.Result.Rows[0]["Status"]}" } };
 
                         foreach (DataRow dataRow in paramResult.Result.Rows)
                         {
@@ -2930,6 +3127,134 @@ public class TaxController : Controller
             throw;
         }
     }
+
+    //private async Task<List<TaxModel>> GetHSNTaxList(dynamic MainModel)
+    //{
+    //    try
+    //    {
+    //        var HSNTAXParam = new HSNTAX();
+    //        var TaxGrid = new List<TaxModel>();
+    //        var HSNTaxDetail = new HSNTAXInfo();
+    //        //_MemoryCache.TryGetValue("KeyTaxGrid", out TaxGrid);
+    //        string modelJson = HttpContext.Session.GetString("KeyTaxGrid");
+    //        if (!string.IsNullOrEmpty(modelJson))
+    //        {
+    //            TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelJson);
+    //        }
+
+    //        if (TaxGrid == null)
+    //            TaxGrid = new List<TaxModel>();
+
+    //        var grid = MainModel;
+    //        if (MainModel.TxPageName == "JobWorkIssue")
+    //        {
+    //            var JobGrid = new List<JobWorkGridDetail>();
+    //            _MemoryCache.TryGetValue("KeyJobWorkIssue", out JobGrid);
+    //            if (JobGrid == null)
+    //                _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out JobGrid);
+
+    //            grid = JobGrid;
+    //        }
+    //        else if (MainModel.TxPageName == "PurchaseBill")
+    //        {
+    //            grid = MainModel.ItemDetailGrid != null && MainModel.ItemDetailGrid.Count > 0 ? MainModel.ItemDetailGrid : MainModel.ItemDetailGridd;
+    //        }
+    //        else
+    //        {
+    //            grid = MainModel.ItemDetailGrid;
+    //        }
+
+    //        List<string> partCodeCheck = new List<string>();
+    //        foreach (var item in grid)
+    //        {
+    //            HSNTAXParam.HSNNo = (MainModel != null && MainModel.TxPageName == "PurchaseBill") ? item.HSNNO : (item.HSNNo != null && !string.IsNullOrEmpty(item.HSNNo.ToString()) ? Convert.ToInt32(item.HSNNo) : 0);
+    //            HSNTAXParam.AC = MainModel.AccountCode;
+    //            HSNTAXParam.ItemCode = item.ItemCode;
+
+
+    //if (MainModel.TxPageName == "PurchaseBill")
+    //            {
+    //                MainModel.HSNNO = item.HSNNO;
+    //            }
+    //            else
+    //            {
+    //                MainModel.HSNNo = item.HSNNo;
+    //            }
+
+    //            string partCode = "";
+    //            if (MainModel.TxPageName == "JobWorkIssue" || MainModel.TxPageName == "SaleInvoice" || MainModel.TxPageName == "CreditNote" || MainModel.TxPageName == "PurchaseRejection" || MainModel.TxPageName == "PurchaseBill" || MainModel.TxPageName == "SaleRejection")
+    //                partCode = item.PartCode;
+    //            else
+    //                partCode = item.PartText;
+
+    //            if (partCodeCheck.Contains(partCode))
+    //            {
+    //                //do nothing
+    //            }
+    //            else
+    //            {
+    //                //if(TaxGrid.TxPartName == item.PartCode)
+
+    //                var paramResult = await ITaxModule.GetHSNTaxInfo(HSNTAXParam);
+
+    //                if ( paramResult.Result != null && paramResult.Result?.Rows.Count > 0)
+    //                {
+    //                    if (paramResult.Result.Rows[0]["Status"] != "SuccessFull")
+    //                   return new List<TaxModel> { new TaxModel { Message = $"Error: {paramResult.Result.Rows[0]["Status"]}" } };
+
+    //                    foreach (DataRow dataRow in paramResult.Result.Rows)
+    //                    {
+    //                        //HSNTaxDetail.AddInTaxable = dataRow["AddInTaxable"].ToString();
+    //                        HSNTaxDetail.AddInTaxable = "N";
+    //                        HSNTaxDetail.LocalCen = dataRow["LocalCen"].ToString();
+    //                        HSNTaxDetail.Refundable = dataRow["Refundable"].ToString();
+    //                        HSNTaxDetail.SGSTAccountCode = ToInt32(dataRow["SGSTAccountCode"]);
+    //                        HSNTaxDetail.SGSTTaxName = dataRow["SGSTTaxName"].ToString();
+    //                        HSNTaxDetail.CGSTAccountCode = ToInt32(dataRow["CGSTAccountCode"]);
+    //                        HSNTaxDetail.CGSTTaxName = dataRow["CGSTTaxName"].ToString();
+    //                        HSNTaxDetail.TaxType = dataRow["TaxType"].ToString();
+    //                        HSNTaxDetail.TaxPercent = ToDecimal(dataRow["TaxPercent"]);
+    //                        if (MainModel.TxPageName == "JobWorkIssue" || MainModel.TxPageName == "SaleInvoice" || MainModel.TxPageName == "SaleRejection" || MainModel.TxPageName == "CreditNote" || MainModel.TxPageName == "PurchaseRejection")
+    //                        {
+    //                            HSNTaxDetail.ItemCode = item.ItemCode;
+    //                            HSNTaxDetail.ItemName = item.ItemName;
+    //                            HSNTaxDetail.PartName = item.PartCode;
+    //                        }
+    //                        else if (MainModel.TxPageName == "PurchaseBill")
+    //                        {
+    //                            HSNTaxDetail.ItemCode = item.ItemCode;
+    //                            HSNTaxDetail.ItemName = item.Item_Name;
+    //                            HSNTaxDetail.PartName = item.PartCode;
+    //                        }
+    //                        else
+    //                        {
+    //                            HSNTaxDetail.ItemCode = item.ItemCode;
+    //                            HSNTaxDetail.ItemName = item.ItemText;
+    //                            HSNTaxDetail.PartName = item.PartText;
+    //                        }
+    //                    }
+
+    //                    if (paramResult.Result.Rows[0]["LocalCen"] == "CGST" || paramResult.Result.Rows[0]["LocalCen"] == "SGST")
+    //                    {
+    //                        PrepareTaxList(HSNTaxDetail, ref TaxGrid, "CGST", MainModel);
+    //                        PrepareTaxList(HSNTaxDetail, ref TaxGrid, "SGST", MainModel);
+    //                    }
+    //                    else
+    //                    {
+    //                        PrepareTaxList(HSNTaxDetail, ref TaxGrid, "IGST", MainModel);
+    //                    }
+    //                }
+    //            }
+    //            partCodeCheck.Add(partCode);
+    //        }
+
+    //        return TaxGrid;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        throw;
+    //    }
+    //}
 
     private async Task<List<IssueNRGPTaxDetail>> GetHSNIssueTaxList(dynamic MainModel)
     {
@@ -3039,7 +3364,7 @@ public class TaxController : Controller
                 TxTaxTypeName = HSNTaxDetail.TaxType,
                 TxAccountCode = !string.IsNullOrEmpty(CGSTSGST) && CGSTSGST == "CGST" ? HSNTaxDetail.CGSTAccountCode : HSNTaxDetail.SGSTAccountCode,
                 TxAccountName = !string.IsNullOrEmpty(CGSTSGST) && CGSTSGST == "CGST" ? HSNTaxDetail.CGSTTaxName : HSNTaxDetail.SGSTTaxName,
-                TxPercentg = HSNTaxDetail.TaxPercent,
+                TxPercentg =Convert.ToSingle( HSNTaxDetail.TaxPercent),
                 TxAdInTxable = HSNTaxDetail.AddInTaxable,
                 TxRoundOff = MainModel.TxRoundOff == "YES" ? "Y" : "N",
                 TxAmount = MainModel.TxRoundOff == "YES" ? Math.Round(TaxAmt["Amt"]) : TaxAmt["Amt"],
@@ -3061,7 +3386,7 @@ public class TaxController : Controller
                 TxTaxTypeName = HSNTaxDetail.TaxType,
                 TxAccountCode = HSNTaxDetail.CGSTAccountCode,
                 TxAccountName = HSNTaxDetail.CGSTTaxName,
-                TxPercentg = HSNTaxDetail.TaxPercent,
+                TxPercentg = Convert.ToSingle(HSNTaxDetail.TaxPercent),
                 TxAdInTxable = HSNTaxDetail.AddInTaxable,
                 TxRoundOff = MainModel.TxRoundOff == "YES" ? "Y" : "N",
                 TxAmount = MainModel.TxRoundOff == "YES" ? Math.Round(TaxAmt["Amt"]) : TaxAmt["Amt"],
@@ -3071,6 +3396,8 @@ public class TaxController : Controller
             });
         }
     }
+
+
     private void PrepareTaxList(HSNTAXInfo HSNTaxDetail, ref List<TaxModel> TaxGrid, string CGSTSGST, dynamic MainModel)
     {
         var TaxValue = CalculateTax(HSNTaxDetail.ItemCode.ToString(), HSNTaxDetail.TaxPercent.ToString(), MainModel.TxPageName);
@@ -3123,6 +3450,59 @@ public class TaxController : Controller
             });
         }
     }
+
+    //private void PrepareTaxList(HSNTAXInfo HSNTaxDetail, ref List<TaxModel> TaxGrid, string CGSTSGST, dynamic MainModel)
+    //{
+    //    var TaxValue = CalculateTax(HSNTaxDetail.ItemCode.ToString(), HSNTaxDetail.TaxPercent.ToString(), MainModel.TxPageName);
+    //    var TaxAmt = JToken.Parse(JsonConvert.SerializeObject(TaxValue.Value));
+
+    //    if (CGSTSGST == "CGST" || CGSTSGST == "SGST")
+    //    {
+    //        TaxGrid.Add(new TaxModel
+    //        {
+    //            TxSeqNo = TaxGrid == null ? 1 : TaxGrid.Count + 1,
+    //            TxType = "TAX",
+    //            TxPartCode = HSNTaxDetail.ItemCode,
+    //            TxPartName = HSNTaxDetail.PartName,
+    //            TxItemCode = HSNTaxDetail.ItemCode,
+    //            TxItemName = HSNTaxDetail.ItemName,
+    //            TxTaxType = 25,
+    //            TxTaxTypeName = HSNTaxDetail.TaxType,
+    //            TxAccountCode = !string.IsNullOrEmpty(CGSTSGST) && CGSTSGST == "CGST" ? HSNTaxDetail.CGSTAccountCode : HSNTaxDetail.SGSTAccountCode,
+    //            TxAccountName = !string.IsNullOrEmpty(CGSTSGST) && CGSTSGST == "CGST" ? HSNTaxDetail.CGSTTaxName : HSNTaxDetail.SGSTTaxName,
+    //            TxPercentg = HSNTaxDetail.TaxPercent,
+    //            TxAdInTxable = HSNTaxDetail.AddInTaxable,
+    //            TxRoundOff = MainModel.TxRoundOff == "YES" ? "Y" : "N",
+    //            TxAmount = MainModel.TxRoundOff == "YES" ? Math.Round((decimal)TaxAmt["Amt"]) : (decimal)TaxAmt["Amt"],
+    //            TxRefundable = HSNTaxDetail.Refundable,
+    //            TxOnExp = (decimal)TaxAmt["TaxOnExp"],
+    //            TxRemark = "Tax Addedd From HSN # " + ((MainModel.TxPageName == "PurchaseBill") ? MainModel.HSNNO : MainModel.HSNNo),
+    //        });
+    //    }
+    //    else
+    //    {
+    //        TaxGrid.Add(new TaxModel
+    //        {
+    //            TxSeqNo = TaxGrid == null ? 1 : TaxGrid.Count + 1,
+    //            TxType = "TAX",
+    //            TxPartCode = HSNTaxDetail.ItemCode,
+    //            TxPartName = HSNTaxDetail.PartName,
+    //            TxItemCode = HSNTaxDetail.ItemCode,
+    //            TxItemName = HSNTaxDetail.ItemName,
+    //            TxTaxType = 25,
+    //            TxTaxTypeName = HSNTaxDetail.TaxType,
+    //            TxAccountCode = HSNTaxDetail.CGSTAccountCode,
+    //            TxAccountName = HSNTaxDetail.CGSTTaxName,
+    //            TxPercentg = HSNTaxDetail.TaxPercent,
+    //            TxAdInTxable = HSNTaxDetail.AddInTaxable,
+    //            TxRoundOff = MainModel.TxRoundOff == "YES" ? "Y" : "N",
+    //            TxAmount = MainModel.TxRoundOff == "YES" ? Math.Round((decimal)TaxAmt["Amt"]) : (decimal)TaxAmt["Amt"],
+    //            TxRefundable = HSNTaxDetail.Refundable,
+    //            TxOnExp = (decimal)TaxAmt["TaxOnExp"],
+    //            TxRemark = "Tax Addedd From HSN # " + ((MainModel.TxPageName == "PurchaseBill") ? MainModel.HSNNO : MainModel.HSNNo),
+    //        });
+    //    }
+    //}
 
     private void StoreInCache(string CacheKey, object CacheObject)
     {

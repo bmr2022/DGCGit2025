@@ -47,7 +47,7 @@ public class Common
         public string? Refundable { get; set; }
         public int SGSTAccountCode { get; set; }
         public string? SGSTTaxName { get; set; }
-        public int TaxPercent { get; set; }
+        public decimal TaxPercent { get; set; }
         public string? TaxType { get; set; }
     }
 

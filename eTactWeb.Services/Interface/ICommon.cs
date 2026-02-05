@@ -11,5 +11,7 @@ namespace eTactWeb.Services.Interface
     {
         Task<ResponseResult> CheckFinYearBeforeSave(int YearCode, string Date, string DateName);
         Task<ResponseResult> FillReportTypes(string TableName);
+        Task<ResponseResult> GetDashboardData(string spName, string flag, Dictionary<string, object> parameters);
+
     }
 }

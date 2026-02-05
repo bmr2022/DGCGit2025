@@ -67,5 +67,38 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> GetDashboardData(
+           string spName,
+           string flag,
+           Dictionary<string, object> parameters)
+        {
+            var response = new ResponseResult();
+
+            try
+            {
+                IList<SqlParameter> sqlParams = new List<SqlParameter>
+        {
+            new SqlParameter("@Flag", flag)
+        };
+
+                foreach (var p in parameters)
+                {
+                    sqlParams.Add(new SqlParameter(p.Key, p.Value ?? DBNull.Value));
+                }
+
+                // 🔑 Convert ONLY here
+                IList<dynamic> dynamicParams = sqlParams.Cast<dynamic>().ToList();
+
+                response = await _IDataLogic.ExecuteDataTable(spName, dynamicParams);
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
     }
 }

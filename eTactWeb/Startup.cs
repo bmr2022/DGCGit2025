@@ -226,6 +226,8 @@ namespace eTactWeb
             services.TryAddScoped<ICancelRequition, CancelRequitionBLL>();
             services.TryAddScoped<IPOApprovalPolicy, POApprovalPolicyBLL>();
             services.TryAddScoped<IBillRegister, BillRegisterBLL>();
+            services.TryAddScoped<IImportToTallyReport, ImportToTallyReportBLL>();
+
 
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();
             services.TryAddTransient<ITaxMaster, TaxMasterBLL>();

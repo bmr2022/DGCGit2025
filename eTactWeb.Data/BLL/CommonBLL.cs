@@ -29,5 +29,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _CommonDAL.FillReportTypes(TableName);
         }
+        public async Task<ResponseResult> GetDashboardData(string spName, string flag, Dictionary<string, object> parameters)
+        {
+            return await _CommonDAL.GetDashboardData(spName, flag, parameters);
+        }
     }
 }
