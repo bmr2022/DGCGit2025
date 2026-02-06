@@ -3085,7 +3085,7 @@ public class TaxController : Controller
                             HSNTaxDetail.CGSTAccountCode = ToInt32(dataRow["CGSTAccountCode"]);
                             HSNTaxDetail.CGSTTaxName = dataRow["CGSTTaxName"].ToString();
                             HSNTaxDetail.TaxType = dataRow["TaxType"].ToString();
-                            HSNTaxDetail.TaxPercent = ToInt32(dataRow["TaxPercent"]);
+                            HSNTaxDetail.TaxPercent = ToDecimal(dataRow["TaxPercent"]);
                             if (MainModel.TxPageName == "JobWorkIssue" || MainModel.TxPageName == "SaleInvoice" || MainModel.TxPageName == "SaleRejection" || MainModel.TxPageName == "CreditNote" || MainModel.TxPageName == "PurchaseRejection")
                             {
                                 HSNTaxDetail.ItemCode = item.ItemCode;
