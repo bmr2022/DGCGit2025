@@ -6897,10 +6897,22 @@
                             } else {
                                 $('.SaleBillScheduleDetail').show();
                             }
+
                             if (obj.Result[0].HideOtherFieldOFSaleBillDetailTable === "N") {
                                 $('.SaleBillOtherDetail').hide();
                             } else {
                                 $('.SaleBillOtherDetail').show();
+                            }
+                            if (obj.Result[0].ShowHideSaleBillCustomerGSTDetail === "N") {
+                                $('.SaleBillCustomerGSTDetail').hide();
+                            } else {
+                                $('.SaleBillCustomerGSTDetail').show();
+                            }
+
+                            if (obj.Result[0].ShowHideSaleBillCustomerAddressDetail === "N") {
+                                $('.SaleBillCustomerAddressDetail').hide();
+                            } else {
+                                $('.SaleBillCustomerAddressDetail').show();
                             }
 
                             

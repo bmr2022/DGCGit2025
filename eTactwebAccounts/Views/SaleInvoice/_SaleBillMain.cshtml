@@ -113,17 +113,17 @@
             <input type="hidden" value="@Model.AccountCode" id="hiddenAccountCode" />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCustomerDetail">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCustomerGSTDetail">
             <label asp-for="GSTNO" class="form-label" style="color: blue;">GST No</label>
-            <input asp-for="GSTNO" class="form-control" />
+            <input asp-for="GSTNO" readonly class="form-control" tabindex="-1" />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCustomerDetail">
             <label asp-for="StateNameofSupply" class="form-label">State </label>
             <input asp-for="StateNameofSupply" class="form-control" readonly />
         </div>
-        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCustomerDetail">
+        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCustomerAddressDetail">
             <label asp-for="CustAddress" class="form-label" style="color: red;">Cust Address*</label>
-            <input asp-for="CustAddress" class="form-control" />
+            <input asp-for="CustAddress" readonly class="form-control" tabindex="-1"/>
         </div>
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCustomerDetail">
             <label asp-for="StateCode" class="form-label" style="color: red;">State Code*</label>

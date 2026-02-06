@@ -652,8 +652,8 @@
                     OnParentGroup(parentID);  
                 }
             }
-            $('#GSTRegistered').val("N").trigger('change');
-            $('#TDS').val("N").trigger('change');
+            // $('#GSTRegistered').val("N").trigger('change');
+            // $('#TDS').val("N").trigger('change');
         });
 
         function RemoveOptionsfromPAC() {
@@ -845,22 +845,22 @@
         }
 
 
-        $('#GSTRegistered').change(function () {
-            if ($(this).val() == "Y") {
-                $('#GSTPartyTypes').val('CGST');
-            }
-            else if ($(this).val() == "N") {
-                $('#GSTPartyTypes').val('IGST');
-                RemoveErrorCls('GSTNO');
-                RemoveErrorCls('GSTTAXTYPE');
-            }
-            else {
-                $('#GSTPartyTypes').prop('selectedIndex', 0);
-                RemoveErrorCls('GSTPartyTypes');
-                RemoveErrorCls('GSTNO');
-                RemoveErrorCls('GSTTAXTYPE');
-            }
-        });
+        // $('#GSTRegistered').change(function () {
+        //     if ($(this).val() == "Y") {
+        //         $('#GSTPartyTypes').val('CGST');
+        //     }
+        //     else if ($(this).val() == "N") {
+        //         $('#GSTPartyTypes').val('IGST');
+        //         RemoveErrorCls('GSTNO');
+        //         RemoveErrorCls('GSTTAXTYPE');
+        //     }
+        //     else {
+        //         $('#GSTPartyTypes').prop('selectedIndex', 0);
+        //         RemoveErrorCls('GSTPartyTypes');
+        //         RemoveErrorCls('GSTNO');
+        //         RemoveErrorCls('GSTTAXTYPE');
+        //     }
+        // });
 
         function GetSalePersonName() {
             $.ajax({
@@ -1033,12 +1033,12 @@
                 }
 
                 // GST Tax Type
-                if (!$('#GSTTAXTYPE').val()) {
-                    AddErrorCls('GSTTAXTYPE');
-                    IsErr = 1;
-                } else {
-                    RemoveErrorCls('GSTTAXTYPE'); 
-                }
+                // if (!$('#GSTTAXTYPE').val()) {
+                //     AddErrorCls('GSTTAXTYPE');
+                //     IsErr = 1;
+                // } else {
+                //     RemoveErrorCls('GSTTAXTYPE'); 
+                // }
 
                 // PAN NO mandatory
                 // if (!$('#PANNO').val()) {

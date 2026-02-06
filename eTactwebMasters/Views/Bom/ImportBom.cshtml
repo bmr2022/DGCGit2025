@@ -4,6 +4,31 @@
     ViewData["Title"] = "Form";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<style>
+    #fullPageLoader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        display: none;
+        z-index: 99999;
+    }
+
+    .loaderBox {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 25px 40px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+</style>
 
 <div class="rounded shadow-lg">
     <form enctype="multipart/form-data" autocomplete="off" class="form-horizontal">
@@ -192,9 +217,24 @@
     </form>
 </div>
 
+<div id="fullPageLoader">
+    <div class="loaderBox">
+        <span>Processing...</span>
+    </div>
+</div>
+</div>
+
+
 @section Scripts
     {
     <script>
+        function showLoader() {
+            $('#fullPageLoader').fadeIn(100);
+        }
+
+        function hideLoader() {
+            $('#fullPageLoader').fadeOut(100);
+        }
 
         function CheckNumberOfCols(file) {
              
@@ -260,6 +300,7 @@
         }
 
         function UploadButton() {
+            showLoader(); // ✅ Show full page loader
             var fileInput = $('#ExcelFile');
             var file = fileInput.prop("files")[0];
 
@@ -314,7 +355,17 @@
 
                                     }
 
-                                }
+                                },
+                            complete: function () {
+                                hideLoader(); //  Hide after complete
+                            },
+                            error: function (response) {
+                                alert(response.responseText);
+                            },
+                            failure: function (response) {
+                                alert(response.responseText);
+                            }
+
                             });
 
                         // } else {
