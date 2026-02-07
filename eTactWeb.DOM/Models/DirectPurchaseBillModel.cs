@@ -33,6 +33,7 @@ public class DPBDashBoard : TimeStamp
     public string? DPNTypeServItem { get; set; }
     public string? ToDate { get; set; }
     public string? VendorAddress { get; set; }
+    public string? GSTNo { get; set; }
     public string? VendorName { get; set; }
     public int? YearCode { get; set; }
     public string? StateName { get; set; }
@@ -522,6 +523,7 @@ public class DirectPurchaseBillModel : DPBItemDetail
     [Column(TypeName = "decimal(18, 6)")]
     public decimal? TotalRoundOffAmt { get; set; }
     public string? VendorAddress { get; set; }
+    public string? GSTNo { get; set; }
     public int? YearCode { get; set; }
 
     public string? Approved { get; set; }

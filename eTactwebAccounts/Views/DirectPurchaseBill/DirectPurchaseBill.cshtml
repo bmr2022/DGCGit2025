@@ -904,6 +904,7 @@
             window.history.back();
         }
         var actualRate = 0;
+        var LocationRequired = '';
               function GetFeatureOption() {
             $.ajax({
                 type: "POST",
@@ -957,6 +958,24 @@
                                 $('.OtherFieldOFDirectPurchaseBillDetailTable').hide();
                             } else {
                                 $('.OtherFieldOFDirectPurchaseBillDetailTable').show();
+                            }
+
+                            if (feature.HideShowDirectPurchaseBillCustomerAddress === "N") {
+     $('.DirectPurchaseBillCustomerAddress').hide();
+ } else {
+     $('.DirectPurchaseBillCustomerAddress').show();
+ }
+                            if (feature.HideShowDirectPurchaseBillCustomerGSTNo === "N") {
+                                $('.DirectPurchaseBillCustomerGSTNo').hide();
+                            } else {
+                                $('.DirectPurchaseBillCustomerGSTNo').show();
+                            }
+                            if (feature.HideShowDirectPurchaseBillLocation === "N") {
+                                $('.DirectPurchaseBillLocation').hide();
+                                LocationRequired = 'N';
+                            } else {
+                                $('.DirectPurchaseBillLocation').show();
+                                LocationRequired = 'Y';
                             }
 
                          
@@ -3385,7 +3404,7 @@
                                     $('#GstType').val(obj.Result[0].GSTPartyTypes);
                                 }
                                 else {
-                                    $('#GstType').val('');
+                                $('#GstType').val('');
                                 }
                                 if (obj.Result[0].StateName != null && obj.Result[0].StateName != undefined && obj.Result[0].StateName != '') {
                                     $('#VendorStateName').val(obj.Result[0].StateName);
@@ -3399,6 +3418,13 @@
                                 else {
                                     $('#VendorAddress').val('');
                                 }
+
+                            if (obj.Result[0].GSTNo != null && obj.Result[0].GSTNo != undefined && obj.Result[0].GSTNo != '') {
+                                $('#GSTNo').val(obj.Result[0].GSTNo);
+                            }
+                            else {
+                                $('#GSTNo').val('');
+                            }
                                       if (obj.Result[0].PaymentDays != null && obj.Result[0].PaymentDays != undefined && obj.Result[0].PaymentDays != ''&& obj.Result[0].PaymentDays != '0') {
                                     $('#PaymentDays').val(obj.Result[0].PaymentDays);
                                 }
@@ -3999,19 +4025,30 @@
                   $("#InvoiceNo").focus();
                   return false;
               }
-            if (hasEmptyLocation) {
-                $.notify("Item Location is required for all items.", "error");
-                return;
+              if(LocationRequired=='Y')
+            {
+                if (hasEmptyLocation) {
+                    $.notify("Item Location is required for all items.", "error");
+                    return;
+                }
             }
 
             //if ($('#AccountCode').find(':selected').data('gstregister') == 'Y') {
             var AdjPendAmt = $('#AdjPendAmt').val();
             AdjPendAmt = (AdjPendAmt != null && AdjPendAmt != '' && AdjPendAmt != undefined) ? parseFloat(AdjPendAmt) : 0;
             var resultforadj = CheckAndValidateAdjAmtAtTimeofAdd('NetTotal', AdjPendAmt);
-            if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                isError = true;
-                return false;
-            }
+            // if (!checkPartCodeMusthaveAtLeastOneTax()) {
+            //     isError = true;
+            //     return false;
+            // }
+             
+                if ($('#divTaxGrid tr td').length <= 1 && $('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '') {
+                                      $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
+                    isError = true;
+                    return false;
+                                  }
+              
+
             else if (resultforadj.toString().toLowerCase() == "true") {
                 $.notify("Please add Adjust amount properly, And total should be less then or equal to Net Total.", "error");
                 isError = true;
@@ -4229,13 +4266,16 @@
             else {
                 RemoveErrorCls('DiscPer');
             }
-            if ($('#ItemLocation').val() == "" ) {
-                AddErrorCls('ItemLocation');
-                IsError = 1;
-            }
-            else {
-                RemoveErrorCls('ItemLocation');
-            }
+           if (LocationRequired == 'Y') {
+               if ($('#ItemLocation').val() == "") {
+                   $.notify("Item Location is required", "error");
+                   AddErrorCls('ItemLocation');
+                   IsError = 1;
+               }
+               else {
+                   RemoveErrorCls('ItemLocation');
+               }
+           }
 
 
             if ($('#DPBType').val() === 'Domestic') {

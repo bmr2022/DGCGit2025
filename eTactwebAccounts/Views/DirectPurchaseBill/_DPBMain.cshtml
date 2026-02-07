@@ -75,9 +75,13 @@
                    class="form-control" onchange="onInvoiceChange('InvoiceNo')" />
 
         </div>
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12 DirectPurchaseBillCustomerDetail">
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12 DirectPurchaseBillCustomerAddress">
             <label asp-for="VendorAddress" class="form-label">Vendor Address</label>
             <input asp-for="VendorAddress" disabled class="form-control" readonly />
+        </div>
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12 DirectPurchaseBillCustomerGSTNo">
+            <label asp-for="GSTNo" class="form-label">GST No</label>
+            <input asp-for="GSTNo" disabled class="form-control" readonly />
         </div>
 
         <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillCustomerDetail">
