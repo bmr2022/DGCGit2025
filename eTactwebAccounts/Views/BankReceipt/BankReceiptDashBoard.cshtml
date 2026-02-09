@@ -79,8 +79,8 @@
                                 <label asp-for="DashboardType" class="form-label">Dashboard Type</label>
                                 <select asp-for="DashboardType" class="form-select" onchange="GetSearchData();">
                                     <option value="" disabled>-Select-</option>
-                                    <option value="Summary" >Summary</option>
-                                    <option value="Detail" selected>Detail</option>
+                                    <option value="Summary" selected>Summary</option>
+                                    <option value="Detail">Detail</option>
                                 </select>
                             </div>
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -182,7 +182,7 @@
             FillSoNoInDashboard();
             GetFormRights();
             GetSearchData();
-
+            GetFormRights();
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
             sessionStorage.removeItem('LedgerNameBack');
@@ -299,19 +299,69 @@
             });
         }
 
+        // function GetSearchData() {
+
+
+        //     if ($('#DashboardType').val() == "Summary") {
+        //         GetDashBoardSummaryData();
+        //         GetFormRights();
+        //     }
+        //     else {
+        //         GetDashBoardDetailData();
+        //          GetFormRights();
+        //     }
+        // }
         function GetSearchData() {
+            var itemCode = "";
+
+            if ($('#PartCode').val() != "0") {
+                itemCode = $('#PartCode').val();   // PartCode selected
+            }
+            else if ($('#ItemName').val() != "0") {
+                itemCode = $('#ItemName').val();   // ItemName selected
+            }
+            var formData = {
+                FromDate: $('#FromDate').val(),
+                ToDate: $('#ToDate').val(),
+                LedgerName: $('#LedgerName').val(),
+                Bank: $('#Bank').val(),
+                VoucherNo: $('#VoucherNo').val(),
+                AgainstVoucherNo: $('#AgainstVoucherNo').val(),
+                SoNo: $('#SONo').val(),
+                AgainstBillno: $('#AgainstBillno').val(),
+                summaryDetail: $('#DashboardType').val(),   // Summary / Detail
+                searchBox: $('#search-box').val(),          // Global search
+                Flag: "True"
+
+                // summaryDetail: $('#DashboardType').val(),
+                // custInvoiceNo: $('#CustInvoiceNo').find(':selected').text() === "-Select-" ? "" : $('#CustInvoiceNo').find(':selected').text(),
+                // AccountCode: $('#Account_Name').val(),
+                // mrnNo: $('#MrnNo').find(':selected').text() === "-Select-" ? "" : $('#MrnNo').find(':selected').text(),
+                // gateNo: $('#GateNo').find(':selected').text() === "-Select-" ? "" : $('#GateNo').find(':selected').text(),
+                // ItemCode: itemCode,
+                // againstBillNo: $('#AgainstBillNo').find(':selected').text() === "-Select-" ? "" : $('#AgainstBillNo').find(':selected').text(),
+                // docName: $('#DocumentName').find(':selected').text() === "-Select-" ? "" : $('#DocumentName').find(':selected').text(),
+                // voucherNo: $('#VoucherNo').find(':selected').text() === "-Select-" ? "" : $('#VoucherNo').find(':selected').text(),
+                // FromDate: $('#FinFromDate').val(),
+                // ToDate: $('#FinToDate').val(),
+                // Flag: "False"
+            };
 
 
-            if ($('#DashboardType').val() == "Summary") {
-                GetDashBoardSummaryData();
-                GetFormRights();
-            }
-            else {
-                GetDashBoardDetailData();
-                GetFormRights();
-            }
+            $.ajax({
+                url: '@Url.Action("GetSearchData")',
+                type: "POST",
+                data: formData,
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    GetFormRights();
+                    GetTotalAmounts();
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText);
+                }
+            });
         }
-
         function GetDashBoardSummaryData() {
 
             $.ajax({

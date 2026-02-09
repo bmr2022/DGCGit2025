@@ -20,12 +20,14 @@ namespace eTactWeb.Data.DAL
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
         private readonly ConnectionStringService _connectionStringService;
-        public BankPaymentDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
+        private readonly ICommon _common;
+        public BankPaymentDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService, ICommon common)
         {
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
             _connectionStringService = connectionStringService;
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
+            _common = common;
         }
         public static DateTime ParseDate(string dateString)
         {
@@ -368,27 +370,55 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate)
+        public async Task<ResponseResult> GetDashBoardData(string summaryDetail, string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
         {
-            var responseResult = new ResponseResult();
-            try
-            {
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
-                SqlParams.Add(new SqlParameter("@summDetail", "Summary"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Payment"));
-                SqlParams.Add(new SqlParameter("@fromdate", ParseFormattedDate(FromDate)));
-                SqlParams.Add(new SqlParameter("@todate", ParseFormattedDate(ToDate)));
-                responseResult = await _IDataLogic.ExecuteDataSet("AccSpVoucherEntry", SqlParams).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                dynamic error = new ExpandoObject();
-                error.Message = ex.Message;
-                error.Source = ex.Source;
-            }
-            return responseResult;
+            var flag = summaryDetail == "Summary"
+               ? "Summary"
+               : "Detail";
+
+            var parameters = new Dictionary<string, object>
+    {
+        { "@VoucherType", "Bank-Payment" },
+        { "@AgainstBillNo", AgainstBillno},
+        { "@PONO", EmptyIfNull(PoNo) },
+        { "@AgainstVoucherNo", EmptyIfNull(AgainstVoucherNo) },
+        { "@voucherNo", VoucherNo },
+        { "@Bank", EmptyIfNull(Bank) },
+        { "@LedgerName", EmptyIfNull(LedgerName) },
+        { "@summDetail", flag },
+     //   {"@Flag", "DASHBOARD" },
+        { "@fromdate", CommonFunc.ParseFormattedDate(FromDate) },
+        { "@todate", CommonFunc.ParseFormattedDate(ToDate) }
+    };
+
+            return await _common.GetDashboardData(
+                "AccSpVoucherEntry",
+                "DASHBOARD",
+                parameters
+            );
         }
+        //public async Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate)
+        //{
+        //    var responseResult = new ResponseResult();
+        //    try
+        //    {
+        //        var SqlParams = new List<dynamic>();
+        //        SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
+        //        SqlParams.Add(new SqlParameter("@summDetail", "Summary"));
+        //        SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Payment"));
+        //        SqlParams.Add(new SqlParameter("@fromdate", ParseFormattedDate(FromDate)));
+        //        SqlParams.Add(new SqlParameter("@todate", ParseFormattedDate(ToDate)));
+        //        responseResult = await _IDataLogic.ExecuteDataSet("AccSpVoucherEntry", SqlParams).ConfigureAwait(false);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        dynamic error = new ExpandoObject();
+        //        error.Message = ex.Message;
+        //        error.Source = ex.Source;
+        //    }
+        //    return responseResult;
+        //}
+
         public async Task<BankPaymentModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PONo, string AgainstBillno)
         {
             DataSet? oDataSet = new DataSet();

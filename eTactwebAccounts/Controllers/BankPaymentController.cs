@@ -14,6 +14,7 @@ using System.Runtime.Caching;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
 using System.Globalization;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace eTactwebAccounts.Controllers
 {
@@ -961,35 +962,87 @@ namespace eTactwebAccounts.Controllers
                 {
                     return RedirectToAction("Dashboard", "Home");
                 }
-                var Result = await _IBankPayment.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
-                if (Result != null)
-                {
-                    DataSet ds = Result.Result;
-                    if (ds != null && ds.Tables.Count > 0)
-                    {
-                        var dt = ds.Tables[0];
-                        model.BankPaymentGrid = CommonFunc.DataTableToList<BankPaymentModel>(dt, "BankPaymentDashBoard");
+                //var Result = await _IBankPayment.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
+                //            if (Result != null)
+                //            {
+                //                DataSet ds = Result.Result;
+                //                if (ds != null && ds.Tables.Count > 0)
+                //                {
+                //                    var dt = ds.Tables[0];
+                //                    model.BankPaymentGrid = CommonFunc.DataTableToList<BankPaymentModel>(dt, "BankPaymentDashBoard");
 
-                        if (Flag != "True")
-                        {
-                            model.FromDate1 = FromDate;
-                            model.ToDate1 = ToDate;
-                            model.LedgerName = LedgerName;
-                            model.Bank = Bank;
-                            model.VoucherNo = VoucherNo;
-                            model.AgainstVoucherRefNo = AgainstVoucherRefNo;
-                            model.AgainstVoucherNo = AgainstVoucherNo;
-                            model.Searchbox = Searchbox;
-                            model.DashboardType = DashboardType;
-                            return View(model);
-                        }
-                    }
-                }
+                //                    if (Flag != "True")
+                //                    {
+                //                        model.FromDate1 = FromDate;
+                //                        model.ToDate1 = ToDate;
+                //                        model.LedgerName = LedgerName;
+                //                        model.Bank = Bank;
+                //                        model.VoucherNo = VoucherNo;
+                //                        model.AgainstVoucherRefNo = AgainstVoucherRefNo;
+                //                        model.AgainstVoucherNo = AgainstVoucherNo;
+                //                        model.Searchbox = Searchbox;
+                //                        model.DashboardType = DashboardType;
+                //                        return View(model);
+                //                    }
+                //                }
+                //            }
+                model.FromDate1 = FromDate;
+                model.ToDate1 = ToDate;
+                model.LedgerName = LedgerName;
+                model.Bank = Bank;
+                model.VoucherNo = VoucherNo;
+                model.AgainstVoucherRefNo = AgainstVoucherRefNo;
+                model.AgainstVoucherNo = AgainstVoucherNo;
+                model.Searchbox = Searchbox;
+                model.DashboardType = DashboardType;
+                //  model.Mode = Mode;
                 return View(model);
             }
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+        public async Task<IActionResult> GetSearchData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno, string summaryDetail, string searchBox, string Flag = "True")
+        {
+            try
+            {
+                var model = new BankPaymentModel
+                {
+                    YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode")),
+                    Searchbox = searchBox
+                };
+
+                var result = await _IBankPayment.GetDashBoardData(summaryDetail, ParseFormattedDate(FromDate), ParseFormattedDate(ToDate), LedgerName, Bank, VoucherNo, AgainstVoucherNo, PoNo, AgainstBillno);
+
+                if (result == null || !(result.Result is DataTable dt))
+                {
+                    return PartialView("_BankPaymentDashBoardGrid", model);
+                }
+
+                model.Headers = dt.Columns
+                    .Cast<DataColumn>()
+                    .Select(c => new DashboardColumn
+                    {
+                        Title = c.ColumnName,
+                        Field = c.ColumnName
+                    })
+                    .ToList();
+
+                model.Rows = dt.AsEnumerable()
+                    .Select(r => dt.Columns
+                        .Cast<DataColumn>()
+                        .ToDictionary(
+                            c => c.ColumnName,
+                            c => r[c] == DBNull.Value ? null : r[c]
+                        ))
+                    .ToList();
+
+                return PartialView("_BankPaymentDashBoardGrid", model);
+            }
+            catch
+            {
+                throw;
             }
         }
         public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)

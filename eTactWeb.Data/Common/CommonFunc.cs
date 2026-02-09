@@ -28,6 +28,10 @@ public static class CommonFunc
         }
         return data;
     }
+    public static string EmptyIfNull(string value)
+    {
+        return value ?? string.Empty;
+    }
     public static async Task<string> Generate1DCodeImage(string qrText, string filePath)
     {
         try
