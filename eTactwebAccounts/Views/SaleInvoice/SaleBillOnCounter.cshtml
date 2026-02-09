@@ -4827,7 +4827,9 @@
             FillSOPendQty();
             FillTotalStock();
           
-            DisableDiscountFields();
+
+            // COMMENT BY MONIKA FOR DGC BECAUSE WE CHECK DUBLICATE ITEM IN GRID
+            // DisableDiscountFields();
             CalculateAmount();
             GetlastBillDetail();
         }
