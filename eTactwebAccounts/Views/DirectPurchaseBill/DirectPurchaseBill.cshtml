@@ -905,6 +905,8 @@
         }
         var actualRate = 0;
         var LocationRequired = '';
+                var GstNoRequired = '';
+
               function GetFeatureOption() {
             $.ajax({
                 type: "POST",
@@ -967,8 +969,10 @@
  }
                             if (feature.HideShowDirectPurchaseBillCustomerGSTNo === "N") {
                                 $('.DirectPurchaseBillCustomerGSTNo').hide();
+                                GstNoRequired = 'N';
                             } else {
                                 $('.DirectPurchaseBillCustomerGSTNo').show();
+                                GstNoRequired = 'Y';
                             }
                             if (feature.HideShowDirectPurchaseBillLocation === "N") {
                                 $('.DirectPurchaseBillLocation').hide();
@@ -4029,6 +4033,13 @@
             {
                 if (hasEmptyLocation) {
                     $.notify("Item Location is required for all items.", "error");
+                    return;
+                }
+            }
+            if(GstNoRequired=='Y')
+            {
+                if ($('#GSTNo').val()=='') {
+                    $.notify("Gst No is Required.", "error");
                     return;
                 }
             }

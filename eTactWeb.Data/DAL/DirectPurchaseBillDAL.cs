@@ -1016,6 +1016,7 @@ public class DirectPurchaseBillDAL
                     MainModel.AccountCode = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["AccountCode"]);
                     MainModel.InvoiceNo = oDataSet.Tables[0].Rows[0]["InvoiceNo"].ToString();
                     MainModel.AccountName = oDataSet.Tables[0].Rows[0]["VendorName"].ToString();
+                    MainModel.GSTNo = oDataSet.Tables[0].Rows[0]["GSTNO"].ToString();
                     MainModel.InvDate = oDataSet.Tables[0].Rows[0]["InvoiceDate"].ToString();
                     MainModel.PurchVouchNo = oDataSet.Tables[0].Rows[0]["purvoucherno"].ToString();
                     MainModel.VouchDate = oDataSet.Tables[0].Rows[0]["VoucherDate"].ToString();
