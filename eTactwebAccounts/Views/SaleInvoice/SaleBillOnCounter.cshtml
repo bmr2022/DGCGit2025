@@ -6808,6 +6808,7 @@
         }
 
         var AllowedToDispatchQtyMoreThenCloseSOPendQty = '';
+        var GSTMandatoryOnSaleBill = '';
         function GetFeatureOption() {
 
             $.ajax({
@@ -6907,8 +6908,10 @@
                             }
                             if (obj.Result[0].ShowHideSaleBillCustomerGSTDetail === "N") {
                                 $('.SaleBillCustomerGSTDetail').hide();
+                                GSTMandatoryOnSaleBill='N';
                             } else {
                                 $('.SaleBillCustomerGSTDetail').show();
+                                GSTMandatoryOnSaleBill='Y';
                             }
 
                             if (obj.Result[0].ShowHideSaleBillCustomerAddressDetail === "N") {
@@ -7941,7 +7944,13 @@
                     return false;
                 }
             }
-
+           
+            if (GSTMandatoryOnSaleBill = 'Y') {
+                if ($('#GSTNO').val() == '') {
+                    $.notify("GST No is required...!", "error");
+                    return false;
+                }
+            }
             if ($('#CustOrderNo').val() == '') {
                 $.notify("CustOrder No is required...!", "error");
                 return false;
@@ -7950,6 +7959,7 @@
             let AdjustAmount = parseFloat($('#AdjAdjstedAmt1').text());
             let TotalAmount = parseFloat($('#AdjTotalAmt1').text());
             let NetAmount = parseFloat($('#NetTotal').val());
+            let BasicAmount = parseFloat($('#lblItemNetAmount').text().trim());
 
             // if (AdjustAmount !== TotalAmount || TotalAmount !== NetAmount) {
             //     $.notify("AdjustAmount, TotalAmount, and NetAmount must all be equal....!", "error");
@@ -7957,6 +7967,11 @@
             // }
 
             if(NetAmount<0)
+            {
+                $.notify("Net Amount should not be negative...!", "error");
+                return false;
+            }
+             if(BasicAmount<=0)
             {
                 $.notify("Net Amount should not be negative...!", "error");
                 return false;
