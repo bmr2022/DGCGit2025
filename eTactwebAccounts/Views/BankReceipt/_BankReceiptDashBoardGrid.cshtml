@@ -321,7 +321,7 @@
                             <!-- VIEW -->
                             <div id="viewCursorDiv-@Cntr">
                                 <a class="table-link link-success"
-                                   asp-action="BankPayment"
+                                   asp-action="BankReceipt"
                                    asp-route-Mode=@encryptDecrypt.Encrypt("V")
                                    asp-route-VoucherNo=@encryptDecrypt.Encrypt(
                            row.ContainsKey("VoucherNo")
@@ -343,7 +343,7 @@
                             <!-- EDIT -->
                             <div id="editCursorDiv-@Cntr">
                                 <a class="table-link link-primary"
-                                   asp-action="BankPayment"
+                                   asp-action="BankReceipt"
                                    asp-route-Mode=@encryptDecrypt.Encrypt("U")
                                    asp-route-VoucherNo="@encryptDecrypt.Encrypt(
                                             row.ContainsKey("VoucherNo")
@@ -372,7 +372,7 @@
                     {
                         foreach (var col in Model.Headers)
                         {
-                            <td>
+                            <td data-field="@col.Field">
                                 @{
                                     if (row.ContainsKey(col.Field) && row[col.Field] != null)
                                     {

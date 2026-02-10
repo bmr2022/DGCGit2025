@@ -158,5 +158,7 @@ namespace eTactWeb.DOM.Models
         public decimal PopCrAmt { get; set; }
         public decimal PopAdjustmentAmt { get; set; }
         public string? Bank { get; set; }
+        public List<DashboardColumn> Headers { get; set; }
+        public List<Dictionary<string, object>> Rows { get; set; }
     }
 }

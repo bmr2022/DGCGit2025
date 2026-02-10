@@ -561,7 +561,7 @@
                     {
                         foreach (var col in Model.Headers)
                         {
-                            <td>
+                            <td data-field="@col.Field">
                                 @{
                                     if (row.ContainsKey(col.Field) && row[col.Field] != null)
                                     {

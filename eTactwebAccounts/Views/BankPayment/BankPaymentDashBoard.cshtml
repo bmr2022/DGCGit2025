@@ -226,6 +226,7 @@
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
                     GetFormRights();
+                    calculateFooterTotalsSafe();
                     //  GetTotalAmounts();
                 },
                 error: function (xhr) {
@@ -233,7 +234,38 @@
                 }
             });
         }
+        function calculateFooterTotalsSafe() {
 
+            let columnInfo = {};
+
+            $('#SRDashboardGrid tbody tr').not(':has(td[colspan])').each(function () {
+
+                $(this).find('td[data-field]').each(function () {
+
+                    let field = $(this).data('field');
+                    let text = $(this).text().trim().replace(/,/g, '');
+
+                    if (!columnInfo[field]) {
+                        columnInfo[field] = { sum: 0, isNumeric: true };
+                    }
+
+                    if (text === '' || isNaN(text) || !isFinite(text)) {
+                        columnInfo[field].isNumeric = false;
+                        return;
+                    }
+
+                    columnInfo[field].sum += parseFloat(text);
+                });
+            });
+
+            for (let field in columnInfo) {
+                if (columnInfo[field].isNumeric) {
+                    $('#tfoot_' + field).text(columnInfo[field].sum.toFixed(2));
+                } else {
+                    $('#tfoot_' + field).text('');
+                }
+            }
+        }
         // function GetSearchData() {
 
         //     if ($('#DashboardType').val() == "Summary") {
@@ -423,7 +455,7 @@
         $("#search-box").on("keyup", function () {
 
             var value = $(this).val().toLowerCase();
-            $("#gateDashboardtable tr").filter(function () {
+            $("#divSRDashboardGrid tr").filter(function () {
                 if (currentSearchColumn !== null) {
                     var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
                     $(this).toggle(columnText.indexOf(value) > -1);
@@ -440,7 +472,7 @@
         });
 
         $('#sendToExcel').click(function () {
-            $("#GateDataTable").table2excel({
+            $("#SRDashboardGrid").table2excel({
                 filename: "WorkOrderProcessDetailData.xls"
             });
         });
@@ -452,14 +484,14 @@
 
             $('.sortCol').css('color', 'white');
             if (currentOrder === 'asc') {
-                sortTable('GateDataTable', colno, false);
+                sortTable('SRDashboardGrid', colno, false);
                 $(this).data('sortorder', 'desc');
                 $(this).css('color', 'yellow');
                 //$(this).css('font-size', 'larger');
                 $(this).find('i:first').removeClass('fa-arrow-up');
                 $(this).find('i:first').addClass('fa-arrow-down');
             } else {
-                sortTable('GateDataTable', colno, true);
+                sortTable('SRDashboardGrid', colno, true);
                 $(this).data('sortorder', 'asc');
                 $(this).css('color', 'yellow');
                 // $(this).css('font-size', 'larger');

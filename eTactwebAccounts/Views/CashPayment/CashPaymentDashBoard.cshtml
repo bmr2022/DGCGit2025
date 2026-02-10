@@ -83,8 +83,8 @@
                                 <label asp-for="DashboardType" class="form-label">Dashboard Type</label>
                                 <select asp-for="DashboardType" class="form-select" onchange="GetSearchData();">
                                     <option value="" disabled>-Select-</option>
-                                    <option value="Summary" >Summary</option>
-                                    <option value="Detail" selected>Detail</option>
+                                    <option value="Summary" selected>Summary</option>
+                                    <option value="Detail">Detail</option>
                                 </select>
                             </div>
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -318,17 +318,57 @@
                 }
             });
         }
-        function GetSearchData() {
+        // function GetSearchData() {
 
-            if ($('#DashboardType').val() == "Summary") {
-                GetDashBoardSummaryData();
-                GetFormRights();
+        //     if ($('#DashboardType').val() == "Summary") {
+        //         GetDashBoardSummaryData();
+        //         GetFormRights();
+        //     }
+        //     else {
+        //         GetDashBoardDetailData();
+        //         GetFormRights();
+        //     }
+        // }
+        function GetSearchData() {
+            var itemCode = "";
+
+            if ($('#PartCode').val() != "0") {
+                itemCode = $('#PartCode').val();   // PartCode selected
             }
-            else {
-                GetDashBoardDetailData();
-                GetFormRights();
+            else if ($('#ItemName').val() != "0") {
+                itemCode = $('#ItemName').val();   // ItemName selected
             }
+            var formData = {
+                FromDate: $('#FromDate').val(),
+                ToDate: $('#ToDate').val(),
+                LedgerName: $('#LedgerName').val(),
+                Bank: $('#Bank').val(),
+                VoucherNo: $('#VoucherNo').val(),
+                AgainstVoucherNo: $('#AgainstVoucherNo').val(),
+                PONo: $('#PONo').val(),
+                AgainstBillno: $('#AgainstBillno').val(),
+                summaryDetail: $('#DashboardType').val(),   // Summary / Detail
+                searchBox: $('#search-box').val(),          // Global search
+                Flag: "True"
+            };
+
+
+            $.ajax({
+                url: '@Url.Action("GetSearchData")',
+                type: "POST",
+                data: formData,
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    GetFormRights();
+                    calculateFooterTotalsSafe();
+                    //  GetTotalAmounts();
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText);
+                }
+            });
         }
+
 
         function GetDashBoardSummaryData() {
 

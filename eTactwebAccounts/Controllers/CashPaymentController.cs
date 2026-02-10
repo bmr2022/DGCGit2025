@@ -90,11 +90,11 @@ namespace eTactwebAccounts.Controllers
                 int decryptedID = EncryptDecrypt.DecodeID(encID);
                 int decryptedYC = EncryptDecrypt.DecodeID(encYC);
                 string decryptedMode = EncryptDecrypt.Decrypt(Mode);
-                //string decryptedVoucherNo = EncryptDecrypt.Decrypt(VoucherNo);
+                string decryptedVoucherNo = EncryptDecrypt.Decrypt(VoucherNo);
                 ID = decryptedID;
                 YearCode = decryptedYC;
                 Mode = decryptedMode;
-                //VoucherNo = decryptedVoucherNo;
+                VoucherNo = decryptedVoucherNo;
             }
             var table = rights.Result.Tables[0];
             bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
@@ -965,16 +965,16 @@ namespace eTactwebAccounts.Controllers
                 }
                 //FromDate = HttpContext.Session.GetString("FromDate");
                 //ToDate = HttpContext.Session.GetString("ToDate");
-                var Result = await _ICashPayment.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
-                if (Result != null)
-                {
-                    DataSet ds = Result.Result;
-                    if (ds != null && ds.Tables.Count > 0)
-                    {
-                        var dt = ds.Tables[0];
-                        model.CashPaymentGrid = CommonFunc.DataTableToList<CashPaymentModel>(dt, "CashPaymentDashBoard");
-                    }
-                }
+                //var Result = await _ICashPayment.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
+                //if (Result != null)
+                //{
+                //    DataSet ds = Result.Result;
+                //    if (ds != null && ds.Tables.Count > 0)
+                //    {
+                //        var dt = ds.Tables[0];
+                //        model.CashPaymentGrid = CommonFunc.DataTableToList<CashPaymentModel>(dt, "CashPaymentDashBoard");
+                //    }
+                //}
                 model.FromDate = FromDate;
                 model.ToDate = ToDate;
                 model.LedgerName = LedgerName;
@@ -1000,6 +1000,49 @@ namespace eTactwebAccounts.Controllers
             model = await _ICashPayment.GetDashBoardDetailData(FromDate, ToDate, LedgerName, Bank, VoucherNo, AgainstVoucherNo, PoNo, AgainstBillno);
             return PartialView("_CashPaymentDashBoardDetailGrid", model);
         }
+        public async Task<IActionResult> GetSearchData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno, string summaryDetail, string searchBox, string Flag = "True")
+        {
+            try
+            {
+                var model = new CashPaymentModel
+                {
+                    YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode")),
+                    Searchbox = searchBox
+                };
+
+                var result = await _ICashPayment.GetDashBoardData(summaryDetail, ParseFormattedDate(FromDate), ParseFormattedDate(ToDate), LedgerName, Bank, VoucherNo, AgainstVoucherNo, PoNo, AgainstBillno);
+
+                if (result == null || !(result.Result is DataTable dt))
+                {
+                    return PartialView("_CashPaymentDashBoardGrid", model);
+                }
+
+                model.Headers = dt.Columns
+                    .Cast<DataColumn>()
+                    .Select(c => new DashboardColumn
+                    {
+                        Title = c.ColumnName,
+                        Field = c.ColumnName
+                    })
+                    .ToList();
+
+                model.Rows = dt.AsEnumerable()
+                    .Select(r => dt.Columns
+                        .Cast<DataColumn>()
+                        .ToDictionary(
+                            c => c.ColumnName,
+                            c => r[c] == DBNull.Value ? null : r[c]
+                        ))
+                    .ToList();
+
+                return PartialView("_CashPaymentDashBoardGrid", model);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
         {
             HttpContext.Session.Remove("KeyCashPaymentGrid");

@@ -1,4 +1,4 @@
-﻿@model eTactWeb.DOM.Models.CashReceiptModel;
+﻿@* @model eTactWeb.DOM.Models.CashReceiptModel;
 
 @using Microsoft.AspNetCore.Http
 @using System.Reflection.PortableExecutable
@@ -184,4 +184,231 @@
         white-space: nowrap; /* Prevent content from wrapping */
     }
 </style>
+
+ *@
+  @model eTactWeb.DOM.Models.CashReceiptModel
+@using eTactWeb.Data.Common
+@inject EncryptDecrypt encryptDecrypt
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+        }
+
+    table tfoot {
+        position: sticky;
+        bottom: 0;
+        background: linear-gradient(180deg, #b3e0f5, #80d4f0) !important;
+        color: #222;
+        z-index: 1;
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        height: 30px;
+    }
+
+        table tfoot td {
+            font-weight: bold;
+            border-top: 2px solid #dee2e6;
+            font-size: 13px;
+            color: #222;
+        }
+
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #SRDashboardGrid {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #SOThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    #SRDashboardGrid tbody td {
+        font-weight: normal !important;
+    }
+</style>
+
+<table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0"
+       id="SRDashboardGrid">
+
+    <thead class="bg-gradient card-headerBG text-light" id="SOThead">
+        <tr>
+            <th>Sr#</th>
+            <th>Action</th>
+
+            @if (Model.Headers != null && Model.Headers.Any())
+            {
+                var colIndex = 1;
+                foreach (var col in Model.Headers)
+                {
+                    <th data-columnno="@colIndex" data-sortorder="asc" class="sortCol">
+                        <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
+                        @col.Title
+                    </th>
+                    colIndex++;
+                }
+            }
+        </tr>
+    </thead>
+
+    <tbody id="divSRDashboardGrid">
+        @if (Model.Rows == null || Model.Rows.Count == 0)
+        {
+            <tr class="text-center">
+                <td colspan="@((Model.Headers?.Count ?? 0) + 2)" class="text-black-50">
+                    <strong>NO DATA FOUND</strong>
+                </td>
+            </tr>
+        }
+        else
+        {
+            int Cntr = 0;
+
+            foreach (var row in Model.Rows)
+            {
+                Cntr++;
+
+                <tr onclick="selection(this)">
+                    <th>@Cntr</th>
+
+                    <td style="text-align:center;white-space: nowrap;">
+                        <div id="container">
+
+                            <!-- PRINT -->
+                            <div id="printData-@Cntr">
+                                <a class="table-link link-dark"
+                                   asp-action="PrintReport"
+                                   asp-route-EntryId="@(row.ContainsKey("AccEntryId") ? row["AccEntryId"] : "")"
+                                   asp-route-YearCode="@(row.ContainsKey("YearCode") ? row["YearCode"] : "")"
+                                   asp-route-VoucherName="@(row.ContainsKey("SubVoucherName") ? row["SubVoucherName"] : "")">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </div>
+
+                            <!-- VIEW -->
+                            <div id="viewCursorDiv-@Cntr">
+                                <a class="table-link link-success"
+                                   asp-action="CashReceipt"
+                                   asp-route-Mode=@encryptDecrypt.Encrypt("V")
+                                   asp-route-VoucherNo=@encryptDecrypt.Encrypt(
+                           row.ContainsKey("VoucherNo")
+                           ? Convert.ToString(row["VoucherNo"])
+                           : string.Empty )
+                                   asp-route-ID="@(row.ContainsKey("AccEntryId")
+            ? EncryptDecrypt.EncodeID(Convert.ToInt32(row["AccEntryId"]))
+            : EncryptDecrypt.EncodeID(0))"
+                                   asp-route-YearCode="@(row.ContainsKey("YearCode")
+            ? EncryptDecrypt.EncodeID(Convert.ToInt32(row["YearCode"]))
+            : EncryptDecrypt.EncodeID(0))">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </div>
+
+                            <!-- EDIT -->
+                            <div id="editCursorDiv-@Cntr">
+                                <a class="table-link link-primary"
+                                   asp-action="CashReceipt"
+                                   asp-route-Mode=@encryptDecrypt.Encrypt("U")
+                                   asp-route-VoucherNo="@encryptDecrypt.Encrypt(
+                                            row.ContainsKey("VoucherNo")
+                                                ? Convert.ToString(row["VoucherNo"])
+                                                : string.Empty
+                                        )"
+                                   asp-route-ID="@(row.ContainsKey("AccEntryId")
+            ? EncryptDecrypt.EncodeID(Convert.ToInt32(row["AccEntryId"]))
+            : EncryptDecrypt.EncodeID(0))"
+                                   asp-route-YearCode="@(row.ContainsKey("YearCode")
+            ? EncryptDecrypt.EncodeID(Convert.ToInt32(row["YearCode"]))
+            : EncryptDecrypt.EncodeID(0))">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </div>
+
+
+
+                        </div>
+                    </td>
+
+                    @if (Model.Headers != null && Model.Headers.Any())
+                    {
+                        foreach (var col in Model.Headers)
+                        {
+                            <td data-field="@col.Field">
+                                @{
+                                    if (row.ContainsKey(col.Field) && row[col.Field] != null)
+                                    {
+                                        var value = row[col.Field];
+
+                                        if (value is decimal || value is double || value is float)
+                                        {
+                                            @string.Format("{0:0.00}", value)
+                                        }
+                                        else
+                                        {
+                                            @value
+                                        }
+                                    }
+                                }
+                            </td>
+                        }
+                    }
+                </tr>
+            }
+        }
+    </tbody>
+
+    <tfoot class="bg-light fw-bold">
+        <tr>
+            <td></td>
+            <td>Total</td>
+
+            @if (Model.Headers != null && Model.Headers.Any())
+            {
+                foreach (var col in Model.Headers)
+                {
+                    <td id="tfoot_@col.Field"></td>
+                }
+            }
+        </tr>
+    </tfoot>
+</table>
 

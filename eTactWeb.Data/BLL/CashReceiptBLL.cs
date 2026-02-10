@@ -17,9 +17,10 @@ namespace eTactWeb.Data.BLL
         private CashReceiptDAL _CashReceiptDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public CashReceiptBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
+
+        public CashReceiptBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService, ICommon common)
         {
-            _CashReceiptDAL = new CashReceiptDAL(config, dataLogicDAL, connectionStringService);
+            _CashReceiptDAL = new CashReceiptDAL(config, dataLogicDAL, connectionStringService, common);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<ResponseResult> FillLedgerName(string VoucherType, string Type)
@@ -66,9 +67,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _CashReceiptDAL.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
         }
-        public async Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate)
+        //public async Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate)
+        //{
+        //    return await _CashReceiptDAL.GetDashBoardData(FromDate, ToDate);
+        //}
+        public async Task<ResponseResult> GetDashBoardData(string summaryDetail, string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno)
         {
-            return await _CashReceiptDAL.GetDashBoardData(FromDate, ToDate);
+            return await _CashReceiptDAL.GetDashBoardData(summaryDetail, FromDate, ToDate, LedgerName, Bank, VoucherNo, AgainstVoucherNo, SoNo, AgainstBillno);
         }
         public async Task<CashReceiptModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno)
         {

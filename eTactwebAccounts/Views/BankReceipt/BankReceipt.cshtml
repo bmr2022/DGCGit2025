@@ -1025,10 +1025,10 @@
 
         function BindModeOfAdjust() {
             $('#ModeOfAdjustment').append(`
-                                                                                    <option selected value="New Ref">New Ref</option>
-                                                                                    <option value="Advance">Advance</option>
-                                                                                    <option value="Against Ref">Against Ref</option>
-                                                                                `);
+                                                                            <option selected value="New Ref">New Ref</option>
+                                                                            <option value="Advance">Advance</option>
+                                                                            <option value="Against Ref">Against Ref</option>
+                                                                        `);
         }
 
         $('#LedgerName').change(function () {
@@ -2342,8 +2342,8 @@
                         var BackDateEntryAllowed = obj.Result[0].AccAllowBackdateVoucherEntry;
 
                         if (BackDateEntryAllowed != "Y") {
-                            $('#EntryDate,#VoucherDate').datepicker("option", "minDate", parseDateToFormat(EntryDate));
-                            $('#EntryDate,#VoucherDate').datepicker("option", "maxDate", parseDateToFormat(VoucherDate));
+                            $('#EntryDate,#VoucherDate').datepicker("option", "minDate", (EntryDate));
+                            $('#EntryDate,#VoucherDate').datepicker("option", "maxDate", (VoucherDate));
 
 
                         }

@@ -60,11 +60,11 @@ namespace eTactwebAccounts.Controllers
                 int decryptedID = EncryptDecrypt.DecodeID(encID);
                 int decryptedYC = EncryptDecrypt.DecodeID(encYC);
                 string decryptedMode = EncryptDecrypt.Decrypt(Mode);
-                //string decryptedVoucherNo = EncryptDecrypt.Decrypt(VoucherNo);
+                string decryptedVoucherNo = EncryptDecrypt.Decrypt(VoucherNo);
                 ID = decryptedID;
                 YearCode = decryptedYC;
                 Mode = decryptedMode;
-                //VoucherNo = decryptedVoucherNo;
+                VoucherNo = decryptedVoucherNo;
             }
             var table = rights.Result.Tables[0];
             bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
