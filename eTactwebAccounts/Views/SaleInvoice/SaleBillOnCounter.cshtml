@@ -4029,8 +4029,8 @@
 
         DueDateCalculation();
 
-        $('#DiscountPer').prop("readonly", false);
-        $('#DiscountAmt').prop("readonly", false);
+        // $('#DiscountPer').prop("readonly", false);
+        // $('#DiscountAmt').prop("readonly", false);
 
         // var txAmt = $('#lblItemNetAmount').text();
         // $('#NetTotal').val(txAmt);
@@ -7052,6 +7052,10 @@
                 $('#DiscountAmt').val(DA.toFixed(6));
                 Amount = Amount - DA;
             }
+            else
+            {
+                 $('#DiscountAmt').val(0);
+            }
 
             $('#Amount').val(Amount.toFixed(6));
 
@@ -7807,7 +7811,7 @@
                             $('#DiscountPer').val(0);
                             $('#DiscountPer').prop("readonly", false);
                             $('#DiscountAmt').val(0);
-                            $('#DiscountAmt').prop("readonly", false);
+                            // $('#DiscountAmt').prop("readonly", false);
                         }
 
                         calculatetotalqty();
@@ -7971,9 +7975,9 @@
                 $.notify("Net Amount should not be negative...!", "error");
                 return false;
             }
-             if(BasicAmount<=0)
+             if(BasicAmount<0)
             {
-                $.notify("Net Amount should not be negative...!", "error");
+                $.notify("Basic Amount should not be negative...!", "error");
                 return false;
             }
 

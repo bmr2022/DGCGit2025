@@ -817,7 +817,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@TaxableAmt", model.TaxableAmt));
                 SqlParams.Add(new SqlParameter("@TaxbaleAmtInWord", model.TaxbaleAmtInWord ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@GSTAmount", model.GSTAmount));
-                SqlParams.Add(new SqlParameter("@@RoundoffType", "Y"));
+                SqlParams.Add(new SqlParameter("@RoundoffType", "Y"));
                 SqlParams.Add(new SqlParameter("@RoundType", model.TotalRoundOff ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@RoundOffAmt", model.TotalRoundOffAmt));
                 SqlParams.Add(new SqlParameter("@DiscountPercent", model.DiscountPercent));
