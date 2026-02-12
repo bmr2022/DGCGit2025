@@ -6908,10 +6908,10 @@
                             }
                             if (obj.Result[0].ShowHideSaleBillCustomerGSTDetail === "N") {
                                 $('.SaleBillCustomerGSTDetail').hide();
-                                GSTMandatoryOnSaleBill='N';
+                                
                             } else {
                                 $('.SaleBillCustomerGSTDetail').show();
-                                GSTMandatoryOnSaleBill='Y';
+                                // GSTMandatoryOnSaleBill='Y';
                             }
 
                             if (obj.Result[0].ShowHideSaleBillCustomerAddressDetail === "N") {
@@ -6919,6 +6919,14 @@
                             } else {
                                 $('.SaleBillCustomerAddressDetail').show();
                             }
+
+                            if (obj.Result[0].GSTNoMandatoryForSalebill === "Y") {
+                                GSTMandatoryOnSaleBill='Y';
+                            } else {
+                               GSTMandatoryOnSaleBill='N';
+                            }
+
+
 
                             
 
@@ -7949,7 +7957,7 @@
                 }
             }
            
-            if (GSTMandatoryOnSaleBill = 'Y') {
+            if (GSTMandatoryOnSaleBill == 'Y') {
                 if ($('#GSTNO').val() == '') {
                     $.notify("GST No is required...!", "error");
                     return false;
