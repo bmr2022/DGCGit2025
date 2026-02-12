@@ -278,6 +278,7 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@Subvoucher", "CASH-RECEIPT"));
                 sqlParams.Add(new SqlParameter("@ActualEntryDate", actualEntryDate));
                 sqlParams.Add(new SqlParameter("@InstrumentNo", model.InsNo));
+                sqlParams.Add(new SqlParameter("@VchNarration", model.Naration));
                 sqlParams.Add(new SqlParameter("@intrument", model.Intrument));
                 sqlParams.Add(new SqlParameter("@intrumentdate", InsDate));
                 sqlParams.Add(new SqlParameter("@IpAddress", model.IPAddress));
@@ -632,6 +633,7 @@ namespace eTactWeb.Data.DAL
             if (DateTime.TryParse(DS.Tables[0].Rows[0]["VoucherDocdate"].ToString(), out DateTime VoucherDocdate))
                 model.VoucherDate = VoucherDocdate.ToString("dd/MM/yyyy");
             model.SubVoucherName = DS.Tables[0].Rows[0]["SubVoucherName"].ToString();
+            model.Naration = DS.Tables[0].Rows[0]["VoucherRemark"].ToString();
             model.VoucherNo = DS.Tables[0].Rows[0]["VoucherNo"].ToString();
             model.VoucherDocDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString();
             model.VoucherDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString();
@@ -671,6 +673,7 @@ namespace eTactWeb.Data.DAL
                         VoucherDocDate = row["VoucherDocdate"].ToString(),
                         SubVoucherName = row["SubVoucherName"].ToString(),
                         Currency = row["Currency"].ToString(),
+                        CurrencyId = Convert.ToInt32(row["CurrencyId"].ToString()),
                         CurrentValue = Convert.ToDecimal(row["CurrentValue"].ToString()),
                         LedgerName = row["LedgerName"].ToString(),
                         AccountCode = Convert.ToInt32(row["Accountcode"].ToString()),
@@ -702,6 +705,7 @@ namespace eTactWeb.Data.DAL
                         CustOrderNo = row["CustOrderNo"].ToString(),
                         NameOnCheque = row["NameOnCheque"].ToString(),
                         AccountNarration = row["AccountNarration"].ToString(),
+                        PartyWiseNaration = row["AccountNarration"].ToString(),
                         Description = row["Description"].ToString(),
                         VoucherRemark = row["VoucherRemark"].ToString(),
                         ActualEntryby = Convert.ToInt32(row["ActualEntryBy"].ToString()),

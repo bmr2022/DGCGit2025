@@ -62,7 +62,7 @@ namespace eTactWeb.DOM.Models
         //exchange rate
         public double ExRate { get; set; }
         public string PartyWiseNaration { get; set; }
-        public string Naration { get; set; }
+        public string? Naration { get; set; }
         public decimal DrAmt { get; set; }
         public decimal CrAmt { get; set; }
         public double VoucherAmt { get; set; }
