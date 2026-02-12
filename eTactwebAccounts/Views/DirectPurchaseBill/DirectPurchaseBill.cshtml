@@ -974,6 +974,13 @@
                                 $('.DirectPurchaseBillCustomerGSTNo').show();
                                 GstNoRequired = 'Y';
                             }
+                            if (feature.GSTNoMandatoryForDPB === "Y") {
+                                // $('.DirectPurchaseBillCustomerGSTNo').hide();
+                                GstNoRequired = 'Y';
+                            } else {
+                                // $('.DirectPurchaseBillCustomerGSTNo').show();
+                                GstNoRequired = 'N';
+                            }
                             if (feature.HideShowDirectPurchaseBillLocation === "N") {
                                 $('.DirectPurchaseBillLocation').hide();
                                 LocationRequired = 'N';
