@@ -800,7 +800,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@CityofSupply", model.CityofSupply ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@CountryOfSupply", model.CountryOfSupply ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@DistanceKM", model.DistanceKM));
-                SqlParams.Add(new SqlParameter("@vehicleNo", model.vehicleNo ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@vehicleNo", model.VehicalNumber ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@TransporterName", model.TransporterName ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@TransporterdocNo", model.TransporterdocNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@TransporterId", model.TransporterId));
@@ -1573,7 +1573,7 @@ namespace eTactWeb.Data.DAL
                 model.CityofSupply = DS.Tables[0].Rows[0]["CityofSupply"]?.ToString();
                 model.CountryOfSupply = DS.Tables[0].Rows[0]["CountryOfSupply"]?.ToString();
                 model.DistanceKM = Convert.ToDecimal(DS.Tables[0].Rows[0]["DistanceKM"]);
-                model.vehicleNo = DS.Tables[0].Rows[0]["vehicleNo"]?.ToString();
+                model.VehicalNumber = DS.Tables[0].Rows[0]["vehicleNo"]?.ToString();
                 model.TransporterName = DS.Tables[0].Rows[0]["TransporterName"]?.ToString();
                 model.TransporterdocNo = DS.Tables[0].Rows[0]["TransporterdocNo"]?.ToString();
                 model.TransporterId = Convert.ToInt32(DS.Tables[0].Rows[0]["TransporterId"]);

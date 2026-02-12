@@ -215,6 +215,7 @@ namespace eTactWeb.DOM.Models
         public string? CountryOfSupply { get; set; }
         public decimal DistanceKM { get; set; }
         public string? vehicleNo { get; set; }
+        public string? VehicalNumber { get; set; }
         public string? TransporterName { get; set; }
         public string? TransporterdocNo { get; set; }
         public int TransporterId { get; set; }

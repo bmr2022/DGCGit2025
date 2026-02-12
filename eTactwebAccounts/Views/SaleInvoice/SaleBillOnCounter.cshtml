@@ -7947,10 +7947,10 @@
 
 
 
-            if ($('#vehicleNo').val() != '') {
-                var inputValue = $('#vehicleNo').val();
+            if ($('#VehicalNumber').val() != '') {
+                var inputValue = $('#VehicalNumber').val();
                 if (inputValue.length > 10) {
-                    $('#vehicleNo').val(inputValue.substring(0, 10));
+                    $('#VehicalNumber').val(inputValue.substring(0, 10));
                 } else if (inputValue.length < 10) {
                     $.notify("Please enter at least 10 characters in Vehicle No", "error");
                     return false;
@@ -8043,7 +8043,7 @@
             });
         }
 
-        $('#vehicleNo').on('input', function () {
+        $('#VehicalNumber').on('input', function () {
             var inputValue = $(this).val();
             if (inputValue.length > 10) {
                 $(this).val(inputValue.substring(0, 10));
@@ -8059,7 +8059,7 @@
             return true;
         });
 
-                   $('#vehicleNo').on('change', function () {
+        $('#VehicalNumber').on('change', function () {
                    var inputValue = $(this).val();
                    if (inputValue!=="" &&  inputValue.length < 10) {
                        $.notify("Please enter at least 10 characters in Vehicle No", "error");
