@@ -207,7 +207,7 @@
                         <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
                             <div class="d-flex justify-content-center align-items-center flex-grow-1">
-                                <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemNetAmount"></span></strong>
+                                <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemNetAmount">0</span></strong>
                                 <strong>Total Qty : <span id="TotalQty"></span></strong>
                                 <input type="hidden" asp-for="BillAmt" />
                                 <strong>, TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
@@ -1676,6 +1676,42 @@
 
                    $('#Amount').val(Amount.toFixed(2));
                }
+
+        function calculateitembasicnettaxable() {
+
+            var GSTPer = parseFloat($('#GSTPer').val()) || 0;
+            var Amount = parseFloat($('#Amount').val()) || 0;
+
+            var TotalBasicAmount = 0;
+            var TotalGSTAmount = 0;
+
+            // 🔹 Loop grid rows
+            $('#divSaleBillList tr').each(function () {
+
+                var GridAmount = parseFloat($(this).find('.GridAmount').text()) || 0;
+                var GridGstPer = parseFloat($(this).find('.GSTPer').text()) || 0;
+
+                var GridTaxAmt = GridAmount * (GridGstPer / 100);
+
+                TotalBasicAmount += GridAmount;
+                TotalGSTAmount += GridTaxAmt;
+            });
+
+            // 🔹 Add current row values
+            var CurrentGSTAmount = Amount * (GSTPer / 100);
+
+            TotalBasicAmount += Amount;
+            TotalGSTAmount += CurrentGSTAmount;
+
+            // 🔹 Final Net Amount
+            var TotalNetAmount = TotalBasicAmount + TotalGSTAmount;
+
+            // 🔹 Set Values (rounded properly)
+            $('#itembasicamount').val((Math.round(TotalBasicAmount * 100) / 100).toFixed(2));
+            $('#itemtaxableamount').val((Math.round(TotalGSTAmount * 100) / 100).toFixed(2));
+            $('#itemnetamount').val((Math.round(TotalNetAmount * 100) / 100).toFixed(2));
+        }
+
         $(document).ready(function () {
             const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
             // $('#Group_Code').select2();
@@ -7066,6 +7102,7 @@
             }
 
             $('#Amount').val(Amount.toFixed(6));
+            calculateitembasicnettaxable();
 
 
         }
@@ -8245,6 +8282,8 @@
                             $('#Unit').val(obj.Result[0].unit);
                             $('#AltUnit').val("");
                             $('#AltUnit').val(obj.Result[0].unit);
+                            $('#GSTPer').val("0");
+                            $('#GSTPer').val(obj.Result[0].IGST);
                             // $('#OtherRateCurr').val("");
                             // $('#OtherRateCurr').val(obj.Result[0].OtherRateCurr);
                             // $('#ItemDescription').val("");
