@@ -1712,6 +1712,18 @@
             $('#itemnetamount').val((Math.round(TotalNetAmount * 100) / 100).toFixed(2));
         }
 
+
+        function itemwisetaxcalculation() {
+            var GSTPer = parseFloat($('#GSTPer').val()) || 0;
+            var Amount = parseFloat($('#Amount').val()) || 0;
+
+            var TaxAmount = Amount * (GSTPer / 100);
+            var NetAmount = Amount + TaxAmount;
+
+            $('#taxableamt').val(TaxAmount.toFixed(2));
+            $('#netamt').val(NetAmount.toFixed(2));
+        }
+
         $(document).ready(function () {
             const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
             // $('#Group_Code').select2();
@@ -5894,8 +5906,9 @@
                         }
                         //$('#PartCode,#ItemCode').val(0).trigger("change");
 
-                        $('#Uniquebatchno,#Batchno,#Qty,#SOPendQty,#SeqNo').val(0);
+                        $('#Qty,#SOPendQty,#SeqNo,#Amount,#GSTPer,#taxableamt,#netamt').val(0);
                         $('#PartCodeText,#ItemNameText,#ItemLocation,#ItemGroupName,#VehicleNo').val("");
+                        $('#igstper').text('');
                         // $('#StoreId').val(0);
                         // $('#LotStock,#TotalStock').val("");
 
@@ -6053,6 +6066,14 @@
 
         function ClearSpecificItemTax(ItemCode) {
 
+        }
+        function Cleartext()
+        {
+            $('#Uniquebatchno,#Batchno,#Qty,#SaleSchYearCode,#SOPendQty,#Qty,#taxableamt,#netamt,#DiscountPer,#DiscountAmt').val(0);
+            $('#LotStock,#TotalStock').val("");
+            $('#BOMInd,#ProducedUnprod').val('');
+            $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Amount').val(0);
+            $('#igstper').text('');
         }
 
         function ClearGrid() {
@@ -7103,6 +7124,7 @@
 
             $('#Amount').val(Amount.toFixed(6));
             calculateitembasicnettaxable();
+            itemwisetaxcalculation();
 
 
         }
@@ -7738,6 +7760,7 @@
                             $('#AgainstProdPlanYearCode').val(obj[0].AgainstProdPlanYearCode);
                             $('#AgaisntProdPlanDate').val(obj[0].AgaisntProdPlanDate);
                             $('#GSTPer').val(obj[0].GSTPer);
+                            $('#igstper').text(obj[0].GSTPer);
                             $('#GSTType').val(obj[0].GSTType);
                             $('#PacketsDetail').val(obj[0].PacketsDetail);
                             $('#OtherDetail').val(obj[0].OtherDetail);
@@ -7751,6 +7774,7 @@
                             $('#ItemLocation').val(obj[0].ItemLocation);
                             $('#ItemGroupName').val(obj[0].ItemGroupName);
                             $('#VehicleNo').val(obj[0].VehicleNo);
+                           
                             // FillUniqueBatchNo();
                                if (obj[0].Uniquebatchno != '0' && obj[0].Uniquebatchno != null && obj[0].Uniquebatchno != 0) {
                                     $('#Uniquebatchno').append('<option value="' + obj[0].Uniquebatchno + '" selected>' + obj[0].Uniquebatchno + '</option>');
@@ -7771,6 +7795,8 @@
                                 $('.gridHiddenField').hide();
                             }
                                           $('#saleBillRow-' + SeqNo).remove();
+                            calculateitembasicnettaxable();
+                            itemwisetaxcalculation();
                             // DeleteItemRow(SeqNo);
 
                              if ($('#divSaleBillList').children().length == 0) {
@@ -7831,8 +7857,10 @@
                         $('#divSaleBillList').html(data);
 
                         BasicTotal();
+                        calculateitembasicnettaxable();
                         ClearDRCRGrid();
                         ClearAdjustmentGrid();
+
 
                         if ($('#SaleBillJobwork').val() == 'J') {
                             $('.jobWorkChalln').show();
@@ -7862,7 +7890,7 @@
                         calculatetotalqty();
 
                        
-                        GetFeatureOption();
+                       
                         $.notify('Item Added To Grid.', "success");
                     
 
@@ -7916,6 +7944,7 @@
                         $.notify(response.responseText, "error");
                     }
                 }).done(function () {
+                    GetFeatureOption();
                     GetTaxPartItem();
                     GetDbCrDetail();
                            ClearAdjustmentGrid();
@@ -8284,6 +8313,8 @@
                             $('#AltUnit').val(obj.Result[0].unit);
                             $('#GSTPer').val("0");
                             $('#GSTPer').val(obj.Result[0].IGST);
+                             // $('#igstoer').val("0");
+                            $('#igstper').text(obj.Result[0].IGST);
                             // $('#OtherRateCurr').val("");
                             // $('#OtherRateCurr').val(obj.Result[0].OtherRateCurr);
                             // $('#ItemDescription').val("");

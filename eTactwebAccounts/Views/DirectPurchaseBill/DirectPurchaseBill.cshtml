@@ -4545,6 +4545,7 @@
         var isEditAllowed = "false";
          var EditEachItem = false;
         async function EditItemRow(SeqNo) {
+            $('.btnClearTax').trigger('click');
               var RowCount = $('#divPOItemList tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
@@ -4556,6 +4557,7 @@
                 url: '@Url.Action("EditItemRow")',
                 type: "POST",
                 data: { PartCode: PartCode, SeqNo: SeqNo },
+                async:false,
                 success: await function (data, status, xhr) {
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
@@ -4841,6 +4843,7 @@
             }).done(function () {
                 GetTaxPartItem();
                 GetDbCrDetail();
+                GetFeatureOption();
             });
         }
 

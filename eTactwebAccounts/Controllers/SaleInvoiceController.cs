@@ -1669,39 +1669,39 @@ namespace eTactWeb.Controllers
         public IActionResult DeleteItemRow(int SeqNo, string Mode)
         {
             var MainModel = new SaleBillModel();
-            if (Mode == "U")
-            {
-                int Indx = Convert.ToInt32(SeqNo) - 1;
-                string modelJson = HttpContext.Session.GetString("KeySaleBillGrid");
-                List<SaleBillDetail> saleBillDetail = new List<SaleBillDetail>();
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    saleBillDetail = JsonConvert.DeserializeObject<List<SaleBillDetail>>(modelJson);
-                }
-                int seq = Convert.ToInt32(SeqNo);
-                if (saleBillDetail != null && saleBillDetail.Count > 0)
-                {
-                    saleBillDetail.RemoveAt(Convert.ToInt32(Indx));
+            //if (Mode == "U")
+            //{
+            //    int Indx = Convert.ToInt32(SeqNo) - 1;
+            //    string modelJson = HttpContext.Session.GetString("KeySaleBillGrid");
+            //    List<SaleBillDetail> saleBillDetail = new List<SaleBillDetail>();
+            //    if (!string.IsNullOrEmpty(modelJson))
+            //    {
+            //        saleBillDetail = JsonConvert.DeserializeObject<List<SaleBillDetail>>(modelJson);
+            //    }
+            //    int seq = Convert.ToInt32(SeqNo);
+            //    if (saleBillDetail != null && saleBillDetail.Count > 0)
+            //    {
+            //        saleBillDetail.RemoveAt(Convert.ToInt32(Indx));
 
-                    //Indx = 0;
+            //        //Indx = 0;
 
-                    //foreach (var item in saleBillDetail)
-                    //{
-                    //    Indx++;
-                    //    item.SeqNo = Indx;
-                    //}
-                    var removeItem = saleBillDetail.FirstOrDefault(x => x.SeqNo == seq);
-                    if (removeItem != null)
-                    {
-                        saleBillDetail.Remove(removeItem);
-                    }
-                    MainModel.saleBillDetails = saleBillDetail;
+            //        //foreach (var item in saleBillDetail)
+            //        //{
+            //        //    Indx++;
+            //        //    item.SeqNo = Indx;
+            //        //}
+            //        var removeItem = saleBillDetail.FirstOrDefault(x => x.SeqNo == seq);
+            //        if (removeItem != null)
+            //        {
+            //            saleBillDetail.Remove(removeItem);
+            //        }
+            //        MainModel.saleBillDetails = saleBillDetail;
 
-                    HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(MainModel.saleBillDetails));
-                }
-            }
-            else
-            {
+            //        HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(MainModel.saleBillDetails));
+            //    }
+            //}
+            //else
+            //{
                 string modelJson = HttpContext.Session.GetString("KeySaleBillGrid");
                 List<SaleBillDetail> saleBillGrid = new List<SaleBillDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
@@ -1731,7 +1731,7 @@ namespace eTactWeb.Controllers
 
                     HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(MainModel.saleBillDetails));
                 }
-            }
+            //}
 
             return PartialView("_SaleBillGrid", MainModel);
         }

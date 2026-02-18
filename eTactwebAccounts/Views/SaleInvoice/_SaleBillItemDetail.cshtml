@@ -236,32 +236,29 @@
         </div>
         <label class="form-label">Show/Hide Fields</label>
     </div>
-    <div class="col-sm-auto py-2 text-center">
-        <button type="button" class="btn btn-sm btn-outline-danger btnClearTax" style="margin-top:10px;" onclick="ClearGrid();">
-            <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>
-            Clear Grid
-        </button>
-    </div>
     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12 text-center mt-4">
         <button type="button" class="ItemBtn btn btn-sm btn-outline-danger">
             <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
         </button>
     </div>
-
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-        <label  class="form-label" style="color: red;">Basic Amount*</label>
-        <input id="itembasicamount"  class="form-control" readonly style="background-color:#FFFACD" />
-    </div>
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-        <label class="form-label" style="color: red;">GST Amount*</label>
-        <input id="itemtaxableamount" class="form-control" readonly style="background-color:#FFFACD" />
+    <div class="col-sm-auto py-2 text-center">
+        <button type="button" class="btn btn-sm btn-outline-danger " style="margin-top:10px;" onclick="Cleartext();">
+            <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>
+            Clear 
+        </button>
     </div>
 
+
+   
     <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-        <label class="form-label" style="color: red;">Net Amount*</label>
-        <input id="itemnetamount" class="form-control" readonly style="background-color:#FFFACD" />
+        <label class="form-label" >GST <i id="igstper"></i>%*</label>
+        <input id="taxableamt" class="form-control" readonly style="background-color:#FFFACD" />
     </div>
 
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label class="form-label" >Net Amount</label>
+        <input id="netamt" class="form-control" readonly style="background-color:#FFFACD" />
+    </div>
 
 
 
