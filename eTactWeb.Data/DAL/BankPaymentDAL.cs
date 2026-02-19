@@ -350,6 +350,7 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@ActualEntryDate", actualEntryDate));
                 sqlParams.Add(new SqlParameter("@InstrumentNo", model.InsNo));
                 sqlParams.Add(new SqlParameter("@intrument", model.Intrument));
+                sqlParams.Add(new SqlParameter("@VchNarration", model.Naration));
                 sqlParams.Add(new SqlParameter("@intrumentdate", InsDate));
                 sqlParams.Add(new SqlParameter("@UID", model.UID));
                 sqlParams.Add(new SqlParameter("@IpAddress", model.IPAddress));
@@ -722,6 +723,7 @@ namespace eTactWeb.Data.DAL
                 model.ActualEntryDate = actualEntryDate.ToString("dd/MM/yyyy");
             model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
             model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
+            model.Naration = DS.Tables[0].Rows[0]["VoucherRemark"].ToString();
             model.DrAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["DrAmt"].ToString());
             model.CrAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["CrAmt"].ToString());
             model.BankRECO = DS.Tables[0].Rows[0]["chequeClearDate"].ToString().Split(" ")[0];
@@ -778,7 +780,7 @@ namespace eTactWeb.Data.DAL
                         SOYear = Convert.ToInt32(row["SOYear"].ToString()),
                         CustOrderNo = row["CustOrderNo"].ToString(),
                         NameOnCheque = row["NameOnCheque"].ToString(),
-                        AccountNarration = row["AccountNarration"].ToString(),
+                        PartyWiseNaration = row["AccountNarration"].ToString(),
                         Description = row["Description"].ToString(),
                         VoucherRemark = row["VoucherRemark"].ToString(),
                         ActualEntryby = Convert.ToInt32(row["ActualEntryBy"].ToString()),

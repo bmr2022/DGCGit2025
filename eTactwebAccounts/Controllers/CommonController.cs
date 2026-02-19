@@ -1386,11 +1386,12 @@ namespace eTactWeb.Controllers
             return Json(new List<AdjustmentModel>());
         }
         #endregion
-        public async Task<JsonResult> FillReportTypes(string TableName)
+        public async Task<JsonResult> FillReportTypes(string TableName, string MainReportType)
         {
-            var JSON = await _ICommon.FillReportTypes(TableName);
+            var JSON = await _ICommon.FillReportTypes(TableName, MainReportType);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
     }
 }

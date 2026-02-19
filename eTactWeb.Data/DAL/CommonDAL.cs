@@ -48,13 +48,16 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> FillReportTypes(string TableName)
+        public async Task<ResponseResult> FillReportTypes(string TableName, string MainReportType)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@RelatedTable", TableName));
+                SqlParams.Add(new SqlParameter("@MainReportType", string.IsNullOrEmpty(MainReportType)
+            ? (object)DBNull.Value
+            : MainReportType));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GetReportTypes", SqlParams);
             }
             catch (Exception ex)
@@ -66,6 +69,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
 
         public async Task<ResponseResult> GetDashboardData(
            string spName,

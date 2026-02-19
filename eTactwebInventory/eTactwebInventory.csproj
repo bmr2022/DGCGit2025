@@ -22,6 +22,7 @@
     <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
     <PackageReference Include="MimeKit" Version="4.12.0" />
     <PackageReference Include="PDFsharp" Version="6.2.1" />
+    <PackageReference Include="QuestPDF" Version="2026.2.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -29,6 +29,8 @@
 </style>
 <head>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 </head>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
@@ -54,6 +56,9 @@
                                         <div class="col">
                                             <label class="form-label">From Date</label>
                                             <input asp-for="FromDate" class="form-control" />
+                                            <input id="FinFromDate" value="@Model.FromDate" type="hidden" class="form-control" />
+                                            <input id="FinToDate" value="@Model.ToDate" type="hidden" class="form-control" />
+                                            <input id="YearCodeHidden" value="@Model.YearCode" type="hidden" class="form-control" />
                                         </div>
                                         <div class="col">
                                             <label class="form-label">To Date</label>
@@ -61,16 +66,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:250px;">
-                                    <label asp-for="ReportType" class="form-label" style="font-weight:bold">Report Type</label>
-                                    <select class="form-control custom-select2" asp-for="ReportType">
-                                        <option value="">-Select-</option>
-                                        <option value="TransactionLedgerSummary">Transaction Ledger Summary</option>
-                                        <option value="MonthlySummary" selected>Monthly Summary</option>
-                                        <option value="TransactionLedgerDetail">Transaction Ledger Detail</option>
-                                        <option value="GROUPSUMMARY">Group Transaction Summary</option>
-                                        <option value="GROUPDETAIL">Group Transaction Detail</option>
-                                        <option value="BalanceConfirmation">Balance Confirmation</option>
+
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ReportType" class="form-label">Report Type</label>
+                                    <select asp-for="ReportType" id="ReportType" class="form-select">
+                                        <option disabled value="">-Select-</option>
                                     </select>
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:100px;">
@@ -141,7 +142,7 @@
 
                                 <div class=" d-flex justify-content-center   mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
 
-                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetValidateData();">
+                                    <button class="btn btn-sm btn-outline-info" type="button" id="btnSearch" style="padding:0px;height:30px;width:120px;" onclick="GetValidateData();">
                                         <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
                                     </button>
                                     <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
@@ -150,7 +151,11 @@
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="TransactionLedger" asp-action="TransactionLedger">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
-                                    <a href="#" class="btn btn-primary btn-sm ms-3" onclick="ddBack()" id="BackButton">
+                                    <a class="btn btn-sm btn-outline-danger" onclick="downloadLedger()" id="LedgerPDF" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                        <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i>
+                                        PDF
+                                    </a>
+                                    <a href="#" class="btn btn-primary btn-sm ms-3" style="padding:3px;height:30px;width:100px;margin-left:20px;" onclick="ddBack()" id="BackButton">
                                         <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                         BACK
                                     </a>
@@ -222,11 +227,9 @@
     <script>
 
         $(document).ready(function () {
-            debugger;
+            var FromDate = new Date($("#FromDate").val());
+            var ToDate = new Date($("#ToDate").val());
 
-            /* ------------------------------------------
-               1) INIT DATEPICKER + SELECT2
-            ------------------------------------------- */
             $("#FromDate").datepicker({ dateFormat: "dd/mm/yy" });
             $("#ToDate").datepicker({ dateFormat: "dd/mm/yy" });
 
@@ -253,15 +256,19 @@
                     return '';
                 }
             }
-
             const currentDate = new Date();
             let fromDate = convertToDDMMYYYY('@Model.FromDate');
             $("#FromDate").datepicker("setDate", fromDate || currentDate);
             $("#ToDate").datepicker("setDate", currentDate);
+            $('#FromDate').datepicker("option", "minDate", new Date($("#FinFromDate").val()));
+            $('#FromDate').datepicker("option", "maxDate", new Date($("#FinToDate").val()));
+            $('#ToDate').datepicker("option", "minDate", new Date($("#FinFromDate").val()));
+            $('#ToDate').datepicker("option", "maxDate", new Date($("#FinToDate").val()));
 
-            /* ------------------------------------------
-               2) LOAD DROPDOWNS → THEN RESTORE FILTERS
-            ------------------------------------------- */
+            $('#ReportType').empty();
+            var ReqType = $('#ReqType').val();
+            FillReportType("TransactionLedgerReport", "");
+
             $.when(
                 FillParentLedgerName(),
                 FillVoucherName(),
@@ -276,16 +283,14 @@
 
                         let last = stack[stack.length - 1];
 
-                        /* ============================================================
-                           CASE 1 : Coming from MONTHLY → Transaction Ledger Summary
-                           (We receive data-month + YearCodeHidden)
-                        ============================================================ */
                         if (last.drillData && last.drillData.month) {
 
                             let monthno = parseInt(last.drillData.month);
-                            let yearcode = parseInt($("#YearCodeHidden").val() || new Date().getFullYear());
+                            /*     let yearcode = parseInt($("#YearCodeHidden").val() || new Date().getFullYear());
+                              */
+                            let finStartYear = parseInt($("#YearCodeHidden").val());
+                            let yearcode = (monthno <= 3) ? finStartYear + 1 : finStartYear;
 
-                            // First & last day of month
                             let firstDay = new Date(yearcode, monthno - 1, 1);
                             let lastDay = new Date(yearcode, monthno, 0);
 
@@ -297,24 +302,22 @@
 
                             $("#FromDate").val(fd);
                             $("#ToDate").val(td);
-
-                            // AccountCode if passed
+                            $('#FromDate').datepicker("option", "minDate", new Date($("#FinFromDate").val()));
+                            $('#FromDate').datepicker("option", "maxDate", new Date($("#FinToDate").val()));
+                            $('#ToDate').datepicker("option", "minDate", new Date($("#FinFromDate").val()));
+                            $('#ToDate').datepicker("option", "maxDate", new Date($("#FinToDate").val()));
                             if (last.drillData.accountcode) {
                                 $("#LedgerName").val(last.drillData.accountcode).trigger("change");
                             }
 
-                            // Set report type
+                            if (last.drillData.groupname) {
+                                $("#ParentLedgerName").val(last.drillData.groupname).trigger("change");
+                            }
                             $("#ReportType").val(last.forceReportType).trigger("change");
                             ddInitPage("TransactionLedgerVoucher", "BackButton", "ReportType");
-                            // Auto load summary
                             $("#btnSearch").click();
                         }
 
-
-                        /* ============================================================
-                           CASE 2 : Coming from TRAIL BALANCE
-                           (restore saved filters)
-                        ============================================================ */
                         else if (last.returnPageName === "TrailBalance") {
 
                             let f = ddLoadFilters("TrailBalance");
@@ -322,11 +325,18 @@
                             if (f) {
                                 $("#FromDate").val(f.FromDate);
                                 $("#ToDate").val(f.ToDate);
-
+                                $('#FromDate').datepicker("option", "minDate", new Date($("#FinFromDate").val()));
+                                $('#FromDate').datepicker("option", "maxDate", new Date($("#FinToDate").val()));
+                                $('#ToDate').datepicker("option", "minDate", new Date($("#FinFromDate").val()));
+                                $('#ToDate').datepicker("option", "maxDate", new Date($("#FinToDate").val()));
                                 $("#ParentLedgerName").val(f.ParentGroupList).trigger("change");
 
                                 if (last.drillData.accountcode) {
                                     $("#LedgerName").val(last.drillData.accountcode).trigger("change");
+                                }
+
+                                if (last.drillData.groupname) {
+                                    $("#ParentLedgerName").val(last.drillData.groupname).trigger("change");
                                 }
 
                                 $("#ReportType").val(last.forceReportType).trigger("change");
@@ -334,10 +344,6 @@
                             }
                         }
 
-
-                        /* ============================================================
-                           CASE 3 : Nested TRANSACTION LEDGER → TRANSACTION LEDGER
-                        ============================================================ */
                         else if (last.returnPageName === "TransactionLedger") {
 
                             let f = ddLoadFilters("TransactionLedger");
@@ -345,6 +351,10 @@
                             if (f) {
                                 $("#FromDate").val(f.FromDate);
                                 $("#ToDate").val(f.ToDate);
+                                $('#FromDate').datepicker("option", "minDate", new Date($("#FinFromDate").val()));
+                                $('#FromDate').datepicker("option", "maxDate", new Date($("#FinToDate").val()));
+                                $('#ToDate').datepicker("option", "minDate", new Date($("#FinFromDate").val()));
+                                $('#ToDate').datepicker("option", "maxDate", new Date($("#FinToDate").val()));
                             }
 
                             if (last.drillData.groupledger) {
@@ -365,6 +375,10 @@
                             if (f) {
                                 $("#FromDate").val(f.FromDate);
                                 $("#ToDate").val(f.ToDate);
+                                $('#FromDate').datepicker("option", "minDate", new Date($("#FinFromDate").val()));
+                                $('#FromDate').datepicker("option", "maxDate", new Date($("#FinToDate").val()));
+                                $('#ToDate').datepicker("option", "minDate", new Date($("#FinFromDate").val()));
+                                $('#ToDate').datepicker("option", "maxDate", new Date($("#FinToDate").val()));
                             }
 
                             if (last.drillData.groupledger) {
@@ -380,25 +394,78 @@
                         }
                     }
                     else {
-                        $('#BackButton').hide();
+                        //$('#BackButton').hide();
                     }
                 }, 20);
             });
 
+            if (@Model.AccountCode > 0 && '@Model.ReportType' == 'TransactionLedgerSummary') {
+                var accountCode = '@(Model?.AccountCode ?? 0)';
+                var reportType = '@(Model?.ReportType ?? "")';
+
+                if (parseInt(accountCode) > 0 && reportType === "TransactionLedgerSummary") {
+
+                    $("#ReportType").val(reportType).trigger("change");
+                    $("#LedgerName").val(accountCode).trigger("change");
+
+                    GetDetailsData();
+                }
+
+            }
+
         });
+
+        function downloadLedger() {
+
+
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var ReportType = $('#ReportType').val();
+            var GroupOrLedger = $('#Group_Ledger').val();
+            var ParentAccountCode = $('#ParentLedgerName').val();
+            var AccountCode = $('#LedgerName').val();
+            var AccountName = $('#LedgerName option:selected').text();
+            var VoucherType = $('#VoucherType').val();
+
+
+            var url = '/TransactionLedger/DownloadLedgerPdf?' +
+                'FromDate=' + encodeURIComponent(FromDate) +
+                '&ToDate=' + encodeURIComponent(ToDate) +
+                '&ReportType=' + encodeURIComponent(ReportType) +
+                '&GroupOrLedger=' + encodeURIComponent(GroupOrLedger) +
+                '&ParentAccountCode=' + encodeURIComponent(ParentAccountCode) +
+                '&VoucherType=' + encodeURIComponent(VoucherType) +
+                '&AccountName=' + encodeURIComponent(AccountName) +
+                '&AccountCode=' + encodeURIComponent(AccountCode);
+
+            window.location.href = url;  // This triggers download
+        }
+
 
         function GetValidateData() {
 
+            /* if ($(this).val() == 'TransactionLedgerSummary' || $(this).val() == 'TransactionLedgerDetail') {
+
+            }
+            else if ($(this).val() == 'GROUPSUMMARY' || $(this).val() == 'GROUPDETAIL') {
+
+            }
+            else {
+
+            } */
+
             if ($('#ReportType').val() == "TransactionLedgerSummary" || $('#ReportType').val() == "TransactionLedgerDetail") {
-                if ($('#LedgerName').val() == 0 || $('#LedgerName').prop('selectedIndex') == 0) {
+                /* if ($('#LedgerName').val() == 0 || $('#LedgerName').prop('selectedIndex') == 0) {
                     $.notify('Account Code is mandatory to display details data', "error");
                     $('#BackButton').hide();
                 }
-                else {
-                    GetDetailsData();
-                }
+                else { */
+                $('#Group_Ledger').val('Ledger').trigger('change');
+                GetDetailsData();
+                /* } */
             }
             else if ($('#ReportType').val() == "GROUPSUMMARY" || $('#ReportType').val() == "GROUPDETAIL") {
+                $('#Group_Ledger').val('Group').trigger('change');
                 GetTransactionLedgerGroupSummaryDetailsData();
             }
             else {
@@ -414,29 +481,30 @@
 
         $('#ReportType').on('change', function () {
 
-            // Skip manual logic if auto-filled by DrillDown
             if (window.isAutoChangingReportType) {
                 console.log("⏭ Auto ReportType change (drilldown) — skipping manual logic");
+
                 return;
             }
+
+
+
+
+
+
 
             var selectedText = $(this).find("option:selected").text();
             $('#reportTitle').text(selectedText === "-Select-" ? "Report" : selectedText);
 
             var selectedType = $(this).val();
 
-            // Manual-change logic (only when user changes)
             console.log("🔹 Manual ReportType change → running validation");
 
             if (selectedType === "MonthlySummary") {
-                // If you had logic to clear/check stack previously, remove or adapt it
-                // Example: do any UI reset you want for MonthlySummary
             } else if (selectedType === "GROUPSUMMARY") {
-                // If you want LedgerName reset on user selection:
                 $('#LedgerName').prop('selectedIndex', 0).trigger('change');
             }
 
-            // Run your validation or data fetch
             if (typeof GetValidateData === "function") {
                 GetValidateData();
             }
@@ -481,11 +549,7 @@
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
             $.ajax({
-                url: '@Url.Action("FillVoucherName", "TransactionLedger")', // Action that returns FillGroup data
-                /* data: {
-                    FromDate: FromDate,
-                    ToDate: ToDate
-                }, */
+                url: '@Url.Action("FillVoucherName", "TransactionLedger")',
                 type: 'GET',
                 async: false,
                 success: function (response, status, error) {
@@ -509,7 +573,7 @@
 
         $('#LedgerName').change(function () {
             $('#AccountCode').val($('#LedgerName').val());
-            GetValidateData();
+            /* GetValidateData(); */
         });
 
         function selection(CurrentRow) {
@@ -535,7 +599,6 @@
                         ledgerNameDropdown.append('<option value="' + ledger.Account_Code + '">' + ledger.LedgerName + '</option>');
                     });
 
-                    // ✅ After options are loaded, set selected value from model
                     var savedLedger = '@Model.AccountCode';
                     if (savedLedger && savedLedger !== "0") {
                         ledgerNameDropdown.val(savedLedger).trigger('change');
@@ -549,8 +612,6 @@
 
         function FillParentLedgerName() {
 
-            //var FromDate = $('#FromDate').val();
-            //var ToDate = $('#ToDate').val();
             $.ajax({
                 url: '@Url.Action("FillLedgerName", "TransactionLedger")',
                 type: 'GET',
@@ -587,11 +648,9 @@
                     ParentAccountCode: $('#ParentLedgerName').val(),
                     AccountCode: $('#LedgerName').val(),
                     VoucherType: $('#VoucherType').val()
-                    // add other filter fields as required
                 },
                 success: function (partialHtml) {
 
-                    // 1) Inject partial HTML
                     $('#divStockMainRegister').html(partialHtml);
                     $('#opnDRDiv').show();
                     $('#opnCRDiv').show();
@@ -602,7 +661,7 @@
                     var totalRows = $('#divStockMainRegister tr').length;
                     $('#totalRows').text(totalRows);
                     countAllTotal();
-                    $('#BackButton').hide();
+                    /* $('#BackButton').hide(); */
                 },
                 error: function (xhr, status, err) {
                     console.error('GetDetailsData failed:', err);
@@ -615,9 +674,6 @@
             var FromentryDate = $('#FromDate').val();
             var ToEntryDate = $('#ToDate').val();
             var AccountCode = $('#AccountCode').val();
-            //var VoucherType = $('#VoucherType').val();
-            //var CrAmt = $('#CrAmt').val();
-            //var DrAmt = $('#DrAmt').val();
 
             $.ajax({
                 type: 'POST',
@@ -627,8 +683,6 @@
                     FromentryDate: FromentryDate,
                     ToEntryDate: ToEntryDate,
                     AccountCode: AccountCode,
-                    //CrAmt: CrAmt,
-                    //DrAmt: DrAmt
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
@@ -708,19 +762,18 @@
         function GetServerDate() {
             $.ajax({
                 type: "GET",
-                url: "@Url.Action("GetServerDate")",
+                url: "@Url.Action("GetServerDate", "ProductionEntry")",
                 async: false,
                 success: function (result, status, error) {
                     console.log(result);
                     if (result != null) {
-                        // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                        //$('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 
                         var firstDayOfMonth = getFirstDayOfMonth(result);
                         $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
 
                         $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-
+                        $('#FromDate').datepicker("option", "minDate", new Date($("#FinFromDate").val()));
+                        $('#ToDate').datepicker("option", "maxDate", new Date($("#FinToDate").val()));
                     }
                 }
             });
@@ -747,12 +800,9 @@
                     responseType: 'blob' // important for file download
                 },
                 success: function (data, status, xhr) {
-                    // Create a Blob and download
                     const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
                     const link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
-
-                    // Optional: get filename from response header
                     var filename = `TransactionLedger_${ReportType}.xlsx`;
                     var disposition = xhr.getResponseHeader('Content-Disposition');
                     if (disposition && disposition.indexOf('filename=') !== -1) {
@@ -769,11 +819,9 @@
         });
 
         function convertToDDMMYYYY(dateStr) {
-            // Example input: "01/Apr/2025 00:00:00"
             let parts = dateStr.split(" ");
             let [day, mon, year] = datePart.split("/");
 
-            // Month short names to number
             const months = {
                 Jan: "01", Feb: "02", Mar: "03", Apr: "04",
                 May: "05", Jun: "06", Jul: "07", Aug: "08",
@@ -794,14 +842,12 @@
                 sortTable(colno, false);
                 $(this).data('sortorder', 'desc');
                 $(this).css('color', 'yellow'); // Visual indication of descending order
-                //$(this).css('font-size', 'larger'); // Visual indication of descending order
                 $(this).find('i:first').removeClass('fa-arrow-up');
                 $(this).find('i:first').addClass('fa-arrow-down');
             } else {
                 sortTable(colno, true);
                 $(this).data('sortorder', 'asc');
                 $(this).css('color', 'yellow');
-                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
                 $(this).find('i:first').removeClass('fa-arrow-down');
                 $(this).find('i:first').addClass('fa-arrow-up');
             }
@@ -918,7 +964,6 @@
                 });
 
             });
-            //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
             countAllTotal();
             $('#totalRows').text($('#divStockMainRegister tr').length - 1);
         }
@@ -946,6 +991,7 @@
 
 }
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <style>
 
     .sort-icon {

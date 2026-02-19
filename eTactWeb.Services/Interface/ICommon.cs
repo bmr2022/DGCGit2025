@@ -10,7 +10,7 @@ namespace eTactWeb.Services.Interface
     public interface ICommon
     {
         Task<ResponseResult> CheckFinYearBeforeSave(int YearCode, string Date, string DateName);
-        Task<ResponseResult> FillReportTypes(string TableName);
+        Task<ResponseResult> FillReportTypes(string TableName, string MainReportType);
         Task<ResponseResult> GetDashboardData(string spName, string flag, Dictionary<string, object> parameters);
 
     }

@@ -365,7 +365,7 @@ namespace eTactwebAccounts.Controllers
                 Item.ApprovedBy,
                 Item.ApprovedDate = DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.Approved ,
-                Item.AccountNarration ?? string.Empty,
+                Item.PartyWiseNaration ?? string.Empty,
                 Item.CurrencyId ,
                 Item.CurrentValue ,
                 Item.AdjustmentAmtOthCur ,

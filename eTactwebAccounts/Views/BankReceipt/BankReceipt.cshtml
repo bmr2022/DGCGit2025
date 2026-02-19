@@ -195,7 +195,7 @@
                                                             <!-- Report Button 2 -->
                                                             <button type="button"
                                                                     onclick="openOuteStandingReport()"
-                                                                    title="Open Summary Report"
+                                                                    title="Open OutStanding Report"
                                                                     style="background: transparent; border: none; padding: 2px;">
                                                                 <i class="fa fa-external-link" style="color: #ffcc00; font-size: 14px;"></i>
                                                             </button>
@@ -272,7 +272,7 @@
                                     </div>
                                     <div style="width:170px;">
                                         <label asp-for="Naration" class="form-label">Naration</label>
-                                        <input asp-for="Naration" class="form-control" data-val="false" readonly />
+                                        <input asp-for="Naration" class="form-control" data-val="false" />
                                     </div>
                                     <div style="width:170px;">
                                         <label asp-for="DrAmt" class="form-label">Dr Amt</label>
@@ -2049,6 +2049,7 @@
                 "AgainstVoucherEntryId": $('#AgainstVoucherEntryId').val(),
                 "VoucherBillAmt": roundVal($('#VoucherBillAmt').val()),
                 "PendBillAmt": roundVal($('#PendBillAmt').val()),
+                "SeqNo": $('#SeqNo').val(),
                 "SeqNo": $('#SeqNo').val(),
                 "CustOrderNo": $('#CustOrderNo').val(),
                 "SoDate": $('#SoDate').val(),

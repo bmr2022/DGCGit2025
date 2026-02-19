@@ -21,6 +21,7 @@
     <PackageReference Include="FastReport.OpenSource.Web" Version="2023.2.25" />
     <PackageReference Include="Grpc.Core" Version="2.46.6" />
     <PackageReference Include="PDFsharp" Version="6.2.1" />
+    <PackageReference Include="QuestPDF" Version="2026.2.1" />
     <PackageReference Include="System.Composition.AttributedModel" Version="9.0.2" />
   </ItemGroup>
 

@@ -25,9 +25,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _CommonDAL.CheckFinYearBeforeSave(YearCode, Date, DateName);
         }
-        public async Task<ResponseResult> FillReportTypes(string TableName)
+        public async Task<ResponseResult> FillReportTypes(string TableName, string MainReportType)
         {
-            return await _CommonDAL.FillReportTypes(TableName);
+            return await _CommonDAL.FillReportTypes(TableName, MainReportType);
         }
         public async Task<ResponseResult> GetDashboardData(string spName, string flag, Dictionary<string, object> parameters)
         {
