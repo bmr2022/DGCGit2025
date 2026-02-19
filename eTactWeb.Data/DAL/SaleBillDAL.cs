@@ -1770,7 +1770,7 @@ namespace eTactWeb.Data.DAL
                             AgainstProdPlanNo = row["AgainstProdPlanNo"]?.ToString(),
                             AgainstProdPlanYearCode = row["AgainstProdPlanYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstProdPlanYearCode"]) : 0,
                             AgaisntProdPlanDate = row["AgaisntProdPlanDate"]?.ToString(),
-                            GSTPer = row["GSTPer"] != DBNull.Value ? Convert.ToInt32(row["GSTPer"]) : 0,
+                            GSTPer = row["GSTPer"] != DBNull.Value ? Convert.ToSingle(row["GSTPer"]) : 0,
                             GSTType = row["GSTType"]?.ToString(),
                             PacketsDetail = row["PacketsDetail"]?.ToString(),
                             OtherDetail = row["OtherDetail"]?.ToString(),
