@@ -346,12 +346,24 @@
             if (deleteMessage) {
                 $.notify(deleteMessage, "error");
             }
-            GetServerDate();
+            // GetServerDate();
             YearEditDeleteRight();
+            var currentDate = new Date();
+
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            function formatDate(date) {
+                var day = ("0" + date.getDate()).slice(-2);
+                var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                var year = date.getFullYear();
+                var dateString = day + "/" + month + "/" + year;
+                return dateString;
+            }
+
+            $('#FinFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
             // var FromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
             var ToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
             // $("#FinFromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
-            $('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDate);
+            $('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", "now");
 
             ///   $('#FinFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#FinFromDate').val()));
 

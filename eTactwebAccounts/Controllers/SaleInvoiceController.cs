@@ -1939,10 +1939,10 @@ namespace eTactWeb.Controllers
                     }
                     else
                     {
-                        if (SaleBillDetail.Any(x => x.ItemCode == model.ItemCode ))
-                        {
-                            return StatusCode(207, "Duplicate");
-                        }
+                        //if (SaleBillDetail.Any(x => x.ItemCode == model.ItemCode ))
+                        //{
+                        //    return StatusCode(207, "Duplicate");
+                        //}
 
                         
                             model.SeqNo = newSeqNo;

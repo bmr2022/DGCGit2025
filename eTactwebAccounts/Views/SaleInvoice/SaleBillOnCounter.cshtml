@@ -1532,15 +1532,21 @@
                 data: { "AccountCode": AccountCode, "itemcode": itemcode },
                 url: "@Url.Action("GetDiscAccountGroupWise","SaleOrder")",
                 dataType: "json",
+                async: false,
                 success: function (result, status, error) {
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
 
                         $('#DiscountPer').val(0);
-                         if (result && result.Result && result.Result.length > 0) {
-                        $('#DiscountPer').val(obj.Result[0].SaleDiscount);
-                         }
+                       
+
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            $('#DiscountPer').val(0);
+                            $('#DiscountPer').val(obj.Result[0].SaleDiscount);
+
+                        }
 
                     }
                 }
@@ -5074,20 +5080,21 @@
                 }
 
 
-                if ($('#Qty').val() == 0) {
-                    $.notify('BillQty can not be less then 0...!', "error");
-                    AddErrorCls('Qty');
-                    Err = 1;
-                }
-                else {
-                    RemoveErrorCls('Qty');
-                }
+                
             } else {
                 RemoveErrorCls('Batchno');
                 RemoveErrorCls('Uniquebatchno');
                 RemoveErrorCls('Qty');
             }
 
+            if ($('#Qty').val() == 0 || $('#Qty').val() == '0' || $('#Qty').val() == '' || $('#Qty').val() == null) {
+                $.notify('BillQty can not be less then 0...!', "error");
+                AddErrorCls('Qty');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Qty');
+            }
 
             if ($('#AllowToAddNegativeStockInStore').val() == 'N') {
 
@@ -5115,11 +5122,11 @@
             var rowCount = $('#divSaleBillList tr').length;
             for (var i = 0; i <= rowCount; i++) {
                 if ($('#GridIC-' + i).val() == $('#ItemCode').val()) {
-                    if (parseFloat($('#saleBillRow-' + i).find('td.DiscPer').text()) != parseFloat($('#DiscountPer').val())) {
-                        $.notify('Disc Per should same with Grid Disc Per...!', "error");
-                        AddErrorCls('DiscountPer');
-                        Err = 1;
-                    }
+                    // if (parseFloat($('#saleBillRow-' + i).find('td.DiscPer').text()) != parseFloat($('#DiscountPer').val())) {
+                    //     $.notify('Disc Per should same with Grid Disc Per...!', "error");
+                    //     AddErrorCls('DiscountPer');
+                    //     Err = 1;
+                    // }
 
                     if (parseFloat($('#saleBillRow-' + i).find('td.rate').text()) != parseFloat($('#Rate').val())) {
                         $.notify('Rate should same with Grid Rate...!', "error");
@@ -5128,6 +5135,69 @@
                     }
                 }
             }
+
+            var itemCode = $('#ItemCode').val();
+            var currentDisc = parseFloat($('#DiscountPer').val()) || 0;
+
+            var sameItemCount = 0;
+            var hundredDiscountCount = 0;
+
+            // 🔥 If editing, store editing row id or index
+            var editRowId = $('#EditRowId').val(); // store this while editing (optional)
+
+            $('#divSaleBillList tr').each(function () {
+
+                // 🔥 Skip empty rows
+                if ($(this).find('.GridIC').length == 0)
+                    return;
+
+                // // 🔥 Skip currently editing row (VERY IMPORTANT)
+                // if (editRowId != "" && $(this).attr('id') == editRowId)
+                //     return;
+
+                var gridItemCode = $(this).find('.GridIC').val();
+                var gridDisc = parseFloat($(this).find('.DiscPer').text()) || 0;
+
+                if (gridItemCode == itemCode) {
+
+                    sameItemCount++;
+
+                    if (gridDisc == 100) {
+                        hundredDiscountCount++;
+                    }
+                }
+
+            });
+
+            /* -------------------------------
+               ❌ Rule 1 → Max 2 times allowed
+            ---------------------------------*/
+            if (sameItemCount >= 2) {
+                $.notify('Same item cannot be added more than 2 times...!', "error");
+                Err = 1;
+            }
+
+            /* ------------------------------------------
+               ❌ Rule 2 → Both entries cannot be 100%
+            --------------------------------------------*/
+            if (sameItemCount == 1 && currentDisc == 100 && hundredDiscountCount == 1) {
+                $.notify('Same item with 100% discount already exists...!', "error");
+                AddErrorCls('DiscountPer');
+                Err = 1;
+            }
+
+            /* -------------------------------------------------
+               ❌ Rule 3 → If adding second time, one must be 100%
+            ---------------------------------------------------*/
+            if (sameItemCount == 1) {
+
+                if (currentDisc != 100 && hundredDiscountCount == 0) {
+                    $.notify('If item added twice, one entry must have 100% discount...!', "error");
+                    AddErrorCls('DiscountPer');
+                    Err = 1;
+                }
+            }
+
 
             Err == 1 ? ShowErrorFld('H_Panel2') : HideErrorFld('H_Panel2');
             if (Err == 1) return false;
@@ -6419,9 +6489,10 @@
                     $("#ItemNameText").val(ui.item.onlyItemName);
                     $('#ItemCode').val(ui.item.itemCode);
                     $('#PartCode').val(ui.item.itemCode);
+                    GetDiscAccountGroupWise();
                     onItemSelected("ItemCode");
                     FillSOItemRate();
-                    GetDiscAccountGroupWise();
+                    
                     return false;
                 },
                 focus: function (event, ui) {
@@ -6532,10 +6603,10 @@
                                 $("#ItemNameText").val(match.OnlyItemName);
                                 $("#ItemCode").val(match.Item_Code);
                                 $("#PartCode").val(match.Item_Code);
-
+                                GetDiscAccountGroupWise();
                                 onItemSelected("ItemCode");
                                  FillSOItemRate();
-                              GetDiscAccountGroupWise();
+                            
 
                             }
                         }
@@ -6557,8 +6628,9 @@
                     $("#PartCodeText").val(ui.item.onlyPartCode);
                     $('#ItemCode').val(ui.item.itemCode);
                     $('#PartCode').val(ui.item.itemCode);
-                    onItemSelected("ItemCode");
                     GetDiscAccountGroupWise();
+                    onItemSelected("ItemCode");
+                    
                     return false;
 
                 },
@@ -8303,10 +8375,10 @@
                             var rate = obj.Result[0].Rate == '' ? 0 : parseFloat(obj.Result[0].Rate);
                             $('#Rate').val("");
                             $('#Rate').val((rate).toFixed(2));
-                            $('#DiscountPer').val(0);
-                            $('#DiscountPer').val(obj.Result[0].DiscPer);
-                            $('#DiscountAmt').val(0);
-                            $('#DiscountAmt').val(obj.Result[0].DiscRs);
+                            // $('#DiscountPer').val(0);
+                            // $('#DiscountPer').val(obj.Result[0].DiscPer);
+                            // $('#DiscountAmt').val(0);
+                            // $('#DiscountAmt').val(obj.Result[0].DiscRs);
                             $('#Unit').val("");
                             $('#Unit').val(obj.Result[0].unit);
                             $('#AltUnit').val("");
@@ -8328,10 +8400,10 @@
                             $('#VehicleNo').val("");
                             $('#VehicleNo').val(obj.Result[0].Vehicle);
 
-                            if ($('#DiscountPer').val() != 0 || $('#DiscountAmt').val() != 0) {
-                                // $('#DiscountPer').prop("readonly", true);
-                                $('#DiscountAmt').prop("readonly", true);
-                            }
+                            // if ($('#DiscountPer').val() != 0 || $('#DiscountAmt').val() != 0) {
+                            //     // $('#DiscountPer').prop("readonly", true);
+                            //     $('#DiscountAmt').prop("readonly", true);
+                            // }
                         }
                     }
                 }

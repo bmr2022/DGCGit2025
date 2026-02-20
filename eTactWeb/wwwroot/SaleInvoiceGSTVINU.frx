@@ -1,0 +1,704 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" DoublePass="true" ReportInfo.Created="09/21/2025 11:50:07" ReportInfo.Modified="02/12/2026 16:56:14" ReportInfo.CreatorVersion="2023.2.0.0" PrintSettings.Printer="EPSON M1170 Series" PrintSettings.SavePrinterWithReport="true" PrintSettings.Duplex="Simplex" PrintSettings.PrintMode="Scale" PrintSettings.PrintOnSheetWidth="210.058" PrintSettings.PrintOnSheetHeight="296.926" PrintSettings.PrintOnSheetRawPaperSize="9">
+  <ScriptText>using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Drawing;
+using System.Data;
+using FastReport;
+using FastReport.Data;
+using FastReport.Dialog;
+using FastReport.Barcode;
+using FastReport.Table;
+using FastReport.Utils;
+
+namespace FastReport
+{
+  public class ReportScript
+  {
+
+  
+
+    
+
+    private void Container8_BeforePrint(object sender, EventArgs e)
+    {
+      TextObject txtAddress = Report.FindObject(&quot;Text234&quot;) as TextObject; //adress
+      TextObject txtFinalNameaboveone = Report.FindObject(&quot;Text233&quot;) as TextObject; // customername
+      string txtFinalName = Report.GetColumnValue(&quot;SPReportSaleBill.CustAddress&quot;).ToString();
+     // TextObject txtFinalName = Report.FindObject(&quot;Text234&quot;) as TextObject; //address
+      TextObject txtBelow1 = Report.FindObject(&quot;Text235&quot;) as TextObject;    //city
+      TextObject txtBelow2 = Report.FindObject(&quot;Text225&quot;) as TextObject;    //citylabel
+      TextObject txtBelow3 = Report.FindObject(&quot;Text239&quot;) as TextObject;   //state
+      TextObject txtBelow4 = Report.FindObject(&quot;Text260&quot;) as TextObject;   //statename
+      TextObject txtBelow5 = Report.FindObject(&quot;Text240&quot;) as TextObject;   //mobile
+      TextObject txtBelow6 = Report.FindObject(&quot;Text237&quot;) as TextObject;   //mobilelabel
+      // Move the below textbox down
+      // Note: Top is in centimeters in FastReport
+      txtAddress.Top = txtFinalNameaboveone.Top + txtFinalNameaboveone.Height + 4.9f;
+    
+        // Check the length of the actual text content
+      if (txtFinalName.Length &lt; 70)
+      {
+       
+     
+        txtBelow1.Top = txtAddress.Top + txtAddress.Height + 15.9f;
+        txtBelow2.Top = txtAddress.Top + txtAddress.Height + 15.9f;
+        txtBelow3.Top = txtAddress.Top + txtAddress.Height + 35.9f;
+        txtBelow4.Top = txtAddress.Top + txtAddress.Height + 35.9f;
+        txtBelow5.Top = txtAddress.Top + txtAddress.Height + 60.9f;
+        txtBelow6.Top = txtAddress.Top + txtAddress.Height + 60.9f;
+         TextObject txttest = Report.FindObject(&quot;Text264&quot;) as TextObject;
+         TextObject txttest1 = Report.FindObject(&quot;Text263&quot;) as TextObject;
+        txttest.Text = &quot;test&quot;;
+        txttest1.Text = txtFinalName.Length.ToString() ;
+      }
+      else if ((txtFinalName.Length &gt;= 70)  &amp;&amp; (txtFinalName.Length &lt;= 130))
+      {
+       
+     
+        txtBelow1.Top = txtAddress.Top + txtAddress.Height + 25.9f;
+        txtBelow2.Top = txtAddress.Top + txtAddress.Height + 25.9f;
+        txtBelow3.Top = txtAddress.Top + txtAddress.Height + 45.9f;
+        txtBelow4.Top = txtAddress.Top + txtAddress.Height + 45.9f;
+        txtBelow5.Top = txtAddress.Top + txtAddress.Height + 60.9f;
+        txtBelow6.Top = txtAddress.Top + txtAddress.Height + 60.9f;
+        TextObject txttest = Report.FindObject(&quot;Text264&quot;) as TextObject;
+        TextObject txttest1 = Report.FindObject(&quot;Text263&quot;) as TextObject;
+        txttest.Text = &quot;test&quot;;
+        txttest1.Text = txtFinalName.Length.ToString() ;
+      }
+      else if   ((txtFinalName.Length &gt;= 131) &amp;&amp; (txtFinalName.Length &lt;= 160))
+      {
+        txtBelow1.Top = txtAddress.Top + txtAddress.Height + 15.9f;
+        txtBelow2.Top = txtAddress.Top + txtAddress.Height + 15.9f;
+        txtBelow3.Top = txtAddress.Top + txtAddress.Height + 33.9f;
+        txtBelow4.Top = txtAddress.Top + txtAddress.Height + 33.9f;
+        txtBelow5.Top = txtAddress.Top + txtAddress.Height + 50.9f;
+        txtBelow6.Top = txtAddress.Top + txtAddress.Height + 50.9f;
+        TextObject txttest = Report.FindObject(&quot;Text264&quot;) as TextObject;
+        TextObject txttest1 = Report.FindObject(&quot;Text263&quot;) as TextObject;
+        txttest.Text = &quot;test&quot;;
+        txttest1.Text = txtFinalName.Length.ToString() ;
+      }
+      else if ((txtFinalName.Length &gt;= 161) &amp;&amp; (txtFinalName.Length &lt;= 500))
+      {
+   
+        txtBelow1.Top = txtAddress.Top + txtAddress.Height + 35.9f;
+        txtBelow2.Top = txtAddress.Top + txtAddress.Height + 35.9f;
+        txtBelow3.Top = txtAddress.Top + txtAddress.Height + 70.9f;
+        txtBelow4.Top = txtAddress.Top + txtAddress.Height + 70.9f;
+        txtBelow5.Top = txtAddress.Top + txtAddress.Height + 50.9f;
+        txtBelow6.Top = txtAddress.Top + txtAddress.Height + 50.9f;
+        TextObject txttest = Report.FindObject(&quot;Text264&quot;) as TextObject;
+        TextObject txttest1 = Report.FindObject(&quot;Text263&quot;) as TextObject;
+        txttest.Text = &quot;test1&quot;;
+        txttest1.Text = txtFinalName.Length.ToString() ;
+      }
+      else
+      {
+        
+        txtBelow1.Top = txtAddress.Top + txtAddress.Height + 30.9f;
+        txtBelow2.Top = txtAddress.Top + txtAddress.Height + 30.9f;
+        txtBelow3.Top = txtAddress.Top + txtAddress.Height + 45.9f;
+        txtBelow4.Top = txtAddress.Top + txtAddress.Height + 45.9f;
+        txtBelow5.Top = txtAddress.Top + txtAddress.Height + 60.9f;
+        txtBelow6.Top = txtAddress.Top + txtAddress.Height + 60.9f;
+        
+      }
+     
+    }
+
+       
+
+    
+
+    private void Container11_BeforePrint(object sender, EventArgs e)
+    {
+      string strTransName = Report.GetColumnValue(&quot;SPReportSaleBill.Transportername&quot;).ToString();
+      TextObject txtTransName = Report.FindObject(&quot;Text242&quot;) as TextObject; //transportname
+    
+      TextObject txtGrNo = Report.FindObject(&quot;Text227&quot;) as TextObject;    //city
+      TextObject txtGrNo1 = Report.FindObject(&quot;Text243&quot;) as TextObject;    //citylabel
+      TextObject txtCourierDt = Report.FindObject(&quot;Text230&quot;) as TextObject;   //state
+      TextObject txtCourierDt1 = Report.FindObject(&quot;Text246&quot;) as TextObject;   //statename
+      TextObject txtTransGST = Report.FindObject(&quot;Text228&quot;) as TextObject;   //mobile
+      TextObject txtTransGST1 = Report.FindObject(&quot;Text244&quot;) as TextObject;   //mobilelabel
+      TextObject txtPvtMrk = Report.FindObject(&quot;Text231&quot;) as TextObject;   //mobile
+      TextObject txtPvtMrk1 = Report.FindObject(&quot;Text247&quot;) as TextObject;   //mobilelabel
+      if (strTransName.Length &gt; 10)
+      {
+       
+     
+        txtGrNo.Top = txtTransName.Top + txtTransName.Height + 10.9f;
+        txtGrNo1.Top = txtTransName.Top + txtTransName.Height + 10.9f;
+        txtCourierDt.Top = txtTransName.Top + txtTransName.Height + 10.9f;
+        txtCourierDt1.Top = txtTransName.Top + txtTransName.Height + 10.9f;
+        txtTransGST.Top = txtTransName.Top + txtTransName.Height + 20.9f;
+        txtTransGST1.Top = txtTransName.Top + txtTransName.Height + 20.9f;
+        txtPvtMrk.Top = txtTransName.Top + txtTransName.Height + 20.9f;
+        txtPvtMrk1.Top = txtTransName.Top + txtTransName.Height + 20.9f;
+//        txtCourier.Top = txtTransName.Top + txtTransName.Height + 40.9f;
+//        txtCourier1.Top = txtTransName.Top + txtTransName.Height + 40.9f;
+//        txtGRDate.Top = txtTransName.Top + txtTransName.Height + 40.9f;
+//        txtGRDate1.Top = txtTransName.Top + txtTransName.Height + 40.9f ;
+//        txtDrivername.Top = txtTransName.Top + txtTransName.Height + 50.9f;
+//        txtDrivername1.Top = txtTransName.Top + txtTransName.Height + 50.9f;
+//        txtMobile.Top = txtTransName.Top + txtTransName.Height + 50.9f;
+//        txtMobile1.Top = txtTransName.Top + txtTransName.Height + 50.9f;
+//        txtPermitNo.Top = txtTransName.Top + txtTransName.Height + 60.9f;
+//        txtPermitNo1.Top = txtTransName.Top + txtTransName.Height + 60.9f;
+//        txtDeliveradd.Top = txtTransName.Top + txtTransName.Height + 60.9f;
+//        txtDeliveradd1.Top = txtTransName.Top + txtTransName.Height + 60.9f;
+         
+        TextObject txttest2 = Report.FindObject(&quot;Text267&quot;) as TextObject;
+        
+        txttest2.Text = strTransName.Length.ToString() ;
+     }
+   }
+
+    private void Data1_BeforePrint(object sender, EventArgs e)
+    {
+      TextObject txt = Report.FindObject(&quot;Text266&quot;) as TextObject;
+      string text = Report.GetColumnValue(&quot;SPReportSaleBill.ItemName&quot;).ToString();
+      txt.Text = text;
+      txt.CanGrow = true;
+      txt.CanShrink = true;
+      txt.Clip  = false;
+      txt.WordWrap = true;
+      float calculatedHeight = txt.CalcHeight();
+        
+      // Add padding to prevent cutoff (usually 4-6 pixels)
+      float padding = 2f;
+      txt.Height = calculatedHeight + padding;
+      Data1.Height = txt.Height + 2f; // Extra 2 pixels for safety
+          string billrate1 = Report.GetColumnValue(&quot;SPReportSaleBill.SeqNo&quot;).ToString();
+      TextObject text373 = Data1.FindObject(&quot;Text373&quot;) as TextObject;
+      string billrate = text373.Text;
+      if (billrate1 == &quot;19&quot;  )
+      {
+        Line23.Visible =false;
+      }
+      else
+      {
+         Line23.Visible =false;
+      }
+      //TextObject text373 = Data1.FindObject(&quot;Text373&quot;) as TextObject;
+             //Text432.Text= text362.Height.ToString();
+     
+      //if (text373.Text  == &quot;19&quot;  )
+      //{
+        //Line23.Visible =true;
+      //}
+      //TextObject text373 = Data1.FindObject(&quot;Text373&quot;) as TextObject;
+      //TextObject text434 = Data1.FindObject(&quot;Text434&quot;) as TextObject;
+      // LineObject line23 = Report.FindObject(&quot;Line23&quot;) as LineObject;
+      //Text432.Text= text362.Height.ToString();
+      //text434.Text = text373.Text;
+      //if (text373.Text  == &quot;5&quot;  )
+      //{
+        //line23.Visible =true;
+      //}
+      //else
+      //{
+       // line23.Visible =false;
+     // }
+      
+    }
+
+    
+
+    private void Data1_BeforeLayout(object sender, EventArgs e)
+    {
+      TextObject text76 = Data1.FindObject(&quot;Text76&quot;) as TextObject;
+      if (text76 != null)
+      {
+        text76.Height = Data1.Height;  // Now final stretched height
+        text76.GrowToBottom = true;
+      }
+      TextObject text77 = Data1.FindObject(&quot;Text77&quot;) as TextObject;
+      if (text77 != null)
+      {
+        text77.Height = Data1.Height;  // Now final stretched height
+        text77.GrowToBottom = true;
+      }
+      TextObject text78 = Data1.FindObject(&quot;Text78&quot;) as TextObject;
+      if (text78 != null)
+      {
+        text78.Height = Data1.Height;  // Now final stretched height
+        text78.GrowToBottom = true;
+      }
+      TextObject text79 = Data1.FindObject(&quot;Text79&quot;) as TextObject;
+      TextObject text39 = Data1.FindObject(&quot;Text79&quot;) as TextObject;
+      if (text79 != null)
+      {
+        text79.Height = Data1.Height;  // Now final stretched height
+        text39.Height = Data1.Height;
+        text79.GrowToBottom = true;
+      }
+      TextObject text80 = Data1.FindObject(&quot;Text80&quot;) as TextObject;
+      if (text80 != null)
+      {
+        text80.Height = Data1.Height;  // Now final stretched height
+        text80.GrowToBottom = true;
+      }
+      TextObject text81 = Data1.FindObject(&quot;Text81&quot;) as TextObject;
+      if (text81 != null)
+      {
+        text81.Height = Data1.Height;  // Now final stretched height
+        text81.GrowToBottom = true;
+      }
+      TextObject text82 = Data1.FindObject(&quot;Text82&quot;) as TextObject;
+      if (text82 != null)
+      {
+        text82.Height = Data1.Height;  // Now final stretched height
+        text82.GrowToBottom = true;
+      }
+      TextObject text83 = Data1.FindObject(&quot;Text83&quot;) as TextObject;
+      if (text83 != null)
+      {
+        text83.Height = Data1.Height;  // Now final stretched height
+        text83.GrowToBottom = true;
+      }
+      TextObject text84 = Data1.FindObject(&quot;Text84&quot;) as TextObject;
+      if (text84 != null)
+      {
+        text84.Height = Data1.Height;  // Now final stretched height
+        text84.GrowToBottom = true;
+      }
+    }
+
+   
+  
+
+  
+
+    
+
+    private void ReportSummary1_BeforePrint(object sender, EventArgs e)
+    {
+     // Text432.Text= Engine.CurPage.ToString();
+      //Text433.Text= Engine.TotalPages.ToString();
+      //if (!Engine.FinalPass) return;  // Skip first pass
+  
+      //for last page check
+      if (Engine.TotalPages &gt; 1 &amp;&amp; Engine.CurPage == (Engine.TotalPages-1))
+      {
+        Child3.FillUnusedSpace=false;
+        Child3.Visible = false ;
+        Engine.CurY += Engine.FreeSpace - ReportSummary1.Height;
+        ReportSummary1.Visible = true;
+        
+        // Text432.Text= Engine.CurPage.ToString();
+      }
+      //for two pages Totalpage gives 2 but curr page start from 0
+      //for other page pther than last page check
+      if (Engine.TotalPages == 1 &amp;&amp; Engine.CurPage == 0)
+      {
+       
+        //Engine.CurY += Engine.FreeSpace - ReportSummary1.Height;
+        ReportSummary1.Visible = true;
+        //Text433.Text= Engine.TotalPages.ToString();
+        ReportSummary1.PrintOnBottom = true;
+      }
+        
+           //Text433.Text= Engine.TotalPages.ToString();
+           //Text432.Text= Engine.CurPage.ToString();
+    }
+    
+
+    private void Child3_BeforePrint(object sender, EventArgs e)
+    {
+      if (Engine.TotalPages &gt; 1 &amp;&amp; Engine.CurPage == (Engine.TotalPages-1))
+      {
+        Child3.FillUnusedSpace=false;
+        Child3.Visible = false ;
+         
+        
+        // Text432.Text= Engine.CurPage.ToString();
+      }
+      //for two pages Totalpage gives 2 but curr page start from 0
+      //for other page pther than last page check
+      if (Engine.TotalPages == 1 &amp;&amp; Engine.CurPage == 0)
+      {
+       
+        //Engine.CurY += Engine.FreeSpace - ReportSummary1.Height;
+        Child3.FillUnusedSpace=true;
+        Child3.Visible = true  ;
+      }
+        
+    }
+
+    
+  }
+}
+</ScriptText>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqW1BWJd4pv0EftT1RVLECMfe5jUmJntCH4xCgN8j4ICSRZRNtnbBRB/d64jfBmQakxlWYXmSO/SH+tRJqd9SrHrcoS5Z5Ji9BrmKDOX/T7pUgrAJqjw0xc7tNEUVZcxMpJOjlHBWrZQxrrUUtNVSmulaeu0glkizz3UlXPJqPgaQfX9Nj641gkFcx6GOt1v5PPPOPK3OipgBMn25vCpt+yQ==">
+      <TableDataSource Name="Table" Alias="SPReportSaleBill" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportSaleBill  @EntryId = @entryparam , @yearCode = @yearparam">
+        <Column Name="EntryID" DataType="System.Int64"/>
+        <Column Name="YearCode" DataType="System.Int64"/>
+        <Column Name="BillNo" DataType="System.String"/>
+        <Column Name="BillDate" DataType="System.DateTime"/>
+        <Column Name="SaleBillJobwork" DataType="System.String"/>
+        <Column Name="PerformaInvNo" DataType="System.String"/>
+        <Column Name="BILLAgainstWarrenty" DataType="System.String"/>
+        <Column Name="CustomerName" DataType="System.String"/>
+        <Column Name="AccountCode" DataType="System.Int64"/>
+        <Column Name="CustAddress" DataType="System.String"/>
+        <Column Name="GSTNO" DataType="System.String"/>
+        <Column Name="mobileno" DataType="System.String"/>
+        <Column Name="ItemName" DataType="System.String"/>
+        <Column Name="ItemCode" DataType="System.Int64"/>
+        <Column Name="HSNNo" DataType="System.String"/>
+        <Column Name="BillQty" DataType="System.Double"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="AltQty" DataType="System.Double"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="NoofCase" DataType="System.Double"/>
+        <Column Name="ItemWeight" DataType="System.Double"/>
+        <Column Name="NoofPcs" DataType="System.Int64"/>
+        <Column Name="BillRate" DataType="System.Double"/>
+        <Column Name="ItemAmount" DataType="System.Double"/>
+        <Column Name="CustomerPartCode" DataType="System.String"/>
+        <Column Name="CGSTPER" DataType="System.Double"/>
+        <Column Name="CGSTAMT" DataType="System.Double"/>
+        <Column Name="SGSTPER" DataType="System.Double"/>
+        <Column Name="SGSTAMT" DataType="System.Double"/>
+        <Column Name="IGSTPER" DataType="System.Double"/>
+        <Column Name="IGSTAMT" DataType="System.Double"/>
+        <Column Name="BillAmt" DataType="System.Double"/>
+        <Column Name="INVNetAmt" DataType="System.Double"/>
+        <Column Name="CompName" DataType="System.String"/>
+        <Column Name="CompAdd" DataType="System.String"/>
+        <Column Name="CompAdd1" DataType="System.String"/>
+        <Column Name="TotalItemAmt" DataType="System.Int32" PropName="Column" Calculated="true" Expression=""/>
+        <Column Name="PackingCharges" DataType="System.Decimal"/>
+        <Column Name="ForwardingCharges" DataType="System.Decimal"/>
+        <Column Name="CourieerCharges" DataType="System.Decimal"/>
+        <Column Name="TransportGSTIn" DataType="System.String"/>
+        <Column Name="PrivateMark" DataType="System.String"/>
+        <Column Name="GRNo" DataType="System.String"/>
+        <Column Name="GRDate" DataType="System.DateTime"/>
+        <Column Name="CourierNO" DataType="System.String"/>
+        <Column Name="CourierDate" DataType="System.DateTime"/>
+        <Column Name="DriverName" DataType="System.String"/>
+        <Column Name="DriverContactNo" DataType="System.String"/>
+        <Column Name="PermitNo" DataType="System.String"/>
+        <Column Name="GroupName" DataType="System.String"/>
+        <Column Name="EntryDate" DataType="System.DateTime"/>
+        <Column Name="BillAmtWord" DataType="System.String"/>
+        <Column Name="TaxableAmt" DataType="System.Double"/>
+        <Column Name="GSTAmount" DataType="System.Double"/>
+        <Column Name="RoundOff" DataType="System.Double"/>
+        <Column Name="NetAmtInWords" DataType="System.String"/>
+        <Column Name="GST_Charge" DataType="System.Double"/>
+        <Column Name="SupplyType" DataType="System.String"/>
+        <Column Name="StateName" DataType="System.String"/>
+        <Column Name="StateCode" DataType="System.String"/>
+        <Column Name="City" DataType="System.String"/>
+        <Column Name="CountryOfSupply" DataType="System.String"/>
+        <Column Name="pincode" DataType="System.String"/>
+        <Column Name="PartCode" DataType="System.String"/>
+        <Column Name="Remark" DataType="System.String"/>
+        <Column Name="Termsandcondition" DataType="System.String"/>
+        <Column Name="DeliveryAddress" DataType="System.String"/>
+        <Column Name="Ewaybillno" DataType="System.String"/>
+        <Column Name="DocketNo" DataType="System.String"/>
+        <Column Name="Commodity" DataType="System.String"/>
+        <Column Name="EInvNo" DataType="System.String"/>
+        <Column Name="EinvGenerated" DataType="System.String"/>
+        <Column Name="BankName" DataType="System.String"/>
+        <Column Name="OursalespersonId" DataType="System.Int64"/>
+        <Column Name="CompPinCode" DataType="System.String"/>
+        <Column Name="DocThough" DataType="System.String"/>
+        <Column Name="BillDiscountPercent" DataType="System.Double"/>
+        <Column Name="BillDiscountAmt" DataType="System.Double"/>
+        <Column Name="CashDisAmt" DataType="System.Double"/>
+        <Column Name="AdditionalDisAmt" DataType="System.Double"/>
+        <Column Name="CreatedByname" DataType="System.String"/>
+        <Column Name="CreatedOn" DataType="System.DateTime"/>
+        <Column Name="currencyId" DataType="System.Int64"/>
+        <Column Name="CurrencyName" DataType="System.String"/>
+        <Column Name="BasicinInWord" DataType="System.String"/>
+        <Column Name="NetAmtInWord" DataType="System.String"/>
+        <Column Name="GSTInWord" DataType="System.String"/>
+        <Column Name="CompPhone" DataType="System.String"/>
+        <Column Name="CompStateCode" DataType="System.String"/>
+        <Column Name="CompStateName" DataType="System.String"/>
+        <Column Name="CompPANNo" DataType="System.String"/>
+        <Column Name="CompGSTNO" DataType="System.String"/>
+        <Column Name="CustomerMobileNo" DataType="System.String"/>
+        <Column Name="Transportername" DataType="System.String"/>
+        <Column Name="vehicleNo" DataType="System.String"/>
+        <Column Name="ItemDiscountPer" DataType="System.Double"/>
+        <Column Name="Column" DataType="System.Int32" Calculated="true" Expression=""/>
+        <Column Name="TotalCGST" DataType="System.Decimal"/>
+        <Column Name="TotalSGST" DataType="System.Decimal"/>
+        <Column Name="TotalIGST" DataType="System.Decimal"/>
+        <Column Name="SeqNo" DataType="System.Int64"/>
+        <Column Name="TotalDiscountBeforeTax" DataType="System.Decimal"/>
+        <CommandParameter Name="entryparam" Expression="entryparam"/>
+        <CommandParameter Name="yearparam" Expression="yearparam"/>
+      </TableDataSource>
+      <TableDataSource Name="Table1" Alias="rpttaxhsn" DataType="System.Int32" Enabled="true" SelectCommand="exec rpt_HSNWiseTaxAmt @EntryId=@entryparam,@YearCode=@yearparam">
+        <Column Name="SaleBillEntryId" DataType="System.Int64"/>
+        <Column Name="SaleBillYearCode" DataType="System.Int64"/>
+        <Column Name="SaleBillNo" DataType="System.String"/>
+        <Column Name="AccountCode" DataType="System.Int64"/>
+        <Column Name="HSNNO" DataType="System.String"/>
+        <Column Name="TaxableAmt" DataType="System.Double"/>
+        <Column Name="CGSTPer" DataType="System.Double"/>
+        <Column Name="CGSTAmt" DataType="System.Double"/>
+        <Column Name="SGSTPer" DataType="System.Double"/>
+        <Column Name="SGSTAmt" DataType="System.Double"/>
+        <Column Name="IGSTPer" DataType="System.Double"/>
+        <Column Name="IGSTAmt" DataType="System.Double"/>
+        <Column Name="OtherDetail" DataType="System.String"/>
+        <CommandParameter Name="entryparam" Expression="entryparam"/>
+        <CommandParameter Name="yearparam" Expression="yearparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Total Name="TotalQty" Expression="[SPReportSaleBill.BillQty]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="TotalAmt" Expression="[SPReportSaleBill.ItemAmount]" Evaluator="Data1" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="TotalCGST" Expression="[SPReportSaleBill.CGSTAMT]" Evaluator="Data1" PrintOn="ReportTitle1" ResetAfterPrint="false"/>
+    <Total Name="TotalSGST" Expression="[SPReportSaleBill.SGSTAMT]" Evaluator="Data1" PrintOn="ReportTitle1" ResetAfterPrint="false"/>
+    <Total Name="TotalIGST" Expression="[SPReportSaleBill.IGSTAMT]" Evaluator="Data1" PrintOn="ReportTitle1" ResetAfterPrint="false"/>
+    <Total Name="Total" Expression="1" Evaluator="Data1" ResetAfterPrint="false"/>
+  </Dictionary>
+  <ReportPage Name="Page1" RawPaperSize="9" LeftMargin="7" TopMargin="7" RightMargin="7" BottomMargin="7" Guides="302.4,396.9,9.45,708.75,349.65,-9450,-9440.55,18.9,340.2,94.5,103.95,330.75,710.64,359.1,444.15,425.25,538.65,585.9,576.45,689.85,652.05,434.7,548.1,614.25,709.88,47.25,623.7,519.75,472.5,406.35,481.95,207.9,132.3,217.35,405.59,510.3,56.7,699.3,10.58,29.48,66.15,151.2,236.25,491.4,595.35,226.8,557.55,604.8,463.05,28.35,85.05,179.55,274.05,160.65,453.6,292.95,368.55" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="740.88" Height="138.3" CanGrow="true" CanShrink="true" Guides="0,28.35,37.8,47.25,-9450,-9440.55,56.7,226.8,75.6,94.5,113.4,132.3,151.2,170.1">
+      <TextObject Name="Text28" Left="4" Top="4" Width="699.3" Height="28.35" Text="TAX INVOICE" HorzAlign="Center" Font="Arial, 14pt, style=Bold" TextFill.Color="165, 42, 42"/>
+      <TextObject Name="Text117" Left="-9450" Top="-9450" Width="9.45" Height="9.45" Text="[IIf([SPReportSaleBill.CourierNO]== &quot;&quot;, &quot;&quot;, &quot;CourierNO:&quot;)]&#13;&#10;" Font="Arial, 9pt"/>
+      <TextObject Name="Text307" Top="37.8" Width="708.75" Height="18.9" Text="[SPReportSaleBill.CompName]" HorzAlign="Center" Font="Arial, 11pt, style=Bold"/>
+      <TextObject Name="Text310" Left="-4.25" Top="53.7" Width="708.75" Height="18.9" Text="2707,NEHRU MOTOR MARKET" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text311" Top="72.15" Width="699.3" Height="18.9" Text="2718,LOTHIAN ROAD KASHMERE GATE DELHI 110006" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text312" Top="91.05" Width="708.75" Height="28.35" Text="PHONE:- 9717590880 ,011-23977599 ,FAX :01123939221 EMAIL : vap@dgc.co.in &lt;mailto:vap@dgc.co.in&gt; " HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text313" Top="109.95" Width="708.75" Height="18.9" Text="GSTIN/UIN:-07AAAFV4018K1Z6" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <ChildBand Name="Child1" Top="142.3" Width="740.88" Height="171.1" CanGrow="true" Guides="141.75,141.75,141.75">
+        <ContainerObject Name="Container8" Left="9.45" Top="1" Width="321.3" Height="170.1" CanGrow="true" CanShrink="true" GrowToBottom="true" BeforePrintEvent="Container8_BeforePrint">
+          <TextObject Name="Text223" Left="3" Top="9.45" Width="75.6" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.CustomerName]== &quot;&quot;, &quot;&quot;, &quot;Client:&quot;)]" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text224" Left="3" Top="28.35" Width="75.6" Height="18.9" CanGrow="true" Text="[IIf([SPReportSaleBill.CustAddress]== &quot;&quot;, &quot;&quot;, &quot;Address:&quot;)]" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text233" Left="85.05" Top="9.45" Width="226.8" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.CustomerName] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.CustomerName])]" Font="Arial, 10pt, style=Bold" Clip="false"/>
+          <TextObject Name="Text234" Left="85.05" Top="28.35" Width="245.7" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.CustAddress] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.CustAddress])]" Font="Arial, 10pt, style=Bold" Clip="false"/>
+          <TextObject Name="Text225" Left="3" Top="47.25" Width="75.6" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.City]== &quot;&quot;, &quot;&quot;, &quot;City:&quot;)]" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text235" Left="85.05" Top="47.25" Width="245.7" Height="18.9" CanGrow="true" CanShrink="true" GrowToBottom="true" Text="[IIf([SPReportSaleBill.City] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.City])]" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text239" Left="85.05" Top="66.15" Width="245.7" Height="18.9" CanGrow="true" CanShrink="true" GrowToBottom="true" Text="[IIf([SPReportSaleBill.StateName] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.StateName])]" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text260" Left="3" Top="66.15" Width="75.6" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.StateName]== &quot;&quot;, &quot;&quot;, &quot;State:&quot;)]" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text237" Left="3" Top="85.05" Width="75.6" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.CustomerMobileNo]== &quot;&quot;, &quot;&quot;, &quot;Mobile:&quot;)]" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text240" Left="85.05" Top="85.05" Width="245.7" Height="18.9" CanGrow="true" CanShrink="true" GrowToBottom="true" Text="[IIf([SPReportSaleBill.CustomerMobileNo] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.CustomerMobileNo])]" Font="Arial, 10pt, style=Bold"/>
+          <LineObject Name="Line1" Top="1" Width="699.3"/>
+          <LineObject Name="Line19" Left="1" Height="160.65" GrowToBottom="true"/>
+          <TextObject Name="Text337" Left="3" Top="133.3" Width="75.6" Height="18.9" Text="[IIf([SPReportSaleBill.GSTNO]== &quot;&quot;, &quot;&quot;, &quot;GSTIN No:&quot;)]&#13;&#10; &#13;&#10;" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text338" Left="83.45" Top="133.3" Width="226.8" Height="18.9" GrowToBottom="true" Text="[IIf([SPReportSaleBill.GSTNO]== &quot;&quot;, &quot;&quot;, [SPReportSaleBill.GSTNO])]&#13;&#10;" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text342" Left="3" Top="151.2" Width="75.6" Height="18.9" Text="[IIf([SPReportSaleBill.StateCode]== &quot;&quot;, &quot;&quot;, &quot;StateCode:&quot;)]&#13;&#10; &#13;&#10;" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text374" Left="85.05" Top="151.2" Width="94.5" Height="18.9" Text="[SPReportSaleBill.StateCode]" Font="Arial, 10pt, style=Bold"/>
+        </ContainerObject>
+        <ContainerObject Name="Container11" Left="340.2" Top="18.9" Width="302.4" Height="151.2" CanGrow="true" CanShrink="true" GrowToBottom="true" BeforePrintEvent="Container11_BeforePrint">
+          <TextObject Name="Text226" Width="85.05" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.Transportername]== &quot;&quot;, &quot;&quot;, &quot;Transporter:&quot;)]" Font="Arial, 9pt, style=Bold"/>
+          <TextObject Name="Text227" Top="37.8" Width="85.05" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.GrNo]== &quot;&quot;, &quot;&quot;, &quot;Gr No:&quot;)]" Font="Arial, 9pt, style=Bold"/>
+          <TextObject Name="Text228" Top="56.7" Width="85.05" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.TransportGSTIn]== &quot;&quot;, &quot;&quot;, &quot;TransportGSTIn:&quot;)]" Font="Arial, 9pt, style=Bold"/>
+          <TextObject Name="Text242" Left="85.05" Width="274.05" Height="18.9" CanGrow="true" CanShrink="true" GrowToBottom="true" Text="[IIf([SPReportSaleBill.Transportername]== &quot;&quot;, &quot;&quot;, [SPReportSaleBill.Transportername])]" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text243" Left="85.05" Top="37.8" Width="113.4" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.GRNo] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.GRNo])]" Font="Arial, 9pt, style=Bold"/>
+          <TextObject Name="Text244" Left="85.05" Top="56.7" Width="113.4" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.TransportGSTIn]== &quot;&quot;, &quot;&quot;, [SPReportSaleBill.TransportGSTIn])]" Font="Arial, 9pt, style=Bold"/>
+          <TextObject Name="Text248" Top="75.6" Width="85.05" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.CourierNO]== &quot;&quot;, &quot;&quot;, &quot;CourierNo:&quot;)]" Font="Arial, 9pt, style=Bold"/>
+          <TextObject Name="Text249" Top="94.5" Width="85.05" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.DriverName]== &quot;&quot;, &quot;&quot;, &quot;DriverName:&quot;)]&#13;&#10;" Font="Arial, 9pt, style=Bold"/>
+          <TextObject Name="Text251" Left="85.05" Top="75.6" Width="113.4" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.CourierNO] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.CourierNO])]" Font="Arial, 9pt, style=Bold"/>
+          <TextObject Name="Text252" Left="85.05" Top="94.5" Width="113.4" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.DriverName] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.DriverName])]" Font="Arial, 9pt, style=Bold"/>
+          <TextObject Name="Text261" Top="113.4" Width="85.05" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.PermitNo]== &quot;&quot;, &quot;&quot;, &quot;PermitNo:&quot;)]" Font="Arial, 9pt, style=Bold"/>
+          <TextObject Name="Text262" Left="85.05" Top="113.4" Width="113.4" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.PermitNo] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.PermitNo])]" Font="Arial, 9pt, style=Bold"/>
+          <ContainerObject Name="Container13" Left="198.45" Width="170.1" Height="151.2" CanGrow="true" CanShrink="true" GrowToBottom="true">
+            <TextObject Name="Text270" Top="37.8" Width="66.15" Height="18.9" CanShrink="true" Text="[IIf([SPReportSaleBill.CourierDate] == DateTime.Parse(&quot;1900-01-01&quot;), &quot;&quot;, &quot;Cour Dt.&quot;)]" Font="Arial, 10pt"/>
+            <TextObject Name="Text271" Left="66.15" Top="37.8" Width="94.5" Height="18.9" CanShrink="true" Text="[IIf([SPReportSaleBill.CourierDate] == DateTime.Parse(&quot;1900-01-01&quot;), &quot;&quot;, [SPReportSaleBill.CourierDate] )]" Font="Arial, 10pt"/>
+            <TextObject Name="Text274" Top="56.7" Width="66.15" Height="18.9" CanShrink="true" Text="[IIf([SPReportSaleBill.GRDate] == DateTime.Parse(&quot;1900-01-01&quot;), &quot;&quot;, &quot;GR Dt.&quot;)]" Font="Arial, 10pt"/>
+            <TextObject Name="Text275" Left="66.15" Top="56.7" Width="94.5" Height="18.9" CanShrink="true" Text="[IIf([SPReportSaleBill.GRDate] == DateTime.Parse(&quot;1900-01-01&quot;), &quot;&quot;, [SPReportSaleBill.GRDate] )]" Font="Arial, 10pt"/>
+            <TextObject Name="Text276" Top="75.6" Width="66.15" Height="18.9" CanShrink="true" Text="[IIf([SPReportSaleBill.DriverContactNo]== &quot;&quot;, &quot;&quot;, &quot;Mobile:&quot;)]" Font="Arial, 10pt"/>
+            <TextObject Name="Text277" Left="66.15" Top="75.6" Width="94.5" Height="18.9" CanShrink="true" Text="[IIf([SPReportSaleBill.DriverContactNo] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.DriverContactNo])]" Font="Arial, 10pt"/>
+            <TextObject Name="Text278" Top="94.5" Width="66.15" Height="18.9" CanShrink="true" Text="[IIf([SPReportSaleBill.deliveryaddress]== &quot;&quot;, &quot;&quot;, &quot;Delivery add:&quot;)]" Font="Arial, 10pt"/>
+            <TextObject Name="Text279" Left="66.15" Top="94.5" Width="94.5" Height="18.9" CanShrink="true" Text="[IIf([SPReportSaleBill.deliveryaddress] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.deliveryaddress])]" Font="Arial, 10pt"/>
+            <TextObject Name="Text268" Top="18.9" Width="66.15" Height="18.9" CanShrink="true" Text="[IIf([SPReportSaleBill.vehicleNo]== &quot;&quot;, &quot;&quot;, &quot;Veh. no:&quot;)]" Font="Arial, 10pt"/>
+            <TextObject Name="Text269" Left="66.15" Top="18.9" Width="94.5" Height="18.9" CanShrink="true" Text="[IIf([SPReportSaleBill.vehicleNo]== &quot;&quot;, &quot;&quot;, [SPReportSaleBill.vehicleNo])]" Font="Arial, 10pt"/>
+          </ContainerObject>
+          <TextObject Name="Text272" Top="18.9" Width="66.15" Height="18.9" CanShrink="true" GrowToBottom="true" Text="[IIf([SPReportSaleBill.PrivateMark]== &quot;&quot;, &quot;&quot;, &quot;Pvt. Mark:&quot;)]" Font="Arial, 9pt, style=Bold"/>
+          <TextObject Name="Text273" Left="85.05" Top="18.9" Width="94.5" Height="18.9" CanShrink="true" Text="[IIf([SPReportSaleBill.PrivateMark] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.PrivateMark])]" Font="Arial, 9pt, style=Bold"/>
+        </ContainerObject>
+        <LineObject Name="Line4" Left="340.2" Height="9.45" CanGrow="true" CanShrink="true" GrowToBottom="true"/>
+        <ShapeObject Name="Shape3" Left="340.2" Width="368.55" Height="18.9" Fill.Color="LightGray" CanShrink="true"/>
+        <TextObject Name="Text18" Left="349.65" Width="85.05" Height="18.9" CanShrink="true" Text="Invoice No:" Font="Arial, 9pt, style=Bold"/>
+        <TextObject Name="Text19" Left="415.8" Width="113.4" Height="18.9" CanShrink="true" Text="[SPReportSaleBill.BillNo]" Font="Arial, 9pt, style=Bold"/>
+        <TextObject Name="Text20" Left="529.2" Width="47.25" Height="18.9" CanShrink="true" Text="Date:" Font="Arial, 9pt, style=Bold"/>
+        <TextObject Name="Text21" Left="567" Width="113.4" Height="18.9" CanGrow="true" CanShrink="true" CanBreak="false" Text="[SPReportSaleBill.BillDate]" Format="Date" Format.Format="d" Font="Arial, 9pt, style=Bold"/>
+        <LineObject Name="Line20" Left="706.86" Height="161.78" GrowToBottom="true"/>
+      </ChildBand>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="317.4" Width="740.88" Height="28.35" PrintOn="FirstPage, SinglePage" Guides="0,28.34999,18.89999">
+      <ShapeObject Name="Shape1" Left="9.45" Width="699.3" Height="28.35" Fill.Color="LightGray"/>
+      <TextObject Name="Text37" Left="9.45" Width="37.8" Height="18.9" Text="Sr " HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text29" Left="623.7" Width="85.05" Height="18.9" Text="Amount" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text30" Left="576.45" Width="37.8" Height="18.9" Text="Disc%" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text31" Left="519.75" Width="56.7" Height="18.9" Text="Rate" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text32" Left="472.5" Width="47.25" Height="18.9" Text="Unit" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text33" Left="406.35" Width="75.6" Height="18.9" Text="Qty" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text34" Left="198.45" Width="37.8" Height="18.9" Text="GST" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text35" Left="132.3" Width="75.6" Height="18.9" Text="HSN Code" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text36" Left="47.25" Width="85.05" Height="18.9" Text="Icode" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <LineObject Name="Line10" Left="47.25" Height="28.35"/>
+      <LineObject Name="Line11" Left="140.99" Height="28.35"/>
+      <LineObject Name="Line12" Left="202.35" Height="28.35"/>
+      <LineObject Name="Line13" Left="405.59" Height="28.35"/>
+      <LineObject Name="Line14" Left="472.5" Height="28.35"/>
+      <LineObject Name="Line15" Left="519.75" Height="28.35"/>
+      <LineObject Name="Line16" Left="576.45" Height="28.35"/>
+      <LineObject Name="Line17" Left="623.7" Height="28.35"/>
+      <TextObject Name="Text314" Left="292.95" Width="37.8" Height="18.9" Text="Item" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <LineObject Name="Line21" Left="236.25" Height="28.35"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader2" Top="349.75" Width="740.88" Condition="[SPReportSaleBill.EntryID]">
+      <GroupHeaderBand Name="GroupHeader1" Top="353.75" Width="740.88" Condition="[SPReportSaleBill.SeqNo]">
+        <DataBand Name="Data1" Top="357.75" Width="740.88" Height="37.8" CanGrow="true" BeforePrintEvent="Data1_BeforePrint" BeforeLayoutEvent="Data1_BeforeLayout" DataSource="Table">
+          <TextObject Name="Text266" Left="238.8" Width="170.1" Height="37.8" CanGrow="true" GrowToBottom="true" Text="[SPReportSaleBill.ItemName]" Font="Arial, 8pt"/>
+          <TextObject Name="Text40" Left="415.8" Width="66.15" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.BillQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+          <TextObject Name="Text42" Left="519.75" Width="56.7" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.BillRate]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+          <TextObject Name="Text43" Left="576.45" Width="37.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.ItemDiscountPer]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+          <TextObject Name="Text44" Left="623.7" Width="73.71" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.ItemAmount]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+          <TextObject Name="Text41" Left="472.5" Width="37.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.Unit]" HorzAlign="Center" Font="Arial, 8pt"/>
+          <TextObject Name="Text38" Left="47.25" Width="94.5" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.PartCode]" Font="Arial, 8pt" Clip="false"/>
+          <TextObject Name="Text317" Left="141.75" Top="0.65" Width="56.7" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.HSNNO]" Font="Arial, 8pt" Clip="false"/>
+          <TextObject Name="Text361" Left="198.45" Width="28.35" Height="18.9" Text="[IIf([SPReportSaleBill.CGSTPER]== 0, [SPReportSaleBill.IGSTPER], [SPReportSaleBill.CGSTPER]*2)]" HorzAlign="Center" Font="Arial, 8pt"/>
+          <TextObject Name="Text362" Left="9.45" Width="9.45" Height="37.8" Border.Lines="Left" GrowToBottom="true" HorzAlign="Center" Font="Arial, 8pt"/>
+          <TextObject Name="Text363" Left="47.25" Width="9.45" Height="37.8" Border.Lines="Left" GrowToBottom="true" HorzAlign="Center" Font="Arial, 8pt"/>
+          <TextObject Name="Text364" Left="141.75" Width="9.45" Height="37.8" Border.Lines="Left" GrowToBottom="true" HorzAlign="Center" Font="Arial, 8pt"/>
+          <TextObject Name="Text365" Left="202.23" Width="9.45" Height="37.8" Border.Lines="Left" GrowToBottom="true" HorzAlign="Center" Font="Arial, 8pt"/>
+          <TextObject Name="Text366" Left="236.25" Width="9.45" Height="37.8" Border.Lines="Left" GrowToBottom="true" HorzAlign="Center" Font="Arial, 8pt"/>
+          <TextObject Name="Text367" Left="406.35" Width="9.45" Height="37.8" Border.Lines="Left" GrowToBottom="true" HorzAlign="Center" Font="Arial, 8pt"/>
+          <TextObject Name="Text368" Left="472.5" Width="9.45" Height="37.8" Border.Lines="Left" GrowToBottom="true" HorzAlign="Center" Font="Arial, 8pt"/>
+          <TextObject Name="Text369" Left="519.75" Width="9.45" Height="37.8" Border.Lines="Left" GrowToBottom="true" HorzAlign="Center" Font="Arial, 8pt"/>
+          <TextObject Name="Text370" Left="576.45" Width="9.45" Height="37.8" Border.Lines="Left" GrowToBottom="true" HorzAlign="Center" Font="Arial, 8pt"/>
+          <TextObject Name="Text371" Left="623.7" Width="9.45" Height="37.8" Border.Lines="Left" GrowToBottom="true" HorzAlign="Center" Font="Arial, 8pt"/>
+          <TextObject Name="Text372" Left="697.41" Width="9.45" Height="37.8" Border.Lines="Right" GrowToBottom="true" HorzAlign="Center" Font="Arial, 8pt"/>
+          <TextObject Name="Text373" Left="9.45" Width="37.8" Height="18.9" Text="[[Total]+1]" HorzAlign="Center" Font="Arial, 8pt"/>
+          <LineObject Name="Line23" Left="9.45" Top="37.8" Width="697.41" Visible="false" BeforePrintEvent="Line23_BeforePrint"/>
+          <TextObject Name="Text434" Left="415.8" Top="18.9" Height="18.9" Font="Arial, 8pt"/>
+        </DataBand>
+      </GroupHeaderBand>
+      <GroupFooterBand Name="GroupFooter2" Top="399.55" Width="740.88" Height="169.95" BeforePrintEvent="GroupFooter2_BeforePrint">
+        <TextObject Name="Text320" Left="18.9" Top="37.8" Width="132.3" Height="18.9" Text="Net Amount (in Words)" Font="Arial, 8pt, style=Bold"/>
+        <TextObject Name="Text302" Left="9.45" Top="21.65" Width="378" Height="18.9" Text="If GST No is provided Input tax is valid" Font="Arial, 8pt, style=Bold"/>
+        <TextObject Name="Text144" Left="311.85" Top="9.45" Width="141.75" Height="18.9" CanShrink="true" Text="[TotalQty]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text304" Left="619.4" Top="10" Width="75.6" Height="9.45" CanGrow="true" Text="[SPReportSaleBill.BillAmt]" HorzAlign="Right" Font="Arial, 10pt, style=Bold" Clip="false"/>
+        <TextObject Name="Text143" Left="9.45" Width="378" Height="18.9" Text="Amount Before Tax" Font="Arial, 8pt, style=Bold"/>
+        <TextObject Name="Text210" Left="406.35" Top="101.95" Width="9.45" Height="18.9" HorzAlign="Right" Font="Arial, 7pt, style=Bold" TextFill.Color="Brown"/>
+        <TextObject Name="Text287" Left="255.15" Top="84.85" Width="94.5" Height="18.9" Visible="false" Text="[IIf([TotalIGST]== &quot;0&quot;, &quot;&quot;, [TotalIGST])]&#13;&#10;&#13;&#10; " HorzAlign="Right" Font="Arial, 10pt"/>
+        <ShapeObject Name="Shape6" Left="7.8" Top="-0.15" Width="699.3" Height="170.1"/>
+        <TextObject Name="Text289" Left="604.8" Top="108.65" Width="94.5" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.INVNetAmt]== 0, &quot;&quot;, [SPReportSaleBill.INVNetAmt])]&#13;&#10;" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text290" Left="604.8" Top="124" Width="94.5" Height="18.9" CanGrow="true" Text="[IIf([SPReportSaleBill.RoundOff]== 0, &quot;&quot;, [SPReportSaleBill.RoundOff])]&#13;&#10;" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text293" Left="472.5" Top="47.05" Width="94.5" Height="18.9" CanGrow="true" Text="[IIf([SPReportSaleBill.SGSTPER]== 0, &quot;&quot;, &quot;SGST %&quot;)]" Font="Arial, 9pt, style=Bold"/>
+        <TextObject Name="Text294" Left="472.5" Top="94.3" Width="94.5" Height="18.9" Text="[IIf([SPReportSaleBill.IGSTPER]== 0, &quot;&quot;, &quot;IGST %&quot;)]" Font="Arial, 9pt, style=Bold"/>
+        <TextObject Name="Text295" Left="472.5" Top="108.65" Width="122.85" Height="18.9" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.INVNetAmt]== 0, &quot;&quot;, &quot;Total Amt Inc GST&quot;)]" Font="Arial, 9pt, style=Bold"/>
+        <TextObject Name="Text296" Left="472.5" Top="124" Width="94.5" Height="18.9" CanGrow="true" Text="[IIf([SPReportSaleBill.RoundOff]== 0, &quot;&quot;, &quot;Round Off&quot;)]" Font="Arial, 9pt, style=Bold"/>
+        <TextObject Name="Text305" Left="472.5" Top="69.85" Width="94.5" Height="18.9" CanGrow="true" Text="[IIf([SPReportSaleBill.CGSTPER]== 0, &quot;&quot;, &quot;CGST %&quot;)]" Font="Arial, 9pt, style=Bold"/>
+        <TextObject Name="Text306" Left="472.5" Top="140.55" Width="75.6" Height="18.9" Text="Net Amt " Font="Arial, 11pt, style=Bold"/>
+        <TextObject Name="Text319" Left="557.8" Top="139.55" Width="141.75" Height="18.9" Text="[SPReportSaleBill.INVNetAmt]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 11pt, style=Bold" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text229" Left="274.05" Top="50.95" Width="66.15" Height="18.9" Visible="false" CanShrink="true" Text="[IIf([SPReportSaleBill.vehicleNo]== &quot;&quot;, &quot;&quot;, &quot;Veh. no:&quot;)]" HorzAlign="Right" Font="Arial, 9pt, style=Bold"/>
+        <TextObject Name="Text246" Left="292.95" Top="60.4" Width="75.6" Height="18.9" Visible="false" CanShrink="true" Text="[IIf([SPReportSaleBill.CourierDate] == DateTime.Parse(&quot;1900-01-01&quot;), &quot;&quot;, [SPReportSaleBill.CourierDate] )]" HorzAlign="Right" Font="Arial, 9pt, style=Bold"/>
+        <TextObject Name="Text331" Left="604.8" Top="69.85" Width="94.5" Height="18.9" Text="[IIf([SPReportSaleBill.CGSTPER]== 0, &quot;&quot;, [SPReportSaleBill.TotalCGST])]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text332" Left="604.8" Top="50.95" Width="94.5" Height="18.9" Text="[IIf([SPReportSaleBill.SGSTAMT]== 0, &quot;&quot;,[SPReportSaleBill.TotalSGST])]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text333" Left="604.8" Top="93.2" Width="94.5" Height="18.9" Text="[IIf([SPReportSaleBill.IGSTPER]== 0, &quot;&quot;, [SPReportSaleBill.TotalIGST])]" HorzAlign="Right" Font="Arial, 10pt"/>
+        <TextObject Name="Text258" Left="274.05" Top="50.95" Width="94.5" Height="18.9" Visible="false" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.DriverContactNo] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.DriverContactNo])]" Font="Arial, 9pt, style=Bold"/>
+        <TextObject Name="Text288" Left="302.4" Top="65.95" Width="94.5" Height="18.9" Visible="false" CanGrow="true" CanShrink="true" Text="[IIf([TotalsGST]== &quot;0&quot;, &quot;&quot;, [TotalsGST])]&#13;&#10;" HorzAlign="Right" Font="Arial, 10pt"/>
+        <TextObject Name="Text375" Left="9.45" Top="94.5" Width="378" Height="18.9" CanGrow="true" Text="[SPReportSaleBill.NetAmtInWords]" Font="Arial, 10pt"/>
+        <TextObject Name="Text405" Left="472.5" Top="28.35" Width="94.5" Height="18.9" CanGrow="true" Text="[IIf([SPReportSaleBill.TotalDiscountBeforeTax]== 0, &quot;&quot;, &quot;DISCOUNT &quot;)]" Font="Arial, 9pt, style=Bold"/>
+        <TextObject Name="Text407" Left="604.8" Top="28.35" Width="94.5" Height="18.9" Text="[IIf([SPReportSaleBill.TotalDiscountBeforeTax]== 0, &quot;&quot;,[SPReportSaleBill.TotalDiscountBeforeTax])]&#13;&#10;" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+        <ChildBand Name="Child2" Top="573.5" Width="740.88" Height="56.7">
+          <SubreportObject Name="Subreport1" Left="6.9" Top="-0.05" Width="699.3" Height="56.7" ReportPage="Page2"/>
+        </ChildBand>
+      </GroupFooterBand>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="641.98" Width="740.88" Height="151.2" BeforePrintEvent="ReportSummary1_BeforePrint" Guides="0,132.3,28.35001,37.79999,793.8,113.4,151.2,264.6,302.4,340.2,226.8,359.1,396.9,75.59998,189,415.8,66.14999,198.45,217.35,245.7,18.89999,85.04999,103.95,160.65,179.55,207.9,170.1">
+      <TextObject Name="Text321" Left="9.45" Top="11.25" Width="207.9" Height="28.35" Text="BANK DETAILS&#13;&#10;NAME - VINU AUTO PARTS&#13;&#10;" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text322" Left="9.45" Top="39.6" Width="207.9" Height="28.35" Text="A/C No. - 03302840000174 " Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text323" Left="9.45" Top="58.5" Width="207.9" Height="18.9" Text="BANK - HDFC BANK LTD." Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text324" Left="9.45" Top="77.4" Width="321.3" Height="18.9" Text="BRANCH - KASHMERE GATE, NEW DELHI" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text325" Left="9.45" Top="96.3" Width="207.9" Height="18.9" Text="IFSC - HDFC0000330 " Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text263" Left="274.05" Top="66.15" Width="94.5" Height="18.9" Visible="false" Text="[Length([SPReportSaleBill.CustAddress])]" Font="Arial, 10pt"/>
+      <TextObject Name="Text264" Left="160.65" Top="66.15" Width="94.5" Height="18.9" Visible="false" Font="Arial, 10pt"/>
+      <TextObject Name="Text265" Left="160.65" Top="94.5" Width="94.5" Height="18.9" Visible="false" Font="Arial, 10pt"/>
+      <TextObject Name="Text267" Left="151.2" Top="28.35" Width="94.5" Height="18.9" Visible="false" Font="Arial, 10pt"/>
+      <TextObject Name="Text259" Left="453.6" Top="94.5" Width="94.5" Height="18.9" Visible="false" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.deliveryaddress] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.deliveryaddress])]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text257" Left="453.6" Top="56.7" Width="66.15" Height="18.9" Visible="false" CanShrink="true" Text="[IIf([SPReportSaleBill.GRDate] == DateTime.Parse(&quot;1900-01-01&quot;), &quot;&quot;, [SPReportSaleBill.GRDate] )]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text247" Left="453.6" Top="37.8" Width="94.5" Height="18.9" Visible="false" CanShrink="true" Text="[IIf([SPReportSaleBill.PrivateMark] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.PrivateMark])]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text245" Left="453.6" Width="85.05" Height="18.9" Visible="false" CanShrink="true" Text="[IIf([SPReportSaleBill.vehicleNo]== &quot;&quot;, &quot;&quot;, [SPReportSaleBill.vehicleNo])]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text256" Left="387.45" Top="94.5" Width="66.15" Height="18.9" Visible="false" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.deliveryaddress]== &quot;&quot;, &quot;&quot;, &quot;Delivery add:&quot;)]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text255" Left="387.45" Top="75.6" Width="66.15" Height="18.9" Visible="false" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.DriverContactNo]== &quot;&quot;, &quot;&quot;, &quot;Mobile:&quot;)]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text254" Left="387.45" Top="56.7" Width="66.15" Height="18.9" Visible="false" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.GRDate] == DateTime.Parse(&quot;1900-01-01&quot;), &quot;&quot;, &quot;GR Dt.&quot;)]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text231" Left="387.45" Top="37.8" Width="66.15" Height="18.9" Visible="false" CanShrink="true" Text="[IIf([SPReportSaleBill.PrivateMark]== &quot;&quot;, &quot;&quot;, &quot;Pvt. Mark:&quot;)]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text230" Left="387.45" Top="18.9" Width="66.15" Height="18.9" Visible="false" CanShrink="true" Text="[IIf([SPReportSaleBill.CourierDate] == DateTime.Parse(&quot;1900-01-01&quot;), &quot;&quot;, &quot;Cour Dt.&quot;)]" Font="Arial, 9pt, style=Bold"/>
+      <ShapeObject Name="Shape7" Left="9.45" Width="697.41" Height="122.85"/>
+      <TextObject Name="Text334" Left="529.2" Top="56.7" Width="170.1" Height="18.9" Text="[SPReportSaleBill.CompName]" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text335" Left="538.65" Top="94.5" Width="160.65" Height="18.9" Text="Authorised Signatory&#13;&#10;" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text336" Left="10.9" Top="122.85" Width="699.3" Height="28.35" Text="We declare that this invoice shows the actual price of the goods described and that all particulars are true &amp; correct. All disputes if any subject to Delhi Jurisdiction." Font="Arial, 8pt"/>
+      <TextObject Name="Text433" Left="189" Width="94.5" Height="18.9" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text432" Left="302.4" Width="94.5" Height="18.9" Font="Arial, 8pt"/>
+      <ChildBand Name="Child3" Top="634.2" Width="740.88" Height="3.78" BeforePrintEvent="Child3_BeforePrint" FillUnusedSpace="true">
+        <TextObject Name="Text353" Left="9.45" Width="9.45" Height="3.78" Border.Lines="Left" GrowToBottom="true" Font="Arial, 8pt"/>
+        <TextObject Name="Text360" Left="697.41" Width="9.45" Height="3.78" Border.Lines="Right" GrowToBottom="true" Font="Arial, 8pt"/>
+      </ChildBand>
+    </ReportSummaryBand>
+    <PageFooterBand Name="PageFooter1" Top="797.18" Width="740.88" Height="151.2" Visible="false" BeforePrintEvent="PageFooter1_BeforePrint">
+      <TextObject Name="Text409" Left="9.89" Top="11.25" Width="207.9" Height="28.35" Text="BANK DETAILS&#13;&#10;NAME - VINU AUTO PARTS&#13;&#10;" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text410" Left="9.89" Top="39.6" Width="207.9" Height="28.35" Text="A/C No. - 03302840000174 " Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text411" Left="9.89" Top="58.5" Width="207.9" Height="18.9" Text="BANK - HDFC BANK LTD." Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text412" Left="9.89" Top="77.4" Width="321.3" Height="18.9" Text="BRANCH - KASHMERE GATE, NEW DELHI" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text413" Left="9.89" Top="96.3" Width="207.9" Height="18.9" Text="IFSC - HDFC0000330 " Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text414" Left="274.49" Top="66.15" Width="94.5" Height="18.9" Visible="false" Text="[Length([SPReportSaleBill.CustAddress])]" Font="Arial, 10pt"/>
+      <TextObject Name="Text415" Left="161.09" Top="66.15" Width="94.5" Height="18.9" Visible="false" Font="Arial, 10pt"/>
+      <TextObject Name="Text416" Left="161.09" Top="94.5" Width="94.5" Height="18.9" Visible="false" Font="Arial, 10pt"/>
+      <TextObject Name="Text417" Left="151.64" Top="28.35" Width="94.5" Height="18.9" Visible="false" Font="Arial, 10pt"/>
+      <TextObject Name="Text418" Left="454.04" Top="94.5" Width="94.5" Height="18.9" Visible="false" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.deliveryaddress] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.deliveryaddress])]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text419" Left="454.04" Top="56.7" Width="66.15" Height="18.9" Visible="false" CanShrink="true" Text="[IIf([SPReportSaleBill.GRDate] == DateTime.Parse(&quot;1900-01-01&quot;), &quot;&quot;, [SPReportSaleBill.GRDate] )]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text420" Left="454.04" Top="37.8" Width="94.5" Height="18.9" Visible="false" CanShrink="true" Text="[IIf([SPReportSaleBill.PrivateMark] == &quot;&quot;, &quot;&quot;, [SPReportSaleBill.PrivateMark])]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text421" Left="454.04" Width="85.05" Height="18.9" Visible="false" CanShrink="true" Text="[IIf([SPReportSaleBill.vehicleNo]== &quot;&quot;, &quot;&quot;, [SPReportSaleBill.vehicleNo])]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text422" Left="387.89" Top="94.5" Width="66.15" Height="18.9" Visible="false" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.deliveryaddress]== &quot;&quot;, &quot;&quot;, &quot;Delivery add:&quot;)]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text423" Left="387.89" Top="75.6" Width="66.15" Height="18.9" Visible="false" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.DriverContactNo]== &quot;&quot;, &quot;&quot;, &quot;Mobile:&quot;)]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text424" Left="387.89" Top="56.7" Width="66.15" Height="18.9" Visible="false" CanGrow="true" CanShrink="true" Text="[IIf([SPReportSaleBill.GRDate] == DateTime.Parse(&quot;1900-01-01&quot;), &quot;&quot;, &quot;GR Dt.&quot;)]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text425" Left="387.89" Top="37.8" Width="66.15" Height="18.9" Visible="false" CanShrink="true" Text="[IIf([SPReportSaleBill.PrivateMark]== &quot;&quot;, &quot;&quot;, &quot;Pvt. Mark:&quot;)]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text426" Left="387.89" Top="18.9" Width="66.15" Height="18.9" Visible="false" CanShrink="true" Text="[IIf([SPReportSaleBill.CourierDate] == DateTime.Parse(&quot;1900-01-01&quot;), &quot;&quot;, &quot;Cour Dt.&quot;)]" Font="Arial, 9pt, style=Bold"/>
+      <ShapeObject Name="Shape8" Left="9.89" Width="697.41" Height="122.85"/>
+      <TextObject Name="Text427" Left="529.64" Top="56.7" Width="170.1" Height="18.9" Text="[SPReportSaleBill.CompName]" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text428" Left="539.09" Top="94.5" Width="160.65" Height="18.9" Text="Authorised Signatory&#13;&#10;" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text429" Left="11.34" Top="122.85" Width="699.3" Height="28.35" Text="We declare that this invoice shows the actual price of the goods described and that all particulars are true &amp; correct. All disputes if any subject to Delhi Jurisdiction." Font="Arial, 8pt"/>
+    </PageFooterBand>
+  </ReportPage>
+  <ReportPage Name="Page2" RawPaperSize="9" LeftMargin="7" TopMargin="7" RightMargin="7" BottomMargin="7" Watermark.Font="Arial, 60pt">
+    <GroupHeaderBand Name="GroupHeader4" Width="740.88" Height="28.35" Condition="[rpttaxhsn.SaleBillEntryId]">
+      <ShapeObject Name="Shape4" Left="1.6" Width="698.54" Height="28.35" Fill.Color="LightGray"/>
+      <TextObject Name="Text291" Left="181.45" Width="66.15" Height="18.9" Text="CGST %" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text297" Left="237.15" Width="75.6" Height="18.9" Text="CGST Amt" HorzAlign="Right" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text298" Left="319.1" Width="56.7" Height="18.9" Text="SGST %" HorzAlign="Right" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text299" Left="379.9" Width="85.05" Height="18.9" Text="SGST Amt" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text300" Left="532.45" Width="75.6" Height="18.9" Text="IGST Amt" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text301" Left="470.75" Width="56.7" Height="18.9" Text="IGST %" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text343" Left="9.45" Width="85.05" Height="18.9" Text="HSN Code" Font="Arial, 9pt, style=Bold" TextFill.Color="Brown"/>
+      <TextObject Name="Text345" Left="94.5" Width="85.05" Height="18.9" Text="Taxable Amt" Font="Arial, 9pt, style=Bold" TextFill.Color="Brown"/>
+      <GroupHeaderBand Name="GroupHeader3" Top="32.35" Width="740.88" Condition="[rpttaxhsn.HSNNO]">
+        <DataBand Name="Data2" Top="36.35" Width="740.88" Height="18.9" DataSource="Table1">
+          <TextObject Name="Text397" Left="9.45" Width="66.15" Height="18.9" Text="[rpttaxhsn.HSNNO]" Font="Arial, 10pt"/>
+          <TextObject Name="Text399" Left="189" Width="28.35" Height="18.9" Text="[rpttaxhsn.CGSTPer]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+          <TextObject Name="Text400" Left="245.7" Width="66.15" Height="18.9" Text="[rpttaxhsn.CGSTAmt]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+          <TextObject Name="Text401" Left="330.75" Width="28.35" Height="18.9" Text="[rpttaxhsn.SGSTPer]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+          <TextObject Name="Text402" Left="378" Width="85.05" Height="18.9" Text="[rpttaxhsn.SGSTAmt]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+          <TextObject Name="Text403" Left="472.5" Width="28.35" Height="18.9" Text="[rpttaxhsn.IGSTPer]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+          <TextObject Name="Text404" Left="529.2" Width="94.5" Height="18.9" Text="[rpttaxhsn.IGSTAmt]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+          <TextObject Name="Text408" Left="94.5" Width="94.5" Height="18.9" Text="[rpttaxhsn.TaxableAmt]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+          <TextObject Name="Text430" Left="2.65" Width="9.45" Height="18.9" Border.Lines="Left" GrowToBottom="true" Font="Arial, 8pt"/>
+          <TextObject Name="Text431" Left="680.4" Width="18.9" Height="18.9" Border.Lines="Right" GrowToBottom="true" Font="Arial, 8pt"/>
+        </DataBand>
+      </GroupHeaderBand>
+      <GroupFooterBand Name="GroupFooter1" Top="59.25" Width="740.88">
+        <LineObject Name="Line22" Width="699.3"/>
+      </GroupFooterBand>
+    </GroupHeaderBand>
+  </ReportPage>
+</Report>
