@@ -36,7 +36,7 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetLedgerGroup"));
-                SqlParams.Add(new SqlParameter("@AccountCode",  AccountCode));
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerOpeningEntry", SqlParams);
             }
             catch (Exception ex)
@@ -86,8 +86,8 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
-        } 
-        public async Task<ResponseResult> GetAmountAndType (int AccountCode, int OpeningForYear, string ActualEntryDate)
+        }
+        public async Task<ResponseResult> GetAmountAndType(int AccountCode, int OpeningForYear, string ActualEntryDate)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -107,7 +107,7 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
-        } 
+        }
         public async Task<ResponseResult> GetLedgersByGroup(string groupAccountCode)
         {
             var _ResponseResult = new ResponseResult();
@@ -145,14 +145,15 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-       
+
         public async Task<ResponseResult> SaveWorkOrderProcess(LedgerOpeningEntryModel model)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
+
                 var SqlParams = new List<dynamic>();
-               // DateTime entDt = DateTime.Now;
+                // DateTime entDt = DateTime.Now;
                 var upDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
                 var entDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
                 //DateTime? entDt = string.IsNullOrEmpty(model.ActualEntryDate)
@@ -166,6 +167,7 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@Updationdate", upDt));
                     SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
                     SqlParams.Add(new SqlParameter("@GroupAccountCode", model.GroupAccountCode));
+                    SqlParams.Add(new SqlParameter("@updatedby", model.Createdby));
                     //SqlParams.Add(new SqlParameter("@DrCr", string.IsNullOrEmpty(model.DrCr) ? "" : model.DrCr));
                     //SqlParams.Add(new SqlParameter("@Amount", model.Amount == 0 ? 0 : model.Amount));
                 }
@@ -174,6 +176,7 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                     SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode == 0 ? 0 : model.AccountCode));
                     SqlParams.Add(new SqlParameter("@GroupAccountCode", model.GroupAccountCode == 0 ? 0 : model.GroupAccountCode));
+                    SqlParams.Add(new SqlParameter("@CreatedBy", model.Createdby));
                     //SqlParams.Add(new SqlParameter("@GroupAccountCode", model.GroupCode == 0 ? 0 : model.GroupCode));
                 }
 
@@ -184,7 +187,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", entDt));
                 SqlParams.Add(new SqlParameter("@PreviousAmount", model.PreviousAmount == 0 ? 0 : model.PreviousAmount));
                 SqlParams.Add(new SqlParameter("@EntryByEmpId", model.EntryByEmpId == 0 ? 0 : model.EntryByEmpId));
-               
+                SqlParams.Add(new SqlParameter("@IPAddress", model.IPAddress));
+
                 SqlParams.Add(new SqlParameter("@CC", model.CC == null ? "" : model.CC));
 
 
@@ -277,7 +281,7 @@ namespace eTactWeb.Data.DAL
                             Amount = Convert.ToInt32(row["Amount"].ToString()),
                             CC = DS.Tables[0].Rows[0]["CC"].ToString(),
                             EntryByEmpId = Convert.ToInt32(row["EntryByEmpId"].ToString()),
-                             ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"].ToString(),
+                            ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"].ToString(),
                             //ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]): (DateTime?)null,
                             UpdatedByEmpId = Convert.ToInt32(row["UpdatedByEmpId"].ToString()),
                             Updationdate = DS.Tables[0].Rows[0]["Updationdate"].ToString(),
@@ -294,17 +298,18 @@ namespace eTactWeb.Data.DAL
                 throw;
             }
         }
-        public async Task<ResponseResult> GetDashboardData()
+        public async Task<ResponseResult> GetDashboardData(int userID)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
-            //    DateTime currentDate = DateTime.Today;
-            //    DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+                //    DateTime currentDate = DateTime.Today;
+                //    DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
+                SqlParams.Add(new SqlParameter("@CreatedBy", userID));
 
-                _ResponseResult = await _IDataLogic .ExecuteDataSet("AccSPLedgerOpeningEntry", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSPLedgerOpeningEntry", SqlParams);
             }
             catch (Exception ex)
             {
@@ -314,7 +319,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<LedgerOpeningEntryDashBoardGridModel> GetDashboardDetailData(string GroupName,string LedgerName,float PreviousAmount, string DrCr)
+        public async Task<LedgerOpeningEntryDashBoardGridModel> GetDashboardDetailData(string GroupName, int userID, string LedgerName, float PreviousAmount, string DrCr)
         {
             DataSet? oDataSet = new DataSet();
             var model = new LedgerOpeningEntryDashBoardGridModel();
@@ -329,10 +334,11 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@GroupName", string.IsNullOrEmpty(GroupName) ? DBNull.Value : GroupName);
                     oCmd.Parameters.AddWithValue("@LedgerName", string.IsNullOrEmpty(LedgerName) ? DBNull.Value : LedgerName);
+                    oCmd.Parameters.AddWithValue("@CreatedBy", userID);
 
                     oCmd.Parameters.AddWithValue("@Amount", PreviousAmount);
                     oCmd.Parameters.AddWithValue("@DrCr", DrCr);
-                    
+
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                     {
@@ -342,24 +348,24 @@ namespace eTactWeb.Data.DAL
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
                     model.LedgerOpeningEntryDashBoardGrid = (from DataRow dr in oDataSet.Tables[0].Rows
-                                                       select new LedgerOpeningEntryDashBoardGridModel
-                                                       {
-                                                           GroupName = dr.IsNull("GroupName") ? string.Empty : dr["GroupName"].ToString(),
-                                                           LedgerName = dr.IsNull("LedgerName") ? string.Empty : dr["LedgerName"].ToString(),
-                                                           ClosingYearCode = dr.IsNull("ClosingYearCode") ? 0 : Convert.ToInt32(dr["ClosingYearCode"]),
-                                                           AccountCode = dr.IsNull("AccountCode") ? 0 : Convert.ToInt32(dr["AccountCode"]),
-                                                           DrCr = dr.IsNull("DrCr") ? string.Empty : dr["DrCr"].ToString(),
-                                                           Amount = dr.IsNull("Amount") ? 0 : Convert.ToInt32(dr["Amount"]),
-                                                           CC = dr.IsNull("CC") ? string.Empty : dr["CC"].ToString(),
-                                                           EntryByEmployee = dr.IsNull("EntryByEmployee") ? string.Empty : dr["EntryByEmployee"].ToString(),
-                                                           ActualEntryDate = dr.IsNull("ActualEntryDate") ? string.Empty : Convert.ToDateTime(dr["ActualEntryDate"]).ToString("dd-MM-yyyy"),
-                                                           GroupAccountCode = dr.IsNull("GroupAccountCode") ? 0 : Convert.ToInt32(dr["GroupAccountCode"]),
-                                                           UpdatedByEmployee = dr.IsNull("UpdatedByEmployee") ? string.Empty : dr["UpdatedByEmployee"].ToString(),
-                                                           Updationdate = dr.IsNull("Updationdate") ? string.Empty : Convert.ToDateTime(dr["Updationdate"]).ToString("dd-MM-yyyy"),
-                                                           EntryByMachine = dr.IsNull("EntryByMachine") ? string.Empty : dr["EntryByMachine"].ToString()
+                                                             select new LedgerOpeningEntryDashBoardGridModel
+                                                             {
+                                                                 GroupName = dr.IsNull("GroupName") ? string.Empty : dr["GroupName"].ToString(),
+                                                                 LedgerName = dr.IsNull("LedgerName") ? string.Empty : dr["LedgerName"].ToString(),
+                                                                 ClosingYearCode = dr.IsNull("ClosingYearCode") ? 0 : Convert.ToInt32(dr["ClosingYearCode"]),
+                                                                 AccountCode = dr.IsNull("AccountCode") ? 0 : Convert.ToInt32(dr["AccountCode"]),
+                                                                 DrCr = dr.IsNull("DrCr") ? string.Empty : dr["DrCr"].ToString(),
+                                                                 Amount = dr.IsNull("Amount") ? 0 : Convert.ToInt32(dr["Amount"]),
+                                                                 CC = dr.IsNull("CC") ? string.Empty : dr["CC"].ToString(),
+                                                                 EntryByEmployee = dr.IsNull("EntryByEmployee") ? string.Empty : dr["EntryByEmployee"].ToString(),
+                                                                 ActualEntryDate = dr.IsNull("ActualEntryDate") ? string.Empty : Convert.ToDateTime(dr["ActualEntryDate"]).ToString("dd-MM-yyyy"),
+                                                                 GroupAccountCode = dr.IsNull("GroupAccountCode") ? 0 : Convert.ToInt32(dr["GroupAccountCode"]),
+                                                                 UpdatedByEmployee = dr.IsNull("UpdatedByEmployee") ? string.Empty : dr["UpdatedByEmployee"].ToString(),
+                                                                 Updationdate = dr.IsNull("Updationdate") ? string.Empty : Convert.ToDateTime(dr["Updationdate"]).ToString("dd-MM-yyyy"),
+                                                                 EntryByMachine = dr.IsNull("EntryByMachine") ? string.Empty : dr["EntryByMachine"].ToString()
 
 
-                                                       }).ToList();
+                                                             }).ToList();
                 }
             }
             catch (Exception ex)
@@ -374,7 +380,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<ResponseResult> DeleteByID(int AC, int YC)
+        public async Task<ResponseResult> DeleteByID(int AC, int YC, int userID)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -383,6 +389,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@AccountCode", AC));
                 SqlParams.Add(new SqlParameter("@CloseYearcode", YC));
+                SqlParams.Add(new SqlParameter("@CreatedBy", userID));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerOpeningEntry", SqlParams);
             }
             catch (Exception ex)
@@ -394,5 +401,55 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+        public async Task<ResponseResult> GetAccountCodeandParentAccountCode(string AccountName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetAccountCodeandParentAccountCode"));
+                SqlParams.Add(new SqlParameter("@AccountName", AccountName));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerOpeningEntry", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> UpdateMultipleDataFromExcel(DataTable ItemDetailGrid, string flag, int CloseingYearCode, string MachineName, string IPAddress, string CC, int EntryByEmpId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>
+        {
+            new SqlParameter("@Flag", flag),
+            new SqlParameter("@CloseYearcode", CloseingYearCode),
+            new SqlParameter("@EntryByMachine", MachineName),
+            new SqlParameter("@IPAddress", IPAddress),
+            new SqlParameter("@CC", CC),
+            new SqlParameter("@EntryByEmpId", EntryByEmpId),
+
+            new SqlParameter("@ExcelData", ItemDetailGrid)
+        };
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerOpeningEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
     }
 }

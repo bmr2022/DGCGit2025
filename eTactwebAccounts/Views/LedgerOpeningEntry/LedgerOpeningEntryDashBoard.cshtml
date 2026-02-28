@@ -10,7 +10,7 @@
                 <h5>
                     Ledger Opening Entry - <strong>Dashboard</strong>
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-action="LedgerOpeningEntry" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                        <a asp-action="LedgerOpeningEntry" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                             <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                             Add New
                         </a>
@@ -31,7 +31,7 @@
                                         <label class="form-label">To Date</label>
                                         <input asp-for="ToDate" class="form-control" />
                                     </div>
-                                     <input asp-for="FromDate1" type="hidden" />
+                                    <input asp-for="FromDate1" type="hidden" />
                                     <input asp-for="ToDate1" type="hidden" />
                                     <input type="hidden" asp-for="EntryByMachine" value="@Environment.MachineName" />
                                     <input type="hidden" class="form-control" asp-for="ParentAccountCode" />
@@ -73,7 +73,7 @@
                                     }
                                 </select>
                             </div>
-                           
+
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label class="form-label">Global search</label>
@@ -118,7 +118,7 @@
 {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            
+
             GetDetailData();
         });
 
@@ -132,7 +132,7 @@
             $('#OpeningForYear').rules("remove", "required");
             GetAllGroupName();
             GetAllLedgerName();
-            
+
         });
         function GetFormRights() {
 
@@ -149,29 +149,29 @@
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#viewCursorDiv-' + i).empty();
                                 $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
-                                                                                                        <span class="fa-stack">
-                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                                                                                        </span>
-                                                                                                    </a>`);
+                                                                                                                <span class="fa-stack">
+                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                                                </span>
+                                                                                                            </a>`);
                             }
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#editCursorDiv-' + i).empty();
                                 $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
-                                                                                                                <span class="fa-stack">
-                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                                                                                </span>
-                                                                                                            </a>`);
+                                                                                                                        <span class="fa-stack">
+                                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                                                        </span>
+                                                                                                                    </a>`);
                             }
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#deleteCursorDiv-' + i).empty();
                                 $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
-                                                                                                                <span class="fa-stack">
-                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                                                                                </span>
-                                                                                                            </a>`);
+                                                                                                                        <span class="fa-stack">
+                                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                                                        </span>
+                                                                                                                    </a>`);
                             }
                             $("#divDashboardGrid").css("display", "none");
                             $(".totalrows").css("display", "none");
@@ -196,33 +196,33 @@
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#viewCursorDiv-' + i).empty();
                                         $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
-                                                                        <span class="fa-stack">
-                                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                                                        </span>
-                                                                    </a>`);
+                                                                                <span class="fa-stack">
+                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                </span>
+                                                                            </a>`);
                                     }
                                 }
                                 if (!optUpdate) {
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#editCursorDiv-' + i).empty();
                                         $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
-                                                                        <span class="fa-stack">
-                                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                                        </span>
-                                                                    </a>`);
+                                                                                <span class="fa-stack">
+                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                </span>
+                                                                            </a>`);
                                     }
                                 }
                                 if (!optDelete) {
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#deleteCursorDiv-' + i).empty();
                                         $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
-                                                                        <span class="fa-stack">
-                                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                                        </span>
-                                                                    </a>`);
+                                                                                <span class="fa-stack">
+                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                </span>
+                                                                            </a>`);
                                     }
                                 }
                                 if (!(optUpdate || optDelete || optView)) {
@@ -251,7 +251,7 @@
             $('#AccountCode').val($('#LedgerName').val());
         })
         $(function () {
-           
+
             if ($('#gateDashboardtable tr').length < 1) {
                 var dashGrid = 0;
                 $('#totalRows').text(dashGrid);
@@ -302,7 +302,7 @@
 
                 //fromdate
                 var day = originalFromDate.getDate();
-                var month = originalFromDate.getMonth() + 1; 
+                var month = originalFromDate.getMonth() + 1;
                 var year = originalFromDate.getFullYear();
 
                 var convertedFromDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
@@ -325,7 +325,7 @@
                 url: '@Url.Action("GetAllGroupName", "LedgerOpeningEntry")', // Action that returns FillGroup data
                 type: 'GET',
                 success: function (response, status, error) {
-                     
+
                     var groupDropdown = $('#GroupName');
                     var obj = $.parseJSON(response);
                     groupDropdown.empty(); // Clear existing options
@@ -373,7 +373,7 @@
 
         }
         // $(document).on('select2:select', '#GroupName,#LedgerName', function (e) {
-        //      
+        //
         //     var cntId = e.target.id;
         //     if (cntId == 'GroupName') {
         //         ItemNameChange(cntId);
@@ -384,12 +384,12 @@
         // });
 
         // function ItemNameChange(ID) {
-        //      
+        //
         //     SetPartCodeItemName(ID);
         // }
 
         // function PartCodeChange(ID) {
-        //      
+        //
         //     $.when(SetPartCodeItemName(ID)).done(function () {
         //     });
         // }
@@ -397,7 +397,7 @@
         // function SetPartCodeItemName(ID) {
         //     if (!ID) return;
         //     else {
-        //          
+        //
         //         var v = $('#' + ID).select2('val');
         //         if (ID == "LedgerName") {
         //             $("#GroupName").val(v).trigger("change");
@@ -410,13 +410,13 @@
         // }
 
         function GetDetailData() {
-             
+
             var requestData = {
                 SParam: $('#SParam').serializeArray(),
-               // PreviousAmount: $('#PreviousAmount').val(),
+                // PreviousAmount: $('#PreviousAmount').val(),
                 //LedgerName: $('#LedgerName').val() || $('#LedgerName').find(':selected').val(),
-               // GroupName: $('#GroupName').val(),
-               // DrCr: $('#DrCr').val()
+                // GroupName: $('#GroupName').val(),
+                // DrCr: $('#DrCr').val()
             };
             console.log("Data From DashBoard:", requestData)
             $.ajax({
@@ -443,14 +443,14 @@
                 }
             });
         }
-      function GetSearchDetailData() {
-             
+        function GetSearchDetailData() {
+
             var requestData = {
                 SParam: $('#SParam').serializeArray(),
-               PreviousAmount: $('#PreviousAmount').val(),
+                PreviousAmount: $('#PreviousAmount').val(),
                 LedgerName: $('#LedgerName').val() || $('#LedgerName').find(':selected').val(),
-               GroupName: $('#GroupName').val(),
-               DrCr: $('#DrCr').val()
+                GroupName: $('#GroupName').val(),
+                DrCr: $('#DrCr').val()
             };
             console.log("Data From DashBoard:", requestData)
             $.ajax({
@@ -460,11 +460,11 @@
                 async: false,
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
-                    if ($('#gateDashboardtable').val() == '') {
+                    if ($('#divDashboardGrid tr').length < 1) {
                         var dashGrid = 0;
                         $('#totalRows').text(dashGrid);
                     } else {
-                        var dashGrid = $('#gateDashboardtable tr').length;
+                        var dashGrid = $('#divDashboardGrid tr').length - 1;
                         $('#totalRows').text(dashGrid);
                     }
                     GetFormRights();
@@ -477,8 +477,8 @@
                 }
             });
         }
-      
-       
+
+
 
         function GetServerDate() {
             $.ajax({
@@ -493,21 +493,29 @@
                 }
             });
         }
-       
+
 
         var currentSearchColumn = null;
-
         $("#search-box").on("keyup", function () {
-
             var value = $(this).val().toLowerCase();
+            var totalVisible = 0; // counter for visible rows
+
             $("#gateDashboardtable tr").filter(function () {
                 if (currentSearchColumn !== null) {
                     var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
-                    $(this).toggle(columnText.indexOf(value) > -1);
+                    var isVisible = columnText.indexOf(value) > -1;
+                    $(this).toggle(isVisible);
+                    if (isVisible) totalVisible++;
                 } else {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    var isVisible = $(this).text().toLowerCase().indexOf(value) > -1;
+                    $(this).toggle(isVisible);
+                    if (isVisible) totalVisible++;
                 }
+
             });
+
+            // Update total rows dynamically
+            $('#totalRows').text(totalVisible);
         });
 
 
@@ -546,12 +554,12 @@
         });
 
         function confirmDelete(event) {
-             
+
             event.preventDefault();
             if (confirm("Are you sure you want to delete this entry?")) {
                 var urlHref = $(event.currentTarget).attr("href");
                 var linkUrl = urlHref;
-                
+
                 // linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() +
                 //     "&ToDate=" + $('#ToDate').val() +
                 //     "&GroupName=" + $('#GroupName').val() +
@@ -574,20 +582,20 @@
             event.preventDefault();
             if (confirm("Are you sure you want to Edit this entry?")) {
                 // Get the automatically generated href
-                 
+
                 var linkUrl = $(event.currentTarget).attr("href");
-                
+
                 // Redirect to the new URL
                 window.location.href = linkUrl;
             }
         }
 
-        
 
 
 
-        
-        
+
+
+
     </script>
     <script src="~/Scripts/table2excel.js"></script>
 }

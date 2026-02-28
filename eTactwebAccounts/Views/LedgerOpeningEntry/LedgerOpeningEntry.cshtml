@@ -24,7 +24,7 @@
     <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
 </head>
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="LedgerOpeningEntry" asp-controller="LedgerOpeningEntry" method="post" autocomplete="on" class="form-horizontal" >
+    <form asp-action="LedgerOpeningEntry" asp-controller="LedgerOpeningEntry" method="post" autocomplete="on" class="form-horizontal">
         <div class="card-header card-headerBG text-light bg-gradient">
             <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
                 <h5>
@@ -36,7 +36,7 @@
                         </a>
                         <div class="row justify-content-between g-2">
                             <div class="col-auto">
-                               @*  <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                                @*  <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
                                 <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
                                 <input asp-for="WOProcEntryIdBack" type="hidden" value="@Model.WOProcEntryIdBack" />
                                 <input asp-for="EntryDateBack" type="hidden" value="@Model.EntryDateBack" />
@@ -67,7 +67,7 @@
                                         REFRESH
                                     </a>
                                 </div>
-                               
+
                             }
                         </div>
                     </span>
@@ -86,33 +86,33 @@
                         <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
                             <div class="accordion-body">
                                 <div class="row g-2">
-                                        <input type="hidden" asp-for="EntryByMachine" value="@Environment.MachineName" />
-                                        <input type="hidden" asp-for="ActualEntryDate" class="form-control"  />
-                                        <input type="hidden" asp-for="OpeningForYear" class="form-control" value="@Model.OpeningForYear" />
-                                        <input type="hidden" asp-for="CC" class="form-control" value="@Model.CC"  />
-                                        <input type="hidden" asp-for="EntryByEmpId" class="form-control" value="@Model.EntryByEmpId"  />
-                                        <input type="hidden" asp-for="UpdatedByEmpId" class="form-control" value="@Model.UpdatedByEmpId"  />
-                                        <input type="hidden" asp-for="Updationdate" class="form-control" value="@Model.Updationdate"  />
-                                        <input type="hidden" asp-for="Amount" class="form-control" value="@Model.Amount"  />
-                                        <input type="hidden" value="@Model.Mode" asp-for="Mode" />
-                                   
+                                    <input type="hidden" asp-for="EntryByMachine" value="@Environment.MachineName" />
+                                    <input type="hidden" asp-for="ActualEntryDate" class="form-control" />
+                                    <input type="hidden" asp-for="OpeningForYear" class="form-control" value="@Model.OpeningForYear" />
+                                    <input type="hidden" asp-for="CC" class="form-control" value="@Model.CC" />
+                                    <input type="hidden" asp-for="EntryByEmpId" class="form-control" value="@Model.EntryByEmpId" />
+                                    <input type="hidden" asp-for="UpdatedByEmpId" class="form-control" value="@Model.UpdatedByEmpId" />
+                                    <input type="hidden" asp-for="Updationdate" class="form-control" value="@Model.Updationdate" />
+                                    <input type="hidden" asp-for="Amount" class="form-control" value="@Model.Amount" />
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="GroupName" class="form-label">Ledger Group</label>
                                         <input asp-for="GroupAccountCode" class="form-control" type="hidden" value="@Model.GroupAccountCode" />
-                                 @*        <input asp-for="GroupCode" class="form-control" type="hidden" value="@Model.GroupCode" /> *@
+                                        @*        <input asp-for="GroupCode" class="form-control" type="hidden" value="@Model.GroupCode" /> *@
                                         <select disabled asp-for="GroupName" id="GroupName" class="form-control" data-is-update-mode="@((Model?.Mode == "U" || Model?.Mode == "V") ? "true" : "false")">
                                             <option value="@Model.GroupAccountCode">-Select-</option>
                                             @* <option value="@Model.AccountCode">-Select-</option>*@
                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                             {
                                                 <option value="@Model.AccountCode" selected>@Model.GroupName</option>
-                                            } 
+                                            }
                                         </select>
                                     </div>
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="LedgerName" class="form-label" style="color:red">Ledger Name*</label>
-                                        <input type="hidden" class="form-control" asp-for="AccountCode" value="@Model.AccountCode"  />
+                                        <input type="hidden" class="form-control" asp-for="AccountCode" value="@Model.AccountCode" />
                                         @* <input asp-for="AccountCode" class="form-control" type="hidden" value="@Model.AccountCode" /> *@
                                         <select asp-for="LedgerName" id="LedgerName" class="form-control" required data-is-update-mode="@((Model?.Mode == "U" || Model?.Mode == "V") ? "true" : "false")">
                                             @* <option value="@Model.GroupAccountCode">-Select-</option>  *@
@@ -126,10 +126,10 @@
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="ClosingYearCode" class="form-label" style="color:red">Closing Year*</label>
                                         <input asp-for="FinFromDate" type="hidden" value="@Model.FinFromDate" />
-                                        <input asp-for="ClosingYearCode" class="form-control" value="@Model.ClosingYearCode" readonly  />
-                                    
+                                        <input asp-for="ClosingYearCode" class="form-control" value="@Model.ClosingYearCode" readonly />
+
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="PreviousAmount" class="form-label">Amount</label>
                                         <input id="PreviousAmount" type="text" asp-for="PreviousAmount" class="form-control" value="@Model.Amount" />
                                         <span asp-validation-for="PreviousAmount" class="text-danger"></span>
@@ -153,7 +153,7 @@
                                             </button>
                                         </div>
                                     }
-                                    else
+                                    else if (Model.Mode != "V")
                                     {
                                         <div class="col-auto" style="margin-top:28px; ">
                                             <button type="submit" class="btn btn-primary btn-sm submitBTN">
@@ -163,117 +163,156 @@
                                         </div>
                                     }
                                     <div class="row">
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
-                                        <label asp-for="EntryByEmpName" class="form-label">Created By</label>
-                                        <input type="hidden" asp-for="EntryByEmpId" class="form-control" readonly />
-                                        <input asp-for="EntryByEmpName" class="form-control" readonly />
+                                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
+                                            <label asp-for="EntryByEmpName" class="form-label">Created By</label>
+                                            <input type="hidden" asp-for="EntryByEmpId" class="form-control" readonly />
+                                            <input asp-for="EntryByEmpName" class="form-control" readonly />
+                                        </div>
+                                        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                            <label asp-for="CC" class="form-label">CC</label>
+                                            <input asp-for="CC" class="form-control" readonly />
+                                        </div>
+                                        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                            <label asp-for="EntryByMachine" class="form-label">Entered by Machine Name</label>
+                                            <input asp-for="EntryByMachine" class="form-control" readonly value="@Environment.MachineName" />
+                                        </div>
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
-                                        <label asp-for="CC" class="form-label">CC</label>
-                                        <input asp-for="CC" class="form-control" readonly />
-                                    </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
-                                        <label asp-for="EntryByMachine" class="form-label">Entered by Machine Name</label>
-                                        <input asp-for="EntryByMachine" class="form-control" readonly value="@Environment.MachineName" />
-                                    </div>
-                                    </div>
-                                    
+
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
                             </div>
+
                         </div>
 
                     </div>
-                    
                 </div>
-            </div>
-             
 
-            <div class="card-footer p-3">
-                <div class="row justify-content-between g-2">
-                    <div class="card-header card-headerBG text-light bg-gradient">
-                        <h5>
+
+                <div class="card-footer p-3">
+                    <div class="row justify-content-between g-2">
+                        <div class="card-header card-headerBG text-light bg-gradient">
+                            <h5>
                                 <strong>Ledger Opening Entry: @Model.OpeningForYear</strong>
 
-                            <span class="d-flex float-end" style="margin-top:-2px;">
-                                 
-                                @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-                                <a asp-action="LedgerOpeningEntryDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
-                                    <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
-                                    Dashboard
-                                </a>
-                                @*<partial name="_FormsButton" />*@
-                                <div class="row justify-content-between g-2">
-                                    <div class="col-auto">
-                                          <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+
+                                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                                    <a asp-action="LedgerOpeningEntryDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                        Dashboard
+                                    </a>
+                                    @*<partial name="_FormsButton" />*@
+                                    <div class="row justify-content-between g-2">
+                                        <div class="col-auto">
+                                            <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
                                             <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
                                             <input asp-for="GroupNameBack" type="hidden" value="@Model.GroupNameBack" />
                                             <input asp-for="LedgerNameBack" type="hidden" value="@Model.LedgerNameBack" />
                                             <input asp-for="OpeningForYearBack" type="hidden" value="@Model.OpeningForYearBack" />
                                             <input asp-for="PreviousAmountBack" type="hidden" value="@Model.PreviousAmountBack" />
                                             <input asp-for="DrCrBack" type="hidden" value="@Model.DrCrBack" />
-                                        <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
-                                           
-                                        @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
-                                        <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
-                                            <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
-                                            BACK
-                                        </a>
-                                    </div>
-                                    @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
-                                    {
-                                        <div class="col-auto">
-                                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                                            <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
-                                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
-                                                <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-                                                REFRESH
+                                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+
+                                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                                BACK
                                             </a>
                                         </div>
-                                        
-                                    }
-                                </div>
-                            </span>
-                        </h5>
+                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                        {
+                                            <div class="col-auto">
+                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+
+                                        }
+                                    </div>
+                                </span>
+                            </h5>
+                        </div>
                     </div>
                 </div>
-            </div>
     </form>
 </div>
 
 @section Scripts {
     <script>
-
         $('.submitBTN').click(function (e) {
-             
-            e.preventDefault(); // Prevent default form submission
+
+            e.preventDefault();
+            if (!validation()) return;
+
+
+            $.ajax({
+                url: $('form').attr('action'),
+                type: $('form').attr('method'),
+                data: $('form').serialize(),
+                beforeSend: function () {
+                    $('#ajaxLoader').show(); // ✅ Show loader
+                },
+                success: function (response) {
+
+                    // Success from controller
+                    if (response.success) {
+                        if (response.redirectUrl) {
+                            window.location.href = response.redirectUrl;
+                        } else {
+                            $.notify(response.message, "error");
+                        }
+
+
+                        $('#ajaxLoader').hide();
+                        // optional redirect
+                        // window.location.href = response.redirectUrl;
+                    }
+                    else {
+                        // SP StatusText / validation error
+                        $.notify(response.message, "error");
+                        $('#ajaxLoader').hide();
+                    }
+                },
+                error: function () {
+                    $.notify("Unexpected server error", "error");
+                }
+            });
+        });
+        function validation() {
 
             var isValid = true; // Flag to track validation status
 
-            if ($("#DrCr").val() == "" || $("#DrCr").val() == null) {
-                $.notify("Type can not be Blank", "error");
-                isValid = false;
-            }
+
             if ($("#LedgerName").val() == "" || $("#LedgerName").val() == null) {
                 $.notify("Ledger Name can not be Blank", "error");
                 isValid = false;
             }
-            if ($("#GroupName").val() == "" || $("#GroupName").val() == null) {
+            else if ($("#GroupName").val() == "" || $("#GroupName").val() == null) {
                 $.notify("Group Name can not be Blank", "error");
                 isValid = false;
             }
-            if ($("#ClosingYearCode").val() == "" || $("#ClosingYearCode").val() == null || $("#ClosingYearCode").val() == "0") {
+
+            else if ($("#ClosingYearCode").val() == "" || $("#ClosingYearCode").val() == null || $("#ClosingYearCode").val() == "0") {
                 $.notify("Closing Year Code can not be Blank or 0", "error");
                 isValid = false;
             }
-            if ($("#PreviousAmount").val() == "" || $("#PreviousAmount").val() == null || parseFloat($("#PreviousAmount").val()) == 0) {
+            else if ($("#PreviousAmount").val() == "" || $("#PreviousAmount").val() == null || parseFloat($("#PreviousAmount").val()) == 0) {
                 $.notify("Amount Year Code can not be Blank or 0", "error");
                 isValid = false;
             }
-            
-            if (isValid) {
-                $('form').submit(); // Submit form only if all conditions are met
+            else if ($("#DrCr").val() == "" || $("#DrCr").val() == null) {
+                $.notify("Type can not be Blank", "error");
+                isValid = false;
             }
-        });
+            return isValid;
+
+            // if (isValid) {
+            //     $('form').submit(); // Submit form only if all conditions are met
+            // }
+        }
 
         $(document).ready(function () {
             GetFormRights();
@@ -299,7 +338,7 @@
                 $('#GroupName').prop('disabled', true);
                 $('#LedgerName').prop('disabled', true);
             }
-             
+
             // console.log('GroupName mode:', $('#GroupName').data('is-update-mode'));
             // console.log('LedgerName mode:', $('#LedgerName').data('is-update-mode'));
             // if ($('#GroupName').data('is-update-mode') === "true") {
@@ -317,10 +356,10 @@
             // if ($('select[name="LedgerName"]').data('is-update-mode') === "true") {
             //     $('select[name="LedgerName"]').prop('disabled', true); // Disable the select element
             // }
-           
-           
+
+
         });
-       
+
 
         // $('#LedgerName').change(function () {
         //     GroupName();
@@ -359,30 +398,30 @@
                     $.notify(errMsg, { position: "top center", className: "error" });
                 }
             });
-         
+
         }
 
 
         $('#GroupName').change(function () {
-             if ($('#Mode').val() !== "U") {
+            if ($('#Mode').val() !== "U") {
                 $('#GroupAccountCode').val($('#GroupName').val());
             }
         });
-        
 
-         $('#LedgerName').change(function () {
-             if ($('#Mode').val() !== "U") {
+
+        $('#LedgerName').change(function () {
+            if ($('#Mode').val() !== "U") {
                 $('#AccountCode').val($('#LedgerName').val());
             }
         });
         $('#LedgerName').change(function () {
-             
+
             GetGroupByAccountCode();
             GetAmountAndType();
         });
 
         // $('#LedgerName').change(function () {
-        //      if ($('#Mode').val() !== "U") { 
+        //      if ($('#Mode').val() !== "U") {
         //         $('#AccountCode').val($('#LedgerName').val());
         //      }
         // });
@@ -428,20 +467,20 @@
         }
 
         function GetAmountAndType() {
-             
+
             var AccountCode = $('#LedgerName').val();
             var ActualEntryDate = $('#FinFromDate').val();
             var OpeningForYear = $('#ClosingYearCode').val();
             $.ajax({
                 url: '@Url.Action("GetAmountAndType", "LedgerOpeningEntry")', // Action that returns FillGroup data
                 type: 'GET',
-                data:{
+                data: {
                     AccountCode: AccountCode,
                     ActualEntryDate: ActualEntryDate,
                     OpeningForYear: OpeningForYear
                 },
                 success: function (response, status, error) {
-                     
+
                     var obj = $.parseJSON(response);
                     $('#PreviousAmount').val(obj.Result[0].OpnAmt);
                     var Type = obj.Result[0].OpnType;
@@ -458,7 +497,7 @@
         }
 
         function GetGroupByAccountCode() {
-              
+
             var AccountCode = $('#LedgerName').val();
             $.ajax({
                 url: '@Url.Action("GetGroupByAccountCode", "LedgerOpeningEntry")', // Action that returns FillGroup data
@@ -467,15 +506,15 @@
                     AccountCode: AccountCode
                 },
                 success: function (response, status, error) {
-                     
+
                     var groupDropdown = $('#GroupName');
                     var obj = $.parseJSON(response);
                     groupDropdown.empty(); // Clear existing options
                     //groupDropdown.append('<option value="">-- Select Group --</option>');
-                      
+
                     // Populate the group dropdown with options
                     $.each(obj.Result, function (index, group) {
-                         
+
                         groupDropdown.append('<option value="' + group.GroupCode + '">' + group.GroupName + '</option>');
                     });
                     $('#GroupAccountCode').val($('#GroupName').val());
@@ -484,7 +523,7 @@
                         var GroupCode = '@Model.GroupAccountCode';
                         $('#LedgerName').val(GroupCode).trigger("change");
                     }
-                  
+
                 },
                 error: function (xhr, status, error) {
                     alert('Failed to load groups.');
@@ -493,13 +532,13 @@
 
 
         }
-        
+
         function GetAllGroupName() {
             $.ajax({
                 url: '@Url.Action("GetAllGroupName", "LedgerOpeningEntry")', // Action that returns FillGroup data
                 type: 'GET',
                 success: function (response, status, error) {
-                      
+
                     var groupDropdown = $('#GroupName');
                     var obj = $.parseJSON(response);
                     groupDropdown.empty(); // Clear existing options
@@ -524,21 +563,21 @@
                 url: '@Url.Action("GetLedgersALLGroup", "LedgerOpeningEntry")', // Action that returns FillGroup data
                 type: 'GET',
                 success: function (response, status, error) {
-                        var ledgerDropdown = $('#LedgerName');
-                        var obj = $.parseJSON(response);
-                        ledgerDropdown.empty(); 
-                        ledgerDropdown.append('<option value="">-- Select Ledger --</option>');
+                    var ledgerDropdown = $('#LedgerName');
+                    var obj = $.parseJSON(response);
+                    ledgerDropdown.empty();
+                    ledgerDropdown.append('<option value="">-- Select Ledger --</option>');
 
-                       
-                        $.each(obj.Result, function (index, ledger) {
+
+                    $.each(obj.Result, function (index, ledger) {
                         ledgerDropdown.append('<option value="' + ledger.account_code + '">' + ledger.LedgerName + '</option>');
-                        });
-                        if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-                            var GroupCode = '@Model.AccountCode';
-                            $('#LedgerName').val(GroupCode).trigger("change");
-                        }
-                    },
+                        var GroupCode = '@Model.AccountCode';
+                        $('#LedgerName').val(GroupCode).trigger("change");
+                    }
+                },
                 error: function (xhr, status, error) {
                     alert('Failed to load groups.');
                 }
@@ -546,10 +585,10 @@
 
 
         }
-        
+
         $('#GridButton').click(function (e) {
             e.preventDefault();
-            
+
             var SchData = {
                 "GroupName": $('#GroupName').val(),
                 "LedgerName": $('#LedgerName').val(),
@@ -566,9 +605,10 @@
                 url: '@Url.Action("AddLedgerOpeningEntryGrid", "LedgerOpeningEntry")',
                 data: { model: SchData },
                 success: function (result, status, xhr) {
-                    if (xhr.status == 200 && xhr.responseText == result) {;
-                        $('#divStockGrid').html(result); 
-                        TotalNoOfRows(); 
+                    if (xhr.status == 200 && xhr.responseText == result) {
+                        ;
+                        $('#divStockGrid').html(result);
+                        TotalNoOfRows();
                     } else if (xhr.status == 207) {
                         $.notify('Duplicate Item...!', "info");
                     }
@@ -579,7 +619,7 @@
             });
         });
 
-       
+
 
         var isEditAllowed = "false";
 
@@ -655,14 +695,14 @@
             sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
             sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
             sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
-         
+
             window.history.back();
         }
 
-   
+
 
     </script>
-  
+
 
 }
 

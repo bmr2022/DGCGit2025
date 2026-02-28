@@ -12,7 +12,7 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL
 {
-    public class LedgerOpeningEntryBLL:ILedgerOpeningEntry
+    public class LedgerOpeningEntryBLL : ILedgerOpeningEntry
     {
         private LedgerOpeningEntryDAL _LedgerOpeningEntryDAL;
         private readonly IDataLogic _DataLogicDAL;
@@ -28,15 +28,15 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ResponseResult> GetLedgersByGroup(string groupAccountCode)
         {
-            return await _LedgerOpeningEntryDAL.GetLedgersByGroup( groupAccountCode);
+            return await _LedgerOpeningEntryDAL.GetLedgersByGroup(groupAccountCode);
         }
         public async Task<ResponseResult> GetGroupByAccountCode(int AccountCode)
         {
             return await _LedgerOpeningEntryDAL.GetGroupByAccountCode(AccountCode);
-        } 
+        }
         public async Task<ResponseResult> GetAmountAndType(int AccountCode, int OpeningForYear, string ActualEntryDate)
         {
-            return await _LedgerOpeningEntryDAL.GetAmountAndType( AccountCode,  OpeningForYear,  ActualEntryDate);
+            return await _LedgerOpeningEntryDAL.GetAmountAndType(AccountCode, OpeningForYear, ActualEntryDate);
         }
         public async Task<ResponseResult> GetLedgersALLGroup()
         {
@@ -54,17 +54,27 @@ namespace eTactWeb.Data.BLL
         {
             return await _LedgerOpeningEntryDAL.GetViewByID(AccountCode);
         }
-        public async Task<ResponseResult> GetDashboardData()
+        public async Task<ResponseResult> GetDashboardData(int userID)
         {
-            return await _LedgerOpeningEntryDAL.GetDashboardData();
+            return await _LedgerOpeningEntryDAL.GetDashboardData(userID);
         }
-        public async Task<LedgerOpeningEntryDashBoardGridModel> GetDashboardDetailData(string GroupName, string LedgerName, float PreviousAmount, string DrCr)
+        public async Task<LedgerOpeningEntryDashBoardGridModel> GetDashboardDetailData(string GroupName, int userID, string LedgerName, float PreviousAmount, string DrCr)
         {
-            return await _LedgerOpeningEntryDAL.GetDashboardDetailData( GroupName,  LedgerName, PreviousAmount,  DrCr);
+            return await _LedgerOpeningEntryDAL.GetDashboardDetailData(GroupName, userID, LedgerName, PreviousAmount, DrCr);
         }
-        public async Task<ResponseResult> DeleteByID(int AC, int YC)
+        public async Task<ResponseResult> DeleteByID(int AC, int YC, int userID)
         {
-            return await _LedgerOpeningEntryDAL.DeleteByID(AC, YC);
+            return await _LedgerOpeningEntryDAL.DeleteByID(AC, YC, userID);
+        }
+
+        public Task<ResponseResult> GetAccountCodeandParentAccountCode(string AccountName)
+        {
+            return _LedgerOpeningEntryDAL.GetAccountCodeandParentAccountCode(AccountName);
+        }
+
+        public async Task<ResponseResult> UpdateMultipleDataFromExcel(DataTable ItemDetailGrid, string flag, int CloseingYearCode, string MachineName, string IPAddress, string CC, int EntryByEmpId)
+        {
+            return await _LedgerOpeningEntryDAL.UpdateMultipleDataFromExcel(ItemDetailGrid, flag, CloseingYearCode, MachineName, IPAddress, CC, EntryByEmpId);
         }
     }
 }

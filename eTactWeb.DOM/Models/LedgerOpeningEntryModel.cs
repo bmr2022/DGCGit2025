@@ -11,7 +11,10 @@ namespace eTactWeb.DOM.Models
     [Serializable]
     public class LedgerOpeningEntryModel : LedgerOpeningEntryGridModel
     {
+        public int Createdby { get; set; }
         public int SrNO { get; set; }
+        public string? EntryByMachineName { get; set; }
+        public string? IPAddress { get; set; }
         public int AccountCode { get; set; }
         public int GroupAccountCode { get; set; }
         public int ParentAccountCode { get; set; }
