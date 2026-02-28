@@ -40,21 +40,251 @@
         line-height: 28px;
         width: 200px;
     }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+        background: #f2f6f9;
+    }
+
+    /* Top Bar */
+    .header {
+        background: #1f4e79;
+        color: white;
+        padding: 6px 12px;
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .small-btn {
+        background: #2e75b6;
+        border: none;
+        color: white;
+        padding: 4px 8px;
+        font-size: 11px;
+        cursor: pointer;
+        border-radius: 2px;
+        margin-left: 4px;
+    }
+
+        .small-btn.green {
+            background: #2e8b57;
+        }
+
+        .small-btn.red {
+            background: #c00000;
+        }
+
+    /* Grid Section */
+    .grid-header {
+        background: #4f81bd;
+        color: white;
+        padding: 4px 8px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed; /* Important - no scroll */
+        font-size: 11px;
+    }
+
+    th {
+        background: #dbe5f1;
+        border: 1px solid #b8cce4;
+        padding: 3px;
+    }
+
+    td {
+        border: 1px solid #d0d7e5;
+        padding: 2px;
+        text-align: center;
+    }
+
+    input {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 11px;
+        padding: 2px;
+        border: 1px solid #c5c5c5;
+        background: #ffffe0;
+        height: 20px;
+    }
+
+    .readonly {
+        background: #f5f5f5;
+    }
+
+    .delete-btn {
+        background: #c00000;
+        color: white;
+        border: none;
+        font-size: 10px;
+        padding: 2px 5px;
+        cursor: pointer;
+    }
+
+    /* Footer */
+    .footer {
+        background: #e7eff9;
+        padding: 6px;
+        font-size: 12px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+    }
+    /* Accordion Grid Wrapper */
+    .erp-grid-wrapper {
+        border: 1px solid #cfd8e3;
+        background: #ffffff;
+        margin-top: 8px;
+    }
+
+    /* Header */
+    .erp-grid-header {
+        background: linear-gradient(to right,#2f5597,#1f4e79);
+        color: white;
+        padding: 6px 10px;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Summary Right Side */
+    .erp-summary {
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    /* Add Button */
+    .erp-btn {
+        padding: 4px 10px;
+        font-size: 12px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .erp-btn-add {
+        background: #2e8b57;
+        color: white;
+    }
+
+        .erp-btn-add:hover {
+            background: #256f46;
+        }
+
+    /* Table container */
+    .erp-table-container {
+        width: 100%;
+        overflow: hidden; /* NO SCROLL */
+    }
+
+        /* Compact Table */
+        .erp-table-container table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        /* Header */
+        .erp-table-container th {
+            background: #dde6f5;
+            border: 1px solid #c5d0e6;
+            padding: 4px 3px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Body */
+        .erp-table-container td {
+            border: 1px solid #e0e6f2;
+            padding: 2px;
+            text-align: center;
+        }
+
+        /* Compact Inputs */
+        .erp-table-container input,
+        .erp-table-container select {
+            width: 100%;
+            height: 20px;
+            font-size: 11px;
+            padding: 2px;
+            border: 1px solid #c8ccd4;
+            background: #fffde6;
+            box-sizing: border-box;
+        }
+
+            /* Readonly fields */
+            .erp-table-container input[readonly] {
+                background: #f4f4f4;
+            }
+
+    /* Delete Button */
+    .erp-delete {
+        background: #c00000;
+        color: white;
+        border: none;
+        font-size: 10px;
+        padding: 2px 6px;
+        cursor: pointer;
+    }
+
+    /* Small numeric fields */
+    input.qty,
+    input.disc,
+    input.igstp,
+    input.cgstp,
+    input.sgstp {
+        text-align: right;
+    }
+
+    /* Very small columns */
+    .erp-table-container th:nth-child(1),
+    .erp-table-container td:nth-child(1) {
+        text-align: center;
+    }
+
+    /* Unit column */
+    .erp-table-container td:nth-child(5) input {
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    /* Tax % small */
+    .erp-table-container td:nth-child(11) input,
+    .erp-table-container td:nth-child(13) input,
+    .erp-table-container td:nth-child(15) input {
+        text-align: right;
+    }
+
+    /* Delete column */
+    .erp-table-container td:nth-child(17) {
+        padding: 0;
+    }
+    /* Increase tbody row height */
+    .erp-table-container tbody td {
+        height: 28px; /* adjust here */
+        vertical-align: middle;
+    }
+
+    /* Increase input height slightly */
+    .erp-table-container tbody input,
+    .erp-table-container tbody select {
+        height: 24px;
+    }
 </style>
+
+
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <form asp-action="SaleRejection" autocomplete="off" class="form-horizontal" enctype="multipart/form-data">
-        @*  @if (!string.IsNullOrEmpty(ViewBag.ResponseResult))
-        {
-        <div class="alert alert-danger">
-        @ViewBag.ResponseResult
-        </div>
-        }
-        else if (!string.IsNullOrEmpty(ViewBag.isSuccess))
-        {
-        <div class="alert alert-success">
-        @ViewBag.ResponseResult
-        </div>
-        } *@
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" asp-for="EID" />
         <div class="card-header card-headerBG text-light bg-gradient">
@@ -93,7 +323,7 @@
                     <div class="row justify-content-between g-2">
                         <div class="col-auto">
                             <input type="hidden" id="ShouldEinvoice" name="ShouldEinvoice" />
-                            <a href="#" class=" btn btn-primary btn-sm" onclick="ddBack()">
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="BackButtonData()">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
                             </a>
@@ -101,10 +331,6 @@
                         @if (Model.Mode != "V")
                         {
                             <div class="col-auto">
-                                @* <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
-                            <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-                            REFRESH
-                            </a> *@
                                 <a type="button" class="btn btn-secondary btn-sm" asp-action="SaleRejectionEdit"
                                    asp-controller="SaleRejection">
                                     <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
@@ -154,15 +380,22 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="HPanel2">
                         <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
-                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                            <div class="d-flex align-items-center">
+                                <i class="fa-solid fa-table-list fa-lg fa-fw fa-fade me-2"
+                                   style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>
+                                <strong class="text-uppercase">Item Detail Grid</strong>
+                            </div>
+
+                            <div class="d-flex justify-content-center align-items-center flex-grow-1">
+                                <strong class="me-2">BASIC TOTAL:</strong>
+                                <span class="me-4 text-warning lblItemNetAmount">0.00</span>
+                                <strong class="me-4">Total Qty : <span class="TotalQty"></span></strong>
+
+                                <strong class="me-2">TOTAL NO OF ITEMS:</strong>
+                                <span class="text-warning lblItemCount">0</span>
+                            </div>
                         </button>
                         <div class="d-flex justify-content-front align-items-center">
-                            @* <div class="col-auto">
-                            <button type="button" class="ItemBtn btn btn-sm btn-outline-danger">
-                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
-                            </button>
-                            </div> *@
-
                         </div>
                     </h2>
                     <div id="BPanel2" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel2">
@@ -174,165 +407,49 @@
                             <div class="card">
 
 
-                                <div class="card-body overflow-auto pb-0">
-                                    @*  <div class="table-responsive" style="max-height:150px;">
-                                    <table class="table table-hover table-bordered table-striped" id="poTable">
-                                    <thead class="bg-gradient card-headerBG text-light small" id="poThead" style="white-space:nowrap">
-                                    <tr id="headerRow">
-
-                                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
-                                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
-                                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec Qty</th>
-                                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale BillQty</th>
-                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillRate</th>
-                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rej Qty</th>
-                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rej Rate</th>
-                                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis %</th>
-                                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Amt</th>
-                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
-                                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SONO</th>
-                                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
-                                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO YC</th>
-                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
-
-
-                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
-                                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AgainstBillType JWSALE</th>
-                                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Against Bill No</th>
-                                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AgainstBill YC</th>
-                                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AgainstBill EntryId</th>
-                                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Against OpnOrBill</th>
-                                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
-                                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Size</th>
-                                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>NoOfCase</th>
-                                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Receive In Store</th>
-                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Amt</th>
-                                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust OrderNo</th>
-                                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec Storeid</th>
-                                    <th data-columnno="18" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Remark</th>
-                                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillremark</th>
-                                    </tr>
-
-                                    </thead>
-                                    <tbody id="divSaleRejectionList">
-                                    <partial name="_LoadSaleRejectionGrid" />
-
-                                    </tbody>
-                                    </table>
-                                    </div> *@
-
-                                    <div class="table-responsive" style="max-height:150px;">
-                                        <table class="table table-hover table-bordered table-striped" id="poTable">
-                                            <thead class="bg-gradient card-headerBG text-light small" id="poThead" style="white-space:nowrap">
-                                                <tr id="headerRow">
-
-                                                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Seq No</th>
-                                                    <th data-columnno="7" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> PartCode
-                                                    </th>
-                                                    <th data-columnno="8" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> ItemName
-                                                    </th>
-                                                    <th data-columnno="13" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Rec Qty
-                                                    </th>
-                                                    <th data-columnno="14" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> SaleBill Qty
-                                                    </th>
-                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBill Rate
-                                                    </th>
-                                                    <th data-columnno="15" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Rej Qty
-                                                    </th>
-                                                    <th data-columnno="16" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Rej Rate
-                                                    </th>
-                                                    <th data-columnno="22" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Discount %
-                                                    </th>
-                                                    <th data-columnno="23" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Discount Amt
-                                                    </th>
-                                                    <th data-columnno="17" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Amount
-                                                    </th>
-                                                    <th data-columnno="24" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> SONO
-                                                    </th>
-                                                    <th data-columnno="25" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> SO Date
-                                                    </th>
-                                                    <th data-columnno="26" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> SO YC
-                                                    </th>
-                                                    <th data-columnno="18" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Unit
-                                                    </th>
-                                                    <th data-columnno="2" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AgainstBillType JWSALE
-                                                    </th>
-                                                    <th data-columnno="3" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Against Bill No
-                                                    </th>
-                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AgainstBill YC
-                                                    </th>
-                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AgainstBill EntryId
-                                                    </th>
-                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Against OpnOrBill
-                                                    </th>
-
-                                                    <th data-columnno="9" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> HSN No
-                                                    </th>
-                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Item Size
-                                                    </th>
-                                                    <th data-columnno="11" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> No Of Case
-                                                    </th>
-                                                    <th data-columnno="12" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Rec Store Name
-                                                    </th>
-
-                                                    <th data-columnno="19" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Alt Qty
-                                                    </th>
-
-                                                    <th data-columnno="21" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Item Amount
-                                                    </th>
-                                                    <th data-columnno="27" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Cust Order No
-                                                    </th>
-                                                    <th data-columnno="28" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Rec Store ID
-                                                    </th>
-                                                    <th data-columnno="29" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Saleorder Remark
-                                                    </th>
-                                                    <th data-columnno="30" data-sortorder="asc" class="sortCol">
-                                                        <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Sale Bill Remark
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="divAddSaleRejectionList" style="background-color:lightgoldenrodyellow">
+                    @* <button class="add-btn" onclick="addRow()">+ Add Item</button> *@
+                                            <button id="btnAddNew" onclick="addRow()" class="erp-btn erp-btn-add">
+                                                + Add Item
+                                            </button>
+                                            <div class="erp-grid-wrapper">
+                                 <div class="erp-table-container">
+                                        <table id="ItemDetailTable">
+                                        <thead>
+                                            <tr>
+                                                    <th style="width:3%">SNo</th>
+                                                    <th style="width:8%">Item Code</th>
+                                                    <th style="width:15%">Item Name</th>
+                                                    <th style="width:4%">Qty</th>
+                                                    <th style="width:4%">Unit</th>
+                                                    <th style="width:6%">Rate</th>
+                                                    <th style="width:6%">Final Rate</th>
+                                                    <th style="width:4%">Disc%</th>
+                                                    <th style="width:7%">Amount</th>
+                                                    <th style="width:7%">Bill No</th>
+                                                    <th style="width:4%">IG%</th>
+                                                    <th style="width:6%">IG Amt</th>
+                                                    <th style="width:4%">CG%</th>
+                                                    <th style="width:6%">CG Amt</th>
+                                                    <th style="width:4%">SG%</th>
+                                                    <th style="width:6%">SG Amt</th>
+                                                    <th style="width:2%">X</th>
+                                            </tr>
+                                        </thead>
+                                            <tbody id="SaleRejectionBody">
                                                 <partial name="_AddSaleRejectionGrid" />
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                        </tbody>
+                                    </table>
                                 </div>
-                            </div>
+</div>
+</div>
                             <div class="progress my-3 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div class="row g-2 gx-3">
                                 <div class="col-12 text-center">
-                                    <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemNetAmount"></span></strong>
-                                    <strong>, TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
+                                    <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span class="lblItemNetAmount"></span></strong>
+                                    <strong>, TOTAL QTY : <span class="TotalQty"></span></strong>
+                                    <strong>, TOTAL NO OF ITEMS : <span class="lblItemCount"></span></strong>
                                 </div>
                             </div>
                         </div>
@@ -342,6 +459,10 @@
                     <h2 class="accordion-header" id="H_TaxDetail">
                         <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TaxDetail" aria-expanded="true" aria-controls="B_TaxDetail">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Tax Detail</strong>
+                            <div class="d-flex justify-content-center align-items-center flex-grow-1">
+                                <label asp-for="NetTotal" class="form-label">Net Total</label>
+                                <input asp-for="NetTotal" style="width:100px; background-color:ghostwhite !important" class="form-control NetTotal" onchange="onNetTotalChange()" readonly />
+                            </div>
                         </button>
                     </h2>
                     <div id="B_TaxDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_TaxDetail">
@@ -389,7 +510,7 @@
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="NetTotal" class="form-label">Net Total</label>
-                                    <input asp-for="NetTotal" class="form-control" readonly />
+                                    <input asp-for="NetTotal" class="form-control NetTotal" readonly />
                                 </div>
                             </div>
                         </div>
@@ -434,7 +555,7 @@
                                     <i class="fa-solid fa-grid-horizontal fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                     Dashboard
                                 </a>
-                                <a href="#" class=" btn btn-primary btn-sm" onclick="ddBack()">
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="BackButtonData()">
                                     <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                     BACK
                                 </a>
@@ -480,9 +601,392 @@
 </div>
 
 
+<div id="ajaxLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+        <span class="spinner-border text-primary" role="status"></span>
+        <br />
+        <span>Processing...</span>
+    </div>
+</div>
+
+
+
 @section Scripts
 {
     <script>
+
+        function LoadData() {
+
+            var saleBillNo = $('#SaleBillNo').val();
+
+            if (!saleBillNo) {
+                alert("Please enter Sale Bill No");
+                return;
+            }
+
+            $.ajax({
+                url: '/SaleRejection/LoadSaleBillData',
+                type: 'POST',
+                data: { saleBillNo: saleBillNo },
+                success: function (response) {
+
+                    // $('#SaleRejectionBody').html(response);
+                    $('#SaleRejectionBody').html(response);
+
+
+                },
+                error: function () {
+                    alert("Error loading data");
+                }
+            });
+        }
+
+
+        let rowIndex = 0;
+
+        function addRow() {
+
+            let table = $("#ItemDetailTable tbody");
+            let index = table.find("tr").length;
+
+            let row = `
+        <tr>
+        <td>${index + 1}</td>
+
+        <td><input name="ItemDetails[${index}].PartCode"
+                class="partcode-input "  /></td>
+
+        <td><input name="ItemDetails[${index}].ItemName"
+                class="itemname-input " />
+                <input type="hidden" name="ItemDetails[${index}].ItemCode"
+                        class="ItemCode-input " />
+        </td>
+
+        <td><input name="ItemDetails[${index}].Qty"
+        class="qty "
+        oninput="calculateRow(this)" /></td>
+
+        <td><input name="ItemDetails[${index}].Unit"
+                class="Unit" /></td>
+
+        <td><input name="ItemDetails[${index}].Rate"
+        class="rate "
+        oninput="calculateRow(this)" /></td>
+
+                <td><input name="ItemDetails[${index}].RejRate"
+        class="RejRate "
+        oninput="calculateRow(this)" /></td>
+
+        <td><input name="ItemDetails[${index}].DiscPer"
+        class="disc "
+        oninput="calculateRow(this)" /></td>
+
+        <td><input name="ItemDetails[${index}].Amount"
+        class="amount " readonly /></td>
+                  <td><input name="ItemDetails[${index}].BillNo"
+                        class="BillNo " readonly /></td>
+
+        <td><input name="ItemDetails[${index}].IGSTPer"
+        class="igstp "
+        oninput="calculateRow(this)" /></td>
+
+        <td><input name="ItemDetails[${index}].IGSTAmt"
+        class="igsta " readonly /></td>
+
+        <td><input name="ItemDetails[${index}].CGSTPer"
+        class="cgstp "
+        oninput="calculateRow(this)" /></td>
+
+        <td><input name="ItemDetails[${index}].CGSTAmt"
+        class="cgsta " readonly /></td>
+
+        <td><input name="ItemDetails[${index}].SGSTPer"
+        class="sgstp "
+        oninput="calculateRow(this)" /></td>
+
+        <td><input name="ItemDetails[${index}].SGSTAmt"
+        class="sgsta " readonly /></td>
+
+        <td><button type="button"
+        onclick="deleteRow(this)">X</button></td>
+        </tr>
+        `;
+
+            table.append(row);
+        }
+        function calculateRow(el) {
+
+            let row = $(el).closest("tr");
+
+            let qty = parseFloat(row.find(".qty").val()) || 0;
+            let rate = parseFloat(row.find(".RejRate").val()) ||
+                parseFloat(row.find(".rate").val()) || 0;
+            let disc = parseFloat(row.find(".disc").val()) || 0;
+
+            let amount = qty * rate;
+            amount -= amount * disc / 100;
+
+            row.find(".amount").val(amount.toFixed(2));
+
+            let ig = parseFloat(row.find(".igstp").val()) || 0;
+            let cg = parseFloat(row.find(".cgstp").val()) || 0;
+            let sg = parseFloat(row.find(".sgstp").val()) || 0;
+
+            row.find(".igsta").val((amount * ig / 100).toFixed(2));
+            row.find(".cgsta").val((amount * cg / 100).toFixed(2));
+            row.find(".sgsta").val((amount * sg / 100).toFixed(2));
+        }
+        function deleteRow(btn) {
+            let row = btn.parentNode.parentNode;
+            row.remove();
+            resetSNo();
+        }
+
+        function resetSNo() {
+            let rows = document.querySelectorAll("#saleTable tbody tr");
+            rowIndex = 0;
+            rows.forEach((r, index) => {
+                r.cells[0].innerText = index + 1;
+                rowIndex = index + 1;
+            });
+        }
+
+        addRow();
+
+
+        function ApplyGridAutoFill() {
+
+            // 🔹 PART CODE SEARCH
+            $(document).on("focus", ".partcode-input", function () {
+
+                if ($(this).data("ui-autocomplete")) return;
+
+                $(this).autocomplete({
+                    minLength: 2,
+                    source: function (request, response) {
+
+                        $.ajax({
+                            url: '/PurchaseOrder/FillItems',
+                            type: 'POST',
+                            data: {
+                                Type: $('#POTypeServItem').val(),
+                                ShowAllItem: 'N',
+                                SearchItemCode: '',
+                                SearchPartCode: request.term
+                            },
+                            success: function (result) {
+
+                                let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                                if (obj.StatusCode === 200 && Array.isArray(obj.Result.Table)) {
+
+                                    let filtered = obj.Result.Table.filter(item =>
+                                        googleMatch(request.term, item)
+                                    );
+
+                                    response($.map(filtered, function (item) {
+                                        return {
+                                            label: item.PartCode + " - " + item.ItemName,
+                                            value: item.PartCode,
+                                            itemName: item.ItemName,
+                                            itemCode: item.Item_Code
+                                        };
+                                    }));
+                                }
+                                else {
+                                    response([]);
+                                }
+                            }
+                        });
+                    },
+
+                    select: function (event, ui) {
+
+                        let row = $(this).closest("tr");
+
+                        row.find(".partcode-input").val(ui.item.value);
+                        row.find(".itemname-input").val(ui.item.itemName);
+
+                        row.find(".ItemCode-input").val(ui.item.itemCode);
+                        FillSOItemRate(row);
+
+                        return false;
+                    }
+                });
+            });
+
+
+            // 🔹 ITEM NAME SEARCH
+            $(document).on("focus", ".itemname-input", function () {
+
+                if ($(this).data("ui-autocomplete")) return;
+
+                $(this).autocomplete({
+                    minLength: 2,
+                    source: function (request, response) {
+
+                        $.ajax({
+                            url: '/PurchaseOrder/FillItems',
+                            type: 'POST',
+                            data: {
+                                Type: $('#POTypeServItem').val(),
+                                ShowAllItem: 'N',
+                                SearchItemCode: request.term,
+                                SearchPartCode: ''
+                            },
+                            success: function (result) {
+
+                                let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                                if (obj.StatusCode === 200 && Array.isArray(obj.Result.Table)) {
+
+                                    let filtered = obj.Result.Table.filter(item =>
+                                        googleMatch(request.term, item)
+                                    );
+
+                                    response($.map(filtered, function (item) {
+                                        return {
+                                            label: item.ItemName + " - " + item.PartCode,
+                                            value: item.ItemName,
+                                            partCode: item.PartCode,
+                                            itemCode: item.Item_Code
+                                        };
+                                    }));
+                                }
+                                else {
+                                    response([]);
+                                }
+                            }
+                        });
+                    },
+
+                    select: function (event, ui) {
+
+                        let row = $(this).closest("tr");
+
+                        row.find(".itemname-input").val(ui.item.value);
+                        row.find(".partcode-input").val(ui.item.partCode);
+
+                        row.find(".ItemCode-input").val(ui.item.itemCode);
+                        FillSOItemRate(row);
+
+                        return false;
+                    }
+                });
+            });
+
+        }
+
+
+        function AutoFillPARTYNAMELIST() {
+            // Source for PartCodeText
+            const AccountCodeSourse = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("AutoFillPARTYNAMELIST", "SaleOrder")',
+                    type: 'POST',
+                    data: {
+
+                        SearchAccount: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.Account_Name.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.Account_Name,
+                                    value: item.Account_Name,
+                                    accountCode: item.Account_Code,
+
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+
+
+            // Autocomplete for PartCodeText
+            $("#Account_Name").autocomplete({
+                source: AccountCodeSourse,
+                select: function (event, ui) {
+                    $("#Account_Name").val(ui.item.value).data("Account_Code", ui.item.accountCode);
+
+                    $('#AccountCode').val(ui.item.accountCode);
+
+                    
+                    // if ($('#divdbCrItemList tr td').length > 1) {
+                    //     ClearDRCRGrid();
+                    //     GetDbCrDetail();
+                    // }
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#Account_Name").val(ui.item.value);
+
+                    return false;
+                },
+                minLength: 2
+            });
+
+
+        }
+
+        function FillSOItemRate(row) {
+
+            var sono = $("#SONO").val() == '0' ? '' : $("#SONO").val();
+            var itemCode = $(row).find('.ItemCode-input').val();   // get item from row
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillSOItemRate","SaleInvoice")",
+                data: {
+                    "sono": sono,
+                    "soYearCode": $('#SOYearCode').val(),
+                    "accountCode": $('#AccountCode').val(),
+                    "custOrderNo": $('#CustOrderNo').val(),
+                    "itemCode": itemCode,
+                    "SubInvoicetype": $('#SubInvoicetype').val()
+                },
+                dataType: "json",
+                success: function (result) {
+
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+
+                        if (obj.StatusCode == 200 && obj.Result.length > 0) {
+
+                            var data = obj.Result[0];
+
+                            var rate = data.Rate == '' ? 0 : parseFloat(data.Rate);
+
+                            // ✅ Fill Grid Fields
+                            $(row).find('.rate').val(rate.toFixed(2));
+                            $(row).find('.RejRate').val(rate.toFixed(2));
+                            $(row).find('.Unit').val(data.unit);
+                            $(row).find('.GridHSNNo').val(data.HsnNo);
+                            $(row).find('.igstp').val(data.IGST);
+
+                        }
+                    }
+                },
+                error: function (xhr) {
+                    console.log("Error: " + xhr.responseText);
+                }
+            });
+        }
+
+
+
         function calculateNetTotal() {
             var saleTotal = 0;
             var taxTotal = 0;
@@ -503,14 +1007,16 @@
             var netTotal = saleTotal + taxTotal;
 
             // Set NetTotal
-            $('#NetTotal').val(netTotal.toFixed(2)); // since it's text, not input
+            $('.NetTotal').val(netTotal.toFixed(2)); // since it's text, not input
         }
+
         $('#RoundOffAccountCode').change(function () {
             CalculateAdjAmt('NetTotal');
             GetDbCrDetail();
             ClearAdjustmentGrid();
             AddAdjstmntDetail1();
         });
+
         function FillRoundOffAccount(dt) {
             var showAllDoc = dt;
             $.ajax({
@@ -523,12 +1029,14 @@
                     if (result != null) {
 
                         var obj = $.parseJSON(result);
-                        $('#RoundOffAccountCode').empty();
-                        $('#RoundOffAccountCode').append('<option value="0">-Select-</option>');
-                        if (obj.StatusCode != 500) {
-                            $.each(obj.Result.Table, function (index, val) {
-                                $('#RoundOffAccountCode').append("<option value=" + val.Account_Code + ">" + val.Account_Name + "</option>");
-                            });
+                        if (obj.Result != null) {
+                            $('#RoundOffAccountCode').empty();
+                            $('#RoundOffAccountCode').append('<option value="0">-Select-</option>');
+                            if (obj.StatusCode != 500) {
+                                $.each(obj.Result.Table, function (index, val) {
+                                    $('#RoundOffAccountCode').append("<option value=" + val.Account_Code + ">" + val.Account_Name + "</option>");
+                                });
+                            }
                         }
                     }
 
@@ -539,13 +1047,31 @@
             });
         }
 
+        function BackButtonData() {
+            window.history.back();
+        }
         $(document).ready(function () {
-            debugger
+            AutoFillPARTYNAMELIST();
+            AutoComplete('VSaleBillMainDetailitemAccount', 'SaleBillNo', 'SaleBillNo', null);
+            ApplyGridAutoFill();
+
             GetServerDate();
+            FillSubvoucher();
             var dtValue = $('#RDT').prop("checked") == true ? "T" : "F";
 
             FillRoundOffAccount(dtValue);
             $('#RoundOffAccountCode').select2();
+
+            $('#divAddSaleRejectionList tr').each(function () {
+
+                var rejRate = parseFloat($(this).find('.RejRate').val()) || 0;
+
+                if (rejRate === 0) {
+                    $(this).css('background-color', '#ffe6e6'); // light red
+                }
+            });
+            // allowPositiveNumberJQ('.RejRate');
+
             if ($("#Mode").val() === "U" || $("#Mode").val() === "V") {
                 let code = $("#hiddenRoundOffAccountCode").val();
 
@@ -577,7 +1103,7 @@
                 }
 
                 var txTotal = sum + txSum;
-                $('#NetTotal').val(txTotal.toFixed(2));
+                $('.NetTotal').val(txTotal.toFixed(2));
                 /* $('#AdjPendAmt').val($('#NetTotal').val()); */
             }
 
@@ -621,8 +1147,8 @@
             }
 
             var txTotal = sum + txSum;
-            $('#NetTotal').val(txTotal.toFixed(2));
-            $('#AdjPendAmt').val($('#NetTotal').val());
+            $('.NetTotal').val(txTotal.toFixed(2));
+            $('#AdjPendAmt').val($('.NetTotal').val());
             $('#TotalDiscountPercentage').val(0);
             $('#TotalAmtAftrDiscount').val(0);
             GetTaxPartItem();
@@ -651,16 +1177,17 @@
 
             calculateNetTotal();
 
+        });   //ready end
+
+        $('#PaymentCreditDay').on('input', function () {
+            var creditDays = $(this).val();
+            if (isNaN(creditDays) || creditDays < 0 || creditDays > 90) {
+                $(this).val('');
+            } else {
+                $(this).val(parseInt(creditDays, 10));
+            }
         });
 
-        // function CalculateRejAmount() {
-        //     var rowCount = $('#divSaleRejectionList tr').length;
-        //     for (var i = 1; i <= rowCount; i++) {
-        //         var rejRate = $('#rejRate-' + i).val() != '' ? parseFloat($('#rejRate-' + i).val()) : 0;
-        //         var rejQty = $('#rejQty-' + i).text() != '' ? parseFloat($('#rejQty-' + i).text()) : 0;
-        //         $('#rejAmount-' + i).text(rejRate * rejQty);
-        //     }
-        // }
         function CalculateRejAmount() {
             var rowCount = $('#divAddSaleRejectionList tr').length;
             for (var i = 1; i <= rowCount; i++) {
@@ -720,59 +1247,6 @@
 
 
         }
-        //         function CalculateRejAmount() {
-        //     var schDataArr = [];
-        //     var rowCount = $('#divAddSaleRejectionList tr').length;
-
-        //     for (var i = 1; i <= rowCount; i++) {
-        //         var rejRate = parseFloat($('#rejRate-' + i).val()) || 0;
-        //         var rejQty = parseFloat($('#rejQty-' + i).text()) || 0;
-        //         var discountPer = parseFloat($('#discountPer-' + i).text()) || 0;
-        //         var discountAmt = parseFloat($('#DiscountAmt-' + i).text()) || 0;
-        //         var rejAmount = rejRate * rejQty;
-
-        //         if (discountAmt > 0) {
-        //             rejAmount -= discountAmt;
-        //         } else if (discountPer > 0) {
-        //             rejAmount -= rejAmount * discountPer / 100;
-        //         }
-
-        //         if (rejAmount < 0) rejAmount = 0;
-
-        //         $('#Amount-' + i).text(rejAmount.toFixed(2));
-
-        //         // ✅ collect row data
-        //         var SchData = {
-        //                ItemCode: parseInt($('#itemCode-' + i).val()) || 0,
-        // AgainstBillEntryId: parseInt($('#againstBillEntryId-' + i).text()) || 0,
-        // AgainstBillYearCode: parseInt($('#againstBillYearCode-' + i).text()) || 0,
-        // RejRate: parseFloat(rejRate) || 0,
-        // Amount: parseFloat(rejAmount) || 0
-        //         };
-        //         schDataArr.push(SchData);
-        //     }
-
-        //     // ✅ send to controller
-        //     $.ajax({
-        //         type: "POST",
-        //         url: '@Url.Action("UpdateRejectionItem")',
-        //         data: JSON.stringify(schDataArr), // send array directly
-        //         contentType: "application/json; charset=utf-8",
-        //         dataType: "json",
-        //         success: function (response) {
-        //             console.log("Session updated successfully:", response);
-        //         },
-        //         error: function (xhr, status, error) {
-        //             console.error("Error updating session:", error);
-        //         }
-        //     });
-
-        //     ClearDRCRGrid();
-        //     ClearAdjustmentGrid();
-        //     btnClearTax();
-        //     BasicTotal();
-        //     GetDbCrDetail();
-        // }
 
         async function GetTaxPartItem() {
             $.ajax({
@@ -816,8 +1290,6 @@
             });
         }
 
-
-
         document.addEventListener('DOMContentLoaded', function () {
             var now = new Date();
             var hours = ('0' + now.getHours()).slice(-2);
@@ -837,49 +1309,58 @@
             $(this).val(inputValue);
         });
 
-        /*  function DueDateCalculation() {
-
-             var dueDate = $('#AdjDueDate').val();
-             alert('adjfdate'+$('#AdjDueDate').val());
-
-             var custInvoiceDate = new Date($('#CustInvoiceDate').val());
-             // var creaditDays = $('#PaymentCreditDay').val() == "" ? 0 : parseInt($('#PaymentCreditDay').val(), 10); AdjDueDate
-
-             // SaleBillDate.setDate(SaleBillDate.getDate() + creaditDays);
-
-             var formattedDueDate = $.datepicker.formatDate('dd/mm/yy', custInvoiceDate);
-
-             $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDueDate);
-
-         } */
         function DueDateCalculation() {
-            var dueDate = $('#AdjDueDate').val();
-            /* // var SaleBillDate = new Date($('#SaleBillDate').val()); */
 
-            var dateStr = parseDateToFormat($('#CustInvoiceDate').val().split(" ")[0]);
-            var [day, month, year] = dateStr.split('/').map(Number);
-            var SaleBillDate = new Date(year, month - 1, day);
+            // var dueDate = $('#AdjDueDate').val();
+            // var dateStr = parseDateToFormat($('#CustInvoiceDate').val().split(" ")[0]);
+            // var [day, month, year] = dateStr.split('/').map(Number);
+            // var SaleBillDate = new Date(year, month - 1, day);
 
-            var creaditDays = $('#PaymentTerm').val() == "" ? 0 : parseInt($('#PaymentTerm').val(), 10);
+            // var creaditDays = $('#PaymentTerm').val() == "" ? 0 : parseInt($('#PaymentTerm').val(), 10);
 
-            SaleBillDate.setDate(SaleBillDate.getDate() + creaditDays);
+            // SaleBillDate.setDate(SaleBillDate.getDate() + creaditDays);
 
-            var formattedDueDate = $.datepicker.formatDate('dd/mm/yy', SaleBillDate);
+            // var formattedDueDate = $.datepicker.formatDate('dd/mm/yy', SaleBillDate);
+            // $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDueDate);
+            // $('#AdjDueDate').datepicker("option", "minDate", ($('#CustInvoiceDate').val()).split(" ")[0]);
+
+
+
+
+
+            var CustInvoiceDateVal = $('#CustInvoiceDate').val();
+
+            if (!CustInvoiceDateVal) {
+                console.warn("SaleBillDate is empty, skipping DueDateCalculation");
+                return;
+            }
+
+            // If value is like "31/08/2025" → no need to split
+            var [day, month, year] = CustInvoiceDateVal.split('/').map(Number);
+            var CustInvoiceDate = new Date(year, month - 1, day);
+
+            var creditDays = $('#PaymentTerm').val() == "" ? 0 : parseInt($('#PaymentTerm').val(), 10);
+
+            // Add credit days
+            CustInvoiceDate.setDate(CustInvoiceDate.getDate() + creditDays);
+
+            // Format as dd/mm/yy
+            var formattedDueDate = $.datepicker.formatDate('dd/mm/yy', CustInvoiceDate);
+
+            // Set in AdjDueDate
             $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDueDate);
-            $('#AdjDueDate').datepicker("option", "minDate", ($('#CustInvoiceDate').val()).split(" ")[0]);
+
+            // Restrict min date to SaleBillDate
+            $('#AdjDueDate').datepicker("option", "minDate", CustInvoiceDateVal);
+            // AddAdjstmntDetail1();
         }
 
-
         $('#PaymentTerm').change(function () {
-            $('#divAdjItemList').empty();
-            var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
-            $('#divAdjItemList').html(NoData);
-            CalculateAdjAmt('NetTotal');
             DueDateCalculation();
             ClearAdjustmentGrid();
+            $('#AdjNewRefNo').val($('#CustInvoiceNo').val());
             AddAdjstmntDetail1();
         });
-
 
         $('#SaleBillDate').change(function () {
             var saleBillDate = parseDateToFormat($(this).val());
@@ -958,7 +1439,7 @@
             // $('#StoreId').val(0);
             FillSOPendQty();
             FillTotalStock();
-            FillSOItemRate();
+            // FillSOItemRate();
         });
 
         $('#SchNo').change(function () {
@@ -998,8 +1479,6 @@
 
             return true;
         }
-
-
 
         function FillSOPendQty() {
             $.ajax({
@@ -1129,8 +1608,8 @@
                         }
 
                         var txTotal = sum + txSum;
-                        $('#NetTotal').val(txTotal.toFixed(2));
-                        $('#AdjPendAmt').val($('#NetTotal').val());
+                        $('.NetTotal').val(txTotal.toFixed(2));
+                        $('#AdjPendAmt').val($('.NetTotal').val());
                         $('#TotalDiscountPercentage').val(0);
                         $('#TotalAmtAftrDiscount').val(0);
                         $('#divSaleRejectionList').empty();
@@ -1172,6 +1651,7 @@
         $('.btnClearTax').click(function () {
             btnClearTax();
         });
+
         function btnClearTax() {
             ClearTax();
             $.ajax({
@@ -1184,8 +1664,10 @@
                     $('#divTaxGrid').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                     $('#divTaxGrid').html(NoData);
-                    var txAmt = $('#lblItemNetAmount').text();
-                    $('#NetTotal').val(txAmt);
+                    var txAmt = $('.lblItemNetAmount').text();
+                    txAmt = parseFloat(txAmt || 0).toFixed(2);
+                    $('.lblItemNetAmount').text(txAmt);
+                    $('.NetTotal').val(txAmt);
                     $('#BaseNetTotal').val(txAmt);
                     // $('#AdjNewRefNo').val($('#NetTotal').val());
 
@@ -1202,7 +1684,6 @@
                 }
             });
         }
-
 
         function ClearGrid() {
             $.ajax({
@@ -1260,7 +1741,6 @@
             FillItems($('#TypeItemServAssets').val());
         });
 
-
         // var sonoItems = [];
         function FillItems(itemType) {
             var showAll = $('#ItemSA').prop('checked') ? 'T' : 'F';
@@ -1298,9 +1778,10 @@
         function NewEntryId() {
 
             var YearCode = $('#SaleRejYearCode').val();
+            var SubVoucherName = $('#SubVoucherName').val();
             $.ajax({
                 type: "POST",
-                data: { "YearCode": YearCode },
+                data: { "YearCode": YearCode, "SaleRejEntryDate": $('#SaleRejEntryDate').val(), "SubVoucherName": SubVoucherName },
                 url: "@Url.Action("NewEntryId")",
                 dataType: "json",
                 async: false,
@@ -1312,6 +1793,8 @@
                             $('#SaleRejEntryId').val(obj.Result.Table[0].SaleRejEntryId);
                             $('#VoucherNo').val("");
                             $('#VoucherNo').val(obj.Result.Table[0].VoucherNo);
+                            $('#SaleRejectionSubVoucherNo').val("");
+                            $('#SaleRejectionSubVoucherNo').val(obj.Result.Table[0].SubVoucherNo);
                             $('#SalerejCreditNoteVoucherNo').val("");
                             $('#SalerejCreditNoteVoucherNo').val(obj.Result.Table[0].VoucherNo);
                             $('#AdjNewRefNo').val($('#VoucherNo').val());
@@ -1321,6 +1804,10 @@
                 }
             });
         }
+
+        $('#SubVoucherName').change(function () {
+            NewEntryId();
+        });
 
         $('#SH').change(function () {
             if ($('#SH').is(':checked') == true) {
@@ -1403,6 +1890,7 @@
                 }
             });
         });
+
         function DeleteItemRow(SeqNo) {
             $.ajax({
                 url: '@Url.Action("DeleteItemRow")',
@@ -1431,8 +1919,7 @@
 
 
         $(document).on('select2:select', '#AccountCode', function (e) {
-            // FillSONO();
-            // FillCurrency();
+
             FillCustomerAddress();
 
             if ($('#divTaxGrid tr td').length > 1) {
@@ -1447,10 +1934,9 @@
         });
 
         $(document).on('select2:select', '#DocTypeAccountCode', function (e) {
-            // if ($('#divSaleBillList tr td').length > 1) {
             GetDbCrDetail();
-            // }
         });
+
         function GetGstRegister() {
             var accountCode = $('#AccountCode').val();
             $.ajax({
@@ -1496,8 +1982,6 @@
                         $('#CountryOfSupply').val(obj.Result.Table[0].Country);
                         $('#PaymentCreditDay').empty();
                         $('#PaymentCreditDay').val(obj.Result.Table[0].CreditDays);
-
-                        DueDateCalculation();
                         $('#AdjNewRefNo').val($('#VoucherNo').val());
                     }
                 }
@@ -1515,125 +1999,58 @@
 
             }
         });
-        //        async function ValidateSubmit() {
-        //     try {
-        //         // === 1. Validate Vehicle No ===
-        //         const vehicleNo = $('#Vehicleno').val()?.trim() || '';
-        //         if (vehicleNo !== '') {
-        //             if (vehicleNo.length > 10) {
-        //                 $('#Vehicleno').val(vehicleNo.substring(0, 10));
-        //             } else if (vehicleNo.length < 10) {
-        //                 $.notify("Please enter at least 10 characters in Vehicle No", "error");
-        //                 return false;
-        //             }
-        //         }
 
-        //         // === 2. Validate Distance ===
-        //         const distance = parseFloat($('#DistanceKM').val()) || 0;
-        //         if (distance > 3000) {
-        //             $('#DistanceKM').val(0);
-        //             $.notify("Distance KM should not be greater than 3000 KM!", "error");
-        //             return false;
-        //         }
-
-        //         // === 3. Validate Mandatory Fields ===
-        //         const validations = [
-        //             { id: '#AccountCode', message: "Customer Name is mandatory!" },
-        //             { id: '#DocTypeAccountCode', message: "DocType Name is mandatory!" },
-        //             { id: '#VoucherNo', message: "Voucher No is mandatory!" },
-        //             { id: '#PaymentTerm', message: "Please enter payment Credit days!" }
-        //         ];
-
-        //         for (const { id, message } of validations) {
-        //             if (!$(id).val() || $(id).val() == 0) {
-        //                 $.notify(message, "error");
-        //                 return false;
-        //             }
-        //         }
-
-        //         // === 4. Validate Debit / Credit Balance ===
-        //         let drAmt = 0, crAmt = 0;
-        //         $('#divdbCrItemList tr').each(function () {
-        //             const dr = parseFloat($(this).find('.dramt').text()) || 0;
-        //             const cr = parseFloat($(this).find('.cramt').text()) || 0;
-        //             drAmt += dr;
-        //             crAmt += cr;
-        //         });
-
-        //         if (drAmt !== crAmt) {
-        //             $.notify("Debit and Credit amounts are not balanced!", "error");
-        //             return false;
-        //         }
-
-        //         // === 5. Helper to Check Empty Grid ===
-
-
-        //         // === 6. Validate Required Grids ===
-        //         let hasError = false;
-
-        //         if (isGridEmpty('#divAddSaleRejectionList')) {
-        //             $.notify('Sale Rejection Grid should have at least 1 item!', "error");
-        //             hasError = true;
-        //         }
-
-        //         if (isGridEmpty('#divAdjItemList')) {
-        //             $.notify('Adjustment Grid should have at least 1 item!', "error");
-        //             hasError = true;
-        //         }
-
-        //         if (isGridEmpty('#divdbCrItemList')) {
-        //             $.notify('DR/CR Grid should have at least 1 item!', "error");
-        //             hasError = true;
-        //         }
-
-        //         if ($('#GSTRegistered').val() === 'Y' && isGridEmpty('#divTaxGrid')) {
-        //             $.notify('Tax Grid should have at least 1 item!', "error");
-        //             hasError = true;
-        //         }
-
-        //         if (hasError) return false;
-
-        //         // === 7. All Validations Passed ===
-        //         return true;
-
-        //     } catch (error) {
-        //         console.error("Error during validation:", error);
-        //         $.notify("An unexpected error occurred during validation!", "error");
-        //         return false;
-        //     }
-        // }
         function ValidateSubmit() {
 
             var Err = 0;
+            var rowCount = $('#divAddSaleRejectionList tr').length;
+            var salebillRowCount = $('#divTaxGrid tr').length;
+            let AdjustAmount = parseFloat($('#AdjAdjstedAmt1').text());
+            let TotalAmount = parseFloat($('#AdjTotalAmt1').text());
+            let NetAmount = parseFloat($('.NetTotal').val());
+
+            var drcrrowCount = $('#divdbCrItemList tr').length;
+            var drAmt = 0;
+            var crAmt = 0;
+
+            for (var i = 1; i <= drcrrowCount; i++) {
+                drAmt += $('#drcrRow-' + i + ' .dramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .dramt').text());
+                crAmt += $('#drcrRow-' + i + ' .cramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .cramt').text());
+            }
+
+
             if ($('#DocTypeAccountCode').prop('selectedIndex') == 0) {
                 $.notify("DocType Name is mandatory...!", "error");
                 Err = 1;
             }
-            var rowCount = $('#divAddSaleRejectionList tr').length;
-            for (var i = 1; i <= rowCount; i++) {
-                if ($('#rejRate-' + i).val() == '' || $('#rejRate-' + i).val() == 0) {
-                    $.notify('Rej Rate is mandatory..!', "error");
-                    AddErrorCls('Rate');
-                    Err = 1;
-                } else {
-                    RemoveErrorCls('Rate');
-                }
+
+            else if (rowCount > 0) {
+
+                for (var i = 1; i <= rowCount; i++) {
+                    if ($('#rejRate-' + i).val() == '' || $('#rejRate-' + i).val() == 0) {
+                        $.notify('Rej Rate is mandatory..!', "error");
+                        AddErrorCls('Rate');
+                        Err = 1;
+                    } else {
+                        RemoveErrorCls('Rate');
+                    }
 
 
 
-                if ($('#Amount-' + i).text() == '' || $('#Amount-' + i).text() == 0) {
-                    $.notify('Sale Rejection is mandatory..!', "error");
-                    AddErrorCls('Amount');
-                    Err = 1;
-                } else {
-                    RemoveErrorCls('Amount');
+                    if ($('#Amount-' + i).text() == '' || $('#Amount-' + i).text() == 0) {
+                        $.notify('Sale Rejection is mandatory..!', "error");
+                        AddErrorCls('Amount');
+                        Err = 1;
+                    } else {
+                        RemoveErrorCls('Amount');
+                    }
                 }
             }
 
             Err == 1 ? ShowErrorFld('H_Panel2') : HideErrorFld('H_Panel2');
             if (Err == 1) return false;
 
-            var salebillRowCount = $('#divTaxGrid tr').length;
+
             if ($('#divTaxGrid tr td').length > 1) {
                 for (var i = 1; i < salebillRowCount; i++) {
                     if ($('#txGridAmount-' + i).text() == 0) {
@@ -1643,7 +2060,7 @@
                 }
             }
 
-            if ($('#Vehicleno').val() != '') {
+            else if ($('#Vehicleno').val() != '') {
                 var inputValue = $('#Vehicleno').val();
                 if (inputValue.length > 10) {
                     $('#Vehicleno').val(inputValue.substring(0, 10));
@@ -1653,47 +2070,38 @@
                 }
             }
 
-            if ($('#SalerejCreditNoteVoucherNo').val() == '') {
+            else if ($('#SalerejCreditNoteVoucherNo').val() == '') {
                 $.notify("SalerejCreditNoteVoucherNo  is required...!", "error");
                 return false;
             }
 
-            let AdjustAmount = parseFloat($('#AdjAdjstedAmt1').text());
-            let TotalAmount = parseFloat($('#AdjTotalAmt1').text());
-            let NetAmount = parseFloat($('#NetTotal').val());
 
-            if (AdjustAmount !== TotalAmount || TotalAmount !== NetAmount) {
+
+            else if (AdjustAmount !== TotalAmount || TotalAmount !== NetAmount) {
                 $.notify("AdjustAmount, TotalAmount, and NetAmount must all be equal....!", "error");
                 return false;
             }
 
 
-            if ($('#Account_Name').val() == '') {
+            else if ($('#Account_Name').val() == '') {
                 $.notify("Customer Name is mandatory...!", "error");
                 return false;
             }
 
 
-            if ($('#SaleBillNo').val() == '') {
+            else if ($('#SaleBillNo').val() == '') {
                 $.notify("SaleBillNo is mandatory...!", "error");
                 return false;
             }
 
-            if ($('#PaymentTerm').val() == 0) {
-                $.notify("Payment Term should not be 0...!", "error");
+            else if ($('#PaymentTerm').val() == 0) {
+                $.notify("Credit Days should not be 0...!", "error");
                 return false;
             }
 
-            var rowCount = $('#divdbCrItemList tr').length;
-            var drAmt = 0;
-            var crAmt = 0;
 
-            for (var i = 1; i <= rowCount; i++) {
-                drAmt += $('#drcrRow-' + i + ' .dramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .dramt').text());
-                crAmt += $('#drcrRow-' + i + ' .cramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .cramt').text());
-            }
 
-            if (drAmt.toFixed(2) != crAmt.toFixed(2)) {
+            else if (drAmt.toFixed(2) != crAmt.toFixed(2)) {
                 $.notify("Debit and Credit are not maintained...!", "error");
                 return false;
             }
@@ -1712,7 +2120,7 @@
                     return;
                 }
 
-                if ($('#GSTRegistered').val() === 'Y') {
+                else if ($('#GSTRegistered').val() === 'Y') {
                     if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() === "DOMESTIC") {
                         $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
                         return;
@@ -1720,7 +2128,7 @@
 
 
                 }
-                if ($('#divAdjItemList tr td').length <= 1) {
+                else if ($('#divAdjItemList tr td').length <= 1) {
                     $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
                     return;
                 }
@@ -1728,16 +2136,53 @@
 
 
                 // Check for CR in Adjustment Grid
-                if (drCrGrid <= 1) {
+                else if (drCrGrid <= 1) {
                     $.notify("Debit And Credit Amount Status Grid should at least have one item", "error");
                     return;
                 }
-                if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
+                else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
                     $.notify("Total Debit And Total Credit Amount should be same", "error");
                     return;
                 }
-                $("form").submit();
+                // $("form").submit();
+
+
+                // 🔥 AJAX SUBMIT
+                $.ajax({
+                    url: $('form').attr('action'),
+                    type: $('form').attr('method'),
+                    data: $('form').serialize(),
+                    beforeSend: function () {
+                        $('#ajaxLoader').show(); // ✅ Show loader
+                    },
+                    success: function (response) {
+
+                        // Success from controller
+                        if (response.success) {
+
+                            if (response.redirectUrl) {
+
+                                window.location.href = response.redirectUrl;
+
+                            }
+
+
+                            $('#ajaxLoader').hide();
+                            // optional redirect
+                            // window.location.href = response.redirectUrl;
+                        }
+                        else {
+                            // SP StatusText / validation error
+                            $.notify(response.message, "error");
+                            $('#ajaxLoader').hide();
+                        }
+                    },
+                    error: function () {
+                        $.notify("Unexpected server error", "error");
+                    }
+                });
             });
+
         });
 
         function ValidateSubmitWrapper(callback) {
@@ -1778,48 +2223,48 @@
                             let html = '';
                             let i = 1;
                             html += `
-                                <tr>
-                                    <td id="partCode-${i}">
-                                        <input type="hidden" id="itemCode-${i}" value="${obj[0].ItemCode}" />
-                                        ${obj[0].PartCode}
-                                    </td>
-                                    <td id="itemName-${i}">${obj[0].ItemName}</td>
-                                    <td id="recQty-${i}">${obj[0].RecQty}</td>
-                                    <td id="saleBillQty-${i}">${obj[0].SaleBillQty}</td>
-                                    <td id="rate-${i}" style="background-color:#FFF3CD;font-weight:600;">${obj[0].Rate}</td>
-                                          <td id="rejQty-${i}">${obj[0].RejQty}</td>
+                                                <tr>
+                                                    <td id="partCode-${i}">
+                                                        <input type="hidden" id="itemCode-${i}" value="${obj[0].ItemCode}" />
+                                                        ${obj[0].PartCode}
+                                                    </td>
+                                                    <td id="itemName-${i}">${obj[0].ItemName}</td>
+                                                    <td id="recQty-${i}">${obj[0].RecQty}</td>
+                                                    <td id="saleBillQty-${i}">${obj[0].SaleBillQty}</td>
+                                                    <td id="rate-${i}" style="background-color:#FFF3CD;font-weight:600;">${obj[0].Rate}</td>
+                                                          <td id="rejQty-${i}">${obj[0].RejQty}</td>
 
-                                    <td>
-                                        <input class="form-control text-center"
-                                               id="rejRate-${i}"
-                                               value="${obj[0].RejRate}"
-                                               onchange="CalculateRejAmount(); highlightRejRate(this, '${obj[0].Rate}');"
-                                               style="background-color:${obj[0].RejRate != obj[0].Rate ? 'red' : '#85f2ec'};font-weight:600;" />
-                                    </td>
-                                    <td id="discountPer-${i}">${obj[0].DiscountPer}</td>
-                                    <td id="DiscountAmt-${i}">${obj[0].DiscountAmt}</td>
-                                    <td id="rejAmount-${i}">${obj[0].Amount}</td>
-                                    <td id="sono-${i}">${obj[0].SONO}</td>
-                                    <td id="soDate-${i}">${obj[0].SODate}</td>
-                                    <td id="soYearcode-${i}">${obj[0].SOyearcode}</td>
-                                    <td id="Unit-${i}">${obj[0].Unit}</td>
-                                    <td id="altQty-${i}">${obj[0].AltQty}</td>
-                                    <td id="againstBillTypeJWSALE-${i}">${obj[0].AgainstBillTypeJWSALE}</td>
-                                    <td><input class="form-control" value="${obj[0].AgainstBillNo}" id="againstBillNo-${i}" readonly /></td>
-                                    <td><input class="form-control" value="${obj[0].AgainstBillYearCode}" id="againstBillYearCode-${i}" readonly /></td>
-                                    <td id="againstBillEntryId-${i}">${obj[0].AgainstBillEntryId}</td>
-                                    <td id="againstOpnOrBill-${i}">${obj[0].AgainstOpnOrBill}</td>
-                                    <td id="HSNNo-${i}">${obj[0].HSNNo}</td>
-                                    <td id="itemsize-${i}">${obj[0].Itemsize}</td>
-                                    <td id="noOfCase-${i}">${obj[0].NoOfCase}</td>
-                                    <td id="recStoreName-${i}">${obj[0].RecStoreName}</td>
-                                    <td id="Amount-${i}">${obj[0].Amount}</td>
-                                    <td id="custOrderNo-${i}">${obj[0].CustOrderNo}</td>
-                                    <td id="recStoreId-${i}">${obj[0].RecStoreId}</td>
-                                    <td id="saleorderRemark-${i}">${obj[0].SaleorderRemark}</td>
-                                    <td id="saleBillremark-${i}">${obj[0].SaleBillremark}</td>
-                                </tr>
-                            `;
+                                                    <td>
+                                                                <input class="form-control text-center rejRate"
+                                                               id="rejRate-${i}"
+                                                               value="${obj[0].RejRate}"
+                                                               onchange="CalculateRejAmount(); highlightRejRate(this, '${obj[0].Rate}');"
+                                                               style="background-color:${obj[0].RejRate != obj[0].Rate ? 'red' : '#85f2ec'};font-weight:600;" />
+                                                    </td>
+                                                    <td id="discountPer-${i}">${obj[0].DiscountPer}</td>
+                                                    <td id="DiscountAmt-${i}">${obj[0].DiscountAmt}</td>
+                                                    <td id="rejAmount-${i}">${obj[0].Amount}</td>
+                                                    <td id="sono-${i}">${obj[0].SONO}</td>
+                                                    <td id="soDate-${i}">${obj[0].SODate}</td>
+                                                    <td id="soYearcode-${i}">${obj[0].SOyearcode}</td>
+                                                    <td id="Unit-${i}">${obj[0].Unit}</td>
+                                                    <td id="altQty-${i}">${obj[0].AltQty}</td>
+                                                    <td id="againstBillTypeJWSALE-${i}">${obj[0].AgainstBillTypeJWSALE}</td>
+                                                    <td><input class="form-control" value="${obj[0].AgainstBillNo}" id="againstBillNo-${i}" readonly /></td>
+                                                    <td><input class="form-control" value="${obj[0].AgainstBillYearCode}" id="againstBillYearCode-${i}" readonly /></td>
+                                                    <td id="againstBillEntryId-${i}">${obj[0].AgainstBillEntryId}</td>
+                                                    <td id="againstOpnOrBill-${i}">${obj[0].AgainstOpnOrBill}</td>
+                                                    <td id="HSNNo-${i}">${obj[0].HSNNo}</td>
+                                                    <td id="itemsize-${i}">${obj[0].Itemsize}</td>
+                                                    <td id="noOfCase-${i}">${obj[0].NoOfCase}</td>
+                                                    <td id="recStoreName-${i}">${obj[0].RecStoreName}</td>
+                                                    <td id="Amount-${i}">${obj[0].Amount}</td>
+                                                    <td id="custOrderNo-${i}">${obj[0].CustOrderNo}</td>
+                                                    <td id="recStoreId-${i}">${obj[0].RecStoreId}</td>
+                                                    <td id="saleorderRemark-${i}">${obj[0].SaleorderRemark}</td>
+                                                    <td id="saleBillremark-${i}">${obj[0].SaleBillremark}</td>
+                                                </tr>
+                                            `;
 
                             $('#divSaleRejectionList').append(html);
                         }
@@ -1886,7 +2331,7 @@
                 select: function (e, i) {
                     //$("#" + SelectFunc).val(i.item.value);
                 },
-                minLength: 1
+                minLength: 2
             });
         }
 
@@ -2026,39 +2471,39 @@
             });
         }
 
-        function FillSOItemRate() {
+        // function FillSOItemRate() {
 
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("FillSOItemRate")",
-                data: { "sono": $("#SONO").val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "custOrderNo": $('#CustOrderNo').val(), "itemCode": $('#ItemCode').val() },
-                dataType: "json",
-                success: function (result, status, error) {
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "@Url.Action("FillSOItemRate")",
+        //         data: { "sono": $("#SONO").val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "custOrderNo": $('#CustOrderNo').val(), "itemCode": $('#ItemCode').val() },
+        //         dataType: "json",
+        //         success: function (result, status, error) {
 
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
-                        if (obj.StatusCode == 200) {
-                            $('#Rate').val("");
-                            $('#Rate').val(obj.Result[0].Rate);
-                            $('#DiscountPer').val("");
-                            $('#DiscountPer').val(obj.Result[0].DiscPer);
-                            $('#DiscountAmt').val("");
-                            $('#DiscountAmt').val(obj.Result[0].DiscRs);
-                            $('#Unit').val("");
-                            $('#Unit').val(obj.Result[0].unit);
-                            // $('#OtherRateCurr').val("");
-                            // $('#OtherRateCurr').val(obj.Result[0].OtherRateCurr);
-                            // $('#ItemDescription').val("");
-                            // $('#ItemDescription').val(obj.Result[0].ItemDescription);
-                            $('#HSNNo').val("");
-                            $('#HSNNo').val(obj.Result[0].HsnNo);
-                        }
+        //             if (result != null) {
+        //                 var obj = $.parseJSON(result);
+        //                 if (obj.StatusCode == 200) {
+        //                     $('#Rate').val("");
+        //                     $('#Rate').val(obj.Result[0].Rate);
+        //                     $('#DiscountPer').val("");
+        //                     $('#DiscountPer').val(obj.Result[0].DiscPer);
+        //                     $('#DiscountAmt').val("");
+        //                     $('#DiscountAmt').val(obj.Result[0].DiscRs);
+        //                     $('#Unit').val("");
+        //                     $('#Unit').val(obj.Result[0].unit);
+        //                     // $('#OtherRateCurr').val("");
+        //                     // $('#OtherRateCurr').val(obj.Result[0].OtherRateCurr);
+        //                     // $('#ItemDescription').val("");
+        //                     // $('#ItemDescription').val(obj.Result[0].ItemDescription);
+        //                     $('#HSNNo').val("");
+        //                     $('#HSNNo').val(obj.Result[0].HsnNo);
+        //                 }
 
-                    }
+        //             }
 
-                }
-            });
-        }
+        //         }
+        //     });
+        // }
 
         function FILLCustomerOrderAndSPDate() {
             $.ajax({
@@ -2082,16 +2527,16 @@
                             // $('#SODate').val(obj.Result[0].Sodate);
 
                             $('#SODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date(obj.Result[0].Sodate.split("T")[0]));
-                            FillSOItemRate();
+                            // FillSOItemRate();
                         }
                     }
                 }
             });
         }
 
-        $('#CustOrderNo').change(function () {
-            FillSOItemRate();
-        });
+        // $('#CustOrderNo').change(function () {
+        //     FillSOItemRate();
+        // });
 
         $('#SONO').change(function () {
 
@@ -2117,7 +2562,7 @@
 
         $('#SOYearCode').change(function () {
             FillItems($('#TypeItemServAssets').val());
-            FillSOItemRate();
+            // FillSOItemRate();
             FILLCustomerOrderAndSPDate();
 
             if ($('#SOYearCode').val() == '0') {
@@ -2214,23 +2659,38 @@
 
         function BasicTotal() {
 
+            let amountSum = 0;
+            let qtySum = 0;
+            let itemCount = 0;
 
-            let sum = 0;
+            // Count how many Amount-* elements exist
+            const totalItems = $('[id^="Amount-"]').length;
 
-            $('#divAddSaleRejectionList tr').each(function (index) {
-                const i = index + 1; // if your IDs are 1-based (Amount-1, Amount-2, etc.)
-                const val = parseFloat($('#Amount-' + i).text().trim());
-                if (!isNaN(val)) {
-                    sum += val;
-                }
-            });
+            for (let i = 1; i <= totalItems; i++) {
 
-            $('#lblItemNetAmount').text(sum.toFixed(2));
-            $('#ItemNetAmount').val(sum.toFixed(2));
+                let $amountEl = $('#Amount-' + i);
+                let $qtyEl = $('#rejQty-' + i);
 
+                if ($amountEl.length === 0 || $qtyEl.length === 0) continue;
 
+                // read value safely (text OR input)
+                let amountVal = $amountEl.is('input') ? $amountEl.val() : $amountEl.text();
+                let qtyVal = $qtyEl.is('input') ? $qtyEl.val() : $qtyEl.text();
 
+                let amount = parseFloat(amountVal);
+                let qty = parseFloat(qtyVal);
 
+                if (isNaN(amount) || isNaN(qty)) continue;
+
+                amountSum += amount;
+                qtySum += qty;
+                itemCount++;
+            }
+
+            $('.lblItemNetAmount').text(amountSum.toFixed(2));
+            $('#ItemNetAmount').val(amountSum.toFixed(2));
+            $('.TotalQty').text(qtySum.toFixed(2));
+            $('.lblItemCount').text(itemCount);
         }
 
         $('#Uniquebatchno').change(function () {
@@ -2498,9 +2958,11 @@
                     var formattedYear = parseDateToFormat(new Date(past2Year).toISOString().split("T")[0]);
 
                     $('#SaleRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
-                    $('#SaleRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    $('#SaleRejEntryDate').datepicker("option", "minDate", formattedPastDate);
-                    $('#SaleRejEntryDate').datepicker("option", "maxDate", FinToDate);
+                    // $('#SaleRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+
+                    // $('#SaleRejEntryDate').datepicker("option", "minDate", formattedPastDate);
+                    // $('#SaleRejEntryDate').datepicker("option", "maxDate", FinToDate);
 
                     /*    $('#SaleRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                        // $('#GateDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
@@ -2529,8 +2991,8 @@
                     minEntryDate = minEntryDate.toLocaleDateString('en-GB');
                     maxEntryDate = maxEntryDate.toLocaleDateString('en-GB');
 
-                    $('#SaleRejEntryDate').datepicker("option", "minDate", minEntryDate);
-                    $('#SaleRejEntryDate').datepicker("option", "maxDate", maxEntryDate);
+                    // $('#SaleRejEntryDate').datepicker("option", "minDate", minEntryDate);
+                    // $('#SaleRejEntryDate').datepicker("option", "maxDate", maxEntryDate);
 
                     var saleBillDate = $('#SaleBillDate').datepicker('getDate');
                     var newDate = addDays(saleBillDate, 1);
@@ -2544,6 +3006,42 @@
             }
 
         }
+
+
+        ////////
+
+        function FillSubvoucher() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillSubvoucher")",
+
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#SubVoucherName').empty();
+                            // $('#SubVoucherName').append('<option value="0">-Select-</option>');
+                            if (obj.StatusCode != 500) {
+                                $.each(obj.Result.Table, function (index, val) {
+                                    $('#SubVoucherName').append("<option value=" + val.SubVoucherName + ">" + val.SubVoucherName/* val.CustomerName */ + "</option>");
+                                });
+                            }
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                $('#SubVoucherName').val('@Model.SubVoucherName');
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
+
+
+
     </script>
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
 }
@@ -2567,5 +3065,21 @@
 
     .select2-search__field {
         z-index: 10000 !important; /* Adjust the value as needed */
+    }
+
+    #GridLabels thead th {
+        position: sticky;
+        top: 0;
+        z-index: 3;
+        background: linear-gradient(to bottom, #2e6f7e, #245a66);
+        color: #fff;
+    }
+
+    #GridLabels th {
+        padding: 6px 8px !important;
+        font-size: 12px;
+        vertical-align: middle !important;
+        text-align: center;
+        white-space: nowrap;
     }
 </style>

@@ -1,9 +1,12 @@
 ﻿@model eTactWeb.DOM.Models.PendingSaleRejectionModel
+@using eTactWeb.Data.Common
+@inject EncryptDecrypt encryptDecrypt
 
 @{
     ViewData["Title"] = "Pending Sale Rejection";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+
 
 
 <div class="shadow-lg">
@@ -68,25 +71,29 @@
                                 </select>
                             </div>
 
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
-                                <label asp-for="GlobalSearch" class="form-label">Global Search</label>
-                                <input type="text" class="form-control" asp-for="GlobalSearch" id="search-box" value="@Model.GlobalSearch" placeholder="Search..." />
+                            <div class="row align-items-end">
+                                <div class="col-sm-3 col-md-4 col-lg-3 col-xl-2">
+                                    <label asp-for="GlobalSearch" class="form-label">Global Search</label>
+                                    <input type="text" class="form-control" asp-for="GlobalSearch" id="search-box"
+                                           value="@Model.GlobalSearch" placeholder="Search..." style="background-color:#FFFACD;" />
+                                </div>
+
+                                <div class="col-auto d-flex gap-2 mt-3">
+                                    <button class="btn btn-sm btn-outline-success" type="button" id="ShowDetailBtn" style="height:30px;width:100px;">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw"></i> SHOW
+                                    </button>
+
+                                    <a class="btn btn-sm btn-outline-danger" asp-controller="PendingSaleRejection"
+                                       asp-action="PendingSaleRejection" style="height:30px;width:100px;">
+                                        <i class="fa-solid fa-rotate fa-fw"></i> RESET
+                                    </a>
+
+                                    <button class="btn btn-sm btn-outline-success" type="button" id="btnGridExcel" style="height:30px;width:100px;">
+                                        <i class="fa-solid fa-upload fa-fw"></i> EXCEL
+                                    </button>
+                                </div>
                             </div>
 
-                            <div class=" d-flex justify-content-center mt-3" width="inherit">
-                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="ShowDetailBtn">
-                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SHOW
-                                </button>
-                                @*<a class="btn btn-sm btn-outline-info" id="TransertoIssBtn" style="padding:3px;height:30px;width:200px;margin-left:20px;pointer-events:none;" onclick="TransferToIssue()">
-                                <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>TRANSFER TO ISSUE
-                                </a>*@
-                                <a class="btn btn-sm btn-outline-danger" asp-controller="PendingSaleRejection" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-action="PendingSaleRejection">
-                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
-                                </a>
-                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="btnGridExcel">
-                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
-                                </button>
-                            </div>
                         </div>
                     </form>
                 </div>
@@ -249,7 +256,7 @@
         }
 
         function PendingMRNForSaleRejection() {
-            debugger
+             
             var YearCode = $('#YearCode').val();
             $.ajax({
                 type: "POST",
@@ -262,16 +269,20 @@
                         var obj = $.parseJSON(result);
                         var html = "";
                         $('#divSaleRejectionGrid').empty();
+                        
                         var i = 1;
                         $.each(obj.Result, function (index, val) {
+                            var entryIDEnc = encodeID(val.MRNEntryId);
+                            var yearCodeEnc = encodeID(val.MRNYearCode);
+
                             html += '<tr id="DisplayBomRow">' +
                                 '<td id="srNo">' + i + '</td>';
 
                             if (val.QCCompleted === "Y") {
                                 // ✅ Allow navigation if QC completed
                                 html += '<td><a href="/SaleRejection/Index?mrnNo=' + val.MRNNo +
-                                    '&mrnEntryId=' + val.MRNEntryId +
-                                    '&mrnYC=' + val.MRNYearCode + '" class="text-primary fw-bold">' + val.MRNNo + '</a></td>';
+                                    '&mrnEntryId=' + encodeURIComponent(entryIDEnc) +
+                                    '&mrnYC=' + encodeURIComponent(yearCodeEnc) + '" class="text-primary fw-bold">' + val.MRNNo + '</a></td>';
                             } else {
                                 // ⚠️ Disable navigation, show notify message
                                 html += '<td><a href="javascript:void(0);" onclick="$.notify(\'Please complete QC first!\', \'error\');" class="text-danger fw-bold">' + val.MRNNo + '</a></td>';
@@ -302,6 +313,29 @@
                 }
             });
         }
+
+        function encodeID(id) {
+            var obfuscated = id * 12345 + 6789;
+            var bytes = new Uint8Array(4);
+            bytes[0] = obfuscated & 0xFF;
+            bytes[1] = (obfuscated >> 8) & 0xFF;
+            bytes[2] = (obfuscated >> 16) & 0xFF;
+            bytes[3] = (obfuscated >> 24) & 0xFF;
+
+            var binary = String.fromCharCode.apply(null, bytes);
+            var base64 = btoa(binary)
+                .replace(/=/g, '')
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_');
+            return base64;
+        }
+
+        function openSaleRejection(mrnNo, mrnEntryId, mrnYearCode) {
+    window.location.href =
+        '/SaleRejection/Index?mrnNo=' + encodeURIComponent(mrnNo) +
+        '&mrnEntryId=' + encodeURIComponent(mrnEntryId) +
+        '&mrnYC=' + encodeURIComponent(mrnYearCode);
+}
 
         $("#btnGridExcel").click(function () {
             const table = document.querySelector("#pendingMRNSaleRejection");

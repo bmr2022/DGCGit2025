@@ -12,134 +12,154 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.DAL
 {
-    public class PendingSaleRejectionDAL
-    {
-        private readonly ConnectionStringService _connectionStringService;
-        public PendingSaleRejectionDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
-        {
-            //DBConnectionString = configuration.GetConnectionString("eTactDB");
-            _connectionStringService = connectionStringService;
-            DBConnectionString = _connectionStringService.GetConnectionString();
-            _IDataLogic = iDataLogic;
-        }
+	public class PendingSaleRejectionDAL
+	{
+		private readonly ConnectionStringService _connectionStringService;
+		public PendingSaleRejectionDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
+		{
+			//DBConnectionString = configuration.GetConnectionString("eTactDB");
+			_connectionStringService = connectionStringService;
+			DBConnectionString = _connectionStringService.GetConnectionString();
+			_IDataLogic = iDataLogic;
+		}
 
-        public IDataLogic? _IDataLogic { get; }
+		public IDataLogic? _IDataLogic { get; }
 
-        public IConfiguration? Configuration { get; }
+		public IConfiguration? Configuration { get; }
 
-        private string DBConnectionString { get; }
+		private string DBConnectionString { get; }
 
-        public async Task<ResponseResult> PendingMRNForSaleRejection(string fromDate, string toDate, string mrnNo, string gateNo, string customerName)
-        {
-            var _ResponseResult = new ResponseResult();
-            try
-            {
+		public async Task<ResponseResult> PendingMRNForSaleRejection(string fromDate, string toDate, string mrnNo, string gateNo, string customerName)
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
 
-                 fromDate = CommonFunc.ParseFormattedDate(fromDate);
-                 toDate = CommonFunc.ParseFormattedDate(toDate);
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "PendingMRNForSaleRejection"));
-                SqlParams.Add(new SqlParameter("@fromDate", fromDate));
-                SqlParams.Add(new SqlParameter("@toDate", toDate));
-                SqlParams.Add(new SqlParameter("@MRNNO", mrnNo ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@GateNo", gateNo ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@CustomerName", customerName ?? string.Empty));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpSalerejection", SqlParams);
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
+				fromDate = CommonFunc.ParseFormattedDate(fromDate);
+				toDate = CommonFunc.ParseFormattedDate(toDate);
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "PendingMRNForSaleRejection"));
+				SqlParams.Add(new SqlParameter("@fromDate", fromDate));
+				SqlParams.Add(new SqlParameter("@toDate", toDate));
+				SqlParams.Add(new SqlParameter("@MRNNO", mrnNo ?? string.Empty));
+				SqlParams.Add(new SqlParameter("@GateNo", gateNo ?? string.Empty));
+				SqlParams.Add(new SqlParameter("@CustomerName", customerName ?? string.Empty));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpSalerejection", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
 
-            return _ResponseResult;
-        }
-        public async Task<ResponseResult> FillMRNNO(string fromDate, string toDate, string mrnNo, string gateNo)
-        {
-            var _ResponseResult = new ResponseResult();
-            try
-            {
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "FILLPendingMRN"));
-                SqlParams.Add(new SqlParameter("@fromDate", fromDate));
-                SqlParams.Add(new SqlParameter("@toDate", toDate));
-                SqlParams.Add(new SqlParameter("@MRNNO", mrnNo ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@GateNo", gateNo ?? string.Empty));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpSalerejection", SqlParams);
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
+			return _ResponseResult;
+		}
+		public async Task<ResponseResult> GetFormRights(int userId)
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
+				SqlParams.Add(new SqlParameter("@EmpId", userId));
+				SqlParams.Add(new SqlParameter("@MainMenu", "Pending Sale Rejection"));
 
-            return _ResponseResult;
-        } 
-        public async Task<ResponseResult> FillGateNO(string fromDate, string toDate, string mrnNo, string gateNo)
-        {
-            var _ResponseResult = new ResponseResult();
-            try
-            {
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "FILLPendingGateNo"));
-                SqlParams.Add(new SqlParameter("@fromDate", fromDate));
-                SqlParams.Add(new SqlParameter("@toDate", toDate));
-                SqlParams.Add(new SqlParameter("@MRNNO", mrnNo ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@GateNo", gateNo ?? string.Empty));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpSalerejection", SqlParams);
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
+				_ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+			return _ResponseResult;
+		}
+		public async Task<ResponseResult> FillMRNNO(string fromDate, string toDate, string mrnNo, string gateNo)
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "FILLPendingMRN"));
+				SqlParams.Add(new SqlParameter("@fromDate", fromDate));
+				SqlParams.Add(new SqlParameter("@toDate", toDate));
+				SqlParams.Add(new SqlParameter("@MRNNO", mrnNo ?? string.Empty));
+				SqlParams.Add(new SqlParameter("@GateNo", gateNo ?? string.Empty));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpSalerejection", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
 
-            return _ResponseResult;
-        }
-        public async Task<ResponseResult> FillCustomerInvNO(string fromDate, string toDate, string mrnNo, string gateNo)
-        {
-            var _ResponseResult = new ResponseResult();
-            try
-            {
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "FILLPendingInvoice"));
-                SqlParams.Add(new SqlParameter("@fromDate", fromDate));
-                SqlParams.Add(new SqlParameter("@toDate", toDate));
-                SqlParams.Add(new SqlParameter("@MRNNO", mrnNo ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@GateNo", gateNo ?? string.Empty));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpSalerejection", SqlParams);
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
+			return _ResponseResult;
+		}
+		public async Task<ResponseResult> FillGateNO(string fromDate, string toDate, string mrnNo, string gateNo)
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "FILLPendingGateNo"));
+				SqlParams.Add(new SqlParameter("@fromDate", fromDate));
+				SqlParams.Add(new SqlParameter("@toDate", toDate));
+				SqlParams.Add(new SqlParameter("@MRNNO", mrnNo ?? string.Empty));
+				SqlParams.Add(new SqlParameter("@GateNo", gateNo ?? string.Empty));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpSalerejection", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
 
-            return _ResponseResult;
-        }
-        public async Task<ResponseResult> FillPartyName(string fromDate, string toDate)
-        {
-            var _ResponseResult = new ResponseResult();
-            try
-            {
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "FILLPendingPartyName"));
-                SqlParams.Add(new SqlParameter("@fromDate", fromDate));
-                SqlParams.Add(new SqlParameter("@toDate", toDate));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpSalerejection", SqlParams);
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
+			return _ResponseResult;
+		}
+		public async Task<ResponseResult> FillCustomerInvNO(string fromDate, string toDate, string mrnNo, string gateNo)
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "FILLPendingInvoice"));
+				SqlParams.Add(new SqlParameter("@fromDate", fromDate));
+				SqlParams.Add(new SqlParameter("@toDate", toDate));
+				SqlParams.Add(new SqlParameter("@MRNNO", mrnNo ?? string.Empty));
+				SqlParams.Add(new SqlParameter("@GateNo", gateNo ?? string.Empty));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpSalerejection", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
 
-            return _ResponseResult;
-        }
-    }
+			return _ResponseResult;
+		}
+		public async Task<ResponseResult> FillPartyName(string fromDate, string toDate)
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "FILLPendingPartyName"));
+				SqlParams.Add(new SqlParameter("@fromDate", fromDate));
+				SqlParams.Add(new SqlParameter("@toDate", toDate));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpSalerejection", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+
+			return _ResponseResult;
+		}
+	}
 }

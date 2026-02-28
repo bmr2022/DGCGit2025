@@ -1079,7 +1079,7 @@ public class DirectPurchaseBillDAL
                             DPBQty = (!string.IsNullOrEmpty(row["RecQty"].ToString())) ? Convert.ToDecimal(row["RecQty"]) : 0,
                             Unit = (!string.IsNullOrEmpty(row["Unit"].ToString())) ? row["Unit"].ToString() : string.Empty,
                             BillQty = (!string.IsNullOrEmpty(row["BillQty"].ToString())) ? Convert.ToDecimal(row["BillQty"]) : 0,
-                            Rate = (!string.IsNullOrEmpty(row["ItemCode"].ToString())) ? Convert.ToDecimal(row["ItemCode"]) : 0,
+                            Rate = (!string.IsNullOrEmpty(row["Rate"].ToString())) ? Convert.ToDecimal(row["Rate"]) : 0,
                             OtherRateCurr = (!string.IsNullOrEmpty(row["AmtinOtherCurr"].ToString())) ? Convert.ToDecimal(row["AmtinOtherCurr"]) : 0,
                             DiscPer = Convert.ToDecimal(row["DiscountPer"]),
                             DiscRs = Convert.ToDecimal(row["DiscountAmt"]),

@@ -27,6 +27,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _TransactionLedgerDAL.GetLedgerName(ParentAccountCode);
         }
+        public async Task<ResponseResult> GetCompanyDetail(int? AccountCode)
+        {
+            return await _TransactionLedgerDAL.GetCompanyDetail(AccountCode);
+        }
         public async Task<ResponseResult> FillLedgerName()
         {
             return await _TransactionLedgerDAL.FillLedgerName();
