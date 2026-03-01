@@ -187,21 +187,10 @@
                                 <input asp-for="FromDate" value="@Model.FromDate" class="form-control" type="hidden" />
                                 <input asp-for="ToDate" value="@Model.ToDate" class="form-control" type="hidden" />
                                 <input type="hidden" asp-for="SrNO" />
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="CC" class="form-label">Branch</label>
-                                    <input asp-for="CC" class="form-control" readonly />
-                                </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="AccEntryId" class="form-label">Entry Id</label>
-                                    <input asp-for="AccEntryId" class="form-control" readonly />
-                                </div>
+
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="EntryDate" class="form-label">Entry Date</label>
                                     <input asp-for="EntryDate" class="form-control" readonly />
-                                </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="YearCode" class="form-label">YearCode</label>
-                                    <input asp-for="YearCode" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
                                     <label asp-for="SubVoucherName" class="form-label" style="width:130px;color:red;">SubVoucher Name*</label>
@@ -217,7 +206,7 @@
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px;">
                                     <label asp-for="VoucherNo" class="form-label" style=" color:red;">VoucherNo*</label>
-                                    <input asp-for="VoucherNo" class="form-control" readonly style="background-color: lightblue !important;" />
+                                    <input asp-for="VoucherNo" value="@Model.VoucherNo" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
                                     <label asp-for="VoucherDate" class="form-label" style=" color:red;">Voucher Date*</label>
@@ -274,6 +263,14 @@
                                                                 <span class="tiny-slider"></span>
                                                             </label>
                                                             <span style="font-size: 12px; color: white;">Show All</span>
+                                                            <!-- Report Button 1 -->
+                                                            <button type="button"
+                                                                    onclick="openLedgerReport()"
+                                                                    title="Open Ledger Report"
+                                                                    style="background: transparent; border: none; padding: 2px;">
+                                                                <i class="fa fa-file-text" style="color: #00ffff; font-size: 14px;"></i>
+                                                            </button>
+
                                                         </div>
                                                     </th>
                                                     <th style="color:yellow">Balance* &nbsp;&nbsp; DR/CR*</th>
@@ -378,6 +375,19 @@
                             </div>
                             <div class="accordion-body">
                                 <div class="row g-2 gx-3" id="_ItemGrid">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="CC" class="form-label">Branch</label>
+                                        <input asp-for="CC" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="AccEntryId" class="form-label">Entry Id</label>
+                                        <input asp-for="AccEntryId" class="form-control" readonly />
+                                    </div>
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="YearCode" class="form-label">YearCode</label>
+                                        <input asp-for="YearCode" class="form-control" readonly />
+                                    </div>
                                     <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="ActualEntryDate" class="form-label">Actual Entry Date </label>
                                         <input asp-for="ActualEntryDate" class="form-control" readonly />
@@ -479,19 +489,19 @@
                 <div class="d-flex align-items-center gap-3" style="margin-left:70px">
                     <button type="button" class="btn btn-sm btn-primary" onclick="AdjustButton()">Adjust</button>
                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD;" placeholder="Search...">
-                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
                         <label asp-for="AdjustAmount" class="form-label me-2">Total Adjst Amt</label>
-                        <input asp-for="AdjustAmount" class="form-control" onchange="ChangeAdjustAmount()" type="number" min="0"/>
+                        <input asp-for="AdjustAmount" class="form-control" onchange="ChangeAdjustAmount()" type="number" min="0" />
                     </div>
-                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <label asp-for="PopUpBalance" class="form-label me-2">Total Pending Amount to Adjust</label>
+                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
+                        <label asp-for="PopUpBalance" class="form-label me-2">Total Pending Amt</label>
                         <input asp-for="PopUpBalance" class="form-control" readonly />
                     </div>
-                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
                         <label asp-for="TotalPopDrAmt" class="form-label me-2">Total DrAmt</label>
                         <input asp-for="TotalPopDrAmt" class="form-control" readonly />
                     </div>
-                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
                         <label asp-for="TotalPopCrAmt" class="form-label me-2">Total CrAmt</label>
                         <input asp-for="TotalPopCrAmt" class="form-control" readonly />
                     </div>
@@ -502,31 +512,31 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row g-2 gx-3">
-                            <div class="card-body text-center overflow-auto pb-0">
-                                <div class="table-responsive" style="max-height:350px;">
+                            <div class="card-body text-center overflow-auto pb-0" style="padding-top:0px">
+                                <div class="table-responsive" style="max-height:400px;">
                                     <table class="table table-hover table-bordered table-striped mb-0 BomDetailtable" id="GateDataTable">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
                                             <tr>
                                                 <th>Action</th>
                                                 <th>Add <input id="CheckUnCheckAll" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
-                                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sr#</th>
-                                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Type</th>
-                                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher No</th>
-                                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice No</th>
-                                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Date</th>
-                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Due Date</th>
-                                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Balance</th>
-                                                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Type</th>
-                                                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Adj Amt</th>
-                                                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Adjusted</th>
-                                                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dr Amt</th>
-                                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cr Amt</th>
-                                                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
-                                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BillNet Amt</th>
-                                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>>New RefNo</th>
-                                                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Mode Of Adjust</th>
-                                                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Acc EntryId</th>
-                                                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual DrCr Type</th>
+                                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sr#</th>
+                                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Type</th>
+                                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher No</th>
+                                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice No</th>
+                                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Date</th>
+                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Due Date</th>
+                                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Balance</th>
+                                                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Type</th>
+                                                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Adj Amt</th>
+                                                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Adjusted</th>
+                                                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dr Amt</th>
+                                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cr Amt</th>
+                                                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
+                                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BillNet Amt</th>
+                                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>>New RefNo</th>
+                                                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Mode Of Adjust</th>
+                                                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Acc EntryId</th>
+                                                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:2px;margin:2px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual DrCr Type</th>
                                             </tr>
                                         </thead>
                                         <tbody id="divDisplayPopupForPendingVouchersDetail">
@@ -577,8 +587,8 @@
 @section Scripts {
     <script>
 
-                       function Validate_Submit() {
-                            
+        function Validate_Submit() {
+
             var Err = 0;
             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
             var CrAmt = parseFloat($('#CrAmt').val()) || 0;
@@ -627,72 +637,85 @@
             $('form').submit();
         });
 
-                               function ChangeAdjustAmount() {
-                    var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
-                    var AdjustQtyStr = $('#AdjustAmount').val();
+        function ChangeAdjustAmount() {
+            var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+            var AdjustQtyStr = $('#AdjustAmount').val();
 
-                    // Step 1: Validation
-                    if (AdjustQtyStr.includes('-')) return;
-                    var AdjustQty = parseFloat(AdjustQtyStr);
-                    if (isNaN(AdjustQty) || AdjustQty <= 0) return;
+            // Step 1: Validation
+            if (AdjustQtyStr.includes('-')) return;
+            var AdjustQty = parseFloat(AdjustQtyStr);
+            if (isNaN(AdjustQty) || AdjustQty <= 0) return;
 
-                    // Step 2: Store original balances (only once)
-                    for (let i = 1; i <= rowCount; i++) {
-                        const $bal = $('#BalanceAmt-' + i);
-                        if ($bal.data('original') === undefined) {
-                            const original = parseFloat($bal.text());
-                            $bal.data('original', original);
-                        }
-                    }
-
-                    // Step 3: Reset all rows to original state
-                    for (let i = 1; i <= rowCount; i++) {
-                        const $bal = $('#BalanceAmt-' + i);
-                        const $adjAmt = $('#AdjustAmt-' + i);
-                        const $chk = $('#CheckUnCheck-' + i);
-                        const original = parseFloat($bal.data('original'));
-
-                        $bal.text(original.toFixed(2));
-                        $adjAmt.val("0.00");
-                        $chk.prop('checked', false);
-
-                        // Reset background color of full row to white
-                        $('#AdjustData-' + i).css("background-color", "");
-                    }
-
-                    // Step 4: Distribute AdjustAmount
-                    let RemainingQty = AdjustQty;
-
-                    for (let i = 1; i <= rowCount; i++) {
-                        if (RemainingQty <= 0) break;
-
-                        const $bal = $('#BalanceAmt-' + i);
-                        const $adjAmt = $('#AdjustAmt-' + i);
-                        const $chk = $('#CheckUnCheck-' + i);
-                        const original = parseFloat($bal.data('original'));
-
-                        if (isNaN(original) || original <= 0) continue;
-
-                        const adjustHere = Math.min(RemainingQty, original);
-                        RemainingQty -= adjustHere;
-
-                        $chk.prop('checked', true);
-                        $adjAmt.val(adjustHere.toFixed(2));
-                        $bal.text((original - adjustHere).toFixed(2));
-
-                        // Optional: highlight adjusted rows (light blue)
-                        $('#AdjustData-' + i).css("background-color", "");
-
-                        CheckUnCheckCheck(i);
-                    }
-
-                    // Step 5: Ensure background color of unchecked rows is white
-                    for (let i = 1; i <= rowCount; i++) {
-                        if (!$('#CheckUnCheck-' + i).is(':checked')) {
-                            $('#AdjustData-' + i).css("background-color", "");
-                        }
-                    }
+            // Step 2: Store original balances (only once)
+            for (let i = 1; i <= rowCount; i++) {
+                const $bal = $('#BalanceAmt-' + i);
+                if ($bal.data('original') === undefined) {
+                    const original = parseFloat($bal.text());
+                    $bal.data('original', original);
                 }
+            }
+
+            // Step 3: Reset all rows to original state
+            for (let i = 1; i <= rowCount; i++) {
+                const $bal = $('#BalanceAmt-' + i);
+                const $adjAmt = $('#AdjustAmt-' + i);
+                const $chk = $('#CheckUnCheck-' + i);
+                const original = parseFloat($bal.data('original'));
+
+                $bal.text(original.toFixed(2));
+                $adjAmt.val("0.00");
+                $chk.prop('checked', false);
+
+                // Reset background color of full row to white
+                $('#AdjustData-' + i).css("background-color", "");
+            }
+
+            // Step 4: Distribute AdjustAmount
+            let RemainingQty = AdjustQty;
+
+            for (let i = 1; i <= rowCount; i++) {
+                if (RemainingQty <= 0) break;
+
+                const $bal = $('#BalanceAmt-' + i);
+                const $adjAmt = $('#AdjustAmt-' + i);
+                const $chk = $('#CheckUnCheck-' + i);
+                const original = parseFloat($bal.data('original'));
+
+                if (isNaN(original) || original <= 0) continue;
+
+                const adjustHere = Math.min(RemainingQty, original);
+                RemainingQty -= adjustHere;
+
+                $chk.prop('checked', true);
+                $adjAmt.val(adjustHere.toFixed(2));
+                $bal.text((original - adjustHere).toFixed(2));
+
+                // Optional: highlight adjusted rows (light blue)
+                $('#AdjustData-' + i).css("background-color", "");
+
+                CheckUnCheckCheck(i);
+            }
+
+            // Step 5: Ensure background color of unchecked rows is white
+            for (let i = 1; i <= rowCount; i++) {
+                if (!$('#CheckUnCheck-' + i).is(':checked')) {
+                    $('#AdjustData-' + i).css("background-color", "");
+                }
+            }
+        }
+        function openLedgerReport() {
+            var AccountCode = parseInt($('#LedgerName').val()) || 0;
+            if (AccountCode > 0) {
+                window.open('/TransactionLedger/Index?Accountcode='
+                    + AccountCode
+                    + '&ReportType=TransactionLedgerSummary',
+                    '_blank');
+            }
+            else {
+                $.notify("Please select a ledger to view the report.", "error");
+            }
+
+        }
 
         $(document).ready(function () {
             $('#VoucherType').select2();
@@ -759,50 +782,50 @@
             $('#PRODSTATUSProdUnProdRej').rules("remove", "required");
             $('#PRODSTATUSProdUnProdRej').rules("remove", "required");
 
-                     if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
-                        
-                                var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                    var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                    var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                    var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                                    FillEntryID();
-                    }
-                    var finFromDate = $('#FromDate').val();
-                var finToDate = $('#ToDate').val();
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
 
-                var dateParts1 = finFromDate.split("/");
-                var monthNames = {
-                    "Jan": "01",
-                    "Feb": "02",
-                    "Mar": "03",
-                    "Apr": "04",
-                    "May": "05",
-                    "Jun": "06",
-                    "Jul": "07",
-                    "Aug": "08",
-                    "Sep": "09",
-                    "Oct": "10",
-                    "Nov": "11",
-                    "Dec": "12"
-                };
+                var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                FillEntryID();
+            }
+            var finFromDate = $('#FromDate').val();
+            var finToDate = $('#ToDate').val();
 
-                var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
-                var dateParts2 = finToDate.split("/");
+            var dateParts1 = finFromDate.split("/");
+            var monthNames = {
+                "Jan": "01",
+                "Feb": "02",
+                "Mar": "03",
+                "Apr": "04",
+                "May": "05",
+                "Jun": "06",
+                "Jul": "07",
+                "Aug": "08",
+                "Sep": "09",
+                "Oct": "10",
+                "Nov": "11",
+                "Dec": "12"
+            };
 
-                var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+            var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+            var dateParts2 = finToDate.split("/");
 
-                     $('#EntryDate').on('change', function () {
-                    var entryDateVal = $(this).val(); // Get selected EntryDate
-                    $('#VoucherDate').datepicker("setDate", entryDateVal); // Set same date in VoucherDate
-                            FillEntryID();
-                                            $('#divBankReceiptDetail').empty()
-                });
-                $('#VoucherDate').on('change', function () {
-                    var voucherDateVal = $(this).val(); // Get selected EntryDate
-                    $('#EntryDate').datepicker("setDate", voucherDateVal); // Set same date in VoucherDate
-                            FillEntryID();
-                                        $('#divBankReceiptDetail').empty()
-                });
+            var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+            $('#EntryDate').on('change', function () {
+                var entryDateVal = $(this).val(); // Get selected EntryDate
+                $('#VoucherDate').datepicker("setDate", entryDateVal); // Set same date in VoucherDate
+                FillEntryID();
+                $('#divBankReceiptDetail').empty()
+            });
+            $('#VoucherDate').on('change', function () {
+                var voucherDateVal = $(this).val(); // Get selected EntryDate
+                $('#EntryDate').datepicker("setDate", voucherDateVal); // Set same date in VoucherDate
+                FillEntryID();
+                $('#divBankReceiptDetail').empty()
+            });
             $('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
             $('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
 
@@ -918,88 +941,88 @@
 
             // Initial check on page load
             checkModeOfAdjustment();
-                                    let lastEnterTime = 0;
-        const doubleEnterThreshold = 400; // milliseconds
+            let lastEnterTime = 0;
+            const doubleEnterThreshold = 400; // milliseconds
 
-        document.addEventListener("keydown", function (e) {
-            if (e.key === "Enter") {
-                const now = Date.now();
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") {
+                    const now = Date.now();
 
-                const active = document.activeElement;
+                    const active = document.activeElement;
 
-                // Let Select2 handle selection first
-                if ($('.select2-container--open').length) {
-                    return;
+                    // Let Select2 handle selection first
+                    if ($('.select2-container--open').length) {
+                        return;
+                    }
+
+                    e.preventDefault();
+
+                    const form = document.querySelector("form");
+
+                    const focusable = Array.from(form.querySelectorAll("input, select, textarea"))
+                        .filter(el =>
+                            el.offsetParent !== null &&
+                            el.type !== "hidden" &&
+                            !el.disabled &&
+                            !el.readOnly
+                        );
+
+                    let current = active;
+                    if (current.classList.contains("select2-selection") || current.closest(".select2-selection")) {
+                        const container = current.closest(".select2-container");
+                        if (container && container.previousElementSibling) {
+                            current = container.previousElementSibling;
+                        }
+                    }
+
+                    const index = focusable.indexOf(current);
+
+                    // Double Enter pressed
+                    if (now - lastEnterTime < doubleEnterThreshold) {
+                        // Trigger GridButton click
+                        const gridBtn = document.querySelector(".GridButton");
+                        if (gridBtn) gridBtn.click();
+                        lastEnterTime = 0; // reset
+                        return;
+                    }
+
+                    lastEnterTime = now;
+
+                    // Move to next field
+                    if (index > -1 && index < focusable.length - 1) {
+                        let next = focusable[index + 1];
+                        next.focus();
+
+                        if (next.classList.contains("select2-hidden-accessible")) {
+                            $(next).select2("open");
+                        }
+                    }
                 }
+            });
 
-                e.preventDefault();
-
-                const form = document.querySelector("form");
+            $(document).on('select2:select', function (e) {
+                const current = e.target;
+                const form = current.closest("form");
 
                 const focusable = Array.from(form.querySelectorAll("input, select, textarea"))
                     .filter(el =>
                         el.offsetParent !== null &&
                         el.type !== "hidden" &&
-                        !el.disabled &&
-                        !el.readOnly
+                        !el.disabled
                     );
-
-                let current = active;
-                if (current.classList.contains("select2-selection") || current.closest(".select2-selection")) {
-                    const container = current.closest(".select2-container");
-                    if (container && container.previousElementSibling) {
-                        current = container.previousElementSibling;
-                    }
-                }
 
                 const index = focusable.indexOf(current);
 
-                // Double Enter pressed
-                if (now - lastEnterTime < doubleEnterThreshold) {
-                    // Trigger GridButton click
-                    const gridBtn = document.querySelector(".GridButton");
-                    if (gridBtn) gridBtn.click();
-                    lastEnterTime = 0; // reset
-                    return;
-                }
-
-                lastEnterTime = now;
-
-                // Move to next field
                 if (index > -1 && index < focusable.length - 1) {
-                    let next = focusable[index + 1];
-                    next.focus();
-
-                    if (next.classList.contains("select2-hidden-accessible")) {
-                        $(next).select2("open");
-                    }
+                    const next = focusable[index + 1];
+                    setTimeout(() => {
+                        next.focus();
+                        if (next.classList.contains("select2-hidden-accessible")) {
+                            $(next).select2("open");
+                        }
+                    }, 100);
                 }
-            }
-        });
-
-        $(document).on('select2:select', function (e) {
-            const current = e.target;
-            const form = current.closest("form");
-
-            const focusable = Array.from(form.querySelectorAll("input, select, textarea"))
-                .filter(el =>
-                    el.offsetParent !== null &&
-                    el.type !== "hidden" &&
-                    !el.disabled
-                );
-
-            const index = focusable.indexOf(current);
-
-            if (index > -1 && index < focusable.length - 1) {
-                const next = focusable[index + 1];
-                setTimeout(() => {
-                    next.focus();
-                    if (next.classList.contains("select2-hidden-accessible")) {
-                        $(next).select2("open");
-                    }
-                }, 100);
-            }
-        });
+            });
 
 
         });
@@ -1042,10 +1065,10 @@
 
         function BindModeOfAdjust() {
             $('#ModeOfAdjustment').append(`
-                                                    <option selected value="New Ref">New Ref</option>
-                                                    <option value="Advance">Advance</option>
-                                                    <option value="Against Ref">Against Ref</option>
-                                                `);
+                                                            <option selected value="New Ref">New Ref</option>
+                                                            <option value="Advance">Advance</option>
+                                                            <option value="Against Ref">Against Ref</option>
+                                                        `);
         }
 
         $('#LedgerName').change(function () {
@@ -1440,12 +1463,12 @@
 
         function FillLedgerName() {
 
-                    var ShowAll = $('#ShowAll').is(':checked') ? 'Y' : 'N';
+            var ShowAll = $('#ShowAll').is(':checked') ? 'Y' : 'N';
             $.ajax({
                 url: '@Url.Action("FillLedgerName", "JournalVoucher")',
                 type: 'POST',
                 data: {
-                            ShowAll: ShowAll
+                    ShowAll: ShowAll
                 },
                 async: false,
                 success: function (response, status, error) {
@@ -1612,10 +1635,12 @@
                                 });
                             }
                             else {
-                                if ($('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
-                                    $('#DisplayRoutingDetailModal').modal('show');
-                                    PopUpForPendingVouchers("AddMode");
-                                }
+
+                                //Monika
+                                // if ($('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
+                                //     $('#DisplayRoutingDetailModal').modal('show');
+                                //     PopUpForPendingVouchers("AddMode");
+                                // }
                                 $('#Type option').filter(function () {
                                     return $(this).val() === "CR";
                                 }).prop('selected', true);
@@ -1759,9 +1784,9 @@
             });
         }
 
-                function ChangeAdjustAmt(i) {
+        function ChangeAdjustAmt(i) {
             let adjustAmtInput = $('#AdjustAmt-' + i);
-            let balanceText = $('#BalanceText-' + i);
+            let balanceText = $('#BalanceAmt-' + i);
             let netBalanceHidden = $('#NetBalance-' + i);
             let originalBalanceHidden = $('#OriginalBalance-' + i);
             let errorSpan = $('#AdjustAmtError-' + i);
@@ -1805,10 +1830,17 @@
 
             var Err = 0;
             var RowCount = $('#lblcheckitem').text();
-            if (RowCount <= 0) {
+            // if (RowCount <= 0) {
+            //     $.notify("Please check at least one row to adjust", "error");
+            //     Err = 1;
+            // }
+
+            //Monika
+            if ($('#divDisplayPopupForPendingVouchersDetail input[type="checkbox"]:checked').length === 0) {
                 $.notify("Please check at least one row to adjust", "error");
-                Err = 1;
+                Err = 1; // ❌ Stop execution here
             }
+
             if ($('#Balance').val() == 0) {
                 AddErrorCls('Balance');
                 $.notify("Balance is must be greater than 0.", "error");
@@ -1850,8 +1882,8 @@
                         "DRCR": $('#PopUpType-' + i).text(),
                         "DrAmt": DrAmt,
                         "CrAmt": CrAmt,
-                                "ActualEntryby": parseInt($('#ActualEntryby').val()),
-        "UID": parseInt($('#UID').val()),
+                        "ActualEntryby": parseInt($('#ActualEntryby').val()),
+                        "UID": parseInt($('#UID').val()),
                         "EntryByMachine": $('#EntryByMachine').val(),
                         "AgainstVoucherNo": $('#PopUpVoucherNo-' + i).text(),
                         "AgainstVoucheryearCode": $('#PopUpYearCode-' + i).text(),
@@ -1937,14 +1969,14 @@
             else {
                 RemoveErrorCls('AdjustmentAmt');
             }
-           /*  if ($('#Balance').val() == 0) {
-                AddErrorCls('Balance');
-                $.notify("Balance is must be greater than 0.", "error");
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('Balance');
-            } */
+            /*  if ($('#Balance').val() == 0) {
+                 AddErrorCls('Balance');
+                 $.notify("Balance is must be greater than 0.", "error");
+                 Err = 1;
+             }
+             else {
+                 RemoveErrorCls('Balance');
+             } */
             if ($('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
                 AddErrorCls('ModeOfAdjustment');
                 $.notify("Cannot add to grid directly.", "error");
@@ -2143,20 +2175,20 @@
             }
         }
 
-                $('#CheckUnCheckAll').click(function () {
-                    var isChecked = $(this).is(':checked');
+        $('#CheckUnCheckAll').click(function () {
+            var isChecked = $(this).is(':checked');
 
-                    $('input[id^="CheckUnCheck-"]').each(function () {
-                        $(this).prop('checked', isChecked);
+            $('input[id^="CheckUnCheck-"]').each(function () {
+                $(this).prop('checked', isChecked);
 
-                        var index = $(this).attr('id').split('-')[1];
-                        CheckUnCheckCheck(index);
-                    });
-                });
+                var index = $(this).attr('id').split('-')[1];
+                CheckUnCheckCheck(index);
+            });
+        });
 
         function CheckUnCheckCheck(i) {
             var isChecked = $('#CheckUnCheck-' + i).is(':checked');
-            var balanceText = $('#BalanceText-' + i);
+            var balanceText = $('#BalanceAmt-' + i);
             var adjustInput = $('#AdjustAmt-' + i);
             var netBalance = parseFloat($('#NetBalance-' + i).val()) || 0;
             var originalBalance = parseFloat($('#OriginalBalance-' + i).val()) || 0;
@@ -2193,48 +2225,48 @@
             AdjustAmount();
         }
 
-                function CheckUnCheckEdit() {
+        function CheckUnCheckEdit() {
 
-                            var RowCount = $('#divBankReceiptDetail tr').length;
-                            var PopUpRow = $('#divDisplayPopupForPendingVouchersDetail tr').length;
-                            var selectedRows = 0;
+            var RowCount = $('#divBankReceiptDetail tr').length;
+            var PopUpRow = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+            var selectedRows = 0;
 
-                            var existingVoucherIds = new Map();
+            var existingVoucherIds = new Map();
 
-                            for (let i = 1; i <= RowCount; i++) {
-                                let voucherId = $('#AgainstVoucherEntryId-' + i).text().trim();
-                                let amount = parseFloat($('#AdjAmtG-' + i).text());
-                                let balance = parseFloat($('#BalanceG-' + i).text());
-                                let accountCode = $('#LedgerName').val();
+            for (let i = 1; i <= RowCount; i++) {
+                let voucherId = $('#AgainstVoucherEntryId-' + i).text().trim();
+                let amount = parseFloat($('#AdjAmtG-' + i).text());
+                let balance = parseFloat($('#BalanceG-' + i).text());
+                let accountCode = $('#LedgerName').val();
 
-                                let key = voucherId + '_' + accountCode;
-                                existingVoucherIds.set(voucherId, { amount, balance });
-                            }
+                let key = voucherId + '_' + accountCode;
+                existingVoucherIds.set(voucherId, { amount, balance });
+            }
 
-                            var selectedRows = $('#divDisplayPopupForPendingVouchersDetail tr').has('input[type="checkbox"]:checked').length;
+            var selectedRows = $('#divDisplayPopupForPendingVouchersDetail tr').has('input[type="checkbox"]:checked').length;
 
-                            if (selectedRows === RowCount) {
-                                $('#CheckUnCheckAll').prop('checked', true);
-                            }
-                            else {
-                                $('#CheckUnCheckAll').prop('checked', false);
-                            }
+            if (selectedRows === RowCount) {
+                $('#CheckUnCheckAll').prop('checked', true);
+            }
+            else {
+                $('#CheckUnCheckAll').prop('checked', false);
+            }
 
-                            for (let i = 1; i <= PopUpRow; i++) {
-                                let popupVoucherId = $('#PopUpAccEntryId-' + i).text().trim();
+            for (let i = 1; i <= PopUpRow; i++) {
+                let popupVoucherId = $('#PopUpAccEntryId-' + i).text().trim();
 
-                                if (existingVoucherIds.has(popupVoucherId)) {
-                                    selectedRows++;
-                                    $('#CheckUnCheck-' + i).prop('checked', true);
-                                    let { amount, balance } = existingVoucherIds.get(popupVoucherId);
-                                    $('#AdjustAmt-' + i).val(amount);
-                                    $('#BalanceAmt-' + i).text(balance);
-                                    $('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
-                                }
-                            }
-                            AdjustAmount();
-                            $('#lblcheckitem').text(selectedRows);
-                        }
+                if (existingVoucherIds.has(popupVoucherId)) {
+                    selectedRows++;
+                    $('#CheckUnCheck-' + i).prop('checked', true);
+                    let { amount, balance } = existingVoucherIds.get(popupVoucherId);
+                    $('#AdjustAmt-' + i).val(amount);
+                    $('#BalanceAmt-' + i).text(balance);
+                    $('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
+                }
+            }
+            AdjustAmount();
+            $('#lblcheckitem').text(selectedRows);
+        }
 
         var currentSearchColumn = null;
 
@@ -2252,41 +2284,41 @@
         });
 
         $(document).on("click", ".sortCol", function () {
-    var $column = $(this).parent().closest("th");
-    var colno = $(this).data('columnno');
-    var currentOrder = $(this).data('sortorder');
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
 
-    $('.sortCol').css('color', 'white');
-    if (currentOrder === 'asc') {
-        sortTable('GateDataTable', colno, false);
-        $(this).data('sortorder', 'desc');
-        $(this).css('color', 'yellow');
-        //$(this).css('font-size', 'larger');
-        $(this).find('i:first').removeClass('fa-arrow-up');
-        $(this).find('i:first').addClass('fa-arrow-down');
-    } else {
-        sortTable('GateDataTable', colno, true);
-        $(this).data('sortorder', 'asc');
-        $(this).css('color', 'yellow');
-        // $(this).css('font-size', 'larger');
-        $(this).find('i:first').removeClass('fa-arrow-down');
-        $(this).find('i:first').addClass('fa-arrow-up');
-    }
-});
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable('GateDataTable', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('GateDataTable', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
 
-               function PressBack() {
-                     
-                    sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
-                    sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
-                    sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
-                    sessionStorage.setItem('VoucherNoBack', $('#VoucherNoBack').val());
-                    sessionStorage.setItem('AgainstVoucherRefNoBack', $('#AgainstVoucherRefNoBack').val());
-                    sessionStorage.setItem('AgainstVoucherNoBack', $('#AgainstVoucherNoBack').val());
-                    sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
-                    sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+        function PressBack() {
 
-                    window.history.back();
-                }
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+            sessionStorage.setItem('VoucherNoBack', $('#VoucherNoBack').val());
+            sessionStorage.setItem('AgainstVoucherRefNoBack', $('#AgainstVoucherRefNoBack').val());
+            sessionStorage.setItem('AgainstVoucherNoBack', $('#AgainstVoucherNoBack').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
 
         $('#btnRoutingExcel').click(function () {
             $("#GateDataTable").table2excel({

@@ -23,12 +23,14 @@ namespace eTactwebAccounts.Controllers
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
         private readonly ConnectionStringService _connectionStringService;
+        public EncryptDecrypt EncryptDecrypt { get; }
         public JournalVoucherController(ILogger<JournalVoucherController> logger, IDataLogic iDataLogic, IJournalVoucher IJournalVoucher, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IJournalVoucher = IJournalVoucher;
             _IWebHostEnvironment = iWebHostEnvironment;
+            EncryptDecrypt = encryptDecrypt;
             this.iconfiguration = iconfiguration;
             _connectionStringService = connectionStringService;
         }
@@ -40,34 +42,86 @@ namespace eTactwebAccounts.Controllers
             return Json(JsonString);
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string VoucherName = "")
-		{
-			string my_connection_string;
-			string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-			string webRootPath = _IWebHostEnvironment.WebRootPath;
-			var webReport = new WebReport();
-			webReport.Report.Clear();
-			webReport.Report.Dispose();
-			webReport.Report = new Report();
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
 
-			webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
+            webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
             my_connection_string = _connectionStringService.GetConnectionString();
-			my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-			webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-			webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
-			webReport.Report.SetParameterValue("vouchernameparam", VoucherName);
-			webReport.Report.SetParameterValue("yearcodeparam", YearCode);
-			webReport.Report.SetParameterValue("entryidparam", EntryId);
-			webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-			webReport.Report.Refresh();
-			return View(webReport);
-		}
-		[Route("{controller}/Index")]
+            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("vouchernameparam", VoucherName);
+            webReport.Report.SetParameterValue("yearcodeparam", YearCode);
+            webReport.Report.SetParameterValue("entryidparam", EntryId);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+        }
+        [Route("{controller}/Index")]
         [HttpGet]
         public async Task<ActionResult> JournalVoucher(int ID, string Mode, int YearCode, string VoucherNo, string FromDate = "", string ToDate = "", string LedgerName = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
         {
             HttpContext.Session.Remove("KeyJournalVoucherGrid");
             HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
-            TempData.Clear();
+            // TempData.Clear();
+            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var rights = await _IJournalVoucher.GetFormRights(userID);
+            if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+            {
+                return RedirectToAction("Dashboard", "Home");
+            }
+
+
+            string encID = Request.Query["ID"].ToString();
+            string encYC = Request.Query["YearCode"].ToString();
+
+            if (!string.IsNullOrEmpty(encID) || !string.IsNullOrEmpty(encYC))
+            {
+                int decryptedID = EncryptDecrypt.DecodeID(encID);
+                int decryptedYC = EncryptDecrypt.DecodeID(encYC);
+                string decryptedMode = EncryptDecrypt.Decrypt(Mode);
+                string decryptedVoucherNo = EncryptDecrypt.Decrypt(VoucherNo);
+                ID = decryptedID;
+                YearCode = decryptedYC;
+                Mode = decryptedMode;
+                VoucherNo = decryptedVoucherNo;
+            }
+            var table = rights.Result.Tables[0];
+            bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+            bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+            bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+            bool optSave = Convert.ToBoolean(table.Rows[0]["OptSave"]);
+
+
+            if (Mode == "U")
+            {
+                if (!(optUpdate))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+            }
+            if (Mode == "V")
+            {
+                if (!(optView))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+            }
+            if (ID <= 0)
+            {
+                if (!optSave)
+                {
+                    return RedirectToAction("JournalVoucherDashBoard", "JournalVoucher");
+                }
+            }
+
+
             var MainModel = new JournalVoucherModel();
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
@@ -885,21 +939,81 @@ namespace eTactwebAccounts.Controllers
                 var model = new JournalVoucherModel();
                 FromDate = HttpContext.Session.GetString("FromDate");
                 ToDate = HttpContext.Session.GetString("ToDate");
-                var Result = await _IJournalVoucher.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
-                if (Result != null)
+                int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                var rights = await _IJournalVoucher.GetFormRights(userID);
+                if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
                 {
-                    DataSet ds = Result.Result;
-                    if (ds != null && ds.Tables.Count > 0)
-                    {
-                        var dt = ds.Tables[0];
-                        model.JournalVoucherList = CommonFunc.DataTableToList<JournalVoucherModel>(dt, "JournalVoucherDashBoard");
-                    }
+                    return RedirectToAction("Dashboard", "Home");
                 }
+                var table = rights.Result.Tables[0];
+
+                bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+                bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+                bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+                bool optDelete = Convert.ToBoolean(table.Rows[0]["OptDelete"]);
+                if (!(optAll || optView || optUpdate || optDelete))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+                //var Result = await _IJournalVoucher.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
+                //if (Result != null)
+                //{
+                //    DataSet ds = Result.Result;
+                //    if (ds != null && ds.Tables.Count > 0)
+                //    {
+                //        var dt = ds.Tables[0];
+                //        model.JournalVoucherList = CommonFunc.DataTableToList<JournalVoucherModel>(dt, "JournalVoucherDashBoard");
+                //    }
+                //}
                 return View(model);
             }
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+        public async Task<IActionResult> GetSearchData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno, string summaryDetail, string searchBox, string Flag = "True")
+        {
+            try
+            {
+                var model = new JournalVoucherModel
+                {
+                    YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode")),
+                    Searchbox = searchBox
+                };
+
+                var result = await _IJournalVoucher
+                //.GetDashboardData(ParseFormattedDate(fromDate), ParseFormattedDate(toDate), custInvoiceNo, AccountCode, mrnNo, gateNo, ItemCode, againstBillNo, voucherNo, summaryDetail, searchBox);
+                .GetDashBoardData(summaryDetail, ParseFormattedDate(FromDate), ParseFormattedDate(ToDate), LedgerName, Bank, VoucherNo, AgainstVoucherNo, SoNo, AgainstBillno);
+
+                if (result == null || !(result.Result is DataTable dt))
+                {
+                    return PartialView("_JournalVoucherDashBoardGrid", model);
+                }
+
+                model.Headers = dt.Columns
+                    .Cast<DataColumn>()
+                    .Select(c => new DashboardColumn
+                    {
+                        Title = c.ColumnName,
+                        Field = c.ColumnName
+                    })
+                    .ToList();
+
+                model.Rows = dt.AsEnumerable()
+                    .Select(r => dt.Columns
+                        .Cast<DataColumn>()
+                        .ToDictionary(
+                            c => c.ColumnName,
+                            c => r[c] == DBNull.Value ? null : r[c]
+                        ))
+                    .ToList();
+
+                return PartialView("_JournalVoucherDashBoardGrid", model);
+            }
+            catch
+            {
+                throw;
             }
         }
         public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)

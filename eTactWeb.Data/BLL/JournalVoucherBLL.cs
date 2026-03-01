@@ -16,9 +16,9 @@ namespace eTactWeb.Data.BLL
     {
         private JournalVoucherDAL _JournalVoucherDAL;
         private readonly IDataLogic _DataLogicDAL;
-        public JournalVoucherBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
+        public JournalVoucherBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService, ICommon common)
         {
-            _JournalVoucherDAL = new JournalVoucherDAL(config, dataLogicDAL, connectionStringService);
+            _JournalVoucherDAL = new JournalVoucherDAL(config, dataLogicDAL, connectionStringService, common);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<ResponseResult> FillLedgerName(string VoucherType, string Type)
@@ -65,9 +65,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _JournalVoucherDAL.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
         }
-        public async Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate)
+        //public async Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate)
+        //{
+        //    return await _JournalVoucherDAL.GetDashBoardData(FromDate, ToDate);
+        //}
+        public async Task<ResponseResult> GetDashBoardData(string summaryDetail, string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno)
         {
-            return await _JournalVoucherDAL.GetDashBoardData(FromDate, ToDate);
+            return await _JournalVoucherDAL.GetDashBoardData(summaryDetail, FromDate, ToDate, LedgerName, Bank, VoucherNo, AgainstVoucherNo, SoNo, AgainstBillno);
         }
         public async Task<JournalVoucherModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
         {

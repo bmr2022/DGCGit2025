@@ -13,7 +13,7 @@
                 <h5>
                     Journal Voucher - <strong>Dashboard</strong>
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-action="JournalVoucher" asp-controller="JournalVoucher" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                        <a asp-action="JournalVoucher" asp-controller="JournalVoucher" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                             <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                             Add New
                         </a>
@@ -74,7 +74,7 @@
                                     <option value="Detail">Detail</option>
                                 </select>
                             </div>
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>  
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label class="form-label">Global search</label>
                                 <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD " placeholder="Search...">
@@ -136,7 +136,7 @@
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
-            if (FromDateBack != null  &&  FromDateBack != ''){
+            if (FromDateBack != null && FromDateBack != '') {
                 $('#FromDate').val(FromDateBack);
                 $('#ToDate').val(ToDateBack);
                 $('#LedgerName').val(LedgerNameBack);
@@ -145,7 +145,7 @@
                 $('#AgainstVoucherNo').val(AgainstVoucherNoBack);
                 $('#search-box').val(GlobalSearchBack);
                 $('#DashboardType').val(DashboardTypeBack);
-             }
+            }
 
             $('#LedgerName').select2();
             $('#Bank').select2();
@@ -171,12 +171,12 @@
             sessionStorage.removeItem('DashboardTypeBack');
 
         });
-                function GetFormRights() {
+        function GetFormRights() {
 
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
-                async:false,
+                async: false,
                 success: function (data) {
 
                     if (data != null) {
@@ -186,34 +186,34 @@
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#viewCursorDiv-' + i).empty();
                                 $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
-                                                                                                <span class="fa-stack">
-                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                                                                                </span>
-                                                                                            </a>`);
+                                                                                                        <span class="fa-stack">
+                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                                        </span>
+                                                                                                    </a>`);
                             }
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#editCursorDiv-' + i).empty();
                                 $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
-                                                                                                        <span class="fa-stack">
-                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                                                                        </span>
-                                                                                                    </a>`);
+                                                                                                                <span class="fa-stack">
+                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                                                </span>
+                                                                                                            </a>`);
                             }
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#deleteCursorDiv-' + i).empty();
                                 $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
-                                                                                                        <span class="fa-stack">
-                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                                                                        </span>
-                                                                                                    </a>`);
+                                                                                                                <span class="fa-stack">
+                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                                                </span>
+                                                                                                            </a>`);
                             }
                             $("#divDashboardGrid").css("display", "none");
                             $(".totalrows").css("display", "none");
                             $("#SParam").hide();
-                        }else{
+                        } else {
 
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
@@ -225,7 +225,7 @@
                                 if (!optSave) {
 
                                     $("#savebtn").css("pointer-events", "none");
-                                }else{
+                                } else {
                                     $("#savebtn").css("pointer-events", "");
                                 }
                                 if (!optView) {
@@ -233,33 +233,33 @@
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#viewCursorDiv-' + i).empty();
                                         $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
-                                                                <span class="fa-stack">
-                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                                                </span>
-                                                            </a>`);
+                                                                        <span class="fa-stack">
+                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                        </span>
+                                                                    </a>`);
                                     }
                                 }
                                 if (!optUpdate) {
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#editCursorDiv-' + i).empty();
                                         $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
-                                                                <span class="fa-stack">
-                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                                </span>
-                                                            </a>`);
+                                                                        <span class="fa-stack">
+                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                        </span>
+                                                                    </a>`);
                                     }
                                 }
                                 if (!optDelete) {
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#deleteCursorDiv-' + i).empty();
                                         $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
-                                                                <span class="fa-stack">
-                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                                </span>
-                                                            </a>`);
+                                                                        <span class="fa-stack">
+                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                        </span>
+                                                                    </a>`);
                                     }
                                 }
                                 if (!(optUpdate || optDelete || optView)) {
@@ -276,16 +276,87 @@
                 }
             });
         }
+        // function GetSearchData() {
+
+        //     if ($('#DashboardType').val() == "Summary") {
+        //         GetDashBoardSummaryData();
+        //         GetFormRights();
+        //     }
+        //     else {
+        //         GetDashBoardDetailData();
+        //         GetFormRights();
+        //     }
+        // }
+        function calculateFooterTotalsSafe() {
+
+            let columnInfo = {};
+
+            $('#SRDashboardGrid tbody tr').not(':has(td[colspan])').each(function () {
+
+                $(this).find('td[data-field]').each(function () {
+
+                    let field = $(this).data('field');
+                    let text = $(this).text().trim().replace(/,/g, '');
+
+                    if (!columnInfo[field]) {
+                        columnInfo[field] = { sum: 0, isNumeric: true };
+                    }
+
+                    if (text === '' || isNaN(text) || !isFinite(text)) {
+                        columnInfo[field].isNumeric = false;
+                        return;
+                    }
+
+                    columnInfo[field].sum += parseFloat(text);
+                });
+            });
+
+            for (let field in columnInfo) {
+                if (columnInfo[field].isNumeric) {
+                    $('#tfoot_' + field).text(columnInfo[field].sum.toFixed(2));
+                } else {
+                    $('#tfoot_' + field).text('');
+                }
+            }
+        }
+
         function GetSearchData() {
-             
-            if ($('#DashboardType').val() == "Summary") {
-                GetDashBoardSummaryData();
-                GetFormRights();
+            var itemCode = "";
+
+            if ($('#PartCode').val() != "0") {
+                itemCode = $('#PartCode').val();   // PartCode selected
             }
-            else {
-                GetDashBoardDetailData();
-                GetFormRights();
+            else if ($('#ItemName').val() != "0") {
+                itemCode = $('#ItemName').val();   // ItemName selected
             }
+            var formData = {
+                FromDate: $('#FromDate').val(),
+                ToDate: $('#ToDate').val(),
+                LedgerName: $('#LedgerName').val(),
+                Bank: $('#Bank').val(),
+                VoucherNo: $('#VoucherNo').val(),
+                AgainstVoucherNo: $('#AgainstVoucherNo').val(),
+                SoNo: $('#SONo').val(),
+                AgainstBillno: $('#AgainstBillno').val(),
+                summaryDetail: $('#DashboardType').val(),   // Summary / Detail
+                searchBox: $('#search-box').val(),          // Global search
+                Flag: "True"
+            };
+
+
+            $.ajax({
+                url: '@Url.Action("GetSearchData")',
+                type: "POST",
+                data: formData,
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    GetFormRights();
+                    calculateFooterTotalsSafe();
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText);
+                }
+            });
         }
 
         function GetDashBoardSummaryData() {
@@ -321,7 +392,7 @@
                 data: $('#SParam').serializeArray(),
                 async: false,
                 success: function (data) {
-                      
+
                     $('#divDashboardGrid').empty().append(data);
                     if ($('#gateDashboardtable tr').length < 1) {
                         var dashGrid = 0;
@@ -360,7 +431,7 @@
         $("#search-box").on("keyup", function () {
 
             var value = $(this).val().toLowerCase();
-            $("#gateDashboardtable tr").filter(function () {
+            $("#divSRDashboardGrid tr").filter(function () {
                 if (currentSearchColumn !== null) {
                     var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
                     $(this).toggle(columnText.indexOf(value) > -1);
@@ -377,7 +448,7 @@
         });
 
         $('#sendToExcel').click(function () {
-            $("#GateDataTable").table2excel({
+            $("#SRDashboardGrid").table2excel({
                 filename: "WorkOrderProcessDetailData.xls"
             });
         });
@@ -389,14 +460,14 @@
 
             $('.sortCol').css('color', 'white');
             if (currentOrder === 'asc') {
-                sortTable('GateDataTable', colno, false);
+                sortTable('SRDashboardGrid', colno, false);
                 $(this).data('sortorder', 'desc');
                 $(this).css('color', 'yellow');
                 //$(this).css('font-size', 'larger');
                 $(this).find('i:first').removeClass('fa-arrow-up');
                 $(this).find('i:first').addClass('fa-arrow-down');
             } else {
-                sortTable('GateDataTable', colno, true);
+                sortTable('SRDashboardGrid', colno, true);
                 $(this).data('sortorder', 'asc');
                 $(this).css('color', 'yellow');
                 // $(this).css('font-size', 'larger');
@@ -415,14 +486,14 @@
         }
         function confirmEdit(event) {
             event.preventDefault();
-                    sessionStorage.setItem('FromDateBack', $('#FromDate').val());
-        sessionStorage.setItem('ToDateBack', $('#ToDate').val());
-        sessionStorage.setItem('LedgerNameBack', $('#LedgerName').val());
-        sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
-        sessionStorage.setItem('AgainstVoucherRefNoBack', $('#AgainstVoucherRefNo').val());
-        sessionStorage.setItem('AgainstVoucherNoBack', $('#AgainstVoucherNo').val());
-        sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
-        sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
+            sessionStorage.setItem('FromDateBack', $('#FromDate').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDate').val());
+            sessionStorage.setItem('LedgerNameBack', $('#LedgerName').val());
+            sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
+            sessionStorage.setItem('AgainstVoucherRefNoBack', $('#AgainstVoucherRefNo').val());
+            sessionStorage.setItem('AgainstVoucherNoBack', $('#AgainstVoucherNo').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
             linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&LedgerName=" + $('#LedgerName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&AgainstVoucherRefNo=" + $('#AgainstVoucherRefNo').val() + "&AgainstVoucherNo=" + $('#AgainstVoucherNo').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
@@ -432,21 +503,21 @@
         function BackButtonData(event) {
 
             event.preventDefault();
-                    sessionStorage.setItem('FromDateBack', $('#FromDate').val());
-        sessionStorage.setItem('ToDateBack', $('#ToDate').val());
-        sessionStorage.setItem('LedgerNameBack', $('#LedgerName').val());
-        sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
-        sessionStorage.setItem('AgainstVoucherRefNoBack', $('#AgainstVoucherRefNo').val());
-        sessionStorage.setItem('AgainstVoucherNoBack', $('#AgainstVoucherNo').val());
-        sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
-        sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
+            sessionStorage.setItem('FromDateBack', $('#FromDate').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDate').val());
+            sessionStorage.setItem('LedgerNameBack', $('#LedgerName').val());
+            sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
+            sessionStorage.setItem('AgainstVoucherRefNoBack', $('#AgainstVoucherRefNo').val());
+            sessionStorage.setItem('AgainstVoucherNoBack', $('#AgainstVoucherNo').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
             linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&LedgerName=" + $('#LedgerName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&AgainstVoucherRefNo=" + $('#AgainstVoucherRefNo').val() + "&AgainstVoucherNo=" + $('#AgainstVoucherNo').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
             window.location.href = linkUrl;
         }
 
-        $('#FromDate').change(function(){
+        $('#FromDate').change(function () {
             FillLedgerInDashboard();
             FillBankInDashboard();
             FillVoucherNoInDashboard();
@@ -454,7 +525,7 @@
             FillAgainstVoucherRefNoInDashboard();
         });
 
-         $('#ToDate').change(function(){
+        $('#ToDate').change(function () {
             FillLedgerInDashboard();
             FillBankInDashboard();
             FillVoucherNoInDashboard();
@@ -462,11 +533,11 @@
             FillAgainstVoucherRefNoInDashboard();
         });
 
-         function FillLedgerInDashboard() {
+        function FillLedgerInDashboard() {
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("FillLedgerInDashboard", "BankPayment")',
-                data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
+                data: { "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val() },
                 async: false,
                 dataType: "json",
                 success: function (response, status, error) {
@@ -487,7 +558,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("FillBankInDashboard", "BankPayment")',
-                data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
+                data: { "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val() },
                 async: false,
                 dataType: "json",
                 success: function (response, status, error) {
@@ -508,7 +579,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("FillVoucherNoInDashboard", "BankPayment")',
-                data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
+                data: { "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val() },
                 async: false,
                 dataType: "json",
                 success: function (response, status, error) {
@@ -529,7 +600,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("FillAgainstVoucherRefNoInDashboard", "BankPayment")',
-                data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
+                data: { "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val() },
                 async: false,
                 dataType: "json",
                 success: function (response, status, error) {
@@ -550,12 +621,12 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("FillAgainstVoucherNoInDashboard", "BankPayment")',
-                data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
+                data: { "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val() },
                 async: false,
                 dataType: "json",
                 success: function (response, status, error) {
                     var obj = $.parseJSON(response);
-                     $('#AgainstVoucherNo').empty();
+                    $('#AgainstVoucherNo').empty();
                     $('#AgainstVoucherNo').append('<option value="">--Select--</option>');
                     $.each(obj.Result, function (key, val) {
                         $('#AgainstVoucherNo').append('<option value = "' + val.AgainstVoucherNo + '"> ' + val.AgainstVoucherNo + ' </option>');
@@ -575,14 +646,14 @@
 }
 
 <style>
-    #GateDataTable th.sticky-action {
+    #SRDashboardGrid th.sticky-action {
         position: sticky;
         left: 0;
         z-index: 10;
     }
 
     /* Sticky Action column cells */
-    #GateDataTable td.sticky-action {
+    #SRDashboardGrid td.sticky-action {
         position: sticky;
         left: 0;
         background-color: #fff;

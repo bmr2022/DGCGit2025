@@ -20,7 +20,9 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate);
         Task<ResponseResult> SaveBankReceipt(JournalVoucherModel model, DataTable GIGrid);
-        Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate);
+        Task<ResponseResult> GetDashBoardData(string summaryDetail, string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno);
+
+        //Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate);
         Task<JournalVoucherModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo);
         Task<JournalVoucherModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo);
         Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string VoucherType);

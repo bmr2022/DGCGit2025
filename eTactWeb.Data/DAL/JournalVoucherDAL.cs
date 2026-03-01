@@ -20,12 +20,14 @@ namespace eTactWeb.Data.DAL
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
         private readonly ConnectionStringService _connectionStringService;
-        public JournalVoucherDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
+        private readonly ICommon _common;
+        public JournalVoucherDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService, ICommon common)
         {
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
             _connectionStringService = connectionStringService;
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
+            _common = common;
         }
         public static DateTime ParseDate(string dateString)
         {
@@ -209,7 +211,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "NEWENTRY"));
                 SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
-                SqlParams.Add(new SqlParameter("@yearcode", YearCode)); 
+                SqlParams.Add(new SqlParameter("@yearcode", YearCode));
                 SqlParams.Add(new SqlParameter("@VoucherDate", ParseFormattedDate(VoucherDate)));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
@@ -296,27 +298,54 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate)
+        public async Task<ResponseResult> GetDashBoardData(string summaryDetail, string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string SONo, string AgainstBillno)
         {
-            var responseResult = new ResponseResult();
-            try
-            {
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
-                SqlParams.Add(new SqlParameter("@summDetail", "Summary"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
-                SqlParams.Add(new SqlParameter("@fromdate", ParseFormattedDate(FromDate)));
-                SqlParams.Add(new SqlParameter("@todate", ParseFormattedDate(ToDate)));
-                responseResult = await _IDataLogic.ExecuteDataSet("AccSpVoucherEntry", SqlParams).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                dynamic error = new ExpandoObject();
-                error.Message = ex.Message;
-                error.Source = ex.Source;
-            }
-            return responseResult;
+            var flag = summaryDetail == "Summary"
+               ? "Summary"
+               : "Detail";
+
+            var parameters = new Dictionary<string, object>
+    {
+        { "@VoucherType", "JOURNAL-VOUCHER" },
+        { "@AgainstBillNo", AgainstBillno},
+        { "@SONO", EmptyIfNull(SONo) },
+        { "@AgainstVoucherNo", EmptyIfNull(AgainstVoucherNo) },
+        { "@voucherNo", VoucherNo },
+        { "@Bank", EmptyIfNull(Bank) },
+        { "@LedgerName", EmptyIfNull(LedgerName) },
+        { "@summDetail", flag },
+     //   {"@Flag", "DASHBOARD" },
+        { "@fromdate", CommonFunc.ParseFormattedDate(FromDate) },
+        { "@todate", CommonFunc.ParseFormattedDate(ToDate) }
+    };
+
+            return await _common.GetDashboardData(
+                "AccSpVoucherEntry",
+                "DASHBOARD",
+                parameters
+            );
         }
+        //public async Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate)
+        //{
+        //    var responseResult = new ResponseResult();
+        //    try
+        //    {
+        //        var SqlParams = new List<dynamic>();
+        //        SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
+        //        SqlParams.Add(new SqlParameter("@summDetail", "Summary"));
+        //        SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
+        //        SqlParams.Add(new SqlParameter("@fromdate", ParseFormattedDate(FromDate)));
+        //        SqlParams.Add(new SqlParameter("@todate", ParseFormattedDate(ToDate)));
+        //        responseResult = await _IDataLogic.ExecuteDataSet("AccSpVoucherEntry", SqlParams).ConfigureAwait(false);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        dynamic error = new ExpandoObject();
+        //        error.Message = ex.Message;
+        //        error.Source = ex.Source;
+        //    }
+        //    return responseResult;
+        //}
         public async Task<JournalVoucherModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstBillno, string AgainstVoucherNo)
         {
             DataSet? oDataSet = new DataSet();
@@ -348,35 +377,35 @@ namespace eTactWeb.Data.DAL
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
                     model.JournalVoucherList = (from DataRow dr in oDataSet.Tables[0].Rows
-                                             select new JournalVoucherModel
-                                             {
-                                                 LedgerName = dr["LedgerName"] != DBNull.Value ? dr["LedgerName"].ToString() : string.Empty,
-                                                 AccountCode = dr["Accountcode"] != DBNull.Value ? Convert.ToInt32(dr["Accountcode"]) : 0,
-                                                 VoucherNo = dr["VoucherNo"] != DBNull.Value ? dr["VoucherNo"].ToString() : string.Empty,
-                                                 VoucherDate = dr["VchDate"] != DBNull.Value ? dr["VchDate"].ToString() : string.Empty,
-                                                 DrAmt = dr["DrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DrAmt"]) : 0,
-                                                 CrAmt = dr["CrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["CrAmt"]) : 0,
-                                                 VoucherType = dr["VoucherType"] != DBNull.Value ? dr["VoucherType"].ToString() : string.Empty,
-                                                 ModeOfAdjustment = dr["ModeOfAdjustment"] != DBNull.Value ? dr["ModeOfAdjustment"].ToString() : string.Empty,
-                                                 SubVoucherName = dr["SubVoucherName"] != DBNull.Value ? dr["SubVoucherName"].ToString() : string.Empty,
-                                                 AgainstVoucherEntryId = dr["AgainstVoucherEntryId"] != DBNull.Value ? Convert.ToInt32(dr["AgainstVoucherEntryId"]) : 0,
-                                                 AgainstVoucherNo = dr["AgainstVoucherNo"] != DBNull.Value ? dr["AgainstVoucherNo"].ToString() : string.Empty,
-                                                 AgainstVoucherRefNo = dr["againstVoucherRefNo"] != DBNull.Value ? dr["againstVoucherRefNo"].ToString() : string.Empty,
-                                                 AgainstBillno = dr["AgainstBillno"] != DBNull.Value ? dr["AgainstBillno"].ToString() : string.Empty,
-                                                 AgainstVoucherType = dr["AgainstVoucherType"] != DBNull.Value ? dr["AgainstVoucherType"].ToString() : string.Empty,
-                                                 AgainstVoucheryearCode = dr["AgainstVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(dr["AgainstVoucheryearcode"]) : 0,
-                                                 ActualEntryBy = dr["ActualEntryByEmp"] != DBNull.Value ? dr["ActualEntryByEmp"].ToString() : string.Empty,
-                                                 ActualEntryDate = dr["ActualEntryDate"].ToString(),
-                                                 UpdatedOn = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToDateTime(dr["LastUpdatedDate"]) : (DateTime?)null,
-                                                 UpdatedByEmp = dr["UpdatedByEmp"] != DBNull.Value ? dr["UpdatedByEmp"].ToString() : string.Empty,
-                                                 EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? dr["EntryByMachine"].ToString() : string.Empty,
-                                                 AccEntryId = dr["AccEntryId"] != DBNull.Value ? Convert.ToInt32(dr["AccEntryId"]) : 0,
-                                                 YearCode = dr["AccYearCode"] != DBNull.Value ? Convert.ToInt32(dr["AccYearCode"]) : 0,
-                                                 EntryDate = dr["EntryDate"] != DBNull.Value ? dr["EntryDate"].ToString() : string.Empty,
-                                                 ActualEntryby = dr["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(dr["ActualEntryBy"]) : 0,
-                                                 UpdatedBy = dr["UpdatedBy"] != DBNull.Value ? Convert.ToInt32(dr["UpdatedBy"]) : 0
+                                                select new JournalVoucherModel
+                                                {
+                                                    LedgerName = dr["LedgerName"] != DBNull.Value ? dr["LedgerName"].ToString() : string.Empty,
+                                                    AccountCode = dr["Accountcode"] != DBNull.Value ? Convert.ToInt32(dr["Accountcode"]) : 0,
+                                                    VoucherNo = dr["VoucherNo"] != DBNull.Value ? dr["VoucherNo"].ToString() : string.Empty,
+                                                    VoucherDate = dr["VchDate"] != DBNull.Value ? dr["VchDate"].ToString() : string.Empty,
+                                                    DrAmt = dr["DrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DrAmt"]) : 0,
+                                                    CrAmt = dr["CrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["CrAmt"]) : 0,
+                                                    VoucherType = dr["VoucherType"] != DBNull.Value ? dr["VoucherType"].ToString() : string.Empty,
+                                                    ModeOfAdjustment = dr["ModeOfAdjustment"] != DBNull.Value ? dr["ModeOfAdjustment"].ToString() : string.Empty,
+                                                    SubVoucherName = dr["SubVoucherName"] != DBNull.Value ? dr["SubVoucherName"].ToString() : string.Empty,
+                                                    AgainstVoucherEntryId = dr["AgainstVoucherEntryId"] != DBNull.Value ? Convert.ToInt32(dr["AgainstVoucherEntryId"]) : 0,
+                                                    AgainstVoucherNo = dr["AgainstVoucherNo"] != DBNull.Value ? dr["AgainstVoucherNo"].ToString() : string.Empty,
+                                                    AgainstVoucherRefNo = dr["againstVoucherRefNo"] != DBNull.Value ? dr["againstVoucherRefNo"].ToString() : string.Empty,
+                                                    AgainstBillno = dr["AgainstBillno"] != DBNull.Value ? dr["AgainstBillno"].ToString() : string.Empty,
+                                                    AgainstVoucherType = dr["AgainstVoucherType"] != DBNull.Value ? dr["AgainstVoucherType"].ToString() : string.Empty,
+                                                    AgainstVoucheryearCode = dr["AgainstVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(dr["AgainstVoucheryearcode"]) : 0,
+                                                    ActualEntryBy = dr["ActualEntryByEmp"] != DBNull.Value ? dr["ActualEntryByEmp"].ToString() : string.Empty,
+                                                    ActualEntryDate = dr["ActualEntryDate"].ToString(),
+                                                    UpdatedOn = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToDateTime(dr["LastUpdatedDate"]) : (DateTime?)null,
+                                                    UpdatedByEmp = dr["UpdatedByEmp"] != DBNull.Value ? dr["UpdatedByEmp"].ToString() : string.Empty,
+                                                    EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? dr["EntryByMachine"].ToString() : string.Empty,
+                                                    AccEntryId = dr["AccEntryId"] != DBNull.Value ? Convert.ToInt32(dr["AccEntryId"]) : 0,
+                                                    YearCode = dr["AccYearCode"] != DBNull.Value ? Convert.ToInt32(dr["AccYearCode"]) : 0,
+                                                    EntryDate = dr["EntryDate"] != DBNull.Value ? dr["EntryDate"].ToString() : string.Empty,
+                                                    ActualEntryby = dr["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(dr["ActualEntryBy"]) : 0,
+                                                    UpdatedBy = dr["UpdatedBy"] != DBNull.Value ? Convert.ToInt32(dr["UpdatedBy"]) : 0
 
-                                             }).ToList();
+                                                }).ToList();
                 }
             }
             catch (Exception ex)
@@ -422,29 +451,29 @@ namespace eTactWeb.Data.DAL
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
                     model.JournalVoucherList = (from DataRow dr in oDataSet.Tables[0].Rows
-                                             select new JournalVoucherModel
-                                             {
-                                                 AccEntryId = dr["AccEntryId"] != DBNull.Value ? Convert.ToInt32(dr["AccEntryId"]) : 0,
-                                                 YearCode = dr["AccYearCode"] != DBNull.Value ? Convert.ToInt32(dr["AccYearCode"]) : 0,
-                                                 EntryDate = dr["EntryDate"] != DBNull.Value ? dr["EntryDate"].ToString() : string.Empty,
-                                                 SubVoucherName = dr["SubVoucherName"] != DBNull.Value ? dr["SubVoucherName"].ToString() : string.Empty,
-                                                 VoucherNo = dr["VoucherNo"] != DBNull.Value ? dr["VoucherNo"].ToString() : string.Empty,
-                                                 VoucherDocDate = dr["VoucherDocdate"] != DBNull.Value ? dr["VoucherDocdate"].ToString() : string.Empty,
-                                                 Currency = dr["Currency"] != DBNull.Value ? dr["Currency"].ToString() : string.Empty,
-                                                 VoucherType = dr["Vouchertype"] != DBNull.Value ? dr["Vouchertype"].ToString() : string.Empty,
-                                                 UID = dr["uid"] != DBNull.Value ? Convert.ToInt32(dr["uid"]) : 0,
-                                                 ActualEntryby = dr["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(dr["ActualEntryBy"]) : 0,
-                                                 ActualEntryBy = dr["ActualEntryByEmp"] != DBNull.Value ? dr["ActualEntryByEmp"].ToString() : string.Empty,
-                                                 ActualEntryDate = dr["ActualEntryDate"].ToString(),
-                                                 UpdatedBy = dr["UpdatedBy"] != DBNull.Value ? Convert.ToInt32(dr["UpdatedBy"]) : 0,
-                                                 UpdatedByEmp = dr["UpdatedByEmp"] != DBNull.Value ? dr["UpdatedByEmp"].ToString() : string.Empty,
-                                                 UpdatedOn = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToDateTime(dr["LastUpdatedDate"]) : (DateTime?)null,
-                                                 EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? dr["EntryByMachine"].ToString() : string.Empty,
-                                                 CC = dr["CC"] != DBNull.Value ? dr["CC"].ToString() : string.Empty,
-                                                 DrAmt = dr["DrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DrAmt"]) : 0,
-                                                 CrAmt = dr["CrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["CrAmt"]) : 0,
+                                                select new JournalVoucherModel
+                                                {
+                                                    AccEntryId = dr["AccEntryId"] != DBNull.Value ? Convert.ToInt32(dr["AccEntryId"]) : 0,
+                                                    YearCode = dr["AccYearCode"] != DBNull.Value ? Convert.ToInt32(dr["AccYearCode"]) : 0,
+                                                    EntryDate = dr["EntryDate"] != DBNull.Value ? dr["EntryDate"].ToString() : string.Empty,
+                                                    SubVoucherName = dr["SubVoucherName"] != DBNull.Value ? dr["SubVoucherName"].ToString() : string.Empty,
+                                                    VoucherNo = dr["VoucherNo"] != DBNull.Value ? dr["VoucherNo"].ToString() : string.Empty,
+                                                    VoucherDocDate = dr["VoucherDocdate"] != DBNull.Value ? dr["VoucherDocdate"].ToString() : string.Empty,
+                                                    Currency = dr["Currency"] != DBNull.Value ? dr["Currency"].ToString() : string.Empty,
+                                                    VoucherType = dr["Vouchertype"] != DBNull.Value ? dr["Vouchertype"].ToString() : string.Empty,
+                                                    UID = dr["uid"] != DBNull.Value ? Convert.ToInt32(dr["uid"]) : 0,
+                                                    ActualEntryby = dr["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(dr["ActualEntryBy"]) : 0,
+                                                    ActualEntryBy = dr["ActualEntryByEmp"] != DBNull.Value ? dr["ActualEntryByEmp"].ToString() : string.Empty,
+                                                    ActualEntryDate = dr["ActualEntryDate"].ToString(),
+                                                    UpdatedBy = dr["UpdatedBy"] != DBNull.Value ? Convert.ToInt32(dr["UpdatedBy"]) : 0,
+                                                    UpdatedByEmp = dr["UpdatedByEmp"] != DBNull.Value ? dr["UpdatedByEmp"].ToString() : string.Empty,
+                                                    UpdatedOn = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToDateTime(dr["LastUpdatedDate"]) : (DateTime?)null,
+                                                    EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? dr["EntryByMachine"].ToString() : string.Empty,
+                                                    CC = dr["CC"] != DBNull.Value ? dr["CC"].ToString() : string.Empty,
+                                                    DrAmt = dr["DrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DrAmt"]) : 0,
+                                                    CrAmt = dr["CrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["CrAmt"]) : 0,
 
-                                             }).ToList();
+                                                }).ToList();
                 }
             }
             catch (Exception ex)
@@ -517,29 +546,29 @@ namespace eTactWeb.Data.DAL
                 {
                     int count = 1;
                     model.JournalVoucherList = (from DataRow dr in oDataSet.Tables[0].Rows
-                                             select new JournalVoucherModel
-                                             {
-                                                 SeqNo = count++,
-                                                 YearCode = Convert.ToInt32(dr["YearCode"].ToString()),
-                                                 VoucherType = dr["VoucherType"].ToString() ?? "",
-                                                 VoucherNo = dr["VoucherNo"].ToString() ?? "",
-                                                 InVoiceNo = dr["InvoiceNo"].ToString() ?? "",
-                                                 VoucherDate = dr["VoucherDate"].ToString() ?? "",
-                                                 DueDate = dr["DueDate"].ToString() ?? "",
-                                                 Balance = string.IsNullOrEmpty(dr["BalanceAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["BalanceAmt"].ToString()),
-												 NetAmount = string.IsNullOrEmpty(dr["TotalAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["TotalAmt"].ToString()),
-												 DRCR = dr["DrCrType"].ToString() ?? "",
-                                                 AdjustmentAmt = string.IsNullOrEmpty(dr["AdjAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["AdjAmt"].ToString()),
-                                                 Adjusted = dr["Adjusted"].ToString() ?? "",
-                                                 DrAmt = string.IsNullOrEmpty(dr["DrAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["DrAmt"].ToString()),
-                                                 CrAmt = string.IsNullOrEmpty(dr["CrAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["CrAmt"].ToString()),
-                                                 PendBillAmt = string.IsNullOrEmpty(dr["BillNetAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["BillNetAmt"].ToString()),
-                                                 NewrefNo = dr["NewrefNo"].ToString() ?? "",
-                                                 ModeOfAdjustment = dr["ModOfAdjust"].ToString() ?? "",
-                                                 AccEntryId = string.IsNullOrEmpty(dr["AccEntryid"].ToString()) ? 0 : Convert.ToInt32(dr["AccEntryid"].ToString()),
-                                                 ActualDrCr = dr["ActualDRCRType"].ToString() ?? "",
-                                                 DocEntryId = string.IsNullOrEmpty(dr["DocEntryId"].ToString()) ? 0 : Convert.ToInt32(dr["DocEntryId"].ToString())
-                                             }).ToList();
+                                                select new JournalVoucherModel
+                                                {
+                                                    SeqNo = count++,
+                                                    YearCode = Convert.ToInt32(dr["YearCode"].ToString()),
+                                                    VoucherType = dr["VoucherType"].ToString() ?? "",
+                                                    VoucherNo = dr["VoucherNo"].ToString() ?? "",
+                                                    InVoiceNo = dr["InvoiceNo"].ToString() ?? "",
+                                                    VoucherDate = dr["VoucherDate"].ToString() ?? "",
+                                                    DueDate = dr["DueDate"].ToString() ?? "",
+                                                    Balance = string.IsNullOrEmpty(dr["BalanceAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["BalanceAmt"].ToString()),
+                                                    NetAmount = string.IsNullOrEmpty(dr["TotalAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["TotalAmt"].ToString()),
+                                                    DRCR = dr["DrCrType"].ToString() ?? "",
+                                                    AdjustmentAmt = string.IsNullOrEmpty(dr["AdjAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["AdjAmt"].ToString()),
+                                                    Adjusted = dr["Adjusted"].ToString() ?? "",
+                                                    DrAmt = string.IsNullOrEmpty(dr["DrAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["DrAmt"].ToString()),
+                                                    CrAmt = string.IsNullOrEmpty(dr["CrAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["CrAmt"].ToString()),
+                                                    PendBillAmt = string.IsNullOrEmpty(dr["BillNetAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["BillNetAmt"].ToString()),
+                                                    NewrefNo = dr["NewrefNo"].ToString() ?? "",
+                                                    ModeOfAdjustment = dr["ModOfAdjust"].ToString() ?? "",
+                                                    AccEntryId = string.IsNullOrEmpty(dr["AccEntryid"].ToString()) ? 0 : Convert.ToInt32(dr["AccEntryid"].ToString()),
+                                                    ActualDrCr = dr["ActualDRCRType"].ToString() ?? "",
+                                                    DocEntryId = string.IsNullOrEmpty(dr["DocEntryId"].ToString()) ? 0 : Convert.ToInt32(dr["DocEntryId"].ToString())
+                                                }).ToList();
                 }
             }
             catch (Exception ex)
@@ -596,7 +625,7 @@ namespace eTactWeb.Data.DAL
             model.VoucherDocDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString();
             model.VoucherDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString();
             model.Currency = DS.Tables[0].Rows[0]["Currency"].ToString();
-            model.CurrencyId =Convert.ToInt32(DS.Tables[0].Rows[0]["CurrencyId"].ToString());
+            model.CurrencyId = Convert.ToInt32(DS.Tables[0].Rows[0]["CurrencyId"].ToString());
             model.UID = Convert.ToInt32(DS.Tables[0].Rows[0]["uid"].ToString());
             model.ActualEntryby = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());
             model.ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryByEmp"].ToString();
@@ -666,10 +695,10 @@ namespace eTactWeb.Data.DAL
                         AccountNarration = row["AccountNarration"].ToString(),
                         Description = row["Description"].ToString(),
                         VoucherRemark = row["VoucherRemark"].ToString(),
-                        ActualEntryby =Convert.ToInt32(row["ActualEntryBy"].ToString()),
+                        ActualEntryby = Convert.ToInt32(row["ActualEntryBy"].ToString()),
                         BankType = row["UnderGroup"].ToString(),
                         DRCR = row["CRDDR"].ToString(),
-                        Balance =  Convert.ToDecimal(row["BalanceAmt"].ToString()),
+                        Balance = Convert.ToDecimal(row["BalanceAmt"].ToString()),
                         Type = row["DRCRTYPE"].ToString(),
                     });
                 }
@@ -711,7 +740,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@flag", "SHOWSOListFORADVANCEPAYMENT"));
                 SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
-                SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));  
+                SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));
                 SqlParams.Add(new SqlParameter("@accountcode", accountcode));
                 SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
 
@@ -759,7 +788,7 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@flag", "SHOWSODateFORADVANCEPAYMENT"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));    
+                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
                 SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));
                 SqlParams.Add(new SqlParameter("@accountcode", accountcode));
                 SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));

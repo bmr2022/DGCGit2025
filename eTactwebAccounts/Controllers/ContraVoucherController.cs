@@ -13,7 +13,7 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactwebAccounts.Controllers
 {
-      public class ContraVoucherController : Controller
+    public class ContraVoucherController : Controller
     {
         private readonly IDataLogic _IDataLogic;
         public IContraVoucher _IContraVoucher { get; }
@@ -21,6 +21,7 @@ namespace eTactwebAccounts.Controllers
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
         private readonly ConnectionStringService _connectionStringService;
+        public EncryptDecrypt EncryptDecrypt { get; }
         public ContraVoucherController(ILogger<ContraVoucherController> logger, IDataLogic iDataLogic, IContraVoucher IContraVoucher, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
@@ -28,6 +29,7 @@ namespace eTactwebAccounts.Controllers
             _IContraVoucher = IContraVoucher;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+            EncryptDecrypt = encryptDecrypt;
             _connectionStringService = connectionStringService;
         }
         public async Task<JsonResult> GetFormRights()
@@ -38,34 +40,85 @@ namespace eTactwebAccounts.Controllers
             return Json(JsonString);
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string VoucherName = "")
-		{
-			string my_connection_string;
-			string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-			string webRootPath = _IWebHostEnvironment.WebRootPath;
-			var webReport = new WebReport();
-			webReport.Report.Clear();
-			webReport.Report.Dispose();
-			webReport.Report = new Report();
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
 
-			webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
+            webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
             my_connection_string = _connectionStringService.GetConnectionString();
-			//my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-			webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-			webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
-			webReport.Report.SetParameterValue("vouchernameparam", VoucherName);
-			webReport.Report.SetParameterValue("yearcodeparam", YearCode);
-			webReport.Report.SetParameterValue("entryidparam", EntryId);
-			webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-			webReport.Report.Refresh();
-			return View(webReport);
-		}
-		[Route("{controller}/Index")]
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("vouchernameparam", VoucherName);
+            webReport.Report.SetParameterValue("yearcodeparam", YearCode);
+            webReport.Report.SetParameterValue("entryidparam", EntryId);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+        }
+        [Route("{controller}/Index")]
         [HttpGet]
         public async Task<ActionResult> ContraVoucher(int ID, string Mode, int YearCode, string VoucherNo, string FromDate = "", string ToDate = "", string LedgerName = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
         {
             HttpContext.Session.Remove("KeyContraVoucherGrid");
             HttpContext.Session.Remove("KeyContraVoucherGridEdit");
             TempData.Clear();
+            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var rights = await _IContraVoucher.GetFormRights(userID);
+            if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+            {
+                return RedirectToAction("Dashboard", "Home");
+            }
+
+
+            string encID = Request.Query["ID"].ToString();
+            string encYC = Request.Query["YearCode"].ToString();
+
+            if (!string.IsNullOrEmpty(encID) || !string.IsNullOrEmpty(encYC))
+            {
+                int decryptedID = EncryptDecrypt.DecodeID(encID);
+                int decryptedYC = EncryptDecrypt.DecodeID(encYC);
+                string decryptedMode = EncryptDecrypt.Decrypt(Mode);
+                string decryptedVoucherNo = EncryptDecrypt.Decrypt(VoucherNo);
+                ID = decryptedID;
+                YearCode = decryptedYC;
+                Mode = decryptedMode;
+                VoucherNo = decryptedVoucherNo;
+            }
+            var table = rights.Result.Tables[0];
+            bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+            bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+            bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+            bool optSave = Convert.ToBoolean(table.Rows[0]["OptSave"]);
+
+
+            if (Mode == "U")
+            {
+                if (!(optUpdate))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+            }
+            if (Mode == "V")
+            {
+                if (!(optView))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+            }
+            if (ID <= 0)
+            {
+                if (!optSave)
+                {
+                    return RedirectToAction("JournalVoucherDashBoard", "JournalVoucher");
+                }
+            }
+
             var MainModel = new ContraVoucherModel();
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
@@ -130,6 +183,8 @@ namespace eTactwebAccounts.Controllers
                 {
                     GIGrid = GetDetailTable(ContraVoucherGrid);
                 }
+                model.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.ActualEntryBy = HttpContext.Session.GetString("UID");
                 model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
                 model.IPAddress = HttpContext.Session.GetString("ClientIP");
                 var Result = await _IContraVoucher.SaveContraVoucher(model, GIGrid);
@@ -465,7 +520,7 @@ namespace eTactwebAccounts.Controllers
 
                         if (model.BankType?.ToLower() == "bank")
                         {
-                            isDuplicate = OrderGrid.Any(x => x.LedgerName == model.LedgerName );
+                            isDuplicate = OrderGrid.Any(x => x.LedgerName == model.LedgerName);
                             if (isDuplicate) return StatusCode(210, "Duplicate");
                         }
                         else if (model.ModeOfAdjustment?.ToLower() == "new ref")
@@ -774,39 +829,97 @@ namespace eTactwebAccounts.Controllers
             {
                 HttpContext.Session.Remove("KeyContraVoucherGrid");
                 HttpContext.Session.Remove("KeyContraVoucherGridEdit");
+                int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                var rights = await _IContraVoucher.GetFormRights(userID);
+                if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+                var table = rights.Result.Tables[0];
+
+                bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+                bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+                bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+                bool optDelete = Convert.ToBoolean(table.Rows[0]["OptDelete"]);
+                if (!(optAll || optView || optUpdate || optDelete))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
                 var model = new ContraVoucherModel();
                 FromDate = HttpContext.Session.GetString("FromDate");
                 ToDate = HttpContext.Session.GetString("ToDate");
-                var Result = await _IContraVoucher.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
-                if (Result != null)
-                {
-                    DataSet ds = Result.Result;
-                    if (ds != null && ds.Tables.Count > 0)
-                    {
-                        var dt = ds.Tables[0];
-                        model.ContraVoucherGrid = CommonFunc.DataTableToList<ContraVoucherModel>(dt, "ContraVoucherDashBoard");
+                //var Result = await _IContraVoucher.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
+                //if (Result != null)
+                //{
+                //    DataSet ds = Result.Result;
+                //    if (ds != null && ds.Tables.Count > 0)
+                //    {
+                //        var dt = ds.Tables[0];
+                //        model.ContraVoucherGrid = CommonFunc.DataTableToList<ContraVoucherModel>(dt, "ContraVoucherDashBoard");
 
-                        if (Flag != "True")
-                        {
-                            model.FromDate1 = FromDate;
-                            model.ToDate1 = ToDate;
-                            model.LedgerName = LedgerName;
-                            model.Bank = Bank;
-                            model.VoucherNo = VoucherNo;
-                            model.AgainstVoucherRefNo = AgainstVoucherRefNo;
-                            model.AgainstVoucherNo = AgainstVoucherNo;
-                            model.Searchbox = Searchbox;
-                            model.DashboardType = DashboardType;
-                            return View(model);
-                        }
-                    }
-                }
+                //        if (Flag != "True")
+                //        {
+                //            model.FromDate1 = FromDate;
+                //            model.ToDate1 = ToDate;
+                //            model.LedgerName = LedgerName;
+                //            model.Bank = Bank;
+                //            model.VoucherNo = VoucherNo;
+                //            model.AgainstVoucherRefNo = AgainstVoucherRefNo;
+                //            model.AgainstVoucherNo = AgainstVoucherNo;
+                //            model.Searchbox = Searchbox;
+                //            model.DashboardType = DashboardType;
+                //            return View(model);
+                //        }
+                //    }
+                //}
 
                 return View(model);
             }
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+        public async Task<IActionResult> GetSearchData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string summaryDetail, string searchBox, string Flag = "True")
+        {
+            try
+            {
+                var model = new ContraVoucherModel
+                {
+                    YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode")),
+                    Searchbox = searchBox
+                };
+
+                var result = await _IContraVoucher.GetDashBoardData(summaryDetail, ParseFormattedDate(FromDate), ParseFormattedDate(ToDate), LedgerName, Bank, VoucherNo);
+
+                if (result == null || !(result.Result is DataTable dt))
+                {
+                    return PartialView("_ContraVoucherDashBoardGrid", model);
+                }
+
+                model.Headers = dt.Columns
+                    .Cast<DataColumn>()
+                    .Select(c => new DashboardColumn
+                    {
+                        Title = c.ColumnName,
+                        Field = c.ColumnName
+                    })
+                    .ToList();
+
+                model.Rows = dt.AsEnumerable()
+                    .Select(r => dt.Columns
+                        .Cast<DataColumn>()
+                        .ToDictionary(
+                            c => c.ColumnName,
+                            c => r[c] == DBNull.Value ? null : r[c]
+                        ))
+                    .ToList();
+
+                return PartialView("_ContraVoucherDashBoardGrid", model);
+            }
+            catch
+            {
+                throw;
             }
         }
         public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo)
@@ -879,6 +992,6 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-       
+
     }
 }

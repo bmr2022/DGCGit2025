@@ -68,7 +68,7 @@
                                             </span>
                                         </a>
                                     </div>
-                                    @if(item.YearCode == yearCode)
+                                    @if (item.YearCode == yearCode)
                                     {
                                         <div id="editCursorDiv-@Cntr">
                                             <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="JournalVoucher" onclick="confirmEdit(event)" asp-controller="JournalVoucher" asp-route-Mode="U" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode" asp-route-VoucherNo="@item.VoucherNo">

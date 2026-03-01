@@ -7,7 +7,7 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models
 {
-        public class ContraVoucherModel : TimeStamp
+    public class ContraVoucherModel : TimeStamp
     {
         public string? FromDateBack { get; set; }
         public string? IPAddress { get; set; }
@@ -160,5 +160,7 @@ namespace eTactWeb.DOM.Models
         public string? Bank { get; set; }
         public string? FromDate1 { get; set; }
         public string? ToDate1 { get; set; }
+        public List<DashboardColumn> Headers { get; set; }
+        public List<Dictionary<string, object>> Rows { get; set; }
     }
 }

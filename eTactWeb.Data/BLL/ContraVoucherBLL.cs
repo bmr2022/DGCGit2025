@@ -12,15 +12,15 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL
 {
-    
-     public class ContraVoucherBLL : IContraVoucher
+
+    public class ContraVoucherBLL : IContraVoucher
     {
         private ContraVoucherDAL _ContraVoucherDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public ContraVoucherBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
+        public ContraVoucherBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService, ICommon common)
         {
-            _ContraVoucherDAL = new ContraVoucherDAL(config, dataLogicDAL, connectionStringService);
+            _ContraVoucherDAL = new ContraVoucherDAL(config, dataLogicDAL, connectionStringService, common);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<ResponseResult> GetFormRights(int ID)
@@ -59,16 +59,20 @@ namespace eTactWeb.Data.BLL
         {
             return await _ContraVoucherDAL.FillCurrency();
         }
-     
+
         public async Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate)
         {
             return await _ContraVoucherDAL.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
             //GetLedgerBalance
             //return await _BankReceiptDAL.GetOpeningAmt(OpeningYearCode, AccountCode);
         }
-        public async Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate)
+        //public async Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate)
+        //{
+        //    return await _ContraVoucherDAL.GetDashBoardData(FromDate, ToDate);
+        //}
+        public async Task<ResponseResult> GetDashBoardData(string summaryDetail, string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo)
         {
-            return await _ContraVoucherDAL.GetDashBoardData(FromDate, ToDate);
+            return await _ContraVoucherDAL.GetDashBoardData(summaryDetail, FromDate, ToDate, LedgerName, Bank, VoucherNo);
         }
         public async Task<ContraVoucherModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo)
         {
