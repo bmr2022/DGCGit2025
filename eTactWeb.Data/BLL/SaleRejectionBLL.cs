@@ -37,9 +37,9 @@ namespace eTactWeb.Data.BLL
 
 
 
-        public async Task<List<SaleRejectionDetail>> GetSaleBillData(string saleBillNo)
+        public async Task<List<SaleRejectionDetail>> GetSaleBillData(string saleBillNo,int AccountCode)
         {
-            return await _SaleRejectionDAL.GetSaleBillData(saleBillNo);
+            return await _SaleRejectionDAL.GetSaleBillData(saleBillNo, AccountCode);
         }
         public async Task<ResponseResult> GetTotalAmount(SaleRejectionFilter model)
 		{
@@ -105,5 +105,9 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _SaleRejectionDAL.DeleteByID(ID, YC, accountCode, createdBy, machineName, cc);
 		}
-	}
+        public async Task<ResponseResult> GETSaleBillNo(int AccountCode, string SaleBillNo)
+        {
+            return await _SaleRejectionDAL.GETSaleBillNo(AccountCode, SaleBillNo);
+        }
+    }
 }

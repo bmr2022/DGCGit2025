@@ -579,14 +579,14 @@ namespace eTactWeb.Controllers
 					{
 						model.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 						model.LastUpdatedByName = HttpContext.Session.GetString("EmpName");
-						SBGrid = GetDetailTable(saleRejectionDetail);
+						SBGrid = GetDetailTable(model.SaleRejectionDetails);
 					}
 					else
 					{
 						model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 						model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
 						model.EntryByempId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-						SBGrid = GetDetailTable(saleRejectionDetail);
+						SBGrid = GetDetailTable(model.SaleRejectionDetails);
 					}
 
 					if (TaxGrid != null && TaxGrid.Count > 0)
@@ -1022,10 +1022,10 @@ namespace eTactWeb.Controllers
        
 
         [HttpPost]
-        public async Task<IActionResult> LoadSaleBillData(string saleBillNo)
+        public async Task<IActionResult> LoadSaleBillData(string saleBillNo, int AccountCode)
         {
             // Get new data from BLL
-            var newData = await _saleRejection.GetSaleBillData(saleBillNo);
+            var newData = await _saleRejection.GetSaleBillData(saleBillNo, AccountCode);
 
             // Get existing session data
             string saleRejectionModelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
@@ -1040,13 +1040,23 @@ namespace eTactWeb.Controllers
 
             // Save back to session
             HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(saleRejectionDetail));
-
+            
             SaleRejectionModel model = new SaleRejectionModel
             {
                 SaleRejectionDetails = saleRejectionDetail
             };
+            HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(model));
+
 
             return PartialView("_AddSaleRejectionGrid", model);
         }
+        public async Task<JsonResult> GETSaleBillNo(int AccountCode, string SaleBillNo)
+        {
+            var JSON = await _saleRejection.GETSaleBillNo(AccountCode, SaleBillNo);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
     }
+
+   
 }

@@ -25,6 +25,7 @@ namespace eTactWeb.DOM.Models
 		public bool DT { get; set; }
 		public int MRNEntryId { get; set; }
 		public string MrnNo { get; set; }
+		public string? StateCode { get; set; }
 		public string MRNDate { get; set; }
 		public int Mrnyearcode { get; set; }
 		public string SalerejCreditNoteVoucherNo { get; set; }

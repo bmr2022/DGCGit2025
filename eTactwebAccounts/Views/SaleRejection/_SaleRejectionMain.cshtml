@@ -17,19 +17,31 @@
         </div>
 
 
-       
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="GSTNO" class="form-label">GST No</label>
-            <input asp-for="GSTNO" class="form-control" readonly />
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="SaleRejYearCode" class="form-label" style="color: blue;">YearCode</label>
+            <input asp-for="SaleRejYearCode" class="form-control" readonly />
         </div>
+
+
+       
+       
 
         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="AccountCode" class="form-label" style="color: red;">Customer Name*</label>
             <input asp-for="AccountCode" class="form-control" readonly type="hidden" />
             <input asp-for="AccountCode" class="form-control" id="hiddenAccountCode" readonly type="hidden" />
+            <input  class="form-control" id="CompanyStateCode" readonly type="hidden" />
             <input asp-for="Account_Name" class="form-control"  />
         </div>
+         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="GSTNO" class="form-label">GST No</label>
+            <input asp-for="GSTNO" class="form-control" readonly />
+        </div>
 
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="StateCode" class="form-label">State</label>
+            <input asp-for="StateCode" class="form-control" readonly />
+        </div>
         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="DocTypeAccountCode" class="form-label" style="color: red;">Doc Type Name*</label>
             <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
@@ -42,6 +54,18 @@
             {
                 <input type="hidden" asp-for="DocTypeAccountCode" id="hiddenDocType" />
             }
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="VoucherNo" class="form-label" style="color: red;">Voucher No*</label>
+            <input asp-for="VoucherNo" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="CustInvoiceNo" class="form-label" style="color: red;">Cust InvNo*</label>
+            <input asp-for="CustInvoiceNo" class="form-control"  />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="CustInvoiceDate" class="form-label" style="color: red;">Cust InvDate*</label>
+            <input asp-for="CustInvoiceDate" class="form-control" readonly />
         </div>
 
        
@@ -59,13 +83,13 @@
             <label asp-for="Transporter" class="form-label">Transport Name</label>
             <input asp-for="Transporter" class="form-control" />
         </div>
-        <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+        @* <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
             <label asp-for="SaleBillNo" class="form-label">Sale Billno</label>
             <input asp-for="SaleBillNo" class="form-control" />
         </div>
         <div class="col-sm-1 col-md-1 col-lg-1 col-xl-1">
            <button type="button" onclick="LoadData()">Load</button>
-        </div>
+        </div> *@
 
 
 

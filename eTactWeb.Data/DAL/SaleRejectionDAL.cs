@@ -898,7 +898,7 @@ namespace eTactWeb.Data.DAL
 			return _ResponseResult;
 		}
 
-        public async Task<List<SaleRejectionDetail>> GetSaleBillData(string saleBillNo)
+        public async Task<List<SaleRejectionDetail>> GetSaleBillData(string saleBillNo,int AccountCode)
         {
             List<SaleRejectionDetail> list = new List<SaleRejectionDetail>();
 
@@ -912,6 +912,7 @@ namespace eTactWeb.Data.DAL
 
                         cmd.Parameters.AddWithValue("@Flag", "FillSaleBillData");
                         cmd.Parameters.AddWithValue("@SaleBillNo", saleBillNo);
+                        cmd.Parameters.AddWithValue("@AccountCode", AccountCode);
 
                         await con.OpenAsync();
 
@@ -931,9 +932,11 @@ namespace eTactWeb.Data.DAL
 
                                     RejQty = dr["BillQty"] != DBNull.Value ? Convert.ToSingle(dr["BillQty"]) : 0,
                                     Rate = dr["BillRate"] != DBNull.Value ? Convert.ToSingle(dr["BillRate"]) : 0,
+                                    RejRate = dr["BillRate"] != DBNull.Value ? Convert.ToSingle(dr["BillRate"]) : 0,
 
                                     DiscountPer = dr["DiscountPer"] != DBNull.Value ? Convert.ToSingle(dr["DiscountPer"]) : 0,
                                     DiscountAmt = dr["DiscountAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DiscountAmt"]) : 0,
+                                    Amount = dr["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(dr["ItemAmount"]) : 0,
 
                                     CGSTAmt = dr["CGSTAmount"] != DBNull.Value ? Convert.ToDecimal(dr["CGSTAmount"]) : 0,
                                     SGSTAmt = dr["SGSTAmount"] != DBNull.Value ? Convert.ToDecimal(dr["SGSTAmount"]) : 0,
@@ -959,5 +962,28 @@ namespace eTactWeb.Data.DAL
 
             return list;
         }
+
+        public async Task<ResponseResult> GETSaleBillNo(int AccountCode, string SaleBillNo)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GETSaleBillNo"));
+
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+                SqlParams.Add(new SqlParameter("@SaleBillNo", SaleBillNo ?? ""));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSpSalerejection", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
     }
 }

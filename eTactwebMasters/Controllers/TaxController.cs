@@ -1606,7 +1606,7 @@ public class TaxController : Controller
                     MainModel = JsonConvert.DeserializeObject<SaleRejectionModel>(modelJson);
                 }
 
-                ListOfItems = MainModel.ItemDetailGrid;
+                ListOfItems = MainModel.SaleRejectionDetails;
 
             }
             else if (SN == "IssueNRGP")
@@ -3037,6 +3037,9 @@ public class TaxController : Controller
             else if (MainModel.TxPageName == "PurchaseBill")
             {
                 grid = MainModel.ItemDetailGrid != null && MainModel.ItemDetailGrid.Count > 0 ? MainModel.ItemDetailGrid : MainModel.ItemDetailGridd;
+            } else if (MainModel.TxPageName == "SaleRejection")
+            {
+                grid = MainModel.SaleRejectionDetails;
             }
             else
             {

@@ -10,106 +10,106 @@
         </td>
 
         <td>
-            <input name="ItemDetails[@i].PartCode"
+                <input name="SaleRejectionDetails[@i].PartCode"
                    value="@Model.SaleRejectionDetails[i].PartCode"
                    class="partcode-input" onfocusout="FillSOItemRate($(this).closest('tr'))" />
         </td>
 
         <td>
-            <input name="ItemDetails[@i].ItemName"
+                <input name="SaleRejectionDetails[@i].ItemName"
                    value="@Model.SaleRejectionDetails[i].ItemName"
                    class="itemname-input " onfocusout="FillSOItemRate($(this).closest('tr'))" />
 
-            <input name="ItemDetails[@i].ItemCode"
+            <input name="SaleRejectionDetails[@i].ItemCode"
                    value="@Model.SaleRejectionDetails[i].ItemCode"
                    class="ItemCode-input " type="hidden" />
         </td>
 
         <td>
-            <input name="ItemDetails[@i].Qty"
+                    <input name="SaleRejectionDetails[@i].RejQty"
                    value="@Model.SaleRejectionDetails[i].RejQty"
                    class="qty"
                    oninput="calculateRow(this)" />
         </td>
 
         <td>
-            <input name="ItemDetails[@i].Unit"
-                   value="@Model.SaleRejectionDetails[i].Unit"
+                <input name="SaleRejectionDetails[@i].Unit"
+                       value="@Model.SaleRejectionDetails[i].Unit" readonly
                 />
         </td>
 
         <td>
-            <input name="ItemDetails[@i].Rate"
+                <input name="SaleRejectionDetails[@i].Rate"
                    value="@Model.SaleRejectionDetails[i].Rate"
-                   class="rate"
-                   oninput="calculateRow(this)" />
+                   class="rate" 
+                   oninput="calculateRow(this)" readonly />
         </td>
 
         <td>
-            <input name="ItemDetails[@i].RejRate"
+                <input name="SaleRejectionDetails[@i].RejRate"
                    value="@Model.SaleRejectionDetails[i].RejRate"
                    class="RejRate"
                    oninput="calculateRow(this)" />
         </td>
 
         <td>
-            <input name="ItemDetails[@i].DiscountPer"
+                <input name="SaleRejectionDetails[@i].DiscountPer"
                    value="@Model.SaleRejectionDetails[i].DiscountPer"
                    class="disc "
                    oninput="calculateRow(this)" />
         </td>
 
         <td>
-            <input name="ItemDetails[@i].Amount"
+                <input name="SaleRejectionDetails[@i].Amount"
                    value="@Model.SaleRejectionDetails[i].Amount"
                    class="amount"
                    readonly />
         </td>
 
         <td>
-            <input name="ItemDetails[@i].BillNo"
+                <input name="SaleRejectionDetails[@i].BillNo"
                    value="@Model.SaleRejectionDetails[i].AgainstBillNo"
                    class="BillNo"
                    readonly />
         </td>
 
         <td>
-            <input name="ItemDetails[@i].IGSTPer"
+                <input name="SaleRejectionDetails[@i].IGSTPer"
                    value="@Model.SaleRejectionDetails[i].IGSTPer"
                    class="igstp "
                    oninput="calculateRow(this)" />
         </td>
 
         <td>
-            <input name="ItemDetails[@i].IGSTAmt"
+            <input name="SaleRejectionDetails[@i].IGSTAmt"
                    value="@Model.SaleRejectionDetails[i].IGSTAmt"
                    class="igsta"
                    readonly />
         </td>
 
         <td>
-            <input name="ItemDetails[@i].CGSTPer"
+                <input name="SaleRejectionDetails[@i].CGSTPer"
                    value="@Model.SaleRejectionDetails[i].CGSTPer"
                    class="cgstp "
                    oninput="calculateRow(this)" />
         </td>
 
         <td>
-            <input name="ItemDetails[@i].CGSTAmt"
+                <input name="SaleRejectionDetails[@i].CGSTAmt"
                    value="@Model.SaleRejectionDetails[i].CGSTAmt"
                    class="cgsta "
                    readonly />
         </td>
 
         <td>
-            <input name="ItemDetails[@i].SGSTPer"
+                <input name="SaleRejectionDetails[@i].SGSTPer"
                    value="@Model.SaleRejectionDetails[i].SGSTPer"
                    class="sgstp "
                    oninput="calculateRow(this)" />
         </td>
 
         <td>
-            <input name="ItemDetails[@i].SGSTAmt"
+                <input name="SaleRejectionDetails[@i].SGSTAmt"
                    value="@Model.SaleRejectionDetails[i].SGSTAmt"
                    class="sgsta "
                    readonly />

@@ -23,7 +23,8 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> NewEntryId(int YearCode, string SaleRejEntryDate, string SubVoucherName);
 		Task<ResponseResult> GetTotalAmount(SaleRejectionFilter model);
 		Task<ResponseResult> DeleteByID(int ID, int YC, int accountCode, int createdBy, string machineName, string cc);
-        Task<List<SaleRejectionDetail>> GetSaleBillData(string saleBillNo);
+        Task<List<SaleRejectionDetail>> GetSaleBillData(string saleBillNo, int AccountCode);
+        Task<ResponseResult> GETSaleBillNo(int AccountCode, string SaleBillNo);
 
     }
 }
