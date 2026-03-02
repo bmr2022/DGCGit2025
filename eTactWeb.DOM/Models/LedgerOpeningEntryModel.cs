@@ -20,7 +20,7 @@ namespace eTactWeb.DOM.Models
         public int ParentAccountCode { get; set; }
         public int OpeningForYear { get; set; }
         public string DrCr { get; set; }
-        public float Amount { get; set; }
+        public decimal Amount { get; set; }
         public string CC { get; set; }
         public int EntryByEmpId { get; set; }
         public string? EntryByEmpName { get; set; }
@@ -60,7 +60,7 @@ namespace eTactWeb.DOM.Models
         public int ParentAccountCode { get; set; }
         public int OpeningForYear { get; set; }
         public string DrCr { get; set; }
-        public float Amount { get; set; }
+        public decimal Amount { get; set; }
         public string CC { get; set; }
         public int EntryByEmpId { get; set; }
         public string ActualEntryDate { get; set; }
@@ -89,7 +89,7 @@ namespace eTactWeb.DOM.Models
         public int ParentAccountCode { get; set; }
         public int OpeningForYear { get; set; }
         public string DrCr { get; set; }
-        public float Amount { get; set; }
+        public decimal Amount { get; set; }
         public string CC { get; set; }
         public int EntryByEmpId { get; set; }
         public string ActualEntryDate { get; set; }
@@ -125,7 +125,7 @@ namespace eTactWeb.DOM.Models
         public int ParentAccountCode { get; set; }
         public int OpeningForYear { get; set; }
         public string DrCr { get; set; }
-        public float Amount { get; set; }
+        public decimal Amount { get; set; }
         public string CC { get; set; }
         public int EntryByEmpId { get; set; }
         public string ActualEntryDate { get; set; }

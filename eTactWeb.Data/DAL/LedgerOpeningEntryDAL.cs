@@ -257,7 +257,7 @@ namespace eTactWeb.Data.DAL
                 model.GroupAccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["ParentAccountCode"].ToString());
                 model.ClosingYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["ClosingYearCode"].ToString());
                 model.DrCr = DS.Tables[0].Rows[0]["DrCr"].ToString();
-                model.Amount = Convert.ToInt32(DS.Tables[0].Rows[0]["Amount"].ToString());
+                model.Amount = Convert.ToDecimal(DS.Tables[0].Rows[0]["Amount"].ToString());
                 model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
                 model.EntryByEmpId = Convert.ToInt32(DS.Tables[0].Rows[0]["EntryByEmpId"].ToString());
                 model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"].ToString();
@@ -278,7 +278,7 @@ namespace eTactWeb.Data.DAL
                             GroupAccountCode = Convert.ToInt32(row["ParentAccountCode"].ToString()),
                             ClosingYearCode = Convert.ToInt32(row["ClosingYearCode"].ToString()),
                             DrCr = DS.Tables[0].Rows[0]["DrCr"].ToString(),
-                            Amount = Convert.ToInt32(row["Amount"].ToString()),
+                            Amount = Convert.ToDecimal(row["Amount"].ToString()),
                             CC = DS.Tables[0].Rows[0]["CC"].ToString(),
                             EntryByEmpId = Convert.ToInt32(row["EntryByEmpId"].ToString()),
                             ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"].ToString(),
@@ -355,7 +355,7 @@ namespace eTactWeb.Data.DAL
                                                                  ClosingYearCode = dr.IsNull("ClosingYearCode") ? 0 : Convert.ToInt32(dr["ClosingYearCode"]),
                                                                  AccountCode = dr.IsNull("AccountCode") ? 0 : Convert.ToInt32(dr["AccountCode"]),
                                                                  DrCr = dr.IsNull("DrCr") ? string.Empty : dr["DrCr"].ToString(),
-                                                                 Amount = dr.IsNull("Amount") ? 0 : Convert.ToInt32(dr["Amount"]),
+                                                                 Amount = dr.IsNull("Amount") ? 0 : Convert.ToDecimal(dr["Amount"]),
                                                                  CC = dr.IsNull("CC") ? string.Empty : dr["CC"].ToString(),
                                                                  EntryByEmployee = dr.IsNull("EntryByEmployee") ? string.Empty : dr["EntryByEmployee"].ToString(),
                                                                  ActualEntryDate = dr.IsNull("ActualEntryDate") ? string.Empty : Convert.ToDateTime(dr["ActualEntryDate"]).ToString("dd-MM-yyyy"),

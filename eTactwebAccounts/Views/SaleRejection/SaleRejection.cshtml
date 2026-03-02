@@ -1820,8 +1820,7 @@
      
 
         function ValidateSubmit() {
-            ApplyHSNTaxForSaleRejection();
-
+           
             var Err = 0;
             var rowCount = $('#divAddSaleRejectionList tr').length;
             var salebillRowCount = $('#divTaxGrid tr').length;
@@ -1897,11 +1896,7 @@
 
 
 
-            else if (AdjustAmount !== TotalAmount || TotalAmount !== NetAmount) {
-                $.notify("AdjustAmount, TotalAmount, and NetAmount must all be equal....!", "error");
-                return false;
-            }
-
+          
 
             else if ($('#Account_Name').val() == '') {
                 $.notify("Customer Name is mandatory...!", "error");
@@ -1921,10 +1916,7 @@
 
 
 
-            else if (drAmt.toFixed(2) != crAmt.toFixed(2)) {
-                $.notify("Debit and Credit are not maintained...!", "error");
-                return false;
-            }
+          
 
             return true;
         }
@@ -1932,79 +1924,120 @@
         $('#submitBTN, #submitBTNfooter,#UpdateButton,#UpdateButtonfooter').click(function (e) {
             e.preventDefault();
 
-            ValidateSubmitWrapper(function (isValid) {
-                if (!isValid) return;
-                var drCrGrid = $('#divdbCrItemList tr').length;
-                if ($('#SaleRejectionBody tr').length < 1) {
-                    $.notify('Sale Rejection Grid Should Have Atleast 1 Item...!', "error");
-                    return;
-                }
+            $.ajax({
+                url: '/SaleRejection/UpdateSaleRejectionSession',
+                type: 'POST',
+                // contentType: 'application/json',
+                data: $('form').serialize(),
+                async: false,
+                success: function (response) {
+                    ValidateSubmitWrapper(function (isValid) {
+                        if (!isValid) return;
+                        ApplyHSNTaxForSaleRejection();
+                        ClearAdjustmentGrid();
+                        AddAdjstmntDetail1();
 
-                else if ($('#GSTRegistered').val() === 'Y') {
-                    if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() === "DOMESTIC") {
-                        $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                        return;
-                    }
+                        let AdjustAmount = parseFloat($('#AdjAdjstedAmt1').text());
+                        let TotalAmount = parseFloat($('#AdjTotalAmt1').text());
+                        let NetAmount = parseFloat($('.NetTotal').val());
+                        var drcrrowCount = $('#divdbCrItemList tr').length;
+                        var drAmt = 0;
+                        var crAmt = 0;
 
-
-                }
-                else if ($('#divAdjItemList tr td').length <= 1) {
-                    $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
-                    return;
-                }
-
-
-
-                // Check for CR in Adjustment Grid
-                else if (drCrGrid <= 1) {
-                    $.notify("Debit And Credit Amount Status Grid should at least have one item", "error");
-                    return;
-                }
-                else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
-                    $.notify("Total Debit And Total Credit Amount should be same", "error");
-                    return;
-                }
-                // $("form").submit();
+                        for (var i = 1; i <= drcrrowCount; i++) {
+                            drAmt += $('#drcrRow-' + i + ' .dramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .dramt').text());
+                            crAmt += $('#drcrRow-' + i + ' .cramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .cramt').text());
+                        }
 
 
-                // 🔥 AJAX SUBMIT
-                $.ajax({
-                    url: $('form').attr('action'),
-                    type: $('form').attr('method'),
-                    data: $('form').serialize(),
-                    beforeSend: function () {
-                        $('#ajaxLoader').show(); // ✅ Show loader
-                    },
-                    success: function (response) {
 
-                        // Success from controller
-                        if (response.success) {
 
-                            if (response.redirectUrl) {
+                        var drCrGrid = $('#divdbCrItemList tr').length;
+                        if ($('#SaleRejectionBody tr').length < 1) {
+                            $.notify('Sale Rejection Grid Should Have Atleast 1 Item...!', "error");
+                            return;
+                        }
+                        else if (AdjustAmount !== TotalAmount || TotalAmount !== NetAmount) {
+                            $.notify("AdjustAmount, TotalAmount, and NetAmount must all be equal....!", "error");
+                            return false;
+                        }
+                        else if (drAmt.toFixed(2) != crAmt.toFixed(2)) {
+                            $.notify("Debit and Credit are not maintained...!", "error");
+                            return false;
+                        }
 
-                                window.location.href = response.redirectUrl;
-
+                        else if ($('#GSTRegistered').val() === 'Y') {
+                            if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() === "DOMESTIC") {
+                                $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
+                                return;
                             }
 
 
-                            $('#ajaxLoader').hide();
-                            // optional redirect
-                            // window.location.href = response.redirectUrl;
                         }
-                        else {
-                            // SP StatusText / validation error
-                            $.notify(response.message, "error");
-                            $('#ajaxLoader').hide();
+                        else if ($('#divAdjItemList tr td').length <= 1) {
+                            $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
+                            return;
                         }
-                    },
-                    error: function () {
-                        $.notify("Unexpected server error", "error");
-                        $('#ajaxLoader').hide();
-                    }
-                });
+
+
+
+                        // Check for CR in Adjustment Grid
+                        else if (drCrGrid <= 1) {
+                            $.notify("Debit And Credit Amount Status Grid should at least have one item", "error");
+                            return;
+                        }
+                        else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
+                            $.notify("Total Debit And Total Credit Amount should be same", "error");
+                            return;
+                        }
+                        // $("form").submit();
+
+
+                        // 🔥 AJAX SUBMIT
+                        $.ajax({
+                            url: $('form').attr('action'),
+                            type: $('form').attr('method'),
+                            data: $('form').serialize(),
+                            async: false,
+                            beforeSend: function () {
+                                $('#ajaxLoader').show(); // ✅ Show loader
+                            },
+                            success: function (response) {
+
+                                // Success from controller
+                                if (response.success) {
+
+                                    if (response.redirectUrl) {
+
+                                        window.location.href = response.redirectUrl;
+
+                                    }
+
+
+                                    $('#ajaxLoader').hide();
+                                    // optional redirect
+                                    // window.location.href = response.redirectUrl;
+                                }
+                                else {
+                                    // SP StatusText / validation error
+                                    $.notify(response.message, "error");
+                                    $('#ajaxLoader').hide();
+                                }
+                            },
+                            error: function () {
+                                $.notify("Unexpected server error", "error");
+                                $('#ajaxLoader').hide();
+                            }
+                        });
+                    });
+
+                }
             });
 
+
         });
+
+      
 
         function ValidateSubmitWrapper(callback) {
             if (!ValidateSubmit()) {

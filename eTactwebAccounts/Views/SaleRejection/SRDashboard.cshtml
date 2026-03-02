@@ -10,7 +10,7 @@
             <h5>
                 Sale Rejection - <strong>Dashboard</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="PendingSaleRejection" asp-controller="PendingSaleRejection" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                    <a asp-action="Index" asp-controller="SaleRejection" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                         <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                         Add New
                     </a>
@@ -92,13 +92,6 @@
                                 </select>
                                 <input type="hidden" value="@Model.AgainstBillNo" id="hiddenAgainstBillNo" />
                             </div>
-                            @* <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
-                                <label asp-for="Account_Name" class="form-label">Document Name</label>
-                                <select asp-for="Account_Name" id="DocumentName" class="form-control">
-                                    <option value="">-Select-</option>
-                                </select>
-                                <input type="hidden" value="@Model.DocumentName" id="hiddenDocumentName" /> 
-                            </div> *@
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="VoucherNo" class="form-label">Voucher No</label>
                                 <select asp-for="VoucherNo" class="form-control">
@@ -106,7 +99,7 @@
                                 </select>
                                 <input type="hidden" value="@Model.VoucherNo" id="hiddenVoucherNo" />
                             </div>
-                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-end mt-3">
+                            <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 d-flex justify-content-end mt-3">
                                 <button class="btn btn-sm btn-outline-info" type="button" onclick="GetSearchData();">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
                                 </button>
@@ -144,30 +137,30 @@
         </div>
     </div>
 </div>
-
 @section Scripts
 {
     <script>
-            function  EditButtonData(event,AgainstVoucherNo) {
-                  event.preventDefault();
-                  if (AgainstVoucherNo && AgainstVoucherNo.trim() !== "" && AgainstVoucherNo!=="()") {
-            $.notify("This bill is linked with Against Voucher No: " + AgainstVoucherNo, "error");
-            return; // stop further execution
-        }
-        else{
-        var urlHref = $(event.currentTarget).attr("href");
-            var linkUrl = urlHref;
-            window.location.href = linkUrl;
+        function EditButtonData(event, AgainstVoucherNo) {
+            event.preventDefault();
+            if (AgainstVoucherNo && AgainstVoucherNo.trim() !== "" && AgainstVoucherNo !== "()") {
+                $.notify("This bill is linked with Against Voucher No: " + AgainstVoucherNo, "error");
+                // return; // stop further execution
+            }
+            else {
+                var urlHref = $(event.currentTarget).attr("href");
+                var linkUrl = urlHref;
+                window.location.href = linkUrl;
             }
         }
         $(document).ready(function () {
-                    var deleteMessage = '@TempData["DeleteMessage"]';
 
-                if (deleteMessage) {
-                    $.notify(deleteMessage, "error");
-                }
+            var deleteMessage = '@TempData["DeleteMessage"]';
+
+            if (deleteMessage) {
+                $.notify(deleteMessage, "error");
+            }
             GetFormRights();
-            var FromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
+            var FromDate = $('#FinFromDate').val().split(" ")[0];
             $("#FinFromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
             $('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
@@ -202,12 +195,12 @@
             $('#Account_Name').val($('#hiddenAccountName').val());
 
         });
-                  function GetFormRights() {
+        function GetFormRights() {
 
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
-                async:false,
+                async: false,
                 success: function (data) {
 
                     if (data != null) {
@@ -217,34 +210,34 @@
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#viewCursorDiv-' + i).empty();
                                 $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
-                                                                                                <span class="fa-stack">
-                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                                                                                </span>
-                                                                                            </a>`);
+                                                                                                                                <span class="fa-stack">
+                                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                                                                </span>
+                                                                                                                            </a>`);
                             }
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#editCursorDiv-' + i).empty();
                                 $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
-                                                                                                        <span class="fa-stack">
-                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                                                                        </span>
-                                                                                                    </a>`);
+                                                                                                                                        <span class="fa-stack">
+                                                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                                                                        </span>
+                                                                                                                                    </a>`);
                             }
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#deleteCursorDiv-' + i).empty();
                                 $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
-                                                                                                        <span class="fa-stack">
-                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                                                                        </span>
-                                                                                                    </a>`);
+                                                                                                                                        <span class="fa-stack">
+                                                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                                                                        </span>
+                                                                                                                                    </a>`);
                             }
                             $("#divDashboardGrid").css("display", "none");
                             $(".totalrows").css("display", "none");
                             $("#SParam").hide();
-                        }else{
+                        } else {
 
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
@@ -256,7 +249,7 @@
                                 if (!optSave) {
 
                                     $("#savebtn").css("pointer-events", "none");
-                                }else{
+                                } else {
                                     $("#savebtn").css("pointer-events", "");
                                 }
                                 if (!optView) {
@@ -264,33 +257,33 @@
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#viewCursorDiv-' + i).empty();
                                         $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
-                                                                <span class="fa-stack">
-                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                                                </span>
-                                                            </a>`);
+                                                                                                <span class="fa-stack">
+                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                                </span>
+                                                                                            </a>`);
                                     }
                                 }
                                 if (!optUpdate) {
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#editCursorDiv-' + i).empty();
                                         $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
-                                                                <span class="fa-stack">
-                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                                </span>
-                                                            </a>`);
+                                                                                                <span class="fa-stack">
+                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                                </span>
+                                                                                            </a>`);
                                     }
                                 }
                                 if (!optDelete) {
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#deleteCursorDiv-' + i).empty();
                                         $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
-                                                                <span class="fa-stack">
-                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                                </span>
-                                                            </a>`);
+                                                                                                <span class="fa-stack">
+                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                                </span>
+                                                                                            </a>`);
                                     }
                                 }
                                 if (!(optUpdate || optDelete || optView)) {
@@ -308,7 +301,6 @@
             });
         }
         var currentSearchColumn = null;
-
         $("#search-box").on("keyup", function () {
             var value = $(this).val().toLowerCase();
             $("#divSRDashboardGrid tr").filter(function () {
@@ -320,12 +312,10 @@
                 }
             });
         });
-
         $(document).on("click", "th[data-columnno]", function () {
             currentSearchColumn = $(this).data('columnno');
             $("#search-box").val('').trigger('keyup');
         });
-
         $(document).on("click", ".sortCol", function () {
             var $column = $(this).parent().closest("th");
             var colno = $(this).data('columnno');
@@ -349,39 +339,6 @@
                 $(this).find('i:first').addClass('fa-arrow-up');
             }
         });
-
-        // function confirmDelete(event) {
-        //
-        //     event.preventDefault();
-        //     var entryId = $('#deleteLink').data('id');
-        //     var yc = $('#deleteLink').data('yc');
-        //     var createdby = $('#deleteLink').data('createdby');
-        //     var machinename = $('#deleteLink').data('machinename');
-        //     var accountCode = $('#deleteLink').data('accountcode');
-        //     var cc = $('#deleteLink').data('cc');
-        //     if (confirm("Are you sure you want to delete this entry?")) {
-        //
-        //         // var linkUrl = $(event.currentTarget).attr("href");
-        //         // window.location.href = linkUrl;
-
-        //         $.ajax({
-        //             url: '@Url.Action("DeleteByID")',
-        //             data: { "ID": entryId, "YC": yc, "accountCode": accountCode, "createdBy": createdby, "machineName": machinename, "cc": cc },
-        //             type: "POST",
-        //             async: false,
-        //             success: function (data) {
-
-        //             },
-        //             error: function (response) {
-        //                 alert(response.responseText);
-        //             },
-        //             failure: function (response) {
-        //                 alert(response.responseText);
-        //             }
-        //         });
-        //     }
-        // }
-
         function confirmDelete(event) {
 
             event.preventDefault();
@@ -392,7 +349,6 @@
                 window.location.href = linkUrl;
             }
         }
-
         $("#btnGridExcel").click(function () {
             const table = document.querySelector("#SRDashboardGrid");
             const rows = table.querySelectorAll("tr");
@@ -426,7 +382,6 @@
 
             XLSX.writeFile(wb, "SRDashboardData.xlsx");
         });
-
         function FillCustomerName() {
 
             var fromDate = $('#FinFromDate').val();
@@ -436,7 +391,7 @@
                 data: { "fromDate": fromDate, "toDate": toDate },
                 url: "@Url.Action("FillCustomerName")",
                 dataType: "json",
-                async:false,
+                async: false,
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -455,46 +410,64 @@
                 }
             });
         }
-
         function GetTotalAmounts() {
-            debugger
+
             let dataObj = {
-                FromDate: $('#FinFromDate').val(),
-                ToDate: $('#FinToDate').val(),
+                fromDate: $('#FinFromDate').val(),
+                toDate: $('#FinToDate').val(),
+                CustInvoiceNo: $('#CustInvoiceNo').find(':selected').text() === "-Select-" ? "" : $('#CustInvoiceNo').find(':selected').text(),
+                AccountCode: $('#Account_Name').val(),
+                MrnNo: $('#MrnNo').find(':selected').text() === "-Select-" ? "" : $('#MrnNo').find(':selected').text(),
+                GateNo: $('#GateNo').find(':selected').text() === "-Select-" ? "" : $('#GateNo').find(':selected').text(),
+                ItemCode: $('#ItemName').val(),
+                AgainstBillNo: $('#AgainstBillNo').find(':selected').text() === "-Select-" ? "" : $('#AgainstBillNo').find(':selected').text(),
+                VoucherNo: $('#VoucherNo').find(':selected').text() === "-Select-" ? "" : $('#VoucherNo').find(':selected').text(),
+
             };
 
-            console.log("dataforamount", dataObj);
             $.ajax({
                 url: '/SaleRejection/GetTotalAmount',
                 type: 'GET',
                 data: dataObj,
-                traditional: true,
                 dataType: 'json',
 
                 success: function (data) {
-                    console.log("data", data);
 
                     const obj = typeof data === "string" ? JSON.parse(data) : data;
 
-                    if (obj && obj.Result && obj.Result.length > 0) {
-                        let row = obj.Result[0];
-                        $('#tfootBillAmt').text(row.BasicAmount?.toFixed(2) ?? "0.00");
-                        $('#tfootNetAmt').text(row.NetAmount?.toFixed(2) ?? "0.00");
-                        $('#tfootTaxableAmt').text(row.TaxableAmount?.toFixed(2) ?? "0.00");
-                    } else {
-                        $('#tfootBillAmt').text("0.00");
-                        $('#tfootNetAmt').text("0.00");
-                        $('#tfootTaxableAmt').text("0.00");
-                    }
-                },
+                    // Clear only dynamic footer cells
+                    $('#SRDashboardGrid tfoot td[id^="tfoot_"]').text('');
+                    // enableTableSorting('#SRDashboardGrid');
+                    if (!obj?.Result?.length) return;
 
+                    let row = obj.Result[0];
+
+                    // 🔥 KEY MAPPING (API → Footer)
+                    const keyMap = {
+                        BasicAmount: 'BillAmt',
+                        NetAmount: 'InvNetAmt',
+                        TaxableAmount: 'Taxableamt'
+                    };
+
+                    Object.keys(row).forEach(function (key) {
+
+                        if (!keyMap[key]) return;
+
+                        let value = parseFloat(row[key]);
+                        if (isNaN(value)) return;
+
+                        let footerCell = $('#tfoot_' + keyMap[key]);
+                        if (footerCell.length) {
+                            footerCell.text(value.toFixed(2));
+                        }
+                    });
+                },
 
                 error: function (err) {
                     console.error("❌ Error fetching totals:", err);
                 }
             });
         }
-
         function FillInvoiceNo() {
 
             var fromDate = $('#FinFromDate').val();
@@ -523,7 +496,6 @@
                 }
             });
         }
-
         function FillItemName() {
 
             var fromDate = $('#FinFromDate').val();
@@ -552,7 +524,7 @@
                 }
             });
         }
-          function FillGateNo() {
+        function FillGateNo() {
 
             var fromDate = $('#FinFromDate').val();
             var toDate = $('#FinToDate').val();
@@ -580,7 +552,7 @@
                 }
             });
         }
-         function FillMRNNo() {
+        function FillMRNNo() {
 
             var fromDate = $('#FinFromDate').val();
             var toDate = $('#FinToDate').val();
@@ -720,40 +692,132 @@
                 }
             });
         }
-
         function GetSearchData() {
+            var itemCode = "";
+
+            if ($('#PartCode').val() != "0") {
+                itemCode = $('#PartCode').val();   // PartCode selected
+            }
+            else if ($('#ItemName').val() != "0") {
+                itemCode = $('#ItemName').val();   // ItemName selected
+            }
             var formData = {
-                'summaryDetail': $('#SummaryDetail').val(),
-                'custInvoiceNo': $('#CustInvoiceNo').find(':selected').text() == "-Select-" ? "" : $('#CustInvoiceNo').find(':selected').text(),
-                'account_Name': $('#Account_Name').find(':selected').text() == "-Select-" ? "" : $('#Account_Name').find(':selected').text(),
-                'mrnNo': $('#MrnNo').find(':selected').text() == "-Select-" ? "" : $('#MrnNo').find(':selected').text(),
-                'gateNo': $('#GateNo').find(':selected').text() == "-Select-" ? "" : $('#GateNo').find(':selected').text(),
-                'partCode': $('#PartCode').find(':selected').text() == "-Select-" ? "" : $('#PartCode').find(':selected').text(),
-                'itemName': $('#ItemName').find(':selected').text() == "-Select-" ? "" : $('#ItemName').find(':selected').text(),
-                'againstBillNo': $('#AgainstBillNo').find(':selected').text() == "-Select-" ? "" : $('#AgainstBillNo').find(':selected').text(),
-                'documentName': $('#DocumentName').find(':selected').text() == "-Select-" ? "" : $('#DocumentName').find(':selected').text(),
-                'voucherNo': $('#VoucherNo').find(':selected').text() == "-Select-" ? "" : $('#VoucherNo').find(':selected').text(),
-                'fromDate': $('#FinFromDate').val(),
-                'toDate': $('#FinToDate').val()
+                summaryDetail: $('#SummaryDetail').val(),
+                custInvoiceNo: $('#CustInvoiceNo').find(':selected').text() === "-Select-" ? "" : $('#CustInvoiceNo').find(':selected').text(),
+                AccountCode: $('#Account_Name').val(),
+                mrnNo: $('#MrnNo').find(':selected').text() === "-Select-" ? "" : $('#MrnNo').find(':selected').text(),
+                gateNo: $('#GateNo').find(':selected').text() === "-Select-" ? "" : $('#GateNo').find(':selected').text(),
+                ItemCode: itemCode,
+                againstBillNo: $('#AgainstBillNo').find(':selected').text() === "-Select-" ? "" : $('#AgainstBillNo').find(':selected').text(),
+                docName: $('#DocumentName').find(':selected').text() === "-Select-" ? "" : $('#DocumentName').find(':selected').text(),
+                voucherNo: $('#VoucherNo').find(':selected').text() === "-Select-" ? "" : $('#VoucherNo').find(':selected').text(),
+                fromDate: $('#FinFromDate').val(),
+                toDate: $('#FinToDate').val(),
+                Flag: "False"
             };
 
             $.ajax({
                 url: '@Url.Action("GetSearchData")',
                 type: "POST",
-                async: false,
                 data: formData,
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
-                      GetFormRights();
+                    GetFormRights();
+                    GetTotalAmounts();
                 },
-                error: function (response) {
-                    alert(response.responseText);
-                },
-                failure: function (response) {
-                    alert(response.responseText);
+                error: function (xhr) {
+                    alert(xhr.responseText);
                 }
             });
         }
+
+        // $(document).on("click", ".sortCol", function () {
+        //     ;
+        //     var $column = $(this).parent().closest("th");
+        //     var colno = $(this).data('columnno');
+        //     var currentOrder = $(this).data('sortorder');
+
+        //     $('.sortCol').css('color', 'white');
+        //     if (currentOrder === 'asc') {
+        //         sortTable(colno, false);
+        //         $(this).data('sortorder', 'desc');
+        //         $(this).css('color', 'blue'); // Visual indication of descending order
+        //         //$(this).css('font-size', 'larger'); // Visual indication of descending order
+        //         $(this).find('i:first').removeClass('fa-arrow-up');
+        //         $(this).find('i:first').addClass('fa-arrow-down');
+        //     } else {
+        //         sortTable(colno, true);
+        //         $(this).data('sortorder', 'asc');
+        //         $(this).css('color', 'yellow');
+        //         // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+        //         $(this).find('i:first').removeClass('fa-arrow-down');
+        //         $(this).find('i:first').addClass('fa-arrow-up');
+        //     }
+        // });
+
+        $(document).on("click", ".sortCol", function () {
+
+            var $th = $(this); // this IS th.sortCol
+            var colno = parseInt($th.attr('data-columnno'), 10);
+            var currentOrder = $th.attr('data-sortorder') || 'asc';
+
+            // Reset all headers
+            $('.sortCol')
+                .attr('data-sortorder', 'asc')
+                .find('i')
+                .removeClass('fa-arrow-up fa-arrow-down');
+
+            if (currentOrder === 'asc') {
+                sortTable(colno, true);   // ASC
+                $th.attr('data-sortorder', 'desc');
+                $th.find('i:first').addClass('fa-arrow-up');
+            } else {
+                sortTable(colno, false);  // DESC
+                $th.attr('data-sortorder', 'asc');
+                $th.find('i:first').addClass('fa-arrow-down');
+            }
+        });
+
+
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('#SRDashboardGrid');
+            var rows = table.find('#divSRDashboardGrid > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divSRDashboardGrid').append(row);
+            });
+        }
+
+
+
+
     </script>
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>

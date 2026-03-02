@@ -222,12 +222,7 @@ namespace eTactWeb.Controllers
 			}
 			//model.adjustmentModel = new AdjustmentModel();
 
-			if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
-			{
-				model = await _saleRejection.GetViewByID(ID, Mode, YearCode);
-				model.Mode = Mode;
-				model.ID = ID;
-			}
+			
 			if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
 			{
 				model = await _saleRejection.GetViewByID(ID, Mode, YearCode);
@@ -641,9 +636,10 @@ namespace eTactWeb.Controllers
 								success = true,
 								message = "Sale Rejection saved successfully",
 								redirectUrl = Url.Action(
-		"PendingSaleRejection",
-		"PendingSaleRejection",
-		new { id = 0 }
+                                    "Dashboard",
+        "SaleRejection"
+        
+		
 	)
 							});
 						}
@@ -670,10 +666,9 @@ namespace eTactWeb.Controllers
 								success = true,
 								message = "Sale Rejection Updated successfully",
 								redirectUrl = Url.Action(
-		"PendingSaleRejection",
-		"PendingSaleRejection",
-		new { id = 0 }
-	)
+        "Dashboard",
+        "SaleRejection"
+    )
 							});
 						}
 
@@ -1056,6 +1051,24 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateSaleRejectionSession( SaleRejectionModel Model)
+        {
+            if (Model != null)
+            {
+                HttpContext.Session.SetString(
+                    "KeySaleRejectionGrid",
+                    JsonConvert.SerializeObject(Model.SaleRejectionDetails)
+                );
+                HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(Model));
+
+            }
+
+            return Json(new { success = true });
+        }
+
+
     }
 
    

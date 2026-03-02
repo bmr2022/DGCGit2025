@@ -34,7 +34,7 @@ namespace eTactWeb.Controllers
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> LedgerOpeningEntry(int ID, int EntryByEmpId, int YC, string DrCr, string GlobalSearch, string LedgerName, string YearCode, float Amount, string GroupName, string Mode, int AccountCode, int GroupAccountCode, string CC, string Account_Name, string FromDate = "", string ToDate = "")
+        public async Task<ActionResult> LedgerOpeningEntry(int ID, int EntryByEmpId, int YC, string DrCr, string GlobalSearch, string LedgerName, string YearCode, decimal Amount, string GroupName, string Mode, int AccountCode, int GroupAccountCode, string CC, string Account_Name, string FromDate = "", string ToDate = "")
         {
             int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             var rights = await _ILedgerOpeningEntry.GetFormRights(userID);
@@ -491,7 +491,7 @@ namespace eTactWeb.Controllers
                 dt.Columns.Add("Account_Name", typeof(string));
                 dt.Columns.Add("ParentAccountCode", typeof(int));
                 dt.Columns.Add("DrCr", typeof(string));
-                dt.Columns.Add("Amount", typeof(long));
+                dt.Columns.Add("Amount", typeof(decimal));
 
                 int rowIndex = 1;
 
@@ -589,6 +589,7 @@ namespace eTactWeb.Controllers
                     {
                         return Json(new
                         {
+
                             StatusText = response.StatusText,
                             StatusCode = 201,
                             RedirectUrl = ""
