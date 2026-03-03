@@ -493,16 +493,21 @@ namespace eTactWeb.Controllers
                 dt.Columns.Add("DrCr", typeof(string));
                 dt.Columns.Add("Amount", typeof(decimal));
 
+                List<string> errorList = new List<string>();
                 int rowIndex = 1;
 
                 foreach (var excelRow in request.ExcelData)
                 {
                     DataRow row = dt.NewRow();
+                    bool hasError = false;
+                    string accountNameForError = "";
+
 
                     foreach (var map in request.Mapping)
                     {
                         string dbCol = map.Key;      // DB column name
                         string excelCol = map.Value; // Excel column name
+                        
 
                         object value = DBNull.Value;
 
@@ -527,18 +532,18 @@ namespace eTactWeb.Controllers
                                     }
 
                                     if (AccountCode != 0)
+
+                                    {
                                         value = AccountCode;
+                                        row["ParentAccountCode"] = ParentAccountCode;
+                                    }
 
                                     else
-                                        return Json(new
-                                        {
-                                            StatusCode = 201,
-                                            StatusText = $"Please Enter valid UnderCategoryId at Row {rowIndex}"
-                                        });
-
-
-                                    row["ParentAccountCode"] = ParentAccountCode;
-
+                                    {
+                                        errorList.Add($"Row {rowIndex} - Account '{Account_Name}' not found.");
+                                        hasError = true;
+                                        break;
+                                    }
                                 }
 
 
@@ -559,20 +564,29 @@ namespace eTactWeb.Controllers
                             }
                             catch
                             {
-                                value = DBNull.Value; // Conversion failed
+                                errorList.Add($"Row {rowIndex} - Invalid value for column '{dbCol}' in Account '{accountNameForError}'.");
+                                hasError = true;
+                                break;
                             }
                         }
 
                         row[dbCol] = value;
                     }
 
-                    dt.Rows.Add(row);
+                    //dt.Rows.Add(row);
+                    if (!hasError)
+                        dt.Rows.Add(row);
+
                     rowIndex++;
                 }
 
                 // Pass to repository/service layer
-                response = await _ILedgerOpeningEntry.UpdateMultipleDataFromExcel(dt, flag, CloseingYearCode, MachineName, IPAddress, CC, EntryByEmpId);
-
+                if (dt.Rows.Count > 0)
+                {
+                    response = await _ILedgerOpeningEntry
+                        .UpdateMultipleDataFromExcel(dt, flag, CloseingYearCode,
+                            MachineName, IPAddress, CC, EntryByEmpId);
+                }
                 if (response != null)
                 {
                     if ((response.StatusText == "Success" || response.StatusText == "Updated") &&
@@ -581,8 +595,11 @@ namespace eTactWeb.Controllers
                         return Json(new
                         {
                             StatusCode = 200,
-                            StatusText = "Data imported successfully",
-                            RedirectUrl = Url.Action("ImportAndUpdateLedgerOpening", "LedgerOpeningEntry", new { Flag = "" })
+                            StatusText = "Process completed",
+                            SuccessCount = dt.Rows.Count,
+                            ErrorList = errorList,
+                            RedirectUrl = Url.Action("ImportAndUpdateLedgerOpening",
+        "LedgerOpeningEntry", new { Flag = "" })
                         });
                     }
                     else

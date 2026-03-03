@@ -37,13 +37,13 @@ namespace eTactWeb.DOM.Models
 		public string CustInvoiceTime { get; set; }
 		public int AccountCode { get; set; }
 		public string Account_Name { get; set; }
-		public float PaymentTerm { get; set; }
+		public decimal PaymentTerm { get; set; }
 		public string GSTNO { get; set; }
 		public string DomesticExportNEPZ { get; set; }
 		public string? Transporter { get; set; }
 		public string? Vehicleno { get; set; }
-		public float BillAmt { get; set; }
-		public float RoundOffAmt { get; set; }
+		public decimal BillAmt { get; set; }
+		public decimal RoundOffAmt { get; set; }
 		public string? RoundoffType { get; set; }
 		public decimal Taxableamt { get; set; }
 		public decimal ToatlDiscountPercent { get; set; }
@@ -118,14 +118,14 @@ namespace eTactWeb.DOM.Models
 		public bool ItemSA { get; set; }
 		public string? Unit { get; set; }
 		public int HSNNo { get; set; }
-		public double NoOfCase { get; set; }
-		public float SaleBillQty { get; set; }
-		public double RejQty { get; set; }
-		public float RejRate { get; set; }
-		public double RecQty { get; set; }
-		public double Rate { get; set; }
-		public float AltQty { get; set; }
-		public double DiscountPer { get; set; }
+		public decimal NoOfCase { get; set; }
+		public decimal SaleBillQty { get; set; }
+		public decimal RejQty { get; set; }
+		public decimal RejRate { get; set; }
+		public decimal RecQty { get; set; }
+		public decimal Rate { get; set; }
+		public decimal AltQty { get; set; }
+		public decimal DiscountPer { get; set; }
 		public decimal DiscountAmt { get; set; }
 		public string? SONO { get; set; }
 		public long SOyearcode { get; set; }

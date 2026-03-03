@@ -311,12 +311,12 @@ namespace eTactWeb.Data.DAL
 						HSNNo = row["HSNNo"] != DBNull.Value ? Convert.ToInt32(row["HSNNo"]) : 0,
 						SeqNo = row["SeqNo"] != DBNull.Value ? Convert.ToInt32(row["SeqNo"]) : 0,
 						NoOfCase = row["NoOfCase"] != DBNull.Value ? Convert.ToInt32(row["NoOfCase"]) : 0,
-						SaleBillQty = row["SaleBillQty"] != DBNull.Value ? Convert.ToInt32(row["SaleBillQty"]) : 0,
-						RejQty = row["RejQty"] != DBNull.Value ? Convert.ToInt32(row["RejQty"]) : 0,
-						RecQty = row["MRNRecQty"] != DBNull.Value ? Convert.ToInt32(row["MRNRecQty"]) : 0,
-						RejRate = row["RejRate"] != DBNull.Value ? Convert.ToInt32(row["RejRate"]) : 0,
-						Rate = row["SaleBillRate"] != DBNull.Value ? Convert.ToInt32(row["SaleBillRate"]) : 0,
-						DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToDouble(row["DiscountPer"]) : 0,
+						SaleBillQty = row["SaleBillQty"] != DBNull.Value ? Convert.ToDecimal(row["SaleBillQty"]) : 0,
+						RejQty = row["RejQty"] != DBNull.Value ? Convert.ToDecimal(row["RejQty"]) : 0,
+						RecQty = row["MRNRecQty"] != DBNull.Value ? Convert.ToDecimal(row["MRNRecQty"]) : 0,
+						RejRate = row["RejRate"] != DBNull.Value ? Convert.ToDecimal(row["RejRate"]) : 0,
+						Rate = row["SaleBillRate"] != DBNull.Value ? Convert.ToDecimal(row["SaleBillRate"]) : 0,
+						DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToDecimal(row["DiscountPer"]) : 0,
 						DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToDecimal(row["DiscountAmt"]) : 0,
 						SONO = row["SONO"]?.ToString(),
 						SOyearcode = row["SOyearcode"] != DBNull.Value ? Convert.ToInt32(row["SOyearcode"]) : 0,
@@ -331,8 +331,14 @@ namespace eTactWeb.Data.DAL
 						RejectionReason = row["RejectionReason"]?.ToString(),
 						SaleorderRemark = row["SaleorderRemark"]?.ToString(),
 						SaleBillremark = row["SaleBillremark"]?.ToString(),
-						ItemNetAmount = row["ItemAmount"] != DBNull.Value ? Convert.ToInt32(row["ItemAmount"]) : 0
-					});
+						ItemNetAmount = row["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(row["ItemAmount"]) : 0,
+                        IGSTPer = row["IGSTPer"] != DBNull.Value ? Convert.ToDecimal(row["IGSTPer"]) : 0,
+                        CGSTPer = row["CGSTPer"] != DBNull.Value ? Convert.ToDecimal(row["CGSTPer"]) : 0,
+                        SGSTPer = row["SGSTPer"] != DBNull.Value ? Convert.ToDecimal(row["SGSTPer"]) : 0,
+                        IGSTAmt = row["ItemIGSTAmt"] != DBNull.Value ? Convert.ToDecimal(row["ItemIGSTAmt"]) : 0,
+                        CGSTAmt = row["ItemCGSTAmt"] != DBNull.Value ? Convert.ToDecimal(row["ItemCGSTAmt"]) : 0,
+                        SGSTAmt = row["ItemSGSTAmt"] != DBNull.Value ? Convert.ToDecimal(row["ItemSGSTAmt"]) : 0,
+                    });
 				}
 				model.SaleRejectionDetails = SaleRejectionGrid;
 				model.ItemDetailGrid = SaleRejectionGrid;
@@ -625,21 +631,21 @@ namespace eTactWeb.Data.DAL
 			model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"]?.ToString();
 
 			// ----------------- PAYMENT TERM -----------------
-			float accountPaymentTerm = 0f;
+			decimal accountPaymentTerm = 0;
 			if (DS.Tables[0].Rows[0]["PaymentTerms"] != DBNull.Value &&
 				!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["PaymentTerms"].ToString()))
 			{
-				accountPaymentTerm = Convert.ToSingle(DS.Tables[0].Rows[0]["PaymentTerms"]);
+				accountPaymentTerm = Convert.ToDecimal(DS.Tables[0].Rows[0]["PaymentTerms"]);
 			}
 
-			float finalPaymentTerm = accountPaymentTerm;
+			decimal finalPaymentTerm = accountPaymentTerm;
 
 			if (accountPaymentTerm == 0 && DS.Tables.Count > 1 && DS.Tables[1].Rows.Count > 0)
 			{
 				var firstDetailRow = DS.Tables[1].Rows[0];
 				if (firstDetailRow["PaymentTerms"] != DBNull.Value)
 				{
-					finalPaymentTerm = Convert.ToSingle(firstDetailRow["PaymentTerms"]);
+					finalPaymentTerm = Convert.ToDecimal(firstDetailRow["PaymentTerms"]);
 				}
 			}
 
@@ -930,11 +936,11 @@ namespace eTactWeb.Data.DAL
                                     PartCode = dr["PartCode"]?.ToString(),
                                     ItemName = dr["Item_Name"]?.ToString(),
 
-                                    RejQty = dr["BillQty"] != DBNull.Value ? Convert.ToSingle(dr["BillQty"]) : 0,
-                                    Rate = dr["BillRate"] != DBNull.Value ? Convert.ToSingle(dr["BillRate"]) : 0,
-                                    RejRate = dr["BillRate"] != DBNull.Value ? Convert.ToSingle(dr["BillRate"]) : 0,
+                                    RejQty = dr["BillQty"] != DBNull.Value ? Convert.ToDecimal(dr["BillQty"]) : 0,
+                                    Rate = dr["BillRate"] != DBNull.Value ? Convert.ToDecimal(dr["BillRate"]) : 0,
+                                    RejRate = dr["BillRate"] != DBNull.Value ? Convert.ToDecimal(dr["BillRate"]) : 0,
 
-                                    DiscountPer = dr["DiscountPer"] != DBNull.Value ? Convert.ToSingle(dr["DiscountPer"]) : 0,
+                                    DiscountPer = dr["DiscountPer"] != DBNull.Value ? Convert.ToDecimal(dr["DiscountPer"]) : 0,
                                     DiscountAmt = dr["DiscountAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DiscountAmt"]) : 0,
                                     Amount = dr["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(dr["ItemAmount"]) : 0,
 

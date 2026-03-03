@@ -850,10 +850,13 @@ namespace eTactWeb.Controllers
 			DTSSGrid.Columns.Add("RejectionReason", typeof(string));
 			DTSSGrid.Columns.Add("SaleorderRemark", typeof(string));
 			DTSSGrid.Columns.Add("SaleBillRemark", typeof(string));
-			DTSSGrid.Columns.Add("ItemCGSTAmt", typeof(float));
-			DTSSGrid.Columns.Add("ItemSGSTAmt", typeof(float));
-			DTSSGrid.Columns.Add("ItemIGSTAmt", typeof(float));
-			DTSSGrid.Columns.Add("ItemExpense", typeof(float));
+			DTSSGrid.Columns.Add("ItemCGSTPer", typeof(decimal));
+			DTSSGrid.Columns.Add("ItemSGSTPer", typeof(decimal));
+			DTSSGrid.Columns.Add("ItemIGSTPer", typeof(decimal));
+            DTSSGrid.Columns.Add("ItemCGSTAmt", typeof(decimal));
+            DTSSGrid.Columns.Add("ItemSGSTAmt", typeof(decimal));
+            DTSSGrid.Columns.Add("ItemIGSTAmt", typeof(decimal));
+            DTSSGrid.Columns.Add("ItemExpense", typeof(decimal));
 
 			//DateTime DeliveryDt = new DateTime();
 			foreach (var Item in DetailList)
@@ -896,9 +899,12 @@ namespace eTactWeb.Controllers
 					Item.RejectionReason ?? string.Empty,
 					Item.SaleorderRemark ?? string.Empty,
 					Item.SaleBillremark ?? string.Empty,
-					Item.Amount, // ItemCGSTAmt
-                    Item.Amount, //ItemSGSTAmt
-                    Item.Amount, //ItemIGSTAmt
+					Item.CGSTPer,
+					Item.SGSTPer,
+					Item.IGSTPer,
+					Item.CGSTAmt,
+					Item.SGSTAmt,
+					Item.IGSTAmt,
                     Item.Amount//ItemExpense
                   });
 			}

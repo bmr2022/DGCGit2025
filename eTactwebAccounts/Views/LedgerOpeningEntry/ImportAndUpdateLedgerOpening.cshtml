@@ -157,7 +157,7 @@
 
 
 
-<div class="modal fade" style="display:none" id="ColumnNameModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" style="display:none;margin-top:50px" id="ColumnNameModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -226,7 +226,7 @@
     </div>
 </div>
 
-
+<div id="errorContainer" style="margin-top:10px;"></div>
 <!-- In HTML -->
 <div class="spinner"></div>
 
@@ -374,21 +374,31 @@
                 beforeSend: function () {
                     $('#ajaxLoader').show(); // ✅ Show loader
                 },
-                success: function (data, status, xhr) {
+                success: function (data) {
+
                     $('#ajaxLoader').hide();
-                    $.notify("Data Update Successfully!!", "info");
-                    if (data && (data.statusCode === 200 || data.statusCode === 202)) {
+
+                    let errorDiv = $('#errorContainer');
+                    errorDiv.empty();
+
+                    if (data.errorList && data.errorList.length > 0) {
+
+                        let html = "<ul style='color:red'>";
+                        data.errorList.forEach(function (err) {
+                            html += "<li>" + err + "</li>";
+                        });
+                        html += "</ul>";
+
+                        errorDiv.html(html);
+                    }
+
+                    if (data.successCount > 0) {
+                        $.notify(data.successCount + " records processed successfully!", "success");
+                    }
+
+                    if (data.redirectUrl && data.successCount > 0 && data.errorList.length ==0) {
                         window.location.href = data.redirectUrl;
-                        $.notify("Data Update Successfully!!", "info");
                     }
-                    else if (data && (data.statusCode === 201 || data.statusCode === 205)) {
-                        $.notify(data.statusText, "error");
-                    }
-                    else {
-
-                        $.notify(data.statusText, "error");
-                    }
-
                 },
                 error: function (err) {
                     alert("Error updating data");

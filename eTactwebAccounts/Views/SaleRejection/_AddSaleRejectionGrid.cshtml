@@ -17,7 +17,7 @@
 
         <td>
                 <input name="SaleRejectionDetails[@i].ItemName"
-                   value="@Model.SaleRejectionDetails[i].ItemName"
+                   value="@Model.SaleRejectionDetails[i].ItemName" tabindex="-1"
                    class="itemname-input " onfocusout="FillSOItemRate($(this).closest('tr'))" />
 
             <input name="SaleRejectionDetails[@i].ItemCode"
@@ -33,15 +33,18 @@
         </td>
 
         <td>
-                <input name="SaleRejectionDetails[@i].Unit"
-                       value="@Model.SaleRejectionDetails[i].Unit" readonly
-                />
+            <div style="display:flex; flex-direction:column;">
+                <input name="SaleRejectionDetails[@i].Unit" tabindex="-1"
+                       value="@Model.SaleRejectionDetails[i].Unit" class="Unit" readonly />
+                <input name="SaleRejectionDetails[@i].HSNNo" tabindex="-1"
+                       value="@Model.SaleRejectionDetails[i].HSNNo" class="HSNNo" readonly />
+                </div>
         </td>
 
         <td>
                 <input name="SaleRejectionDetails[@i].Rate"
                    value="@Model.SaleRejectionDetails[i].Rate"
-                   class="rate" 
+                   class="rate" tabindex="-1"
                    oninput="calculateRow(this)" readonly />
         </td>
 
@@ -53,70 +56,80 @@
         </td>
 
         <td>
+            <div style="display:flex; flex-direction:column;">
                 <input name="SaleRejectionDetails[@i].DiscountPer"
-                   value="@Model.SaleRejectionDetails[i].DiscountPer"
-                   class="disc "
-                   oninput="calculateRow(this)" />
+                       value="@Model.SaleRejectionDetails[i].DiscountPer"
+                       class="discPer"
+                       oninput="calculateRow(this)" />
+
+                <input name="SaleRejectionDetails[@i].DiscountAmt"
+                       value="@Model.SaleRejectionDetails[i].DiscountAmt"
+                       class="discamt" tabindex="-1"
+                       readonly />
+            </div>
         </td>
 
         <td>
                 <input name="SaleRejectionDetails[@i].Amount"
                    value="@Model.SaleRejectionDetails[i].Amount"
-                   class="amount"
+                   class="amount" tabindex="-1"
                    readonly />
         </td>
 
         <td>
                 <input name="SaleRejectionDetails[@i].BillNo"
                    value="@Model.SaleRejectionDetails[i].AgainstBillNo"
-                   class="BillNo"
+                   class="BillNo" tabindex="-1"
                    readonly />
         </td>
 
         <td>
+            <div style="display:flex; flex-direction:column;">
                 <input name="SaleRejectionDetails[@i].IGSTPer"
-                   value="@Model.SaleRejectionDetails[i].IGSTPer"
-                   class="igstp "
-                   oninput="calculateRow(this)" />
+                       value="@Model.SaleRejectionDetails[i].IGSTPer"
+                       class="igstp" readonly tabindex="-1"
+                       oninput="calculateRow(this)" />
+
+                <input name="SaleRejectionDetails[@i].IGSTAmt"
+                       value="@Model.SaleRejectionDetails[i].IGSTAmt"
+                       class="igsta"
+                       readonly />
+            </div>
         </td>
 
-        <td>
-            <input name="SaleRejectionDetails[@i].IGSTAmt"
-                   value="@Model.SaleRejectionDetails[i].IGSTAmt"
-                   class="igsta"
-                   readonly />
-        </td>
 
         <td>
+            <div style="display:flex; flex-direction:column;">
                 <input name="SaleRejectionDetails[@i].CGSTPer"
-                   value="@Model.SaleRejectionDetails[i].CGSTPer"
-                   class="cgstp "
-                   oninput="calculateRow(this)" />
-        </td>
+                       value="@Model.SaleRejectionDetails[i].CGSTPer"
+                       class="cgstp" tabindex="-1"
+                       oninput="calculateRow(this)"
+                       readonly/>
 
-        <td>
                 <input name="SaleRejectionDetails[@i].CGSTAmt"
-                   value="@Model.SaleRejectionDetails[i].CGSTAmt"
-                   class="cgsta "
-                   readonly />
+                       value="@Model.SaleRejectionDetails[i].CGSTAmt"
+                       class="cgsta" tabindex="-1"
+                       readonly />
+            </div>
         </td>
 
         <td>
+            <div style="display:flex; flex-direction:column;">
                 <input name="SaleRejectionDetails[@i].SGSTPer"
-                   value="@Model.SaleRejectionDetails[i].SGSTPer"
-                   class="sgstp "
-                   oninput="calculateRow(this)" />
-        </td>
+                       value="@Model.SaleRejectionDetails[i].SGSTPer"
+                       class="sgstp" tabindex="-1"
+                       oninput="calculateRow(this)"
+                       readonly/>
 
-        <td>
                 <input name="SaleRejectionDetails[@i].SGSTAmt"
-                   value="@Model.SaleRejectionDetails[i].SGSTAmt"
-                   class="sgsta "
-                   readonly />
+                       value="@Model.SaleRejectionDetails[i].SGSTAmt"
+                       class="sgsta"
+                       readonly tabindex="-1" />
+            </div>
         </td>
 
         <td>
-            <button type="button"
+            <button type="button" tabindex="-1"
                     onclick="deleteRow(this)">
                 X
             </button>

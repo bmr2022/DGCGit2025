@@ -115,6 +115,10 @@
         height: 20px;
     }
 
+    td input {
+        height: 22px;
+        font-size: 12px;
+    }
     .readonly {
         background: #f5f5f5;
     }
@@ -280,6 +284,16 @@
     .erp-table-container tbody select {
         height: 24px;
     }
+
+    .vertical-pair {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+        .vertical-pair input {
+            width: 100%;
+        }
 </style>
 
 
@@ -444,27 +458,29 @@
                                             <div class="erp-grid-wrapper">
                                  <div class="erp-table-container">
                                         <table id="ItemDetailTable">
-                                        <thead>
-                                            <tr>
+                                            <thead>
+                                                <tr>
                                                     <th style="width:3%">SNo</th>
-                                                    <th style="width:8%">Item Code</th>
+                                                    <th style="width:9%">Item Code</th>
                                                     <th style="width:15%">Item Name</th>
-                                                    <th style="width:4%">Qty</th>
-                                                    <th style="width:4%">Unit</th>
-                                                    <th style="width:6%">Rate</th>
-                                                    <th style="width:6%">Rej Rate</th>
-                                                    <th style="width:4%">Disc%</th>
-                                                    <th style="width:7%">Amount</th>
+                                                    <th style="width:6%">Qty</th>
+                                                    <th style="width:5%">Unit</th>
+                                                    <th style="width:5%">Rate</th>
+                                                    <th style="width:5%">Rej Rate</th>
+
+                                                    <th style="width:8%">Disc % / Amount</th>
+                                                    <th style="width:6%">ItemAmount</th>
+
+
                                                     <th style="width:7%">Bill No</th>
-                                                    <th style="width:4%">IG%</th>
-                                                    <th style="width:6%">IG Amt</th>
-                                                    <th style="width:4%">CG%</th>
-                                                    <th style="width:6%">CG Amt</th>
-                                                    <th style="width:4%">SG%</th>
-                                                    <th style="width:6%">SG Amt</th>
+
+                                                    <th style="width:6%">IG % / IG Amt</th>
+                                                    <th style="width:6%">CG % / CG Amt</th>
+                                                    <th style="width:6%">SG % / SG Amt</th>
+
                                                     <th style="width:2%">X</th>
-                                            </tr>
-                                        </thead>
+                                                </tr>
+                                            </thead>
                                             <tbody id="SaleRejectionBody">
                                                 <partial name="_AddSaleRejectionGrid" />
                                         </tbody>
@@ -687,7 +703,8 @@
                 let lastRow = rows.last();
 
                 let itemCode = lastRow.find(".ItemCode-input").val();
-                let amount = parseFloat(lastRow.find(".amount").val()) || 0;
+                let RejRate = parseFloat(lastRow.find(".RejRate").val()) || 0;
+                let qty = parseFloat(lastRow.find(".qty").val()) || 0;
 
                 if (!itemCode || itemCode.trim() === "") {
                     alert("Please select Item before adding new row.");
@@ -695,7 +712,7 @@
                     return;
                 }
 
-                if (amount <= 0) {
+                if (RejRate <= 0 || qty<=0) {
                     alert("Please enter Qty/Rate to calculate Amount before adding new row.");
                     lastRow.find(".qty").focus();
                     return;
@@ -721,7 +738,7 @@
 
         <td>
         <input name="SaleRejectionDetails[${index}].ItemName"
-               class="itemname-input" />
+                       class="itemname-input" tabindex="-1" />
         <input type="hidden"
                name="SaleRejectionDetails[${index}].ItemCode"
                class="ItemCode-input" />
@@ -733,14 +750,19 @@
                oninput="calculateRow(this)" />
         </td>
 
-        <td>
-        <input name="SaleRejectionDetails[${index}].Unit"
-               class="Unit" readonly />
-        </td>
+               <td>
+                    <div style="display:flex; flex-direction:column;">
+                                <input name="SaleRejectionDetails[${index}].Unit"
+                                                readonly class='Unit' tabindex="-1"
+                        />
+                                <input name="SaleRejectionDetails[${index}].HSNNo"
+                                            readonly class='HSNNo' tabindex="-1" />
+                        </div>
+                </td>
 
         <td>
         <input name="SaleRejectionDetails[${index}].Rate"
-               class="rate" readonly />
+                       class="rate" tabindex="-1" readonly />
         </td>
 
         <td>
@@ -749,57 +771,75 @@
                oninput="calculateRow(this)" />
         </td>
 
-        <td>
-        <input name="SaleRejectionDetails[${index}].DiscountPer"
-               class="disc"
-               oninput="calculateRow(this)" />
+      
+                         <td>
+                    <div style="display:flex; flex-direction:column;">
+                                <input name="SaleRejectionDetails[${index}].DiscountPer"
+
+                                       class="discPer"
+                               oninput="calculateRow(this)" />
+
+                                        <input name="SaleRejectionDetails[${index}].DiscountAmt"
+
+                                       class="discamt"
+                                       readonly  tabindex="-1"/>
+                    </div>
         </td>
+        
 
         <td>
         <input name="SaleRejectionDetails[${index}].Amount"
-               class="amount" readonly />
+                       class="amount" readonly tabindex="-1" />
         </td>
 
         <td>
         <input name="SaleRejectionDetails[${index}].AgainstBillNo"
-               class="BillNo" readonly />
+                       class="BillNo" readonly tabindex="-1" />
+        </td>
+
+                <td>
+            <div style="display:flex; flex-direction:column;">
+                        <input name="SaleRejectionDetails[${index}].IGSTPer"
+                       
+                       class="igstp"
+                       oninput="calculateRow(this)" tabindex="-1" readonly/>
+
+                        <input name="SaleRejectionDetails[${index}].IGSTAmt"
+
+                               class="igsta" tabindex="-1"
+                       readonly />
+            </div>
+        </td>
+
+
+                <td>
+            <div style="display:flex; flex-direction:column;">
+                        <input name="SaleRejectionDetails[${index}].CGSTPer"
+                       class="cgstp" 
+                       oninput="calculateRow(this)" tabindex="-1" readonly />
+
+                        <input name="SaleRejectionDetails[${index}].CGSTAmt"
+                       class="cgsta" tabindex="-1"
+                       readonly />
+            </div>
+        </td>
+
+              <td>
+            <div style="display:flex; flex-direction:column;">
+                        <input name="SaleRejectionDetails[${index}].SGSTPer"
+                       
+                       class="sgstp" tabindex="-1" readonly
+                       oninput="calculateRow(this)" />
+
+                        <input name="SaleRejectionDetails[${index}].SGSTAmt"
+                      
+                       class="sgsta" tabindex="-1"
+                       readonly />
+            </div>
         </td>
 
         <td>
-        <input name="SaleRejectionDetails[${index}].IGSTPer"
-               class="igstp"
-               oninput="calculateRow(this)" />
-        </td>
-
-        <td>
-        <input name="SaleRejectionDetails[${index}].IGSTAmt"
-               class="igsta" readonly />
-        </td>
-
-        <td>
-        <input name="SaleRejectionDetails[${index}].CGSTPer"
-               class="cgstp"
-               oninput="calculateRow(this)" />
-        </td>
-
-        <td>
-        <input name="SaleRejectionDetails[${index}].CGSTAmt"
-               class="cgsta" readonly />
-        </td>
-
-        <td>
-        <input name="SaleRejectionDetails[${index}].SGSTPer"
-               class="sgstp"
-               oninput="calculateRow(this)" />
-        </td>
-
-        <td>
-        <input name="SaleRejectionDetails[${index}].SGSTAmt"
-               class="sgsta" readonly />
-        </td>
-
-        <td>
-        <button type="button" onclick="deleteRow(this)">X</button>
+                <button type="button" tabindex="-1" onclick="deleteRow(this)">X</button>
         </td>
         </tr>
         `;
@@ -813,12 +853,23 @@
             let qty = parseFloat(row.find(".qty").val()) || 0;
             let rate = parseFloat(row.find(".RejRate").val()) ||
                 parseFloat(row.find(".rate").val()) || 0;
-            let disc = parseFloat(row.find(".disc").val()) || 0;
+            let discPer = parseFloat(row.find(".discPer").val()) || 0;
 
-            let amount = qty * rate;
-            amount -= amount * disc / 100;
+           
+            let basicAmount = qty * rate;
+
+            // Step 2: Discount Amount
+            let discAmount = basicAmount * discPer / 100;
+
+            // Set Discount Amount field
+            row.find(".discamt").val(discAmount.toFixed(2));
+
+            // Step 3: Net Amount after discount
+            let amount = basicAmount - discAmount;
 
             row.find(".amount").val(amount.toFixed(2));
+
+           
 
             let ig = parseFloat(row.find(".igstp").val()) || 0;
             let cg = parseFloat(row.find(".cgstp").val()) || 0;
@@ -1181,7 +1232,7 @@
                             $(row).find('.rate').val(rate.toFixed(2));
                             $(row).find('.RejRate').val(rate.toFixed(2));
                             $(row).find('.Unit').val(data.unit);
-                            $(row).find('.GridHSNNo').val(data.HsnNo);
+                            $(row).find('.HSNNo').val(data.HsnNo);
                             // $(row).find('.igstp').val(data.IGST);
 
                             // ✅ GST Logic
@@ -1233,10 +1284,13 @@
                 // btnClearTax();
                 // FillItems($('#TypeItemServAssets').val());
 
-            } 
+            }
+            else {
+                GetGstRegister();
+            }
             // $('#AccountCode').select2();
             $('#DocTypeAccountCode').select2();
-            GetGstRegister();
+            
           
             AutoComplete("DistanceKM", "DistanceKM");
             AutoComplete("vehicleNo", "vehicleNo");
@@ -1294,7 +1348,7 @@
             document.getElementById('CustInvoiceTime').value = hours + ':' + minutes;
         });
 
-        $("#HSNNo,#Qty,#DiscountAmt,#DiscountPer").on("input", function (e) {
+        $(".RejRate,.qty,.discPer").on("input", function (e) {
             var inputValue = $(this).val();
 
             inputValue = inputValue.replace(/[^0-9.]/g, '');
@@ -1820,6 +1874,20 @@
      
 
         function ValidateSubmit() {
+
+            $.ajax({
+                url: '/SaleRejection/UpdateSaleRejectionSession',
+                type: 'POST',
+                // contentType: 'application/json',
+                data: $('form').serialize(),
+                async: false,
+                success: function (response) {
+                  
+                    console.log("Session updated successfully");
+
+                }
+            });
+
            
             var Err = 0;
             var rowCount = $('#divAddSaleRejectionList tr').length;
@@ -1924,13 +1992,7 @@
         $('#submitBTN, #submitBTNfooter,#UpdateButton,#UpdateButtonfooter').click(function (e) {
             e.preventDefault();
 
-            $.ajax({
-                url: '/SaleRejection/UpdateSaleRejectionSession',
-                type: 'POST',
-                // contentType: 'application/json',
-                data: $('form').serialize(),
-                async: false,
-                success: function (response) {
+            setTimeout(function () {
                     ValidateSubmitWrapper(function (isValid) {
                         if (!isValid) return;
                         ApplyHSNTaxForSaleRejection();
@@ -2030,9 +2092,8 @@
                             }
                         });
                     });
+            }, 300);
 
-                }
-            });
 
 
         });
@@ -2180,11 +2241,7 @@
                        // $('#MRNDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                        $('#SaleRejEntryDate').datepicker("option", "minDate", FinFromDate);
                        $('#SaleRejEntryDate').datepicker("option", "maxDate", FinToDate); */
-                    var gateDate = $('#GateDate').val().split(" ")[0];
-                    $('#GateDate').val(gateDate);
-
-                    var mrnDate = $('#MRNDate').val().split(" ")[0];
-                    $('#MRNDate').val(mrnDate);
+                  
 
                     var saleBillEntryDate = parseDateToFormat($('#SaleRejEntryDate').val());
                     let dateParts = saleBillEntryDate.split("/");
