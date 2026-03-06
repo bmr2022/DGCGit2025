@@ -546,6 +546,7 @@ namespace eTactWeb.Data.DAL
 				SqlParams.Add(new SqlParameter("@MrnNo", model.MrnNo ?? string.Empty));
 				SqlParams.Add(new SqlParameter("@MRNDate", MrnDt == default ? string.Empty : MrnDt));
 				SqlParams.Add(new SqlParameter("@Mrnyearcode", model.Mrnyearcode));
+				SqlParams.Add(new SqlParameter("@SaleBillNo", model.SaleBillNo));
 
 				SqlParams.Add(new SqlParameter("@SalerejCreditNoteVoucherNo", model.SalerejCreditNoteVoucherNo ?? string.Empty));
 				SqlParams.Add(new SqlParameter("@VoucherNo", model.VoucherNo ?? string.Empty));

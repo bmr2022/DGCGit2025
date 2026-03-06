@@ -8,7 +8,7 @@ using static eTactWeb.DOM.Models.JobWorkIssueModel;
 using eTactWeb.DOM.Models;
 namespace eTactWeb.Controllers;
 
-[Authorize]
+//[Authorize]
 public class TDSController : Controller
 {
     public TDSController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ITDSModule iTDSModule)

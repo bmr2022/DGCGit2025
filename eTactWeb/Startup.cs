@@ -103,6 +103,9 @@ namespace eTactWeb
                 // Auto-expire after 1 hour
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
+               
+                // Cookie expiry (optional)
+                options.Cookie.MaxAge = TimeSpan.FromHours(1);
 
             });
 

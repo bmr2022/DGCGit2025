@@ -33,7 +33,7 @@
             <input  class="form-control" id="CompanyStateCode" readonly type="hidden" />
             <input asp-for="Account_Name" class="form-control"  />
         </div>
-         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="GSTNO" class="form-label">GST No</label>
             <input asp-for="GSTNO" class="form-control" readonly />
         </div>
@@ -59,10 +59,10 @@
             <label asp-for="VoucherNo" class="form-label" style="color: red;">Voucher No*</label>
             <input asp-for="VoucherNo" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+       @*  <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="CustInvoiceNo" class="form-label" style="color: red;">Cust InvNo*</label>
             <input asp-for="CustInvoiceNo" class="form-control"  />
-        </div>
+        </div> *@
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="CustInvoiceDate" class="form-label" style="color: red;">Cust InvDate*</label>
             <input asp-for="CustInvoiceDate" class="form-control" readonly />
@@ -84,10 +84,26 @@
             <input asp-for="Vehicleno" class="form-control" />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="Transporter" class="form-label">Transport Name</label>
             <input asp-for="Transporter" class="form-control" />
         </div>
+
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="CustInvoiceNo" class="form-label" style="color: red;">Sale Bill No*</label>
+            <input asp-for="CustInvoiceNo" class="form-control" />
+        </div>
+
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <button type="button"
+                    onclick="LoadData()"
+                    class="btn btn-primary btn-sm">
+                Load
+            </button>
+        </div>
+
+
+
         @* <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
             <label asp-for="SaleBillNo" class="form-label">Sale Billno</label>
             <input asp-for="SaleBillNo" class="form-control" />

@@ -29,7 +29,7 @@
                     <input name="SaleRejectionDetails[@i].RejQty"
                    value="@Model.SaleRejectionDetails[i].RejQty"
                    class="qty"
-                   oninput="calculateRow(this)" />
+                   onfocusout="calculateRow(this)" />
         </td>
 
         <td>
@@ -45,14 +45,14 @@
                 <input name="SaleRejectionDetails[@i].Rate"
                    value="@Model.SaleRejectionDetails[i].Rate"
                    class="rate" tabindex="-1"
-                   oninput="calculateRow(this)" readonly />
+                   readonly />
         </td>
 
         <td>
                 <input name="SaleRejectionDetails[@i].RejRate"
                    value="@Model.SaleRejectionDetails[i].RejRate"
                    class="RejRate"
-                   oninput="calculateRow(this)" />
+                   onfocusout="calculateRow(this)" />
         </td>
 
         <td>
@@ -60,7 +60,7 @@
                 <input name="SaleRejectionDetails[@i].DiscountPer"
                        value="@Model.SaleRejectionDetails[i].DiscountPer"
                        class="discPer"
-                       oninput="calculateRow(this)" />
+                       onfocusout="calculateRow(this)" />
 
                 <input name="SaleRejectionDetails[@i].DiscountAmt"
                        value="@Model.SaleRejectionDetails[i].DiscountAmt"
@@ -77,7 +77,7 @@
         </td>
 
         <td>
-                <input name="SaleRejectionDetails[@i].BillNo"
+            <input name="SaleRejectionDetails[@i].AgainstBillNo"
                    value="@Model.SaleRejectionDetails[i].AgainstBillNo"
                    class="BillNo" tabindex="-1"
                    readonly />

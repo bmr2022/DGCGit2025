@@ -893,7 +893,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DGGrid", SBGrid));
                 SqlParams.Add(new SqlParameter("@DTTaxGrid", TaxDetailDT));
 
-                SqlParams.Add(new SqlParameter("@DRCRDATA", DrCrDetailDT));
+                //SqlParams.Add(new SqlParameter("@DRCRDATA", DrCrDetailDT));
                 SqlParams.Add(new SqlParameter("@AgainstRef", AdjDetailDT));
                 SqlParams.Add(new SqlParameter("@DTSSGridAdjust", AdjChallanDetailDT));
 

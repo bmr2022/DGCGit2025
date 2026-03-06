@@ -15,6 +15,7 @@ using eTactWeb.Services.Interface;
 
 namespace eTactWeb.Controllers
 {
+    
     public class LedgerOpeningEntryController : Controller
     {
         private readonly IDataLogic _IDataLogic;

@@ -1647,11 +1647,19 @@
                           $('#RoundOffAccountCode').append('<option value="0">-Select-</option>');
                           if (obj.StatusCode != 500) {
                               $.each(obj.Result.Table, function (index, val) {
-                                  $('#RoundOffAccountCode').append("<option value=" + val.Account_Code + ">" + val.Account_Name + "</option>");
-                              });
+                                if (val.Account_Name === "Round Off A/c") {
+                                    $('#RoundOffAccountCode').append(
+                                        "<option value='" + val.Account_Code + "' selected>" + val.Account_Name + "</option>"
+                                    );
+                                } else {
+                                    $('#RoundOffAccountCode').append(
+                                        "<option value='" + val.Account_Code + "'>" + val.Account_Name + "</option>"
+                                    );
+                                }
+                            });
                           }
                       }
-
+                              
                       if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                        $('#RoundOffAccountCode').val($('#hiddenRoundOffAccountCode').val());
                       }
@@ -1732,6 +1740,7 @@
 
         $(document).ready(function () {
             const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
+            $('#TotalRoundOff').val('Y').trigger('change'); // Trigger change to set initial state of related fields
             // $('#Group_Code').select2();
             // $('#Group_Code1').select2
             $("#NetTotal1").html($("#NetTotal").val())
@@ -5976,8 +5985,8 @@
                         }
                         //$('#PartCode,#ItemCode').val(0).trigger("change");
 
-                        $('#Qty,#SOPendQty,#SeqNo,#Amount,#GSTPer,#taxableamt,#netamt').val(0);
-                        $('#PartCodeText,#ItemNameText,#ItemLocation,#ItemGroupName,#VehicleNo').val("");
+                        $('#Qty,#SOPendQty,#SeqNo,#Amount,#GSTPer,#taxableamt,#netamt,#Rate,#DiscountPer,#DiscountAmt,#HSNNo').val(0);
+                        $('#PartCodeText,#ItemNameText,#ItemLocation,#ItemGroupName,#VehicleNo,#Unit').val("");
                         $('#igstper').text('');
                         // $('#StoreId').val(0);
                         // $('#LotStock,#TotalStock').val("");
@@ -7690,7 +7699,7 @@
                             var ItemCode = $('#GridIC-' + SeqNo).val()
                             ClearDRCRGrid();
                             ClearAdjustmentGrid();
-                            DeleteTaxRowByItemCode(ItemCode);
+                            // DeleteTaxRowByItemCode(ItemCode);
                             EditEachItem = true;
                             EditDeleteBatchValidation = true;
 
@@ -7867,6 +7876,7 @@
                                 $('.gridHiddenField').hide();
                             }
                                           $('#saleBillRow-' + SeqNo).remove();
+                            btnClearTax();
                             calculateitembasicnettaxable();
                             itemwisetaxcalculation();
                             // DeleteItemRow(SeqNo);
@@ -7927,7 +7937,7 @@
                     success: function (data, status, xhr) {
 
                         $('#divSaleBillList').html(data);
-
+                        btnClearTax();
                         BasicTotal();
                         calculateitembasicnettaxable();
                         ClearDRCRGrid();
