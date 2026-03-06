@@ -10,21 +10,21 @@
         </td>
 
         <td>
+            <div style="display:flex; flex-direction:column;">
                 <input name="SaleRejectionDetails[@i].PartCode"
                    value="@Model.SaleRejectionDetails[i].PartCode"
                    class="partcode-input" onfocusout="FillSOItemRate($(this).closest('tr'))" />
-        </td>
-
-        <td>
                 <input name="SaleRejectionDetails[@i].ItemName"
-                   value="@Model.SaleRejectionDetails[i].ItemName" tabindex="-1"
-                   class="itemname-input " onfocusout="FillSOItemRate($(this).closest('tr'))" />
+                       value="@Model.SaleRejectionDetails[i].ItemName" tabindex="-1"
+                       class="itemname-input " onfocusout="FillSOItemRate($(this).closest('tr'))" />
 
-            <input name="SaleRejectionDetails[@i].ItemCode"
-                   value="@Model.SaleRejectionDetails[i].ItemCode"
-                   class="ItemCode-input " type="hidden" />
+                <input name="SaleRejectionDetails[@i].ItemCode"
+                       value="@Model.SaleRejectionDetails[i].ItemCode"
+                       class="ItemCode-input " type="hidden" />
+                       </div>
         </td>
 
+     
         <td>
                     <input name="SaleRejectionDetails[@i].RejQty"
                    value="@Model.SaleRejectionDetails[i].RejQty"
@@ -42,19 +42,19 @@
         </td>
 
         <td>
+            <div style="display:flex; flex-direction:column;">
+            <input name="SaleRejectionDetails[@i].RejRate"
+                   value="@Model.SaleRejectionDetails[i].RejRate"
+                   class="RejRate"
+                   onfocusout="calculateRow(this)" />
                 <input name="SaleRejectionDetails[@i].Rate"
                    value="@Model.SaleRejectionDetails[i].Rate"
                    class="rate" tabindex="-1"
                    readonly />
+                   </div>
         </td>
 
-        <td>
-                <input name="SaleRejectionDetails[@i].RejRate"
-                   value="@Model.SaleRejectionDetails[i].RejRate"
-                   class="RejRate"
-                   onfocusout="calculateRow(this)" />
-        </td>
-
+       
         <td>
             <div style="display:flex; flex-direction:column;">
                 <input name="SaleRejectionDetails[@i].DiscountPer"
@@ -74,6 +74,19 @@
                    value="@Model.SaleRejectionDetails[i].Amount"
                    class="amount" tabindex="-1"
                    readonly />
+        </td>
+
+        <td>
+            <div style="display:flex; flex-direction:column;">
+                <input name="SaleRejectionDetails[@i].GroupName"
+                       value="@Model.SaleRejectionDetails[i].GroupName"
+                       class="GroupName"
+                       readonly />
+                <input name="SaleRejectionDetails[@i].ItemLocation"
+                       value="@Model.SaleRejectionDetails[i].ItemLocation"
+                       class="ItemLocation" tabindex="-1"
+                       readonly />
+            </div>
         </td>
 
         <td>

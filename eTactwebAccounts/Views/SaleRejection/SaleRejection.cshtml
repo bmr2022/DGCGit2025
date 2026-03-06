@@ -490,6 +490,8 @@
 
                                 <strong class="me-2">TOTAL NO OF ITEMS:</strong>
                                 <span class="text-warning lblItemCount">0</span>
+                                        <label asp-for="NetTotal" class="form-label">Net Total</label>
+                                        <input asp-for="NetTotal" style="width:100px; background-color:ghostwhite !important" class="form-control NetTotal" onchange="onNetTotalChange()" readonly />
                             </div>
                         </button>
                         <div class="d-flex justify-content-front align-items-center">
@@ -524,15 +526,16 @@
                                             <thead>
                                                 <tr>
                                                     <th style="width:3%">SNo</th>
-                                                    <th style="width:9%">Item Code</th>
-                                                    <th style="width:15%">Item Name</th>
+                                                    <th style="width:14%">Item Code</th>
+                                                  
                                                     <th style="width:6%">Qty</th>
                                                     <th style="width:5%">Unit</th>
                                                     <th style="width:5%">Rate</th>
-                                                    <th style="width:5%">Rej Rate</th>
+                                                   
 
                                                     <th style="width:8%">Disc % / Amount</th>
                                                     <th style="width:6%">ItemAmount</th>
+                                                    <th style="width:8%">IGRP/Location</th>
 
 
                                                     <th style="width:7%">Bill No</th>
@@ -551,16 +554,7 @@
                                 </div>
 </div>
 </div>
-                            <div class="progress my-3 mb-3" style="height: 4px;">
-                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <div class="row g-2 gx-3">
-                                <div class="col-12 text-center">
-                                    <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span class="lblItemNetAmount"></span></strong>
-                                    <strong>, TOTAL QTY : <span class="TotalQty"></span></strong>
-                                    <strong>, TOTAL NO OF ITEMS : <span class="lblItemCount"></span></strong>
-                                </div>
-                            </div>
+                      
                         </div>
                     </div>
                 </div>
@@ -805,17 +799,19 @@
         </td>
 
         <td>
+                  <div style="display:flex; flex-direction:column;">
         <input name="SaleRejectionDetails[${index}].PartCode"
                class="partcode-input" />
+                        <input name="SaleRejectionDetails[${index}].ItemName"
+                                       class="itemname-input" tabindex="-1" readonly />
+                <input type="hidden"
+                       name="SaleRejectionDetails[${index}].ItemCode"
+                       class="ItemCode-input" />
+
+               </div>
         </td>
 
-        <td>
-        <input name="SaleRejectionDetails[${index}].ItemName"
-                       class="itemname-input" tabindex="-1" />
-        <input type="hidden"
-               name="SaleRejectionDetails[${index}].ItemCode"
-               class="ItemCode-input" />
-        </td>
+      
 
         <td>
         <input name="SaleRejectionDetails[${index}].RejQty"
@@ -834,16 +830,17 @@
                 </td>
 
         <td>
+                   <input name="SaleRejectionDetails[${index}].RejRate"
+                               class="RejRate"
+                                       onfocusout="calculateRow(this)" />
+           <div style="display:flex; flex-direction:column;">
         <input name="SaleRejectionDetails[${index}].Rate"
                        class="rate" tabindex="-1" readonly />
+                               
+                               </div>
         </td>
 
-        <td>
-        <input name="SaleRejectionDetails[${index}].RejRate"
-               class="RejRate"
-                       onfocusout="calculateRow(this)" />
-        </td>
-
+      
       
                          <td>
                     <div style="display:flex; flex-direction:column;">
@@ -864,6 +861,20 @@
         <input name="SaleRejectionDetails[${index}].Amount"
                        class="amount" readonly tabindex="-1" />
         </td>
+
+                  <td>
+                    <div style="display:flex; flex-direction:column;">
+                                        <input name="SaleRejectionDetails[${index}].GroupName"
+                              
+                               class="GroupName"
+                               readonly />
+                                <input name="SaleRejectionDetails[${index}].ItemLocation"
+                               
+                               class="ItemLocation" tabindex="-1"
+                               readonly />
+                    </div>
+                </td>
+
 
         <td>
                 <input name="SaleRejectionDetails[${index}].AgainstBillNo"
@@ -949,9 +960,16 @@
             let cg = parseFloat(row.find(".cgstp").val()) || 0;
             let sg = parseFloat(row.find(".sgstp").val()) || 0;
 
-            row.find(".igsta").val((amount * ig / 100).toFixed(2));
-            row.find(".cgsta").val((amount * cg / 100).toFixed(2));
-            row.find(".sgsta").val((amount * sg / 100).toFixed(2));
+            if ($('#AccountCode').val() != 0) {
+                row.find(".igsta").val((amount * ig / 100).toFixed(2));
+                row.find(".cgsta").val((amount * cg / 100).toFixed(2));
+                row.find(".sgsta").val((amount * sg / 100).toFixed(2));
+            }
+            else {
+                row.find(".igsta").val("0.00");
+                row.find(".cgsta").val("0.00");
+                row.find(".sgsta").val("0.00");
+            }
 
             calculateTotals();
         }
@@ -1018,128 +1036,7 @@
         
 
 
-        // function ApplyGridAutoFill() {
-
-        //     // 🔹 PART CODE SEARCH
-        //     $(document).on("focus", ".partcode-input", function () {
-
-        //         if ($(this).data("ui-autocomplete")) return;
-
-        //         $(this).autocomplete({
-        //             minLength: 2,
-        //             source: function (request, response) {
-
-        //                 $.ajax({
-        //                     url: '/PurchaseOrder/FillItems',
-        //                     type: 'POST',
-        //                     data: {
-        //                         Type: $('#POTypeServItem').val(),
-        //                         ShowAllItem: 'N',
-        //                         SearchItemCode: '',
-        //                         SearchPartCode: request.term
-        //                     },
-        //                     success: function (result) {
-
-        //                         let obj = typeof result === "string" ? JSON.parse(result) : result;
-
-        //                         if (obj.StatusCode === 200 && Array.isArray(obj.Result.Table)) {
-
-        //                             let filtered = obj.Result.Table.filter(item =>
-        //                                 googleMatch(request.term, item)
-        //                             );
-
-        //                             response($.map(filtered, function (item) {
-        //                                 return {
-        //                                     label: item.PartCode + " - " + item.ItemName,
-        //                                     value: item.PartCode,
-        //                                     itemName: item.ItemName,
-        //                                     itemCode: item.Item_Code
-        //                                 };
-        //                             }));
-        //                         }
-        //                         else {
-        //                             response([]);
-        //                         }
-        //                     }
-        //                 });
-        //             },
-
-        //             select: function (event, ui) {
-
-        //                 let row = $(this).closest("tr");
-
-        //                 row.find(".partcode-input").val(ui.item.value);
-        //                 row.find(".itemname-input").val(ui.item.itemName);
-
-        //                 row.find(".ItemCode-input").val(ui.item.itemCode);
-        //                 FillSOItemRate(row);
-
-        //                 return false;
-        //             }
-        //         });
-        //     });
-
-
-        //     // 🔹 ITEM NAME SEARCH
-        //     $(document).on("focus", ".itemname-input", function () {
-
-        //         if ($(this).data("ui-autocomplete")) return;
-
-        //         $(this).autocomplete({
-        //             minLength: 2,
-        //             source: function (request, response) {
-
-        //                 $.ajax({
-        //                     url: '/PurchaseOrder/FillItems',
-        //                     type: 'POST',
-        //                     data: {
-        //                         Type: $('#POTypeServItem').val(),
-        //                         ShowAllItem: 'N',
-        //                         SearchItemCode: request.term,
-        //                         SearchPartCode: ''
-        //                     },
-        //                     success: function (result) {
-
-        //                         let obj = typeof result === "string" ? JSON.parse(result) : result;
-
-        //                         if (obj.StatusCode === 200 && Array.isArray(obj.Result.Table)) {
-
-        //                             let filtered = obj.Result.Table.filter(item =>
-        //                                 googleMatch(request.term, item)
-        //                             );
-
-        //                             response($.map(filtered, function (item) {
-        //                                 return {
-        //                                     label: item.ItemName + " - " + item.PartCode,
-        //                                     value: item.ItemName,
-        //                                     partCode: item.PartCode,
-        //                                     itemCode: item.Item_Code
-        //                                 };
-        //                             }));
-        //                         }
-        //                         else {
-        //                             response([]);
-        //                         }
-        //                     }
-        //                 });
-        //             },
-
-        //             select: function (event, ui) {
-
-        //                 let row = $(this).closest("tr");
-
-        //                 row.find(".itemname-input").val(ui.item.value);
-        //                 row.find(".partcode-input").val(ui.item.partCode);
-
-        //                 row.find(".ItemCode-input").val(ui.item.itemCode);
-        //                 FillSOItemRate(row);
-
-        //                 return false;
-        //             }
-        //         });
-        //     });
-
-        // }
+       
 
 
         function ApplyGridAutoFill() {
@@ -1177,7 +1074,9 @@
                                             label: item.PartCode + " - " + item.ItemName,
                                             value: item.PartCode,
                                             itemName: item.ItemName,
-                                            itemCode: item.Item_Code
+                                            itemCode: item.Item_Code,
+                                            onlyPartCode: item.OnlyPartCode,
+                                            onlyItemName: item.OnlyItemName,
                                         };
                                     }));
                                 }
@@ -1205,12 +1104,12 @@
                             return false;
                         }
 
-                        row.find(".partcode-input").val(ui.item.value);
-                        row.find(".itemname-input").val(ui.item.itemName);
+                        row.find(".partcode-input").val(ui.item.onlyPartCode);
+                        row.find(".itemname-input").val(ui.item.onlyItemName);
                         row.find(".ItemCode-input").val(ui.item.itemCode);
 
                         FillSOItemRate(row);
-
+                       
                         return false;
                     }
                 });
@@ -1250,7 +1149,9 @@
                                             label: item.ItemName + " - " + item.PartCode,
                                             value: item.ItemName,
                                             partCode: item.PartCode,
-                                            itemCode: item.Item_Code
+                                            itemCode: item.Item_Code,
+                                            onlyPartCode: item.OnlyPartCode,
+                                            onlyItemName: item.OnlyItemName,
                                         };
                                     }));
                                 }
@@ -1277,11 +1178,12 @@
                             return false;
                         }
 
-                        row.find(".itemname-input").val(ui.item.value);
-                        row.find(".partcode-input").val(ui.item.partCode);
+                        row.find(".itemname-input").val(ui.item.onlyItemName);
+                        row.find(".partcode-input").val(ui.item.onlyPartCode);
                         row.find(".ItemCode-input").val(ui.item.itemCode);
 
                         FillSOItemRate(row);
+                     
 
                         return false;
                     }
@@ -1342,6 +1244,7 @@
                                 row.find(".ItemCode-input").val(match.Item_Code);
 
                                 FillSOItemRate(row);
+                               
                             }
                         }
                     }
@@ -1395,6 +1298,7 @@
                                 row.find(".ItemCode-input").val(match.Item_Code);
 
                                 FillSOItemRate(row);
+                              
                             }
                         }
                     }
@@ -1605,10 +1509,14 @@
                             $(row).find('.RejRate').val(rate.toFixed(2));
                             $(row).find('.Unit').val(data.unit);
                             $(row).find('.HSNNo').val(data.HsnNo);
+                            $(row).find('.GroupName').val(data.Group_name);
+                            $(row).find('.ItemLocation').val(data.Location);
                             // $(row).find('.igstp').val(data.IGST);
 
+                            if ($('#GSTNO').val()!='')
+                            {
                             // ✅ GST Logic
-                            if (stateCode === companyStateCode) {
+                            if (stateCode === companyStateCode ) {
                                 // Same state → CGST + SGST (half-half)
                                 var halfGST = igst / 2;
 
@@ -1622,16 +1530,71 @@
                                 $(row).find('.cgstp').val(0);
                                 $(row).find('.sgstp').val(0);
                             }
-
+                            }
+                            else
+                            {
+                                // If GST number not available → Set all taxes to 0
+                                $(row).find('.igstp').val(0);
+                                $(row).find('.cgstp').val(0);
+                                $(row).find('.sgstp').val(0);
+                            }
+                          
                         }
                     }
                 },
+                complete: function () {
+                    calculateRow(row); // Trigger calculation after rate is set
+                },
+
                 error: function (xhr) {
                     console.log("Error: " + xhr.responseText);
                 }
             });
         }
 
+
+        function recalculateGSTForAllRows() {
+
+            var stateCode = $('#StateCode').val();
+            var companyStateCode = $('#CompanyStateCode').val();
+
+            $("#ItemDetailTable tbody tr").each(function () {
+
+                let row = $(this);
+
+                let igst = parseFloat(row.find(".igstp").val()) ||
+                    parseFloat(row.find(".cgstp").val()) * 2 || 0;
+
+                if (stateCode === companyStateCode && stateCode != 0) {
+
+                    // Same state → CGST + SGST
+                    let halfGST = igst / 2;
+
+                    row.find('.cgstp').val(halfGST.toFixed(2));
+                    row.find('.sgstp').val(halfGST.toFixed(2));
+                    row.find('.igstp').val(0);
+
+                }
+                else if (stateCode != companyStateCode && stateCode != 0) {
+
+                    // Different state → IGST
+                    row.find('.igstp').val(igst.toFixed(2));
+                    row.find('.cgstp').val(0);
+                    row.find('.sgstp').val(0);
+                }
+                else {
+
+                    // State not available
+                    row.find('.igstp').val(0);
+                    row.find('.cgstp').val(0);
+                    row.find('.sgstp').val(0);
+                }
+
+                calculateRow(row); // Recalculate row
+            });
+
+            calculateTotals();
+        }
             
         
         function BackButtonData() {
@@ -2045,7 +2008,11 @@
                         $('#CompanyStateCode').val(obj.Result.Table[0].CompanyStateCode);
                         $('#AdjNewRefNo').val($('#VoucherNo').val());
                     }
-                }
+                },
+                complete:
+                function () {
+                        recalculateGSTForAllRows();
+                    },
             });
         }
 

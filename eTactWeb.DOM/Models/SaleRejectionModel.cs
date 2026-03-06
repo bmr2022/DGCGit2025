@@ -143,6 +143,9 @@ namespace eTactWeb.DOM.Models
 		[Column(TypeName = "decimal(10, 4)")]
 		public decimal ItemNetAmount { get; set; }
 
+        public string? GroupName { get; set; }
+        public string? ItemLocation { get; set; }
+
         public decimal? IGSTPer { get; set; }
         public decimal? IGSTAmt { get; set; }
 

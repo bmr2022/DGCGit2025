@@ -249,6 +249,7 @@ namespace eTactWeb.Data.DAL
 			model.MRNEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["MRNEntryId"]);
 			model.RoundOffAccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["RoundOffAccountCode"]);
 			model.MrnNo = DS.Tables[0].Rows[0]["MrnNo"]?.ToString();
+			model.StateCode = DS.Tables[0].Rows[0]["state"]?.ToString();
 			model.MRNDate = DS.Tables[0].Rows[0]["MRNDate"]?.ToString();
 			model.Mrnyearcode = Convert.ToInt32(DS.Tables[0].Rows[0]["Mrnyearcode"]);
 			model.SalerejCreditNoteVoucherNo = DS.Tables[0].Rows[0]["SubVoucherNo"]?.ToString();
@@ -321,6 +322,8 @@ namespace eTactWeb.Data.DAL
 						SONO = row["SONO"]?.ToString(),
 						SOyearcode = row["SOyearcode"] != DBNull.Value ? Convert.ToInt32(row["SOyearcode"]) : 0,
 						SODate = row["SODate"]?.ToString(),
+						GroupName = row["Group_Name"]?.ToString(),
+                        ItemLocation = row["ItemLocation"]?.ToString(),
 						CustOrderNo = row["CustOrderNo"]?.ToString(),
 						SOAmmNo = row["SOAmmNo"]?.ToString(),
 						Itemsize = row["Itemsize"]?.ToString(),
