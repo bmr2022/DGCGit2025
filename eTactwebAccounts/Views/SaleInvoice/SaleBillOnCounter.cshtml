@@ -1484,11 +1484,13 @@
 
     // if (hasSONO) {
     //      ClearGrid();
-    //     btnClearTax();
+    //     ClearTaxOnSaleBill();
     //     ClearAdjustmentGrid();
       
     //     ClearCustomerJWGrid();
     // }
+    ClearTaxOnSaleBill();
+                    // ApplyTax4HSN();
                     FillSONO();
             FillCurrency();
             FillCustomerAddress();
@@ -1501,7 +1503,7 @@
                    
 
             // if ($('#divTaxGrid tr td').length > 1) {
-            //     btnClearTax();
+            //     ClearTaxOnSaleBill();
             // }
             // if ($('#divSaleBillList tr td').length > 1) {
             //     //ClearGrid();
@@ -1854,7 +1856,7 @@
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
-                btnClearTax();
+                ClearTaxOnSaleBill();
                 // FillItems($('#TypeItemServAssets').val());
             } else {
                 SetminQty();
@@ -3219,7 +3221,7 @@
                             FillCurrency();
                             FillCustomerAddress();
 
-                            btnClearTax();
+                            ClearTaxOnSaleBill();
                             ClearAdjustmentGrid();
                             ClearDRCRGrid();
                             ClearCustomerJWGrid();
@@ -4000,7 +4002,7 @@
       
         if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
             NewEntryId();
-            btnClearTax();
+            // ClearTaxOnSaleBill();
             // FillItems($('#TypeItemServAssets').val());
         } else {
             SetminQty();
@@ -4203,7 +4205,7 @@
                 $('.ItemBtn').prop("disabled", true);
                 $('.btnAddTax2Grid').prop("disabled", true);
                 $('.btnEnterTaxPass').css("display", "none");
-                $('.btnClearTax').prop("disabled", true);
+                $('.ClearTaxOnSaleBill').prop("disabled", true);
                 $('#AccountCode').prop("disabled", true);
                 $('.btnClearTax').prop("disabled", true);
             }
@@ -5784,11 +5786,11 @@
                             }
 
                             var txTotal = sum + txSum;
-                            $('#NetTotal').val(txTotal.toFixed(6));
+                            $('#NetTotal').val(txTotal.toFixed(2));
                            
                             calculateroundoffnettotal();
-                            ('#NetTotal1').html(txTotal.toFixed(6));
-                            $('#BaseNetTotal').val(txTotal.toFixed(6));
+                            ('#NetTotal1').html(txTotal.toFixed(2));
+                            $('#BaseNetTotal').val(txTotal.toFixed(2));
                             $('#AdjPendAmt').val($('#NetTotal').val());
                             // $('#NetTotal1').html($('#NetTotal').val());
                             $('#TotalDiscountPercentage').val(0);
@@ -6108,40 +6110,40 @@
             });
         }
 
-        $('.btnClearTax').click(function () {
-            btnClearTax();
-        });
+        // $('.btnClearTax').click(function () {
+        //     btnClearTax();
+        // });
 
-        function btnClearTax() {
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("ClearTaxGrid", "PurchaseOrder")",
-                data: { YearCode: $('#YearCode').val() },
-                dataType: "json",
-                success: function (result, status, error) {
+        // function ClearTaxOnSaleBill() {
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "@Url.Action("ClearTaxGrid", "PurchaseOrder")",
+        //         data: { YearCode: $('#YearCode').val() },
+        //         dataType: "json",
+        //         success: function (result, status, error) {
 
-                    $('#divTaxGrid').empty();
-                    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
-                    $('#divTaxGrid').html(NoData);
-                    var txAmt = $('#lblItemNetAmount').text();
-                    $('#NetTotal').val(txAmt);
+        //             $('#divTaxGrid').empty();
+        //             var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+        //             $('#divTaxGrid').html(NoData);
+        //             var txAmt = $('#lblItemNetAmount').text();
+        //             $('#NetTotal').val(txAmt);
                    
-                    calculateroundoffnettotal();
-                    $('#NetTotal1').html(txAmt);
+        //             calculateroundoffnettotal();
+        //             $('#NetTotal1').html(txAmt);
 
 
 
-                    $('#BaseNetTotal').val(txAmt);
-                    $('#AdjPendAmt').val($('#NetTotal').val());
-                    // $('#NetTotal1').html($('#NetTotal').val());
-                    // $('#AdjNewRefNo').val($('#NetTotal').val());
+        //             $('#BaseNetTotal').val(txAmt);
+        //             $('#AdjPendAmt').val($('#NetTotal').val());
+        //             // $('#NetTotal1').html($('#NetTotal').val());
+        //             // $('#AdjNewRefNo').val($('#NetTotal').val());
 
-                },
-                error: function (req, status, error) {
-                    alert(error);
-                }
-            });
-        }
+        //         },
+        //         error: function (req, status, error) {
+        //             alert(error);
+        //         }
+        //     });
+        // }
 
         function ClearSpecificItemTax(ItemCode) {
 
@@ -7195,7 +7197,7 @@
 
             if (DP !== 0) {
                 const DA = ((Amount * DP) / 100);
-                $('#DiscountAmt').val(DA.toFixed(6));
+                $('#DiscountAmt').val(DA.toFixed(2));
                 Amount = Amount - DA;
             }
             else
@@ -7203,7 +7205,7 @@
                  $('#DiscountAmt').val(0);
             }
 
-            $('#Amount').val(Amount.toFixed(6));
+            $('#Amount').val(Amount.toFixed(2));
             calculateitembasicnettaxable();
             itemwisetaxcalculation();
 
@@ -7249,7 +7251,7 @@
         //     FillCustomerAddress();
 
         //     if ($('#divTaxGrid tr td').length > 1) {
-        //         btnClearTax();
+        //         ClearTaxOnSaleBill();
         //     }
         //     if ($('#divSaleBillList tr td').length > 1) {
         //         //ClearGrid();
@@ -7330,7 +7332,7 @@
 
         $('#ConsigneeAccountcode').change(function () {
             FillConsigneeAddress();
-            btnClearTax();
+            ClearTaxOnSaleBill();
         });
 
         $('#AccountCode').change(function () {
@@ -7876,7 +7878,7 @@
                                 $('.gridHiddenField').hide();
                             }
                                           $('#saleBillRow-' + SeqNo).remove();
-                            btnClearTax();
+                            
                             calculateitembasicnettaxable();
                             itemwisetaxcalculation();
                             // DeleteItemRow(SeqNo);
@@ -7894,6 +7896,11 @@
                         $.notify(response.responseText, "error");
                     }
                 }).done(function () {
+                    ClearTaxOnSaleBill();
+                    // ApplyTax4HSN();
+                    ClearAdjustmentGrid();
+                    AddAdjstmntDetail1();
+                        GetFeatureOption();
                     GetDbCrDetail();
                 });
             }
@@ -7937,7 +7944,7 @@
                     success: function (data, status, xhr) {
 
                         $('#divSaleBillList').html(data);
-                        btnClearTax();
+                        
                         BasicTotal();
                         calculateitembasicnettaxable();
                         ClearDRCRGrid();
@@ -8028,6 +8035,9 @@
                 }).done(function () {
                     GetFeatureOption();
                     GetTaxPartItem();
+                    ClearTaxOnSaleBill();
+                    // ApplyTax4HSN();
+                        
                     GetDbCrDetail();
                            ClearAdjustmentGrid();
                     AddAdjstmntDetail1();
@@ -9201,7 +9211,7 @@
 
         $('#RemovalDate').change(function () {
             ClearGrid();
-            btnClearTax();
+            ClearTaxOnSaleBill();
             ClearAdjustmentGrid();
             ClearDRCRGrid();
             ClearCustomerJWGrid();

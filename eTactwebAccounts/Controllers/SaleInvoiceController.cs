@@ -1728,8 +1728,11 @@ namespace eTactWeb.Controllers
                         saleBillGrid.Remove(removeItem);
                     }
                     MainModel.saleBillDetails = saleBillGrid;
+                    MainModel.ItemDetailGrid = saleBillGrid;
+                   
 
                     HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(MainModel.saleBillDetails));
+                    HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(MainModel));
                 }
             //}
 
@@ -1799,6 +1802,7 @@ namespace eTactWeb.Controllers
             //	HttpContext.Session.Remove("ItemList");
             //}
             HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(model.ItemDetailGrid));
+            HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(model));
 
 
             return Json(JsonConvert.SerializeObject(Result));

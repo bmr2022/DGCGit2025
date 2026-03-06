@@ -1809,33 +1809,56 @@ public class TaxController : Controller
         */
     }
 
+    [HttpPost]
     public IActionResult ClearTax(string SN)
     {
         dynamic MainModel = null;
-        if (SN == "IssueNRGP")
+        try
         {
-            MainModel = new IssueNRGPModel();
-            //_MemoryCache.Remove("KeyIssueNRGPTaxGrid");
-            HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
-            return PartialView("_TaxNRGPGrid", MainModel);
-        }
-        else
-        {
-            MainModel = SN == "DirectPurchaseBill" ? new DirectPurchaseBillModel() : (SN == "ItemList" ? new SaleOrderModel() : (SN == "PurchaseBill" ? new PurchaseBillModel() : new PurchaseOrderModel()));
-            MainModel = SN == "JobWorkIssue" ? new JobWorkIssueModel() : "";
-            MainModel = SN == "ItemList" ? new SaleOrderModel() : "";
-            MainModel = SN == "PurchaseRejection" ? new AccPurchaseRejectionModel() : "";
-            MainModel = SN == "SaleRejection" ? new SaleRejectionModel() : "";
-            MainModel = SN == "CreditNote" ? new AccCreditNoteModel() : "";
-            //_MemoryCache.Remove("KeyTaxGrid");
-            HttpContext.Session.Remove("KeyTaxGrid");
-            return PartialView("_TaxGrid", MainModel);
-        }
+            if (SN == "IssueNRGP")
+            {
+                MainModel = new IssueNRGPModel();
+                HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
+                return PartialView("_TaxNRGPGrid", MainModel);
+            }
+            else
+            {
+                MainModel = SN == "DirectPurchaseBill" ? new DirectPurchaseBillModel() :
+                            (SN == "ItemList" ? new SaleOrderModel() :
+                            (SN == "PurchaseBill" ? new PurchaseBillModel() : new PurchaseOrderModel()));
 
-        //var TxModel = new List<TaxModel>();
-        //MainModel.TaxDetailGridd = TxModel;
+                MainModel = SN == "JobWorkIssue" ? new JobWorkIssueModel() : MainModel;
+                MainModel = SN == "ItemList" ? new SaleOrderModel() : MainModel;
+                MainModel = SN == "PurchaseRejection" ? new AccPurchaseRejectionModel() : MainModel;
+                MainModel = SN == "SaleRejection" ? new SaleRejectionModel() : MainModel;
+                MainModel = SN == "CreditNote" ? new AccCreditNoteModel() : MainModel;
+                MainModel = SN == "SaleInvoice" ? new SaleBillModel() : MainModel;
+
+                IList<TaxModel> TaxGrid = new List<TaxModel>();
+
+                string modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+
+                if (!string.IsNullOrEmpty(modelTxGridJson))
+                {
+                    TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTxGridJson);
+
+                    // ✅ Remove only TAX type rows
+                    TaxGrid = TaxGrid.Where(x => x.TxType != "TAX").ToList();
+
+                    MainModel.TaxDetailGridd = TaxGrid;
+
+                    // ✅ Save back to session
+                    HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(TaxGrid));
+                }
+
+                return PartialView("_TaxGrid", MainModel);
+            }
+        }
+        catch (Exception ex)
+        {
+            return Content(ex.ToString()); // shows exact error in browser
+        }
     }
-
     public IActionResult DeleteTaxRow(string SeqNo, string SN)
     {
         decimal TotalTaxAmt = 0;
