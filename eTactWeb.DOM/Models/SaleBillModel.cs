@@ -101,14 +101,14 @@ namespace eTactWeb.DOM.Models
         public string? ItemName { get; set; }
         public int HSNNo { get; set; }
         public string? Unit { get; set; }
-        public float NoofCase { get; set; }
-        public float Qty { get; set; }
+        public decimal NoofCase { get; set; }
+        public decimal Qty { get; set; }
         public string? UnitOfRate { get; set; }
-        public float RateInOtherCurr { get; set; }
-        public float Rate { get; set; }
+        public decimal RateInOtherCurr { get; set; }
+        public decimal Rate { get; set; }
         public string? AltUnit { get; set; }
-        public float AltQty { get; set; }
-        public float ItemWeight { get; set; }
+        public decimal AltQty { get; set; }
+        public decimal ItemWeight { get; set; }
         public int NoofPcs { get; set; }
         public string? CustomerPartCode { get; set; }
         public string? UnitRate { get; set; }
@@ -117,17 +117,17 @@ namespace eTactWeb.DOM.Models
             get => _UnitRate;
             set => _UnitRate = value;
         }
-        public float MRP { get; set; }
-        public float OriginalMRP { get; set; }
-        public float SOPendQty { get; set; }
+        public decimal MRP { get; set; }
+        public decimal OriginalMRP { get; set; }
+        public decimal SOPendQty { get; set; }
         public int AltSOPendQty { get; set; }
-        public float DiscountPer { get; set; }
+        public decimal DiscountPer { get; set; }
         public decimal DiscountAmt { get; set; }
         public string? ItemSize { get; set; }
         public string? Itemcolor { get; set; }
         public int StoreId { get; set; }
         public string? StoreName { get; set; }
-        //public float ItemAmount { get; set; }
+        //public decimal ItemAmount { get; set; }
         public decimal Amount { get; set; }
         public string? AdviceNo { get; set; }
         public int AdviseEntryId { get; set; }
@@ -137,12 +137,12 @@ namespace eTactWeb.DOM.Models
         public string? ProcessName { get; set; }
         public string? Batchno { get; set; }
         public string? Uniquebatchno { get; set; }
-        public float LotStock { get; set; }
-        public float TotalStock { get; set; }
+        public decimal LotStock { get; set; }
+        public decimal TotalStock { get; set; }
         public string? AgainstProdPlanNo { get; set; }
         public int AgainstProdPlanYearCode { get; set; }
         public string? AgaisntProdPlanDate { get; set; }
-        public float? GSTPer { get; set; }
+        public decimal? GSTPer { get; set; }
         public string? GSTType { get; set; }
         public string? PacketsDetail { get; set; }
         public string? OtherDetail { get; set; }
@@ -389,8 +389,8 @@ namespace eTactWeb.DOM.Models
     {
         public int ItemCode { get; set; }
         public string Unit { get; set; }
-        public float BillQty { get; set; }
-        public float JWRate { get; set; }
+        public decimal BillQty { get; set; }
+        public decimal JWRate { get; set; }
         public int ProcessId { get; set; }
         public string SONO { get; set; }
         public string CustOrderNo { get; set; }
@@ -419,19 +419,19 @@ namespace eTactWeb.DOM.Models
         public string BomNo { get; set; }
         public string BomDate { get; set; }
         public string BomStatus { get; set; }
-        public float PendQty { get; set; }
+        public decimal PendQty { get; set; }
         public string IssuePartCode { get; set; }
         public string IssueItemName{ get; set; }
-        public float BomQty{ get; set; }
+        public decimal BomQty{ get; set; }
         public string Through{ get; set; }
-        public float QtyToBeRec{ get; set; }
-        public float ActualAdjQty{ get; set; }
+        public decimal QtyToBeRec{ get; set; }
+        public decimal ActualAdjQty{ get; set; }
         public string Batchno{ get; set; }
         public string UniqueBatchno{ get; set; }
         public int SeqNo{ get; set; }
-        public float IssueQty{ get; set; }
-        public float Rate{ get; set; }
-        public float OriginalRecQty{ get; set; }
+        public decimal IssueQty{ get; set; }
+        public decimal Rate{ get; set; }
+        public decimal OriginalRecQty{ get; set; }
         public string IdealScrap{ get; set; }
         public string IssuedScrap{ get; set; }
         public string CustomerName { get; set; }
@@ -468,9 +468,9 @@ namespace eTactWeb.DOM.Models
         public string RMItemName { get; set; }
         public int ItemCode { get; set; }
         public string RMPartCode { get; set; }
-        public float Qty { get; set; }
-        public float ActualPendQty { get; set; }
-        public float PendToAdjust { get; set; }
+        public decimal Qty { get; set; }
+        public decimal ActualPendQty { get; set; }
+        public decimal PendToAdjust { get; set; }
         public string BOMIND { get; set; }
         public string ProdUnprod { get; set; }
         public string FullyAdjusted { get; set; }
@@ -494,28 +494,28 @@ namespace eTactWeb.DOM.Models
         public int FinishItemCode { get; set; }
         public string? FGPartCode { get; set; }
         public string? FGItemName { get; set; }
-        public float? AdjQty { get; set; }
+        public decimal? AdjQty { get; set; }
         public string CC { get; set; }
         public int? UID { get; set; }
         public string AdjFormType { get; set; }
         public string? TillDate { get; set; }
-        public float? TotIssQty { get; set; }
-        public float? PendQty { get; set; }
-        public float? BOMQty { get; set; }
+        public decimal? TotIssQty { get; set; }
+        public decimal? PendQty { get; set; }
+        public decimal? BOMQty { get; set; }
         public int? BomRevNo { get; set; }
         public string? BOMRevDate { get; set; }
         public int? ProcessID { get; set; }
         public string BOMInd { get; set; }
-        public float? IssQty { get; set; }
-        public float? TotadjQty { get; set; }
-        public float? TotalIssQty { get; set; }
-        public float? TotalRecQty { get; set; }
+        public decimal? IssQty { get; set; }
+        public decimal? TotadjQty { get; set; }
+        public decimal? TotalIssQty { get; set; }
+        public decimal? TotalRecQty { get; set; }
         public int? RunnerItemCode { get; set; }
         public int? ScrapItemCode { get; set; }
-        public float? IdealScrapQty { get; set; }
-        public float? IssuedScrapQty { get; set; }
+        public decimal? IdealScrapQty { get; set; }
+        public decimal? IssuedScrapQty { get; set; }
         public string PreRecChallanNo { get; set; }
-        public float? ScrapqtyagainstRcvqty { get; set; }
+        public decimal? ScrapqtyagainstRcvqty { get; set; }
         public string Recbatchno { get; set; }
         public string Recuniquebatchno { get; set; }
         public string Issbatchno { get; set; }

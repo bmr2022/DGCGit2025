@@ -99,13 +99,13 @@ namespace eTactWeb
 
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromHours(1);
+                options.IdleTimeout = TimeSpan.FromHours(5);
                 // Auto-expire after 1 hour
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
                
                 // Cookie expiry (optional)
-                options.Cookie.MaxAge = TimeSpan.FromHours(1);
+                options.Cookie.MaxAge = TimeSpan.FromHours(5);
 
             });
 

@@ -1192,6 +1192,8 @@
 @section Scripts
 {
     <script>
+
+        
         var exportSupplyTypes = [
             "EXPORT WITH PAYMENT",
             "WITH SEZ PAYMENT",
@@ -1741,6 +1743,9 @@
         }
 
         $(document).ready(function () {
+            allowNumber('#DiscountPer', 2, true);
+            allowNumber('#Rate', 2);
+            allowNumber('#Qty', 4);
             const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
             $('#TotalRoundOff').val('Y').trigger('change'); // Trigger change to set initial state of related fields
             // $('#Group_Code').select2();
@@ -2025,6 +2030,8 @@
                               e.preventDefault();
                                          ValidateSubmitWrapper(function (isValid) {
                               if (!isValid) return;
+
+
 
                               if ($('#divSaleBillList tr td').length <= 1) {
                                   $.notify('Sale Bill Grid Should Have Atleast 1 Item...!', "error");
@@ -5131,21 +5138,40 @@
             }
 
             var rowCount = $('#divSaleBillList tr').length;
-            for (var i = 0; i <= rowCount; i++) {
-                if ($('#GridIC-' + i).val() == $('#ItemCode').val()) {
-                    // if (parseFloat($('#saleBillRow-' + i).find('td.DiscPer').text()) != parseFloat($('#DiscountPer').val())) {
-                    //     $.notify('Disc Per should same with Grid Disc Per...!', "error");
-                    //     AddErrorCls('DiscountPer');
-                    //     Err = 1;
-                    // }
+            // for (var i = 0; i <= rowCount; i++) {
+            //     if ($('#GridIC-' + i).val() == $('#ItemCode').val()) {
+            //         // if (parseFloat($('#saleBillRow-' + i).find('td.DiscPer').text()) != parseFloat($('#DiscountPer').val())) {
+            //         //     $.notify('Disc Per should same with Grid Disc Per...!', "error");
+            //         //     AddErrorCls('DiscountPer');
+            //         //     Err = 1;
+            //         // }
 
-                    if (parseFloat($('#saleBillRow-' + i).find('td.rate').text()) != parseFloat($('#Rate').val())) {
+            //         if (parseFloat($('#saleBillRow-' + i).find('td.rate').text()) != parseFloat($('#Rate').val())) {
+            //             $.notify('Rate should same with Grid Rate...!', "error");
+            //             AddErrorCls('Rate');
+            //             Err = 1;
+            //         }
+            //     }
+            // }
+
+            $('#divSaleBillList tr').each(function () {
+
+                var gridItemCode = $(this).find('[id^="GridIC-"]').val();
+
+                if (gridItemCode == $('#ItemCode').val()) {
+
+                    var gridRate = parseFloat($(this).find('td.rate').text()) || 0;
+                    var rate = parseFloat($('#Rate').val()) || 0;
+
+                    if (gridRate != rate) {
                         $.notify('Rate should same with Grid Rate...!', "error");
                         AddErrorCls('Rate');
                         Err = 1;
                     }
+
                 }
-            }
+
+            });
 
             var itemCode = $('#ItemCode').val();
             var currentDisc = parseFloat($('#DiscountPer').val()) || 0;
@@ -5774,11 +5800,17 @@
                             // ResetPendQty();
                             // FillSOPendQty();
 
-                            $('#ItemNetAmount').val(sum);
+                            $('#ItemNetAmount').val(sum.toFixed(2));
 
                             // $('#lblItemNetAmount').text(sum.toFixed(2));
 
                             var txSum = 0;
+                            // if ($('#divTaxGrid tr td').length > 1) {
+                            //     for (var i = 1; i <= taxRowCount; i++) {
+                            //         txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                            //     }
+                            // }
+
                             if ($('#divTaxGrid tr td').length > 1) {
                                 for (var i = 1; i <= taxRowCount; i++) {
                                     txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
@@ -6021,11 +6053,29 @@
 
                         //     sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
                         // }
-                        $('#ItemNetAmount').val(sum);
+                        $('#ItemNetAmount').val(sum.toFixed(2));
 
                         // $('#lblItemNetAmount').text(sum.toFixed(2));
 
+                        var hasTax = false;
+
+                        $('#divTaxGrid tr').each(function () {
+
+                            var txType = $(this).find('.TxType').text().trim();
+
+                            if (txType === 'TAX') {
+                                hasTax = true;
+                                return false; // stop loop
+                            }
+
+                        });
+
+                        if (hasTax) {
+                            ClearTaxOnSaleBill();
+                        }
+
                         var txSum = 0;
+                        taxRowCount = $('#divTaxGrid tr').length;
                         if ($('#divTaxGrid tr td').length > 1) {
                             for (var i = 1; i <= taxRowCount; i++) {
                                 txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
@@ -7691,6 +7741,7 @@
 
 
             else {
+              
                 $.ajax({
                            url: '/SaleInvoice/EditItemRow',
                     type: "POST",
@@ -7699,8 +7750,8 @@
                         var obj = $.parseJSON(data);
                         if (obj != null) {
                             var ItemCode = $('#GridIC-' + SeqNo).val()
-                            ClearDRCRGrid();
-                            ClearAdjustmentGrid();
+                            // ClearDRCRGrid();
+                            // ClearAdjustmentGrid();
                             // DeleteTaxRowByItemCode(ItemCode);
                             EditEachItem = true;
                             EditDeleteBatchValidation = true;
@@ -7880,7 +7931,7 @@
                                           $('#saleBillRow-' + SeqNo).remove();
                             
                             calculateitembasicnettaxable();
-                            itemwisetaxcalculation();
+                             itemwisetaxcalculation();
                             // DeleteItemRow(SeqNo);
 
                              if ($('#divSaleBillList').children().length == 0) {
@@ -8102,7 +8153,59 @@
             //         }
             //     }
             // }
+            var itemData = {};
 
+            $('#divSaleBillList tr').each(function () {
+
+                var itemCode = $(this).find('[id^="GridIC-"]').val();
+                var disc = parseFloat($(this).find('.DiscPer').text()) || 0;
+                var rate = parseFloat($(this).find('.rate').text()) || 0;
+
+                if (!itemCode) return;
+
+                if (!itemData[itemCode]) {
+                    itemData[itemCode] = {
+                        count: 0,
+                        disc100: 0,
+                        rates: []
+                    };
+                }
+
+                itemData[itemCode].count++;
+                itemData[itemCode].rates.push(rate);
+
+                if (disc === 100) {
+                    itemData[itemCode].disc100++;
+                }
+
+            });
+
+            for (var item in itemData) {
+
+                var data = itemData[item];
+
+                if (data.disc100 > 0) {
+
+                    if (data.count !== 2) {
+                        $.notify('Item with 100% discount must appear exactly twice in grid...!', "error");
+                        Err = 1;
+                        return false;
+                    }
+
+                    if (data.disc100 !== 1) {
+                        $.notify('Only one row can have 100% discount for the same item...!', "error");
+                        Err = 1;
+                        return false;
+                    }
+
+                    if (data.rates[0] !== data.rates[1]) {
+                        $.notify('Both rows must have the same rate for item with 100% discount...!', "error");
+                        Err = 1;
+                        return false;
+                    }
+
+                }
+            }
 
 
             if ($('#VehicalNumber').val() != '') {
@@ -8111,7 +8214,7 @@
                     $('#VehicalNumber').val(inputValue.substring(0, 10));
                 } else if (inputValue.length < 10) {
                     $.notify("Please enter at least 10 characters in Vehicle No", "error");
-                    return false;
+                   
                 }
             }
            

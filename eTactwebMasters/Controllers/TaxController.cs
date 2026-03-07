@@ -3451,9 +3451,9 @@ public class TaxController : Controller
                 TxPercentg = HSNTaxDetail.TaxPercent,
                 TxAdInTxable = HSNTaxDetail.AddInTaxable,
                 TxRoundOff = MainModel.TxRoundOff == "YES" ? "Y" : "N",
-                TxAmount = MainModel.TxRoundOff == "YES" ? Math.Round((decimal)TaxAmt["Amt"]) : (decimal)TaxAmt["Amt"],
+                TxAmount = MainModel.TxRoundOff == "YES" ? Math.Round((decimal)TaxAmt["Amt"]) : Math.Round((decimal)TaxAmt["Amt"], 2),
                 TxRefundable = HSNTaxDetail.Refundable,
-                TxOnExp = (decimal)TaxAmt["TaxOnExp"],
+                TxOnExp = Math.Round((decimal)TaxAmt["TaxOnExp"], 2),
                 TxRemark = "Tax Addedd From HSN # " + ((MainModel.TxPageName == "PurchaseBill") ? MainModel.HSNNO : MainModel.HSNNo),
             });
         }
@@ -3474,9 +3474,9 @@ public class TaxController : Controller
                 TxPercentg = HSNTaxDetail.TaxPercent,
                 TxAdInTxable = HSNTaxDetail.AddInTaxable,
                 TxRoundOff = MainModel.TxRoundOff == "YES" ? "Y" : "N",
-                TxAmount = MainModel.TxRoundOff == "YES" ? Math.Round((decimal)TaxAmt["Amt"]) : (decimal)TaxAmt["Amt"],
+                TxAmount = MainModel.TxRoundOff == "YES" ? Math.Round((decimal)TaxAmt["Amt"]) : Math.Round((decimal)TaxAmt["Amt"], 2),
                 TxRefundable = HSNTaxDetail.Refundable,
-                TxOnExp = (decimal)TaxAmt["TaxOnExp"],
+                TxOnExp = Math.Round((decimal)TaxAmt["TaxOnExp"], 2),
                 TxRemark = "Tax Addedd From HSN # " + ((MainModel.TxPageName == "PurchaseBill") ? MainModel.HSNNO : MainModel.HSNNo),
             });
         }

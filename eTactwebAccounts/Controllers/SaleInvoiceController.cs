@@ -778,8 +778,8 @@ namespace eTactWeb.Controllers
             DataTable Table = new();
             Table.Columns.Add("ItemCode", typeof(int));
             Table.Columns.Add("Unit", typeof(string));
-            Table.Columns.Add("BillQty", typeof(float));
-            Table.Columns.Add("JWRate", typeof(float));
+            Table.Columns.Add("BillQty", typeof(decimal));
+            Table.Columns.Add("JWRate", typeof(decimal));
             Table.Columns.Add("ProcessId", typeof(int));
             Table.Columns.Add("SONO", typeof(string));
             Table.Columns.Add("CustOrderNo", typeof(string));
@@ -989,9 +989,9 @@ namespace eTactWeb.Controllers
                             Group_name = Group_name.ToString(),
                             Group_Code = string.IsNullOrEmpty(GroupCode?.ToString()) ? 0 : Convert.ToInt32(GroupCode),
                             HSNNo = string.IsNullOrEmpty(hsnNo?.ToString()) ? 0 : Convert.ToInt32(hsnNo),
-                            Qty = (float)qty,
-                            Rate = (float)rate,
-                            DiscountPer = (float)discountPer,
+                            Qty = (decimal)qty,
+                            Rate = (decimal)rate,
+                            DiscountPer = (decimal)discountPer,
                             Amount = netAmt,
                             DiscountAmt = discountAmt,
                             ItemNetAmount = netAmt,
@@ -1079,7 +1079,7 @@ namespace eTactWeb.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> SaleInvoice(int ID, string Mode, int YearCode, string DashboardType = "", string FromDate = "", string ToDate = "", string partCode = "", string itemName = "", string VoucherNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string PerformaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "", int? GroupName = null, int? AccountCode = null, int? AccountCodeBack = null, string VoucherTypeBack = "", string[] AccountList = null, string? Narration = "", float? Amount = null, string? DR = "", string? CR = "")
+        public async Task<IActionResult> SaleInvoice(int ID, string Mode, int YearCode, string DashboardType = "", string FromDate = "", string ToDate = "", string partCode = "", string itemName = "", string VoucherNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string PerformaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "", int? GroupName = null, int? AccountCode = null, int? AccountCodeBack = null, string VoucherTypeBack = "", string[] AccountList = null, string? Narration = "", decimal? Amount = null, string? DR = "", string? CR = "")
         {
             var model = new SaleBillModel(); // Create a new model instance for the view
 
@@ -1764,10 +1764,10 @@ namespace eTactWeb.Controllers
 
             var ItmPartCode = model.ItemDetailGrid.FirstOrDefault(item => item.SeqNo == Convert.ToInt32(model.SeqNo)).ItemCode;
 
-            if (TaxGrid != null)
-            {
-                exists = TaxGrid.Any(x => x.TxPartCode == ItmPartCode);
-            }
+            //if (TaxGrid != null)
+            //{
+            //    exists = TaxGrid.Any(x => x.TxPartCode == ItmPartCode);
+            //}
 
             if (exists)
             {
@@ -2082,28 +2082,28 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("CustJwIssChallanDate", typeof(string));
             Table.Columns.Add("AccountCode", typeof(long));
             Table.Columns.Add("FinishItemCode", typeof(long));
-            Table.Columns.Add("AdjQty", typeof(float));
+            Table.Columns.Add("AdjQty", typeof(decimal));
             Table.Columns.Add("CC", typeof(string));
             Table.Columns.Add("UID", typeof(long));
             Table.Columns.Add("AdjFormType", typeof(string));
             Table.Columns.Add("TillDate", typeof(string));
-            Table.Columns.Add("TotIssQty", typeof(float));
-            Table.Columns.Add("PendQty", typeof(float));
-            Table.Columns.Add("BOMQty", typeof(float));
+            Table.Columns.Add("TotIssQty", typeof(decimal));
+            Table.Columns.Add("PendQty", typeof(decimal));
+            Table.Columns.Add("BOMQty", typeof(decimal));
             Table.Columns.Add("BomRevNo", typeof(long));
             Table.Columns.Add("BOMRevDate", typeof(string));
             Table.Columns.Add("ProcessID", typeof(long));
             Table.Columns.Add("BOMInd", typeof(string));
-            Table.Columns.Add("IssQty", typeof(float));
-            Table.Columns.Add("TotadjQty", typeof(float));
-            Table.Columns.Add("TotalIssQty", typeof(float));
-            Table.Columns.Add("TotalRecQty", typeof(float));
+            Table.Columns.Add("IssQty", typeof(decimal));
+            Table.Columns.Add("TotadjQty", typeof(decimal));
+            Table.Columns.Add("TotalIssQty", typeof(decimal));
+            Table.Columns.Add("TotalRecQty", typeof(decimal));
             Table.Columns.Add("RunnerItemCode", typeof(long));
             Table.Columns.Add("ScrapItemCode", typeof(long));
-            Table.Columns.Add("IdealScrapQty", typeof(float));
-            Table.Columns.Add("IssuedScrapQty", typeof(float));
+            Table.Columns.Add("IdealScrapQty", typeof(decimal));
+            Table.Columns.Add("IssuedScrapQty", typeof(decimal));
             Table.Columns.Add("PreRecChallanNo", typeof(string));
-            Table.Columns.Add("ScrapqtyagainstRcvqty", typeof(float));
+            Table.Columns.Add("ScrapqtyagainstRcvqty", typeof(decimal));
             Table.Columns.Add("Recbatchno", typeof(string));
             Table.Columns.Add("Recuniquebatchno", typeof(string));
             Table.Columns.Add("Issbatchno", typeof(string));
@@ -2180,26 +2180,26 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("ItemCode", typeof(int));
             DTSSGrid.Columns.Add("HSNNO", typeof(string));
             DTSSGrid.Columns.Add("Unit", typeof(string));
-            DTSSGrid.Columns.Add("NoofCase", typeof(float));
-            DTSSGrid.Columns.Add("Qty", typeof(float));
+            DTSSGrid.Columns.Add("NoofCase", typeof(decimal));
+            DTSSGrid.Columns.Add("Qty", typeof(decimal));
             DTSSGrid.Columns.Add("UnitOfRate", typeof(string));
-            DTSSGrid.Columns.Add("RateInOtherCurr", typeof(float));
-            DTSSGrid.Columns.Add("Rate", typeof(float));
+            DTSSGrid.Columns.Add("RateInOtherCurr", typeof(decimal));
+            DTSSGrid.Columns.Add("Rate", typeof(decimal));
             DTSSGrid.Columns.Add("AltUnit", typeof(string));
-            DTSSGrid.Columns.Add("AltQty", typeof(float));
-            DTSSGrid.Columns.Add("ItemWeight", typeof(float));
+            DTSSGrid.Columns.Add("AltQty", typeof(decimal));
+            DTSSGrid.Columns.Add("ItemWeight", typeof(decimal));
             DTSSGrid.Columns.Add("NoofPcs", typeof(int));
             DTSSGrid.Columns.Add("CustomerPartCode", typeof(string));
-            DTSSGrid.Columns.Add("MRP", typeof(float));
-            DTSSGrid.Columns.Add("OriginalMRP", typeof(float));
-            DTSSGrid.Columns.Add("SOPendQty", typeof(float));
+            DTSSGrid.Columns.Add("MRP", typeof(decimal));
+            DTSSGrid.Columns.Add("OriginalMRP", typeof(decimal));
+            DTSSGrid.Columns.Add("SOPendQty", typeof(decimal));
             DTSSGrid.Columns.Add("AltSOPendQty", typeof(int));
-            DTSSGrid.Columns.Add("DisountPer", typeof(float));
-            DTSSGrid.Columns.Add("DiscountAmt", typeof(float));
+            DTSSGrid.Columns.Add("DisountPer", typeof(decimal));
+            DTSSGrid.Columns.Add("DiscountAmt", typeof(decimal));
             DTSSGrid.Columns.Add("ItemSize", typeof(string));
             DTSSGrid.Columns.Add("Itemcolor", typeof(string));
             DTSSGrid.Columns.Add("StoreId", typeof(int));
-            DTSSGrid.Columns.Add("ItemAmount", typeof(float));
+            DTSSGrid.Columns.Add("ItemAmount", typeof(decimal));
             DTSSGrid.Columns.Add("AdviceNo", typeof(string));
             DTSSGrid.Columns.Add("AdviseEntryId", typeof(int));
             DTSSGrid.Columns.Add("AdviceYearCode", typeof(int));
@@ -2207,12 +2207,12 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("ProcessId", typeof(int));
             DTSSGrid.Columns.Add("batchno", typeof(string));
             DTSSGrid.Columns.Add("uniquebatchno", typeof(string));
-            DTSSGrid.Columns.Add("LotStock", typeof(float));
-            DTSSGrid.Columns.Add("TotalStock", typeof(float));
+            DTSSGrid.Columns.Add("LotStock", typeof(decimal));
+            DTSSGrid.Columns.Add("TotalStock", typeof(decimal));
             DTSSGrid.Columns.Add("AgainstProdPlanNo", typeof(string));
             DTSSGrid.Columns.Add("AgainstProdPlanYearCode", typeof(int));
             DTSSGrid.Columns.Add("AgaisntProdPlanDate", typeof(string));
-            DTSSGrid.Columns.Add("GSTPer", typeof(float));
+            DTSSGrid.Columns.Add("GSTPer", typeof(decimal));
             DTSSGrid.Columns.Add("GSTType", typeof(string));
             DTSSGrid.Columns.Add("PacketsDetail", typeof(string));
             DTSSGrid.Columns.Add("OtherDetail", typeof(string));
@@ -2825,12 +2825,12 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("TxItemCode", typeof(int));
             Table.Columns.Add("TxTaxType", typeof(int));
             Table.Columns.Add("TxAccountCode", typeof(int));
-            Table.Columns.Add("TxPercentg", typeof(float));
+            Table.Columns.Add("TxPercentg", typeof(decimal));
             Table.Columns.Add("TxAdInTxable", typeof(string));
             Table.Columns.Add("TxRoundOff", typeof(string));
-            Table.Columns.Add("TxAmount", typeof(float));
+            Table.Columns.Add("TxAmount", typeof(decimal));
             Table.Columns.Add("TxRefundable", typeof(string));
-            Table.Columns.Add("TxOnExp", typeof(float));
+            Table.Columns.Add("TxOnExp", typeof(decimal));
             Table.Columns.Add("TxRemark", typeof(string));
 
             foreach (TaxModel Item in TaxDetailList)
