@@ -1024,7 +1024,7 @@ namespace eTactWeb.Data.DAL
                             _ResponseResult = new ResponseResult()
                             {
                                 StatusCode = !oDataTable.Columns.Contains("StatusCode") ? HttpStatusCode.OK : (HttpStatusCode)oDataTable.Rows[0]["StatusCode"],
-                                StatusText = !oDataTable.Columns.Contains("StatusText") ? "Error" : oDataTable.Rows[0]["StatusText"].ToString(),
+                                StatusText = !oDataTable.Columns.Contains("StatusText") ? "Success" : oDataTable.Rows[0]["StatusText"].ToString(),
                                 Result = oDataTable
                             };
                         }
