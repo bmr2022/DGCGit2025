@@ -2364,6 +2364,17 @@ public class ItemMasterController : Controller
             // validations
             var validItemServAssetsOptions = new List<string> { "Item", "Service", "Asset" };
 
+            // Track duplicate PartCodes
+            HashSet<string> processedPartCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            // Get Excel column name mapped to PartCode
+            string partCodeExcelColumn = null;
+
+            if (request.Mapping != null && request.Mapping.ContainsKey("PartCode"))
+            {
+                partCodeExcelColumn = request.Mapping["PartCode"];
+            }
+
             // For each row on this page
             foreach (var excelRow in paginatedData)
             {
@@ -2371,7 +2382,34 @@ public class ItemMasterController : Controller
                 DataRow row = dt.NewRow();
                 bool rowHasError = false;
                 // Save part code to show in errors
-                string partCodeValue = excelRow.ContainsKey("PartCode") ? excelRow["PartCode"]?.ToString() : "";
+                //string partCodeValue = excelRow.ContainsKey("PartCode") ? excelRow["PartCode"]?.ToString() : "";
+                string partCodeValue = "";
+
+                if (!string.IsNullOrEmpty(partCodeExcelColumn) &&
+                    excelRow.ContainsKey(partCodeExcelColumn))
+                {
+                    partCodeValue = excelRow[partCodeExcelColumn]?.ToString()?.Trim();
+                }
+
+                // 🔴 Duplicate PartCode check
+                if (!string.IsNullOrEmpty(partCodeValue))
+                {
+                    if (processedPartCodes.Contains(partCodeValue))
+                    {
+                        rowHasError = true;
+
+                        failedRows.Add(new ExcelRowError
+                        {
+                            PartCode = partCodeValue,
+                            Message = $"Duplicate PartCode found in Excel:{partCodeValue}"
+                        });
+
+                        rowNumber++;
+                        continue; // skip duplicate row
+                    }
+
+                    processedPartCodes.Add(partCodeValue);
+                }
 
                 // mapping keys are DB columns; mapping values are Excel column names
                 if (request.Mapping != null)
