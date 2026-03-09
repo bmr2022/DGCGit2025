@@ -46,8 +46,29 @@ namespace eTactwebAccounts.Controllers
             webReport.Report.Clear();
             webReport.Report.Dispose();
             webReport.Report = new Report();
+            string ReportName = "";
+            var ReportNamepara = _IDataLogic.GetReportName();
+            if (ReportNamepara != null &&
+                ReportNamepara.Result != null &&
+                ReportNamepara.Result.Result != null &&
+                ReportNamepara.Result.Result.Rows.Count > 0)
+            {
+                DataRow row = ReportNamepara.Result.Result.Rows[0];
+                ReportName = row["CashPaymentVoucherPrintReportName"]?.ToString() ?? "";
+            }
+            webReport.Report.Clear();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+            if (!string.IsNullOrEmpty(ReportName))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName + ".frx");
+            }
 
-            webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
+            }
+            // webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
             my_connection_string = _connectionStringService.GetConnectionString();
             //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;

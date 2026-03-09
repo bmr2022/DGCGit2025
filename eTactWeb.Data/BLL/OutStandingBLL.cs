@@ -12,7 +12,7 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL
 {
-    public class OutStandingBLL:IOutStanding
+    public class OutStandingBLL : IOutStanding
     {
         private OutStandingDAL _OutStandingDAL;
         private readonly IDataLogic _DataLogicDAL;
@@ -25,7 +25,7 @@ namespace eTactWeb.Data.BLL
 
         public async Task<ResponseResult> GetPartyName(string outstandingType, string TillDate, int? GroupCode)
         {
-            return await _OutStandingDAL.GetPartyName( outstandingType,TillDate, GroupCode);
+            return await _OutStandingDAL.GetPartyName(outstandingType, TillDate, GroupCode);
         }
         public async Task<ResponseResult> GetGroupName(string outstandingType, string TillDate)
         {
@@ -41,12 +41,13 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<OutStandingModel> GetVoucherList(int AccountCode, string VoucherNo, string VoucherType, int VoucherYearCode, int CurrentYear)
         {
-            return await _OutStandingDAL.GetVoucherList(AccountCode,VoucherNo, VoucherType, VoucherYearCode, CurrentYear);
+            return await _OutStandingDAL.GetVoucherList(AccountCode, VoucherNo, VoucherType, VoucherYearCode, CurrentYear);
         }
 
-        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate,int? GroupName,string[] AccountNameList,int AccountCode,string ShowOnlyApprovedBill,bool ShowZeroBal, string VoucherNo, string VoucherType)
+        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate, int? GroupName, string[] AccountNameList, int AccountCode, int DaysforSlot, int Slab1,
+    int Slab2, int Slab3, int Slab4, int Slab5, int Slab6, string ShowOnlyApprovedBill, bool ShowZeroBal, string VoucherNo, string VoucherType)
         {
-            return await _OutStandingDAL.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList,AccountCode, ShowOnlyApprovedBill, ShowZeroBal, VoucherNo,VoucherType);
+            return await _OutStandingDAL.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList, AccountCode, DaysforSlot, Slab1, Slab2, Slab3, Slab4, Slab5, Slab6, ShowOnlyApprovedBill, ShowZeroBal, VoucherNo, VoucherType);
         }
     }
 }

@@ -120,6 +120,41 @@
                                     </select>
                                 </div>
 
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ageingFields " style="display:none;">
+                                    <label asp-for="DaysforSlot" class="form-label">Freq Of Days</label>
+                                    <input asp-for="DaysforSlot" type="number" class="form-control" placeholder="Enter Days" />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ageingFields" style="display:none;">
+                                    <label asp-for="Slab1" class="form-label">Slab1</label>
+                                    <input asp-for="Slab1" type="number" class="form-control" placeholder="Enter Days" />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12  ageingFields" style="display:none;">
+                                    <label asp-for="Slab2" class="form-label">Slab2</label>
+                                    <input asp-for="Slab2" type="number" class="form-control" placeholder="Enter Days" />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ageingFields" style="display:none;">
+                                    <label asp-for="Slab3" class="form-label">Slab3</label>
+                                    <input asp-for="Slab3" type="number" class="form-control" placeholder="Enter Days" />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ageingFields" style="display:none;">
+                                    <label asp-for="Slab4" class="form-label">Slab4</label>
+                                    <input asp-for="Slab4" type="number" class="form-control" placeholder="Enter Days" />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ageingFields" style="display:none;">
+                                    <label asp-for="Slab5" class="form-label">Slab5</label>
+                                    <input asp-for="Slab5" type="number" class="form-control" placeholder="Enter Days" />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ageingFields" style="display:none;">
+                                    <label asp-for="Slab6" class="form-label">Slab6</label>
+                                    <input asp-for="Slab6" type="number" class="form-control" placeholder="Enter Days" />
+                                </div>
+
                                 <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
                                     <label class="form-label"></label>
                                     <div class="row" style="border: 2px solid #ccc;padding-top:5px; margin:0px;width:190px">
@@ -200,26 +235,25 @@
                                                     <partial name="_OutStandingGrid" />
                                                 </div>
                                             </div>
-                                            <div class="d-flex justify-content-end mt-2 " style="margin-right:400px;">
-                                                @*   *@
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:150px;">
-                                                    <label class="form-label">Total Dr Amt</label>
-                                                    <input id="totDr" class="form-control" readonly />
-                                                </div>
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:150px;margin-left:10px;">
-                                                    <label class="form-label">Total Cr Amt</label>
-                                                    <input id="totCr" class="form-control" readonly />
-                                                </div>
-
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:150px;">
-                                                    <label class="form-label">Total Bill Amt</label>
-                                                    <input id="totBillAmt" class="form-control" readonly />
-                                                </div>
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:150px;">
-                                                    <label class="form-label">Total Pending Amt</label>
-                                                    <input id="totPenAmt" class="form-control" readonly />
-                                                </div>
+                                            @*   <div class="d-flex justify-content-end mt-2 " style="margin-right:400px;">
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:150px;">
+                                            <label class="form-label">Total Dr Amt</label>
+                                            <input id="totDr" class="form-control" readonly />
                                             </div>
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:150px;margin-left:10px;">
+                                            <label class="form-label">Total Cr Amt</label>
+                                            <input id="totCr" class="form-control" readonly />
+                                            </div>
+
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:150px;">
+                                            <label class="form-label">Total Bill Amt</label>
+                                            <input id="totBillAmt" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:150px;">
+                                            <label class="form-label">Total Pending Amt</label>
+                                            <input id="totPenAmt" class="form-control" readonly />
+                                            </div>
+                                            </div> *@
                                             <div class="modal fade" id="popupModal" tabindex="-1" aria-hidden="true">
                                                 <div class="modal-dialog modal-xl">
                                                     <!-- xl for wide table -->
@@ -251,10 +285,28 @@
 @section Scripts
 {
     <script>
+        function toggleAgeingFields() {
+            var value = $("#ReportType").val();
 
+            if (value === "Receive Outstanding Ageing" || value === "Payable Outstanding Ageing") {
+                $(".ageingFields").show();
+            } else {
+                $(".ageingFields").hide();
+            }
+        }
         $(document).ready(function () {
 
-            // Initialize datepicker
+
+            toggleAgeingFields();
+
+            allowPositiveNumberJQ('#Slab1');
+            allowPositiveNumberJQ('#Slab2');
+            allowPositiveNumberJQ('#Slab3');
+            allowPositiveNumberJQ('#Slab4');
+            allowPositiveNumberJQ('#Slab5');
+            allowPositiveNumberJQ('#Slab6');
+            allowPositiveNumberJQ('#DaysforSlot');
+
             var currentDate = new Date();
             $('#TillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", currentDate);
 
@@ -290,6 +342,7 @@
 
             // Handle ReportType change
             $("#ReportType").change(function () {
+                toggleAgeingFields();
                 handleReportTypeChange();
             });
 
@@ -299,6 +352,36 @@
                 if (reportTypesToCheck.includes(reportType)) {
                     $("#Group_Ledger").val("Ledger");
                 }
+            }
+
+
+
+            if (@Model.AccountCode> 0 && '@Model.ReportType' == 'Receive Outstanding') {
+                var accountCode = '@(Model?.AccountCode ?? 0)';
+                var reportType = '@(Model?.ReportType ?? "")';
+
+                if (parseInt(accountCode) > 0 && reportType === "Receive Outstanding") {
+
+                    $("#ReportType").val(reportType).trigger("change");
+                    $("#PartyNameSingle").val(accountCode).trigger("change");
+
+                    // GetDetailsData();
+                }
+
+            }
+
+            if (@Model.AccountCode> 0 && '@Model.ReportType' == 'Payable Outstanding') {
+                var accountCode = '@(Model?.AccountCode ?? 0)';
+                var reportType = '@(Model?.ReportType ?? "")';
+
+                if (parseInt(accountCode) > 0 && reportType === "Payable Outstanding") {
+
+                    $("#ReportType").val(reportType).trigger("change");
+                    $("#PartyNameSingle").val(accountCode).trigger("change");
+
+                    // GetDetailsData();
+                }
+
             }
 
             // Fetch details
@@ -409,7 +492,16 @@
             selectedPartyValues = [];
             $('#PartyNameSingle').val(0);
         });
-
+        $("#DaysforSlot").on("input", function () {
+            if ($(this).val() > 0) {
+                $("#Slab1,#Slab2,#Slab3,#Slab4,#Slab5,#Slab6").val(0);
+            }
+        });
+        $("#Slab1,#Slab2,#Slab3,#Slab4,#Slab5,#Slab6").on("input", function () {
+            if ($(this).val() > 0) {
+                $("#DaysforSlot").val(0);
+            }
+        });
         function GetDetailDataForPartyWise(td) {
             // 🔹 Save state before anything changes
             const filters = {
@@ -656,7 +748,42 @@
         }
 
         function GetDetailsData() {
-             
+            var slab1 = parseInt($("#Slab1").val()) || 0;
+            var slab2 = parseInt($("#Slab2").val()) || 0;
+            var slab3 = parseInt($("#Slab3").val()) || 0;
+            var slab4 = parseInt($("#Slab4").val()) || 0;
+            var slab5 = parseInt($("#Slab5").val()) || 0;
+            var slab6 = parseInt($("#Slab6").val()) || 0;
+            var daysforSlot = parseInt($("#DaysforSlot").val()) || 0;
+
+            if (daysforSlot == 0) {
+
+                if (slab2 > 0 && slab2 <= slab1) {
+                    $.notify("Slab2 must be greater than Slab1", "error");
+                    return false;
+                }
+
+                if (slab3 > 0 && slab3 <= slab2) {
+                    $.notify("Slab3 must be greater than Slab2", "error");
+                    return false;
+                }
+
+                if (slab4 > 0 && slab4 <= slab3) {
+                    $.notify("Slab4 must be greater than Slab3", "error");
+                    return false;
+                }
+
+                if (slab5 > 0 && slab5 <= slab4) {
+                    $.notify("Slab5 must be greater than Slab4", "error");
+                    return false;
+                }
+
+                if (slab6 > 0 && slab6 <= slab5) {
+                    $.notify("Slab6 must be greater than Slab5", "error");
+                    return false;
+                }
+
+            }
             var OutStandingType = $('#ReportType').val();
             var ShowZeroBal = $('#ShowZeroBal').is(':checked');
             var TillDate = $('#TillDate').val();
@@ -682,7 +809,13 @@
             var ShowOnlyApprovedBill = $("input[name='Status']:checked").val();
             var VoucherNo = $('#VoucherNo').val();
             var VoucherType = $('#VoucherType').val();
-
+            var DaysforSlot = $('#DaysforSlot').val();
+            var Slab1 = $("#Slab1").val();
+            var Slab2 = $("#Slab2").val();
+            var Slab3 = $("#Slab3").val();
+            var Slab4 = $("#Slab4").val();
+            var Slab5 = $("#Slab5").val();
+            var Slab6 = $("#Slab6").val();
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetDetailsData", "OutStanding")',
@@ -693,6 +826,13 @@
                     "GroupName": GroupName,
                     "AccountNameList": AccountNameList,
                     "AccountCode": AccountCode,
+                    "DaysforSlot": DaysforSlot,
+                    "Slab1": Slab1,
+                    "Slab2": Slab2,
+                    "Slab3": Slab3,
+                    "Slab4": Slab4,
+                    "Slab5": Slab5,
+                    "Slab6": Slab6,
                     "ShowOnlyApprovedBill": ShowOnlyApprovedBill,
                     "ShowZeroBal": ShowZeroBal,
                     "VoucherNo": VoucherNo,

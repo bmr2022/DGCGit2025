@@ -25,6 +25,10 @@ public class DataLogicBLL : IDataLogic
         _httpContextAccessor = httpContextAccessor;
     }
 
+    public async Task<ResponseResult> GetReportName()
+    {
+        return await _DataLogicDAL.GetReportName();
+    }
     public IList<TextValue> AutoComplete(string Flag, string Column,string FromDate,string ToDate,int ItemCode,int StoreId)
     {
         return _DataLogicDAL.AutoComplete(Flag, Column,FromDate,ToDate,ItemCode,StoreId);

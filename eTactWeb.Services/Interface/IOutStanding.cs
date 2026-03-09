@@ -10,14 +10,15 @@ namespace eTactWeb.Services.Interface
 {
     public interface IOutStanding
     {
-        Task<ResponseResult> GetPartyName(string outstandingType,string TillDate, int? GroupCode);
+        Task<ResponseResult> GetPartyName(string outstandingType, string TillDate, int? GroupCode);
 
         Task<ResponseResult> GetGroupName(string outstandingType, string TillDate);
 
         Task<ResponseResult> GetVoucherNo(int CurrentYear);
 
         Task<ResponseResult> GetVoucherType(int CurrentYear);
-        public Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate,int? GroupName,string[] AccountNameList,int AccountCode,string ShowOnlyApprovedBill, bool ShowZeroBal, string VoucherNo, string VoucherType);
+        public Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate, int? GroupName, string[] AccountNameList, int AccountCode, int DaysforSlot, int Slab1,
+    int Slab2, int Slab3, int Slab4, int Slab5, int Slab6, string ShowOnlyApprovedBill, bool ShowZeroBal, string VoucherNo, string VoucherType);
 
         Task<OutStandingModel> GetVoucherList(int AccountCode, string VoucherNo, string VoucherType, int VoucherYearCode, int CurrentYear);
     }

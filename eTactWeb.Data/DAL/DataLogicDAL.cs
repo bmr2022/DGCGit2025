@@ -51,6 +51,27 @@ namespace eTactWeb.Data.DAL
         //private ResponseResult? _ResponseResult { get; set; }
         private string? DBConnectionString { get; }
 
+        public async Task<ResponseResult> GetReportName()
+        {
+            var Result = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+                Result = await ExecuteDataTable("AccSpVoucherEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return Result;
+        }
+
         public IList<TextValue> AutoComplete(string Flag, string Column, string FromDate, string ToDate, int ItemCode, int StoreId)
         {
             List<TextValue>? List = new List<TextValue>();

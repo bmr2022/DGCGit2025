@@ -15,6 +15,7 @@ namespace eTactWeb.Services.Interface
         Task<object> ExecuteScalar(string SPName, IList<dynamic> SQLParams);
 
         string GetDBConnection();
+        Task<ResponseResult> GetReportName();
 
         Task<DataSet> GetDropDownList(string Flag);
 

@@ -47,11 +47,28 @@ namespace eTactWeb.Controllers
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
             var webReport = new WebReport();
+            string ReportName = "";
+            var ReportNamepara = _IDataLogic.GetReportName();
+            if (ReportNamepara != null &&
+                ReportNamepara.Result != null &&
+                ReportNamepara.Result.Result != null &&
+                ReportNamepara.Result.Result.Rows.Count > 0)
+            {
+                DataRow row = ReportNamepara.Result.Result.Rows[0];
+                ReportName = row["BankRecVoucherPrintReportName"]?.ToString() ?? "";
+            }
             webReport.Report.Clear();
             webReport.Report.Dispose();
             webReport.Report = new Report();
+            if (!string.IsNullOrEmpty(ReportName))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName + ".frx");
+            }
 
-            webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
+            }
             my_connection_string = _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";

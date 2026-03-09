@@ -28,13 +28,16 @@ namespace eTactWeb.Controllers
 
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> OutStanding()
+        public async Task<ActionResult> OutStanding(int Accountcode = 0, string ReportType = "")
         {
             var MainModel = new OutStandingModel();
             MainModel.OutStandingGrid = new List<OutStandingModel>();
             //MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.TillDate = HttpContext.Session.GetString("TillDate");
             MainModel.currYearcode = Convert.ToInt32(HttpContext.Session.GetString("currYearcode"));
+            MainModel.AccountCode = Accountcode;
+            MainModel.ReportType = ReportType;
+
 
             return View(MainModel); // Pass the model with old data to the view
         }
@@ -74,10 +77,11 @@ namespace eTactWeb.Controllers
             return PartialView("_OutStandingPopUpData", model);
         }
 
-        public async Task<IActionResult> GetDetailsData( string outstandingType, string TillDate, int? GroupName, string[] AccountNameList,  int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal, string VoucherNo, string VoucherType)
+        public async Task<IActionResult> GetDetailsData(string outstandingType, string TillDate, int? GroupName, string[] AccountNameList, int AccountCode, int DaysforSlot, int Slab1,
+    int Slab2, int Slab3, int Slab4, int Slab5, int Slab6, string ShowOnlyApprovedBill, bool ShowZeroBal, string VoucherNo, string VoucherType)
         {
             var model = new OutStandingModel();
-            model = await _OutStanding.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList, AccountCode, ShowOnlyApprovedBill, ShowZeroBal, VoucherNo, VoucherType);
+            model = await _OutStanding.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList, AccountCode, DaysforSlot, Slab1, Slab2, Slab3, Slab4, Slab5, Slab6, ShowOnlyApprovedBill, ShowZeroBal, VoucherNo, VoucherType);
             if (outstandingType == "Receive Outstanding Ageing" || outstandingType == "Payable Outstanding Ageing")
             {
                 return PartialView("_OutStandingAgeingGrid", model);
