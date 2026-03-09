@@ -74,7 +74,7 @@ namespace eTactwebAccounts.Controllers
             }
             //webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
             my_connection_string = _connectionStringService.GetConnectionString();
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("vouchernameparam", VoucherName);
