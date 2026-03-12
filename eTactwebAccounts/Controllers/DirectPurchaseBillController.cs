@@ -2386,11 +2386,27 @@ namespace eTactWeb.Controllers
                                             ? locationValue
                                             : (!string.IsNullOrEmpty(Rackid) ? Rackid : null);
 
-                        if (string.IsNullOrEmpty(location))
+                        var LocationParameter = IDirectPurchaseBill.GetFeatureOption();
+
+                        if (LocationParameter != null &&
+                            LocationParameter.Result != null &&
+                            LocationParameter.Result.Result != null &&
+                            LocationParameter.Result.Result.Rows.Count > 0)
                         {
-                            errorList.Add($"Row {row} → Location missing for partcode :{partText} qty : {qtyValue} Rate:{rateValue}");
-                            continue;
+                            DataRow Locationrow = LocationParameter.Result.Result.Rows[0];
+                            var isLocationMandatory = Locationrow["HideShowDirectPurchaseBillLocation"]?.ToString() ?? "";
+
+                             if (isLocationMandatory =="Y")
+                             {
+                                 errorList.Add($"Row {row} → Location missing for partcode :{partText} qty : {qtyValue} Rate:{rateValue}");
+                                 continue;
+                             }
                         }
+                        //    if (string.IsNullOrEmpty(location))
+                        //{
+                        //    errorList.Add($"Row {row} → Location missing for partcode :{partText} qty : {qtyValue} Rate:{rateValue}");
+                        //    continue; 
+                        //}
 
                         if (string.IsNullOrEmpty(itemName)) itemName = item_name;
 

@@ -1783,6 +1783,10 @@ namespace eTactWeb.Data.DAL
                             CostCenterId = row["CostCenterid"] != DBNull.Value ? Convert.ToInt32(row["CostCenterid"]) : 0,
                             Group_Code = row["ItemGroupCode"] != DBNull.Value ? Convert.ToInt32(row["ItemGroupCode"]) : 0,
                             Group_name = row["Group_name"].ToString() ?? "",
+                            ItemGroupName = row["Group_name"]?.ToString(),
+                            ItemLocation = row["ItemLocation"]?.ToString(),
+                           VehicleNo = row["usedinMachorVehicle"]?.ToString(),
+
                         });
                     }
                     SaleBillGrid = SaleBillGrid.OrderBy(item => item.SeqNo).ToList();

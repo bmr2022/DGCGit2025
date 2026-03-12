@@ -803,21 +803,34 @@
             var formattedDate1 = $('#FromDate').val();
             var formattedDate2 = $('#ToDate').val();
 
+            if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V') {
+
+
+
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", $('#EntryDate').val());
+                $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", $('#VoucherDate').val());
+                /* $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }); */
+
+            }
+
 
             $('#EntryDate').on('change', function () {
                 var entryDateVal = $(this).val(); // Get selected EntryDate
                 $('#VoucherDate').datepicker("setDate", entryDateVal); // Set same date in VoucherDate
                 FillEntryID();
-                $('#divBankReceiptDetail').empty()
+                /* $('#divBankReceiptDetail').empty() */
             });
             $('#VoucherDate').on('change', function () {
                 var voucherDateVal = $(this).val(); // Get selected EntryDate
                 $('#EntryDate').datepicker("setDate", voucherDateVal); // Set same date in VoucherDate
                 FillEntryID();
-                $('#divBankReceiptDetail').empty()
+                /* $('#divBankReceiptDetail').empty() */
             });
+
             $('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
             $('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
+
             BackDateEntryAllowed();
 
             var currentDate = new Date();

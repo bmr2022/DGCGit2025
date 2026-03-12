@@ -123,11 +123,12 @@
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
+                dataType: "json",
                 async: false,
-                success: function (data) {
+                success: function (obj) {
 
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
+                    if (obj != null) {
+                       // var obj = $.parseJSON(data);
                         if (obj.Result.Table.length == 0) {
                             var rowCounter = $('#divDashboardGrid tr').length;
                             for (var i = 0; i < rowCounter; i++) {

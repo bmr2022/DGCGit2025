@@ -148,8 +148,8 @@ namespace eTactwebAccounts.Controllers
             MainModel.ActualEntryBy = HttpContext.Session.GetString("EmpName");
             MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+            //MainModel.FromDate = HttpContext.Session.GetString("FromDate");
+            //MainModel.ToDate = HttpContext.Session.GetString("ToDate");
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {
@@ -169,6 +169,9 @@ namespace eTactwebAccounts.Controllers
                 MainModel.UpdatedByEmp = HttpContext.Session.GetString("EmpName");
                 MainModel.UpdatedOn = DateTime.Now;
             }
+            MainModel.FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+            MainModel.ToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
+
 
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;

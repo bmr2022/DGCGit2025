@@ -41,6 +41,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Org.BouncyCastle.Crypto.Engines;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml;
+using PdfSharp.Drawing.BarCodes;
 
 
 
@@ -579,185 +580,217 @@ namespace eTactWeb.Controllers
 
                 if (Result != null)
                 {
-                    if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                    try
                     {
-                        ViewBag.isSuccess = true;
-                        TempData["200"] = "200";
-                        var model1 = new SaleBillModel();
-                        TempData["ShowEinvoicePopup"] = "true";
-                        TempData["SaleBillModelJson"] = JsonConvert.SerializeObject(model1);
-                        model1.adjustmentModel = model1.adjustmentModel ?? new AdjustmentModel();
-
-                        model1.FinFromDate = HttpContext.Session.GetString("FromDate");
-                        model1.FinToDate = HttpContext.Session.GetString("ToDate");
-                        var yearCodeStr = HttpContext.Session.GetString("YearCode");
-                        model1.SaleBillYearCode = !string.IsNullOrEmpty(yearCodeStr) ? Convert.ToInt32(yearCodeStr) : 0;
-                        model1.CC = HttpContext.Session.GetString("Branch");
-                        var uidStr = HttpContext.Session.GetString("UID");
-                        model1.CreatedBy = !string.IsNullOrEmpty(uidStr) ? Convert.ToInt32(uidStr) : 0;
-                        //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                        model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        HttpContext.Session.Remove("SaleBillListItem");
-                        TempData["ShowEinvoicePopup"] = "true";
-                        if (ShouldEinvoice == "true")
+                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
                         {
-                            return Json(new
+                            ViewBag.isSuccess = true;
+                            TempData["200"] = "200";
+                            var model1 = new SaleBillModel();
+                            TempData["ShowEinvoicePopup"] = "true";
+                            TempData["SaleBillModelJson"] = JsonConvert.SerializeObject(model1);
+                            model1.adjustmentModel = model1.adjustmentModel ?? new AdjustmentModel();
+
+                            model1.FinFromDate = HttpContext.Session.GetString("FromDate");
+                            model1.FinToDate = HttpContext.Session.GetString("ToDate");
+                            var yearCodeStr = HttpContext.Session.GetString("YearCode");
+                            model1.SaleBillYearCode = !string.IsNullOrEmpty(yearCodeStr) ? Convert.ToInt32(yearCodeStr) : 0;
+                            model1.CC = HttpContext.Session.GetString("Branch");
+                            var uidStr = HttpContext.Session.GetString("UID");
+                            model1.CreatedBy = !string.IsNullOrEmpty(uidStr) ? Convert.ToInt32(uidStr) : 0;
+                            //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                            model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                            HttpContext.Session.Remove("SaleBillListItem");
+                            TempData["ShowEinvoicePopup"] = "true";
+                            if (ShouldEinvoice == "true")
                             {
-                                status = "Success",
-                                EntryId = model.SaleBillEntryId,
-                                InvoiceNo = model.SaleBillNo,
-                                YearCode = model.SaleBillYearCode,
-                                saleBillType = model.SupplyType,
-                                customerPartCode = model.PartCode,
-                                transporterName = model.TransporterName,
-                                vehicleNo = model.vehicleNo,
-                                distanceKM = model.DistanceKM,
-                                EntrybyId = model.EntryByempId,
-                                MachineName = model.MachineName,
-                                AccountCode = model.AccountCode
+                                return Json(new
+                                {
+                                    status = "Success",
+                                    EntryId = model.SaleBillEntryId,
+                                    InvoiceNo = model.SaleBillNo,
+                                    YearCode = model.SaleBillYearCode,
+                                    saleBillType = model.SupplyType,
+                                    customerPartCode = model.PartCode,
+                                    transporterName = model.TransporterName,
+                                    vehicleNo = model.vehicleNo,
+                                    distanceKM = model.DistanceKM,
+                                    EntrybyId = model.EntryByempId,
+                                    MachineName = model.MachineName,
+                                    AccountCode = model.AccountCode
 
-                            });
+                                });
+                            }
+
+                            HttpContext.Session.Remove("KeySaleBillGrid");
+                            HttpContext.Session.Remove("SaleBillModel");
+                            //return RedirectToAction(nameof(SaleInvoice), new { Id = 0, Mode = "", YC = 0 });
                         }
-
-                        HttpContext.Session.Remove("KeySaleBillGrid");
-                        HttpContext.Session.Remove("SaleBillModel");
-                        //return RedirectToAction(nameof(SaleInvoice), new { Id = 0, Mode = "", YC = 0 });
-                    }
-                    else if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
-                    {
-                        ViewBag.isSuccess = true;
-                        TempData["202"] = "202";
-
-                        var model1 = new SaleBillModel();
-
-                        model1.adjustmentModel = new AdjustmentModel();
-                        model1.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
-                        model1.FinFromDate = HttpContext.Session.GetString("FromDate");
-                        model1.FinToDate = HttpContext.Session.GetString("ToDate");
-                        model1.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                        model1.CC = HttpContext.Session.GetString("Branch");
-                        //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                        model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-
-                        ViewBag.ShowEinvoicePrompt = true;
-                        //if (ShouldPrint == "true")
-                        //{
-                        //    return Json(new
-                        //    {
-                        //        status = "Success", // ✅ Add this!
-                        //        EntryId = model1.SaleBillEntryId,
-                        //        YearCode = model1.SaleBillYearCode,
-                        //        InvoiceNo = model1.SaleBillNo,
-                        //        saleBillType = model1.SupplyType,
-                        //        customerPartCode = "" // optional
-                        //    });
-                        //}
-
-                        //  return View(model1);
-                        HttpContext.Session.Remove("SaleBillListItem");
-                        if (ShouldEinvoice == "true")
+                        else if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
-                            return Json(new
+                            ViewBag.isSuccess = true;
+                            TempData["202"] = "202";
+
+                            var model1 = new SaleBillModel();
+
+                            model1.adjustmentModel = new AdjustmentModel();
+                            model1.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
+                            model1.FinFromDate = HttpContext.Session.GetString("FromDate");
+                            model1.FinToDate = HttpContext.Session.GetString("ToDate");
+                            model1.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                            model1.CC = HttpContext.Session.GetString("Branch");
+                            //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                            model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
+                            ViewBag.ShowEinvoicePrompt = true;
+                            //if (ShouldPrint == "true")
+                            //{
+                            //    return Json(new
+                            //    {
+                            //        status = "Success", // ✅ Add this!
+                            //        EntryId = model1.SaleBillEntryId,
+                            //        YearCode = model1.SaleBillYearCode,
+                            //        InvoiceNo = model1.SaleBillNo,
+                            //        saleBillType = model1.SupplyType,
+                            //        customerPartCode = "" // optional
+                            //    });
+                            //}
+
+                            //  return View(model1);
+                            HttpContext.Session.Remove("SaleBillListItem");
+                            if (ShouldEinvoice == "true")
                             {
-                                status = "Success",
-                                EntryId = model.SaleBillEntryId,
-                                InvoiceNo = model.SaleBillNo,
-                                YearCode = model.SaleBillYearCode,
-                                saleBillType = model.SupplyType,
-                                customerPartCode = model.PartCode,
-                                transporterName = model.TransporterName,
-                                vehicleNo = model.vehicleNo,
-                                distanceKM = model.DistanceKM,
-                                EntrybyId = model.EntryByempId,
-                                MachineName = model.MachineName,
-                                AccountCode = model.AccountCode
+                                return Json(new
+                                {
+                                    status = "Success",
+                                    EntryId = model.SaleBillEntryId,
+                                    InvoiceNo = model.SaleBillNo,
+                                    YearCode = model.SaleBillYearCode,
+                                    saleBillType = model.SupplyType,
+                                    customerPartCode = model.PartCode,
+                                    transporterName = model.TransporterName,
+                                    vehicleNo = model.vehicleNo,
+                                    distanceKM = model.DistanceKM,
+                                    EntrybyId = model.EntryByempId,
+                                    MachineName = model.MachineName,
+                                    AccountCode = model.AccountCode
 
-                            });
+                                });
 
+                            }
+
+                            HttpContext.Session.Remove("KeySaleBillGrid");
+                            HttpContext.Session.Remove("SaleBillModel");
                         }
-
-                        HttpContext.Session.Remove("KeySaleBillGrid");
-                        HttpContext.Session.Remove("SaleBillModel");
-                    }
-                   else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-                    {
-                        var errNum = Result.Result.Message.ToString().Split(":")[1];
-                        model.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
-                        if (errNum == " 2627")
+                        else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
+                            var errNum = Result.Result.Message.ToString().Split(":")[1];
+                            model.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
+                            if (errNum == " 2627")
+                            {
+                                ViewBag.isSuccess = false;
+                                TempData["2627"] = "2627";
+                                _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+
+                                return View(model);
+                            }
+
                             ViewBag.isSuccess = false;
-                            TempData["2627"] = "2627";
+                            TempData["500"] = "500";
                             _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-
+                            HttpContext.Session.Remove("SaleBillListItem");
+                            // return View("Error", Result);
                             return View(model);
                         }
-
-                        ViewBag.isSuccess = false;
-                        TempData["500"] = "500";
-                        _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                        HttpContext.Session.Remove("SaleBillListItem");
-                        // return View("Error", Result);
-                        return View(model);
-                    }
-                    else if (Result.StatusText == "SaveValidation" )
-                    {
-                        ViewBag.isSuccess = false;
-                        var input = "";
-                        if (Result?.Result != null)
+                        else if (Result.StatusText == "SaveValidation")
                         {
-                            if (Result.Result is string str)
+                            ViewBag.isSuccess = false;
+                            var input = "";
+                            if (Result?.Result != null)
                             {
-                                input = str;
+                                if (Result.Result is string str)
+                                {
+                                    input = str;
+                                }
+                                else
+                                {
+                                    input = JsonConvert.SerializeObject(Result.Result);
+                                }
+
+                                TempData["ErrorMessage"] = input;
                             }
                             else
                             {
-                                input = JsonConvert.SerializeObject(Result.Result);
+                                TempData["500"] = "500";
                             }
 
-                            TempData["ErrorMessage"] = input;
+
+                            _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                            //model.IsError = "true";
+                            //return View("Error", Result);
+                            return Json(new
+                            {
+                                status = "Error",
+                                message = input,
+                                EntryId = model.SaleBillEntryId,
+                                InvoiceNo = model.SaleBillNo,
+                                YearCode = model.SaleBillYearCode,
+                                saleBillType = model.SupplyType,
+                                AccountCode = model.AccountCode
+
+                            });
                         }
-                        else
+                        else if (!string.IsNullOrEmpty(Result.StatusText))
                         {
-                            TempData["500"] = "500";
+                            // If SP returned a message (like adjustment error)
+                            TempData["ErrorMessage"] = Result.StatusText;
+                            return Json(new
+                            {
+                                status = "Error",
+                                message = Result.StatusText,
+                                EntryId = model.SaleBillEntryId,
+                                InvoiceNo = model.SaleBillNo,
+                                YearCode = model.SaleBillYearCode,
+                                saleBillType = model.SupplyType,
+                                AccountCode = model.AccountCode
+
+                            });
                         }
 
+                        HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
 
-                        _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                        //model.IsError = "true";
-                        //return View("Error", Result);
+                        var dt = Result?.Result;
+
+                        int? entryid = null;
+                        int? yearCode = null;
+
+                        if (dt != null && dt.Rows.Count > 0)
+                        {
+                            entryid = Convert.ToInt32(dt.Rows[0]["EntryId"]);
+                            yearCode = Convert.ToInt32(dt.Rows[0]["YearCode"]);
+                        }
+
                         return Json(new
                         {
-                            status = "Error",
-                            message = input,
-                            EntryId = model.SaleBillEntryId,
+                            status = "Success",
+                            EntryId = entryid,
                             InvoiceNo = model.SaleBillNo,
-                            YearCode = model.SaleBillYearCode,
+                            YearCode = yearCode,
                             saleBillType = model.SupplyType,
                             AccountCode = model.AccountCode
 
                         });
-                    }
-                    else if (!string.IsNullOrEmpty(Result.StatusText))
+                    }catch(Exception ex)
                     {
-                        // If SP returned a message (like adjustment error)
-                        TempData["ErrorMessage"] = Result.StatusText;
+                        _logger.LogError("\n \n ********** Exception in SaleInvoice Action ********** \n " + ex.ToString() + "\n \n");
                         return Json(new
                         {
                             status = "Error",
-                            message = Result.StatusText,
-                            EntryId = model.SaleBillEntryId,
-                            InvoiceNo = model.SaleBillNo,
-                            YearCode = model.SaleBillYearCode,
-                            saleBillType = model.SupplyType,
-                            AccountCode = model.AccountCode
-
+                            message = "An error occurred while processing the sale invoice. Please try again later."
                         });
                     }
-
-                    HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
                 }
                 HttpContext.Session.Remove("SaleBillListItem");
-                // return Json(new { status = "Success" });
                 return Json(new
                 {
                     status = "Success",
@@ -768,6 +801,8 @@ namespace eTactWeb.Controllers
                     AccountCode = model.AccountCode
 
                 });
+                // return Json(new { status = "Success" });
+
 
                 // return View();
             }

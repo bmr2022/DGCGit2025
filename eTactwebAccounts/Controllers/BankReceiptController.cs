@@ -102,8 +102,6 @@ namespace eTactWeb.Controllers
             MainModel.ActualEntryBy = HttpContext.Session.GetString("EmpName");
             MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            MainModel.FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
-            MainModel.ToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
 
             string encID = Request.Query["ID"].ToString();
             string encYC = Request.Query["YearCode"].ToString();
@@ -173,6 +171,9 @@ namespace eTactWeb.Controllers
                 MainModel.UpdatedByEmp = HttpContext.Session.GetString("EmpName");
                 MainModel.UpdatedOn = DateTime.Now;
             }
+            MainModel.FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+            MainModel.ToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
+
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
             MainModel.VoucherNoBack = VoucherNo;
