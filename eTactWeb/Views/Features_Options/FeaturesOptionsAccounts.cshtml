@@ -1,0 +1,337 @@
+﻿@model eTactWeb.DOM.Models.Features_OptionsModel;
+@{
+	ViewData["Title"] = "Sale Invoice setting";
+	Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+	.disabled-link {
+		pointer-events: none; /* Disables clicking */
+		color: gray; /* Makes it look disabled */
+		text-decoration: none; /* Removes underline */
+		cursor: not-allowed; /* Changes cursor */
+	}
+</style>
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+	<form asp-action="FeaturesOptionsAccounts" asp-controller="Features_Options" method="post" autocomplete="on" class="form-horizontal">
+		<div class="card-header card-headerBG text-light bg-gradient">
+			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+				<h5>
+					<strong> Accounts Setting </strong>
+					<span class="d-flex float-end" style="margin-top:-2px;">
+
+						<div class="row justify-content-between g-2">
+							<div class="col-auto">
+								<a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+									<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+									BACK
+								</a>
+							</div>
+
+							<div class="col-auto">
+								<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+									<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+									REFRESH
+								</a>
+							</div>
+							@if (Model.Mode == "U")
+							{
+
+								<div class="col-auto">
+									<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+										<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+										UPDATE
+									</button>
+								</div>
+							}
+
+							else
+							{
+								<div class="col-auto">
+									<button type="submit" class="btn btn-primary btn-sm submitBTN">
+										<i class="fa-solid fa-chevron-circle-right"></i>
+										Save
+									</button>
+								</div>
+							}
+
+						</div>
+					</span>
+				</h5>
+			</div>
+			<div class="card-body bg-light">
+				<div class="accordion shadow-lg" id="accordionItemCategory">
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="H_ItemCategoryDetail">
+							<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+									aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> Production Setting</strong>
+								<small class="p-3"></small>
+							</button>
+						</h2>
+						<div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+							<div class="accordion-body">
+								<div class="row">
+									<!-- Left Column -->
+									<div class="col-md-6">
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="DebitNotePrintReportName" asp-for="DebitNotePrintReportName" class="form-label me-2" style="width:280px; margin:0;">
+												DebitNotePrintReportName
+											</label>
+											<input class="form-control" asp-for="DebitNotePrintReportName" readonly style="margin:0;" />
+
+										</div>
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="PurchaseRejPrintReportName" asp-for="PurchaseRejPrintReportName" class="form-label me-2" style="width:280px; margin:0;">
+												PurchaseRejPrintReportName
+											</label>
+											<input class="form-control" asp-for="PurchaseRejPrintReportName" readonly style="margin:0;" />
+
+										</div>
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="CreditNotePrintReportName" asp-for="CreditNotePrintReportName" class="form-label me-2" style="width:280px; margin:0;">
+												CreditNotePrintReportName
+											</label>
+											<input class="form-control" asp-for="CreditNotePrintReportName" readonly style="margin:0;" />
+
+										</div>
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="SaleRejectionPrintReportName" asp-for="SaleRejectionPrintReportName" class="form-label me-2" style="width:280px; margin:0;">
+												SaleRejectionPrintReportName
+											</label>
+											<input class="form-control" asp-for="SaleRejectionPrintReportName" readonly style="margin:0;" />
+
+										</div>
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="BankRecVoucherPrintReportName" asp-for="BankRecVoucherPrintReportName" class="form-label me-2" style="width:280px; margin:0;">
+												BankRecVoucherPrintReportName
+											</label>
+											<input class="form-control" asp-for="BankRecVoucherPrintReportName" readonly style="margin:0;" />
+
+										</div>
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="BankPaymentVoucherPrintReportName" asp-for="BankPaymentVoucherPrintReportName" class="form-label me-2" style="width:280px; margin:0;">
+												BankPaymentVoucherPrintReportName
+											</label>
+											<input class="form-control" asp-for="BankPaymentVoucherPrintReportName" readonly style="margin:0;" />
+
+										</div>
+
+									</div>
+
+									<!-- Right Column -->
+									<div class="col-md-6">
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="CashRecVoucherPrintReportName" asp-for="CashRecVoucherPrintReportName" class="form-label me-2" style="width:280px; margin:0;">
+												CashRecVoucherPrintReportName
+											</label>
+											<input class="form-control" asp-for="CashRecVoucherPrintReportName" readonly style="margin:0;" />
+
+										</div>
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="CashPaymentVoucherPrintReportName" asp-for="CashPaymentVoucherPrintReportName" class="form-label me-2" style="width:280px; margin:0;">
+												CashPaymentVoucherPrintReportName
+											</label>
+											<input class="form-control" asp-for="CashPaymentVoucherPrintReportName" readonly style="margin:0;" />
+
+										</div>
+
+
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="JournalVoucherPrintReportName" asp-for="JournalVoucherPrintReportName" class="form-label me-2" style="width:280px; margin:0;">
+												JournalVoucherPrintReportName
+											</label>
+											<input class="form-control" asp-for="JournalVoucherPrintReportName" readonly style="margin:0;" />
+
+										</div>
+
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="VoucherRotationDailyMonthYearly" asp-for="VoucherRotationDailyMonthYearly" class="form-label me-2" style="width:280px; margin:0;">
+												VoucherRotationDailyMonthYearly
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="VoucherRotationDailyMonthYearlyBool" style="margin:0;" />
+											(Uncheck To Not Allow)
+										</div>
+
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="AccPasswordToAllowManualTax" asp-for="AccPasswordToAllowManualTax" class="form-label me-2" style="width:280px; margin:0;">
+												AccPasswordToAllowManualTax
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AccPasswordToAllowManualTaxBool" style="margin:0;" />
+											(Uncheck To Not Allow)
+										</div>
+
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="AccAllowBackdateVoucherEntry" asp-for="AccAllowBackdateVoucherEntry" class="form-label me-2" style="width:280px; margin:0;">
+												AccAllowBackdateVoucherEntry
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AccAllowBackdateVoucherEntryBool" style="margin:0;" />
+											(Uncheck To Not Allow)
+										</div>
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="AccBackdateVoucherEntryPassword" asp-for="AccBackdateVoucherEntryPassword" class="form-label me-2" style="width:280px; margin:0;">
+												AccBackdateVoucherEntryPassword
+											</label>
+											<input class="form-control" asp-for="AccBackdateVoucherEntryPassword" style="margin:0;" />
+
+										</div>
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="AccPurchASerejectionPrintReport" asp-for="AccPurchASerejectionPrintReport" class="form-label me-2" style="width:280px; margin:0;">
+												AccPurchASerejectionPrintReport
+											</label>
+											<input class="form-control" asp-for="AccPurchASerejectionPrintReport" readonly style="margin:0;" />
+
+										</div>
+
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="AllowBackdatePurchaseBill" asp-for="AllowBackdatePurchaseBill" class="form-label me-2" style="width:280px; margin:0;">
+												AllowBackdatePurchaseBill
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AllowBackdatePurchaseBillBool" style="margin:0;" />
+											(Uncheck To Not Allow)
+										</div>
+
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="CostCenterisMendatoryInAllVouchers" asp-for="CostCenterisMendatoryInAllVouchers" class="form-label me-2" style="width:280px; margin:0;">
+												CostCenterisMendatoryInAllVouchers
+											</label>
+											<input class="form-control" asp-for="CostCenterisMendatoryInAllVouchers" style="margin:0;" />
+
+										</div>
+
+
+
+
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+						<div class="card-footer p-3">
+							<div class="row justify-content-between g-2">
+								<div class="card-header card-headerBG text-light bg-gradient">
+									<h5>
+										<strong> Accounts Setting</strong>
+										<span class="d-flex float-end" style="margin-top:-2px;">
+
+
+											<div class="row justify-content-between g-2">
+												<div class="col-auto">
+
+													<a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+														<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+														BACK
+													</a>
+												</div>
+
+												<div class="col-auto">
+													@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+													<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+														@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+														<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+														REFRESH
+													</a>
+												</div>
+												@if (Model.Mode == "U")
+												{
+													Model.Mode = "U";
+													<div class="col-auto">
+														@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+														<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+															<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+															UPDATE
+														</button>
+													</div>
+												}
+												else
+												{
+													<div class="col-auto">
+														<button type="submit" class="btn btn-primary btn-sm submitBTN">
+															<i class="fa-solid fa-chevron-circle-right"></i>
+															Save
+														</button>
+													</div>
+
+												}
+											</div>
+										</span>
+									</h5>
+								</div>
+							</div>
+						</div>
+
+					</div>
+	</form>
+</div>
+
+<style>
+	.form-label {
+		font-weight: 500;
+	}
+
+	.d-flex label {
+		white-space: nowrap;
+	}
+
+	.form-control {
+		max-width: 300px;
+	}
+
+</style>
+@section Scripts {
+
+	<script>
+		$(document).ready(function () {
+
+			$("#PurchaseRejPrintReportName").rules("remove", "required");
+			$("#DebitNotePrintReportName").rules("remove", "required");
+			$("#CreditNotePrintReportName").rules("remove", "required");
+			$("#SaleRejectionPrintReportName").rules("remove", "required");
+
+			$("#BankRecVoucherPrintReportName").rules("remove", "required");
+			$("#BankPaymentVoucherPrintReportName").rules("remove", "required");
+			$("#CashRecVoucherPrintReportName").rules("remove", "required");
+			$("#CashPaymentVoucherPrintReportName").rules("remove", "required");
+			$("#JournalVoucherPrintReportName").rules("remove", "required");
+
+			$("#VoucherRotationDailyMonthYearly").rules("remove", "required");
+			$("#AccPasswordToAllowManualTax").rules("remove", "required");
+			$("#AccAllowBackdateVoucherEntry").rules("remove", "required");
+			$("#AccBackdateVoucherEntryPassword").rules("remove", "required");
+			$("#AccPurchASerejectionPrintReport").rules("remove", "required");
+			$("#AllowBackdatePurchaseBill").rules("remove", "required");
+			$("#CostCenterisMendatoryInAllVouchers").rules("remove", "required");
+
+		});
+		$('.submitBTN').click(function (e) {
+			e.preventDefault();
+
+			$('form').submit();
+		});
+		function PressBack() {
+			sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+			sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+			sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+			sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+			sessionStorage.setItem('OpeningYearCodeBack', $('#OpeningYearCodeBack').val());
+			sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+			sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+			sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+			window.history.back();
+		}
+	</script>
+}
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+
+
+

@@ -1229,13 +1229,17 @@
 
             var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+               
 
-                var EntryDate = $('#EntryDate').val().split("-").join("/");
-                EntryDate = parseDateToFormat(EntryDate.split(" ")[0]);
+                var EntryDate = $('#EntryDate').val();
+               
+                
+               
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+               
 
-                var InvDate = $('#InvDate').val().split("-").join("/");
-                InvDate = (InvDate.split(" ")[0]);
+                var InvDate = $('#InvDate').val();
+               
                 $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy'}).datepicker("setDate", InvDate);
 
                 var PODt = $('#PODate').val().split("-").join("/");

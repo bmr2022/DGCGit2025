@@ -94,7 +94,7 @@
         $(document).ready(function(){
             var dashGrid = $('#bodyAccountDash tr').length;
             $('#totalRows').text(dashGrid);
-            GetFormRights();
+            // GetFormRights();
         });
         function GetSearchData() {
             if($('#DashboardType').val()=="Summary"){
@@ -115,7 +115,7 @@
                     $('#divDashboardGrid').empty().append(data);
                     var dashGrid = $('#bodyAccountDash tr').length;
                     $('#totalRows').text(dashGrid);
-                    GetFormRights();
+                    // GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -137,7 +137,7 @@
                     $('#divDashboardGrid').empty().append(data);
                     var dashGrid = $('#bodyAccountDash tr').length;
                     $('#totalRows').text(dashGrid);
-                    GetFormRights();
+                    // GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
