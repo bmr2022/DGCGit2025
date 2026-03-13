@@ -221,6 +221,8 @@
                                                     <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Location</th>
                                                     <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Name</th>
                                                     <th data-columnno="21" data-sortorder="asc" class="sortCol OtherFieldOFDirectPurchaseBillDetailTable"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cost Center</th>
+                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GSTPer</th>
+
                                                 </tr>
                                             </thead>
                                             <tbody id="divPOItemList">
@@ -1140,6 +1142,52 @@
             window.location.href = url;
         }
 
+        function calculateitembasicnettaxable() {
+
+            var GSTPer = parseFloat($('#GSTPer').val()) || 0;
+            var Amount = parseFloat($('#Amount').val()) || 0;
+
+            var TotalBasicAmount = 0;
+            var TotalGSTAmount = 0;
+
+            // 🔹 Loop grid rows
+            $('#divPOItemList tr').each(function () {
+
+                var GridAmount = parseFloat($(this).find('.GridAmount').text()) || 0;
+                var GridGstPer = parseFloat($(this).find('.GSTPer').text()) || 0;
+
+                var GridTaxAmt = GridAmount * (GridGstPer / 100);
+
+                TotalBasicAmount += GridAmount;
+                TotalGSTAmount += GridTaxAmt;
+            });
+
+            // 🔹 Add current row values
+            var CurrentGSTAmount = Amount * (GSTPer / 100);
+
+            TotalBasicAmount += Amount;
+            TotalGSTAmount += CurrentGSTAmount;
+
+            // 🔹 Final Net Amount
+            var TotalNetAmount = TotalBasicAmount + TotalGSTAmount;
+
+            // 🔹 Set Values (rounded properly)
+            $('#itembasicamount').val((Math.round(TotalBasicAmount * 100) / 100).toFixed(2));
+            $('#itemtaxableamount').val((Math.round(TotalGSTAmount * 100) / 100).toFixed(2));
+            $('#itemnetamount').val((Math.round(TotalNetAmount * 100) / 100).toFixed(0));
+        }
+
+        function itemwisetaxcalculation() {
+            var GSTPer = parseFloat($('#GSTPer').val()) || 0;
+            var Amount = parseFloat($('#Amount').val()) || 0;
+
+            var TaxAmount = Amount * (GSTPer / 100);
+            var NetAmount = Amount + TaxAmount;
+
+            $('#taxableamt').val(TaxAmount.toFixed(2));
+            $('#netamt').val(NetAmount.toFixed(2));
+        }
+
 
         $(document).ready(function () {
             if ($('#DPBType').val() == 'Import') {
@@ -1151,7 +1199,8 @@
                 $('#OtherRateCurr').prop("disabled", true);
             }
             const myInput = document.getElementById("TotalDiscountPercentage");
-
+            calculateitembasicnettaxable();
+            itemwisetaxcalculation();
             myInput.addEventListener("input", function (event) {
                 const inputValue = parseInt(event.target.value);
                 if (isNaN(inputValue) || inputValue > 100) {
@@ -2339,6 +2388,16 @@
               RemoveErrorCls('AccountCode');
           }
 
+            if ($('#InvoiceNo').val() == "") {
+                $.notify("Vendor Invoice No is required", "error");
+                AddErrorCls('InvoiceNo');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('InvoiceNo');
+            }
+
+
           // 🔹 Validate Currency
           if ($('#Currency').find(":selected").text().trim() === "" || $('#Currency').find(":selected").text() === "Select") {
               AddErrorCls('Currency');
@@ -3016,7 +3075,8 @@
                                 printWindow.location.href = printUrl;
                             }
                             else if (Partialview) {
-                                window.location.href = '/NRGP/IssueChallanOnCounter?ID=' + res.entryId + '&Mode=U&YC=' + res.yearCode;
+
+                                window.location.href = '/DirectPurchaseBill/DirectPurchaseBill?ID=' + res.entryId + '&Mode=U&YearCode=' + res.yearCode;
 
                             }
                             else if (shouldPrint && shouldSend) {
@@ -3027,8 +3087,10 @@
                                 $.get(sendUrl);
 
                             }
+                            else {
 
-                            window.location.href = '/DirectPurchaseBill/DirectPurchaseBill';
+                                window.location.href = '/DirectPurchaseBill/DirectPurchaseBill';
+                            }
                         }
                     } else {
                         alert(res.message || "Something went wrong.");
@@ -3170,6 +3232,9 @@
                             $('#PkgStd').val(obj.Result[0].StdPacking);
                             $('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
                             !$('#AltUnit').val() ? $('#UnitRate').prop('disabled', true) : $('#UnitRate').prop('disabled', false);
+                            $('#GSTPer').val(obj.Result[0].IGST);
+                          
+                            $('#igstper').text(obj.Result[0].IGST);
                         }
                     }
                 },
@@ -3798,29 +3863,39 @@
         });
 
         function CalculateRate() {
-            var Amount = $('#Amount').val() === "0" || $('#Amount').val() === "" ? 0 : parseFloat($('#Amount').val());
-            const Rate = $('#Rate').val() === "0" || $('#Rate').val() === "" ? 0 : parseFloat($('#Rate').val());
-            const DP = $('#DiscPer') === "0" || $('#DiscPer').val() === "" ? 0 : parseFloat($('#DiscPer').val());
+            let Amount = 0;
+            let Rate = $('#Rate').val() === "0" || $('#Rate').val() === "" ? 0 : parseFloat($('#Rate').val());
+            let DP = $('#DiscPer') === "0" || $('#DiscPer').val() === "" ? 0 : parseFloat($('#DiscPer').val());
 
-            const POQty = $('#DPBQty').val() == "0" || $('#DPBQty').val() === "" ? 0 : parseInt($('#DPBQty').val());
-            const BillQty = $('#BillQty').val() == "0" || $('#BillQty').val() === "" ? 0 : parseInt($('#BillQty').val());
+            let POQty = $('#DPBQty').val() == "0" || $('#DPBQty').val() === "" ? 0 : parseFloat($('#DPBQty').val());
+            let BillQty = $('#BillQty').val() == "0" || $('#BillQty').val() === "" ? 0 : parseFloat($('#BillQty').val());
+           
             if (BillQty > 0 && Rate > 0) {
                 Amount = BillQty * Rate;
             }
             else {
                 Amount;
+
             }
+           
+             console.log('Amount' + Amount);
 
             if (DP > 100) {
                 $('#DiscPer').val('0');
+                $('#DiscRs').val('0');
             }
             else {
                 if (DP !== 0) {
-                    const DA = ((Amount * DP) / 100);
+                    let DA = ((Amount * DP) / 100);
                     $('#DiscRs').val(DA.toFixed(2));
                     Amount = Amount - DA;
                 }
+                else
+                {
+                    $('#DiscRs').val('0');
+                }
             }
+           
             if (Amount <= 0) {
                 $('#Amount').removeAttr('readonly').removeAttr('disabled');
             }
@@ -3828,7 +3903,37 @@
                 $('#Amount').attr('readonly', 'readonly').attr('disabled', 'disabled');
             }
             $('#Amount').val(Amount.toFixed(2));
+            calculateitembasicnettaxable();
+            itemwisetaxcalculation();
+
         }
+
+        function CalculateRateFromAmount() {
+
+            let Amount = $('#Amount').val() === "" ? 0 : parseFloat($('#Amount').val());
+            let BillQty = $('#BillQty').val() === "" ? 0 : parseFloat($('#BillQty').val());
+            let DP = $('#DiscPer').val() === "" ? 0 : parseFloat($('#DiscPer').val());
+
+            if (BillQty > 0 && Amount > 0) {
+
+                let GrossAmount = Amount;
+
+                if (DP > 0) {
+                    GrossAmount = Amount / (1 - (DP / 100));
+                }
+
+                let Rate = GrossAmount / BillQty;
+
+                $('#Rate').val(Rate.toFixed(2));
+
+                let DiscAmt = (GrossAmount * DP) / 100;
+                $('#DiscRs').val(DiscAmt.toFixed(2));
+            }
+
+            calculateitembasicnettaxable();
+            itemwisetaxcalculation();
+        }
+
 
         function CalculateRate1() {
             // $.ajax({
@@ -3916,9 +4021,9 @@
             var poGrid = $('#divPOItemList tr td').length;
             var taxGrid = $('#divTaxGrid tr td').length;
             var txRowCount = $('#divTaxGrid tr').length;
-            if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                return false;
-            }
+            // if (!checkPartCodeMusthaveAtLeastOneTax()) {
+            //     return false;
+            // }
             if (poGrid <= 1) {
                 $.notify("PO Grid should at least have one item", "error");
                 return;
@@ -3935,7 +4040,7 @@
                             }
                         }
                     }
-                    $("form").submit();
+                    submitForm(false, false, false, null, null, false, true); // no print
                 }
                 else {
 
@@ -3965,7 +4070,7 @@
                     }
                 }
             }
-            $("form").submit();
+            submitForm(false, false, false, null, null, false, true); // no print
         });
 
              function checkDuplicateEntry() {
@@ -4281,6 +4386,16 @@
                 RemoveErrorCls('AccountCode');
             }
 
+            if ($('#InvoiceNo').val() == "") {
+                $.notify("Vendor Invoice No is required", "error");
+                AddErrorCls('InvoiceNo');
+                IsError = 1;
+            }
+            else {
+                RemoveErrorCls('InvoiceNo');
+            }
+
+
             if (parseInt($('#DiscPer').val()) < 0 || parseInt($('#DiscPer').val()) > 100) {
                 AddErrorCls('DiscPer');
                 IsError = 1;
@@ -4454,6 +4569,7 @@
                     'CostCenter': $('#CostCenter').val(),
                     'ItemLocation': $('#ItemLocation').val(),
                     'GroupName': $('#GroupName').val(),
+                    'GSTPer': $('#GSTPer').val(),
                     'CostCenterName': $('#CostCenter option:selected').text(),
                     'Mode': $('#Mode').val() == "U" ? "U" : "INSERT"
                 }
@@ -4598,7 +4714,11 @@
                                     $('#ItemNameText').val(obj[0].ItemText);
                                 $('#PONo').val(obj[0].PONo).trigger('change');
                                 $('#ScheduleNo').val(obj[0].ScheduleNo).trigger('change');
+                                    $('#GSTPer').val(obj[0].GSTPer);
+                                    $('#igstper').text(obj[0].GSTPer);
 
+                                    calculateitembasicnettaxable();
+                                    itemwisetaxcalculation();
                             }
                         }
                     }
@@ -4796,6 +4916,7 @@
                         var sum = 0;
                         var txSum = 0;
                         var columnCount = $('#divPOItemList tr td').length;
+                        calculateitembasicnettaxable();
 
                         //noofitems
                         if (columnCount > 1)

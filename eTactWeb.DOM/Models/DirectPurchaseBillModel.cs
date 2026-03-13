@@ -56,13 +56,13 @@ public class DPBDashBoard : TimeStamp
     public DateTime? InvoiceDate { get; set; }
     public string? UpdatedByName { get; set; }
     public string? DashboardType { get; set; }
-    public float? BasicAmount { get; set; }
-    public float? NetAmount { get; set; }
-    public float? GSTAmount { get; set; }
-    public float? TaxableAmount { get; set; }
-    public float? TotalDiscPer { get; set; }
-    public float? TDSAmount { get; set; }
-    public float? TotalAmtInOtherCurr { get; set; }
+    public decimal? BasicAmount { get; set; }
+    public decimal? NetAmount { get; set; }
+    public decimal? GSTAmount { get; set; }
+    public decimal? TaxableAmount { get; set; }
+    public decimal? TotalDiscPer { get; set; }
+    public decimal? TDSAmount { get; set; }
+    public decimal? TotalAmtInOtherCurr { get; set; }
     public string? POYearCode { get; set; }
     public string? SchYearCode { get; set; }
     public string? ApprovedBy { get; set; }
@@ -76,20 +76,20 @@ public class DPBDashBoard : TimeStamp
     public string? PODate { get; set; }
     public string? SchNo { get; set; }
     public string? SchDate { get; set; }
-    public float? DPBQty { get; set; }
-    public float BillQty { get; set; }
+    public decimal? DPBQty { get; set; }
+    public decimal BillQty { get; set; }
     public string? Unit { get; set; }
-    public float AltQty { get; set; }
+    public decimal AltQty { get; set; }
     public string? AltUnit { get; set; }
     public string? Rate { get; set; }
     public string? RateInOtherCurr { get; set; }
-    public float? DiscPer { get; set; }
-    public float? DiscRs { get; set; }
+    public decimal? DiscPer { get; set; }
+    public decimal? DiscRs { get; set; }
 
     [Column(TypeName = "decimal(18, 6)")]
     public decimal? Amount { get; set; }
-    public float? PendQty { get; set; }
-    public float? PendAltQty { get; set; }
+    public decimal? PendQty { get; set; }
+    public decimal? PendAltQty { get; set; }
     public string? UnitRate { get; set; }
     public string?  SummaryDetail { get; set; }
     //public int EntryId { get; set; }
@@ -103,11 +103,11 @@ public class DPBDashBoard : TimeStamp
     public string? Colour { get; set; }
     public int? CostCenter { get; set; }
     public string? RateApplicableOnUnit { get; set; }
-    public float? MRP { get; set; }
-    public float? RateUnit { get; set; }
-    public float? RateIncludingTaxes { get; set; }
-    public float? AmtinOtherCurr { get; set; }
-    public float? RateConversionFactor { get; set; }
+    public decimal? MRP { get; set; }
+    public decimal? RateUnit { get; set; }
+    public decimal? RateIncludingTaxes { get; set; }
+    public decimal? AmtinOtherCurr { get; set; }
+    public decimal? RateConversionFactor { get; set; }
     public string? Commodity { get; set; }
     public string? BalanceSheetClosed { get; set; }
     public string? PORemarks { get; set; }
@@ -115,7 +115,7 @@ public class DPBDashBoard : TimeStamp
     public string? ItemColor { get; set; }
     public string? ItemModel { get; set; }
     public string? POAmmNo { get; set; }
-    public float? PoRate { get; set; }
+    public decimal? PoRate { get; set; }
     public string? POType { get; set; }
     public string? ProjectNo { get; set; }
     public string? ProjectDate { get; set; }
@@ -152,11 +152,11 @@ public class DPBItemDetail : TaxModel, ITDSModel
     public AdjustmentModel? adjustmentModel { get; set; }
     #region Inherit TDS
     private readonly TDSModel _tdsModel = new TDSModel();
-    public float AcceptedQty { get; set; }
+    public decimal AcceptedQty { get; set; }
 
-    public float ReworkQty { get; set; }
+    public decimal ReworkQty { get; set; }
 
-    public float HoldQty { get; set; }
+    public decimal HoldQty { get; set; }
 
     // Implement ITDSModel properties using the TDSModel instance
     public TDSModel TDSModel
@@ -297,6 +297,7 @@ public class DPBItemDetail : TaxModel, ITDSModel
 
     [Column(TypeName = "decimal(18, 6)")]
     public decimal? Amount { get; set; }
+    public decimal? GSTPer { get; set; }
     public string? GroupName { get; set; }
   
     public string? Color { get; set; }
@@ -430,6 +431,7 @@ public class DirectPurchaseBillModel : DPBItemDetail
 
     [Column(TypeName = "decimal(18, 6)")]
     public decimal? Currency { get; set; }
+    public decimal? GSTPer { get; set; }
     public decimal? TaxableExpenss { get; set; }
     public decimal? OtherExpenss { get; set; }
     public decimal? AdditionalDiscount { get; set; }
@@ -488,7 +490,7 @@ public class DirectPurchaseBillModel : DPBItemDetail
     public string? Transport { get; set; }
     public string? VehicleNo { get; set; }
     public string? ModeOfTransport { get; set; }
-    public float? ExchangeRate { get; set; }
+    public decimal? ExchangeRate { get; set; }
     [Column(TypeName = "decimal(18, 6)")]
    // public decimal BillQty { get; set; }
     public string? EntryByMachineName { get; set; }

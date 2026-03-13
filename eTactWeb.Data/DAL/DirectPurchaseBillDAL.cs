@@ -658,8 +658,8 @@ public class DirectPurchaseBillDAL
                                                   UpdatedOn = string.IsNullOrEmpty(dr["LastUpdatedDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["LastUpdatedDate"]),
                                                   CreatedBy = !string.IsNullOrEmpty(dr["ActualEntryBy"].ToString()) ? 0 : Convert.ToInt32(dr["ActualEntryBy"].ToString()),
                                                   CreatedOn = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
-                                                  BasicAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToSingle(dr["BillAmt"]) : 0,
-                                                  NetAmount = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToSingle(dr["NetAmt"]) : 0,
+                                                  BasicAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToDecimal(dr["BillAmt"]) : 0,
+                                                  NetAmount = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToDecimal(dr["NetAmt"]) : 0,
                                                   AgainstInvNo = dr["AgainstInvNo"].ToString(),
                                                   AgainstVoucherNo = dr["AgainstVoucherNo"].ToString(),
                                                   AgainstVoucherDate = string.IsNullOrEmpty(dr["AgainstVoucherDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["AgainstVoucherDate"]),
@@ -747,8 +747,8 @@ public class DirectPurchaseBillDAL
                                                   UpdatedOn = string.IsNullOrEmpty(dr["LastUpdatedDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["LastUpdatedDate"]),
                                                   CreatedBy = !string.IsNullOrEmpty(dr["ActualEntryBy"].ToString()) ? 0 : Convert.ToInt32(dr["ActualEntryBy"].ToString()),
                                                   CreatedOn = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
-                                                  BasicAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToSingle(dr["BillAmt"]) : 0,
-                                                  NetAmount = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToSingle(dr["NetAmt"]) : 0,
+                                                  BasicAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToDecimal(dr["BillAmt"]) : 0,
+                                                  NetAmount = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToDecimal(dr["NetAmt"]) : 0,
                                                   AgainstVoucherNo = dr["AgainstVoucherNo"].ToString(),
                                                   AgainstInvNo = dr["AgainstInvNo"].ToString()
                                               }).OrderByDescending(a => a.EntryID).ToList();
@@ -855,9 +855,9 @@ public class DirectPurchaseBillDAL
                                                       ItemName = dr["ItemName"].ToString(),
                                                       DPBAmt = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToDecimal(dr["BillAmt"]) : 0,
                                                       //PONetAmt = !string.IsNullOrEmpty(dr["PONetAmt"].ToString()) ? (dr["PONetAmt"].ToString()) : string.Empty,
-                                                      NetAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToSingle(dr["BillAmt"]) : 0,
-                                                      BasicAmount = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToSingle(dr["NetAmt"]) : 0,
-                                                      TaxableAmount = !string.IsNullOrEmpty(dr["TaxableAmt"].ToString()) ? Convert.ToSingle(dr["TaxableAmt"]) : 0,
+                                                      NetAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToDecimal(dr["BillAmt"]) : 0,
+                                                      BasicAmount = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToDecimal(dr["NetAmt"]) : 0,
+                                                      TaxableAmount = !string.IsNullOrEmpty(dr["TaxableAmt"].ToString()) ? Convert.ToDecimal(dr["TaxableAmt"]) : 0,
                                                       ExpenseHead = !string.IsNullOrEmpty(dr["ExpenseHead"].ToString()) ? dr["ExpenseHead"].ToString() : string.Empty,
                                                       ExpenseAmt = !string.IsNullOrEmpty(dr["ExpenseAmt"].ToString()) ? Convert.ToDecimal(dr["ExpenseAmt"]) : 0,
                                                       CGSTHead = !string.IsNullOrEmpty(dr["CGSTHead"].ToString()) ? dr["CGSTHead"].ToString() : string.Empty,
@@ -869,7 +869,7 @@ public class DirectPurchaseBillDAL
                                                       IGSTHead = !string.IsNullOrEmpty(dr["IGSTHead"].ToString()) ? dr["IGSTHead"].ToString() : string.Empty,
                                                       IGSTper = !string.IsNullOrEmpty(dr["IGSTper"].ToString()) ? Convert.ToDecimal(dr["IGSTper"]) : 0,
                                                       IGSTAmt = !string.IsNullOrEmpty(dr["IGSTAmt"].ToString()) ? Convert.ToDecimal(dr["IGSTAmt"]) : 0,
-                                                      GSTAmount = !string.IsNullOrEmpty(dr["GSTAmount"].ToString()) ? Convert.ToSingle(dr["GSTAmount"]) : 0,
+                                                      GSTAmount = !string.IsNullOrEmpty(dr["GSTAmount"].ToString()) ? Convert.ToDecimal(dr["GSTAmount"]) : 0,
                                                   }).OrderBy(a => a.EntryID).ToList();
                 }
             }
@@ -895,10 +895,10 @@ public class DirectPurchaseBillDAL
                                                       ItemName = dr["ItemName"].ToString(),
                                                       HsnNo = dr["HSNNO"].ToString(),
                                                       Unit = dr["Unit"].ToString(),
-                                                      BillQty = !string.IsNullOrEmpty(dr["BillQty"].ToString()) ? Convert.ToSingle(dr["BillQty"]) : 0,
+                                                      BillQty = !string.IsNullOrEmpty(dr["BillQty"].ToString()) ? Convert.ToDecimal(dr["BillQty"]) : 0,
                                                       Rate = !string.IsNullOrEmpty(dr["Rate"].ToString()) ? dr["Rate"].ToString() : string.Empty,
-                                                      DiscPer = !string.IsNullOrEmpty(dr["DiscountPer"].ToString()) ? Convert.ToSingle(dr["DiscountPer"]) : 0,
-                                                      DiscRs = !string.IsNullOrEmpty(dr["DiscountAmt"].ToString()) ? Convert.ToSingle(dr["DiscountAmt"]) : 0,
+                                                      DiscPer = !string.IsNullOrEmpty(dr["DiscountPer"].ToString()) ? Convert.ToDecimal(dr["DiscountPer"]) : 0,
+                                                      DiscRs = !string.IsNullOrEmpty(dr["DiscountAmt"].ToString()) ? Convert.ToDecimal(dr["DiscountAmt"]) : 0,
                                                       Amount = !string.IsNullOrEmpty(dr["Amount"].ToString()) ? Convert.ToDecimal(dr["Amount"]) : 0,
                                                       PONo = !string.IsNullOrEmpty(dr["PONo"].ToString()) ? dr["PONo"].ToString() : string.Empty,
                                                       PODate = dr["PODate"].ToString(),
@@ -922,12 +922,12 @@ public class DirectPurchaseBillDAL
                                                       UpdatedOn = string.IsNullOrEmpty(dr["LastUpdatedDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["LastUpdatedDate"]),
                                                       CreatedBy = !string.IsNullOrEmpty(dr["ActualEntryBy"].ToString()) ? 0 : Convert.ToInt32(dr["ActualEntryBy"].ToString()),
                                                       CreatedOn = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
-                                                      BasicAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToSingle(dr["BillAmt"]) : 0,
-                                                      NetAmount = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToSingle(dr["NetAmt"]) : 0,
-                                                      GSTAmount = !string.IsNullOrEmpty(dr["GSTAmount"].ToString()) ? Convert.ToSingle(dr["GSTAmount"]) : 0,
-                                                      TaxableAmount = !string.IsNullOrEmpty(dr["Taxableamt"].ToString()) ? Convert.ToSingle(dr["Taxableamt"]) : 0,
-                                                      TotalDiscPer = !string.IsNullOrEmpty(dr["ToatlDiscountPercent"].ToString()) ? Convert.ToSingle(dr["ToatlDiscountPercent"]) : 0,
-                                                      TDSAmount = !string.IsNullOrEmpty(dr["TDSAmount"].ToString()) ? Convert.ToSingle(dr["TDSAmount"]) : 0,
+                                                      BasicAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToDecimal(dr["BillAmt"]) : 0,
+                                                      NetAmount = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToDecimal(dr["NetAmt"]) : 0,
+                                                      GSTAmount = !string.IsNullOrEmpty(dr["GSTAmount"].ToString()) ? Convert.ToDecimal(dr["GSTAmount"]) : 0,
+                                                      TaxableAmount = !string.IsNullOrEmpty(dr["Taxableamt"].ToString()) ? Convert.ToDecimal(dr["Taxableamt"]) : 0,
+                                                      TotalDiscPer = !string.IsNullOrEmpty(dr["ToatlDiscountPercent"].ToString()) ? Convert.ToDecimal(dr["ToatlDiscountPercent"]) : 0,
+                                                      TDSAmount = !string.IsNullOrEmpty(dr["TDSAmount"].ToString()) ? Convert.ToDecimal(dr["TDSAmount"]) : 0,
                                                       Remark = !string.IsNullOrEmpty(dr["Remark"].ToString()) ? dr["Remark"].ToString() : string.Empty,
                                                       ApprovedDate = !string.IsNullOrEmpty(dr["ApprovedDate"].ToString()) ? dr["ApprovedDate"].ToString() : string.Empty,
                                                       ApprovedBy = !string.IsNullOrEmpty(dr["ApprovedBy"].ToString()) ? dr["ApprovedBy"].ToString() : string.Empty,
@@ -936,20 +936,20 @@ public class DirectPurchaseBillDAL
                                                       BlockRateVariation = !string.IsNullOrEmpty(dr["BlockRateVariation"].ToString()) ? dr["BlockRateVariation"].ToString() : string.Empty,
                                                       BlockReworkDebitNote = !string.IsNullOrEmpty(dr["BlockReworkDebitNote"].ToString()) ? dr["BlockReworkDebitNote"].ToString() : string.Empty,
                                                       BOEDate = !string.IsNullOrEmpty(dr["BOEDate"].ToString()) ? dr["BOEDate"].ToString() : string.Empty,
-                                                      TotalAmtInOtherCurr = !string.IsNullOrEmpty(dr["TotalAmtInOtherCurr"].ToString()) ? Convert.ToSingle(dr["TotalAmtInOtherCurr"]) : 0,
+                                                      TotalAmtInOtherCurr = !string.IsNullOrEmpty(dr["TotalAmtInOtherCurr"].ToString()) ? Convert.ToDecimal(dr["TotalAmtInOtherCurr"]) : 0,
                                                       Commodity = !string.IsNullOrEmpty(dr["Commodity"].ToString()) ? dr["Commodity"].ToString() : string.Empty,
                                                       BalanceSheetClosed = !string.IsNullOrEmpty(dr["BalanceSheetClosed"].ToString()) ? dr["BalanceSheetClosed"].ToString() : string.Empty,
                                                       PORemarks = !string.IsNullOrEmpty(dr["PORemarks"].ToString()) ? dr["PORemarks"].ToString() : string.Empty,
-                                                      MRP = !string.IsNullOrEmpty(dr["MRP"].ToString()) ? Convert.ToSingle(dr["MRP"]) : 0,
-                                                      RateUnit = !string.IsNullOrEmpty(dr["RateUnit"].ToString()) ? Convert.ToSingle(dr["RateUnit"]) : 0,
-                                                      RateIncludingTaxes = !string.IsNullOrEmpty(dr["RateIncludingTaxes"].ToString()) ? Convert.ToSingle(dr["RateIncludingTaxes"]) : 0,
-                                                      AmtinOtherCurr = !string.IsNullOrEmpty(dr["AmtinOtherCurr"].ToString()) ? Convert.ToSingle(dr["AmtinOtherCurr"]) : 0,
-                                                      RateConversionFactor = !string.IsNullOrEmpty(dr["RateConversionFactor"].ToString()) ? Convert.ToSingle(dr["RateConversionFactor"]) : 0,
+                                                      MRP = !string.IsNullOrEmpty(dr["MRP"].ToString()) ? Convert.ToDecimal(dr["MRP"]) : 0,
+                                                      RateUnit = !string.IsNullOrEmpty(dr["RateUnit"].ToString()) ? Convert.ToDecimal(dr["RateUnit"]) : 0,
+                                                      RateIncludingTaxes = !string.IsNullOrEmpty(dr["RateIncludingTaxes"].ToString()) ? Convert.ToDecimal(dr["RateIncludingTaxes"]) : 0,
+                                                      AmtinOtherCurr = !string.IsNullOrEmpty(dr["AmtinOtherCurr"].ToString()) ? Convert.ToDecimal(dr["AmtinOtherCurr"]) : 0,
+                                                      RateConversionFactor = !string.IsNullOrEmpty(dr["RateConversionFactor"].ToString()) ? Convert.ToDecimal(dr["RateConversionFactor"]) : 0,
                                                       CostCenterName = !string.IsNullOrEmpty(dr["CostCenterName"].ToString()) ? dr["CostCenterName"].ToString() : string.Empty,
                                                       ItemColor = !string.IsNullOrEmpty(dr["ItemColor"].ToString()) ? dr["ItemColor"].ToString() : string.Empty,
                                                       ItemModel = !string.IsNullOrEmpty(dr["ItemModel"].ToString()) ? dr["ItemModel"].ToString() : string.Empty,
                                                       POAmmNo = !string.IsNullOrEmpty(dr["POAmmNo"].ToString()) ? dr["POAmmNo"].ToString() : string.Empty,
-                                                      PoRate = !string.IsNullOrEmpty(dr["PoRate"].ToString()) ? Convert.ToSingle(dr["PoRate"]) : 0,
+                                                      PoRate = !string.IsNullOrEmpty(dr["PoRate"].ToString()) ? Convert.ToDecimal(dr["PoRate"]) : 0,
                                                       POType = !string.IsNullOrEmpty(dr["POType"].ToString()) ? dr["POType"].ToString() : string.Empty,
                                                       ProjectNo = !string.IsNullOrEmpty(dr["ProjectNo"].ToString()) ? dr["ProjectNo"].ToString() : string.Empty,
                                                       ProjectDate = !string.IsNullOrEmpty(dr["ProjectDate"].ToString()) ? dr["ProjectDate"].ToString() : string.Empty,
@@ -1029,7 +1029,7 @@ public class DirectPurchaseBillDAL
                     MainModel.ModeOfTransport = oDataSet.Tables[0].Rows[0]["ModeOfTrans"].ToString();
                     MainModel.Transport = oDataSet.Tables[0].Rows[0]["Transporter"].ToString();
                     MainModel.VehicleNo = oDataSet.Tables[0].Rows[0]["Vehicleno"].ToString();
-                    MainModel.ExchangeRate = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["ExchangeRate"].ToString()) ? 0 : Convert.ToSingle(oDataSet.Tables[0].Rows[0]["ExchangeRate"]);
+                    MainModel.ExchangeRate = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["ExchangeRate"].ToString()) ? 0 : Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["ExchangeRate"]);
                     MainModel.ItemNetAmount = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["NetAmt"].ToString()) ? 0 : Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["NetAmt"]);
                     MainModel.NetTotal = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["NetAmt"].ToString()) ? 0 : (oDataSet.Tables[0].Rows[0]["RoundoffType"].ToString().ToLower() == "y") ? Convert.ToDecimal(Math.Round(Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["NetAmt"]))) : Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["NetAmt"]);
                     MainModel.PaymentDays = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["PaymentDays"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["PaymentDays"]);
@@ -1082,6 +1082,7 @@ public class DirectPurchaseBillDAL
                             BillQty = (!string.IsNullOrEmpty(row["BillQty"].ToString())) ? Convert.ToDecimal(row["BillQty"]) : 0,
                             Rate = (!string.IsNullOrEmpty(row["Rate"].ToString())) ? Convert.ToDecimal(row["Rate"]) : 0,
                             OtherRateCurr = (!string.IsNullOrEmpty(row["AmtinOtherCurr"].ToString())) ? Convert.ToDecimal(row["AmtinOtherCurr"]) : 0,
+                            GSTPer = (!string.IsNullOrEmpty(row["GSTPer"].ToString())) ? Convert.ToDecimal(row["GSTPer"]) : 0,
                             DiscPer = Convert.ToDecimal(row["DiscountPer"]),
                             DiscRs = Convert.ToDecimal(row["DiscountAmt"]),
                             Amount = Convert.ToDecimal(row["Amount"]),
@@ -1316,7 +1317,7 @@ public class DirectPurchaseBillDAL
             SqlParams.Add(new SqlParameter("@ConversionFactor", model.ExchangeRate));
             SqlParams.Add(new SqlParameter("@BillAmt", model.ItemNetAmount));
             SqlParams.Add(new SqlParameter("@RoundOffAmt", model.TotalRoundOffAmt));
-            SqlParams.Add(new SqlParameter("@RoundoffType", model.TotalRoundOff));
+            SqlParams.Add(new SqlParameter("@RoundoffType", "Y"));
             SqlParams.Add(new SqlParameter("@roundoffaccountcode", model.RoundOffAccountCode));
             SqlParams.Add(new SqlParameter("@GSTAmount", 0));
             SqlParams.Add(new SqlParameter("@Taxableamt", (float)Math.Round(model.TxAmount, 2)));
@@ -1355,7 +1356,7 @@ public class DirectPurchaseBillDAL
             SqlParams.Add(new SqlParameter("@DTItemGrid", ItemDetailDT));
             SqlParams.Add(new SqlParameter("@DTTaxGrid", TaxDetailDT));
             SqlParams.Add(new SqlParameter("@DTTDSGrid", TDSDetailDT));
-            SqlParams.Add(new SqlParameter("@DRCRDATA", DrCrDetailDT));
+            //SqlParams.Add(new SqlParameter("@DRCRDATA", DrCrDetailDT));
             SqlParams.Add(new SqlParameter("@AgainstRef", AdjDetailDT));
             if (model.Mode == "UPDATE")
             {
@@ -1407,7 +1408,7 @@ public class DirectPurchaseBillDAL
         foreach (DataRow row in table.Rows)
         {
             foreach (DataColumn col in table.Columns)
-                if (col.DataType == typeof(float))
+                if (col.DataType == typeof(decimal))
                 {
                     if (row[col] != DBNull.Value)
                     {

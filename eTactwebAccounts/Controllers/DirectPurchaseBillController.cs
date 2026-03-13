@@ -490,6 +490,12 @@ namespace eTactWeb.Controllers
 
                     if (Result != null)
                     {
+                        var dt = Result?.Result;
+
+                        int? entryid = null;
+                        int? yearCode = null;
+
+                       
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
                         {
                             ViewBag.isSuccess = true;
@@ -497,7 +503,13 @@ namespace eTactWeb.Controllers
                             HttpContext.Session.Remove("KeyTaxGrid");
                             HttpContext.Session.Remove("KeyTDSGrid");
                             HttpContext.Session.Remove("DirectPurchaseBill");
-                            return Json(new { status = "Success" });
+                            if (dt != null && dt.Rows.Count > 0)
+                            {
+                                entryid = Convert.ToInt32(dt.Rows[0]["EntryId"]);
+                                yearCode = Convert.ToInt32(dt.Rows[0]["YearCode"]);
+                            }
+
+                            return Json(new { status = "Success" , entryId = entryid , yearCode = yearCode });
                         }
                         else if (Result.StatusText == "Inserted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -506,7 +518,12 @@ namespace eTactWeb.Controllers
                             HttpContext.Session.Remove("KeyTaxGrid");
                             HttpContext.Session.Remove("KeyTDSGrid");
                             HttpContext.Session.Remove("DirectPurchaseBill");
-                            return Json(new { status = "Success" });
+                            if (dt != null && dt.Rows.Count > 0)
+                            {
+                                entryid = Convert.ToInt32(dt.Rows[0]["EntryId"]);
+                                yearCode = Convert.ToInt32(dt.Rows[0]["YearCode"]);
+                            }
+                            return Json(new { status = "Success", entryId = entryid, yearCode = yearCode });
                         }
                         else if (Result.StatusText == "Updated Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -516,7 +533,12 @@ namespace eTactWeb.Controllers
                             HttpContext.Session.Remove("KeyTDSGrid");
                             HttpContext.Session.Remove("DirectPurchaseBill");
                             //return RedirectToAction(nameof(DirectPurchaseBill));
-                            return Json(new { status = "Success" });
+                            if (dt != null && dt.Rows.Count > 0)
+                            {
+                                entryid = Convert.ToInt32(dt.Rows[0]["EntryId"]);
+                                yearCode = Convert.ToInt32(dt.Rows[0]["YearCode"]);
+                            }
+                            return Json(new { status = "Success", entryId = entryid, yearCode = yearCode });
                         }
                         else if (Result.StatusText == "Deleted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -563,6 +585,19 @@ namespace eTactWeb.Controllers
                                 return View("DirectPurchaseBill", model);
                             }
                         }
+                        else if (!string.IsNullOrEmpty(Result.StatusText))
+                        {
+                            // If SP returned a message (like adjustment error)
+                            TempData["ErrorMessage"] = Result.StatusText;
+                            return Json(new
+                            {
+                                status = "Error",
+                                message = Result.StatusText,
+                                
+
+                            });
+                        }
+
                         else
                         {
                             model = await BindModels(model);
@@ -1796,25 +1831,25 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("DocTypeID", typeof(int));
             Table.Columns.Add("ItemCode", typeof(int));
             Table.Columns.Add("Unit", typeof(string));
-            Table.Columns.Add("NoOfCase", typeof(float));
-            Table.Columns.Add("BillQty", typeof(float));
-            Table.Columns.Add("RecQty", typeof(float));
-            Table.Columns.Add("RejectedQty", typeof(float));
-            Table.Columns.Add("AltQty", typeof(float));
+            Table.Columns.Add("NoOfCase", typeof(decimal));
+            Table.Columns.Add("BillQty", typeof(decimal));
+            Table.Columns.Add("RecQty", typeof(decimal));
+            Table.Columns.Add("RejectedQty", typeof(decimal));
+            Table.Columns.Add("AltQty", typeof(decimal));
             Table.Columns.Add("AltUnit", typeof(string));
             
-            Table.Columns.Add("Rate", typeof(float));
-            Table.Columns.Add("MRP", typeof(float));
+            Table.Columns.Add("Rate", typeof(decimal));
+            Table.Columns.Add("MRP", typeof(decimal));
             Table.Columns.Add("RateUnit", typeof(string));
-            Table.Columns.Add("RateIncludingTaxes", typeof(float));
-            Table.Columns.Add("AmtinOtherCurr", typeof(float));
-            Table.Columns.Add("RateConversionFactor", typeof(float));
+            Table.Columns.Add("RateIncludingTaxes", typeof(decimal));
+            Table.Columns.Add("AmtinOtherCurr", typeof(decimal));
+            Table.Columns.Add("RateConversionFactor", typeof(decimal));
             Table.Columns.Add("CostCenterId", typeof(int));
-            Table.Columns.Add("AssesRate", typeof(float));
-            Table.Columns.Add("AssesAmount", typeof(float));
-            Table.Columns.Add("DiscountPer", typeof(float));
-            Table.Columns.Add("DiscountAmt", typeof(float));
-            Table.Columns.Add("Amount", typeof(float));
+            Table.Columns.Add("AssesRate", typeof(decimal));
+            Table.Columns.Add("AssesAmount", typeof(decimal));
+            Table.Columns.Add("DiscountPer", typeof(decimal));
+            Table.Columns.Add("DiscountAmt", typeof(decimal));
+            Table.Columns.Add("Amount", typeof(decimal));
             Table.Columns.Add("Itemsize", typeof(string));
             Table.Columns.Add("ItemColor", typeof(string));
             Table.Columns.Add("ItemModel", typeof(string));
@@ -1822,7 +1857,7 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("OtherDetail", typeof(string));
             Table.Columns.Add("DebitNoteType", typeof(string));
             Table.Columns.Add("ProcessId", typeof(int));
-            Table.Columns.Add("NewPoRate", typeof(float));
+            Table.Columns.Add("NewPoRate", typeof(decimal));
             Table.Columns.Add("PONo", typeof(string));
             Table.Columns.Add("POYearCode", typeof(int));
             Table.Columns.Add("PODate", typeof(string));
@@ -1830,7 +1865,7 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("SchYearCode", typeof(int));
             Table.Columns.Add("SchDate", typeof(string));
             Table.Columns.Add("POAmmNo", typeof(string));
-            Table.Columns.Add("PoRate", typeof(float));
+            Table.Columns.Add("PoRate", typeof(decimal));
             Table.Columns.Add("POType", typeof(string));
             Table.Columns.Add("MIRNO", typeof(string));
             Table.Columns.Add("MIRYearCode", typeof(int));
@@ -1847,10 +1882,11 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("AgainstImportInvDate", typeof(string));
             Table.Columns.Add("HSNNO", typeof(string));
            
-            Table.Columns.Add("AcceptedQty", typeof(float));
-            Table.Columns.Add("ReworkQty", typeof(float));
-            Table.Columns.Add("HoldQty", typeof(float));
+            Table.Columns.Add("AcceptedQty", typeof(decimal));
+            Table.Columns.Add("ReworkQty", typeof(decimal));
+            Table.Columns.Add("HoldQty", typeof(decimal));
             Table.Columns.Add("ItemLocation", typeof(string));
+            Table.Columns.Add("GSTPer", typeof(decimal));
 
             foreach (DPBItemDetail Item in itemDetailList)
             {
@@ -1938,7 +1974,8 @@ namespace eTactWeb.Controllers
                     Item.AcceptedQty,
                     Item.HoldQty,
                 Item.ReworkQty,
-                Item.ItemLocation ?? string.Empty
+                Item.ItemLocation ?? string.Empty,
+                Item.GSTPer
                     });
             }
 
@@ -1957,11 +1994,11 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("AccountCode", typeof(int));
             Table.Columns.Add("TaxTypeID", typeof(int));
             Table.Columns.Add("TaxNameCode", typeof(int));
-            Table.Columns.Add("TaxPer", typeof(float));
+            Table.Columns.Add("TaxPer", typeof(decimal));
             Table.Columns.Add("RoundOff", typeof(string));
-            Table.Columns.Add("TDSAmount", typeof(float));
-            Table.Columns.Add("InvBasicAmt", typeof(float));
-            Table.Columns.Add("InvNetAmt", typeof(float));
+            Table.Columns.Add("TDSAmount", typeof(decimal));
+            Table.Columns.Add("InvBasicAmt", typeof(decimal));
+            Table.Columns.Add("InvNetAmt", typeof(decimal));
             Table.Columns.Add("Remark", typeof(string));
             Table.Columns.Add("TypePBDirectPBVouch", typeof(string));
             Table.Columns.Add("BankChallanNo", typeof(string));
@@ -1970,8 +2007,8 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("BankVoucherDate", typeof(string));
             Table.Columns.Add("BankVouchEntryId", typeof(int));
             Table.Columns.Add("BankYearCode", typeof(int));
-            Table.Columns.Add("RemainingAmt", typeof(float));
-            Table.Columns.Add("RoundoffAmt", typeof(float));
+            Table.Columns.Add("RemainingAmt", typeof(decimal));
+            Table.Columns.Add("RoundoffAmt", typeof(decimal));
 
             if (TDSDetailList != null && TDSDetailList.Count > 0)
             {
@@ -2050,10 +2087,10 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("ItemCode", typeof(int));
             Table.Columns.Add("TaxTypeID", typeof(int));
             Table.Columns.Add("TaxAccountCode", typeof(string));
-            Table.Columns.Add("TaxPercentg", typeof(float));
+            Table.Columns.Add("TaxPercentg", typeof(decimal));
             Table.Columns.Add("AddInTaxable", typeof(char));
             Table.Columns.Add("RountOff", typeof(string));
-            Table.Columns.Add("Amount", typeof(float));
+            Table.Columns.Add("Amount", typeof(decimal));
             Table.Columns.Add("TaxRefundable", typeof(char));
             Table.Columns.Add("TaxonExp", typeof(string));
             Table.Columns.Add("Remark", typeof(string));
@@ -2108,11 +2145,11 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("AccountCode", typeof(int));
             Table.Columns.Add("DocTypeID", typeof(int));
             Table.Columns.Add("ItemCode", typeof(int));
-            Table.Columns.Add("BillQty", typeof(float));
-            Table.Columns.Add("Rate", typeof(float));
-            Table.Columns.Add("DiscountPer", typeof(float));
-            Table.Columns.Add("DiscountAmt", typeof(float));
-            Table.Columns.Add("AccountAmount", typeof(float));
+            Table.Columns.Add("BillQty", typeof(decimal));
+            Table.Columns.Add("Rate", typeof(decimal));
+            Table.Columns.Add("DiscountPer", typeof(decimal));
+            Table.Columns.Add("DiscountAmt", typeof(decimal));
+            Table.Columns.Add("AccountAmount", typeof(decimal));
             Table.Columns.Add("DRCR", typeof(string));
 
             IList<DPBItemDetail> itemDetailList = MainModel.ItemDetailGrid;
@@ -2222,6 +2259,7 @@ namespace eTactWeb.Controllers
                     ScheduleDate = model.ScheduleDate,
                     ItemLocation = model.ItemLocation,
                     GroupName = model.GroupName,
+                    GSTPer = model.GSTPer,
 
                     Unit = model.Unit,
                 });

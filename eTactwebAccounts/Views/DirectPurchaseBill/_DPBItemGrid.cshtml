@@ -135,7 +135,7 @@ else
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.OtherRateCurr.ToString()</td>
             <td>@item.DiscPer</td>
             <td>@item.DiscRs</td>
-            <td id="GridAmount-@item.SeqNo">@item.Amount.ToString()</td>
+            <td id="GridAmount-@item.SeqNo" m class="GridAmount">@item.Amount.ToString()</td>
             <td>@item.HSNNo</td>
             <td class="GridUnit">@item.Unit</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.ProcessName</td>
@@ -148,6 +148,7 @@ else
             </td>
             <td>@item.GroupName</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@(item.CostCenterName ?? string.Empty)</td>
+            <td class="GSTPer">@item.GSTPer</td>
         </tr>
     }
 }

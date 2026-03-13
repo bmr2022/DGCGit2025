@@ -129,6 +129,20 @@
             <label asp-for="PaymentDays" class="form-label">Credit Days</label>
             <input asp-for="PaymentDays" class="form-control" />
         </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+            <label class="form-label" style="color: red;">Basic Amount*</label>
+            <input id="itembasicamount" class="form-control" readonly style="background-color:#FFFACD" />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+            <label class="form-label" style="color: red;">GST Amount*</label>
+            <input id="itemtaxableamount" class="form-control" readonly style="background-color:#FFFACD" />
+        </div>
+
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+            <label class="form-label" style="color: red;">Net Amount*</label>
+            <input id="itemnetamount" class="form-control" readonly style="background-color:#FFFACD" />
+        </div>
+
         <a href="javascript:void(0)" onclick="ListOfPendingSaleBillFromOtherBranch()">DPB from Other Branch</a>
         <input type="hidden" asp-for="Approved" class="form-control" />
         <input type="hidden" asp-for="ApprovedDate" class="form-control" />

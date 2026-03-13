@@ -381,12 +381,12 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AccEntryId" class="form-label">Entry Id</label>
-                                        <input asp-for="AccEntryId" class="form-control" readonly />
+                                        <input asp-for="AccEntryId" value="@Model.AccEntryId" class="form-control" readonly />
                                     </div>
 
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="YearCode" class="form-label">YearCode</label>
-                                        <input asp-for="YearCode" class="form-control" readonly />
+                                        <input asp-for="YearCode" value="@Model.YearCode" class="form-control" readonly />
                                     </div>
                                     <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="ActualEntryDate" class="form-label">Actual Entry Date </label>
