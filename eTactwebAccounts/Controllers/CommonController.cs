@@ -1079,7 +1079,7 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("AccountCode", typeof(int));
             Table.Columns.Add("ModOfAdjustment", typeof(string));
             Table.Columns.Add("DrCr", typeof(string));
-            Table.Columns.Add("AdjustedAmount", typeof(float));
+            Table.Columns.Add("AdjustedAmount", typeof(decimal));
             Table.Columns.Add("AgainstAccEntryId", typeof(int));
             Table.Columns.Add("AgainstVoucheryearcode", typeof(int));
             Table.Columns.Add("AgainstvoucherType", typeof(string));
@@ -1127,7 +1127,7 @@ namespace eTactWeb.Controllers
                         // adjustment detail
                         Item.AdjModeOfAdjstment,
                         Item.AdjDrCr ?? string.Empty,
-                       (float)Math.Round((Item.AdjPendAmt != null && Item.AdjPendAmt > 0) ? Convert.ToSingle(Item.AdjPendAmt) : 0, 2),//Item.AdjAdjstedAmt ?? 0,
+                       (decimal)Math.Round((Item.AdjPendAmt != null && Item.AdjPendAmt > 0) ? Convert.ToDecimal(Item.AdjPendAmt) : 0, 2),//Item.AdjAdjstedAmt ?? 0,
                         0,//AgainstAccEntryId
                         0,//AgainstVoucheryearcode
                         string.Empty,//AgainstvoucherType

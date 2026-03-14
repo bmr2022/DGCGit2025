@@ -1921,13 +1921,13 @@ namespace eTactWeb.Controllers
                     Item.ItemCode ?? 0,
                     Item.Unit ?? string.Empty,
                     0f, // Item.NoOfCase
-                    Item.BillQty > 0 ? Item.BillQty : 0,
-                    Item.DPBQty > 0 ? Item.DPBQty: 0,
+                 Math.Round((Item.BillQty ?? 0) > 0 ? (Item.BillQty ?? 0) : 0, 4),
+                  Math.Round((Item.DPBQty ?? 0) > 0 ? (Item.DPBQty ?? 0) : 0, 4),
                     0f, // Item.RejectedQty
                     Item.AltQty > 0 ?  Item.AltQty  : 0,
                     Item.AltUnit ?? string.Empty,
-                     
-                    Item.Rate > 0 ? Item.Rate: 0,
+
+                    Math.Round((Item.Rate ?? 0) > 0 ? (Item.Rate ?? 0) : 0, 2),
                     0f, // Item.MRP
                     Item.UnitRate ?? string.Empty,
                     0f, // Item.RateIncludingTaxes
@@ -1936,9 +1936,9 @@ namespace eTactWeb.Controllers
                     Item.CostCenter > 0 ? Item.CostCenter : 0,
                     0f, // Item.AssesRate
                     0f, // Item.AssesAmount
-                    Item.DiscPer > 0 ? Item.DiscPer : 0,
-                    Item.DiscRs > 0 ? Item.DiscRs : 0,
-                    Item.Amount > 0 ? Item.Amount : 0,
+                     Math.Round((Item.DiscPer ?? 0) > 0 ? (Item.DiscPer ?? 0) : 0, 2),
+                    Math.Round((Item.DiscRs ?? 0) > 0 ? (Item.DiscRs ?? 0) : 0, 2),
+                    Math.Round((Item.Amount ?? 0) > 0 ? (Item.Amount ?? 0) : 0, 2),
                     string.Empty, // Item.Itemsize
                     Item.Color ?? string.Empty,
                     string.Empty, // Item.ItemModel
@@ -2120,7 +2120,7 @@ namespace eTactWeb.Controllers
                     !string.IsNullOrEmpty(Item.TxAdInTxable) && Item.TxAdInTxable.Length == 1 ? Convert.ToChar(Item.TxAdInTxable) : 'N',
                     Item.TxRoundOff,
                     //Math.Round(Item.TxAmount, 2, MidpointRounding.AwayFromZero),
-                    Math.Round(group.TotalAmount, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(group.TotalAmount, 2),
                     !string.IsNullOrEmpty(Item.TxRefundable) && Item.TxRefundable.Length == 1 ? Convert.ToChar(Item.TxRefundable) : 'N',
                     Item.TxOnExp,
                     Item.TxRemark,
@@ -2419,6 +2419,7 @@ namespace eTactWeb.Controllers
                         var purchaseprice = json["Result"][0]["purchaseprice"].ToString();
                         var item_name = json["Result"][0]["item_name"].ToString();
                         var Group_name = json["Result"][0]["Group_name"].ToString();
+                        decimal GSTPer =Convert.ToDecimal(json["Result"][0]["GSTPer"].ToString());
 
                         string location = !string.IsNullOrEmpty(locationValue)
                                             ? locationValue
@@ -2513,7 +2514,8 @@ namespace eTactWeb.Controllers
                             CostCenter = 0,
                             ItemLocation = location,
                             DocTypeText = docTypeName,
-                            docTypeId = DocTypeId
+                            docTypeId = DocTypeId,
+                            GSTPer= Math.Round(GSTPer,2)
                         });
                        
                     }

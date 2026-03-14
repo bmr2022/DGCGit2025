@@ -1350,8 +1350,8 @@ public class DirectPurchaseBillDAL
             SqlParams.Add(new SqlParameter("@OtherExpenss", model.OtherExpenss));
             SqlParams.Add(new SqlParameter("@AdditionalDiscount", model.AdditionalDiscount));
 
-            RoundFloatColumns(ItemDetailDT);
-            RoundFloatColumns(TaxDetailDT);
+            //RoundFloatColumns(ItemDetailDT);
+            //RoundFloatColumns(TaxDetailDT);
 
             SqlParams.Add(new SqlParameter("@DTItemGrid", ItemDetailDT));
             SqlParams.Add(new SqlParameter("@DTTaxGrid", TaxDetailDT));

@@ -2461,6 +2461,9 @@
                     // }
                     //     $('#divPOItemList').empty();
                     //     $('#divPOItemList').html(result);
+
+                    calculateitembasicnettaxable();
+                    itemwisetaxcalculation();
                                var rowCount = $('#divPOItemList tr').length;
                              var columnCount = $('#divPOItemList tr td').length;
                              var taxRowCount = $('#divTaxGrid tr').length;
@@ -2491,6 +2494,7 @@
                              $('#TotalDiscountPercentage').val(0);
                              $('#TotalAmtAftrDiscount').val(0);
                              $('#TotalRoundOffAmt').val(0.00);
+                             
                              // $('#PartCode').select2('open').select2('focus');
                              CalculateRate();
                     calculatetotalqty();
@@ -4040,7 +4044,7 @@
                             }
                         }
                     }
-                    submitForm(false, false, false, null, null, false, true); // no print
+                    // submitForm(false, false, false, null, null, false, true); // no print
                 }
                 else {
 
