@@ -411,30 +411,30 @@ namespace eTactWeb.Data.DAL
                 //    Value = m.ParentAccountCode.ToString()
                 //});
 
-                if (model.Mode != "Search")
-                {
-                    List<TextValue>? _list = new List<TextValue>();
-                    model.ParentGroupList = _list;
+                //if (model.Mode != "Search")
+                //{
+                //    List<TextValue>? _list = new List<TextValue>();
+                //    model.ParentGroupList = _list;
 
-                    if (model.AccountMasterList != null)
-                    {
-                        foreach (AccountMasterModel? item in model.AccountMasterList)
-                        {
-                            TextValue? _lst = new TextValue
-                            {
-                                Text = item.ParentAccountName,
-                                Value = item.ParentAccountCode.ToString()
-                            };
-                            _list.Add(_lst);
-                        }
+                //    if (model.AccountMasterList != null)
+                //    {
+                //        foreach (AccountMasterModel? item in model.AccountMasterList)
+                //        {
+                //            TextValue? _lst = new TextValue
+                //            {
+                //                Text = item.ParentAccountName,
+                //                Value = item.ParentAccountCode.ToString()
+                //            };
+                //            _list.Add(_lst);
+                //        }
 
-                        model.ParentGroupList = _list;
-                    }
-                   // if  model.AccountMasterList != null{
-                     // ;
-                    //}
+                //        model.ParentGroupList = _list;
+                //    }
+                //   // if  model.AccountMasterList != null{
+                //     // ;
+                //    //}
                     
-                }
+                //}
             }
             catch (Exception ex)
             {

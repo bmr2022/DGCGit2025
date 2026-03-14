@@ -104,7 +104,7 @@
             AutoComplete('VItemMaster', 'ParentName', 'ParentGroupname', null);
             AutoComplete('Item_Master_Type', 'ItemTypeName', 'Type_Item', null);
 
-            GetFormRights();
+            // GetFormRights();
         });
 
         function confirmDelete(event, IC) {
@@ -257,7 +257,7 @@
                         $('#divDashboardGrid').empty();
                         $('.ShowAllDiv').empty();
                         $('.ShowAllDiv').append(data);
-                        GetFormRights();
+                        // GetFormRights();
                     },
 
                     complete: function () {
@@ -292,7 +292,7 @@
                         $('.ShowAllDiv').append(data);
                         var dashGrid = $('#divDashboardGrid tr').length;
                         $('#totalRows').text(dashGrid);
-                        GetFormRights();
+                        // GetFormRights();
                     },
 
                     complete: function () {
@@ -507,7 +507,7 @@
                         $('.ShowAllDiv').append(data);
                         var dashGrid = $('#divDashboardGrid tr').length;
                         $('#totalRows').text(dashGrid);
-                        GetFormRights();
+                        // GetFormRights();
                     },
                     complete: function () {
                         hideLoader(); //  Hide after complete
@@ -531,7 +531,7 @@
                         $('.ShowAllDiv').append(data);
                         var dashGrid = $('#divDashboardGrid tr').length;
                         $('#totalRows').text(dashGrid);
-                        GetFormRights();
+                        // GetFormRights();
                     },
                     complete: function () {
                         hideLoader(); //  Hide after complete
