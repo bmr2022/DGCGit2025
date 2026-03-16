@@ -19,6 +19,7 @@ using System.Data;
 using DocumentFormat.OpenXml.EMMA;
 using FastReport.Web;
 using Microsoft.AspNetCore.Hosting;
+using System.Globalization;
 
 namespace eTactWeb.Controllers
 {
@@ -740,7 +741,7 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetAltUnitQty(int ItemCode, float AltQty, float UnitQty)
+        public async Task<JsonResult> GetAltUnitQty(int ItemCode, decimal AltQty, decimal UnitQty)
         {
             var JSON = await IStockAdjust.GetAltUnitQty(ItemCode, AltQty, UnitQty);
             string JsonString = JsonConvert.SerializeObject(JSON);
@@ -825,6 +826,13 @@ namespace eTactWeb.Controllers
                     var worksheet = package.Workbook.Worksheets[0];
                     for (int row = 2; row <= worksheet.Dimension.Rows; row++)
                     {
+                        string partCodeCell = worksheet.Cells[row, 1].Value?.ToString().Trim();
+
+                        if (string.IsNullOrEmpty(partCodeCell))
+                        {
+                            //errors.Add($"PartCode is missing at row {row}");
+                            break;    // skip this row and go ahead
+                        }
 
                         //var itemCatCode = IStockAdjust.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString());
                         var itemCode = IStockAdjust.GetItemCode(worksheet.Cells[row, 2].Value.ToString());
@@ -833,7 +841,18 @@ namespace eTactWeb.Controllers
                         string SlipNo = Request.Form["SlipNo"];
                         string EntryId = Request.Form["EntryId"];
                         var YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                        string UniqueBatchNo="ADJ/"+EntryId+"/"+YearCode+"/"+worksheet.Cells[row, 2].Value.ToString()+"/"+SlipNo;
+                        string excelBatchNo = worksheet.Cells[row, 8].Value?.ToString().Trim();
+                        string excelUniqueBatchNo = worksheet.Cells[row, 9].Value?.ToString().Trim();
+
+                        string batchno = !string.IsNullOrEmpty(excelBatchNo)
+                                            ? excelBatchNo
+                                            : SlipNo;
+
+                        string UniqueBatchNo = !string.IsNullOrEmpty(excelUniqueBatchNo)
+                                            ? excelUniqueBatchNo
+                                            : "ADJ/" + EntryId + "/" + YearCode + "/" + worksheet.Cells[row, 2].Value.ToString() + "/" + SlipNo;
+
+                        // string UniqueBatchNo ="ADJ/"+EntryId+"/"+YearCode+"/"+worksheet.Cells[row, 2].Value.ToString()+"/"+SlipNo;
 
                         //var duplicatePartCode = IStockAdjust.isDuplicate(worksheet.Cells[row, 1].Value.ToString(), "PartCode", "Item_Master");
                         //var duplicateItemName = IStockAdjust.isDuplicate(worksheet.Cells[row, 2].Value.ToString(), "Item_Name", "Item_Master");
@@ -864,12 +883,12 @@ namespace eTactWeb.Controllers
                         var StockDateResult = StockAdjustmentDate.Result.Result != null && StockAdjustmentDate.Result.Result.Rows.Count > 0 ? StockAdjustmentDate.Result.Result.Rows[0].ItemArray[0] : "";
 
 
-                        var GetStoreTotalStock = 0;
-                        var WorkCenterTotalStock = 0;
-                        var StoreLotStockResult = 0;
-                        var WCLotStockResult = 0;
+                        decimal GetStoreTotalStock = 0;
+                        decimal WorkCenterTotalStock = 0;
+                        decimal StoreLotStockResult = 0;
+                        decimal WCLotStockResult = 0;
 
-                        var batchno = worksheet.Cells[row, 8].Value.ToString();
+                        //var batchno = worksheet.Cells[row, 8].Value.ToString();
                         var uniquebatchno = worksheet.Cells[row, 9].Value.ToString();
 
                         if (worksheet.Cells[row, 1].Value.ToString() == "S")
@@ -877,29 +896,55 @@ namespace eTactWeb.Controllers
                             var storeId = IStockAdjust.GetStoreId(worksheet.Cells[row, 3].Value.ToString());
                             storeIdResult = storeId.Result.Result != null && storeId.Result.Result.Rows.Count > 0 ? (int)storeId.Result.Result.Rows[0].ItemArray[0] : 0;
                             var StoreTotalStock = IStockAdjust.FillTotalStock(itemCCode, storeIdResult);
-                            GetStoreTotalStock = StoreTotalStock.Result.Result != null && StoreTotalStock.Result.Result.Rows.Count > 0 ? (int)StoreTotalStock.Result.Result.Rows[0].ItemArray[0] : 0;
+                            GetStoreTotalStock = StoreTotalStock.Result.Result != null && StoreTotalStock.Result.Result.Rows.Count > 0 ? (decimal)StoreTotalStock.Result.Result.Rows[0].ItemArray[0] : 0;
                             var StoreLotStock = IStockAdjust.FillLotStock(itemCCode, storeIdResult, uniquebatchno, batchno);
-                            StoreLotStockResult = StoreLotStock.Result.Result != null && StoreLotStock.Result.Result.Rows.Count > 0 ? (int)StoreLotStock.Result.Result.Rows[0].ItemArray[0] : 0;
+                            StoreLotStockResult = StoreLotStock.Result.Result != null && StoreLotStock.Result.Result.Rows.Count > 0 ? (decimal)StoreLotStock.Result.Result.Rows[0].ItemArray[0] : 0;
                         }
-                        else if (worksheet.Cells[row, 1].Value.ToString() == "M")
+                        else if (worksheet.Cells[row, 1].Value.ToString() == "W")
                         {
                             var WCId = IStockAdjust.GetWorkCenterId(worksheet.Cells[row, 4].Value.ToString());
                             WCResult = WCId.Result.Result != null && WCId.Result.Result.Rows.Count > 0 ? (int)WCId.Result.Result.Rows[0].ItemArray[0] : 0;
                             var WCTotalStock = IStockAdjust.GETWIPotalSTOCK(itemCCode, WCResult);
-                            WorkCenterTotalStock = WCTotalStock.Result.Result != null && WCTotalStock.Result.Result.Rows.Count > 0 ? (int)WCTotalStock.Result.Result.Rows[0].ItemArray[0] : 0;
+                            WorkCenterTotalStock = WCTotalStock.Result.Result != null && WCTotalStock.Result.Result.Rows.Count > 0 ? (decimal)WCTotalStock.Result.Result.Rows[0].ItemArray[0] : 0;
                             var WIPLotStock = IStockAdjust.GetWIPStockBatchWise(itemCCode, WCResult, uniquebatchno, batchno);
-                            WCLotStockResult = WIPLotStock.Result.Result != null && WIPLotStock.Result.Result.Rows.Count > 0 ? (int)WIPLotStock.Result.Result.Rows[0].ItemArray[0] : 0;
+                            WCLotStockResult = WIPLotStock.Result.Result != null && WIPLotStock.Result.Result.Rows.Count > 0 ? (decimal)WIPLotStock.Result.Result.Rows[0].ItemArray[0] : 0;
                         }
-                        
-                        var AltQty = IStockAdjust.GetAltUnitQty(itemCCode, 0, worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock);
-                        var AltQtyResult = AltQty.Result.Result != null && AltQty.Result.Result.Rows.Count > 0 ? (int)AltQty.Result.Result.Rows[0].ItemArray[0] : 0;
-                        var Rate = IStockAdjust.FillRateAmount(itemCCode, YearCode, uniquebatchno, batchno);
-                        var ActualRate = Rate.Result.Result != null && Rate.Result.Result.Rows.Count > 0 ? (int)Rate.Result.Result.Rows[0].ItemArray[0] : 0;
 
-                        var ActualStock = Convert.ToSingle(worksheet.Cells[row, 5].Value.ToString());
+                        var AltQty = IStockAdjust.GetAltUnitQty(itemCCode, 0, worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock);
+                        var AltQtyResult = AltQty.Result.Result != null && AltQty.Result.Result.Rows.Count > 0 ? (decimal)AltQty.Result.Result.Rows[0].ItemArray[0] : 0;
+                        var Rate = IStockAdjust.FillRateAmount(itemCCode, YearCode, uniquebatchno, batchno);
+                        var ActualRate = Rate.Result.Result != null && Rate.Result.Result.Rows.Count > 0 ? (decimal)Rate.Result.Result.Rows[0].ItemArray[0] : 0;
+                        var cellValue = worksheet.Cells[row, 5].Value;
+
+                        decimal ExcelRate = 0;
+
+                        var cellrate = worksheet.Cells[row, 11].Value;
+
+                        if (cellrate != null && decimal.TryParse(cellrate.ToString(), out ExcelRate))
+                        {
+                            if (ExcelRate != 0)
+                            {
+                                ActualRate = ExcelRate;
+                            }
+                        }
+
+
+
+
+                        if (cellValue == null ||
+                            !decimal.TryParse(cellValue.ToString().Trim(),
+                            NumberStyles.Any,
+                            CultureInfo.InvariantCulture,
+                            out decimal actualStock))
+                        {
+                            errors.Add($"Invalid ActualStock at row {row}");
+                            continue;
+                        }
+                        var ActualStock = Convert.ToDecimal(worksheet.Cells[row, 5].Value.ToString());
                         var AdjQty = ActualStock - (worksheet.Cells[row, 1].Value.ToString() == "S" ? StoreLotStockResult : WCLotStockResult);
                         var AdjType = AdjQty > 0 ? "+" : "-";
-                        var Amount = (worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock) * ActualRate;
+                        //var Amount = (worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock) * ActualRate;
+                        var Amount = ActualStock * ActualRate;
 
                         //data.Add(new StockAdjustmentModel()
                         //{
@@ -927,7 +972,24 @@ namespace eTactWeb.Controllers
                         //    StockAdjustmentDate ="01/feb/2025"
                         //    //StockDateResult.ToString()
                         //});
+                        string partCode = worksheet.Cells[row, 2].Value?.ToString().Trim();
 
+
+                        bool duplicate = data.Any(x =>
+                  x.ItemCode == itemCCode &&
+                  x.Storeid == storeIdResult &&
+                  x.Wcid == WCResult &&
+                  x.uniqbatchno == uniquebatchno);
+
+                        if (duplicate)
+                        {
+                            return BadRequest(new
+                            {
+                                status = "duplicate",
+                                message = $"Duplicate entry for PartCode {partCode} at row {row}"
+                            });
+
+                        }
                         data.Add(new StockAdjustmentModel()
                         {
                             StoreWorkCenter = worksheet.Cells[row, 1].Value.ToString(),
@@ -935,10 +997,10 @@ namespace eTactWeb.Controllers
                             ItemName = itemName,
                             StoreName = worksheet.Cells[row, 3].Value?.ToString() ?? string.Empty,
                             WCName = worksheet.Cells[row, 4].Value?.ToString() ?? string.Empty,
-                            ActualStockQty = Convert.ToSingle(worksheet.Cells[row, 5].Value.ToString()),
+                            ActualStockQty = Convert.ToDecimal(worksheet.Cells[row, 5].Value.ToString()),
                             Unit = worksheet.Cells[row, 6].Value.ToString(),
                             altUnit = worksheet.Cells[row, 7].Value?.ToString() ?? string.Empty,
-                            batchno = SlipNo,
+                            batchno = batchno,
                             uniqbatchno = UniqueBatchNo,
                             reasonOfAdjustment = worksheet.Cells[row, 10].Value?.ToString() ?? string.Empty,
                             TotalStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock,
@@ -951,11 +1013,11 @@ namespace eTactWeb.Controllers
                             ItemCode = itemCCode,
                             Wcid = WCResult,
                             Storeid = storeIdResult,
-                            StockAdjustmentDate = "01/feb/2025"
+                            StockAdjustmentDate = DateTime.Now.ToString("dd/MMM/yyyy")
                             //StockDateResult.ToString()
                         });
 
-                        
+
                     }
                     if (errors.Count > 0)
                     {
@@ -982,17 +1044,17 @@ namespace eTactWeb.Controllers
                         SeqNo = cnt++,
                         ItemCode = Convert.ToInt32(row["ItemCode"]),
                         Unit = row["Unit"].ToString(),
-                        LotStock = Convert.ToInt32(row["LotStock"]),
-                        TotalStock = Convert.ToInt32(row["TotalStock"]),
+                        LotStock = Convert.ToDecimal(row["LotStock"]),
+                        TotalStock = Convert.ToDecimal(row["TotalStock"]),
                         altUnit = row["altUnit"].ToString(),
-                        AltQty = Convert.ToInt32(row["AltQty"]),
-                        ActualStockQty = Convert.ToInt32(row["ActuleStockQty"]),
-                        AdjQty = Convert.ToInt32(row["AdjQty"]),
+                        AltQty = Convert.ToDecimal(row["AltQty"]),
+                        ActualStockQty = Convert.ToDecimal(row["ActuleStockQty"]),
+                        AdjQty = Convert.ToDecimal(row["AdjQty"]),
                         AdjType = row["AdjType"].ToString(),
                         Storeid = Convert.ToInt32(row["storeid"]),
                         Wcid = Convert.ToInt32(row["wcid"].ToString()),
-                        Rate = Convert.ToInt32(row["rate"]),
-                        Amount = Convert.ToInt32(row["Amount"].ToString()),
+                        Rate = Convert.ToDecimal(row["rate"]),
+                        Amount = Convert.ToDecimal(row["Amount"].ToString()),
                         batchno = row["batchno"].ToString(),
                         uniqbatchno = row["uniquebatchno"].ToString(),
                         reasonOfAdjustment = row["reasonOfAdjustment"].ToString(),

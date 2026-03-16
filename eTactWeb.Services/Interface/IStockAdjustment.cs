@@ -22,7 +22,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillLotStock(int ItemCode, int Storeid, string UniqueBatchNo, string BatchNo);
         Task<ResponseResult> FillRateAmount(int ItemCode, int YearCode, string UniqueBatchNo = "", string BatchNo = "");
         Task<ResponseResult> FillTotalStock(int ItemCode, int Storeid);
-        Task<ResponseResult> GetAltUnitQty(int ItemCode, float AltQty, float UnitQty);
+        Task<ResponseResult> GetAltUnitQty(int ItemCode, decimal AltQty, decimal UnitQty);
         Task<ResponseResult> FillWorkCenter(string Flag);
         Task<ResponseResult> CheckLastTransDate(string TransDate, int ItemCode, int StoreWC, int YearCode, string batchno, string uniquebatchno, string Flag);
         Task<ResponseResult> FillStore(string Flag);

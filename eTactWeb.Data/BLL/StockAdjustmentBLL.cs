@@ -77,7 +77,7 @@ namespace eTactWeb.Data.BLL
         {
             return await _StockAdjustmentDAL.CheckLastTransDate(TransDate, ItemCode, StoreWC, YearCode, batchno, uniquebatchno, Flag);
         }
-        public async Task<ResponseResult> GetAltUnitQty(int ItemCode, float AltQty, float UnitQty)
+        public async Task<ResponseResult> GetAltUnitQty(int ItemCode, decimal AltQty, decimal UnitQty)
         {
             return await _StockAdjustmentDAL.GetAltUnitQty(ItemCode, AltQty, UnitQty);
         }

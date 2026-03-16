@@ -463,20 +463,20 @@ namespace eTactWeb.Data.DAL
                         PartCode = row["PartCode"].ToString(),
                         ItemName = row["ItemName"].ToString(),
                         Unit = row["Unit"].ToString(),
-                        LotStock = Convert.ToSingle(row["LotStock"]),
-                        TotalStock = Convert.ToSingle(row["TotalStock"]),
+                        LotStock = Convert.ToDecimal(row["LotStock"]),
+                        TotalStock = Convert.ToDecimal(row["TotalStock"]),
                         altUnit = row["altUnit"].ToString(),
-                        AltQty = Convert.ToSingle(row["AltQty"]),
+                        AltQty = Convert.ToDecimal(row["AltQty"]),
                         ActualStockQty = Convert.ToInt32(row["ActuleStockQty"]),
-                        AdjQty = Convert.ToSingle(row["AdjQty"]),
+                        AdjQty = Convert.ToDecimal(row["AdjQty"]),
                         AdjType = row["AdjType"].ToString(),
                         Storeid = Convert.ToInt32(row["storeid"]),
                         StoreName = row["Store_Name"].ToString(),
                         Wcid = Convert.ToInt32(row["wcid"].ToString()),
                         WCName = row["WorkCenter"].ToString(),
-                        Rate = Convert.ToSingle(row["rate"]),
-                        Amount = Convert.ToSingle(row["Amount"].ToString()),
-                        Minimumlevel = Convert.ToSingle(row["MinimumLevel"].ToString()),
+                        Rate = Convert.ToDecimal(row["rate"]),
+                        Amount = Convert.ToDecimal(row["Amount"].ToString()),
+                        Minimumlevel = Convert.ToDecimal(row["MinimumLevel"].ToString()),
                         batchno = row["batchno"].ToString(),
                         uniqbatchno = row["uniquebatchno"].ToString(),
                         reasonOfAdjustment = row["reasonOfAdjutment"].ToString(),
@@ -752,7 +752,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        internal async Task<ResponseResult> GetAltUnitQty(int ItemCode, float AltQty, float UnitQty)
+        internal async Task<ResponseResult> GetAltUnitQty(int ItemCode, decimal AltQty, decimal UnitQty)
         {
             var _ResponseResult = new ResponseResult();
             try

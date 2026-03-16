@@ -61,20 +61,20 @@ namespace eTactWeb.DOM.Models
         public string VahicleName { get; set; }
         public string GroupName { get; set; }
         public string Unit { get; set; }
-        public float LotStock { get; set; }
-        public float Minimumlevel { get; set; }
-        public float TotalStock { get; set; }
+        public decimal LotStock { get; set; }
+        public decimal Minimumlevel { get; set; }
+        public decimal TotalStock { get; set; }
         public string altUnit { get; set; }
-        public float AltQty { get; set; }
-        public float ActualStockQty { get; set; }
-        public float AdjQty { get; set; }
+        public decimal AltQty { get; set; }
+        public decimal ActualStockQty { get; set; }
+        public decimal AdjQty { get; set; }
         public string AdjType { get; set; }
         public int Storeid { get; set; }
         public string StoreName { get; set; }
         public int Wcid { get; set; }
         public string WCName { get; set; }
-        public float Rate { get; set; }
-        public float Amount { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Amount { get; set; }
         public string batchno { get; set; }
         public string uniqbatchno { get; set; }
         public string reasonOfAdjustment { get; set; }
@@ -89,15 +89,15 @@ namespace eTactWeb.DOM.Models
         public int EntryId { get; set; }
         public int YearCode { get; set; }
         public string Unit { get; set; }
-        public float TotalStock { get; set; }
-        public float LotStock { get; set; }
+        public decimal TotalStock { get; set; }
+        public decimal LotStock { get; set; }
         public string altUnit { get; set; }
-        public float AltQty { get; set; }
-        public float AdjQty { get; set; }
-        public float ActuleStockQty { get; set; }
+        public decimal AltQty { get; set; }
+        public decimal AdjQty { get; set; }
+        public decimal ActuleStockQty { get; set; }
         public string AdjType { get; set; }
-        public float Rate { get; set; }
-        public float Amount { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Amount { get; set; }
         public string batchno { get; set; }
         public string uniquebatchno { get; set; }
         public int Storeid { get; set; }
@@ -142,8 +142,8 @@ namespace eTactWeb.DOM.Models
         public string ItemName { get; set; }
         public string StoreName { get; set; }
         public string WCName { get; set; }
-        public float ActualStock { get; set; }
-        public float AdjStock { get; set; }
+        public decimal ActualStock { get; set; }
+        public decimal AdjStock { get; set; }
         public string Unit { get; set; }
         public string? AltUnit { get; set; }
         public string? batchno { get; set; }
