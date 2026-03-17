@@ -955,17 +955,19 @@ namespace eTactWeb.Controllers
 
                         }
                        
-                        var ActualStock = Convert.ToDecimal(worksheet.Cells[row, 5].Value.ToString());
+                        decimal ActualStock = Convert.ToDecimal(worksheet.Cells[row, 5].Value.ToString());
                         decimal AdjQty = 0;
                         if (isadd == "Y")
                         {
                              AdjQty = ActualStock;
+                            ActualStock = GetStoreTotalStock + AdjQty;
                         }
                         else
                         {
                              AdjQty = ActualStock - (worksheet.Cells[row, 1].Value.ToString() == "S" ? StoreLotStockResult : WCLotStockResult);
 
                         }
+                        
                         var AdjType = AdjQty > 0 ? "+" : "-";
                         //var Amount = (worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock) * ActualRate;
                         var Amount = ActualStock * ActualRate;
@@ -1021,7 +1023,12 @@ namespace eTactWeb.Controllers
                             ItemName = itemName,
                             StoreName = worksheet.Cells[row, 3].Value?.ToString() ?? string.Empty,
                             WCName = worksheet.Cells[row, 4].Value?.ToString() ?? string.Empty,
-                            ActualStockQty = Convert.ToDecimal(worksheet.Cells[row, 5].Value.ToString()),
+                            //if (isadd == "Y")
+
+                            //ActualStockQty = Convert.ToDecimal(worksheet.Cells[row, 5].Value.ToString()),
+
+                            ActualStockQty= ActualStock,
+
                             Unit = worksheet.Cells[row, 6].Value.ToString(),
                             altUnit = worksheet.Cells[row, 7].Value?.ToString() ?? string.Empty,
                             batchno = batchno,

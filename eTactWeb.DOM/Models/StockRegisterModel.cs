@@ -26,6 +26,10 @@ namespace eTactWeb.DOM.Models
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public IList<StockRegisterDetail>? StockRegisterDetail { get; set; }
+
+        public SaleRejectionFilter Filters { get; set; }
+        public List<DashboardColumn> Headers { get; set; }
+        public List<Dictionary<string, object>> Rows { get; set; }
     }
     public class StockRegisterDetail
     {

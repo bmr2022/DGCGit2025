@@ -104,19 +104,7 @@
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ReportType" class="form-label">Report Type</label>
                                     <select asp-for="ReportType" class="form-select">
-                                        <option disabled value="">-Select-</option>
-                                        <option selected value="STOCKSUMMARY">STOCK SUMMARY</option>
-                                        <option value="STOCKDETAIL">DETAIL STOCK REPORT</option>
-                                        <option value="SHOWALLSTORESTOCK">ALL STORE STOCK</option>
-                                        <option value="STOCKWITHZEROINVENTORY">SUMMARY WITH ZERO INVENTORY</option>
-                                        <option value="STOCKSUMMARY">Show only balance</option>
-                                        <option value="SHOWONLYRECDATA">Show only rec</option>
-                                        <option value="SHOWONLYISSUEDATA">Show only issue</option>
-                                        <option value="BATCHWISESTOCKSUMMARY">Batch Wise Summary</option>
-                                        <option value="STOCKSUMMARY">STORE + WIP STOCK SUMMARY</option>
-                                        <option value="SHOWALLSTORE+WIPSTOCK">STORE + WIP ALL STORE STOCK</option>
-                                        <option value="SHOWALLSTORE+WIPSTOCK+JOBWORK">SHOW ALL STORE WITH JW STOCK+RET CHALLAN</option>
-                                        <option value="NegativeStock">Show Negative Stock</option>
+                                       
                                     </select>
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
@@ -222,6 +210,9 @@
             $('#PartCode').select2(); */
             $('#ItemGroupName').select2();
             $('#ItemType').select2();
+            $('#ReportType').empty();
+            
+            FillReportType("SPReportSTockRegister", "");
             FillItemGroup(); 
             FillItemType();
           /*   FillItemName();
@@ -269,6 +260,11 @@
 
             // Open in new tab
             window.open(url, '_blank');
+        });
+        $(document).on('click', '.page-btn', function (e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            loadPage(page);
         });
 
         function loadPage(pageNumber) {
@@ -339,7 +335,7 @@
 
         $('#sendToExcel').click(function () {
             var reportType = $('#ReportType').val(); // assuming there's a dropdown or input with id="ReportType"
-            window.location.href = '/StockRegister/ExportStockRegisterToExcel?ReportType=' + encodeURIComponent(reportType);
+            window.location.href = '/StockRegister/ExportStockregisterExcel?ReportType=' + encodeURIComponent(reportType);
         });
 
                         document.getElementById('sendToPDF').addEventListener('click', async () => {
@@ -407,6 +403,50 @@
             var dateString = day + "/" + month + "/" + year;
             return dateString;
         }
+        function calculateFooterTotalsSafe() {
+
+            let columnSums = {};
+
+            $('#SRDashboardGrid tbody tr').each(function () {
+
+                $(this).find('td[data-field]').each(function () {
+
+                    let field = $(this).data('field');
+                    let text = $(this).text().trim();
+
+                    if (!columnSums[field]) {
+                        columnSums[field] = 0;
+                    }
+
+                    let cleanText = text.replace(/,/g, '');
+
+                    if (cleanText === '') return;
+
+                    if (/[^0-9.\-]/.test(cleanText)) return;
+
+                    let value = parseFloat(cleanText);
+                    if (!isNaN(value)) {
+                        columnSums[field] += value;
+                    }
+                });
+            });
+
+            // ✅ Normal column totals
+            for (let field in columnSums) {
+                if (field !== "TotalStock") {
+                    $('#tfoot_' + field).text(columnSums[field].toFixed(2));
+                }
+            }
+
+            // ✅ Custom TotalStock formula
+            let opn = columnSums["OpnStk"] || 0;
+            let rec = columnSums["RecQty"] || 0;
+            let iss = columnSums["IssQty"] || 0;
+
+            let totalStock = opn + rec - iss;
+
+            $('#tfoot_TotalStock').text(totalStock.toFixed(2));
+        }
 
         function GetStockRegisterData() {
              
@@ -420,7 +460,8 @@
                     $('#divStockMainRegister').empty();
                     $('#divStockMainRegister').html(result);
                     $('#totalRows').text($('#divStockMainRegister tr').length - 1);
-                    countAllTotal();
+                    /* countAllTotal(); */
+                    calculateFooterTotalsSafe();
                 }
             });
         }
@@ -430,7 +471,7 @@
             var searchString = $(this).val().trim();
             var ReportType = $('#ReportType').val();
             $.ajax({
-                    url: "/StockRegister/GlobalSearch?searchString=" + searchString + "&ReportType=" + ReportType,
+                    url: "/StockRegister/GlobalSearch?searchString=" + searchString ,
 
                 type: "GET",
                 data: { searchString: searchString },
@@ -439,13 +480,17 @@
                     $('#divStockMainRegister').empty();
                     $('#divStockMainRegister').html(data);
                     $('#totalRows').text($('#divStockMainRegister tr').length - 1);
-                    countAllTotal();
+                    /* countAllTotal(); */
+                     calculateFooterTotalsSafe();
                 },
                 error: function () {
                     console.log("Error fetching search results.");
                 }
             });
         });
+
+
+        
 
       
 

@@ -1,235 +1,62 @@
 ﻿@model eTactWeb.DOM.Models.StockRegisterModel
-
-
-@if (Model.ReportMode == "STOCKSUMMARY")
-{
-    <partial name="_StockSummaryReport" />
-}
-else if (Model.ReportMode == "SHOWALLSTORESTOCK")
-{
-    <partial name="_ShowAllStoreStockReport" />
-
-}
-else if (Model.ReportMode == "STOCKWITHZEROINVENTORY")
-{
-    <partial name="_StockSummaryReport" />
-
-}
-else if (Model.ReportMode == "OnlyBalance")
-{
-    <partial name="_StockSummaryReport" />
-
-}
-else if (Model.ReportMode == "SHOWONLYRECDATA")
-{
-    <partial name="_ShowOnlyRecReport" />
-
-}
-else if (Model.ReportMode == "SHOWONLYISSUEDATA")
-{
-    <partial name="_ShowOnlyIssueReport" />
-
-}
-else if (Model.ReportMode == "BATCHWISESTOCKSUMMARY")
-{
-    <partial name="_BatchWiseSummaryReport" />
-
-}
-else if (Model.ReportMode == "SHOWALLSTORE+WIPSTOCK")
-{
-    <partial name="_ShowAllStockandWIPStock" />
-
-}
-else if (Model.ReportMode == "SHOWALLSTORE+WIPSTOCK+JOBWORK")
-{
-    <partial name="_ShowAllStoreWIPandJW" />
-
-}
-else if (Model.ReportMode == "NegativeStock")
-{
-    <partial name="_ShowNegativeStockReport" />
-
-}
-else
-{
-    <div class="table-responsive" style="max-height:300px;overflow-y:auto;">
-        <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
-            <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
-                <tr>
-                   
-                    <th>Sr#</th>
-                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
-                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Transaction Type</th>
-                    <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Party Name</th>
-                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill No</th>
-
-
-                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Trans Date</th>
-                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
-                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
-                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Opn Stk</th>
-                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec Qty</th>
-                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Iss Qty</th>
-                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tot Stk</th>
-                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Trans SlipNo</th>
-                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
-                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
-                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
-                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Min Level</th>
-                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
-                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Stock</th>
-                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Date</th>
-                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN No</th>
-                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No</th>
-                    <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
-                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Id</th>
-                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt rec Qty</th>
-                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Iss Qty</th>
-                    <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Name</th>
-                    <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>package</th>
-                </tr>
-            </thead>
-            <tbody id="divStockRegisterBody">
-                @{
-                    var @Cntr = 0;
-                    if (Model.StockRegisterDetail == null)
-                    {
-                        <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
-                    }
-                    else
-                    {
-                        foreach (var item in Model.StockRegisterDetail)
-                        {
-                            Cntr = Cntr + 1;
-
-                            <tr id="SAGridRow-@Cntr">
-                               
-                                       
-                                <th>@Cntr</th>
-                                <td>@item.StoreName<input type="hidden" asp-for="TotalRecords" value="@item.TotalRecords" /></td>
-                                <td>@item.TransactionType</td>
-                                <td>@item.PartyName</td>
-                                <td>@item.BillNo</td>
-                                @if (item.TransDate != null)
-                                {
-                                    <td>@item.TransDate.Split(" ")[0]</td>
-                                }
-                                else
-                                {
-                                    <td>@item.TransDate</td>
-                                }
-                                <td style="background-color: #e09ef0;">@item.PartCode</td>
-                                <td>@item.ItemName</td>
-                                <td id="opnStk-@Cntr">@item.OpnStk</td>
-                                <td id="recQty-@Cntr">@item.RecQty</td>
-                                <td id="issQty-@Cntr">@item.IssQty</td>
-                                @if (item.TotStk < 0)
-                                {
-
-                                    <td id="totStk-@Cntr" style="color:red;">@item.TotStk</td>
-                                }
-                                else
-                                {
-                                    <td id="totStk-@Cntr">@item.TotStk</td>
-
-                                }
-                                <td>@item.TransSlipNo</td>
-                                <td>@item.Unit</td>
-                                <td id="rate-@Cntr">@item.Rate</td>
-                                <td id="amount-@Cntr">@item.Amount</td>
-                                <td>@item.MinLevel</td>
-                                <td>@item.AltUnit</td>
-                                <td>@item.AltStock</td>
-                               
-                                @if (item.BillDate != null)
-                                {
-                                    <td>@item.BillDate.Split(" ")[0]</td>
-                                }
-                                else
-                                {
-                                    <td>@item.BillDate</td>
-                                }
-                              
-                                <td>@item.MRNNo</td>
-                                <td>@item.BatchNo</td>
-                                <td>@item.UniquebatchNo</td>
-                                <td>@item.EntryId</td>
-                                <td>@item.AltRecQty</td>
-                                <td>@item.AltIssQty</td>
-                                <td>@item.GroupName</td>
-                                <td>@item.package</td>
-                            </tr>
-                        }
-                    }
-                }
-
-            </tbody>
-        </table>
-    </div>
-  
-
-    int displayedRows = Model.PageNumber * Model.PageSize;
-    if (displayedRows > Model.TotalRecords)
-    {
-        displayedRows = Model.TotalRecords;
-    }
-
-<center><strong>TOTAL ROWS: <span>@displayedRows</span></strong></center>
-}
-    <div class="card-footer d-flex justify-content-between align-items-center">
-        <div>
-            <button type="button" class="btn btn-link bg-graident" onclick="back();">
-                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>BACK
-            </button>
-        </div>
-        @{
-            int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
-        }
-        @if (Model.TotalRecords > 0)
-        {
-            <ul class="pagination d-flex align-items-center">
-                @if (Model.PageNumber > 1)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="#" onclick="GlobalSearch(@(Model.PageNumber - 1)); return false;">Previous</a>
-                    </li>
-                }
-
-                @if (Model.PageNumber > 3)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="#" onclick="loadPage(1); return false;">1</a>
-                    </li>
-                    <li class="page-item disabled"><a class="page-link">...</a></li>
-                }
-
-                @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
-                {
-                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                        <a class="page-link" href="#" onclick="loadPage(@i); return false;">@i</a>
-                    </li>
-                }
-
-                @if (Model.PageNumber < totalPages - 2)
-                {
-                    <li class="page-item disabled"><a class="page-link">...</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" onclick="loadPage(@totalPages); return false;">@totalPages</a>
-                    </li>
-                }
-
-                @if (Model.PageNumber < totalPages)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber + 1)); return false;">Next</a>
-                    </li>
-                }
-            </ul>
-        }
-    </div>
-
+@using eTactWeb.Data.Common
+@inject EncryptDecrypt encryptDecrypt
 
 <style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+        }
+
+    .table-container {
+        max-height: 350px; /* 👈 set max height here */
+        overflow-y: auto;
+    }
+
+   
+   
+
+
+    table tfoot {
+        position: sticky;
+        bottom: 0;
+        background: linear-gradient(180deg, #b3e0f5, #80d4f0) !important;
+        color: #222;
+        z-index: 1;
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        height: 30px;
+    }
+
+        table tfoot td {
+            font-weight: bold;
+            border-top: 2px solid #dee2e6;
+            font-size: 13px;
+            color: #222;
+        }
+
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #SRDashboardGrid {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #SOThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
 
     .sort-icon {
         padding: 5px;
@@ -247,10 +74,191 @@ else
         vertical-align: super;
     }
 
-    #dashRThead th {
-        background-color: #127387;
-        position: sticky;
-        top: 0;
-        z-index: 1;
+    #SRDashboardGrid tbody td {
+        font-weight: normal !important;
     }
+     .stock-warning {
+    background-color: #ffcccc !important; /* light red */
+    color: #000;
+}
 </style>
+
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0"
+           id="SRDashboardGrid">
+
+        <thead class="bg-gradient card-headerBG text-light" id="SOThead">
+            <tr>
+                <th>Sr#</th>
+          
+                @if (Model.Headers != null && Model.Headers.Any())
+                {
+                    var colIndex = 1;
+                    foreach (var col in Model.Headers)
+                    {
+                        <th data-columnno="@colIndex" data-sortorder="asc" class="sortCol">
+                            <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
+                            @col.Title
+                        </th>
+                        colIndex++;
+                    }
+                }
+            </tr>
+        </thead>
+
+        <tbody id="divSRDashboardGrid">
+            @if (Model.Rows == null || Model.Rows.Count == 0)
+            {
+                <tr class="text-center">
+                    <td colspan="@((Model.Headers?.Count ?? 0) + 2)" class="text-black-50">
+                        <strong>NO DATA FOUND</strong>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                int Cntr = 0;
+
+                foreach (var row in Model.Rows)
+                {
+                    Cntr++;
+                    bool highlightRow = false;
+
+                    if (Model.ReportType == "STOCKSUMMARY")
+                    {
+                        if (row.ContainsKey("TotalStock") && row["TotalStock"] != null)
+                        {
+                            decimal totalStockValue = 0;
+
+                            if (decimal.TryParse(row["TotalStock"].ToString(), out totalStockValue))
+                            {
+                                if (totalStockValue <= 0)
+                                {
+                                    highlightRow = true;
+                                }
+                            }
+                        }
+                    }
+                    <tr class="@(highlightRow ? "stock-warning" : "")">
+                        <th>@Cntr</th>
+
+
+                        @if (Model.Headers != null && Model.Headers.Any())
+                        {
+                            foreach (var col in Model.Headers)
+                            {
+                                <td class="grid-cell" data-field="@col.Field">
+                                    @{
+                                        if (row.ContainsKey(col.Field) && row[col.Field] != null)
+                                        {
+                                            var value = row[col.Field];
+
+                                            if (value is decimal || value is double || value is float)
+                                            {
+                                                <span class="num">@string.Format("{0:0.00}", value)</span>
+                                            }
+                                            else
+                                            {
+                                                @value
+                                            }
+                                        }
+                                    }
+                                </td>
+
+                            }
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+
+        <tfoot class="bg-light fw-bold">
+            <tr>
+                <!-- Sr# column -->
+                <td></td>
+
+                @if (Model.Headers != null && Model.Headers.Any())
+                {
+                    bool isFirst = true;
+                    foreach (var col in Model.Headers)
+                    {
+                        if (isFirst)
+                        {
+                            <td>Total</td>
+                            isFirst = false;
+                        }
+                        else
+                        {
+                            <td id="tfoot_@col.Field"></td>
+                        }
+                    }
+                }
+            </tr>
+        </tfoot>
+
+    </table>
+</div>
+@{
+    int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+}
+
+<center>
+    <strong>
+        <span style="margin-right: 30px;">TOTAL ROWS  : <span>@displayedRows</span></span>
+        <span>TOTAL RECORDS : <span>@Model.TotalRecords</span></span>
+    </strong>
+</center>
+
+
+
+@if (Model.TotalRecords > 0)
+{
+    //int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+
+    <ul class="pagination d-flex align-items-center">
+
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="@(Model.PageNumber - 1)" href="#">Previous</a>
+            </li>
+        }
+
+        @if (Model.PageNumber > 3)
+        {
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="1" href="#">1</a>
+            </li>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+        }
+
+        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link page-btn" data-page="@i" href="#">@i</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages - 2)
+        {
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="@totalPages" href="#">@totalPages</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="@(Model.PageNumber + 1)" href="#">Next</a>
+            </li>
+        }
+
+    </ul>
+}
+

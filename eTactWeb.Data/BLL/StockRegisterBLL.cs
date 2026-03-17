@@ -18,13 +18,15 @@ namespace eTactWeb.Data.BLL
         private readonly IDataLogic _DataLogicDAL;
         private readonly StockRegisterDAL _StockRegisterDAL;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ICommon _common;
 
-        public StockRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
+        public StockRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService, ICommon common)
         {
             _DataLogicDAL = iDataLogic;
-            _StockRegisterDAL = new StockRegisterDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
+            _StockRegisterDAL = new StockRegisterDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService,common);
+            _common = common;
         }
-        public async Task<StockRegisterModel> GetStockRegisterData(string FromDate, string ToDate, string PartCode,string ItemName, string ItemGroup, string ItemType,int StoreId, string ReportType,string BatchNo,string UniqueBatchNo)
+        public async Task<ResponseResult> GetStockRegisterData(string FromDate, string ToDate, string PartCode,string ItemName, string ItemGroup, string ItemType,int StoreId, string ReportType,string BatchNo,string UniqueBatchNo)
         {
             return await _StockRegisterDAL.GetStockRegisterData(FromDate, ToDate,PartCode,ItemName,ItemGroup,ItemType,StoreId,ReportType,BatchNo,UniqueBatchNo);
         }

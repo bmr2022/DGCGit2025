@@ -1,12 +1,16 @@
-﻿using eTactWeb.Data.Common;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
+using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
+using FastReport;
+using FastReport.Web;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using eTactWeb.DOM.Models;
+using Org.BouncyCastle.Ocsp;
+using PdfSharp.Drawing.BarCodes;
+using System.Data;
 using System.Globalization;
-using ClosedXML.Excel;
-using FastReport.Web;
-using FastReport;
 
 namespace eTactWeb.Controllers
 {
@@ -69,131 +73,243 @@ namespace eTactWeb.Controllers
             model.StockRegisterDetail = new List<StockRegisterDetail>();
             return View(model);
         }
+        public IActionResult ExportStockregisterExcel(string ReportType)
+        {
+            string json = HttpContext.Session.GetString("StockRegisterList");
+
+            if (string.IsNullOrEmpty(json))
+                return Content("No data available for export.");
+
+            // Deserialize as dynamic list
+            var data = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(json);
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("StockRegister");
+
+            if (data != null && data.Count > 0)
+            {
+                // 🔥 Add Headers
+                int col = 1;
+                foreach (var key in data[0].Keys)
+                {
+                    worksheet.Cell(1, col).Value = key;
+                    worksheet.Cell(1, col).Style.Font.Bold = true;
+                    col++;
+                }
+
+                // 🔥 Add Rows
+                int row = 2;
+                foreach (var item in data)
+                {
+                    col = 1;
+                    foreach (var value in item.Values)
+                    {
+                        worksheet.Cell(row, col).Value = value?.ToString();
+                        col++;
+                    }
+                    row++;
+                }
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "StockRegister.xlsx"
+            );
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetStockRegisterData(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int StoreId, string ReportType, string BatchNo, string UniqueBatchNo, int pageNumber = 1, int pageSize = 500, string SearchBox = "")
         {
+            
+            //var fullList = (await _IStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, StoreId, ReportType, BatchNo, UniqueBatchNo))?.StockRegisterDetail ?? new List<StockRegisterDetail>();
+            var YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             var model = new StockRegisterModel();
-            model.ReportMode = ReportType;
-            var fullList = (await _IStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, StoreId, ReportType, BatchNo, UniqueBatchNo))?.StockRegisterDetail ?? new List<StockRegisterDetail>();
-            if (string.IsNullOrWhiteSpace(SearchBox))
+            var result = (await _IStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, StoreId, ReportType, BatchNo, UniqueBatchNo));
+            //model.ReportMode = Flag;
+            //model.ReqType = ReQType;
+           
+            if (result == null || !(result.Result is DataTable dt))
             {
-                model.TotalRecords = fullList.Count();
-                model.PageNumber = pageNumber;
-                model.PageSize = pageSize;
-
-                // Apply server-side paging here
-                model.StockRegisterDetail = fullList
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToList();
+                model.TotalRecords = 0;
+                model.Rows = new List<Dictionary<string, object>>();
+                return PartialView("_StockRegisterGrid", model);
             }
-            else
-            {
-                List<StockRegisterDetail> filteredResults;
-                if (string.IsNullOrWhiteSpace(SearchBox))
+
+            model.TotalRecords = dt.Rows.Count;
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+
+            model.Headers = dt.Columns
+                .Cast<DataColumn>()
+                .Select(c => new DashboardColumn
                 {
-                    filteredResults = fullList.ToList();
-                }
-                else
+                    Title = c.ColumnName,
+                    Field = c.ColumnName
+                })
+                .ToList();
+
+            //model.Rows = dt.AsEnumerable()
+            //    .Select(r => dt.Columns
+            //        .Cast<DataColumn>()
+            //        .ToDictionary(
+            //            c => c.ColumnName,
+            //            c => r[c] == DBNull.Value ? null : r[c]
+            //        ))
+            //    .ToList();
+
+            model.ReportType = ReportType;
+            model.Rows = dt.AsEnumerable()
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .Select(r => dt.Columns
+                .Cast<DataColumn>()
+                .ToDictionary(
+                    c => c.ColumnName,
+                    c => r[c] == DBNull.Value ? null : r[c]
+                ))
+            .ToList();
+            HttpContext.Session.SetString("StockRegisterList", JsonConvert.SerializeObject(dt));
+            return PartialView("_StockRegisterGrid", model);
+
+
+
+        }
+
+        [HttpGet]
+        public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 50)
+        {
+            StockRegisterModel model = new StockRegisterModel();
+
+            // 1️⃣ Get session data
+            string modelJson = HttpContext.Session.GetString("StockRegisterList");
+
+            if (string.IsNullOrWhiteSpace(modelJson))
+            {
+                model.Rows = new List<Dictionary<string, object>>();
+                model.Headers = new List<DashboardColumn>();
+                model.TotalRecords = 0;
+                return PartialView("_StockRegisterGrid", model);
+            }
+
+            // 2️⃣ Deserialize rows
+            var allRows = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(modelJson);
+
+            if (allRows == null || allRows.Count == 0)
+            {
+                model.Rows = new List<Dictionary<string, object>>();
+                model.Headers = new List<DashboardColumn>();
+                model.TotalRecords = 0;
+                return PartialView("_StockRegisterGrid", model);
+            }
+
+            // 3️⃣ Dynamic search (all columns)
+            var filteredRows = string.IsNullOrWhiteSpace(searchString)
+                ? allRows
+                : allRows.Where(row =>
+                    row.Values.Any(val =>
+                        val != null &&
+                        val.ToString()
+                           .Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                  .ToList();
+
+            // fallback → show all
+            if (filteredRows.Count == 0)
+                filteredRows = allRows;
+
+            // 4️⃣ Dynamic headers (from keys)
+            model.Headers = filteredRows.First()
+                .Keys
+                .Select(k => new DashboardColumn
                 {
-                    filteredResults = fullList
-                        .Where(i => i.GetType().GetProperties()
-                            .Where(p => p.PropertyType == typeof(string))
-                            .Select(p => p.GetValue(i)?.ToString())
-                            .Any(value => !string.IsNullOrEmpty(value) &&
-                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
-                        .ToList();
+                    Title = k,
+                    Field = k
+                })
+                .ToList();
 
+            // 5️⃣ Pagination
+            model.TotalRecords = filteredRows.Count;
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
 
-                    if (filteredResults.Count == 0)
-                    {
-                        filteredResults = fullList.ToList();
-                    }
-                }
-
-                model.TotalRecords = filteredResults.Count;
-                model.StockRegisterDetail = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-                model.PageNumber = pageNumber;
-                model.PageSize = pageSize;
-            }
-            if (ReportType == "NegativeStock")
-            {
-                string serializedGridForNegativeStock = JsonConvert.SerializeObject(fullList);
-                HttpContext.Session.SetString("KeyStockListNeg", serializedGridForNegativeStock);
-            }
-            else
-            {
-                string serializedGrid = JsonConvert.SerializeObject(fullList);
-                HttpContext.Session.SetString("KeyStockList", serializedGrid);
-            }
+            model.Rows = filteredRows
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             return PartialView("_StockRegisterGrid", model);
         }
-        [HttpGet]
-        public IActionResult GlobalSearch(string searchString,string ReportType, int pageNumber = 1, int pageSize = 500)
-        {
-            StockRegisterModel model = new StockRegisterModel();
-            if (string.IsNullOrWhiteSpace(searchString))
-            {
-                return PartialView("_StockRegisterGrid", new List<StockRegisterModel>());
-            }
-            string modelJson = "";
-            if (ReportType == "NegativeStock")
-            {
-                 modelJson = HttpContext.Session.GetString("KeyStockListNeg");
-            }
-            else
-            {
-                 modelJson = HttpContext.Session.GetString("KeyStockList");
-            }
+        //[HttpGet]
+        //public IActionResult GlobalSearch(string searchString,string ReportType, int pageNumber = 1, int pageSize = 500)
+        //{
+        //    StockRegisterModel model = new StockRegisterModel();
+        //    if (string.IsNullOrWhiteSpace(searchString))
+        //    {
+        //        return PartialView("_StockRegisterGrid", new List<StockRegisterModel>());
+        //    }
+        //    string modelJson = "";
+        //    if (ReportType == "NegativeStock")
+        //    {
+        //         modelJson = HttpContext.Session.GetString("KeyStockListNeg");
+        //    }
+        //    else
+        //    {
+        //         modelJson = HttpContext.Session.GetString("KeyStockList");
+        //    }
                 
-            List<StockRegisterDetail> stockRegisterViewModel = new List<StockRegisterDetail>();
-            if (!string.IsNullOrEmpty(modelJson))
-            {
-                stockRegisterViewModel = JsonConvert.DeserializeObject<List<StockRegisterDetail>>(modelJson);
-            }
-            if ( stockRegisterViewModel == null)
-            {
-                return PartialView("_StockRegisterGrid", new List<StockRegisterModel>());
-            }
+        //    List<StockRegisterDetail> stockRegisterViewModel = new List<StockRegisterDetail>();
+        //    if (!string.IsNullOrEmpty(modelJson))
+        //    {
+        //        stockRegisterViewModel = JsonConvert.DeserializeObject<List<StockRegisterDetail>>(modelJson);
+        //    }
+        //    if ( stockRegisterViewModel == null)
+        //    {
+        //        return PartialView("_StockRegisterGrid", new List<StockRegisterModel>());
+        //    }
 
-            List<StockRegisterDetail> filteredResults;
+        //    List<StockRegisterDetail> filteredResults;
 
-            if (string.IsNullOrWhiteSpace(searchString))
-            {
-                filteredResults = stockRegisterViewModel.ToList();
-            }
-            else
-            {
-                filteredResults = stockRegisterViewModel
-                    .Where(i => i.GetType().GetProperties()
-                        .Where(p => p.PropertyType == typeof(string))
-                        .Select(p => p.GetValue(i)?.ToString())
-                        .Any(value => !string.IsNullOrEmpty(value) &&
-                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
-                    .ToList();
+        //    if (string.IsNullOrWhiteSpace(searchString))
+        //    {
+        //        filteredResults = stockRegisterViewModel.ToList();
+        //    }
+        //    else
+        //    {
+        //        filteredResults = stockRegisterViewModel
+        //            .Where(i => i.GetType().GetProperties()
+        //                .Where(p => p.PropertyType == typeof(string))
+        //                .Select(p => p.GetValue(i)?.ToString())
+        //                .Any(value => !string.IsNullOrEmpty(value) &&
+        //                              value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+        //            .ToList();
 
 
-                if (filteredResults.Count == 0)
-                {
-                    filteredResults = stockRegisterViewModel.ToList();
-                }
-            }
+        //        if (filteredResults.Count == 0)
+        //        {
+        //            filteredResults = stockRegisterViewModel.ToList();
+        //        }
+        //    }
 
-            model.TotalRecords = filteredResults.Count;
-            model.StockRegisterDetail = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-            model.PageNumber = pageNumber;
-            model.PageSize = pageSize;
-            if (ReportType == "NegativeStock")
-            {
-                return PartialView("_ShowNegativeStockReport", model);
-            }
-            else
-            {
-                return PartialView("_StockRegisterGrid", model);
-            }
-            return null;
-        }
+        //    model.TotalRecords = filteredResults.Count;
+        //    model.StockRegisterDetail = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+        //    model.PageNumber = pageNumber;
+        //    model.PageSize = pageSize;
+        //    if (ReportType == "NegativeStock")
+        //    {
+        //        return PartialView("_ShowNegativeStockReport", model);
+        //    }
+        //    else
+        //    {
+        //        return PartialView("_StockRegisterGrid", model);
+        //    }
+        //    return null;
+        //}
         public async Task<JsonResult> FillItemName()
         {
             var JSON = await _IStockRegister.FillItemName();
@@ -243,423 +359,7 @@ namespace eTactWeb.Controllers
                 return Json(new { error = "An unexpected error occurred: " + ex.Message });
             }
         }
-        [HttpGet]
-        public async Task<IActionResult> ExportStockRegisterToExcel(string ReportType)
-        {
-            string modelJson;
-            if(ReportType== "NegativeStock")
-            {
-                 modelJson = HttpContext.Session.GetString("KeyStockListNeg");
-            }
-            else
-            {
-                 modelJson = HttpContext.Session.GetString("KeyStockList");
-            }
-            List<StockRegisterDetail> stockRegisterList = new List<StockRegisterDetail>();
-            if (!string.IsNullOrEmpty(modelJson))
-            {
-                stockRegisterList = JsonConvert.DeserializeObject<List<StockRegisterDetail>>(modelJson);
-            }
-
-            if (stockRegisterList == null)
-                return NotFound("No data available to export.");
-
-            using var workbook = new XLWorkbook();
-            var worksheet = workbook.Worksheets.Add("Stock Register");
-
-            var reportGenerators = new Dictionary<string, Action<IXLWorksheet, IList<StockRegisterDetail>>>
-            {
-                { "STOCKSUMMARY", ExportStockSummary },
-                { "STOCKDETAIL", ExportStockDetail },
-                { "SHOWALLSTORESTOCK", ExportSHOWALLSTORESTOCK },
-                { "STOCKWITHZEROINVENTORY", ExportStockSummary },
-
-                { "SHOWONLYRECDATA", ExportSHOWONLYRECDATA },                
-                { "SHOWONLYISSUEDATA", ExportSHOWONLYISSUEDATA },               
-                { "BATCHWISESTOCKSUMMARY", ExportBATCHWISESTOCKSUMMARY },            
-                
-                { "SHOWALLSTORE+WIPSTOCK", ExportSHOWALLSTORE_WIPSTOCK },               
-                { "SHOWALLSTORE+WIPSTOCK+JOBWORK", ExportSHOWALLSTORE_WIPSTOCK_JOBWORK },             
-                { "NegativeStock", ExportNegativeStock },
-                // Add more report types here if needed
-            };
-
-            if (reportGenerators.TryGetValue(ReportType, out var generator))
-            {
-                generator(worksheet, stockRegisterList);
-            }
-            else
-            {
-                return BadRequest("Invalid report type.");
-            }
-
-            worksheet.Columns().AdjustToContents();
-
-            using var stream = new MemoryStream();
-            workbook.SaveAs(stream);
-            stream.Position = 0;
-
-            // Dynamic file name with only date
-            string fileName = $"{ReportType}_Report_{DateTime.Now:dd-MMM-yyyy}.xlsx";
-
-            return File(
-                stream.ToArray(),
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                fileName
-            );
-        }
-        private void ExportStockSummary(IXLWorksheet sheet, IList<StockRegisterDetail> list)
-        {
-            string[] headers = {
-        "Sr#", "Store Name", "Part Code", "Item Name", "Opn Stk", "Rec Qty", "Iss Qty", "Tot Stk",
-        "Std Packing", "Unit", "Avg Rate", "Amount", "Min Level", "Alt Unit", "Alt Stock",
-        "Group Name", "Bin No", "Maximum Level", "Reorder Level"
-    };
-
-            for (int i = 0; i < headers.Length; i++)
-                sheet.Cell(1, i + 1).Value = headers[i];
-
-            int row = 2, srNo = 1;
-            foreach (var item in list)
-            {
-                sheet.Cell(row, 1).Value = srNo++;
-                sheet.Cell(row, 2).Value = item.StoreName;
-                sheet.Cell(row, 3).Value = item.PartCode;
-                sheet.Cell(row, 4).Value = item.ItemName;
-                sheet.Cell(row, 5).Value = item.OpnStk;
-                sheet.Cell(row, 6).Value = item.RecQty;
-                sheet.Cell(row, 7).Value = item.IssQty;
-                sheet.Cell(row, 8).Value = item.TotStk;
-                sheet.Cell(row, 9).Value = item.StdPacking;
-                sheet.Cell(row, 10).Value = item.Unit;
-                sheet.Cell(row, 11).Value = item.AvgRate;
-                sheet.Cell(row, 12).Value = item.Amount;
-                sheet.Cell(row, 13).Value = item.MinLevel;
-                sheet.Cell(row, 14).Value = item.AltUnit;
-                sheet.Cell(row, 15).Value = item.AltStock;
-                sheet.Cell(row, 16).Value = item.GroupName;
-                sheet.Cell(row, 17).Value = item.BinNo;
-                sheet.Cell(row, 18).Value = item.MaximumLevel;
-                sheet.Cell(row, 19).Value = item.ReorderLevel;
-                row++;
-            }
-        }
-        private void ExportStockDetail(IXLWorksheet sheet, IList<StockRegisterDetail> list)
-        {
-            string[] headers = {
-        "Sr#", "Store Name", "Transaction Type", "Trans Date", "Part Code", "Item Name", "Opn Stk",
-        "Rec Qty", "Iss Qty", "Tot Stk", "Unit", "Rate", "Amount", "Min Level", "Alt Unit",
-        "Alt Stock", "Bill No", "Bill Date", "Party Name", "MRN No", "Batch No", "Unique Batch No",
-        "Entry Id", "Alt Rec Qty", "Alt Iss Qty", "Group Name", "Package"
-    };
-
-            for (int i = 0; i < headers.Length; i++)
-                sheet.Cell(1, i + 1).Value = headers[i];
-
-            int row = 2, srNo = 1;
-            foreach (var item in list)
-            {
-                sheet.Cell(row, 1).Value = srNo++;
-                sheet.Cell(row, 2).Value = item.StoreName;
-                sheet.Cell(row, 3).Value = item.TransactionType;
-                sheet.Cell(row, 4).Value = item.TransDate;
-                sheet.Cell(row, 5).Value = item.PartCode;
-                sheet.Cell(row, 6).Value = item.ItemName;
-                sheet.Cell(row, 7).Value = item.OpnStk;
-                sheet.Cell(row, 8).Value = item.RecQty;
-                sheet.Cell(row, 9).Value = item.IssQty;
-                sheet.Cell(row, 10).Value = item.TotStk;
-                sheet.Cell(row, 11).Value = item.Unit;
-                sheet.Cell(row, 12).Value = item.Rate;
-                sheet.Cell(row, 13).Value = item.Amount;
-                sheet.Cell(row, 14).Value = item.MinLevel;
-                sheet.Cell(row, 15).Value = item.AltUnit;
-                sheet.Cell(row, 16).Value = item.AltStock;
-                sheet.Cell(row, 17).Value = item.BillNo;
-                sheet.Cell(row, 18).Value = item.BillDate;
-                sheet.Cell(row, 19).Value = item.PartyName;
-                sheet.Cell(row, 20).Value = item.MRNNo;
-                sheet.Cell(row, 21).Value = item.BatchNo;
-                sheet.Cell(row, 22).Value = item.UniquebatchNo;
-                sheet.Cell(row, 23).Value = item.EntryId;
-                sheet.Cell(row, 24).Value = item.AltRecQty;
-                sheet.Cell(row, 25).Value = item.AltIssQty;
-                sheet.Cell(row, 26).Value = item.GroupName;
-                sheet.Cell(row, 27).Value = item.package;
-                row++;
-            }
-        }
-
-        private void ExportSHOWALLSTORESTOCK(IXLWorksheet sheet, IList<StockRegisterDetail> list)
-        {
-            string[] headers = { "Sr#", "Item Name", "Part Code", "Total", "Unit", "Rate", "Amount", "Item Type", "Item Group", "Main Store", 
-                "Rej Store" };
-
-
-            // Header row
-            for (int i = 0; i < headers.Length; i++)
-                sheet.Cell(1, i + 1).Value = headers[i];
-
-            int row = 2;
-            int srNo = 1;
-
-            foreach (var item in list)
-            {
-                sheet.Cell(row, 1).Value = srNo++;               // Sr#
-                sheet.Cell(row, 2).Value = item.ItemName;         // Item Name
-                sheet.Cell(row, 3).Value = item.PartCode;         // Part Code
-                sheet.Cell(row, 4).Value = item.Total;            // Total
-                sheet.Cell(row, 5).Value = item.Unit;             // Unit
-                sheet.Cell(row, 6).Value = item.Rate;             // Rate
-                sheet.Cell(row, 7).Value = item.Amount;           // Amount
-                sheet.Cell(row, 8).Value = item.ItemType;         // Item Type
-                sheet.Cell(row, 9).Value = item.ItemGroup;        // Item Group
-                sheet.Cell(row, 10).Value = item.MAINSTORE;       // Main Store
-                sheet.Cell(row, 11).Value = item.REJSTORE;        // Rej Store
-
-                // Optional: Highlight negative stock just like UI
-                if (item.Total < 0)
-                {
-                    sheet.Cell(row, 4).Style.Font.FontColor = XLColor.Red;
-                }
-
-                row++;
-            }
-
-            // Optional: Auto adjust column width
-            sheet.Columns().AdjustToContents();
-        }
-
-        private void ExportSHOWONLYRECDATA(IXLWorksheet sheet, IList<StockRegisterDetail> list)
-        {
-            string[] headers = { "Sr#", "Store Name", "Transaction Type", "Trans Date", "Part Code", "Item Name", "Rec Qty", "Unit", "Rate", "Amount", "Bill No", "Bill Date", "Party Name", "MRN No", "Batch No", "Unique Batch No", "Entry Id", "Alt Rec Qty", "Group Name" };
-
-            for (int i = 0; i < headers.Length; i++)
-                sheet.Cell(1, i + 1).Value = headers[i];
-
-            int row = 2, srNo = 1;
-
-            foreach (var item in list)
-            {
-                sheet.Cell(row, 1).Value = srNo++;
-                sheet.Cell(row, 2).Value = item.StoreName;
-                sheet.Cell(row, 3).Value = item.TransactionType;
-                sheet.Cell(row, 4).Value = item.TransDate != null ? item.TransDate.Split(" ")[0] : item.TransDate;
-                sheet.Cell(row, 5).Value = item.PartCode;
-                sheet.Cell(row, 6).Value = item.ItemName;
-                sheet.Cell(row, 7).Value = item.RecQty;
-                sheet.Cell(row, 8).Value = item.Unit;
-                sheet.Cell(row, 9).Value = item.Rate;
-                sheet.Cell(row, 10).Value = item.Amount;
-                sheet.Cell(row, 11).Value = item.BillNo;
-                sheet.Cell(row, 12).Value = item.BillDate != null ? item.BillDate.Split(" ")[0] : item.BillDate;
-                sheet.Cell(row, 13).Value = item.PartyName;
-                sheet.Cell(row, 14).Value = item.MRNNo;
-                sheet.Cell(row, 15).Value = item.BatchNo;
-                sheet.Cell(row, 16).Value = item.UniquebatchNo;
-                sheet.Cell(row, 17).Value = item.EntryId;
-                sheet.Cell(row, 18).Value = item.AltRecQty;
-                sheet.Cell(row, 19).Value = item.GroupName;
-
-                row++;
-            }
-
-            sheet.Columns().AdjustToContents();
-        }
-
-        private void ExportSHOWONLYISSUEDATA(IXLWorksheet sheet, IList<StockRegisterDetail> list)
-        {
-            string[] headers = {
-        "Sr#", "Store Name", "Transaction Type", "Trans Date",
-        "Part Code", "Item Name", "Iss Qty", "Unit", "Rate", "Amount",
-        "Min Level", "Alt Unit", "Bill No", "Bill Date", "Party Name",
-        "MRN No", "Batch No", "Unique Batch No", "Entry Id",
-        "Alt Rec Qty", "Alt Iss Qty", "Group Name"
-    };
-
-            for (int i = 0; i < headers.Length; i++)
-                sheet.Cell(1, i + 1).Value = headers[i];
-
-            int row = 2, srNo = 1;
-
-            foreach (var item in list)
-            {
-                sheet.Cell(row, 1).Value = srNo++;
-                sheet.Cell(row, 2).Value = item.StoreName;
-                sheet.Cell(row, 3).Value = item.TransactionType;
-                sheet.Cell(row, 4).Value = item.TransDate != null ? item.TransDate.Split(" ")[0] : item.TransDate;
-                sheet.Cell(row, 5).Value = item.PartCode;
-                sheet.Cell(row, 6).Value = item.ItemName;
-                sheet.Cell(row, 7).Value = item.IssQty;
-                sheet.Cell(row, 8).Value = item.Unit;
-                sheet.Cell(row, 9).Value = item.Rate;
-                sheet.Cell(row, 10).Value = item.Amount;
-                sheet.Cell(row, 11).Value = item.MinLevel;
-                sheet.Cell(row, 12).Value = item.AltUnit;
-                sheet.Cell(row, 13).Value = item.BillNo;
-                sheet.Cell(row, 14).Value = item.BillDate != null ? item.BillDate.Split(" ")[0] : item.BillDate;
-                sheet.Cell(row, 15).Value = item.PartyName;
-                sheet.Cell(row, 16).Value = item.MRNNo;
-                sheet.Cell(row, 17).Value = item.BatchNo;
-                sheet.Cell(row, 18).Value = item.UniquebatchNo;
-                sheet.Cell(row, 19).Value = item.EntryId;
-                sheet.Cell(row, 20).Value = item.AltRecQty;
-                sheet.Cell(row, 21).Value = item.AltIssQty;
-                sheet.Cell(row, 22).Value = item.GroupName;
-
-                row++;
-            }
-
-            sheet.Columns().AdjustToContents();
-        }
-        private void ExportBATCHWISESTOCKSUMMARY(IXLWorksheet sheet, IList<StockRegisterDetail> list)
-        {
-            string[] headers = { "Sr#", "Store Name", "Part Code", "Item Name", "Opn Stk", "Rec Qty", "Iss Qty", "Tot Stock", "Batch Stock", "Unit", "Min Level", "Alt Unit", "Alt Stock", "Avg Rate", "Amount", "Group Name", "Std Packing", "Maximum Level", "Reorder Level", "Bin No", "Party Name", "Batch No", "Unique Batch No" };
-
-            // HEADER
-            for (int i = 0; i < headers.Length; i++)
-                sheet.Cell(1, i + 1).Value = headers[i];
-
-            int row = 2, srNo = 1;
-
-            // DATA
-            foreach (var item in list)
-            {
-                sheet.Cell(row, 1).Value = srNo++;                 // Sr#
-                sheet.Cell(row, 2).Value = item.StoreName;
-                sheet.Cell(row, 3).Value = item.PartCode;
-                sheet.Cell(row, 4).Value = item.ItemName;
-                sheet.Cell(row, 5).Value = item.OpnStk;
-                sheet.Cell(row, 6).Value = item.RecQty;
-                sheet.Cell(row, 7).Value = item.IssQty;
-                sheet.Cell(row, 8).Value = item.TotStk;
-                sheet.Cell(row, 9).Value = item.BatchStock;
-                sheet.Cell(row, 10).Value = item.Unit;
-                sheet.Cell(row, 11).Value = item.MinLevel;
-                sheet.Cell(row, 12).Value = item.AltUnit;
-                sheet.Cell(row, 13).Value = item.AltStock;
-                sheet.Cell(row, 14).Value = item.AvgRate;
-                sheet.Cell(row, 15).Value = item.Amount;
-                sheet.Cell(row, 16).Value = item.GroupName;
-                sheet.Cell(row, 17).Value = item.StdPacking;
-                sheet.Cell(row, 18).Value = item.MaximumLevel;
-                sheet.Cell(row, 19).Value = item.ReorderLevel;
-                sheet.Cell(row, 20).Value = item.BinNo;
-                sheet.Cell(row, 21).Value = item.PartyName;
-                sheet.Cell(row, 22).Value = item.BatchNo;
-                sheet.Cell(row, 23).Value = item.UniquebatchNo;
-
-                row++;
-            }
-
-            sheet.Columns().AdjustToContents();
-        }
-        private void ExportSHOWALLSTORE_WIPSTOCK(IXLWorksheet sheet, IList<StockRegisterDetail> list)
-        {
-            string[] headers = { "Sr#", "Item Name", "Part Code", "Total", "Unit", "Rate", "Amount", "Item Type", "Item Group", "Main Store", "Rej Store", "QC Store", "Assembly" };
-
-            // HEADER
-            for (int i = 0; i < headers.Length; i++)
-                sheet.Cell(1, i + 1).Value = headers[i];
-
-            int row = 2, sr = 1;
-
-            // DATA
-            foreach (var item in list)
-            {
-                sheet.Cell(row, 1).Value = sr++;                 // Sr#
-                sheet.Cell(row, 2).Value = item.ItemName;
-                sheet.Cell(row, 3).Value = item.PartCode;
-                sheet.Cell(row, 4).Value = item.Total;
-                sheet.Cell(row, 5).Value = item.Unit;
-                sheet.Cell(row, 6).Value = item.Rate;
-                sheet.Cell(row, 7).Value = item.Amount;
-                sheet.Cell(row, 8).Value = item.ItemType;
-                sheet.Cell(row, 9).Value = item.ItemGroup;
-                sheet.Cell(row, 10).Value = item.MAINSTORE;
-                sheet.Cell(row, 11).Value = item.REJSTORE;
-                sheet.Cell(row, 12).Value = item.QCSTORE;
-                sheet.Cell(row, 13).Value = item.Assembly;
-
-                // Optional: Negative stock in RED
-                if (item.Total < 0)
-                    sheet.Cell(row, 4).Style.Font.FontColor = XLColor.Red;
-
-                row++;
-            }
-
-            sheet.Columns().AdjustToContents();
-            sheet.SheetView.FreezeRows(1); // freeze header
-        }
-
-        private void ExportSHOWALLSTORE_WIPSTOCK_JOBWORK(IXLWorksheet sheet, IList<StockRegisterDetail> list)
-        {
-            string[] headers = { "Sr#", "Item Name", "Part Code", "Total", "Unit", "Rate", "Amount", "Item Type", "Item Group", "Main Store", "Assembly" };
-
-            // Header
-            for (int i = 0; i < headers.Length; i++)
-                sheet.Cell(1, i + 1).Value = headers[i];
-
-            int row = 2, sr = 1;
-
-            // Data
-            foreach (var item in list)
-            {
-                sheet.Cell(row, 1).Value = sr++;
-                sheet.Cell(row, 2).Value = item.ItemName;
-                sheet.Cell(row, 3).Value = item.PartCode;
-                sheet.Cell(row, 4).Value = item.Total;
-                sheet.Cell(row, 5).Value = item.Unit;
-                sheet.Cell(row, 6).Value = item.Rate;
-                sheet.Cell(row, 7).Value = item.Amount;
-                sheet.Cell(row, 8).Value = item.ItemType;
-                sheet.Cell(row, 9).Value = item.ItemGroup;
-                sheet.Cell(row, 10).Value = item.MAINSTORE;
-                sheet.Cell(row, 11).Value = item.Assembly;
-
-                // Negative stock red
-                if (item.Total < 0)
-                    sheet.Cell(row, 4).Style.Font.FontColor = XLColor.Red;
-
-                row++;
-            }
-
-            sheet.Columns().AdjustToContents();
-            sheet.SheetView.FreezeRows(1);
-        }
-        private void ExportNegativeStock(IXLWorksheet sheet, IList<StockRegisterDetail> list)
-        {
-            string[] headers = { "Sr#", "Item Name", "Part Code", "Stock", "Store Name", "Unique Batch No", "Batch No", "Item Code", "Store ID" };
-
-            // HEADER
-            for (int i = 0; i < headers.Length; i++)
-                sheet.Cell(1, i + 1).Value = headers[i];
-
-            int row = 2, sr = 1;
-
-            // DATA
-            foreach (var item in list)
-            {
-                sheet.Cell(row, 1).Value = sr++;
-                sheet.Cell(row, 2).Value = item.ItemName;
-                sheet.Cell(row, 3).Value = item.PartCode;
-                sheet.Cell(row, 4).Value = item.TotStk;          // Stock
-                sheet.Cell(row, 5).Value = item.StoreName;
-                sheet.Cell(row, 6).Value = item.UniquebatchNo;
-                sheet.Cell(row, 7).Value = item.BatchNo;
-                sheet.Cell(row, 8).Value = item.ItemCode;
-                sheet.Cell(row, 9).Value = item.StoreId;
-
-                // Highlight negative stock
-                if (item.TotStk < 0)
-                    sheet.Cell(row, 4).Style.Font.FontColor = XLColor.Red;
-
-                row++;
-            }
-
-            sheet.Columns().AdjustToContents();
-            sheet.SheetView.FreezeRows(1);   // Freeze header
-        }
+       
 
         public IActionResult GetStockDataForPDF(string ReportType)
         {
