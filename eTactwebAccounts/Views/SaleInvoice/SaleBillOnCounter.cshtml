@@ -1280,8 +1280,10 @@
                         $('.jobWorkChalln').hide();
                         $('.gridHiddenField').hide();
                     }
+                            calculateitembasicnettaxable();
+                   itemwisetaxcalculation();
 
-                    // ===== CALCULATE ITEMS & AMOUNTS =====
+                           // ===== CALCULATE ITEMS & AMOUNTS =====
                     var rowCount = $('#divSaleBillList tr').length;
                            var columnCount = $('#divSaleBillList tr td').length;
                     var taxRowCount = $('#divTaxGrid tr').length;

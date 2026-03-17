@@ -37,10 +37,14 @@
             <label asp-for="Branch" class="form-label">Branch</label>
             <input class="form-control" asp-for="Branch" readonly />
         </div>
-        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <label asp-for="PurchVouchNo" class="form-label">Voucher No*</label>
+        @if (Model.Mode == "U" || Model.Mode == "V")
+        {
+            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="PurchVouchNo" class="form-label">Voucher No*</label>
                 <input asp-for="PurchVouchNo" value="@Model.PurchVouchNo" class="form-control" readonly style="background-color: lightblue !important;" />
-        </div>
+            </div>
+        }
+        
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillEntryDetail">
             <label asp-for="VouchDate" class="form-label">Date*</label>
             <input asp-for="VouchDate"  class="form-control datePickerControl" />

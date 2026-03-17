@@ -15,7 +15,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
-		
+		<StaticWebAssetBasePath>eTactWeb</StaticWebAssetBasePath>
 		<RazorCompileOnBuild>false</RazorCompileOnBuild>
 		<RazorCompileOnPublish>false</RazorCompileOnPublish>
 		<!--<RazorCompileOnPublish>true</RazorCompileOnPublish>-->

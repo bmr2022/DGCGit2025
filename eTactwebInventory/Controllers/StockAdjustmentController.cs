@@ -940,8 +940,32 @@ namespace eTactWeb.Controllers
                             errors.Add($"Invalid ActualStock at row {row}");
                             continue;
                         }
+                        var AddAdjQtyInTotalStock = IStockAdjust.AddAdjQtyInTotalStock();
+                        var isadd = "";
+
+                        if (AddAdjQtyInTotalStock != null &&
+                            AddAdjQtyInTotalStock.Result != null &&
+                            AddAdjQtyInTotalStock.Result.Result != null &&
+                            AddAdjQtyInTotalStock.Result.Result.Rows.Count > 0)
+                        {
+                            DataRow uploadrow = AddAdjQtyInTotalStock.Result.Result.Rows[0];
+
+                           
+                                isadd = uploadrow["AddAdjQtyInTotalStock"]?.ToString() ?? "";
+
+                        }
+                       
                         var ActualStock = Convert.ToDecimal(worksheet.Cells[row, 5].Value.ToString());
-                        var AdjQty = ActualStock - (worksheet.Cells[row, 1].Value.ToString() == "S" ? StoreLotStockResult : WCLotStockResult);
+                        decimal AdjQty = 0;
+                        if (isadd == "Y")
+                        {
+                             AdjQty = ActualStock;
+                        }
+                        else
+                        {
+                             AdjQty = ActualStock - (worksheet.Cells[row, 1].Value.ToString() == "S" ? StoreLotStockResult : WCLotStockResult);
+
+                        }
                         var AdjType = AdjQty > 0 ? "+" : "-";
                         //var Amount = (worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock) * ActualRate;
                         var Amount = ActualStock * ActualRate;

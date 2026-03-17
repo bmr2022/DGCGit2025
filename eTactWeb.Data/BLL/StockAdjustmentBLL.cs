@@ -157,6 +157,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _StockAdjustmentDAL.GetDashWorkCenter(FromDate, ToDate);
         }
+        public async Task<ResponseResult> AddAdjQtyInTotalStock()
+        {
+            return await _StockAdjustmentDAL.AddAdjQtyInTotalStock();
+        }
 
 
     }

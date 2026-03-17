@@ -45,5 +45,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetDashWorkCenter(string FromDate, string ToDate);
         Task<ResponseResult> DeleteByID(int ID, int YC, int entryByEmp, string EntryByMachineName,string EntryDate);
         Task<StockAdjustmentModel> GetViewByID(int ID, string Mode, int YC);
+        public Task<ResponseResult> AddAdjQtyInTotalStock();
     }
 }
