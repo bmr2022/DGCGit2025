@@ -12,7 +12,7 @@
                 <h5>
                     Account Master - <strong>Dashboard</strong>
                     <span class="d-flex float-end" style="margin-top: -2px;">
-                        <a asp-action="Form" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                        <a asp-action="Form" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                             <i class="fa fa-plus-circle fa-fw fa-lg" aria-hidden="true"></i>
                             Add New
                         </a>
@@ -45,10 +45,18 @@
                                 <label class="control-label">City</label>
                                 <input asp-for="City" class="form-control form-control-sm" data-val="false" />
                             </div>
-                            <div class="col">
+                            @*  <div class="col">
                                 <label class="control-label">Dashboard Type</label>
                                 <select class="form-select" asp-for="DashboardType">
                                     <option value="" disabled>-Select-</option>
+                                    <option value="Summary" selected>Summary</option>
+                                    <option value="Detail">Detail</option>
+                                </select>
+                            </div> *@
+                            <div class="col">
+                                <label class="control-label">Dashboard Type</label>
+                                <select class="form-select" asp-for="DashboardType">
+                                    <option value="Dashboard">-Select-</option>
                                     <option value="Summary" selected>Summary</option>
                                     <option value="Detail">Detail</option>
                                 </select>
@@ -57,18 +65,30 @@
                                 <label class="form-label">Global Search</label>
                                 <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                             </div>
+                            <div class="col-md-1 col-sm-6 col-xs-6">
+                                <label for="PageSize" class="control-label">PageSize</label>
+                                <input asp-for="PageSize" list="pageSizes" class="form-control form-control-sm"
+                                       inputmode="numeric" pattern="[0-9]*"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g,'');" value="50" />
+
+                                <datalist id="pageSizes">
+                                    <option value="50"></option>
+                                    <option value="100"></option>
+                                    <option value="150"></option>
+                                </datalist>
+                            </div>
                             <div class=" d-flex justify-content-center mt-3" width="inherit">
-                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="GetSearchData();">
-                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
-                    </button>
-                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
-                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
-                    </button>
-                    <button type="reset" class="btn btn-sm btn-outline-danger" onclick="Reload();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
-                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
-                    </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="GetSearchData();">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <button type="reset" class="btn btn-sm btn-outline-danger" onclick="Reload();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </button>
                                 
-                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -84,68 +104,150 @@
 </div>
 
 @section Scripts
-    {
+{
     <script>
         
         AutoComplete('VAccountHeadMaster', 'Account_Name', 'Account_Name', null);
         AutoComplete('VAccountHeadMaster', 'SalesPersonName', 'salesperson_name', null);
         AutoComplete('VAccountHeadMaster', 'City', 'City', null);
         AutoComplete('VAccountHeadMaster', 'State', 'State', null);
-        $(document).ready(function(){
-            var dashGrid = $('#bodyAccountDash tr').length;
-            $('#totalRows').text(dashGrid);
-            // GetFormRights();
+        // $(document).ready(function(){
+        //     var dashGrid = $('#bodyAccountDash tr').length;
+        //     $('#totalRows').text(dashGrid);
+        //     GetFormRights();
+        // });
+        // function GetSearchData() {
+        //     if($('#DashboardType').val()=="Summary"){
+        //         GetSummaryData();
+        //     }else{
+        //         GetDetailData();
+        //     }
+        // }
+
+        // function GetSummaryData(){
+        //     var data = $('#SParam').serialize();
+        //     $.ajax({
+        //         url: '@Url.Action("GetSearchData")',
+        //         type: "POST",
+        //         async: false,
+        //         data: $('#SParam').serializeArray(),
+        //         success: function (data) {
+        //             $('#divDashboardGrid').empty().append(data);
+        //             var dashGrid = $('#bodyAccountDash tr').length;
+        //             $('#totalRows').text(dashGrid);
+        //             GetFormRights();
+        //         },
+        //         error: function (response) {
+        //             alert(response.responseText);
+        //         },
+        //         failure: function (response) {
+        //             alert(response.responseText);
+        //         }
+        //     });
+        // }
+        
+        // function GetDetailData(){
+        //     var data = $('#SParam').serialize();
+        //     $.ajax({
+        //         url: '@Url.Action("GetDetailData")',
+        //         type: "POST",
+        //         async: false,
+        //         data: $('#SParam').serializeArray(),
+        //         success: function (data) {
+        //             $('#divDashboardGrid').empty().append(data);
+        //             var dashGrid = $('#bodyAccountDash tr').length;
+        //             $('#totalRows').text(dashGrid);
+        //             GetFormRights();
+        //         },
+        //         error: function (response) {
+        //             alert(response.responseText);
+        //         },
+        //         failure: function (response) {
+        //             alert(response.responseText);
+        //         }
+        //     });
+        // }
+        $(document).ready(function () {
+         
+            GetFormRights();
+            GetSearchData();
+            
         });
+
+      
+        $(document).on('click', '.page-btn', function (e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            loadPage(page);
+        });
+        function loadPage(pageNumber) {
+
+            var url = '';
+            var formData = $('#SParam').serializeArray() || [];
+            formData.push({ name: "pageNumber", value: pageNumber });
+            formData.push({ name: "pageSize", value: $('#PageSize').val() });
+             formData.push({ name: "DashboardType", value: $('#DashboardType').val() });
+
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetSearchData")",
+                async: false,
+                data: formData,
+                beforeSend: function () {
+                    $('#ajaxLoader').show(); // ✅ Show loader
+                },
+                success: function (result, status, error) {
+                    $('#ajaxLoader').hide();
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(result);
+                    
+                    $('#totalRows').text($('#AccountTable tbody tr').length);
+                    GetFormRights();
+                }
+            });
+        }
         function GetSearchData() {
-            if($('#DashboardType').val()=="Summary"){
-                GetSummaryData();
-            }else{
-                GetDetailData();
-            }
+
+            var formData = $('#SParam').serializeArray() || [];
+
+            formData.push({ name: "pageNumber", value: 1 });
+            formData.push({ name: "pageSize", value: $('#PageSize').val() });
+             formData.push({ name: "DashboardType", value: $('#DashboardType').val() });
+
+            $.ajax({
+                url: '@Url.Action("GetSearchData", "AccountMaster")',
+                type: "POST",
+                data: formData,
+                beforeSend: function () {
+                    $('#ajaxLoader').show(); // ✅ Show loader
+                },
+                success: function (result, status, error) {
+                    $('#ajaxLoader').hide();
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(result);
+                    $('#totalRows').text($('#AccountTable tbody tr').length);
+                    GetFormRights();
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
         }
 
-        function GetSummaryData(){
-            var data = $('#SParam').serialize();
-            $.ajax({
-                url: '@Url.Action("GetSearchData")',
-                type: "POST",
-                async: false,
-                data: $('#SParam').serializeArray(),
-                success: function (data) {
-                    $('#divDashboardGrid').empty().append(data);
-                    var dashGrid = $('#bodyAccountDash tr').length;
-                    $('#totalRows').text(dashGrid);
-                    // GetFormRights();
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                }
-            });
-        }
-        
-        function GetDetailData(){
-            var data = $('#SParam').serialize();
-            $.ajax({
-                url: '@Url.Action("GetDetailData")',
-                type: "POST",
-                async: false,
-                data: $('#SParam').serializeArray(),
-                success: function (data) {
-                    $('#divDashboardGrid').empty().append(data);
-                    var dashGrid = $('#bodyAccountDash tr').length;
-                    $('#totalRows').text(dashGrid);
-                    // GetFormRights();
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                }
-            });
+
+        function confirmEdit(event) {
+            event.preventDefault();
+
+            if (confirm("Are you sure you want to Edit this entry?")) {
+                var linkUrl = $(event.currentTarget).attr("href");
+
+                // Redirect without appending additional parameters manually
+                window.location.href = linkUrl;
+            }
         }
 
         function confirmDelete(event) {
@@ -167,7 +269,7 @@
         //         filename: "AccountTable.xls"
         //     });
         // });
-        // var currentSearchColumn = null;
+        var currentSearchColumn = null;
         // $("#search-box").on("keyup", function () {
         //     var value = $(this).val().toLowerCase();
         //     $("#bodyAccountDash tr").filter(function () {
@@ -179,10 +281,31 @@
         //         }
         //     });
         // });
+                //for global search
+        $("#search-box").on("input", function () {
+            var searchString = $(this).val().trim();
+            $.ajax({
+                url: "/AccountMaster/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, pageSize: $('#PageSize').val() },
+                success: function (data) {
+                    console.log(data);
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(data);
+
+                    var dashGrid = $('#divDashboardGrid tr').length;
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
 
         $("#sendToExcel").click(function () {
-            window.location.href = "/AccountMaster/ExportAccountExcel";
-        });
+             window.location.href = "/AccountMaster/ExportAccountExcel";
+         });
+
 
 
         $(document).on("click", "th[data-columnno]", function () {

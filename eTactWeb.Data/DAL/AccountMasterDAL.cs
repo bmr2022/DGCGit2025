@@ -14,15 +14,17 @@ namespace eTactWeb.Data.DAL
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
         private readonly ConnectionStringService _connectionStringService;
+        private readonly ICommon _common;
         //private readonly IConfiguration configuration;
 
-        public AccountMasterDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
+        public AccountMasterDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService, ICommon common)
         {
             //configuration = config;
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
             _IDataLogic = iDataLogic;
             _connectionStringService = connectionStringService;
             DBConnectionString = _connectionStringService.GetConnectionString();
+            _common = common;
         }
 
         public async Task<ResponseResult> GetStateCode(string State)
@@ -261,192 +263,47 @@ namespace eTactWeb.Data.DAL
             return _AccountMasterModel;
         }
 
-        public async Task<AccountMasterModel> GetDashboardData(AccountMasterModel model)
+        public async Task<ResponseResult> GetDashboardData(AccountMasterModel model, int userID, string DashboardRepoType)
         {
-            DataSet? oDataSet = new DataSet();
 
-            try
-            {
-                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
-                {
-                    SqlCommand oCmd = new SqlCommand("SP_AccountMaster", myConnection)
-                    {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    oCmd.Parameters.AddWithValue("@Flag", model.Mode);
-                    oCmd.Parameters.AddWithValue("@Account_Name", string.IsNullOrEmpty(model.Account_Name) ? null : model.Account_Name.Trim());
-                    oCmd.Parameters.AddWithValue("@ParentAccountCode", model.ParentAccountCode);
-                    oCmd.Parameters.AddWithValue("@SalesPersonName", string.IsNullOrEmpty(model.SalesPersonName) ? null : model.SalesPersonName.Trim());
-                    oCmd.Parameters.AddWithValue("@State", string.IsNullOrEmpty(model.State) ? null : model.State.Trim());
-                    oCmd.Parameters.AddWithValue("@City", string.IsNullOrEmpty(model.City) ? null : model.City.Trim());
-                    await myConnection.OpenAsync();
-                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
-                    {
-                        oDataAdapter.Fill(oDataSet);
-                    }
-                }
-                if (model.Mode == "SearchALL")
-                {
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        model.AccountMasterList = (from DataRow dr in oDataSet.Tables[0].Rows
-                                                   select new AccountMasterModel
-                                                   {
-                                                       Account_Code = Convert.ToInt32(dr["Account_Code"]),
-                                                       DebCredCode = dr["DebCredCode"].ToString(),
-                                                       Party_Code = dr["Party_Code"].ToString(),
-                                                       Entry_Date = dr["Entry_Date"].ToString(),
-                                                       
-                                                       Account_Name = dr["Account_Name"].ToString(),
-                                                       DisplayName = dr["DisplayName"].ToString(),
-                                                       ParentAccountName = dr["ParentAccount"].ToString(),
-                                                       MainGroup = dr["MainGroup"].ToString(),
-                                                       AccountType = dr["AccountType"].ToString(),
-                                                       SubGroup = dr["SubGroup"].ToString(),
-                                                       SubSubGroup = dr["SubSubGroup"].ToString(),
-                                                       UnderGroup = dr["UnderGroup"].ToString(),
-                                                       ComAddress = dr["ComAddress"].ToString(),
-                                                       ComAddress1 = dr["ComAddress1"].ToString(),
-                                                       PinCode = dr["PinCode"].ToString(),
-                                                       City = dr["City"].ToString(),
-                                                       State = dr["State"].ToString(),
-                                                       Country = dr["Country"].ToString(),
-                                                       PhoneNo = dr["PhoneNo"].ToString(),
-                                                       MobileNo = dr["MobileNo"].ToString(),
-                                                       ContactPerson = dr["ContactPerson"].ToString(),
-                                                       PartyType = dr["PartyType"].ToString(),
-                                                       GSTRegistered = dr["GSTRegistered"].ToString(),
-                                                       GSTNO = dr["GSTNO"].ToString(),
-                                                       GSTPartyTypes = dr["GSTPartyTypes"].ToString(),
-                                                       GSTTAXTYPE = dr["GSTTAXTYPE"].ToString(),
-                                                       Segment = dr["Segment"].ToString(),
-                                                       SSLNo = dr["SSLNo"].ToString(),
-                                                       PANNO = dr["PANNO"].ToString(),
-                                                       TDS = dr["TDS"].ToString(),
-                                                       TDSRate = dr["TDSRate"].ToString(),
-                                                       TDSPartyCategery = dr["TDSPartyCategery"].ToString(),
-                                                       ResponsibleEmployee = dr["ResponsibleEmployee"].ToString(),
-                                                       ResponsibleEmpContactNo = dr["ResponsibleEmpContactNo"].ToString(),
-                                                       SalesPersonName = dr["SalesPersonName"].ToString(),
-                                                       SalesPersonEmailId = dr["SalesPersonEmailId"].ToString(),
-                                                       SalesPersonMobile = dr["SalesPersonMobile"].ToString(),
-                                                       PurchPersonName = dr["PurchPersonName"].ToString(),
-                                                       PurchasePersonEmailId = dr["PurchasePersonEmailId"].ToString(),
-                                                       PurchMobileNo = dr["PurchMobileNo"].ToString(),
-                                                       QCPersonEmailId = dr["QCPersonEmailId"].ToString(),
-                                                       WebSite_Add = dr["WebSite_Add"].ToString(),
-                                                       EMail = dr["EMail"].ToString(),
-                                                       RANGE = dr["RANGE"].ToString(),
-                                                       Division = dr["Division"].ToString(),
-                                                       Commodity = dr["Commodity"].ToString(),
-                                                       WorkingAdd1 = dr["WorkingAdd1"].ToString(),
-                                                       WorkingAdd2 = dr["WorkingAdd2"].ToString(),
-                                                      
-                                                       RateOfInt = dr["RateOfInt"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["RateOfInt"]),
-                                                       CreditLimit = dr["CreditLimit"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["CreditLimit"]),
-                                                       CreditDays = dr["CreditDays"].ToString(),
-                                                       SSL = dr["SSL"].ToString(),
-                                                       BankAccount_No = dr["BankAccount_No"].ToString(),
-                                                       BankAddress = dr["BankAddress"].ToString(),
-                                                       BankIFSCCode = dr["BankIFSCCode"].ToString(),
-                                                       BankSwiftCode = dr["BankSwiftCode"].ToString(),
-                                                       InterbranchSaleBILL = dr["InterbranchSaleBILL"].ToString(),
-                                                       salesperson_name = dr["salesperson_name"].ToString(),
-                                                       salesemailid = dr["salesemailid"].ToString(),
-                                                       salesmobileno = dr["salesmobileno"].ToString(),
-                                                       Approved_By = dr["Approved_By"].ToString(),
-                                                       Approved = dr["Approved"].ToString(),
-                                                       ApprovalDate = dr["ApprovalDate"].ToString(),
-                                                       
-                                                       BlackListed = dr["BlackListed"].ToString(),
-                                                       BlackListed_By = dr["BlackListed_By"].ToString(),
-                                                       
-                                                       YearCode = dr["YearCode"] == DBNull.Value ? 0 : Convert.ToInt32(dr["YearCode"]),
-                                                       Uid = dr["Uid"].ToString(),
-                                                       CC = dr["CC"].ToString(),
-                                                       
-                                                       CreatedBy = dr["CreatedBy"] == DBNull.Value ? 0 : Convert.ToInt32(dr["CreatedBy"]),
-                                                       CreatedOn = dr["CreatedOn"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["CreatedOn"]),
-                                                      
-                                                       UpdatedBy = dr["UpdatedBy"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UpdatedBy"]),
-                                                       UpdatedOn = dr["UpdatedOn"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["UpdatedOn"]),
-                                                       Active = dr["Active"].ToString(),
-                                                       ParentAccountCode = Convert.ToInt32(dr["ParentAccountCode"]),
-                                                      
+            var Flag =
+  !string.IsNullOrEmpty(DashboardRepoType) &&
+  DashboardRepoType.ToUpper() == "DETAIL"
+  ? "DetailSearch"
+  : "Search";
+            var parameters = new Dictionary<string, object>
+{
 
-                                                   }).ToList();
-                    }
-                }
-                else
-                { 
 
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        model.AccountMasterList = (from DataRow dr in oDataSet.Tables[0].Rows
-                                                   select new AccountMasterModel
-                                                   {
-                                                       Account_Code = Convert.ToInt32(dr["Account_Code"]),
-                                                       Account_Name = dr["Account_Name"].ToString(),
-                                                       Party_Code = dr["Party_Code"].ToString(),
-                                                       ParentAccountName = dr["ParentAccount"].ToString(),
-                                                       ParentAccountCode = Convert.ToInt32(dr["ParentAccountCode"]),
-                                                       SubGroup = dr["SubGroup"].ToString(),
-                                                       MainGroup = dr["MainGroup"].ToString(),
-                                                       UnderGroup = dr["UnderGroup"].ToString(),
-                                                       ComAddress = dr["ComAddress"].ToString(),
-                                                       ComAddress1 = dr["ComAddress1"].ToString(),
-                                                       PinCode = dr["PinCode"].ToString(),
-                                                       City = dr["City"].ToString(),
-                                                       State = dr["State"].ToString(),
-                                                       Country = dr["Country"].ToString(),
-                                                       GSTNO = dr["GSTNO"].ToString(),
-                                                   }).ToList();
-                    }
+    { "@Account_Name", string.IsNullOrEmpty(model.Account_Name)
+        ? null
+        : model.Account_Name.Trim() },
 
-                }
+    { "@ParentAccountCode", model.ParentAccountCode },
 
-                //var ilst = model.AccountMasterList.Select(m => new TextValue
-                //{
-                //    Text = m.ParentAccountName,
-                //    Value = m.ParentAccountCode.ToString()
-                //});
+    { "@SalesPersonName", string.IsNullOrEmpty(model.SalesPersonName)
+        ? null
+        : model.SalesPersonName.Trim() },
 
-                //if (model.Mode != "Search")
-                //{
-                //    List<TextValue>? _list = new List<TextValue>();
-                //    model.ParentGroupList = _list;
+    { "@State", string.IsNullOrEmpty(model.State)
+        ?null
+        : model.State.Trim() },
 
-                //    if (model.AccountMasterList != null)
-                //    {
-                //        foreach (AccountMasterModel? item in model.AccountMasterList)
-                //        {
-                //            TextValue? _lst = new TextValue
-                //            {
-                //                Text = item.ParentAccountName,
-                //                Value = item.ParentAccountCode.ToString()
-                //            };
-                //            _list.Add(_lst);
-                //        }
+    { "@City", string.IsNullOrEmpty(model.City)
+        ?null
+        : model.City.Trim() },
 
-                //        model.ParentGroupList = _list;
-                //    }
-                //   // if  model.AccountMasterList != null{
-                //     // ;
-                //    //}
-                    
-                //}
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
-            finally
-            {
-                oDataSet.Dispose();
-            }
-            return model;
+    { "@CreatedBy", userID }
+};
+
+            return await _common.GetDashboardData(
+                "SP_AccountMaster",
+                Flag,
+                parameters
+            );
+
+
+
         }
         public int SafeToInt(object value)
         {

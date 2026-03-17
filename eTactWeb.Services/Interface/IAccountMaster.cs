@@ -9,7 +9,7 @@ namespace eTactWeb.Services.Interface
 
         Task<AccountMasterModel> GetByID(int ID);
 
-        Task<AccountMasterModel> GetDashboardData(AccountMasterModel model);
+        Task<ResponseResult> GetDashboardData(AccountMasterModel model, int userID, string DashboardRepoType);
         Task<AccountMasterModel> GetDetailDashboardData(AccountMasterModel model);
 
         Task<IList<TextValue>> GetDropDownList(string Flag);

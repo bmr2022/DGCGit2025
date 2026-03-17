@@ -139,5 +139,13 @@ namespace eTactWeb.DOM.Models
                 new() { Value = "Y", Text = "Yes" },
                 new() { Value = "N", Text = "No" },
             };
+
+        public string? MachineName { get; set; }
+        public string? IPAddress { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public int TotalRecords { get; set; }
+        public List<DashboardColumn> Headers { get; set; }
+        public List<Dictionary<string, object>> Rows { get; set; }
     }
 }

@@ -1,13 +1,15 @@
-﻿using eTactWeb.Services.Interface;
-using Newtonsoft.Json;
-using static eTactWeb.DOM.Models.Common;
+﻿using ClosedXML.Excel;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
+using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Globalization;
-using System.Data;
+using Newtonsoft.Json;
 using OfficeOpenXml;
+using System.Data;
+using System.Globalization;
+using System.Net;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Controllers
 {
@@ -16,11 +18,13 @@ namespace eTactWeb.Controllers
     {
         private readonly IAccountMaster _IAccountMaster;
         private readonly IDataLogic _IDataLogic;
+        public EncryptDecrypt EncryptDecrypt { get; }
 
-        public AccountMasterController(IDataLogic iDataLogic, IAccountMaster iAccountMaster)
+        public AccountMasterController(IDataLogic iDataLogic, IAccountMaster iAccountMaster, EncryptDecrypt encryptDecrypt)
         {
             _IDataLogic = iDataLogic;
             _IAccountMaster = iAccountMaster;
+            EncryptDecrypt = encryptDecrypt;
         }
 
         [HttpPost]
@@ -37,19 +41,101 @@ namespace eTactWeb.Controllers
             return Json(Result);
         }
 
+        //public async Task<IActionResult> DashBoard()
+        //{
+        //    var model = new AccountMasterModel();
+        //    model.Mode = "Dashboard";
+        //    model = await _IAccountMaster.GetDashboardData(model);
+        //    model.ParentGroupList = await _IDataLogic.GetDropDownList("VPrimaryAccountHeadMaster", "SP_AccountMaster");
+        //    HttpContext.Session.SetString("Model", JsonConvert.SerializeObject(model));
+        //    string jsonData = JsonConvert.SerializeObject(model);
+        //    HttpContext.Session.SetString("AccountList", jsonData);
+        //    return View(model);
+        //   // return RedirectToAction("DashBoard", "AccountMaster");
+
+        //}
+
+
         public async Task<IActionResult> DashBoard()
         {
+            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var rights = await _IAccountMaster.GetFormRights(userID);
+            if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+            {
+                return RedirectToAction("Dashboard", "Home");
+            }
+            var table = rights.Result.Tables[0];
+
+            bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+            bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+            bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+            bool optDelete = Convert.ToBoolean(table.Rows[0]["OptDelete"]);
+            if (!(optAll || optView || optUpdate || optDelete))
+            {
+                return RedirectToAction("Dashboard", "Home");
+            }
             var model = new AccountMasterModel();
+
             model.Mode = "Dashboard";
-            model = await _IAccountMaster.GetDashboardData(model);
+            //model = await _IAccountMaster.GetDashboardData(model, userID);
             model.ParentGroupList = await _IDataLogic.GetDropDownList("VPrimaryAccountHeadMaster", "SP_AccountMaster");
             HttpContext.Session.SetString("Model", JsonConvert.SerializeObject(model));
             string jsonData = JsonConvert.SerializeObject(model);
             HttpContext.Session.SetString("AccountList", jsonData);
             return View(model);
-           // return RedirectToAction("DashBoard", "AccountMaster");
+            // return RedirectToAction("DashBoard", "AccountMaster");
 
         }
+
+
+        public async Task<IActionResult> GetSearchData(AccountMasterModel model, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50)
+        {
+            var DashboardRepoType = model.DashboardType;
+
+            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            // 🔥 Call BLL (Dynamic ResponseResult)
+            var result = await _IAccountMaster.GetDashboardData(
+               model, userID, DashboardRepoType);
+
+            if (result == null || !(result.Result is DataTable dt))
+            {
+                model.TotalRecords = 0;
+                model.Rows = new List<Dictionary<string, object>>();
+                return PartialView("_AccMasterDashboard", model);
+            }
+
+            model.TotalRecords = dt.Rows.Count;
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+
+            // 🔥 Dynamic Headers
+            model.Headers = dt.Columns
+                .Cast<DataColumn>()
+                .Select(c => new DashboardColumn
+                {
+                    Title = c.ColumnName,
+                    Field = c.ColumnName
+                })
+                .ToList();
+
+            // 🔥 Dynamic Rows with Pagination
+            model.Rows = dt.AsEnumerable()
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(r => dt.Columns
+                    .Cast<DataColumn>()
+                    .ToDictionary(
+                        c => c.ColumnName,
+                        c => r[c] == DBNull.Value ? null : r[c]
+                    ))
+                .ToList();
+            // 🔹 Store in session if needed
+            HttpContext.Session.SetString("AccountList", JsonConvert.SerializeObject(dt));
+
+
+            return PartialView("_AccMasterDashboard", model);
+        }
+
 
         public async Task<IActionResult> DeleteByID(int ID)
         {
@@ -82,9 +168,60 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
         public async Task<IActionResult> Form(int ID, string Mode)
         {
+            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var rights = await _IAccountMaster.GetFormRights(userID);
+            if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+            {
+                return RedirectToAction("Dashboard", "Home");
+            }
+
+            var table = rights.Result.Tables[0];
+            //string encID = Request.Query["ID"].ToString();
+            string encID = RouteData.Values["id"]?.ToString();
+            if (!string.IsNullOrEmpty(encID) && encID != "0" && !string.IsNullOrEmpty(Mode))
+            {
+                int decryptedID = EncryptDecrypt.DecodeID(encID);
+                string decryptedMode = EncryptDecrypt.Decrypt(Mode);
+                ID = decryptedID;
+                Mode = decryptedMode;
+
+            }
+
+            bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+            bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+            bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+            bool optSave = Convert.ToBoolean(table.Rows[0]["OptSave"]);
+
+
+            if (Mode == "U")
+            {
+                if (!(optUpdate))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+            }
+            else if (Mode == "V")
+            {
+                if (!(optView))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+            }
+            else if (ID <= 0)
+            {
+                if (!optSave)
+                {
+                    return RedirectToAction("DashBoard", "AccountMaster");
+                }
+                //if (!(optAll || optSave))
+                //{
+                //    return RedirectToAction("Dashboard", "Home");
+                //}
+
+            }
+
             var model = new AccountMasterModel();
 
             if (ID == 0)
@@ -99,7 +236,8 @@ namespace eTactWeb.Controllers
                 model.RegionList = await _IDataLogic.GetDropDownList("GetRegion", "SP_AccountMaster");
                 model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
-                model.Entry_Date = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
+                model.Entry_Date = DateTime.Today.ToString("dd/MM/yyyy");
+                model.CC = HttpContext.Session.GetString("Branch");
                 //productsList.Insert(0, new SelectListItem()
                 //{
                 //    Text = "----Select----",
@@ -110,6 +248,9 @@ namespace eTactWeb.Controllers
             {
                 model = await _IAccountMaster.GetByID(ID);
                 model.Mode = Mode;
+                model.ID = ID;
+                model.CC = HttpContext.Session.GetString("Branch");
+
                 //model.StateList = _IAccountMaster.GetDropDownList("StateMaster");
                 //model.ParentGroupList = _IAccountMaster.GetDropDownList("VPrimaryAccountHeadMaster");
                 model.DatabaseList = await _IAccountMaster.GetDropDownList("GetDatabaseName");
@@ -122,21 +263,79 @@ namespace eTactWeb.Controllers
             if (Mode != "U")
             {
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
                 model.CreatedByName = HttpContext.Session.GetString("EmpName");
                 model.CreatedOn = DateTime.Now;
             }
             else if (Mode == "U")
             {
                 model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
                 model.UpdatedByName = HttpContext.Session.GetString("EmpName");
                 model.UpdatedOn = DateTime.Now;
             }
+            ModelState.Clear();
             HttpContext.Session.SetString("Model", JsonConvert.SerializeObject(model));
-              return View(model);
-           // return RedirectToAction("Form", "AccountMaster");
-           // return View("Views/AccountMaster/Form.cshtml");
+            return View(model);
+            // return RedirectToAction("Form", "AccountMaster");
+            // return View("Views/AccountMaster/Form.cshtml");
         }
-       
+
+
+        //public async Task<IActionResult> Form(int ID, string Mode)
+        //{
+        //    var model = new AccountMasterModel();
+
+        //    if (ID == 0)
+        //    {
+        //        //model.StateList = _IAccountMaster.GetDropDownList("StateMaster");
+        //        //model.ParentGroupList = _IAccountMaster.GetDropDownList("VPrimaryAccountHeadMaster");
+        //        model.StateList = await _IDataLogic.GetDropDownList("StateMaster", "SP_AccountMaster");
+        //        model.DatabaseList = await _IAccountMaster.GetDropDownList("GetDatabaseName");
+        //        model.ParentGroupList = await _IDataLogic.GetDropDownList("VPrimaryAccountHeadMaster", "SP_AccountMaster");
+        //        model.DiscountCategoryList = await _IDataLogic.GetDropDownList("GetDiscountCategory", "SP_AccountMaster");
+        //        model.GroupDiscountCategoryList = await _IDataLogic.GetDropDownList("GetGroupDiscountCategory", "SP_AccountMaster");
+        //        model.RegionList = await _IDataLogic.GetDropDownList("GetRegion", "SP_AccountMaster");
+        //        model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+
+        //        model.Entry_Date = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
+        //        //productsList.Insert(0, new SelectListItem()
+        //        //{
+        //        //    Text = "----Select----",
+        //        //    Value = string.Empty
+        //        //});
+        //    }
+        //    else
+        //    {
+        //        model = await _IAccountMaster.GetByID(ID);
+        //        model.Mode = Mode;
+        //        //model.StateList = _IAccountMaster.GetDropDownList("StateMaster");
+        //        //model.ParentGroupList = _IAccountMaster.GetDropDownList("VPrimaryAccountHeadMaster");
+        //        model.DatabaseList = await _IAccountMaster.GetDropDownList("GetDatabaseName");
+        //        model.StateList = await _IDataLogic.GetDropDownList("StateMaster", "SP_AccountMaster");
+        //        model.ParentGroupList = await _IDataLogic.GetDropDownList("VPrimaryAccountHeadMaster", "SP_AccountMaster");
+        //        model.DiscountCategoryList = await _IDataLogic.GetDropDownList("GetDiscountCategory", "SP_AccountMaster");
+        //        model.GroupDiscountCategoryList = await _IDataLogic.GetDropDownList("GetGroupDiscountCategory", "SP_AccountMaster");
+        //        model.RegionList = await _IDataLogic.GetDropDownList("GetRegion", "SP_AccountMaster");
+        //    }
+        //    if (Mode != "U")
+        //    {
+        //        model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+        //        model.CreatedByName = HttpContext.Session.GetString("EmpName");
+        //        model.CreatedOn = DateTime.Now;
+        //    }
+        //    else if (Mode == "U")
+        //    {
+        //        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+        //        model.UpdatedByName = HttpContext.Session.GetString("EmpName");
+        //        model.UpdatedOn = DateTime.Now;
+        //    }
+        //    HttpContext.Session.SetString("Model", JsonConvert.SerializeObject(model));
+        //      return View(model);
+        //   // return RedirectToAction("Form", "AccountMaster");
+        //   // return View("Views/AccountMaster/Form.cshtml");
+        //}
+
         public static DateTime ParseDate(string dateString)
         {
             if (string.IsNullOrEmpty(dateString))
@@ -161,45 +360,136 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> Form(AccountMasterModel model)
         {
             ModelState.Remove("TxPageName");
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
+            //{
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
+            if (model.Mode == "U")   // UPDATE
             {
-                model.Mode = model.ID == 0 ? "Insert" : "Update";
-                //model.CreatedBy = Constants.UserID;
-
-                var Result = await _IAccountMaster.SaveAccountMaster(model);
-
-                if (Result == null)
-                {
-                    ViewBag.isSuccess = false;
-                    TempData["Message"] = "Something Went Wrong, Please Try Again.";
-                }
-                else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
-                {
-                    ViewBag.isSuccess = true;
-                    TempData["200"] = "200";
-                    return RedirectToAction(nameof(Form), new { ID = 0 });
-                }
-                else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.Ambiguous)
-                {
-                    ViewBag.isSuccess = false;
-                    TempData["300"] = "300";
-                }
-                else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
-                {
-                    ViewBag.isSuccess = true;
-                    TempData["202"] = "202";
-
-                    return RedirectToAction(nameof(Form), new { ID = 0 });
-                }
-                return RedirectToAction(nameof(Form), new { ID = 0 });
+                model.Mode = "Update";
+                // DO NOT touch CreatedBy
+                model.UpdatedBy = userId;
             }
-            else
+            else                     // INSERT
+            {
+                model.Mode = "Insert";
+                model.CreatedBy = userId;
+            }
+            //model.CreatedBy = Constants.UserID;
+            model.MachineName = HttpContext.Session.GetString("ClientMachineName");
+            model.IPAddress = HttpContext.Session.GetString("ClientIP");
+            var Result = await _IAccountMaster.SaveAccountMaster(model);
+
+            if (Result == null)
             {
                 ViewBag.isSuccess = false;
-                TempData["Message"] = "Form Validation Error.";
-                return RedirectToAction(nameof(Form), new { ID = 0 });
+                TempData["Message"] = "Something Went Wrong, Please Try Again.";
             }
+            else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+            {
+                ViewBag.isSuccess = true;
+                TempData["200"] = "200";
+                //return RedirectToAction(nameof(Form), new { ID = 0 });
+            }
+            else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.Ambiguous)
+            {
+                ViewBag.isSuccess = false;
+                TempData["300"] = "300";
+            }
+            else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["202"] = "202";
+                //return RedirectToAction(nameof(Form), new { ID = 0 });
+            }
+            else if (!string.IsNullOrEmpty(Result.StatusText))
+            {
+                // If SP returned a message (like adjustment error)
+                ViewBag.isSuccess = false;
+                TempData["ErrorMessage"] = Result.StatusText;
+                await BindDropdowns(model);   // VERY IMPORTANT
+                model.Mode = model.Mode == "Update" ? "U" : "I";
+
+                return View(model);
+            }
+            return RedirectToAction(nameof(Form), new { ID = 0 });
+            //   return RedirectToAction("Form", "AccountMaster");
+
         }
+
+        private async Task BindDropdowns(AccountMasterModel model)
+        {
+            model.StateList = await _IDataLogic.GetDropDownList("StateMaster", "SP_AccountMaster");
+
+            model.ParentGroupList = await _IDataLogic.GetDropDownList(
+                "VPrimaryAccountHeadMaster",
+                "SP_AccountMaster"
+            );
+
+            model.DiscountCategoryList = await _IDataLogic.GetDropDownList(
+                "GetDiscountCategory",
+                "SP_AccountMaster"
+            );
+
+            model.GroupDiscountCategoryList = await _IDataLogic.GetDropDownList(
+                "GetGroupDiscountCategory",
+                "SP_AccountMaster"
+            );
+
+            model.RegionList = await _IDataLogic.GetDropDownList(
+                "GetRegion",
+                "SP_AccountMaster"
+            );
+
+            model.DatabaseList = await _IAccountMaster.GetDropDownList("GetDatabaseName");
+
+            model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+        }
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Form(AccountMasterModel model)
+        //{
+        //    ModelState.Remove("TxPageName");
+        //    if (ModelState.IsValid)
+        //    {
+        //        model.Mode = model.ID == 0 ? "Insert" : "Update";
+        //        //model.CreatedBy = Constants.UserID;
+
+        //        var Result = await _IAccountMaster.SaveAccountMaster(model);
+
+        //        if (Result == null)
+        //        {
+        //            ViewBag.isSuccess = false;
+        //            TempData["Message"] = "Something Went Wrong, Please Try Again.";
+        //        }
+        //        else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+        //        {
+        //            ViewBag.isSuccess = true;
+        //            TempData["200"] = "200";
+        //            return RedirectToAction(nameof(Form), new { ID = 0 });
+        //        }
+        //        else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.Ambiguous)
+        //        {
+        //            ViewBag.isSuccess = false;
+        //            TempData["300"] = "300";
+        //        }
+        //        else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+        //        {
+        //            ViewBag.isSuccess = true;
+        //            TempData["202"] = "202";
+
+        //            return RedirectToAction(nameof(Form), new { ID = 0 });
+        //        }
+        //        return RedirectToAction(nameof(Form), new { ID = 0 });
+        //    }
+        //    else
+        //    {
+        //        ViewBag.isSuccess = false;
+        //        TempData["Message"] = "Form Validation Error.";
+        //        return RedirectToAction(nameof(Form), new { ID = 0 });
+        //    }
+        //}
 
         [HttpPost]
         public async Task<JsonResult> GetParentGroupDetail(string ID)
@@ -211,160 +501,137 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> GetSearchData(AccountMasterModel model)
+        //public async Task<IActionResult> GetSearchData(AccountMasterModel model)
+        //{
+        //    model.Mode = "Search";
+        //    model = await _IAccountMaster.GetDashboardData(model);
+        //    string jsonData = JsonConvert.SerializeObject(model);
+        //    HttpContext.Session.SetString("AccountList", jsonData);
+        //    return PartialView("_AccMasterDashboard", model);
+        //}
+        //public async Task<IActionResult> GetDetailData(AccountMasterModel model)
+        //{
+        //    model.Mode = "DetailSearch";
+        //    model = await _IAccountMaster.GetDetailDashboardData(model);
+        //    string jsonData = JsonConvert.SerializeObject(model);
+        //    HttpContext.Session.SetString("AccountList", jsonData);
+        //    return PartialView("_AccMasterDashboard", model);
+        //}
+
+        [HttpGet]
+        public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 50)
         {
-            model.Mode = "Search";
-            model = await _IAccountMaster.GetDashboardData(model);
-            string jsonData = JsonConvert.SerializeObject(model);
-            HttpContext.Session.SetString("AccountList", jsonData);
-            return PartialView("_AccMasterDashboard", model);
-        }
-        public async Task<IActionResult> GetDetailData(AccountMasterModel model)
-        {
-            model.Mode = "DetailSearch";
-            model = await _IAccountMaster.GetDetailDashboardData(model);
-            string jsonData = JsonConvert.SerializeObject(model);
-            HttpContext.Session.SetString("AccountList", jsonData);
-            return PartialView("_AccMasterDashboard", model);
-        }
+            AccountMasterModel model = new AccountMasterModel();
 
-        public IActionResult ExportAccountExcel()
-        {
-            // Get JSON from Session
-            var json = HttpContext.Session.GetString("AccountList");
-            if (string.IsNullOrEmpty(json))
-                return Content("No data found in session");
+            // 1️⃣ Get session data
+            string modelJson = HttpContext.Session.GetString("AccountList");
 
-            var model = System.Text.Json.JsonSerializer.Deserialize<AccountMasterModel>(json);
-
-            if (model == null || model.AccountMasterList == null || !model.AccountMasterList.Any())
-                return Content("No data found");
-
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-            using (var package = new ExcelPackage())
+            if (string.IsNullOrWhiteSpace(modelJson))
             {
-                var ws = package.Workbook.Worksheets.Add("AccountMaster");
+                model.Rows = new List<Dictionary<string, object>>();
+                model.Headers = new List<DashboardColumn>();
+                model.TotalRecords = 0;
+                return PartialView("_AccMasterDashboard", model);
+            }
 
-                // ===============================================
-                // 🔵 FULL HEADER LIST (ALL COLUMNS)
-                // ===============================================
-                string[] headers =
+            // 2️⃣ Deserialize rows
+            var allRows = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(modelJson);
+
+            if (allRows == null || allRows.Count == 0)
+            {
+                model.Rows = new List<Dictionary<string, object>>();
+                model.Headers = new List<DashboardColumn>();
+                model.TotalRecords = 0;
+                return PartialView("_AccMasterDashboard", model);
+            }
+
+            // 3️⃣ Dynamic search (all columns)
+            var filteredRows = string.IsNullOrWhiteSpace(searchString)
+                ? allRows
+                : allRows.Where(row =>
+                    row.Values.Any(val =>
+                        val != null &&
+                        val.ToString()
+                           .Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                  .ToList();
+
+            // fallback → show all
+            if (filteredRows.Count == 0)
+                filteredRows = allRows;
+
+            // 4️⃣ Dynamic headers (from keys)
+            model.Headers = filteredRows.First()
+                .Keys
+                .Select(k => new DashboardColumn
                 {
-            "Account Code","DebCred Code","Party Code","Entry Date","Account Name","Display Name",
-            "Parent Account","Main Group","Account Type","Sub Group","Sub Sub Group","Under Group",
-            "Com Address","Com Address 1","Pin Code","City","State","Country","Phone No","Mobile No",
-            "Contact Person","Party Type","GST Registered","GST No","GST Party Type","GST Tax Type",
-            "Segment","SSL No","PAN No","TDS","TDS Rate","TDS Party Category","Responsible Employee",
-            "Responsible Emp Contact","Sales Person Name","Sales Person Email","Sales Person Mobile",
-            "Purchase Person Name","Purchase Person Email","Purchase Person Mobile","QC Person Email",
-            "Website","Email","Range","Division","Commodity","Working Add1","Working Add2",
-            "Rate Of Int","Credit Limit","Credit Days","SSL","Bank Account No","Bank Address",
-            "Bank IFSC Code","Bank Swift Code","Interbranch Sale BILL","Sales Person Name 2",
-            "Sales Email 2","Sales Mobile 2","Approved By","Approved","Approval Date",
-            "Black Listed","Black Listed By","Year Code","UID","CC","Created By","Created On",
-            "Updated By","Updated On","Active","Parent Account Code"
-        };
+                    Title = k,
+                    Field = k
+                })
+                .ToList();
 
-                for (int i = 0; i < headers.Length; i++)
-                    ws.Cells[1, i + 1].Value = headers[i];
+            // 5️⃣ Pagination
+            model.TotalRecords = filteredRows.Count;
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
 
-                // ===============================================
-                // 🔵 DATA ROWS
-                // ===============================================
-                int row = 2;
+            model.Rows = filteredRows
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
-                foreach (var x in model.AccountMasterList)
+            return PartialView("_AccMasterDashboard", model);
+        }
+
+
+        public IActionResult ExportAccountExcel(string ReportType)
+        {
+            string json = HttpContext.Session.GetString("AccountList");
+
+            if (string.IsNullOrEmpty(json))
+                return Content("No data available for export.");
+
+            // Deserialize as dynamic list
+            var data = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(json);
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("AccountMaster");
+
+            if (data != null && data.Count > 0)
+            {
+                // 🔥 Add Headers
+                int col = 1;
+                foreach (var key in data[0].Keys)
                 {
-                    int col = 1;
-
-                    ws.Cells[row, col++].Value = x.Account_Code;
-                    ws.Cells[row, col++].Value = x.DebCredCode;
-                    ws.Cells[row, col++].Value = x.Party_Code;
-                    ws.Cells[row, col++].Value = x.Entry_Date;
-                    ws.Cells[row, col++].Value = x.Account_Name;
-                    ws.Cells[row, col++].Value = x.DisplayName;
-                    ws.Cells[row, col++].Value = x.ParentAccountName;
-                    ws.Cells[row, col++].Value = x.MainGroup;
-                    ws.Cells[row, col++].Value = x.AccountType;
-                    ws.Cells[row, col++].Value = x.SubGroup;
-                    ws.Cells[row, col++].Value = x.SubSubGroup;
-                    ws.Cells[row, col++].Value = x.UnderGroup;
-                    ws.Cells[row, col++].Value = x.ComAddress;
-                    ws.Cells[row, col++].Value = x.ComAddress1;
-                    ws.Cells[row, col++].Value = x.PinCode;
-                    ws.Cells[row, col++].Value = x.City;
-                    ws.Cells[row, col++].Value = x.State;
-                    ws.Cells[row, col++].Value = x.Country;
-                    ws.Cells[row, col++].Value = x.PhoneNo;
-                    ws.Cells[row, col++].Value = x.MobileNo;
-                    ws.Cells[row, col++].Value = x.ContactPerson;
-                    ws.Cells[row, col++].Value = x.PartyType;
-                    ws.Cells[row, col++].Value = x.GSTRegistered;
-                    ws.Cells[row, col++].Value = x.GSTNO;
-                    ws.Cells[row, col++].Value = x.GSTPartyTypes;
-                    ws.Cells[row, col++].Value = x.GSTTAXTYPE;
-                    ws.Cells[row, col++].Value = x.Segment;
-                    ws.Cells[row, col++].Value = x.SSLNo;
-                    ws.Cells[row, col++].Value = x.PANNO;
-                    ws.Cells[row, col++].Value = x.TDS;
-                    ws.Cells[row, col++].Value = x.TDSRate;
-                    ws.Cells[row, col++].Value = x.TDSPartyCategery;
-                    ws.Cells[row, col++].Value = x.ResponsibleEmployee;
-                    ws.Cells[row, col++].Value = x.ResponsibleEmpContactNo;
-                    ws.Cells[row, col++].Value = x.SalesPersonName;
-                    ws.Cells[row, col++].Value = x.SalesPersonEmailId;
-                    ws.Cells[row, col++].Value = x.SalesPersonMobile;
-                    ws.Cells[row, col++].Value = x.PurchPersonName;
-                    ws.Cells[row, col++].Value = x.PurchasePersonEmailId;
-                    ws.Cells[row, col++].Value = x.PurchMobileNo;
-                    ws.Cells[row, col++].Value = x.QCPersonEmailId;
-                    ws.Cells[row, col++].Value = x.WebSite_Add;
-                    ws.Cells[row, col++].Value = x.EMail;
-                    ws.Cells[row, col++].Value = x.RANGE;
-                    ws.Cells[row, col++].Value = x.Division;
-                    ws.Cells[row, col++].Value = x.Commodity;
-                    ws.Cells[row, col++].Value = x.WorkingAdd1;
-                    ws.Cells[row, col++].Value = x.WorkingAdd2;
-                    ws.Cells[row, col++].Value = x.RateOfInt;
-                    ws.Cells[row, col++].Value = x.CreditLimit;
-                    ws.Cells[row, col++].Value = x.CreditDays;
-                    ws.Cells[row, col++].Value = x.SSL;
-                    ws.Cells[row, col++].Value = x.BankAccount_No;
-                    ws.Cells[row, col++].Value = x.BankAddress;
-                    ws.Cells[row, col++].Value = x.BankIFSCCode;
-                    ws.Cells[row, col++].Value = x.BankSwiftCode;
-                    ws.Cells[row, col++].Value = x.InterbranchSaleBILL;
-                    ws.Cells[row, col++].Value = x.salesperson_name;
-                    ws.Cells[row, col++].Value = x.salesemailid;
-                    ws.Cells[row, col++].Value = x.salesmobileno;
-                    ws.Cells[row, col++].Value = x.Approved_By;
-                    ws.Cells[row, col++].Value = x.Approved;
-                    ws.Cells[row, col++].Value = x.ApprovalDate;
-                    ws.Cells[row, col++].Value = x.BlackListed;
-                    ws.Cells[row, col++].Value = x.BlackListed_By;
-                    ws.Cells[row, col++].Value = x.YearCode;
-                    ws.Cells[row, col++].Value = x.Uid;
-                    ws.Cells[row, col++].Value = x.CC;
-                    ws.Cells[row, col++].Value = x.CreatedBy;
-                    ws.Cells[row, col++].Value = x.CreatedOn?.ToString("yyyy-MM-dd");
-                    ws.Cells[row, col++].Value = x.UpdatedBy;
-                    ws.Cells[row, col++].Value = x.UpdatedOn?.ToString("yyyy-MM-dd");
-                    ws.Cells[row, col++].Value = x.Active;
-                    ws.Cells[row, col++].Value = x.ParentAccountCode;
-                    
-
-                    row++;
+                    worksheet.Cell(1, col).Value = key;
+                    worksheet.Cell(1, col).Style.Font.Bold = true;
+                    col++;
                 }
 
-                // Auto-fit
-                ws.Cells[ws.Dimension.Address].AutoFitColumns();
-
-                // Return File
-                return File(package.GetAsByteArray(),
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    "AccountMaster.xlsx");
+                // 🔥 Add Rows
+                int row = 2;
+                foreach (var item in data)
+                {
+                    col = 1;
+                    foreach (var value in item.Values)
+                    {
+                        worksheet.Cell(row, col).Value = value?.ToString();
+                        col++;
+                    }
+                    row++;
+                }
             }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "AccountMaster.xlsx"
+            );
         }
 
         public async Task<IActionResult> GetTDSPartyList()

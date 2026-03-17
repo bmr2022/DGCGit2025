@@ -11,11 +11,13 @@ public class AccountMasterBLL : IAccountMaster
 {
     private AccountMasterDAL _AccountMasterDAL;
     private readonly IDataLogic _DataLogicDAL;
+    private readonly ICommon _common;
 
-    public AccountMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
+    public AccountMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService, ICommon common)
     {
-        _AccountMasterDAL = new AccountMasterDAL(config, dataLogicDAL, connectionStringService);
+        _AccountMasterDAL = new AccountMasterDAL(config, dataLogicDAL, connectionStringService, common);
         _DataLogicDAL = dataLogicDAL;
+        _common = common;
     }
 
     public async Task<ResponseResult> DeleteByID(int ID)
@@ -33,9 +35,9 @@ public class AccountMasterBLL : IAccountMaster
         return await _AccountMasterDAL.GetByID(ID);
     }
 
-    public async Task<AccountMasterModel> GetDashboardData(AccountMasterModel model)
+    public async Task<ResponseResult> GetDashboardData(AccountMasterModel model, int userID, string DashboardRepoType)
     {
-        return await _AccountMasterDAL.GetDashboardData(model);
+        return await _AccountMasterDAL.GetDashboardData(model, userID, DashboardRepoType);
     }
     public async Task<AccountMasterModel> GetDetailDashboardData(AccountMasterModel model)
     {
