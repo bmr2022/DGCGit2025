@@ -1,4 +1,6 @@
-﻿@model eTactWeb.DOM.Models.UnitMasterModel;
+﻿@using eTactWeb.Data.Common
+@model eTactWeb.DOM.Models.UnitMasterModel;
+@inject EncryptDecrypt encryptDecrypt
 <div class="table-responsive" style="max-height:350px;">
     <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
         <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
@@ -6,9 +8,9 @@
                 <th>Sr#</th>
                 <th style="width:50px !important">Action</th>
                 <th>Unit Name</th>
-                <th>CC</th>
-                <th>Round Off</th>
+                <th>Branch</th>
                 <th>Unit Detail</th>
+                <th>Round Off</th>
             </tr>
         </thead>
         <tbody id="gateDashboardtable">
@@ -29,10 +31,7 @@
                                 <div id="container">
 
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="UnitMaster" asp-route-Mode="V" asp-route-Unit_Name="@item.Unit_Name"
-                                           asp-route-Round_Off="@item.Round_Off"
-                                           asp-route-UnitDetail="@item.UnitDetail"
-                                           asp-route-CC="@item.CC" >
+                                        <a class="table-link link-success" asp-action="UnitMaster" asp-route-Mode="@encryptDecrypt.Encrypt("V")" asp-route-Unit_Name="@encryptDecrypt.Encrypt(item.Unit_Name ?? "")">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -43,15 +42,11 @@
                                     <div id="editCursorDiv-@Cntr">
                                         @* <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="LedgerOpeningEntry" onclick="confirmEdit(event)" asp-controller="LedgerOpeningEntry" asp-route-Mode="U" asp-route-ID="@item.EntryByEmpId" asp-route-YC="@item.ClosingYearCode" asp-route-EntryByMachine="@item.EntryByMachine" asp-route-AccountCode="@item.AccountCode">*@
                                         <a class="table-link link-primary"
-                                           asp-action="UnitMaster"
-                                           asp-controller="UnitMaster"
-                                           asp-route-Mode="U"
-                                           asp-route-ID="@Cntr"
-                                           asp-route-Unit_Name="@item.Unit_Name"
-                                           asp-route-Round_Off="@item.Round_Off"
-                                           asp-route-UnitDetail="@item.UnitDetail"
-                                           asp-route-CC="@item.CC"
-                                           onclick="confirmEdit(event)">
+                                               asp-action="UnitMaster"
+                                               asp-controller="UnitMaster"
+                                               asp-route-Mode="@encryptDecrypt.Encrypt("U")"
+                                               asp-route-Unit_Name="@encryptDecrypt.Encrypt(item.Unit_Name ?? "")"
+                                               onclick="confirmEdit(event)">
 
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
@@ -73,8 +68,10 @@
 
                             <td>@item.Unit_Name</td>
                             <td>@item.CC</td>
-                            <td>@item.Round_Off</td>
                             <td>@item.UnitDetail</td>
+                            <td>@item.Round_Off</td>
+                            
+                          
 
                         </tr>
                     }
@@ -88,14 +85,25 @@
 
 
 <style>
+    /* #container {
+            display: flex;
+        }
+
+            #container > div {
+                flex: 1;
+                margin-right: 10px;
+            } */
     #container {
         display: flex;
+        justify-content: center; /* center the icons */
+        gap: 5px; /* space between icons */
     }
 
         #container > div {
-            flex: 1;
-            margin-right: 10px;
+            flex: 0 0 auto; /* shrink to fit content */
+            margin-right: 0; /* remove extra margin */
         }
+
 
     #GateDataTable {
         width: 100%;

@@ -17,12 +17,12 @@
                         </a>
                         <div class="row justify-content-between g-2">
                             <div class="col-auto">
-                                <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+                                <a href="#" class="btn btn-primary btn-sm" onclick="history.back();">
                                     <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                     BACK
                                 </a>
                             </div>
-                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            @if (Model.Mode != "V")
                             {
                                 <div class="col-auto">
                                     <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
@@ -30,11 +30,11 @@
                                         REFRESH
                                     </a>
                                 </div>
-                                @if (Model.Mode == "U"  )
+                                @if (Model.Mode == "U")
                                 {
-                                    Model.Mode = "U";
+                                    @*                                     Model.Mode = "U"; *@
                                     <div class="col-auto">
-                                        <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN" >
+                                        <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
                                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                             UPDATE
                                         </button>
@@ -44,7 +44,7 @@
                                 else
                                 {
                                     <div class="col-auto">
-                                        <button type="submit" class="btn btn-primary btn-sm submitBTN" >
+                                        <button type="submit" class="btn btn-primary btn-sm submitBTN">
                                             <i class="fa-solid fa-chevron-circle-right"></i>
                                             SUBMIT
                                         </button>
@@ -74,24 +74,25 @@
                                     <input type="hidden" asp-for="PrevUnitName" />
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
                                         <label asp-for="Unit_Name" class="form-label" style="color:red;">Unit Name*</label>
-                                        <input asp-for="Unit_Name" class="form-control" required minlength="3" maxlength="3"/>
+                                        <input asp-for="Unit_Name" value="@Model.Unit_Name" class="form-control" required minlength="3" maxlength="3" />
                                     </div>
-                               @*      <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="Round_Off" class="form-label" style="color:red;">Round_Off*</label>
                                         <select class="form-control" asp-for="Round_Off" required>
                                             <option value="">--Select--</option>
                                             <option value="Y">YES</option>
                                             <option value="N">No</option>
                                         </select>
-                                    </div> *@
+                                    </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="UnitDetail" class="form-label">Unit Detail</label>
-                                        <input asp-for="UnitDetail" class="form-control" data-val="false"/>
+                                        <input asp-for="UnitDetail" class="form-control" data-val="false" />
                                     </div>
 
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <label asp-for="CC" class="form-label">CC</label>
-                                        <input asp-for="CC" class="form-control" value="GI" readonly />
+                                        <label asp-for="CC" class="form-label">Branch</label>
+                                        <input type="text" class="form-control" asp-for="CC" readonly value="@Model.CC" />
+                                     
                                     </div>
                                    
 
@@ -130,7 +131,7 @@
                                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" /> *@
 
                                             @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
-                                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="history.back();">
                                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                                 BACK
                                             </a>
@@ -145,12 +146,12 @@
                                                     REFRESH
                                                 </a>
                                             </div>
-                                            @if (Model.Mode == "U"  )
+                                            @if (Model.Mode == "U")
                                             {
                                                 @*Model.Mode = "U";*@
                                                 <div class="col-auto">
                                                     @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                                    <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN" >
+                                                    <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
                                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                                         UPDATE
                                                     </button>
@@ -159,7 +160,7 @@
                                             else
                                             {
                                                 <div class="col-auto">
-                                                    <button type="submit" class="btn btn-primary btn-sm submitBTN" >
+                                                    <button type="submit" class="btn btn-primary btn-sm submitBTN">
                                                         <i class="fa-solid fa-chevron-circle-right"></i>
                                                         SUBMIT
                                                     </button>
@@ -173,208 +174,253 @@
                     </div>
                 </div>
             </div>
-    </form>
-</div>
+        </form>
+    </div>
+    <div id="ajaxLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+            <span class="spinner-border text-primary" role="status"></span>
+            <br />
+            <span>Processing...</span>
+        </div>
+    </div>
 
 
 
-@section Scripts {
-    <script>
+    @section Scripts {
+        <script>
 
-        $('.submitBTN').click(function (e) {
-            e.preventDefault();
-            $('form').submit();
-        });
+            // $('.submitBTN').click(function (e) {
+            //     e.preventDefault();
+            //     $('form').submit();
+            // });
+
+            $('.submitBTN').click(function (e) {
+
+                e.preventDefault();
+          
+
+                $.ajax({
+                    url: $('form').attr('action'),
+                    type: $('form').attr('method'),
+                    data: $('form').serialize(),
+                    beforeSend: function () {
+                        $('#ajaxLoader').show(); // ✅ Show loader
+                    },
+                    success: function (response) {
+
+                        // Success from controller
+                        if (response.success) {
+                            if (response.redirectUrl) {
+                                window.location.href = response.redirectUrl;
+                            } else {
+                                $.notify(response.message, "error");
+                            }
 
 
-        $(document).ready(function () {
-            GetFormRights();
-            $('#Round_Off').rules("remove", "required");
-            $('#Round_Off').select2();
+                            $('#ajaxLoader').hide();
+                            // optional redirect
+                            // window.location.href = response.redirectUrl;
+                        }
+                        else {
+                            // SP StatusText / validation error
+                            $.notify(response.message, "error");
+                            $('#ajaxLoader').hide();
+                        }
+                    },
+                    error: function () {
+                        $.notify("Unexpected server error", "error");
+                    }
+                });
+            });
+
+            $(document).ready(function () {
+                GetFormRights();
+                $('#Round_Off').rules("remove", "required");
+                $('#Round_Off').select2();
            
 
-        });
-        function GetFormRights() {
+            });
+            function GetFormRights() {
 
-            $.ajax({
-                url: "@Url.Action("GetFormRights")",
-                type: "POST",
-                success: function (data) {
+                $.ajax({
+                    url: "@Url.Action("GetFormRights")",
+                    type: "POST",
+                    success: function (data) {
 
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-                        console.log(obj);
-                        var optAll = obj.Result.Table[0].OptAll;
-                        var optSave = obj.Result.Table[0].OptSave;
-                        var optUpdate = obj.Result.Table[0].OptUpdate;
-                        var optDelete = obj.Result.Table[0].OptDelete;
-                        var optView = obj.Result.Table[0].OptView;
-                        if (!optAll) {
-                            if (!optSave) {
-                                $(".submitBTN").prop("disabled", true);
-                            }
-                            if (!(optUpdate || optDelete || optView)) {
-                                $(".DashBoard")
-                                    .addClass("disabled-link")
-                                    .on("click", function (e) {
-                                        e.preventDefault(); // Prevents clicking the link
-                                    });
+                        if (data != null) {
+                            var obj = $.parseJSON(data);
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $(".submitBTN").prop("disabled", true);
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $(".DashBoard")
+                                        .addClass("disabled-link")
+                                        .on("click", function (e) {
+                                            e.preventDefault(); // Prevents clicking the link
+                                        });
+                                }
                             }
                         }
+                    },
+                    error: function (errMsg) {
+                        $.notify(errMsg, { position: "top center", className: "error" });
                     }
-                },
-                error: function (errMsg) {
-                    $.notify(errMsg, { position: "top center", className: "error" });
-                }
-            });
-            calculateSumAndSetValues();
-        }
+                });
+                calculateSumAndSetValues();
+            }
 
        
              
        
-        let originalStoreName = $('#Store_Name').val(); 
-        let originalStoreType = $('#StoreType').val(); 
+            let originalStoreName = $('#Store_Name').val();
+            let originalStoreType = $('#StoreType').val();
 
        
-        $('#Store_Name').change(function () {
-            if ($('#Mode').val() === 'U') { 
-                if ($(this).val() !== originalStoreName) {
-                    ChkForDuplicate(); 
-                }
-            } else if ($('#Mode').val() !== 'V') { 
-                ChkForDuplicate();
-            }
-        });
-
-        
-        $('#StoreType').change(function () {
-            if ($('#Mode').val() === 'U') { 
-                if ($(this).val() !== originalStoreType) {
-                    ChkForDuplicateStoreType(); 
-                }
-            } else if ($('#Mode').val() !== 'V') { 
-                ChkForDuplicateStoreType();
-            }
-        });
-       
-        
-        
-       
-       
-        function TotalNoOfRows() {
-            var Row = $('#divStockGrid tr').length;
-            var tdCount = $('#divStockGrid tr td').length;
-            if (tdCount >= 1) {
-                $('#lblTotalNoOfBelowItems').text(Row);
-            } else {
-                $('#lblTotalNoOfBelowItems').text(0);
-            }
-        }
-
-        function CheckBeforeUpdate() {
-            $.ajax({
-                url: '@Url.Action("CheckBeforeUpdate")',
-                type: "POST",
-                data: { "Type": $('#Entry_id').val() },
-                success: function (data) {
-                    console.log("success");
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-                        if (obj.Result != null) {
-                            if (obj.Result.Table[0].Column1 > 0) {
-                                $.notify("You cannot update this Category as Item with this category already exists", "error");
-                            }
-                            else {
-                                $('form').submit();
-                            }
-                        }
+            $('#Store_Name').change(function () {
+                if ($('#Mode').val() === 'U') {
+                    if ($(this).val() !== originalStoreName) {
+                        ChkForDuplicate();
                     }
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                },
-                failure: function (response) {
-                    alert(response.responseText);
+                } else if ($('#Mode').val() !== 'V') {
+                    ChkForDuplicate();
                 }
             });
-        }
 
+        
+            $('#StoreType').change(function () {
+                if ($('#Mode').val() === 'U') {
+                    if ($(this).val() !== originalStoreType) {
+                        ChkForDuplicateStoreType();
+                    }
+                } else if ($('#Mode').val() !== 'V') {
+                    ChkForDuplicateStoreType();
+                }
+            });
+       
+        
+        
+       
+       
+            function TotalNoOfRows() {
+                var Row = $('#divStockGrid tr').length;
+                var tdCount = $('#divStockGrid tr td').length;
+                if (tdCount >= 1) {
+                    $('#lblTotalNoOfBelowItems').text(Row);
+                } else {
+                    $('#lblTotalNoOfBelowItems').text(0);
+                }
+            }
 
-
-
-        var isEditAllowed = "false";
-
-
-        var editingNow = false;
-        function EditItemRow(SrNO) {
-
-            if (editingNow == false) {
-                return new Promise((resolve, reject) => {
-                    $.ajax({
-                        url: '@Url.Action("EditItemRow")',
-                        type: "POST",
-                        data: { "SrNO": SrNO, "Mode": $('#Mode').val() },
-                    })
-                        .done(function (data, status, xhr) {
-                            editingNow = true;
+            function CheckBeforeUpdate() {
+                $.ajax({
+                    url: '@Url.Action("CheckBeforeUpdate")',
+                    type: "POST",
+                    data: { "Type": $('#Entry_id').val() },
+                    success: function (data) {
+                        console.log("success");
+                        if (data != null) {
                             var obj = $.parseJSON(data);
-                            DeleteItemRow(SeqNo)
-                                .then(() => {
-                                    $('#MainPartCode').val(obj[0].MainPartCode).trigger('change');
-                                    $('#MainItemName').val(obj[0].MainItemName).trigger('change');
-                                    $('#AltPartCode').val(obj[0].AltPartCode).trigger('change');
-                                    $('#AltItemName').val(obj[0].AltItemName).trigger('change');
-                                    var currentSrNo = $('#SrNO').val();
-                                    var newSrNo = obj[0].SrNO;
-                                    if (currentSrNo !== newSrNo) {
-                                        $('#SrNO').val(newSrNo).trigger('change');
-                                    }
-
-                                })
-                                .catch((error) => {
-                                    reject(error);
-                                });
-
-                        })
-                        .fail(function (response) {
-                            reject(response.responseText);
-                        });
-                    $.notify("Item Updated from Grid", "info");
+                            if (obj.Result != null) {
+                                if (obj.Result.Table[0].Column1 > 0) {
+                                    $.notify("You cannot update this Category as Item with this category already exists", "error");
+                                }
+                                else {
+                                    $('form').submit();
+                                }
+                            }
+                        }
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
                 });
             }
-            else {
-                $.notify("Cannot edit as one item is already on above edit grid", "error");
+
+
+
+
+            var isEditAllowed = "false";
+
+
+            var editingNow = false;
+            function EditItemRow(SrNO) {
+
+                if (editingNow == false) {
+                    return new Promise((resolve, reject) => {
+                        $.ajax({
+                            url: '@Url.Action("EditItemRow")',
+                            type: "POST",
+                            data: { "SrNO": SrNO, "Mode": $('#Mode').val() },
+                        })
+                            .done(function (data, status, xhr) {
+                                editingNow = true;
+                                var obj = $.parseJSON(data);
+                                DeleteItemRow(SeqNo)
+                                    .then(() => {
+                                        $('#MainPartCode').val(obj[0].MainPartCode).trigger('change');
+                                        $('#MainItemName').val(obj[0].MainItemName).trigger('change');
+                                        $('#AltPartCode').val(obj[0].AltPartCode).trigger('change');
+                                        $('#AltItemName').val(obj[0].AltItemName).trigger('change');
+                                        var currentSrNo = $('#SrNO').val();
+                                        var newSrNo = obj[0].SrNO;
+                                        if (currentSrNo !== newSrNo) {
+                                            $('#SrNO').val(newSrNo).trigger('change');
+                                        }
+
+                                    })
+                                    .catch((error) => {
+                                        reject(error);
+                                    });
+
+                            })
+                            .fail(function (response) {
+                                reject(response.responseText);
+                            });
+                        $.notify("Item Updated from Grid", "info");
+                    });
+                }
+                else {
+                    $.notify("Cannot edit as one item is already on above edit grid", "error");
+                }
             }
-        }
 
-        function PressBack() {
+            function PressBack() {
 
-            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
-            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
-            sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
-            sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
-            sessionStorage.setItem('OpeningForYearBack', $('#OpeningForYearBack').val());
-            sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
-            sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
-            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+                sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+                sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+                sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+                sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+                sessionStorage.setItem('OpeningForYearBack', $('#OpeningForYearBack').val());
+                sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+                sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+                sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
 
-            window.history.back();
-        }
-
+                window.history.back();
+            }
 
 
-    </script>
+
+        </script>
 
 
-}
+    }
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
 
 
 

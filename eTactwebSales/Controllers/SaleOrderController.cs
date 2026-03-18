@@ -57,7 +57,8 @@ public class SaleOrderController : Controller
     private readonly IEmailService _emailService;
     private readonly ConnectionStringService _connectionStringService;
     private readonly ICompositeViewEngine _viewEngine;
-    public SaleOrderController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ISaleOrder iSaleOrder, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo, IConfiguration configuration, IEmailService emailService, ConnectionStringService connectionStringService, ICompositeViewEngine viewEngine)
+    private readonly ICommon _ICommon;
+    public SaleOrderController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ISaleOrder iSaleOrder, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo, IConfiguration configuration, IEmailService emailService, ConnectionStringService connectionStringService, ICompositeViewEngine viewEngine, ICommon ICommon)
 	{
 		_logger = logger;
 		_IDataLogic = iDataLogic;
@@ -72,6 +73,7 @@ public class SaleOrderController : Controller
         _emailService = emailService;
 		_connectionStringService = connectionStringService;
         _viewEngine = viewEngine;
+        _ICommon = ICommon;
     }
 
 	private EncryptDecrypt _EncryptDecrypt { get; }
@@ -2776,6 +2778,7 @@ public class SaleOrderController : Controller
 
                     var partCode = (worksheet.Cells[row, 1].Value ?? string.Empty).ToString().Trim();
                     var validateUnit = (worksheet.Cells[row, 2].Value ?? string.Empty).ToString().Trim();
+                    var qtystr = (worksheet.Cells[row, 4].Value ?? string.Empty).ToString().Trim();
 
                     // Validate Unit
                     if (validateUnit.Length > 3)
@@ -2817,6 +2820,24 @@ public class SaleOrderController : Controller
                     string wef = Request.Form["WEF"];
                     string soCloseDate = Request.Form["soCloseDate"];
 
+
+                    var unitparameter = _ICommon.CheckRoundOff(unit.ToString());
+                    var roundoff = "N";
+
+                    if (unitparameter != null &&
+                        unitparameter.Result != null &&
+                        unitparameter.Result.Result != null &&
+                        unitparameter.Result.Result.Rows.Count > 0)
+                    {
+                        DataRow excelrow = unitparameter.Result.Result.Rows[0];
+
+                        roundoff = excelrow["Round_Off"]?.ToString() ?? "";
+
+                    }
+
+
+
+
                     itemList.Add(new ItemDetail()
                     {
                         SOEntryId = Convert.ToInt32(soEntryId),
@@ -2848,6 +2869,25 @@ public class SaleOrderController : Controller
                         errors.Add($"Qty should be greater than 0 at row {row} ");
                         continue;
                     }
+
+
+                    if (!string.IsNullOrEmpty(qtystr) && decimal.TryParse(qtystr, out decimal parsedQty))
+                    {
+                        qty = parsedQty;
+
+                        // 🔴 Check for decimal when roundoff = Y
+                        if (roundoff == "Y" && qty % 1 != 0)
+                        {
+                            errors.Add($"Row {row} → Qty should not contain decimal when RoundOff = Y. Qty: {qtystr}");
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        errors.Add($"Row {row} → Invalid Qty: {qtystr}");
+                        continue;
+                    }
+
 
                     string deliveryDateStr = worksheet.Cells[row, 5].Value?.ToString();
                     var deliveryDate = (DateTime?)null;

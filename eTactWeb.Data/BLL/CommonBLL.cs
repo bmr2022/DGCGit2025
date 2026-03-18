@@ -33,5 +33,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _CommonDAL.GetDashboardData(spName, flag, parameters);
         }
+
+        public async Task<ResponseResult> CheckRoundOff(string unit)
+        {
+            return await _CommonDAL.CheckRoundOff(unit);
+        }
     }
 }

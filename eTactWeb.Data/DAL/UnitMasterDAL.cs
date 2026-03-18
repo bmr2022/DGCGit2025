@@ -60,7 +60,8 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@Round_Off", string.IsNullOrEmpty(model.Round_Off) ? DBNull.Value : model.Round_Off));
                     SqlParams.Add(new SqlParameter("@CC", string.IsNullOrEmpty(model.CC) ? DBNull.Value : model.CC));
                     SqlParams.Add(new SqlParameter("@UnitDetail", string.IsNullOrEmpty(model.UnitDetail) ? DBNull.Value : model.UnitDetail));
-                    SqlParams.Add(new SqlParameter("@PrevUnitName",string.IsNullOrEmpty(model.PrevUnitName) ? DBNull.Value : model.PrevUnitName));
+                    SqlParams.Add(new SqlParameter("@PrevUnitName", string.IsNullOrEmpty(model.PrevUnitName) ? DBNull.Value : model.PrevUnitName));
+                    SqlParams.Add(new SqlParameter("@updatedby", model.CreatedBy));
                 }
                 else
                 {
@@ -71,6 +72,7 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@CC", string.IsNullOrEmpty(model.CC) ? DBNull.Value : model.CC));
                     SqlParams.Add(new SqlParameter("@UnitDetail", string.IsNullOrEmpty(model.UnitDetail) ? DBNull.Value : model.UnitDetail));
                     SqlParams.Add(new SqlParameter("@PrevUnitName", DBNull.Value));
+                    SqlParams.Add(new SqlParameter("@ActualEntryBy", model.CreatedBy));
                 }
 
 
@@ -88,13 +90,14 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> GetDashBoardData()
+        public async Task<ResponseResult> GetDashBoardData(int userID)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "Dashboard"));
+                SqlParams.Add(new SqlParameter("@ActualEntryBy", userID));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_UnitMaster", SqlParams);
             }
             catch (Exception ex)
@@ -105,7 +108,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<UnitMasterModel> GetDashBoardDetailData()
+        public async Task<UnitMasterModel> GetDashBoardDetailData(int userID)
         {
             DataSet? oDataSet = new DataSet();
             var model = new UnitMasterModel();
@@ -118,6 +121,7 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure
                     };
                     oCmd.Parameters.AddWithValue("@Flag", "Dashboard");
+                    oCmd.Parameters.AddWithValue("@ActualEntryBy", userID);
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                     {
@@ -127,15 +131,15 @@ namespace eTactWeb.Data.DAL
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
                     model.UnitMasterDashBoardGrid = (from DataRow dr in oDataSet.Tables[0].Rows
-                                                      select new UnitMasterModel
-                                                      {
+                                                     select new UnitMasterModel
+                                                     {
 
-                                                          Unit_Name = dr["Unit_Name"].ToString(),
-                                                          Round_Off = dr["Round_Off"].ToString(),
-                                                          CC = dr["CC"].ToString(),
-                                                          UnitDetail = dr["UnitDetail"].ToString(),
+                                                         Unit_Name = dr["Unit_Name"].ToString(),
+                                                         Round_Off = dr["Round_Off"].ToString(),
+                                                         CC = dr["CC"].ToString(),
+                                                         UnitDetail = dr["UnitDetail"].ToString(),
 
-                                                      }).ToList();
+                                                     }).ToList();
                 }
             }
             catch (Exception ex)
@@ -164,7 +168,7 @@ namespace eTactWeb.Data.DAL
 
                 if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
                 {
-                    //PrepareView(_ResponseResult.Result, ref model);
+                    PrepareView(_ResponseResult.Result, ref model);
                 }
             }
             catch (Exception ex)
@@ -176,7 +180,25 @@ namespace eTactWeb.Data.DAL
 
             return model;
         }
-        public async Task<ResponseResult> DeleteByID(string Unit_Name)
+        private void PrepareView(DataSet ds, ref UnitMasterModel model)
+        {
+            if (ds == null || ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
+                return;
+
+            DataRow dr = ds.Tables[0].Rows[0];
+
+            model.Unit_Name = dr["Unit_Name"] == DBNull.Value ? string.Empty : dr["Unit_Name"].ToString();
+
+            model.CC = dr["CC"] == DBNull.Value ? string.Empty : dr["CC"].ToString();
+
+            model.Round_Off = dr["Round_Off"] == DBNull.Value ? string.Empty : dr["Round_Off"].ToString();
+
+            model.UnitDetail = dr["UnitDetail"] == DBNull.Value ? string.Empty : dr["UnitDetail"].ToString();
+
+
+        }
+
+        public async Task<ResponseResult> DeleteByID(string Unit_Name, int userID)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -184,6 +206,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DeleteByID"));
                 SqlParams.Add(new SqlParameter("@Unit_Name", Unit_Name));
+                SqlParams.Add(new SqlParameter("@ActualEntryBy", userID));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_UnitMaster", SqlParams);
             }
             catch (Exception ex)

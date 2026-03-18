@@ -997,6 +997,36 @@ namespace eTactWeb.Controllers
                         var Group_name = jsonDetail["Result"][0]["Group_name"]?.ToString();
                         var saleprice = jsonDetail["Result"][0]["saleprice"].ToString();
 
+                        var unitparameter = _ICommon.CheckRoundOff(unit.ToString());
+                        var roundoff = "N";
+
+                        if (unitparameter != null &&
+                            unitparameter.Result != null &&
+                            unitparameter.Result.Result != null &&
+                            unitparameter.Result.Result.Rows.Count > 0)
+                        {
+                            DataRow excelrow = unitparameter.Result.Result.Rows[0];
+
+                            roundoff= excelrow["Round_Off"]?.ToString() ?? "";
+
+                        }
+
+                        if (!string.IsNullOrEmpty(qtyStr) && decimal.TryParse(qtyStr, out decimal parsedQty))
+                        {
+                            qty = parsedQty;
+
+                            // 🔴 Check for decimal when roundoff = Y
+                            if (roundoff == "Y" && qty % 1 != 0)
+                            {
+                                errorList.Add($"Row {row} → Qty should not contain decimal when RoundOff = Y. Qty: {qtyStr}");
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            errorList.Add($"Row {row} → Invalid Qty: {qtyStr}");
+                            continue;
+                        }
 
                         decimal rate;
                         if (!string.IsNullOrEmpty(rateStr) && decimal.TryParse(rateStr, out decimal excelRate))

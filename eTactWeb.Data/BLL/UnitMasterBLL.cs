@@ -12,7 +12,7 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL
 {
-    public class UnitMasterBLL: IUnitMaster
+    public class UnitMasterBLL : IUnitMaster
     {
         private UnitMasterDAL _UnitMasterDAL;
         private readonly IDataLogic _DataLogicDAL;
@@ -31,13 +31,13 @@ namespace eTactWeb.Data.BLL
             return await _UnitMasterDAL.SaveUnitMaster(model);
         }
 
-        public async Task<ResponseResult> GetDashBoardData()
+        public async Task<ResponseResult> GetDashBoardData(int userID)
         {
-            return await _UnitMasterDAL.GetDashBoardData();
+            return await _UnitMasterDAL.GetDashBoardData(userID);
         }
-        public async Task<UnitMasterModel> GetDashBoardDetailData()
+        public async Task<UnitMasterModel> GetDashBoardDetailData(int userID)
         {
-            return await _UnitMasterDAL.GetDashBoardDetailData();
+            return await _UnitMasterDAL.GetDashBoardDetailData(userID);
         }
 
         public async Task<UnitMasterModel> GetViewByID(string Unit_Name)
@@ -45,9 +45,9 @@ namespace eTactWeb.Data.BLL
             return await _UnitMasterDAL.GetViewByID(Unit_Name);
         }
 
-        public async Task<ResponseResult> DeleteByID(String Unit_Name)
+        public async Task<ResponseResult> DeleteByID(String Unit_Name, int userID)
         {
-            return await _UnitMasterDAL.DeleteByID(Unit_Name);
+            return await _UnitMasterDAL.DeleteByID(Unit_Name, userID);
         }
     }
 }

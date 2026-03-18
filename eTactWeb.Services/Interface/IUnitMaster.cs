@@ -11,11 +11,11 @@ namespace eTactWeb.Services.Interface
     public interface IUnitMaster
     {
         Task<ResponseResult> SaveUnitMaster(UnitMasterModel model);
-        Task<ResponseResult> GetDashBoardData();
-        Task<UnitMasterModel> GetDashBoardDetailData();
+        Task<ResponseResult> GetDashBoardData(int userID);
+        Task<UnitMasterModel> GetDashBoardDetailData(int userID);
 
         Task<UnitMasterModel> GetViewByID(String Unit_Name);
-        Task<ResponseResult> DeleteByID(String Unit_Name);
+        Task<ResponseResult> DeleteByID(String Unit_Name, int userID);
         Task<ResponseResult> GetFormRights(int uId);
 
     }

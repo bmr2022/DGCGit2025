@@ -104,5 +104,25 @@ namespace eTactWeb.Data.DAL
             return response;
         }
 
+        public async Task<ResponseResult> CheckRoundOff(string unit)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "CheckRoundOff"));
+                SqlParams.Add(new SqlParameter("@Unit", unit));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GetDropDownList", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
     }
 }

@@ -8,12 +8,15 @@ using static eTactWeb.DOM.Models.Common;
 using eTactWeb.DOM.Models;
 using System.Net;
 using System.Data;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using PdfSharp.Drawing.BarCodes;
 
 namespace eTactWeb.Controllers
 {
     public class UnitMasterController : Controller
     {
         private readonly IDataLogic _IDataLogic;
+        public EncryptDecrypt EncryptDecrypt { get; }
         public IUnitMaster _IUnitMaster { get; }
         private readonly ILogger<UnitMasterController> _logger;
         private readonly IConfiguration iconfiguration;
@@ -25,6 +28,7 @@ namespace eTactWeb.Controllers
             _IUnitMaster = iUnitMaster;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+            EncryptDecrypt = encryptDecrypt;
         }
         public async Task<JsonResult> GetFormRights()
         {
@@ -33,28 +37,80 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        [Route("{controller}/Index")]
+        [Route("{controller}/UnitMaster")]
         [HttpGet]
-        public async Task<ActionResult> UnitMaster(string Unit_Name, string Mode, string UnitDetail, string CC,String Round_Off)
+        public async Task<ActionResult> UnitMaster(string Unit_Name, string Mode)
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
-            TempData.Clear();
+            //TempData.Clear();
+            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var rights = await _IUnitMaster.GetFormRights(userID);
+            if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+            {
+                return RedirectToAction("Dashboard", "Home");
+            }
+
+
+            var table = rights.Result.Tables[0];
+
+            if (!string.IsNullOrEmpty(Unit_Name) && (!string.IsNullOrEmpty(Unit_Name)))
+            {
+                string decryptedMode = EncryptDecrypt.Decrypt(Mode);
+                string decryptedUnitName = EncryptDecrypt.Decrypt(Unit_Name);
+                Mode = decryptedMode;
+                Unit_Name = decryptedUnitName;
+
+
+            }
+
+            bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+            bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+            bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+            bool optSave = Convert.ToBoolean(table.Rows[0]["OptSave"]);
+
+
+            if (Mode == "U")
+            {
+                if (!(optUpdate))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+            }
+            else if (Mode == "V")
+            {
+                if (!(optView))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+            }
+            //else if (ID <= 0)
+            //{
+            //    if (!optSave)
+            //    {
+            //        return RedirectToAction("UnitMasterDashBoard", "UnitMaster");
+            //    }
+            //    //if (!(optAll || optSave))
+            //    //{
+            //    //    return RedirectToAction("Dashboard", "Home");
+            //    //}
+
+            //}
+
             var MainModel = new UnitMasterModel();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
             MainModel.CC = HttpContext.Session.GetString("Branch");
             //MainModel.EntryDate = HttpContext.Session.GetString("EntryDate");
 
-            if (!string.IsNullOrEmpty(Mode) && Unit_Name!=" " && Mode == "U")
+            if (!string.IsNullOrEmpty(Mode) && Unit_Name != " " && (Mode == "U" || Mode == "V"))
             {
                 MainModel = await _IUnitMaster.GetViewByID(Unit_Name).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.Unit_Name = Unit_Name;
-                MainModel.Round_Off = Round_Off;
-                MainModel.UnitDetail = UnitDetail;
-                MainModel.PrevUnitName =Unit_Name;
-                MainModel.CC = CC;
-                                
+
+                MainModel.PrevUnitName = Unit_Name;
+
+
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTime.Now.AddMinutes(60),
@@ -66,14 +122,14 @@ namespace eTactWeb.Controllers
             return View(MainModel);
         }
 
-        [Route("{controller}/Index")]
+        [Route("{controller}/UnitMaster")]
         [HttpPost]
         public async Task<IActionResult> UnitMaster(UnitMasterModel model)
         {
             try
             {
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-
+                model.CC = HttpContext.Session.GetString("Branch");
                 var Result = await _IUnitMaster.SaveUnitMaster(model);
                 if (Result != null)
                 {
@@ -81,24 +137,43 @@ namespace eTactWeb.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
+                        return Json(new
+                        {
+                            success = true,
+                            message = "Data saved successfully",
+                            redirectUrl = Url.Action(
+                                    "UnitMasterDashBoard",
+                                    "UnitMaster"
+
+                            )
+                        });
                         //_MemoryCache.Remove("KeyLedgerOpeningEntryGrid");
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
-                    }
-                    else if (Result.IsSuccess == false)
+                        return Json(new
                         {
-                        ViewBag.isSuccess = true;
-                        TempData["423"] = "423";
-                        TempData["DeleteMessage"] = Result.StatusText;
+                            success = true,
+                            message = "Data saved successfully",
+                            redirectUrl = Url.Action(
+                                        "UnitMasterDashBoard",
+                                        "UnitMaster"
+                                      )
+                        });
                     }
+
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         ViewBag.isSuccess = false;
                         TempData["500"] = "500";
                         _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+                        return Json(new
+                        {
+                            success = false,
+                            message = "An unexpected error occurred."
+                        });
                         //return View("Error", Result);
                     }
                     else if (Result.StatusText == "Error" && ((int)Result.StatusCode == 423))
@@ -106,12 +181,54 @@ namespace eTactWeb.Controllers
                         ViewBag.isSuccess = true;
                         string message = "This unit is already in use. You cannot update it.";
 
-                        TempData["ErrorMessage"] = message;
-                        
+
+                        return Json(new
+                        {
+                            success = false,
+                            message = message
+                        });
+
+
                     }
+                    else if (!string.IsNullOrEmpty(Result.StatusText))
+                    {
+                        // If SP returned a message (like adjustment error)
+                        return Json(new
+                        {
+                            success = false,
+                            message = Result.StatusText
+                        });
+
+                        //return View(model);
+                    }
+                    else
+                    {
+                        ViewBag.isSuccess = false;
+                        TempData["Message"] = "Form Validation Error.";
+                        return Json(new
+                        {
+                            success = false,
+                            message = "An unexpected error occurred."
+                        });
+
+                        //  return RedirectToAction(nameof(Form), new { ID = 0 });
+                    }
+
+
+                }
+                else
+                {
+                    ViewBag.isSuccess = false;
+                    TempData["Message"] = "Form Validation Error.";
+                    return Json(new
+                    {
+                        success = false,
+                        message = "An unexpected error occurred."
+                    });
                 }
 
-                return RedirectToAction(nameof(UnitMasterDashBoard));
+
+                // return RedirectToAction(nameof(UnitMasterDashBoard));
 
             }
             catch (Exception ex)
@@ -133,10 +250,29 @@ namespace eTactWeb.Controllers
         {
             try
             {
+
+                int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                var rights = await _IUnitMaster.GetFormRights(userID);
+                if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+                var table = rights.Result.Tables[0];
+
+                bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+                bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+                bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+                bool optDelete = Convert.ToBoolean(table.Rows[0]["OptDelete"]);
+                if (!(optAll || optView || optUpdate || optDelete))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+
+
                 var model = new UnitMasterModel();
                 model.FromDate = HttpContext.Session.GetString("FromDate");
                 model.ToDate = HttpContext.Session.GetString("ToDate");
-                var Result = await _IUnitMaster.GetDashBoardData().ConfigureAwait(true);
+                var Result = await _IUnitMaster.GetDashBoardData(userID).ConfigureAwait(true);
                 if (Result != null)
                 {
                     DataSet ds = Result.Result;
@@ -156,21 +292,32 @@ namespace eTactWeb.Controllers
 
         public async Task<IActionResult> GetDashBoardDetailData()
         {
+            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             var model = new UnitMasterModel();
-            model = await _IUnitMaster.GetDashBoardDetailData();
+            model = await _IUnitMaster.GetDashBoardDetailData(userID);
             return PartialView("_UnitMasterDashBoardGrid", model);
         }
 
 
         public async Task<IActionResult> DeleteByID(String Unit_Name)
         {
-            var Result = await _IUnitMaster.DeleteByID(Unit_Name);
+            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var Result = await _IUnitMaster.DeleteByID(Unit_Name, userID);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {
                 ViewBag.isSuccess = true;
                 TempData["410"] = "410";
+
+
                 //TempData["Message"] = "Data deleted successfully.";
+            }
+            else if (!string.IsNullOrEmpty(Result.StatusText))
+            {
+                // If SP returned a message (like adjustment error)
+                ViewBag.isSuccess = false;
+                TempData["ErrorMessage"] = Result.StatusText;
+
             }
             else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
             {

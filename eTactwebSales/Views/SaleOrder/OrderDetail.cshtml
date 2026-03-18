@@ -4187,6 +4187,7 @@ $('#PendingPOFromOtherBranchModel').modal('hide');
                             $('#Group_Code').val(obj.Result[0].Group_Code);
                              $('#Group_name').val("");
                             $('#Group_name').val(obj.Result[0].Group_name);
+                            validateQtyByUnit($('#Unit').val(),'Qty');
 
                         }
                     }

@@ -62,9 +62,10 @@ namespace eTactWeb.Controllers
         public CultureInfo CI { get; private set; }
         public EncryptDecrypt EncryptDecrypt { get; private set; }
         public IDataLogic IDataLogic { get; private set; }
+        private readonly ICommon _ICommon;
         public IDirectPurchaseBill IDirectPurchaseBill { get; set; }
 
-        public DirectPurchaseBillController(IEinvoiceService IEinvoiceService, IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService, ICompositeViewEngine viewEngine)
+        public DirectPurchaseBillController(IEinvoiceService IEinvoiceService, IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService, ICompositeViewEngine viewEngine, ICommon ICommon)
         {
             _IEinvoiceService = IEinvoiceService;
             _iMemoryCacheService = iMemoryCacheService;
@@ -78,6 +79,7 @@ namespace eTactWeb.Controllers
             _MemoryCache = iMemoryCache;
             _connectionStringService = connectionStringService;
             _viewEngine = viewEngine;
+            _ICommon = ICommon;
         }
 
         [HttpGet]
@@ -2420,6 +2422,38 @@ namespace eTactWeb.Controllers
                         var item_name = json["Result"][0]["item_name"].ToString();
                         var Group_name = json["Result"][0]["Group_name"].ToString();
                         decimal GSTPer =Convert.ToDecimal(json["Result"][0]["GSTPer"].ToString());
+
+                        var unitparameter = _ICommon.CheckRoundOff(Unit.ToString());
+                        var roundoff = "N";
+
+                        if (unitparameter != null &&
+                            unitparameter.Result != null &&
+                            unitparameter.Result.Result != null &&
+                            unitparameter.Result.Result.Rows.Count > 0)
+                        {
+                            DataRow excelrow = unitparameter.Result.Result.Rows[0];
+
+                            roundoff = excelrow["Round_Off"]?.ToString() ?? "";
+
+                        }
+
+                        if (!string.IsNullOrEmpty(qtyValue) && decimal.TryParse(qtyValue, out decimal parsedQty))
+                        {
+                            qty = parsedQty;
+
+                            // 🔴 Check for decimal when roundoff = Y
+                            if (roundoff == "Y" && qty % 1 != 0)
+                            {
+                                errorList.Add($"Row {row} → Qty should not contain decimal when RoundOff = Y. Qty: {qtyValue}");
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            errorList.Add($"Row {row} → Invalid Qty: {qtyValue}");
+                            continue;
+                        }
+
 
                         string location = !string.IsNullOrEmpty(locationValue)
                                             ? locationValue

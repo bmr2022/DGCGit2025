@@ -1393,5 +1393,14 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
+
+        //kinjal add this function 
+        public async Task<JsonResult> CheckRoundOff(string unit)
+        {
+            var JSON = await _ICommon.CheckRoundOff(unit);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
     }
 }
