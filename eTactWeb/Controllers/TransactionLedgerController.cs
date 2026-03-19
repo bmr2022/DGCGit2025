@@ -109,7 +109,7 @@ namespace eTactWeb.Controllers
                         col.Item().AlignCenter()
                             .Text($"From {data.First().FromDate} To {data.First().ToDate}");
                         col.Item().AlignCenter()
-                            .Text(data.First().AccountName).Bold();
+                            .Text(data.First().AccountName).FontSize(12).Bold();
                         col.Item().AlignCenter()
                            .Text(LedgerAddress);
 
@@ -159,40 +159,40 @@ namespace eTactWeb.Controllers
                                 table.Cell().Border(0.3f)
      .BorderColor(Colors.Grey.Lighten2)
      .Padding(3)
-     .Text(row.VchNo ?? "");
+     .Text(row.VchNo ?? "").FontSize(10);
 
                                 table.Cell().Border(0.3f)
                                     .BorderColor(Colors.Grey.Lighten2)
                                     .Padding(3)
-                                    .Text(row.VoucherDocDate ?? "");
+                                    .Text(row.VoucherDocDate ?? "").FontSize(9);
 
                                 table.Cell().Border(0.3f)
                                     .BorderColor(Colors.Grey.Lighten2)
                                     .Padding(3)
-                                    .Text(row.Particulars ?? "");
-
-                                table.Cell().Border(0.3f)
-                                    .BorderColor(Colors.Grey.Lighten2)
-                                    .Padding(3)
-                                    .AlignRight()
-                                    .Text(row.DrAmt == 0 ? "" : row.DrAmt.ToString("N2"));
+                                    .Text(row.Particulars ?? "").FontSize(9);
 
                                 table.Cell().Border(0.3f)
                                     .BorderColor(Colors.Grey.Lighten2)
                                     .Padding(3)
                                     .AlignRight()
-                                    .Text(row.CrAmt == 0 ? "" : row.CrAmt.ToString("N2"));
+                                    .Text(row.DrAmt == 0 ? "" : row.DrAmt.ToString("N2")).FontSize(9);
 
                                 table.Cell().Border(0.3f)
                                     .BorderColor(Colors.Grey.Lighten2)
                                     .Padding(3)
                                     .AlignRight()
-                                    .Text(row.Balance.ToString("N2") + row.Types);
+                                    .Text(row.CrAmt == 0 ? "" : row.CrAmt.ToString("N2")).FontSize(9);
 
                                 table.Cell().Border(0.3f)
                                     .BorderColor(Colors.Grey.Lighten2)
                                     .Padding(3)
-                                    .Text(row.HeadWiseNarration ?? "");
+                                    .AlignRight()
+                                    .Text(row.Balance.ToString("N2") + row.Types).FontSize(9);
+
+                                table.Cell().Border(0.3f)
+                                    .BorderColor(Colors.Grey.Lighten2)
+                                    .Padding(3)
+                                    .Text(row.HeadWiseNarration ?? "").FontSize(9);
                             }
 
                             // 🔹 TOTAL ROW
