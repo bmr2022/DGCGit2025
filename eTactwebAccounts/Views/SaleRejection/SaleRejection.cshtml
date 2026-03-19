@@ -501,20 +501,43 @@
                         <div class="accordion-body">
                             @* <partial name="_SaleRejectionItemDetail" /> *@
 
-                            <div class="row align-items-end mb-2">
+                           <div class="row align-items-center mb-2">
 
-                              
-                                <!-- RIGHT SIDE : Add Item -->
-                                <div class="col-md-6 text-end">
-                                    <button type="button"
-                                            id="btnAddNew"
-                                            onclick="addRow()"
-                                            class="erp-btn erp-btn-add btn-sm-add">
-                                        + Add Item
-                                    </button>
-                                </div>
+    <!-- LEFT SIDE -->
+    <div class="col-md-4">
+        <button type="button"
+                id="btnAddNew"
+                onclick="addRow()"
+                class="erp-btn erp-btn-add btn-sm-add">
+            + Add Item(Alt+A)
+        </button>
+    </div>
 
-                            </div>
+    <!-- RIGHT SIDE -->
+    <div class="col-md-8 d-flex justify-content-end align-items-center gap-2">
+
+        <!-- File Upload -->
+        <input class="form-control form-control-sm w-auto" type="file" id="ExcelFile" />
+
+        <!-- Upload Excel (Icon Only) -->
+        <button type="button"
+                class="btn btn-outline-success btn-sm"
+                onclick="UploadExcel()"
+                title="Upload Excel">
+            <i class="fa-solid fa-upload"></i>
+        </button>
+
+        <!-- Import Format (Icon Only) -->
+        <button type="button"
+                class="btn btn-outline-secondary btn-sm"
+                onclick="ExportPOFormate()"
+                title="Download Import Format">
+            <i class="fa-solid fa-file-arrow-down"></i>
+        </button>
+
+    </div>
+
+</div>
                             <div class="card">
 
 
@@ -552,6 +575,12 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="row g-2 gx-3">
+                                        <div id="excelErrorBox" class="alert alert-danger" style="display:none;">
+                                            <ul id="excelErrorList"></ul>
+                                        </div>
+
+                                    </div>
 </div>
 </div>
                       
@@ -752,6 +781,76 @@
                 },
                 error: function () {
                     alert("Error loading data");
+                }
+            });
+        }
+                function UploadExcel() {
+
+            var fileInput = $('#ExcelFile');
+            var file = fileInput.prop("files")[0];
+
+            if (!file) {
+                AddErrorCls('ExcelFile');
+                $.notify("Please select an Excel file.", "error");
+                return;
+            } else {
+                RemoveErrorCls('ExcelFile');
+            }
+            var stateCode = $('#StateCode').val();          // Party State
+ var companyStateCode = $('#CompanyStateCode').val();  // Company State
+
+            var formData = new FormData();
+            formData.append("excelFile", file);
+            formData.append("stateCode", stateCode);
+            formData.append("companyStateCode", companyStateCode);
+
+             
+
+
+
+            // Optional: send extra fields if needed
+            // formData.append("Flag", $('#Flag').val());
+            
+
+            $.ajax({
+                url: "@Url.Action("UploadExcel")",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+
+                success: function (result) {
+                    console.log(result.html);
+
+                    // ===== SHOW ERRORS IN DIV =====
+                    if (result.errorList && result.errorList.length > 0) {
+                        $("#excelErrorList").empty();
+                        result.errorList.forEach(function (msg) {
+                            $("#excelErrorList").append("<li>" + msg + "</li>");
+                        });
+                        $("#excelErrorBox").show();
+                    } else {
+                        $("#excelErrorBox").hide();
+                    }
+
+                    // ===== LOAD PARTIAL VIEW =====
+                    if (result.html) {
+                        $('#SaleRejectionBody').empty();
+                        $('#SaleRejectionBody').html(result.html);
+                    }
+
+                    calculateTotals();
+                    
+                },
+
+                error: function (xhr) {
+                    if (xhr.status === 400) {
+                        // Show controller BadRequest message in error div
+                        $("#excelErrorList").empty().append("<li>" + xhr.responseText + "</li>");
+                        $("#excelErrorBox").show();
+                    } else {
+                        $.notify("Unexpected error occurred while uploading Excel.", "error");
+                    }
                 }
             });
         }
@@ -1006,6 +1105,7 @@
             $(".lblItemNetAmount").text(basicTotal.toFixed(2));
             $("#ItemNetAmount").val(basicTotal.toFixed(2));
             $("#NetTotal").val(netTotal.toFixed(2));
+            calculateroundoffnettotal();
             $(".TotalQty").text(totalQty);
             $(".lblItemCount").text(itemCount);
         }
@@ -1602,7 +1702,28 @@
             window.history.back();
         }
 
-        
+        function ExportPOFormate() {
+
+            $('#divSaleBillList').empty();
+            var wb = XLSX.utils.book_new();
+
+
+            var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "Rate", "Qty", "Dis%"] });
+
+            //ws['!ref'] = 'A1:I1';
+
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+            XLSX.writeFile(wb, "ImportSalerejFormat.xlsx");
+        }
+        document.addEventListener("keydown", function (e) {
+    // Check for Alt + A
+    if (e.altKey && (e.key === 'a' || e.key === 'A')) {
+        e.preventDefault(); // prevent default browser behavior
+        addRow();
+    }
+});
+
 
         $(document).ready(function () {
             var dtValue = $('#DT').prop("checked") == true ? "T" : "F";
@@ -2008,6 +2129,12 @@
                         $('#CompanyStateCode').empty();
                         $('#CompanyStateCode').val(obj.Result.Table[0].CompanyStateCode);
                         $('#AdjNewRefNo').val($('#VoucherNo').val());
+
+                        if($('#PaymentTerm').val()==0)
+                        {
+                            $('#PaymentTerm').val(1);
+
+                        }
                     }
                 },
                 complete:
@@ -2184,10 +2311,10 @@
                             //     $.notify("AdjustAmount, TotalAmount, and NetAmount must all be equal....!", "error");
                             //     return false;
                             // }
-                            else if (drAmt.toFixed(2) != crAmt.toFixed(2)) {
-                                $.notify("Debit and Credit are not maintained...!", "error");
-                                return false;
-                            }
+                            // else if (drAmt.toFixed(2) != crAmt.toFixed(2)) {
+                            //     $.notify("Debit and Credit are not maintained...!", "error");
+                            //     return false;
+                            // }
 
                             else if ($('#GSTRegistered').val() === 'Y') {
                                 if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() === "DOMESTIC") {
@@ -2209,10 +2336,10 @@
                                 $.notify("Debit And Credit Amount Status Grid should at least have one item", "error");
                                 return;
                             }
-                            else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
-                                $.notify("Total Debit And Total Credit Amount should be same", "error");
-                                return;
-                            }
+                            // else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
+                            //     $.notify("Total Debit And Total Credit Amount should be same", "error");
+                            //     return;
+                            // }
 
                             // ==========================
                             // STEP 5: FINAL SUBMIT
@@ -2349,6 +2476,10 @@
                                 $('#DocTypeAccountCode').append("<option value=" + val.Account_Code + ">" + val.Account_Name + "</option>");
                             });
                         }
+                         var SALERETURN = obj.Result.Table.find(x => x.Account_Name && x.Account_Name.trim().toUpperCase() === "SALE RETURN");
+                            if (SALERETURN) {
+                                $('#DocTypeAccountCode').val(SALERETURN.Account_Code);
+                            }
                     }
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
@@ -2430,6 +2561,10 @@
 
     </script>
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+    @*<script src="~/Scripts/table2excel.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
 }
 
 <style>

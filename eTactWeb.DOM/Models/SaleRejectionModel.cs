@@ -85,7 +85,8 @@ namespace eTactWeb.DOM.Models
 		public List<SaleRejectionDetail> SaleRejectionInputGrid { get; set; }
 		public List<SaleRejectionDetail> SaleRejectionDetails { get; set; }
 		public IList<SaleRejectionDetail>? ItemDetailGrid { get; set; }
-		public IList<DPBItemDetail>? DPBItemDetails { get; set; }
+        public List<string> ErrorList { get; set; }
+        public IList<DPBItemDetail>? DPBItemDetails { get; set; }
 		public IList<DbCrModel>? DbCrGrid { get; set; }
 		//public IList<DbCrModel>? DRCRGrid { get; set; }   
 

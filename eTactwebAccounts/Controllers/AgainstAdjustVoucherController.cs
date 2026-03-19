@@ -314,11 +314,11 @@ namespace eTactwebAccounts.Controllers
                     AdjAgnstAccEntryID = item.AgainstVoucherEntryId,
                     AdjModeOfAdjstment = item.ModeOfAdjustment,
                     AdjPendAmt = (decimal)item.AdjustmentAmt,
-                    AdjTotalAmt = (float)item.VoucherBillAmt,
-                    AdjRemainingAmt = (float)item.PendBillAmt,
+                    AdjTotalAmt = (decimal)item.VoucherBillAmt,
+                    AdjRemainingAmt = (decimal)item.PendBillAmt,
                     AdjAgnstDrCr = item.DRCR,
                     AdjDescription = item.VoucherNo,
-                    AdjAgnstPendAmt = (float?)item.AdjustmentAmt,
+                    AdjAgnstPendAmt = (decimal?)item.AdjustmentAmt,
                     AdjAgnstAccYearCode=item.AgainstVoucheryearCode,
                     AdjAgnstVouchDate = DateTime.TryParse(item.AgainstVoucherDate, out var date) ? date : (DateTime?)null
                 };

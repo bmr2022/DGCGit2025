@@ -259,8 +259,8 @@ public class Common
         public int? AccountAmount { get; set; }
         public string? DRCR { get; set; }
         public string? AccountName { get; set; }
-        public float? DrAmt { get; set; }
-        public float? CrAmt { get; set; }
+        public decimal? DrAmt { get; set; }
+        public decimal? CrAmt { get; set; }
     }
     public class AdjustmentModel : TimeStamp
     {
@@ -290,9 +290,9 @@ public class Common
         public string? AdjDrCr { get; set; }
         //[Column(TypeName = "decimal(18, 6)")]
         public decimal? AdjPendAmt { get; set; }
-        public float? AdjAdjstedAmt { get; set; }
-        public float? AdjTotalAmt { get; set; }
-        public float? AdjRemainingAmt { get; set; }
+        public decimal? AdjAdjstedAmt { get; set; }
+        public decimal? AdjTotalAmt { get; set; }
+        public decimal? AdjRemainingAmt { get; set; }
         public int? AdjOpenEntryID { get; set; }
         public int? AdjOpeningYearCode { get; set; }
         public DateTime? AdjDueDate { get; set; }
@@ -311,17 +311,17 @@ public class Common
         public string? AdjAgnstDrCrName { get; set; }
         public string? AdjAgnstDrCr { get; set; }
         [Column(TypeName = "decimal(18, 6)")]
-        public float? AdjAgnstPendAmt { get; set; }
-        public float? AdjAgnstAdjstedAmt { get; set; }
-        public float? AdjAgnstTotalAmt { get; set; }
-        public float? AdjAgnstRemainingAmt { get; set; }
+        public decimal? AdjAgnstPendAmt { get; set; }
+        public decimal? AdjAgnstAdjstedAmt { get; set; }
+        public decimal? AdjAgnstTotalAmt { get; set; }
+        public decimal? AdjAgnstRemainingAmt { get; set; }
         public int? AdjAgnstOpenEntryID { get; set; }
         public int? AdjAgnstOpeningYearCode { get; set; }
         public DateTime? AdjAgnstVouchDate { get; set; }
         public string? AdjAgnstTransType { get; set; }
-        public float TotalBillAmount {  get; set; }
-        public float TotalRemainingAmount {  get; set; }
-        public float TotalAdjustAmount { get; set; }
-        public float? PendingToAdjustAmount { get; set; }
+        public decimal TotalBillAmount {  get; set; }
+        public decimal TotalRemainingAmount {  get; set; }
+        public decimal TotalAdjustAmount { get; set; }
+        public decimal? PendingToAdjustAmount { get; set; }
     }
 }

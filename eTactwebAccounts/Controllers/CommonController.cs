@@ -233,10 +233,10 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("ItemCode", typeof(int));
             Table.Columns.Add("TaxTypeID", typeof(int));
             Table.Columns.Add("TaxAccountCode", typeof(string));
-            Table.Columns.Add("TaxPercentg", typeof(float));
+            Table.Columns.Add("TaxPercentg", typeof(decimal));
             Table.Columns.Add("AddInTaxable", typeof(char));
             Table.Columns.Add("RountOff", typeof(string));
-            Table.Columns.Add("Amount", typeof(float));
+            Table.Columns.Add("Amount", typeof(decimal));
             Table.Columns.Add("TaxRefundable", typeof(char));
             Table.Columns.Add("TaxonExp", typeof(string));
             Table.Columns.Add("Remark", typeof(string));
@@ -290,11 +290,11 @@ namespace eTactWeb.Controllers
                 Table.Columns.Add("AccountCode", typeof(int));
                 Table.Columns.Add("TaxTypeID", typeof(int));
                 Table.Columns.Add("TaxNameCode", typeof(int));
-                Table.Columns.Add("TaxPer", typeof(float));
+                Table.Columns.Add("TaxPer", typeof(decimal));
                 Table.Columns.Add("RoundOff", typeof(string));
-                Table.Columns.Add("TDSAmount", typeof(float));
-                Table.Columns.Add("InvBasicAmt", typeof(float));
-                Table.Columns.Add("InvNetAmt", typeof(float));
+                Table.Columns.Add("TDSAmount", typeof(decimal));
+                Table.Columns.Add("InvBasicAmt", typeof(decimal));
+                Table.Columns.Add("InvNetAmt", typeof(decimal));
                 Table.Columns.Add("Remark", typeof(string));
                 Table.Columns.Add("TypePBDirectPBVouch", typeof(string));
                 Table.Columns.Add("BankChallanNo", typeof(string));
@@ -303,8 +303,8 @@ namespace eTactWeb.Controllers
                 Table.Columns.Add("BankVoucherDate", typeof(DateTime));
                 Table.Columns.Add("BankVouchEntryId", typeof(int));
                 Table.Columns.Add("BankYearCode", typeof(int));
-                Table.Columns.Add("RemainingAmt", typeof(float));
-                Table.Columns.Add("RoundoffAmt", typeof(float));
+                Table.Columns.Add("RemainingAmt", typeof(decimal));
+                Table.Columns.Add("RoundoffAmt", typeof(decimal));
 
                 if (TDSDetailList != null && TDSDetailList.Count > 0)
                 {
@@ -379,11 +379,11 @@ namespace eTactWeb.Controllers
                 Table.Columns.Add("AccountCode", typeof(int));
                 Table.Columns.Add("TaxTypeID", typeof(int));
                 Table.Columns.Add("TaxNameCode", typeof(int));
-                Table.Columns.Add("TaxPer", typeof(float));
+                Table.Columns.Add("TaxPer", typeof(decimal));
                 Table.Columns.Add("RoundOff", typeof(string));
-                Table.Columns.Add("TDSAmount", typeof(float));
-                Table.Columns.Add("InvBasicAmt", typeof(float));
-                Table.Columns.Add("InvNetAmt", typeof(float));
+                Table.Columns.Add("TDSAmount", typeof(decimal));
+                Table.Columns.Add("InvBasicAmt", typeof(decimal));
+                Table.Columns.Add("InvNetAmt", typeof(decimal));
                 Table.Columns.Add("Remark", typeof(string));
                 Table.Columns.Add("TypePBDirectPBVouch", typeof(string));
                 Table.Columns.Add("BankChallanNo", typeof(string));
@@ -392,8 +392,8 @@ namespace eTactWeb.Controllers
                 Table.Columns.Add("BankVoucherDate", typeof(DateTime));
                 Table.Columns.Add("BankVouchEntryId", typeof(int));
                 Table.Columns.Add("BankYearCode", typeof(int));
-                Table.Columns.Add("RemainingAmt", typeof(float));
-                Table.Columns.Add("RoundoffAmt", typeof(float));
+                Table.Columns.Add("RemainingAmt", typeof(decimal));
+                Table.Columns.Add("RoundoffAmt", typeof(decimal));
 
                 if (TDSDetailList != null && TDSDetailList.Count > 0)
                 {
@@ -467,11 +467,11 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("AccountCode", typeof(int));
             Table.Columns.Add("DocTypeID", typeof(int));
             Table.Columns.Add("ItemCode", typeof(int));
-            Table.Columns.Add("BillQty", typeof(float));
-            Table.Columns.Add("Rate", typeof(float));
-            Table.Columns.Add("DiscountPer", typeof(float));
-            Table.Columns.Add("DiscountAmt", typeof(float));
-            Table.Columns.Add("AccountAmount", typeof(float));
+            Table.Columns.Add("BillQty", typeof(decimal));
+            Table.Columns.Add("Rate", typeof(decimal));
+            Table.Columns.Add("DiscountPer", typeof(decimal));
+            Table.Columns.Add("DiscountAmt", typeof(decimal));
+            Table.Columns.Add("AccountAmount", typeof(decimal));
             Table.Columns.Add("DRCR", typeof(string));
 
             IList<DPBItemDetail> itemDetailList = MainModel.ItemDetailGrid;
@@ -517,11 +517,11 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("AccountCode", typeof(int));
             Table.Columns.Add("DocTypeID", typeof(int));
             Table.Columns.Add("ItemCode", typeof(int));
-            Table.Columns.Add("BillQty", typeof(float));
-            Table.Columns.Add("Rate", typeof(float));
-            Table.Columns.Add("DiscountPer", typeof(float));
-            Table.Columns.Add("DiscountAmt", typeof(float));
-            Table.Columns.Add("AccountAmount", typeof(float));
+            Table.Columns.Add("BillQty", typeof(decimal));
+            Table.Columns.Add("Rate", typeof(decimal));
+            Table.Columns.Add("DiscountPer", typeof(decimal));
+            Table.Columns.Add("DiscountAmt", typeof(decimal));
+            Table.Columns.Add("AccountAmount", typeof(decimal));
             Table.Columns.Add("DRCR", typeof(string));
 
             IList<PBItemDetail> itemDetailList = MainModel.ItemDetailGrid != null && MainModel.ItemDetailGrid.Count > 0 ? MainModel.ItemDetailGrid : MainModel.ItemDetailGridd;
@@ -568,11 +568,11 @@ namespace eTactWeb.Controllers
                 Table.Columns.Add("AccountCode", typeof(int));
                 Table.Columns.Add("DocTypeID", typeof(int));
                 Table.Columns.Add("ItemCode", typeof(int));
-                Table.Columns.Add("BillQty", typeof(float));
-                Table.Columns.Add("Rate", typeof(float));
-                Table.Columns.Add("DiscountPer", typeof(float));
-                Table.Columns.Add("DiscountAmt", typeof(float));
-                Table.Columns.Add("AccountAmount", typeof(float));
+                Table.Columns.Add("BillQty", typeof(decimal));
+                Table.Columns.Add("Rate", typeof(decimal));
+                Table.Columns.Add("DiscountPer", typeof(decimal));
+                Table.Columns.Add("DiscountAmt", typeof(decimal));
+                Table.Columns.Add("AccountAmount", typeof(decimal));
                 Table.Columns.Add("DRCR", typeof(string));
 
                 IList<SaleBillDetail> itemDetailList = MainModel.ItemDetailGrid;
@@ -622,11 +622,11 @@ namespace eTactWeb.Controllers
                 Table.Columns.Add("AccountCode", typeof(int));
                 Table.Columns.Add("DocTypeID", typeof(int));
                 Table.Columns.Add("ItemCode", typeof(int));
-                Table.Columns.Add("BillQty", typeof(float));
-                Table.Columns.Add("Rate", typeof(float));
-                Table.Columns.Add("DiscountPer", typeof(float));
-                Table.Columns.Add("DiscountAmt", typeof(float));
-                Table.Columns.Add("AccountAmount", typeof(float));
+                Table.Columns.Add("BillQty", typeof(decimal));
+                Table.Columns.Add("Rate", typeof(decimal));
+                Table.Columns.Add("DiscountPer", typeof(decimal));
+                Table.Columns.Add("DiscountAmt", typeof(decimal));
+                Table.Columns.Add("AccountAmount", typeof(decimal));
                 Table.Columns.Add("DRCR", typeof(string));
 
                 IList<AccCreditNoteDetail> itemDetailList = MainModel.AccCreditNoteDetails;
@@ -677,11 +677,11 @@ namespace eTactWeb.Controllers
                 Table.Columns.Add("AccountCode", typeof(int));
                 Table.Columns.Add("DocTypeID", typeof(int));
                 Table.Columns.Add("ItemCode", typeof(int));
-                Table.Columns.Add("BillQty", typeof(float));
-                Table.Columns.Add("Rate", typeof(float));
-                Table.Columns.Add("DiscountPer", typeof(float));
-                Table.Columns.Add("DiscountAmt", typeof(float));
-                Table.Columns.Add("AccountAmount", typeof(float));
+                Table.Columns.Add("BillQty", typeof(decimal));
+                Table.Columns.Add("Rate", typeof(decimal));
+                Table.Columns.Add("DiscountPer", typeof(decimal));
+                Table.Columns.Add("DiscountAmt", typeof(decimal));
+                Table.Columns.Add("AccountAmount", typeof(decimal));
                 Table.Columns.Add("DRCR", typeof(string));
 
                 IList<AccPurchaseRejectionDetail> itemDetailList = MainModel.AccPurchaseRejectionDetails;
@@ -734,11 +734,11 @@ namespace eTactWeb.Controllers
                 Table.Columns.Add("AccountCode", typeof(int));
                 Table.Columns.Add("DocTypeID", typeof(int));
                 Table.Columns.Add("ItemCode", typeof(int));
-                Table.Columns.Add("BillQty", typeof(float));
-                Table.Columns.Add("Rate", typeof(float));
-                Table.Columns.Add("DiscountPer", typeof(float));
-                Table.Columns.Add("DiscountAmt", typeof(float));
-                Table.Columns.Add("AccountAmount", typeof(float));
+                Table.Columns.Add("BillQty", typeof(decimal));
+                Table.Columns.Add("Rate", typeof(decimal));
+                Table.Columns.Add("DiscountPer", typeof(decimal));
+                Table.Columns.Add("DiscountAmt", typeof(decimal));
+                Table.Columns.Add("AccountAmount", typeof(decimal));
                 Table.Columns.Add("DRCR", typeof(string));
                 IList<SaleRejectionDetail> itemDetailList = MainModel.SaleRejectionDetails;
                 if (itemDetailList != null && itemDetailList.Any())
@@ -793,8 +793,8 @@ namespace eTactWeb.Controllers
                 {
                     AccountCode = item.AccountCode != null ? (int)item.AccountCode : 0,
                     //AccountName = (string)item.AccountName,
-                    DrAmt = item.DrAmt != null ? (float)item.DrAmt : 0,
-                    CrAmt = item.CrAmt != null ? (float)item.CrAmt : 0,
+                    DrAmt = item.DrAmt != null ? (decimal)item.DrAmt : 0,
+                    CrAmt = item.CrAmt != null ? (decimal)item.CrAmt : 0,
                     //DRCR = (item.DrAmt > 0) ? "DR" : "CR" // DR/CR based on the DrAmt
                 });
             }
@@ -805,8 +805,8 @@ namespace eTactWeb.Controllers
         {
             DataTable Table = new();
             Table.Columns.Add("AccountCode", typeof(int));
-            Table.Columns.Add("DrAmt", typeof(float));
-            Table.Columns.Add("CrAmt", typeof(float));
+            Table.Columns.Add("DrAmt", typeof(decimal));
+            Table.Columns.Add("CrAmt", typeof(decimal));
 
             if (dbCrDetailList != null && dbCrDetailList.Count > 0)
             {
@@ -1084,7 +1084,7 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("AgainstVoucheryearcode", typeof(int));
             Table.Columns.Add("AgainstvoucherType", typeof(string));
             Table.Columns.Add("AgainstVoucherNo", typeof(string));
-            Table.Columns.Add("AgainstVoucherAmount", typeof(float));
+            Table.Columns.Add("AgainstVoucherAmount", typeof(decimal));
             Table.Columns.Add("AgainstVoucherModAdjustment", typeof(string));
             Table.Columns.Add("AgainstAccOpeningEntryId", typeof(int));
             Table.Columns.Add("AgainstOpeningVoucheryearcode", typeof(int));
@@ -1100,9 +1100,9 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("fieldNumINT1", typeof(int));
             Table.Columns.Add("fieldNumINT2", typeof(int));
             Table.Columns.Add("fieldNumINT3", typeof(int));
-            Table.Columns.Add("fieldNum1", typeof(float));
-            Table.Columns.Add("fieldNum2", typeof(float));
-            Table.Columns.Add("fieldNum3", typeof(float));
+            Table.Columns.Add("fieldNum1", typeof(decimal));
+            Table.Columns.Add("fieldNum2", typeof(decimal));
+            Table.Columns.Add("fieldNum3", typeof(decimal));
             Table.Columns.Add("fieldDate1", typeof(string));
             Table.Columns.Add("fieldDate2", typeof(string));
             Table.Columns.Add("fieldDate3", typeof(string));

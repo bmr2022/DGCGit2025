@@ -117,16 +117,16 @@ namespace eTactWeb.Data.DAL
             model.Transporter = DS.Tables[0].Rows[0]["Transporter"]?.ToString();
             model.Vehicleno = DS.Tables[0].Rows[0]["Vehicleno"]?.ToString();
             model.Distance = DS.Tables[0].Rows[0]["Distance"]?.ToString();
-            model.BillAmt = DS.Tables[0].Rows[0]["BillAmt"] != DBNull.Value ? Convert.ToSingle(DS.Tables[0].Rows[0]["BillAmt"]) : 0;
+            model.BillAmt = DS.Tables[0].Rows[0]["BillAmt"] != DBNull.Value ? Convert.ToDecimal(DS.Tables[0].Rows[0]["BillAmt"]) : 0;
             model.NetTotal = DS.Tables[0].Rows[0]["BillAmt"] != DBNull.Value ? Convert.ToDecimal(DS.Tables[0].Rows[0]["BillAmt"]) : 0;
-            model.RoundOffAmt = DS.Tables[0].Rows[0]["RoundOffAmt"] != DBNull.Value ? Convert.ToSingle(DS.Tables[0].Rows[0]["RoundOffAmt"]) : 0;
+            model.RoundOffAmt = DS.Tables[0].Rows[0]["RoundOffAmt"] != DBNull.Value ? Convert.ToDecimal(DS.Tables[0].Rows[0]["RoundOffAmt"]) : 0;
             model.TotalRoundOffAmt = DS.Tables[0].Rows[0]["RoundOffAmt"] != DBNull.Value ? Convert.ToDecimal(DS.Tables[0].Rows[0]["RoundOffAmt"]) : 0;
             model.RoundoffType = DS.Tables[0].Rows[0]["RoundoffType"]?.ToString();
             model.TotalRoundOff = DS.Tables[0].Rows[0]["RoundoffType"]?.ToString();
-            model.Taxableamt = DS.Tables[0].Rows[0]["Taxableamt"] != DBNull.Value ? Convert.ToSingle(DS.Tables[0].Rows[0]["Taxableamt"]) : 0;
-            model.ToatlDiscountPercent = DS.Tables[0].Rows[0]["ToatlDiscountPercent"] != DBNull.Value ? Convert.ToSingle(DS.Tables[0].Rows[0]["ToatlDiscountPercent"]) : 0;
-            model.TotalDiscountAmount = DS.Tables[0].Rows[0]["TotalDiscountAmount"] != DBNull.Value ? Convert.ToSingle(DS.Tables[0].Rows[0]["TotalDiscountAmount"]) : 0;
-            model.NetAmt = DS.Tables[0].Rows[0]["InvNetAmt"] != DBNull.Value ? Convert.ToSingle(DS.Tables[0].Rows[0]["InvNetAmt"]) : 0;
+            model.Taxableamt = DS.Tables[0].Rows[0]["Taxableamt"] != DBNull.Value ? Convert.ToDecimal(DS.Tables[0].Rows[0]["Taxableamt"]) : 0;
+            model.ToatlDiscountPercent = DS.Tables[0].Rows[0]["ToatlDiscountPercent"] != DBNull.Value ? Convert.ToDecimal(DS.Tables[0].Rows[0]["ToatlDiscountPercent"]) : 0;
+            model.TotalDiscountAmount = DS.Tables[0].Rows[0]["TotalDiscountAmount"] != DBNull.Value ? Convert.ToDecimal(DS.Tables[0].Rows[0]["TotalDiscountAmount"]) : 0;
+            model.NetAmt = DS.Tables[0].Rows[0]["InvNetAmt"] != DBNull.Value ? Convert.ToDecimal(DS.Tables[0].Rows[0]["InvNetAmt"]) : 0;
             model.ItemNetAmount = DS.Tables[0].Rows[0]["InvNetAmt"] != DBNull.Value ? Convert.ToDecimal(DS.Tables[0].Rows[0]["InvNetAmt"]) : 0;
             model.PurchaserejRemark = DS.Tables[0].Rows[0]["PurchaserejRemark"]?.ToString();
             model.Remark = DS.Tables[0].Rows[0]["PurchaserejRemark"]?.ToString();
@@ -169,23 +169,23 @@ namespace eTactWeb.Data.DAL
                         ItemName = row["ItemName"]?.ToString(),
                         PartCode = row["PartCode"]?.ToString(),
                         HSNNo = row["HSNNo"]?.ToString(),
-                        BillQty = row["PurchBillQty"] != DBNull.Value ? Convert.ToSingle(row["PurchBillQty"]) : 0,
-                        RejectedQty = row["RejectedQty"] != DBNull.Value ? Convert.ToSingle(row["RejectedQty"]) : 0,
+                        BillQty = row["PurchBillQty"] != DBNull.Value ? Convert.ToDecimal(row["PurchBillQty"]) : 0,
+                        RejectedQty = row["RejectedQty"] != DBNull.Value ? Convert.ToDecimal(row["RejectedQty"]) : 0,
                         Unit = row["Unit"]?.ToString(),
-                        AltQty = row["AltQty"] != DBNull.Value ? Convert.ToSingle(row["AltQty"]) : 0,
+                        AltQty = row["AltQty"] != DBNull.Value ? Convert.ToDecimal(row["AltQty"]) : 0,
                         AltUnit = row["AltUnit"]?.ToString(),
-                        PRRate = row["RejRate"] != DBNull.Value ? Convert.ToSingle(row["RejRate"]) : 0,
-                        BillRate = row["PurchBillRate"] != DBNull.Value ? Convert.ToSingle(row["PurchBillRate"]) : 0,
+                        PRRate = row["RejRate"] != DBNull.Value ? Convert.ToDecimal(row["RejRate"]) : 0,
+                        BillRate = row["PurchBillRate"] != DBNull.Value ? Convert.ToDecimal(row["PurchBillRate"]) : 0,
                         UnitRate = row["UnitRate"]?.ToString(),
-                        AltRate = row["AltRate"] != DBNull.Value ? Convert.ToSingle(row["AltRate"]) : 0,
-                        NoOfCase = row["NoOfCase"] != DBNull.Value ? Convert.ToSingle(row["NoOfCase"]) : 0,
+                        AltRate = row["AltRate"] != DBNull.Value ? Convert.ToDecimal(row["AltRate"]) : 0,
+                        NoOfCase = row["NoOfCase"] != DBNull.Value ? Convert.ToDecimal(row["NoOfCase"]) : 0,
                         CostCenterId = row["CostcenetrId"] != DBNull.Value ? Convert.ToInt32(row["CostcenetrId"]) : 0,
                         DocAccountCode = row["DocAccountCode"] != DBNull.Value ? Convert.ToInt32(row["DocAccountCode"]) : 0,
                         DocAccountName = row["DocumentName"]?.ToString(),
                         ItemAmount = row["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(row["ItemAmount"]) : 0,
                         Amount = row["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(row["ItemAmount"]) : 0,
-                        DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToSingle(row["DiscountPer"]) : 0,
-                        DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToSingle(row["DiscountAmt"]) : 0,
+                        DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToDecimal(row["DiscountPer"]) : 0,
+                        DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToDecimal(row["DiscountAmt"]) : 0,
                         StoreId = row["StoreId"] != DBNull.Value ? Convert.ToInt32(row["StoreId"]) : 0,
                         StoreName = row["StoreName"]?.ToString(),
                         //Stockable = row["Stockable"]?.ToString(),
@@ -194,8 +194,8 @@ namespace eTactWeb.Data.DAL
                         UniqueBatchNo = row["UniqueBatchNo"]?.ToString(),
                         Uniquebatchno = row["UniqueBatchNo"]?.ToString(),
                         //CostCenterName = row["CostCenterName"]?.ToString(),
-                        LotStock = row["LotStock"] != DBNull.Value ? Convert.ToSingle(row["LotStock"]) : 0,
-                        TotalStock = row["TotalStock"] != DBNull.Value ? Convert.ToSingle(row["TotalStock"]) : 0,
+                        LotStock = row["LotStock"] != DBNull.Value ? Convert.ToDecimal(row["LotStock"]) : 0,
+                        TotalStock = row["TotalStock"] != DBNull.Value ? Convert.ToDecimal(row["TotalStock"]) : 0,
                         ItemSize = row["itemSize"]?.ToString(),
                         ItemDescription = row["ItemDescription"]?.ToString(),
                         Remark = row["Remark"]?.ToString(),
@@ -253,9 +253,9 @@ namespace eTactWeb.Data.DAL
                         //AdjDrCrName = row["AccEntryId"]?.ToString(),
                         AdjDrCr = row["DR/CR"]?.ToString(),
                         AdjPendAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToDecimal(row["AdjustmentAmt"]) : 0,
-                        AdjAdjstedAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToSingle(row["AdjustmentAmt"]) : 0,
-                        AdjTotalAmt = row["BillAmt"] != DBNull.Value ? Convert.ToSingle(row["BillAmt"]) : 0, // BillAmt
-                        AdjRemainingAmt = row["RemaingAmt"] != DBNull.Value ? Convert.ToSingle(row["RemaingAmt"]) : 0,
+                        AdjAdjstedAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToDecimal(row["AdjustmentAmt"]) : 0,
+                        AdjTotalAmt = row["BillAmt"] != DBNull.Value ? Convert.ToDecimal(row["BillAmt"]) : 0, // BillAmt
+                        AdjRemainingAmt = row["RemaingAmt"] != DBNull.Value ? Convert.ToDecimal(row["RemaingAmt"]) : 0,
                         AdjOpenEntryID = row["AgainstAccOpeningEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccOpeningEntryId"]) : 0,
                         AdjOpeningYearCode = row["AgainstOpeningVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(row["AgainstOpeningVoucheryearcode"]) : 0,
                         AdjDueDate = string.IsNullOrEmpty(row["voucherDate"]?.ToString()) ? new DateTime() : CommonFunc.ParseDate(row["voucherDate"].ToString()),
@@ -273,9 +273,9 @@ namespace eTactWeb.Data.DAL
                         AdjAgnstDrCrName = row["DR/CR"]?.ToString(),
                         AdjAgnstDrCr = row["DR/CR"]?.ToString(),
                         //AdjAgnstPendAmt = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
-                        AdjAgnstAdjstedAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToSingle(row["AdjustmentAmt"]) : 0,
-                        AdjAgnstTotalAmt = row["BillAmt"] != DBNull.Value ? Convert.ToSingle(row["BillAmt"]) : 0,
-                        AdjAgnstRemainingAmt = row["RemaingAmt"] != DBNull.Value ? Convert.ToSingle(row["RemaingAmt"]) : 0,
+                        AdjAgnstAdjstedAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToDecimal(row["AdjustmentAmt"]) : 0,
+                        AdjAgnstTotalAmt = row["BillAmt"] != DBNull.Value ? Convert.ToDecimal(row["BillAmt"]) : 0,
+                        AdjAgnstRemainingAmt = row["RemaingAmt"] != DBNull.Value ? Convert.ToDecimal(row["RemaingAmt"]) : 0,
                         AdjAgnstOpenEntryID = row["AgainstAccOpeningEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccOpeningEntryId"]) : 0,
                         AdjAgnstOpeningYearCode = row["AgainstOpeningVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(row["AgainstOpeningVoucheryearcode"]) : 0,
                         AdjAgnstVouchDate = row["voucherDate"] != DBNull.Value ? CommonFunc.ParseDate(row["voucherDate"].ToString()) : new DateTime(),
@@ -313,11 +313,11 @@ namespace eTactWeb.Data.DAL
                         PurchBillItemCode = row["BillItemCode"] != DBNull.Value ? Convert.ToInt32(row["BillItemCode"]) : 0,
                         PartCode = row["PartCode"]?.ToString(),
                         ItemName = row["ItemName"]?.ToString(),
-                        BillQty = row["BillQty"] != DBNull.Value ? Convert.ToSingle(row["BillQty"]) : 0,
+                        BillQty = row["BillQty"] != DBNull.Value ? Convert.ToDecimal(row["BillQty"]) : 0,
                         Unit = row["Unit"]?.ToString(),
-                        BillRate = row["BillRate"] != DBNull.Value ? Convert.ToSingle(row["BillRate"]) : 0,
+                        BillRate = row["BillRate"] != DBNull.Value ? Convert.ToDecimal(row["BillRate"]) : 0,
                         DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToInt32(row["DiscountPer"]) : 0,
-                        DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToSingle(row["DiscountAmt"]) : 0,
+                        DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToDecimal(row["DiscountAmt"]) : 0,
                         ItemSize = row["Itemsize"]?.ToString(),
                         Amount = row["Amount"] != DBNull.Value ? Convert.ToDecimal(row["Amount"]) : 0,
                         BillAmount = row["PurchaseBillAmt"] != DBNull.Value ? Convert.ToDecimal(row["PurchaseBillAmt"]) : 0,
@@ -327,11 +327,11 @@ namespace eTactWeb.Data.DAL
                         PODate = row["PODate"]?.ToString(),
                         POEntryId = row["POEntryId"] != DBNull.Value ? Convert.ToInt32(row["POEntryId"]) : 0,
                         POYearCode = row["POYearCode"] != DBNull.Value ? Convert.ToInt32(row["POYearCode"]) : 0,
-                        PoRate = row["PoRate"] != DBNull.Value ? Convert.ToSingle(row["PoRate"]) : 0,
+                        PoRate = row["PoRate"] != DBNull.Value ? Convert.ToDecimal(row["PoRate"]) : 0,
                         PoAmmNo = row["poammno"]?.ToString(),
                         BatchNo = row["BatchNo"]?.ToString(),
                         UniqueBatchNo = row["UniqueBatchNo"]?.ToString(),
-                        AltQty = row["AltQty"] != DBNull.Value ? Convert.ToSingle(row["AltQty"]) : 0,
+                        AltQty = row["AltQty"] != DBNull.Value ? Convert.ToDecimal(row["AltQty"]) : 0,
                         AltUnit = row["AltUnit"]?.ToString(),
                         MIREntryId = row["MIREntryId"] != DBNull.Value ? Convert.ToInt32(row["MIREntryId"]) : 0,
                         MIRNo = row["MIRNo"]?.ToString(),
@@ -353,8 +353,8 @@ namespace eTactWeb.Data.DAL
                         VoucherNo = row["BillVouchNo"]?.ToString(),
                         AccountCode = row["Accountcode"] != DBNull.Value ? Convert.ToInt32(row["Accountcode"]) : 0,
                         AccountName = row["Account_Name"]?.ToString(),
-                        DrAmt = row["DrAmt"] != DBNull.Value ? Convert.ToSingle(row["DrAmt"]) : 0,
-                        CrAmt = row["CrAmt"] != DBNull.Value ? Convert.ToSingle(row["CrAmt"]) : 0
+                        DrAmt = row["DrAmt"] != DBNull.Value ? Convert.ToDecimal(row["DrAmt"]) : 0,
+                        CrAmt = row["CrAmt"] != DBNull.Value ? Convert.ToDecimal(row["CrAmt"]) : 0
                     });
                 }
                 model.DbCrGrid = DRCRGrid ?? new List<DbCrModel>();
@@ -844,10 +844,10 @@ namespace eTactWeb.Data.DAL
                                                      CreatedBy = string.IsNullOrEmpty(dr["Uid"].ToString()) ? 0 : Convert.ToInt32(dr["Uid"].ToString()),
                                                      CreatedOn = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
                                                      ActualEntryDate = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
-                                                     BillAmt = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToSingle(dr["BillAmt"]) : 0,
-                                                     Taxableamt = !string.IsNullOrEmpty(dr["Taxableamt"].ToString()) ? Convert.ToSingle(dr["Taxableamt"]) : 0,
-                                                     InvNetAmt = !string.IsNullOrEmpty(dr["InvNetAmt"].ToString()) ? Convert.ToSingle(dr["InvNetAmt"]) : 0,
-                                                     RoundOffAmt = !string.IsNullOrEmpty(dr["RoundOffAmt"].ToString()) ? Convert.ToSingle(dr["RoundOffAmt"]) : 0
+                                                     BillAmt = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToDecimal(dr["BillAmt"]) : 0,
+                                                     Taxableamt = !string.IsNullOrEmpty(dr["Taxableamt"].ToString()) ? Convert.ToDecimal(dr["Taxableamt"]) : 0,
+                                                     InvNetAmt = !string.IsNullOrEmpty(dr["InvNetAmt"].ToString()) ? Convert.ToDecimal(dr["InvNetAmt"]) : 0,
+                                                     RoundOffAmt = !string.IsNullOrEmpty(dr["RoundOffAmt"].ToString()) ? Convert.ToDecimal(dr["RoundOffAmt"]) : 0
                                                  }).OrderBy(a => a.PurchaseRejEntryId).ToList();
                 }
             }
@@ -937,10 +937,10 @@ namespace eTactWeb.Data.DAL
                                                                     CreatedBy = string.IsNullOrEmpty(dr["Uid"].ToString()) ? 0 : Convert.ToInt32(dr["Uid"].ToString()),
                                                                     CreatedOn = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
                                                                     ActualEntryDate = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
-                                                                    BillAmt = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToSingle(dr["BillAmt"]) : 0,
-                                                                    Taxableamt = !string.IsNullOrEmpty(dr["Taxableamt"].ToString()) ? Convert.ToSingle(dr["Taxableamt"]) : 0,
-                                                                    InvNetAmt = !string.IsNullOrEmpty(dr["InvNetAmt"].ToString()) ? Convert.ToSingle(dr["InvNetAmt"]) : 0,
-                                                                    RoundOffAmt = !string.IsNullOrEmpty(dr["RoundOffAmt"].ToString()) ? Convert.ToSingle(dr["RoundOffAmt"]) : 0
+                                                                    BillAmt = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToDecimal(dr["BillAmt"]) : 0,
+                                                                    Taxableamt = !string.IsNullOrEmpty(dr["Taxableamt"].ToString()) ? Convert.ToDecimal(dr["Taxableamt"]) : 0,
+                                                                    InvNetAmt = !string.IsNullOrEmpty(dr["InvNetAmt"].ToString()) ? Convert.ToDecimal(dr["InvNetAmt"]) : 0,
+                                                                    RoundOffAmt = !string.IsNullOrEmpty(dr["RoundOffAmt"].ToString()) ? Convert.ToDecimal(dr["RoundOffAmt"]) : 0
                                                                 }).OrderBy(a => a.PurchaseRejEntryId).ToList();
                 }
             }

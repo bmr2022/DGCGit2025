@@ -1,33 +1,47 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
-using NuGet.Packaging;
-using static eTactWeb.DOM.Models.Common;
-using static eTactWeb.Data.Common.CommonFunc;
+﻿using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using eTactWeb.Data.BLL;
 using eTactWeb.Data.Common;
-using eTactWeb.Services.Interface;
-using Microsoft.Identity.Client;
 using eTactWeb.DOM.Models;
-using System.Net;
+using eTactWeb.Services.Interface;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Identity.Client;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using NuGet.Packaging;
+using OfficeOpenXml;
+using PdfSharp.Drawing.BarCodes;
 using System.Data;
 using System.Globalization;
-using Microsoft.AspNetCore.Mvc;
-using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using PdfSharp.Drawing.BarCodes;
+using System.Net;
+using static eTactWeb.Data.Common.CommonFunc;
+using static eTactWeb.DOM.Models.Common;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
-using eTactWeb.Data.BLL;
 
 namespace eTactWeb.Controllers
 {
 	public class SaleRejectionController : Controller
 	{
 		private readonly ISaleRejection _saleRejection;
+		private readonly ISaleBill _SaleBill;
 		private readonly ILogger<SaleRejectionController> _logger;
-		public SaleRejectionController(ISaleRejection saleRejection, ILogger<SaleRejectionController> logger)
+        private readonly ICommon _ICommon;
+        private readonly ICompositeViewEngine _viewEngine;
+
+        public SaleRejectionController(ISaleRejection saleRejection, ILogger<SaleRejectionController> logger, ICommon ICommon, ICompositeViewEngine viewEngine,ISaleBill iSaleBill)
 		{
 			_saleRejection = saleRejection;
 			_logger = logger;
-		}
+			_ICommon = ICommon;
+            _viewEngine = viewEngine;
+            _SaleBill = iSaleBill;
+
+        }
 
 
 		[HttpGet]
@@ -782,12 +796,12 @@ namespace eTactWeb.Controllers
 			Table.Columns.Add("TxItemCode", typeof(int));
 			Table.Columns.Add("TxTaxType", typeof(int));
 			Table.Columns.Add("TxAccountCode", typeof(int));
-			Table.Columns.Add("TxPercentg", typeof(float));
+			Table.Columns.Add("TxPercentg", typeof(decimal));
 			Table.Columns.Add("TxAdInTxable", typeof(string));
 			Table.Columns.Add("TxRoundOff", typeof(string));
-			Table.Columns.Add("TxAmount", typeof(float));
+			Table.Columns.Add("TxAmount", typeof(decimal));
 			Table.Columns.Add("TxRefundable", typeof(string));
-			Table.Columns.Add("TxOnExp", typeof(float));
+			Table.Columns.Add("TxOnExp", typeof(decimal));
 			Table.Columns.Add("TxRemark", typeof(string));
 
 			foreach (TaxModel Item in TaxDetailList)
@@ -830,14 +844,14 @@ namespace eTactWeb.Controllers
 			DTSSGrid.Columns.Add("ItemCode", typeof(int));
 			DTSSGrid.Columns.Add("Unit", typeof(string));
 			DTSSGrid.Columns.Add("HSNNo", typeof(int));
-			DTSSGrid.Columns.Add("NoOfCase", typeof(float));
-			DTSSGrid.Columns.Add("SaleBillQty", typeof(float));
-			DTSSGrid.Columns.Add("RejQty", typeof(float));
-			DTSSGrid.Columns.Add("MRNRecQty", typeof(float));
-			DTSSGrid.Columns.Add("RejRate", typeof(float));
-			DTSSGrid.Columns.Add("SaleBillRate", typeof(float));
-			DTSSGrid.Columns.Add("DiscountPer", typeof(float));
-			DTSSGrid.Columns.Add("DiscountAmt", typeof(float));
+			DTSSGrid.Columns.Add("NoOfCase", typeof(decimal));
+			DTSSGrid.Columns.Add("SaleBillQty", typeof(decimal));
+			DTSSGrid.Columns.Add("RejQty", typeof(decimal));
+			DTSSGrid.Columns.Add("MRNRecQty", typeof(decimal));
+			DTSSGrid.Columns.Add("RejRate", typeof(decimal));
+			DTSSGrid.Columns.Add("SaleBillRate", typeof(decimal));
+			DTSSGrid.Columns.Add("DiscountPer", typeof(decimal));
+			DTSSGrid.Columns.Add("DiscountAmt", typeof(decimal));
 			DTSSGrid.Columns.Add("SONO", typeof(string));
 			DTSSGrid.Columns.Add("SOyearcode", typeof(int));
 			DTSSGrid.Columns.Add("SODate", typeof(string));
@@ -846,7 +860,7 @@ namespace eTactWeb.Controllers
 			DTSSGrid.Columns.Add("Itemsize", typeof(string));
 			DTSSGrid.Columns.Add("RecStoreId", typeof(int));
 			DTSSGrid.Columns.Add("OtherDetail", typeof(string));
-			DTSSGrid.Columns.Add("Amount", typeof(float));
+			DTSSGrid.Columns.Add("Amount", typeof(decimal));
 			DTSSGrid.Columns.Add("RejectionReason", typeof(string));
 			DTSSGrid.Columns.Add("SaleorderRemark", typeof(string));
 			DTSSGrid.Columns.Add("SaleBillRemark", typeof(string));
@@ -1072,6 +1086,275 @@ namespace eTactWeb.Controllers
             }
 
             return Json(new { success = true });
+        }
+        public async Task<JsonResult> GetItemDetail(string PartCode)
+        {
+            var JSON = await _SaleBill.GetItemDetail(PartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        private async Task<string> RenderViewToStringAsync(string viewName, object model)
+        {
+            var httpContext = new DefaultHttpContext
+            {
+                RequestServices = HttpContext.RequestServices
+            };
+
+            var actionContext = new ActionContext(httpContext, RouteData, ControllerContext.ActionDescriptor);
+
+            using var sw = new StringWriter();
+
+            var viewResult = _viewEngine.FindView(actionContext, viewName, false);
+
+            if (viewResult.View == null)
+                throw new Exception($"View {viewName} not found.");
+
+            var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+            {
+                Model = model
+            };
+
+            var viewContext = new ViewContext(
+                actionContext,
+                viewResult.View,
+                viewDictionary,
+                TempData,
+                sw,
+                new HtmlHelperOptions()
+            );
+
+            await viewResult.View.RenderAsync(viewContext);
+
+            return sw.ToString();
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> UploadExcel()
+        {
+            var excelFile = Request.Form.Files[0];
+            int stateCode = Convert.ToInt32(Request.Form["stateCode"]);
+            int companyStateCode = Convert.ToInt32(Request.Form["companyStateCode"]);
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            List<SaleRejectionDetail> successList = new List<SaleRejectionDetail>();
+            List<string> errorList = new List<string>();
+
+            using (var stream = excelFile.OpenReadStream())
+            using (var package = new ExcelPackage(stream))
+            {
+                var sheet = package.Workbook.Worksheets[0];
+                int seq = 1;
+
+                for (int row = 2; row <= sheet.Dimension.Rows; row++)
+                {
+                    try
+                    {
+                        string partCode = sheet.Cells[row, 1].Value?.ToString()?.Trim();
+                        string rateStr = sheet.Cells[row, 2].Value?.ToString()?.Trim();
+                        string qtyStr = sheet.Cells[row, 3].Value?.ToString()?.Trim();
+                        string disStr = sheet.Cells[row, 4].Value?.ToString()?.Trim();
+                        //string storename = sheet.Cells[row, 5]?.Value?.ToString()?.Trim() ?? "";
+
+                        if (string.IsNullOrEmpty(partCode))
+                        {
+                            errorList.Add($"Row {row} → Part Code missing");
+                            continue;
+                        }
+
+                        if (!decimal.TryParse(qtyStr, out decimal qty) || qty <= 0)
+                        {
+                            errorList.Add($"Row {row} → Invalid Quantity: {qtyStr}");
+                            continue;
+                        }
+
+                        //if (!decimal.TryParse(rateStr, out decimal rate))
+                        //{
+                        //    errorList.Add($"Row {row} → Invalid Rate: {rateStr}");
+                        //    continue;
+                        //}
+
+                        if (!decimal.TryParse(disStr, out decimal discountPer))
+                            discountPer = 0;
+
+                        // Check duplicate
+                        if (successList.Any(x => x.PartCode == partCode))
+                        {
+                            errorList.Add($"Row {row} → Duplicate Part Code: {partCode}");
+                            continue;
+                        }
+
+                        // Fetch item details
+                        var itemData = await _SaleBill.AutoFillitem("AutoFillPartCode", partCode);
+
+                        if (itemData?.Result == null || itemData.Result.Rows.Count == 0)
+                        {
+                            errorList.Add($"Row {row} → Part code not found: {partCode}");
+                            continue;
+                        }
+
+                        // Access first row
+                        var rowData = itemData.Result.Rows[0];
+                        string itemName = rowData["ItemName"].ToString();
+                        int itemCode = Convert.ToInt32(rowData["Item_Code"]);
+                        // Get store ID
+                        //var storeData = await _SaleBill.GetStoreId(storename);
+                        //JObject storeJson = JObject.Parse(JsonConvert.SerializeObject(storeData));
+                        //var storeRes = storeJson["Result"][0];
+                        //int storeId = Convert.ToInt32(storeRes["storeid"]);
+
+                        // Get more item details
+                        var getItem = GetItemDetail(partCode);
+                        JObject jsonDetail = JObject.Parse(getItem.Result.Value.ToString());
+                        var unit = jsonDetail["Result"][0]["Unit"];
+                        var hsnNo = jsonDetail["Result"][0]["HsnNo"];
+                        var GroupCode = jsonDetail["Result"][0]["GroupCode"];
+                        var Rackid = jsonDetail["Result"][0]["Rackid"]?.ToString();
+                        var Group_name = jsonDetail["Result"][0]["Group_name"]?.ToString();
+                        var saleprice = jsonDetail["Result"][0]["saleprice"].ToString();
+                        decimal GSTPer =Convert.ToDecimal(jsonDetail["Result"][0]["GSTPer"].ToString());
+                        decimal CGST = 0;
+                        decimal SGCT = 0;
+                        decimal IGST = 0;
+
+
+
+                      
+
+                        var unitparameter = _ICommon.CheckRoundOff(unit.ToString());
+                        var roundoff = "N";
+
+                        if (unitparameter != null &&
+                            unitparameter.Result != null &&
+                            unitparameter.Result.Result != null &&
+                            unitparameter.Result.Result.Rows.Count > 0)
+                        {
+                            DataRow excelrow = unitparameter.Result.Result.Rows[0];
+
+                            roundoff = excelrow["Round_Off"]?.ToString() ?? "";
+
+                        }
+
+                        if (!string.IsNullOrEmpty(qtyStr) && decimal.TryParse(qtyStr, out decimal parsedQty))
+                        {
+                            qty = parsedQty;
+
+                            // 🔴 Check for decimal when roundoff = Y
+                            if (roundoff == "Y" && qty % 1 != 0)
+                            {
+                                errorList.Add($"Row {row} → Qty should not contain decimal when RoundOff = Y. Qty: {qtyStr}");
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            errorList.Add($"Row {row} → Invalid Qty: {qtyStr}");
+                            continue;
+                        }
+
+                        decimal rate;
+                        if (!string.IsNullOrEmpty(rateStr) && decimal.TryParse(rateStr, out decimal excelRate))
+                            rate = excelRate;
+                        else if (!string.IsNullOrEmpty(saleprice) && decimal.TryParse(saleprice, out decimal dbRate))
+                            rate = dbRate;
+                        else
+                        {
+                            errorList.Add($"Row {row} → Invalid Rate qty : {qtyStr} Rate:{rateStr}");
+                            continue;
+                        }
+
+                        decimal basicAmt = qty * rate;
+                        decimal discountAmt = basicAmt * (discountPer / 100);
+                        decimal netAmt = basicAmt - discountAmt;
+
+						decimal CGSTAmt = 0;
+						decimal SGSTAmt = 0;
+						decimal IGSTAmt = 0;
+
+                        if (stateCode == companyStateCode)
+                        {
+                            // Same state → CGST + SGST (half-half)
+                            decimal halfGST = GSTPer / 2;
+                            CGST = halfGST;
+                            SGCT = halfGST;
+                            CGSTAmt = netAmt * CGST / 100;
+                            SGSTAmt = netAmt * SGCT / 100;
+
+                        }
+                        else
+                        {
+                            IGST = GSTPer;
+                            IGSTAmt = netAmt * IGST / 100;
+                            // Different state → IGST only
+
+                        }
+
+                        successList.Add(new SaleRejectionDetail
+						{
+							SeqNo = seq++,
+							PartCode = partCode,
+							ItemName = itemName,
+							ItemCode = itemCode,
+							Unit = unit.ToString(),
+							ItemLocation = Rackid.ToString(),
+							GroupName = Group_name.ToString(),
+
+							HSNNo = string.IsNullOrEmpty(hsnNo?.ToString()) ? 0 : Convert.ToInt32(hsnNo),
+							RejQty = Math.Round((decimal)qty, 4),
+							RejRate = Math.Round((decimal)rate, 2),
+							DiscountPer = Math.Round((decimal)discountPer, 2),
+							Amount = Math.Round((decimal)netAmt, 2),
+							DiscountAmt = Math.Round((decimal)discountAmt, 2),
+							ItemNetAmount = Math.Round((decimal)netAmt, 2),
+							CGSTPer = Math.Round((decimal)CGST,2),
+							SGSTPer= Math.Round((decimal)SGCT,2),
+							IGSTPer= Math.Round((decimal)IGST,2),
+							CGSTAmt= Math.Round((decimal)CGSTAmt,2),
+							SGSTAmt= Math.Round((decimal)SGSTAmt,2),
+							IGSTAmt= Math.Round((decimal)IGSTAmt,2),
+
+
+
+
+
+						});
+                    }
+                    catch (Exception ex)
+                    {
+                        errorList.Add($"Row {row} → Error: {ex.Message}");
+                    }
+                }
+            }
+
+            // Prepare model
+            SaleRejectionModel sbModel = new SaleRejectionModel
+            {
+                SaleRejectionDetails = successList,
+               
+                ErrorList = errorList // Add ErrorList property to your SaleBillModel
+            };
+
+            HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(successList));
+            HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(sbModel));
+
+            // Render partial view
+            string html = "";
+            try
+            {
+                html = await RenderViewToStringAsync("_AddSaleRejectionGrid", sbModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Render Error: " + ex.Message);
+            }
+
+            return Json(new
+            {
+                html = html,
+                errorList = errorList
+            });
         }
 
 

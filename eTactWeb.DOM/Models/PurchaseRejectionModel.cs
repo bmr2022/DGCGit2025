@@ -33,14 +33,14 @@ namespace eTactWeb.DOM.Models
         public string Transporter { get; set; } = string.Empty;
         public string Vehicleno { get; set; } = string.Empty;
         public string Distance { get; set; } = string.Empty;
-        public float BillAmt { get; set; }
-        public float RoundOffAmt { get; set; }
+        public decimal BillAmt { get; set; }
+        public decimal RoundOffAmt { get; set; }
         public string RoundoffType { get; set; } = string.Empty;
-        public float Taxableamt { get; set; }
-        public float ToatlDiscountPercent { get; set; }
-        public float TotalDiscountAmount { get; set; }
-        public float NetAmt { get; set; }
-        //public float InvNetAmt { get; set; } //uncomment if needed afterwards for pr
+        public decimal Taxableamt { get; set; }
+        public decimal ToatlDiscountPercent { get; set; }
+        public decimal TotalDiscountAmount { get; set; }
+        public decimal NetAmt { get; set; }
+        //public decimal InvNetAmt { get; set; } //uncomment if needed afterwards for pr
         public string PurchaserejRemark { get; set; } = string.Empty;
         public string CC { get; set; } = string.Empty;
         public int Uid { get; set; }
@@ -62,8 +62,8 @@ namespace eTactWeb.DOM.Models
         public string GSTType { get; set; }
         public string? Batchno { get; set; }
         public string? Uniquebatchno { get; set; }
-        public float LotStock { get; set; }
-        public float TotalStock { get; set; }
+        public decimal LotStock { get; set; }
+        public decimal TotalStock { get; set; }
         public string fromBillDate { get; set; }
         public string toBillDate { get; set; }
         //below are defaults
@@ -113,22 +113,22 @@ namespace eTactWeb.DOM.Models
         public string ItemName { get; set; }
         public string PartCode { get; set; }
         public string HSNNo { get; set; }
-        public float BillQty { get; set; }
-        public float RejectedQty { get; set; }
+        public decimal BillQty { get; set; }
+        public decimal RejectedQty { get; set; }
         public string Unit { get; set; } = string.Empty;
-        public float AltQty { get; set; }
+        public decimal AltQty { get; set; }
         public string AltUnit { get; set; } = string.Empty;
-        public float PRRate { get; set; }
-        public float BillRate { get; set; }
+        public decimal PRRate { get; set; }
+        public decimal BillRate { get; set; }
         public string UnitRate { get; set; } = string.Empty;
-        public float AltRate { get; set; }
-        public float NoOfCase { get; set; }
+        public decimal AltRate { get; set; }
+        public decimal NoOfCase { get; set; }
         public int CostCenterId { get; set; }
         public int DocAccountCode { get; set; }
         public string DocAccountName { get; set; }
         public decimal ItemAmount { get; set; }
-        public float DiscountPer { get; set; }
-        public float DiscountAmt { get; set; }
+        public decimal DiscountPer { get; set; }
+        public decimal DiscountAmt { get; set; }
         public int StoreId { get; set; }
         public string StoreName { get; set; }
         public string ItemSize { get; set; } = string.Empty;
@@ -145,8 +145,8 @@ namespace eTactWeb.DOM.Models
         public string InprocessDate { get; set; } = string.Empty;
         public string? Batchno { get; set; } = string.Empty;
         public string? Uniquebatchno { get; set; } = string.Empty;
-        public float LotStock { get; set; }
-        public float TotalStock { get; set; }
+        public decimal LotStock { get; set; }
+        public decimal TotalStock { get; set; }
         public string hdnuniquekey { get; set; }
     }
     public class AccPurchaseRejectionAgainstBillDetail : TaxModel
@@ -166,11 +166,11 @@ namespace eTactWeb.DOM.Models
         public int PurchBillItemCode { get; set; }
         public string PartCode { get; set; }
         public string ItemName { get; set; }
-        public float? BillQty { get; set; }
+        public decimal? BillQty { get; set; }
         public string? Unit { get; set; }
-        public float? BillRate { get; set; }
-        public float? DiscountPer { get; set; }
-        public float? DiscountAmt { get; set; }
+        public decimal? BillRate { get; set; }
+        public decimal? DiscountPer { get; set; }
+        public decimal? DiscountAmt { get; set; }
         public string? ItemSize { get; set; }
         public decimal? Amount { get; set; }
         public string? PONO { get; set; }
@@ -185,11 +185,11 @@ namespace eTactWeb.DOM.Models
         public string? INProgressDate { get; set; }
         public int? INProgressEntryId { get; set; }
         public int? INProgressYearCode { get; set; }
-        public float? PoRate { get; set; }
+        public decimal? PoRate { get; set; }
         public string? PoAmmNo { get; set; }
         public string? BatchNo { get; set; }
         public string? UniqueBatchNo { get; set; }
-        public float? AltQty { get; set; }
+        public decimal? AltQty { get; set; }
         public string? AltUnit { get; set; }
         [Column(TypeName = "decimal(10, 4)")]
         public decimal BillAmount { get; set; }
@@ -269,10 +269,10 @@ namespace eTactWeb.DOM.Models
         public string? Country { get; set; }
         public string? Currency { get; set; }
         public string? ExchangeRate { get; set; }
-        public float? BillAmt { get; set; }
-        public float? Taxableamt { get; set; }
-        public float? InvNetAmt { get; set; }
-        public float? RoundOffAmt { get; set; }
+        public decimal? BillAmt { get; set; }
+        public decimal? Taxableamt { get; set; }
+        public decimal? InvNetAmt { get; set; }
+        public decimal? RoundOffAmt { get; set; }
         public string? RoundoffType { get; set; }
         public string? BalanceSheetClosed { get; set; }
         public string? LastUpdationDate { get; set; }
