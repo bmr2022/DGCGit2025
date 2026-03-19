@@ -109,7 +109,7 @@ namespace eTactWeb.Controllers
                         col.Item().AlignCenter()
                             .Text($"From {data.First().FromDate} To {data.First().ToDate}");
                         col.Item().AlignCenter()
-                            .Text(data.First().AccountName);
+                            .Text(data.First().AccountName).Bold();
                         col.Item().AlignCenter()
                            .Text(LedgerAddress);
 

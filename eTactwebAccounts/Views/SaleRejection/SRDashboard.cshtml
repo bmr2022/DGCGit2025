@@ -152,6 +152,64 @@
                 window.location.href = linkUrl;
             }
         }
+
+                function calculateFooterTotalsSafe() {
+
+            let columnInfo = {}; // track sum + validity
+
+            $('#SRDashboardGrid tbody tr').each(function () {
+
+                $(this).find('td[data-field]').each(function () {
+
+                    let field = $(this).data('field');
+                    let text = $(this).text().trim();
+
+                    if (!columnInfo[field]) {
+                        columnInfo[field] = {
+                            sum: 0,
+                            isNumericColumn: true
+                        };
+                    }
+
+                    // Remove commas
+                    let cleanText = text.replace(/,/g, '');
+
+                    // ❌ empty cell → ignore
+                    if (cleanText === '') return;
+
+                    // ❌ date detected
+                    if (!isNaN(Date.parse(cleanText))) {
+                        columnInfo[field].isNumericColumn = false;
+                        return;
+                    }
+
+                    // ❌ contains any character
+                    if (/[^0-9.\-]/.test(cleanText)) {
+                        columnInfo[field].isNumericColumn = false;
+                        return;
+                    }
+
+                    let value = parseFloat(cleanText);
+
+                    if (isNaN(value)) {
+                        columnInfo[field].isNumericColumn = false;
+                        return;
+                    }
+
+                    columnInfo[field].sum += value;
+                });
+            });
+
+            // Set footer values
+            for (let field in columnInfo) {
+                if (columnInfo[field].isNumericColumn) {
+                    $('#tfoot_' + field).text(columnInfo[field].sum.toFixed(2));
+                } else {
+                    $('#tfoot_' + field).text('');
+                }
+            }
+        }
+
         $(document).ready(function () {
 
             var deleteMessage = '@TempData["DeleteMessage"]';
@@ -723,7 +781,8 @@
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
                     GetFormRights();
-                    GetTotalAmounts();
+                    // GetTotalAmounts();
+                    calculateFooterTotalsSafe();
                 },
                 error: function (xhr) {
                     alert(xhr.responseText);
