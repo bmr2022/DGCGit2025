@@ -137,7 +137,7 @@
 
                                 <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
                                     <label class="form-label">Global search</label>
-                                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                                    <input type="text" class="form-contr``ol" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                                 </div>
 
                                 <div class=" d-flex justify-content-center   mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
@@ -174,13 +174,13 @@
 
                                 <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradientn show" aria-labelledby="H_SAGrid">
                                     <div class="accordion-body">
-                                        <div class="card-body" id="divPendingMRP">
-                                            <div class="row">
-                                                <div class="col-md-12 divStockRegister" id="divStockMainRegister">
-                                                    <partial name="_TransactionLedgerGrid" />
+                                        <div class="card-body" id="divPendingMRP" style="padding-top:0px !important">
+                                         <div class="d-flex justify-content-end mt-0 " style="margin-right:400px;">
+                                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnamtDiv" style="width:150px;">
+                                                    <label class="form-label">Total Opening</label>
+                                                    <input id="totOpenAmt" class="form-control" readonly />
+                                                   
                                                 </div>
-                                            </div>
-                                            <div class="d-flex justify-content-end mt-2 " style="margin-right:400px;">
                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnDRDiv" style="width:150px;">
                                                     <label class="form-label">Total Dr Amt</label>
                                                     <input id="totDr" class="form-control" readonly />
@@ -194,6 +194,12 @@
                                                     <input id="totBal" class="form-control" readonly />
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                                <div class="col-md-12 divStockRegister" id="divStockMainRegister">
+                                                    <partial name="_TransactionLedgerGrid" />
+                                                </div>
+                                            </div>
+                                           
 
                                             <div class="d-flex justify-content-end mt-2 " style="margin-right:400px;">
                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="totalOpening" style="width:150px;">
@@ -652,6 +658,7 @@
                 success: function (partialHtml) {
 
                     $('#divStockMainRegister').html(partialHtml);
+                    $('#opnamtDiv').show();
                     $('#opnDRDiv').show();
                     $('#opnCRDiv').show();
                     $('#opnTBDiv').show();
@@ -722,6 +729,7 @@
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
                     $('#opnDRDiv').hide();
+                    $('#opnamtDiv').hide();
                     $('#opnCRDiv').hide();
                     $('#opnTBDiv').hide();
                     $('#totalOpening').show();
@@ -898,7 +906,26 @@
                 TotCr += $('#totCrG-' + i).text() == '' ? 0 : parseFloat($('#totCrG-' + i).text());
                 TotDr += $('#totDrG-' + i).text() == '' ? 0 : parseFloat($('#totDrG-' + i).text());
             }
-            var TotBal = TotDr - TotCr;
+            var VoucherType=($('#VoucherType-1').text());
+             var opnTotalBal=0;
+            if(VoucherType=='Opening')
+            {
+             opnTotalBal=(parseFloat($('#totBalG-1').text()) || 0);
+            var OpeningType=($('#Types-1').text());
+
+            
+
+           /*  if(OpeningType=='DR')
+            {
+                TotDr=TotDr+opnTotalBal;
+            }
+            if(OpeningType=='CR')
+            {
+                TotCr=TotCr+opnTotalBal;
+            } */
+            }
+            $('#totOpenAmt').val(opnTotalBal);
+            var TotBal = (TotDr - TotCr)+opnTotalBal;
             $('#totCr').val(0);
             $('#totDr').val(0);
             $('#totBal').val(0);

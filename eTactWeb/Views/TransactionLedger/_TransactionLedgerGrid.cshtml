@@ -127,7 +127,7 @@
                             <th>@Cntr</th>
                             <td>@item.VoucherDocDate</td>
                             <td>@item.Particulars</td>
-                            <td>@item.VoucherType</td>
+                            <td id="VoucherType-@Cntr">@item.VoucherType</td>
                             <td>
                                 @if (item.VoucherType != null && item.VoucherType.Contains("Opening"))
                                 {
@@ -152,7 +152,7 @@
                             <td id="totDrG-@Cntr">@item.DrAmt</td>
                             <td id="totCrG-@Cntr">@item.CrAmt</td>
                             <td id="totBalG-@Cntr">@item.Balance</td>
-                            <td>@item.Types</td>
+                            <td id="Types-@Cntr">@item.Types</td>
                             <td>@item.HeadWiseNarration</td>
                             <td>@item.INVNo</td>
                             <td>@item.BillDate</td>

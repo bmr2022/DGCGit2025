@@ -1735,18 +1735,33 @@
             // AutoComplete('VSaleBillMainDetailitemAccount', 'SaleBillNo', 'SaleBillNo', null);
             ApplyGridAutoFill();
 
-            GetServerDate();
+           
             
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
                 addRow();
+                 GetServerDate();
+
+
                 // btnClearTax();
                 // FillItems($('#TypeItemServAssets').val());
 
             }
             else {
                 GetGstRegister();
+
+                $('#SaleRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#CustInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' });
+
+
             }
+
+            var FinFromDate = parseDateToFormat($('#FinFromDate').val());
+                    var FinToDate = parseDateToFormat($('#FinToDate').val());
+
+                     $('#SaleRejEntryDate,#CustInvoiceDate').datepicker("option", "minDate", FinFromDate);
+                    $('#SaleRejEntryDate,#CustInvoiceDate').datepicker("option", "maxDate", FinToDate);
+
             // $('#AccountCode').select2();
             $('#DocTypeAccountCode').select2();
             

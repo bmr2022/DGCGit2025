@@ -1187,6 +1187,10 @@
         line-height: 28px;
         width: 200px;
     }
+    .no-change {
+    pointer-events: none;
+    background-color: #e9ecef;
+}
 </style>
 
 @section Scripts
@@ -8390,7 +8394,9 @@
             var dtValue = $('#DT').prop("checked") == true ? "T" : "F";
             FillDocument(dtValue);
         });
-
+                $('#DocTypeAccountCode').on('mousedown keydown', function (e) {
+            e.preventDefault();
+        });
         function FillDocument(dt) {
             var showAllDoc = dt;
             $.ajax({
@@ -8410,6 +8416,10 @@
                                 $('#DocTypeAccountCode').append("<option value=" + val.Account_Code + ">" + val.Account_Name + "</option>");
                             });
                         }
+                         var SALERETURN = obj.Result.Table.find(x => x.Account_Name && x.Account_Name.trim().toUpperCase() === "SALES");
+                            if (SALERETURN) {
+                                $('#DocTypeAccountCode').val(SALERETURN.Account_Code);
+                            }
                     }
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {

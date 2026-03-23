@@ -171,7 +171,7 @@
             <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                 <input asp-for="DT" class="form-check-input" type="checkbox" role="switch" />Show All
             </div>
-            <select asp-for="DocTypeAccountCode" class="form-control">
+            <select asp-for="DocTypeAccountCode" class="form-control no-change">
                 <option value="0">-Select-</option>
             </select>
             @if (Model.Mode == "U" || Model.Mode == "V")

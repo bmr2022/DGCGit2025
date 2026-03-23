@@ -243,8 +243,7 @@ namespace eTactWeb.Controllers
 				model.Mode = Mode;
 				model.ID = ID;
 
-				model.FinFromDate = model.FinFromDate ?? HttpContext.Session.GetString("FromDate");
-				model.FinToDate = model.FinToDate ?? HttpContext.Session.GetString("ToDate");
+				
 				model.SaleRejYearCode = model.SaleRejYearCode != null && model.SaleRejYearCode > 0 ? model.SaleRejYearCode : Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 				model.CC = model.CC ?? HttpContext.Session.GetString("Branch");
 			}
@@ -261,8 +260,8 @@ namespace eTactWeb.Controllers
 				SlidingExpiration = TimeSpan.FromMinutes(55),
 				Size = 1024,
 			};
-			model.FinFromDate = HttpContext.Session.GetString("FromDate");
-			model.FinToDate = HttpContext.Session.GetString("ToDate");
+			model.FinFromDate =CommonFunc.ParseFormattedDate( HttpContext.Session.GetString("FromDate"));
+			model.FinToDate = CommonFunc.ParseFormattedDate( HttpContext.Session.GetString("ToDate"));
 			model.SaleRejYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 			model.CC = HttpContext.Session.GetString("Branch");
 			model.UpdatedByName = HttpContext.Session.GetString("EmpName");
