@@ -1825,96 +1825,99 @@ namespace eTactWeb.Controllers
         {
             DataSet DS = new();
             DataTable Table = new();
-
-            Table.Columns.Add("PurchBillEntryID", typeof(int));
-            Table.Columns.Add("PurchBillYearCode", typeof(int));
-            Table.Columns.Add("SeqNo", typeof(int));
-            Table.Columns.Add("Parentcode", typeof(int));
-            Table.Columns.Add("DocTypeID", typeof(int));
-            Table.Columns.Add("ItemCode", typeof(int));
-            Table.Columns.Add("Unit", typeof(string));
-            Table.Columns.Add("NoOfCase", typeof(decimal));
-            Table.Columns.Add("BillQty", typeof(decimal));
-            Table.Columns.Add("RecQty", typeof(decimal));
-            Table.Columns.Add("RejectedQty", typeof(decimal));
-            Table.Columns.Add("AltQty", typeof(decimal));
-            Table.Columns.Add("AltUnit", typeof(string));
-            
-            Table.Columns.Add("Rate", typeof(decimal));
-            Table.Columns.Add("MRP", typeof(decimal));
-            Table.Columns.Add("RateUnit", typeof(string));
-            Table.Columns.Add("RateIncludingTaxes", typeof(decimal));
-            Table.Columns.Add("AmtinOtherCurr", typeof(decimal));
-            Table.Columns.Add("RateConversionFactor", typeof(decimal));
-            Table.Columns.Add("CostCenterId", typeof(int));
-            Table.Columns.Add("AssesRate", typeof(decimal));
-            Table.Columns.Add("AssesAmount", typeof(decimal));
-            Table.Columns.Add("DiscountPer", typeof(decimal));
-            Table.Columns.Add("DiscountAmt", typeof(decimal));
-            Table.Columns.Add("Amount", typeof(decimal));
-            Table.Columns.Add("Itemsize", typeof(string));
-            Table.Columns.Add("ItemColor", typeof(string));
-            Table.Columns.Add("ItemModel", typeof(string));
-            Table.Columns.Add("Deaprtmentid", typeof(int));
-            Table.Columns.Add("OtherDetail", typeof(string));
-            Table.Columns.Add("DebitNoteType", typeof(string));
-            Table.Columns.Add("ProcessId", typeof(int));
-            Table.Columns.Add("NewPoRate", typeof(decimal));
-            Table.Columns.Add("PONo", typeof(string));
-            Table.Columns.Add("POYearCode", typeof(int));
-            Table.Columns.Add("PODate", typeof(string));
-            Table.Columns.Add("SchNo", typeof(string));
-            Table.Columns.Add("SchYearCode", typeof(int));
-            Table.Columns.Add("SchDate", typeof(string));
-            Table.Columns.Add("POAmmNo", typeof(string));
-            Table.Columns.Add("PoRate", typeof(decimal));
-            Table.Columns.Add("POType", typeof(string));
-            Table.Columns.Add("MIRNO", typeof(string));
-            Table.Columns.Add("MIRYearCode", typeof(int));
-            Table.Columns.Add("MIREntryId", typeof(int));
-            Table.Columns.Add("MIRDate", typeof(string));
-            Table.Columns.Add("AllowDebitNote", typeof(string));
-            Table.Columns.Add("DebitNotePending", typeof(string));
-            Table.Columns.Add("ProjectNo", typeof(string));
-            Table.Columns.Add("ProjectDate", typeof(string));
-            Table.Columns.Add("ProjectYearCode", typeof(int));
-            Table.Columns.Add("AgainstImportAccountCode", typeof(int));
-            Table.Columns.Add("AgainstImportInvoiceNo", typeof(string));
-            Table.Columns.Add("AgainstImportYearCode", typeof(int));
-            Table.Columns.Add("AgainstImportInvDate", typeof(string));
-            Table.Columns.Add("HSNNO", typeof(string));
-           
-            Table.Columns.Add("AcceptedQty", typeof(decimal));
-            Table.Columns.Add("ReworkQty", typeof(decimal));
-            Table.Columns.Add("HoldQty", typeof(decimal));
-            Table.Columns.Add("ItemLocation", typeof(string));
-            Table.Columns.Add("GSTPer", typeof(decimal));
-
-            foreach (DPBItemDetail Item in itemDetailList)
+            try
             {
-               
-                string poDt = "";
-                string schDt = "";
-                string mirDt = "";
-                string projectDt = "";
-                string againstImportInvDt = "";
-               
+                
+
+                Table.Columns.Add("PurchBillEntryID", typeof(int));
+                Table.Columns.Add("PurchBillYearCode", typeof(int));
+                Table.Columns.Add("SeqNo", typeof(int));
+                Table.Columns.Add("Parentcode", typeof(int));
+                Table.Columns.Add("DocTypeID", typeof(int));
+                Table.Columns.Add("ItemCode", typeof(int));
+                Table.Columns.Add("Unit", typeof(string));
+                Table.Columns.Add("NoOfCase", typeof(decimal));
+                Table.Columns.Add("BillQty", typeof(decimal));
+                Table.Columns.Add("RecQty", typeof(decimal));
+                Table.Columns.Add("RejectedQty", typeof(decimal));
+                Table.Columns.Add("AltQty", typeof(decimal));
+                Table.Columns.Add("AltUnit", typeof(string));
+
+                Table.Columns.Add("Rate", typeof(decimal));
+                Table.Columns.Add("MRP", typeof(decimal));
+                Table.Columns.Add("RateUnit", typeof(string));
+                Table.Columns.Add("RateIncludingTaxes", typeof(decimal));
+                Table.Columns.Add("AmtinOtherCurr", typeof(decimal));
+                Table.Columns.Add("RateConversionFactor", typeof(decimal));
+                Table.Columns.Add("CostCenterId", typeof(int));
+                Table.Columns.Add("AssesRate", typeof(decimal));
+                Table.Columns.Add("AssesAmount", typeof(decimal));
+                Table.Columns.Add("DiscountPer", typeof(decimal));
+                Table.Columns.Add("DiscountAmt", typeof(decimal));
+                Table.Columns.Add("Amount", typeof(decimal));
+                Table.Columns.Add("Itemsize", typeof(string));
+                Table.Columns.Add("ItemColor", typeof(string));
+                Table.Columns.Add("ItemModel", typeof(string));
+                Table.Columns.Add("Deaprtmentid", typeof(int));
+                Table.Columns.Add("OtherDetail", typeof(string));
+                Table.Columns.Add("DebitNoteType", typeof(string));
+                Table.Columns.Add("ProcessId", typeof(int));
+                Table.Columns.Add("NewPoRate", typeof(decimal));
+                Table.Columns.Add("PONo", typeof(string));
+                Table.Columns.Add("POYearCode", typeof(int));
+                Table.Columns.Add("PODate", typeof(string));
+                Table.Columns.Add("SchNo", typeof(string));
+                Table.Columns.Add("SchYearCode", typeof(int));
+                Table.Columns.Add("SchDate", typeof(string));
+                Table.Columns.Add("POAmmNo", typeof(string));
+                Table.Columns.Add("PoRate", typeof(decimal));
+                Table.Columns.Add("POType", typeof(string));
+                Table.Columns.Add("MIRNO", typeof(string));
+                Table.Columns.Add("MIRYearCode", typeof(int));
+                Table.Columns.Add("MIREntryId", typeof(int));
+                Table.Columns.Add("MIRDate", typeof(string));
+                Table.Columns.Add("AllowDebitNote", typeof(string));
+                Table.Columns.Add("DebitNotePending", typeof(string));
+                Table.Columns.Add("ProjectNo", typeof(string));
+                Table.Columns.Add("ProjectDate", typeof(string));
+                Table.Columns.Add("ProjectYearCode", typeof(int));
+                Table.Columns.Add("AgainstImportAccountCode", typeof(int));
+                Table.Columns.Add("AgainstImportInvoiceNo", typeof(string));
+                Table.Columns.Add("AgainstImportYearCode", typeof(int));
+                Table.Columns.Add("AgainstImportInvDate", typeof(string));
+                Table.Columns.Add("HSNNO", typeof(string));
+
+                Table.Columns.Add("AcceptedQty", typeof(decimal));
+                Table.Columns.Add("ReworkQty", typeof(decimal));
+                Table.Columns.Add("HoldQty", typeof(decimal));
+                Table.Columns.Add("ItemLocation", typeof(string));
+                Table.Columns.Add("GSTPer", typeof(decimal));
+
+                foreach (DPBItemDetail Item in itemDetailList)
+                {
+
+                    string poDt = "";
+                    string schDt = "";
+                    string mirDt = "";
+                    string projectDt = "";
+                    string againstImportInvDt = "";
+
                     poDt = CommonFunc.ParseFormattedDate(Item.PODate);
 
 
 
 
-                schDt = CommonFunc.ParseFormattedDate(Item.ScheduleDate);
-                   
-               
-               
-                mirDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString());
-                projectDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString());
-                againstImportInvDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString());
+                    schDt = CommonFunc.ParseFormattedDate(Item.ScheduleDate);
 
-                Table.Rows.Add(
-                    new object[]
-                    {
+
+
+                    mirDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString());
+                    projectDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString());
+                    againstImportInvDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString());
+
+                    Table.Rows.Add(
+                        new object[]
+                        {
                     EntryID ?? 0,
                     YearCode ?? 0,
                     Item.SeqNo,
@@ -1972,16 +1975,24 @@ namespace eTactWeb.Controllers
                     0, // Item.AgainstImportYearCode
                     againstImportInvDt, // Item.AgainstImportInvDate
                     Item.HSNNo.ToString(),
-                   
+
                     Item.AcceptedQty,
                     Item.HoldQty,
                 Item.ReworkQty,
                 Item.ItemLocation ?? string.Empty,
                 Item.GSTPer
-                    });
-            }
+                        });
+                }
 
-            DS.Tables.Add(Table);
+                DS.Tables.Add(Table);
+                return DS;
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
             return DS;
         }
         private static DataTable GetTDSDetailTable(List<TDSModel> TDSDetailList, DirectPurchaseBillModel MainModel)
@@ -2515,8 +2526,14 @@ namespace eTactWeb.Controllers
                         int DocTypeId = (int)DocTypeJson["Result"][0]["DocTypeId"];
 
                         decimal discountPer = Convert.ToDecimal(sheet.Cells[row, 5].Value?.ToString() ?? "0");
-                        decimal discountRs = qty * rate * (discountPer / 100);
-                        decimal amount = (qty * rate) - discountRs;
+
+                        decimal basicAmount = Math.Round(qty * rate, 2);
+
+                        decimal discountRs = Math.Round(basicAmount * discountPer / 100, 2);
+
+                        decimal amount = Math.Round(basicAmount - discountRs, 2);
+                        //decimal discountRs = qty * rate * (discountPer / 100);
+                        //decimal amount = (qty * rate) - discountRs;
 
                         // ADD TO SUCCESS LIST
                         successList.Add(new DPBItemDetail

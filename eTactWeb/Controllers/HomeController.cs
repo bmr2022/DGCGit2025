@@ -389,11 +389,14 @@ public class HomeController : Controller
         using SqlConnection conn = new(finalConnStr);
         conn.Open();
 
-        string EntryByMachineName = Environment.MachineName;
+        //string EntryByMachineName = Environment.MachineName;
+        var client = GetClientIpAddress(HttpContext);
+        string host = client.Hostname;
+        string ip = client.IpAddress;
         string sql = "exec [SpLastLoggedInDetail] @flag = 'LastLoginDetail', @EntryByMachine = @MachineName";
 
         using SqlCommand cmdParty = new(sql, conn);
-        cmdParty.Parameters.AddWithValue("@MachineName", EntryByMachineName);
+        cmdParty.Parameters.AddWithValue("@MachineName", host);
 
         using SqlDataReader rdrParty = cmdParty.ExecuteReader();
         if (rdrParty.HasRows)

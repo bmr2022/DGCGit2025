@@ -1320,10 +1320,10 @@ public class DirectPurchaseBillDAL
             SqlParams.Add(new SqlParameter("@RoundoffType", "Y"));
             SqlParams.Add(new SqlParameter("@roundoffaccountcode", model.RoundOffAccountCode));
             SqlParams.Add(new SqlParameter("@GSTAmount", 0));
-            SqlParams.Add(new SqlParameter("@Taxableamt", (float)Math.Round(model.TxAmount, 2)));
+            SqlParams.Add(new SqlParameter("@Taxableamt", (decimal)Math.Round(model.TxAmount, 2)));
             SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", model.TotalDiscountPercentage));
             SqlParams.Add(new SqlParameter("@TotalDiscountAmount", model.TotalAmtAftrDiscount));
-            SqlParams.Add(new SqlParameter("@NetAmt", (float)model.NetTotal));
+            SqlParams.Add(new SqlParameter("@NetAmt", (decimal)model.NetTotal));
             SqlParams.Add(new SqlParameter("@Remark", model.Remark));
             SqlParams.Add(new SqlParameter("@CC", model.Branch));
             SqlParams.Add(new SqlParameter("@Uid", model.CreatedBy));

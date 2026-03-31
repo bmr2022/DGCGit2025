@@ -1055,33 +1055,41 @@
                             ClearAdjustmentGrid();
              AddAdjstmntDetail1();
           });
-            function FillRoundOffAccount(dt) {
-             var showAllDoc = dt;
-             $.ajax({
-                 type: "POST",
-                 url: "@Url.Action("FillRoundOffAccount", "PurchaseBill")",
-                 data: { "ShowAllDoc": showAllDoc },
-                 dataType: "json",
-                 async: false,
-                 success: function (result, status, error) {
-                     if (result != null) {
+                         function FillRoundOffAccount(dt) {
+                          var showAllDoc = dt;
+                          $.ajax({
+                              type: "POST",
+                              url: "@Url.Action("FillRoundOffAccount", "PurchaseBill")",
+                              data: { "ShowAllDoc": showAllDoc },
+                              dataType: "json",
+                              async: false,
+                              success: function (result, status, error) {
+                                  if (result != null) {
 
-                         var obj = $.parseJSON(result);
-                         $('#RoundOffAccountCode').empty();
-                         $('#RoundOffAccountCode').append('<option value="0">-Select-</option>');
-                         if (obj.StatusCode != 500) {
-                             $.each(obj.Result.Table, function (index, val) {
-                                 $('#RoundOffAccountCode').append("<option value=" + val.Account_Code + ">" + val.Account_Name + "</option>");
-                             });
-                         }
-                     }
-
-                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                                     $('#RoundOffAccountCode').val($('#hiddenRoundOffAccountCode').val());
-                     }
-                 }
-             });
-         }
+                                      var obj = $.parseJSON(result);
+                                      $('#RoundOffAccountCode').empty();
+                                      $('#RoundOffAccountCode').append('<option value="0">-Select-</option>');
+                                      if (obj.StatusCode != 500) {
+                                          $.each(obj.Result.Table, function (index, val) {
+                                            if (val.Account_Name === "Round Off A/c") {
+                                                $('#RoundOffAccountCode').append(
+                                                    "<option value='" + val.Account_Code + "' selected>" + val.Account_Name + "</option>"
+                                                );
+                                            } else {
+                                                $('#RoundOffAccountCode').append(
+                                                    "<option value='" + val.Account_Code + "'>" + val.Account_Name + "</option>"
+                                                );
+                                            }
+                                        });
+                                      }
+                                  }
+                              
+                                  if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                                   $('#RoundOffAccountCode').val($('#hiddenRoundOffAccountCode').val());
+                                  }
+                              }
+                          });
+                      }
 
         function OpenBarcodeModel(el) {
 
@@ -1215,7 +1223,7 @@
             $('#ScheduleNo').select2();
                   var dtValue = $('#RDT').prop("checked") == true ? "T" : "F";
 
-                 FillRoundOffAccount(dtValue);
+                             FillRoundOffAccount(dtValue);
                      $('#RoundOffAccountCode').select2();
         if ($("#Mode").val() === "U" || $("#Mode").val() === "V") {
                          let code = $("#hiddenRoundOffAccountCode").val();
@@ -3867,78 +3875,128 @@
             });
         });
 
+        // function CalculateRate() {
+        //     let Amount = 0;
+        //     let Rate = $('#Rate').val() === "0" || $('#Rate').val() === "" ? 0 : parseFloat($('#Rate').val());
+        //     let DP = $('#DiscPer') === "0" || $('#DiscPer').val() === "" ? 0 : parseFloat($('#DiscPer').val());
+
+        //     let POQty = $('#DPBQty').val() == "0" || $('#DPBQty').val() === "" ? 0 : parseFloat($('#DPBQty').val());
+        //     let BillQty = $('#BillQty').val() == "0" || $('#BillQty').val() === "" ? 0 : parseFloat($('#BillQty').val());
+           
+        //     if (BillQty > 0 && Rate > 0) {
+        //         Amount = BillQty * Rate;
+        //     }
+        //     else {
+        //         Amount;
+
+        //     }
+           
+        //      console.log('Amount' + Amount);
+
+        //     if (DP > 100) {
+        //         $('#DiscPer').val('0');
+        //         $('#DiscRs').val('0');
+        //     }
+        //     else {
+        //         if (DP !== 0) {
+        //             let DA = ((Amount * DP) / 100);
+        //             $('#DiscRs').val(DA.toFixed(2));
+        //             Amount = Amount - DA;
+        //         }
+        //         else
+        //         {
+        //             $('#DiscRs').val('0');
+        //         }
+        //     }
+           
+        //     if (Amount <= 0) {
+        //         $('#Amount').removeAttr('readonly').removeAttr('disabled');
+        //     }
+        //     else if (Amount > 0 && BillQty > 0 && Rate > 0) {
+        //         $('#Amount').attr('readonly', 'readonly').attr('disabled', 'disabled');
+        //     }
+        //     $('#Amount').val(Amount.toFixed(2));
+        //     calculateitembasicnettaxable();
+        //     itemwisetaxcalculation();
+
+        // }
+
         function CalculateRate() {
-            let Amount = 0;
-            let Rate = $('#Rate').val() === "0" || $('#Rate').val() === "" ? 0 : parseFloat($('#Rate').val());
-            let DP = $('#DiscPer') === "0" || $('#DiscPer').val() === "" ? 0 : parseFloat($('#DiscPer').val());
 
-            let POQty = $('#DPBQty').val() == "0" || $('#DPBQty').val() === "" ? 0 : parseFloat($('#DPBQty').val());
-            let BillQty = $('#BillQty').val() == "0" || $('#BillQty').val() === "" ? 0 : parseFloat($('#BillQty').val());
-           
-            if (BillQty > 0 && Rate > 0) {
-                Amount = BillQty * Rate;
-            }
-            else {
-                Amount;
+    let Rate = $('#Rate').val() === "" ? 0 : parseFloat($('#Rate').val());
+    let DP = $('#DiscPer').val() === "" ? 0 : parseFloat($('#DiscPer').val());
 
-            }
-           
-             console.log('Amount' + Amount);
+    let BillQty = $('#BillQty').val() === "" ? 0 : parseFloat($('#BillQty').val());
 
-            if (DP > 100) {
-                $('#DiscPer').val('0');
-                $('#DiscRs').val('0');
-            }
-            else {
-                if (DP !== 0) {
-                    let DA = ((Amount * DP) / 100);
-                    $('#DiscRs').val(DA.toFixed(2));
-                    Amount = Amount - DA;
-                }
-                else
-                {
-                    $('#DiscRs').val('0');
-                }
-            }
-           
-            if (Amount <= 0) {
-                $('#Amount').removeAttr('readonly').removeAttr('disabled');
-            }
-            else if (Amount > 0 && BillQty > 0 && Rate > 0) {
-                $('#Amount').attr('readonly', 'readonly').attr('disabled', 'disabled');
-            }
-            $('#Amount').val(Amount.toFixed(2));
-            calculateitembasicnettaxable();
-            itemwisetaxcalculation();
+    let Amount = 0;
 
+    if (BillQty > 0 && Rate > 0) {
+
+        // ✅ Step 1: Basic (ROUND FIRST)
+        let basic = parseFloat((BillQty * Rate).toFixed(2));
+
+        console.log('Basic: ' + basic);
+
+        // ✅ Step 2: Discount
+        let discount = 0;
+
+        if (DP > 100) {
+            $('#DiscPer').val('0');
+            $('#DiscRs').val('0');
+        } else if (DP > 0) {
+            discount = parseFloat((basic * DP / 100).toFixed(2));
+            $('#DiscRs').val(discount.toFixed(2));
+        } else {
+            $('#DiscRs').val('0');
         }
 
-        function CalculateRateFromAmount() {
+        // ✅ Step 3: Final Amount
+        Amount = parseFloat((basic - discount).toFixed(2));
+    }
 
-            let Amount = $('#Amount').val() === "" ? 0 : parseFloat($('#Amount').val());
-            let BillQty = $('#BillQty').val() === "" ? 0 : parseFloat($('#BillQty').val());
-            let DP = $('#DiscPer').val() === "" ? 0 : parseFloat($('#DiscPer').val());
+    // UI control
+    if (Amount <= 0) {
+        $('#Amount').prop('readonly', false).prop('disabled', false);
+    } else {
+        $('#Amount').prop('readonly', true).prop('disabled', true);
+    }
 
-            if (BillQty > 0 && Amount > 0) {
+    $('#Amount').val(Amount.toFixed(2));
 
-                let GrossAmount = Amount;
+    calculateitembasicnettaxable();
+    itemwisetaxcalculation();
+}
 
-                if (DP > 0) {
-                    GrossAmount = Amount / (1 - (DP / 100));
+            function CalculateRateFromAmount() {
+
+                let Amount = $('#Amount').val() === "" ? 0 : parseFloat($('#Amount').val());
+                let BillQty = $('#BillQty').val() === "" ? 0 : parseFloat($('#BillQty').val());
+                let DP = $('#DiscPer').val() === "" ? 0 : parseFloat($('#DiscPer').val());
+
+                if (BillQty > 0 && Amount > 0) {
+
+                    let GrossAmount = Amount;
+
+                    // ✅ Reverse discount properly
+                    if (DP > 0 && DP < 100) {
+                        GrossAmount = Amount / (1 - (DP / 100));
+                    }
+
+                    // ✅ Round Gross first
+                    GrossAmount = parseFloat(GrossAmount.toFixed(2));
+
+                    // ✅ Rate calculation
+                    let Rate = parseFloat((GrossAmount / BillQty).toFixed(2));
+                    $('#Rate').val(Rate.toFixed(2));
+
+                    // ✅ Discount
+                    let DiscAmt = parseFloat((GrossAmount * DP / 100).toFixed(2));
+                    $('#DiscRs').val(DiscAmt.toFixed(2));
                 }
 
-                let Rate = GrossAmount / BillQty;
-
-                $('#Rate').val(Rate.toFixed(2));
-
-                let DiscAmt = (GrossAmount * DP) / 100;
-                $('#DiscRs').val(DiscAmt.toFixed(2));
+                calculateitembasicnettaxable();
+                itemwisetaxcalculation();
             }
-
-            calculateitembasicnettaxable();
-            itemwisetaxcalculation();
-        }
-
 
         function CalculateRate1() {
             // $.ajax({
@@ -4194,10 +4252,10 @@
                 $.notify("Debit And Credid Amount Status Grid should at least have one item", "error");
                 return;
             }
-            else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
-                $.notify("Total Debit And Total Credit Amount should be same", "error");
-                return;
-            }
+            // else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
+            //     $.notify("Total Debit And Total Credit Amount should be same", "error");
+            //     return;
+            // }
             else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
                 $.notify("Tax Grid should at least have one item", "error");
                 return;
