@@ -70,6 +70,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.NewEntryId(YearCode, SubInvoicetype);
         }
+        public async Task<ResponseResult> GetStoreByBillType(string SubInvoicetype)
+        {
+            return await _SaleBillDAL.GetStoreByBillType( SubInvoicetype);
+        }
 
         public async Task<ResponseResult> GetCompanyType()
         {

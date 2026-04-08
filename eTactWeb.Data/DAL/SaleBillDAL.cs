@@ -625,6 +625,30 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> GetStoreByBillType( string SubInvoicetype)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+               
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetStoreByBillType"));
+               
+                SqlParams.Add(new SqlParameter("@SubInvoicetype", SubInvoicetype));
+               
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+
         public async Task<ResponseResult> GetCompanyType()
         {
             var _ResponseResult = new ResponseResult();

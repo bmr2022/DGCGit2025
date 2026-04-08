@@ -257,6 +257,7 @@ namespace eTactWeb.Data.DAL
                 model.GetPriceFrom = DS.Tables[0].Rows[0]["GetPriceFrom"].ToString();
                 model.SelectedEmployeeIds = DS.Tables[0].Rows[0]["UserRightsList"].ToString();
                 model.ActualEntryBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());
+                model.StoreId = Convert.ToInt32(DS.Tables[0].Rows[0]["StoreId"].ToString());
                 //model.UpdatedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["UpdatedBy"].ToString());
                 //model.UpdationDate = DS.Tables[0].Rows[0]["UpdationDate"].ToString();
                 model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
@@ -339,6 +340,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine ?? ""));
                 SqlParams.Add(new SqlParameter("@UserRightsList", model.SelectedEmployeeIds ?? ""));
                 SqlParams.Add(new SqlParameter("@GetPriceFrom", model.GetPriceFrom ?? ""));
+                SqlParams.Add(new SqlParameter("@StoreId", model.StoreId ?? 0));
                 SqlParams.Add(new SqlParameter("@VoucherInvoice", "Voucher"));
 
                

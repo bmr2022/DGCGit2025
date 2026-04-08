@@ -321,6 +321,12 @@
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
+                                <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 AllowToChangeStoreOrNot">
+                                    <label asp-for="StoreId" class="form-label" style="color: red;">Store *</label>
+                                    <select asp-for="StoreId" class="form-control">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
                                @*  <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
                                     <label asp-for="CC" class="form-label">CC</label>
                                     <input asp-for="CC" class="form-control" readonly />
@@ -423,6 +429,8 @@
             var date = $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             console.log(date);
 
+                 FillStore();
+
             AutoComplete('Item_Master_Type', 'Type_Item', 'Main_Category_Type', null);
 
             $('#MainVoucherName').rules("remove", "required");
@@ -496,6 +504,36 @@
                 $("#VoucherRotationType").val(oldValue);
             }
         });
+
+             function FillStore() {
+                 $.ajax({
+                     type: "POST",
+                          url: "@Url.Action("FillStore","SaleInvoice")",
+                     dataType: "json",
+                     async:false,
+                     success: function (result, status, error) {
+                         if (result != null) {
+                             var obj = $.parseJSON(result);
+                             $('#StoreId').empty();
+                             // $('#StoreId').append('<option value="0">-Select-</option>');
+                             if (obj.StatusCode != 500) {
+                                 $.each(obj.Result, function (index, val) {
+                                     $('#StoreId').append("<option value=" + val.StoreId + ">" + val.Store_Name + "</option>");
+                                 });
+
+                                
+                             }
+                                  if($('#Mode').val()=="U"||$('#Mode').val()=="V")
+                                  {
+                                  var storeid='@Model.StoreId';
+                                            $('#StoreId').val(storeid).trigger('change');
+                                  }
+
+                            
+                         }
+                     }
+                 });
+             }
 
         function getPrefixEntryId(mainVoucherName) {
              

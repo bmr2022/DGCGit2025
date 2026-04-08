@@ -23,6 +23,7 @@ namespace eTactWeb.Services.Interface
 
         Task<ResponseResult> GetMaxSaleInvoiceEntryDate(int YearCode);
         Task<ResponseResult> NewEntryId(int YearCode,string SubInvoicetype);
+        Task<ResponseResult> GetStoreByBillType(string SubInvoicetype);
         Task<ResponseResult> EditableRateAndDiscountONSaleInvoice();
         Task<ResponseResult> GetBatchInventory();
         Task<ResponseResult> GetCustomerBasedDetails(int Code);

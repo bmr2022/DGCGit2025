@@ -1697,6 +1697,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> GetStoreByBillType( string SubInvoicetype)
+        {
+            var JSON = await _SaleBill.GetStoreByBillType( SubInvoicetype);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
         public async Task<JsonResult> GetCompanyType()
         {

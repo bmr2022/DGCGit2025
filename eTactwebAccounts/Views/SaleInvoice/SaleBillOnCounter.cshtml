@@ -1749,6 +1749,9 @@
         }
 
         $(document).ready(function () {
+            GetFeatureOption();
+              GetInvoiceTypeMain();
+        FillStore();
             allowNumber('#DiscountPer', 2, true);
             allowNumber('#Rate', 2);
             allowNumber('#Qty', 4);
@@ -1760,11 +1763,11 @@
                              $('.salebilloncounter').show();
             calculateitembasicnettaxable();
             itemwisetaxcalculation();        
-                   
+                 
             GetItemGroup();
             AutoFillItems();
             GetCompanyType();
-            GetInvoiceTypeMain();
+           
             
                AutoFillPARTYNAMELIST();
                AutoFillVerifiedSaleBill();
@@ -1941,7 +1944,7 @@
                 //       });
                 // //  }, 300);
             });
-            GetFeatureOption();
+            
             GetMaxSaleInvoiceEntryDate();
             // When user clicks "Print"
             $('#btngenrateEinvoice').click(function () {
@@ -4074,7 +4077,7 @@
         var dtValue = $('#DT').prop("checked") == true ? "T" : "F";
 
         FillDocument(dtValue);
-        FillStore();
+         
         FillDistance();
         FillTransporter();
         // $('#PartCode').select2();
@@ -6925,6 +6928,32 @@
             });
         }
 
+        var BillTypeStoreId=0;
+        function GetStoreByBillType() {
+
+          
+            var SubInvoicetype = ($('#SubInvoicetype option:selected').text().trim());
+            $.ajax({
+                type: "POST",
+                data: { "SubInvoicetype": SubInvoicetype },
+                url: "@Url.Action("GetStoreByBillType")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            BillTypeStoreId=0;
+                            BillTypeStoreId=obj.Result.Table[0].StoreId;
+                           
+                            
+                        }
+                    }
+                }
+            });
+        }
+
 
         function EditableRateAndDiscountONSaleInvoice() {
 
@@ -7005,6 +7034,7 @@
 
         var AllowedToDispatchQtyMoreThenCloseSOPendQty = '';
         var GSTMandatoryOnSaleBill = '';
+        var AllowToChangeSaleBillStoreName='';
         function GetFeatureOption() {
 
             $.ajax({
@@ -7012,6 +7042,7 @@
                 data: {},
                 url: "@Url.Action("GetFeatureOption")",
                 dataType: "json",
+                async:false,
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -7031,6 +7062,7 @@
                             $('#AllowBackDateSALEBILL').val(obj.Result[0].AllowBackDateSALEBILL);
                             $('#AllowToAdjZeroAmt').val(obj.Result[0].AllowToAdjZeroAmt);
                             AllowedToDispatchQtyMoreThenCloseSOPendQty=obj.Result[0].AllowedToDispatchQtyMoreThenCloseSOPendQty;
+                            AllowToChangeSaleBillStoreName=obj.Result[0].AllowToChangeSaleBillStoreName;
                             // $('#ShowHideSaleBillEntryDetail').val(obj.Result[0].ShowHideSaleBillEntryDetail);
                             // $('#ShowHideSaleBillCustomerDetail').val(obj.Result[0].ShowHideSaleBillCustomerDetail);
                             // $('#ShowHideSaleBillOtherRequiredDetail').val(obj.Result[0].ShowHideSaleBillOtherRequiredDetail);
@@ -7171,6 +7203,7 @@
                 type: "POST",
                 url: "@Url.Action("FillStore")",
                 dataType: "json",
+                async:false,
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
@@ -7185,10 +7218,30 @@
                                 $('#MultiStoreName').append("<option value=" + val.StoreId + ">" + val.Store_Name + "</option>");
                             });
                         }
+
+                        if(AllowToChangeSaleBillStoreName=='Y')
+                        {
+                            GetStoreByBillType();
+                           $('#StoreId')
+    .val(BillTypeStoreId)
+    .trigger('change')
+    .prop('disabled', true);
+                        }
                     }
                 }
             });
         }
+
+        $('#SubInvoicetype').change(function(){
+            if(AllowToChangeSaleBillStoreName=='Y')
+                        {
+            GetStoreByBillType();
+            $('#StoreId')
+    .val(BillTypeStoreId)
+    .trigger('change')
+    .prop('disabled', true);
+                        }
+        });
 
 
 

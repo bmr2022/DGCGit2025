@@ -29,6 +29,7 @@ namespace eTactWeb.DOM.Models
         public string Separator { get; set; }
         [Range(0, 10, ErrorMessage = "Length must be between 0 and 10.")]
         public int TotalLength { get; set; }
+        public int? StoreId { get; set; }
         public int ActualEntryBy { get; set; }
         public string ActualEntryDate { get; set; }
         public List<int>? EmployeeName { get; set; }
