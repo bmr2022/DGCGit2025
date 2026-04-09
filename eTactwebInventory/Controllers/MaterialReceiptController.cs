@@ -85,8 +85,75 @@ namespace eTactWeb.Controllers
 
             return Json(null);
         }
-        public IActionResult PrintMultiMRN(string MRNNo, int YearCode)
+        public IActionResult PrintMultiMRN(string MRNNo, int YearCode, string password)
         {
+            var feature = _IMaterialReceipt.GetFeatureOption();
+            var dt = feature.Result.Result;
+
+            string afterQC = dt.Rows[0]["PrintMRNOnlyAfterQC"].ToString();
+            string oneTime = dt.Rows[0]["PrintMRNOnlyOneTimePermission"].ToString();
+            string dbPassword = dt.Rows[0]["PrintMRNOnlyOneTimePassword"].ToString();
+
+            var mrnList = MRNNo.Split(',');
+
+            List<string> finalPrintList = new List<string>();
+            bool anyAlreadyPrinted = false;
+
+            foreach (var mrn in mrnList)
+            {
+                var mrnData = _IMaterialReceipt.GetMRNPrintStatusByMRNNo(mrn, YearCode);
+                var row = mrnData.Result.Result.Rows[0];
+
+                int entryId = Convert.ToInt32(row["EntryId"]);
+                string qcStatus = row["QCCompleted"].ToString();
+                string printTaken = row["PrintOutTaken"].ToString();
+                if (afterQC == "Y" && qcStatus != "Y")
+                {
+                    continue;
+                }
+                if (oneTime == "Y")
+                {
+                    if (printTaken == "Y")
+                    {
+                        anyAlreadyPrinted = true;
+                        continue;
+                    }
+                    else
+                    {
+                        finalPrintList.Add(mrn);
+                        _IMaterialReceipt.UpdatePrintStatus(entryId, YearCode);
+                    }
+                }
+                else
+                {
+                    finalPrintList.Add(mrn);
+                }
+            }
+            //if (anyAlreadyPrinted)
+            //{
+            //    if (string.IsNullOrEmpty(password))
+            //    {
+            //        TempData["PrintError"] = "PASSWORD_REQUIRED";
+            //        TempData["MRNNo"] = MRNNo;
+            //        TempData["YearCode"] = YearCode;
+            //        return RedirectToAction("MRNDashboard");
+            //    }
+
+            //    if (password != dbPassword)
+            //    {
+            //        TempData["PrintError"] = "Wrong password";
+            //        TempData["MRNNo"] = MRNNo;
+            //        TempData["YearCode"] = YearCode;
+            //        return RedirectToAction("MRNDashboard");
+            //    }
+            //}
+            if (finalPrintList.Count == 0)
+            {
+                TempData["PrintError"] = "No MRN available to print.";
+                return RedirectToAction("MRNDashboard");
+            }
+            string finalMRNs = string.Join(",", finalPrintList);
+
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
@@ -103,30 +170,81 @@ namespace eTactWeb.Controllers
             }
             else
             {
-                webReport.Report.Load(webRootPath + "\\MRNMultiReportYauto.frx"); 
+                webReport.Report.Load(webRootPath + "\\MRNMultiReportYauto.frx");
             }
             my_connection_string = _connectionStringService.GetConnectionString();
             //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
-            webReport.Report.SetParameterValue("MrnNoparam", MRNNo);
+            webReport.Report.SetParameterValue("MrnNoparam", finalMRNs);
             webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
 
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             webReport.Report.Refresh();
             return View(webReport);
         }
-       
- 
 
-public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo = "")
+
+
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo = "", string password = "")
         {
+            var feature = _IMaterialReceipt.GetFeatureOption();
+            var dt = feature.Result.Result;
+
+            string afterQC = dt.Rows[0]["PrintMRNOnlyAfterQC"].ToString();
+            string oneTime = dt.Rows[0]["PrintMRNOnlyOneTimePermission"].ToString();
+            string dbPassword = dt.Rows[0]["PrintMRNOnlyOneTimePassword"].ToString();
+            var mrnData = _IMaterialReceipt.GetMRNPrintStatus(EntryId, YearCode);
+            string qcStatus = mrnData.Result.Result.Rows[0]["QCCompleted"].ToString(); // assume column
+            if (afterQC == "Y" && qcStatus != "Y")
+            {
+                TempData["PrintError"] = "QC not completed. Cannot print.";
+                return RedirectToAction("MRNDashboard");
+            }
+            if (oneTime == "Y")
+            {
+                if (mrnData.Result.Result.Rows[0]["PrintOutTaken"].ToString() == "Y")
+                {
+                    if (string.IsNullOrEmpty(password))
+                    {
+                        TempData["PrintError"] = "PASSWORD_REQUIRED";
+                        TempData["EntryId"] = EntryId;
+                        TempData["YearCode"] = YearCode;
+                        TempData["MrnNo"] = MrnNo;
+
+                        return RedirectToAction("MRNDashboard");
+                    }
+
+                    if (password != dbPassword)
+                    {
+                        TempData["PrintError"] = "Wrong password";
+                        TempData["EntryId"] = EntryId;
+                        TempData["YearCode"] = YearCode;
+                        TempData["MrnNo"] = MrnNo;
+                        return RedirectToAction("MRNDashboard");
+                    }
+                    //if (string.IsNullOrEmpty(password))
+                    //{
+                    //    return Json(new { status = "PASSWORD_REQUIRED" });
+                    //}
+
+                    //if (password != dbPassword)
+                    //{
+                    //    return Json(new { status = "DENY", message = "Wrong password" });
+                    //}
+                }
+                else
+                {
+                    _IMaterialReceipt.UpdatePrintStatus(EntryId, YearCode);
+                }
+            }
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
             var webReport = new WebReport();
             webReport.Report.Clear();
             var ReportName = _IMaterialReceipt.GetReportName();
+
             webReport.Report.Dispose();
             webReport.Report = new Report();
             if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
@@ -148,115 +266,176 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
             return View(webReport);
         }
 
-        public IActionResult SendReport(int EntryId = 0, int YearCode = 0, string MrnNo = "", int AccountCode = 0, string emailTo = "", string CC1 = "", string CC2 = "", string CC3 = "")
-        {
-            string my_connection_string;
-            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-            string webRootPath = _IWebHostEnvironment.WebRootPath;
-            var webReport = new WebReport();
-            webReport.Report.Clear();
-            // var ReportName = _IMaterialReceipt.GetReportName();
-            webReport.Report.Dispose();
-            webReport.Report = new Report();
+        //public IActionResult SendReport(int EntryId = 0, int YearCode = 0, string MrnNo = "", int AccountCode = 0, string emailTo = "",
+        //    string CC1 = "", string CC2 = "", string CC3 = "", string CC4 = "", string CC5 = "", string CC6 = "", string CompanyName = "")
+        //{
+        //    var EmailSmtpServer = "";
+        //    var EmailSmtpPort = "";
+        //    var EmailSmtpUsername = "";
+        //    var EmailSmtpPassword = "";
+        //    var EmailFromName = "";
+        //    var EmailFrom = "";
+        //    string my_connection_string;
+        //    string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+        //    string webRootPath = _IWebHostEnvironment.WebRootPath;
+        //    var webReport = new WebReport();
+        //    webReport.Report.Clear();
+        //    // var ReportName = _IMaterialReceipt.GetReportName();
+        //    webReport.Report.Dispose();
+        //    webReport.Report = new Report();
 
-            webReport.Report.Load(webRootPath + "\\MRNShortExcess.frx"); // default repor 
-            my_connection_string = _connectionStringService.GetConnectionString();
-            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
-            //webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
-            webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
-            webReport.Report.SetParameterValue("entryidparam", EntryId);
-            webReport.Report.SetParameterValue("accountcodeparam", AccountCode);
-            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-            webReport.Report.Refresh();
+        //    webReport.Report.Load(webRootPath + "\\MRNShortExcess.frx"); // default repor 
+        //    my_connection_string = _connectionStringService.GetConnectionString();
+        //    webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+        //    webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+        //    //webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
+        //    webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
+        //    webReport.Report.SetParameterValue("entryidparam", EntryId);
+        //    webReport.Report.SetParameterValue("accountcodeparam", AccountCode);
+        //    webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+        //    webReport.Report.Refresh();
+
+        //    var emailparameters = _IDataLogic.GetEmails(AccountCode);
+
+        //    if (emailparameters != null &&
+        //        emailparameters.Result != null &&
+        //        emailparameters.Result.Result != null &&
+        //        emailparameters.Result.Result.Rows.Count > 0)
+        //    {
+        //        DataRow row = emailparameters.Result.Result.Rows[0];
+
+        //        if (string.IsNullOrWhiteSpace(emailTo))
+        //            emailTo = row["EmailId"]?.ToString() ?? "";
+
+        //        if (string.IsNullOrWhiteSpace(CC1))
+        //            CC1 = row["CC1"]?.ToString() ?? "";
+
+        //        if (string.IsNullOrWhiteSpace(CC2))
+        //            CC2 = row["CC2"]?.ToString() ?? "";
+
+        //        if (string.IsNullOrWhiteSpace(CC3))
+        //            CC3 = row["CC3"]?.ToString() ?? "";
+        //        if (string.IsNullOrWhiteSpace(CC4))
+        //            CC4 = row["CC4"]?.ToString() ?? "";
+
+        //        if (string.IsNullOrWhiteSpace(CC5))
+        //            CC5 = row["CC5"]?.ToString() ?? "";
+
+        //        if (string.IsNullOrWhiteSpace(CC6))
+        //            CC6 = row["CC6"]?.ToString() ?? "";
+
+        //        if (string.IsNullOrWhiteSpace(CompanyName))
+        //            CompanyName = row["CompanyName"]?.ToString() ?? "";
 
 
-            // Now call EmailReport
-            return EmailReport(webReport, emailTo, CC1, CC2, CC3, MrnNo);
-        }
+        //        EmailFrom = row["FromEmail"]?.ToString() ?? "";
+        //        EmailSmtpServer = row["EmailSmtpServer"]?.ToString() ?? "";
+        //        EmailSmtpPort = row["EmailSmtpPort"]?.ToString() ?? "";
+        //        EmailSmtpUsername = row["EmailSmtpUsername"]?.ToString() ?? "";
+        //        EmailSmtpPassword = row["EmailSmtpPassword"]?.ToString() ?? "";
+        //        EmailFromName = row["EmailFromName"]?.ToString() ?? "";
 
 
-        public IActionResult EmailReport(WebReport webReport, string emailTo, string CC1, string CC2, string CC3,string MRNNo)
-        {
-            try
-            {
-                webReport.Report.Prepare(); // Prepare the report before exporting
-                // First export the report to an image
-                using (MemoryStream imageStream = new MemoryStream())
-                {
-                    // Configure image export
-                    var imageExport = new ImageExport()
-                    {
-                        ImageFormat = ImageExportFormat.Png, // Force PNG format
-                        Resolution = 300, // Higher quality
-                        //ExportQuality = 100 // Maximum quality
-                    };
+        //    }
+
+
+        //    // Now call EmailReport
+        //    return EmailReport(webReport, emailTo, CC1, CC2, CC3, CC4, CC5, CC6, MrnNo, CompanyName, EmailFrom, EmailSmtpServer, EmailSmtpPort, EmailSmtpUsername, EmailSmtpPassword, EmailFromName);
+        //}
+
+
+        //public IActionResult EmailReport(WebReport webReport, string emailTo, string CC1, string CC2, string CC3, string CC4, string CC5, string CC6, string MRNNo, string CompanyName, string EmailFrom, string EmailSmtpServer, string EmailSmtpPort, string EmailSmtpUsername, string EmailSmtpPassword, string EmailFromName)
+        //{
+        //    try
+        //    {
+        //        webReport.Report.Prepare(); // Prepare the report before exporting
+        //        // First export the report to an image
+        //        using (MemoryStream imageStream = new MemoryStream())
+        //        {
+        //            // Configure image export
+        //            var imageExport = new ImageExport()
+        //            {
+        //                ImageFormat = ImageExportFormat.Png, // Force PNG format
+        //                Resolution = 300, // Higher quality
+        //                //ExportQuality = 100 // Maximum quality
+        //            };
 
 
 
-                    // Export the report
-                    webReport.Report.Export(imageExport, imageStream);
-                    imageStream.Position = 0;
+        //            // Export the report
+        //            webReport.Report.Export(imageExport, imageStream);
+        //            imageStream.Position = 0;
 
-                    // Verify the image data
-                    if (imageStream.Length == 0)
-                        throw new Exception("Report export failed - empty image stream");
+        //            // Verify the image data
+        //            if (imageStream.Length == 0)
+        //                throw new Exception("Report export failed - empty image stream");
 
-                    // Convert to PDF with additional validation
-                    byte[] pdfBytes;
-                    try
-                    {
-                        pdfBytes = ConvertImageToPdf(imageStream.ToArray());
-                    }
-                    catch (Exception ex)
-                    {
-                        // Try alternative conversion if first attempt fails
-                        pdfBytes = ConvertImageToPdf(imageStream.ToArray());
-                    }
-                    //emailTo = "infotech.bmr@gmail.com,bmr.client2021@gmail.com";
-                    emailTo = string.Join(",", new[] { emailTo, CC1, CC2, CC3 }
-                         .Where(x => !string.IsNullOrWhiteSpace(x))
-                         .Select(x => x.Trim()));
-                    string body = $@"
-                        Dear Sir,<br/>
-                        Please find the attachment from AutoComponent.<br/><br/>
-                        Regards,<br/>
-                        AutoComponent Team
-                        ";
-                    var emailToList = emailTo.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
-                                   .Select(e => e.Trim())
-                                   .ToList();
-                    // Send email
-                    //_emailService.SendEmailAsync(
-                    //    emailTo,
-                    //    "Soft Copy Of Challan No: " +Challanno + " From AutoComponent",
-                    //    CC1,
-                    //    CC2,
-                    //    CC3,
-                    //    body,
-                    //    pdfBytes,
-                    //    "Report.pdf").Wait();
-                    foreach (var recipient in emailToList)
-                    {
-                        _emailService.SendEmailAsync(
-                            recipient,
-                            "Soft Copy Of Short & Excess Of MRN No: " + MRNNo + " From AutoComponent",
-                            CC1,
-                            CC2,
-                            CC3,
-                            body,
-                            pdfBytes,
-                            "Report.pdf").Wait();
-                    }
+        //            // Convert to PDF with additional validation
+        //            byte[] pdfBytes;
+        //            try
+        //            {
+        //                pdfBytes = ConvertImageToPdf(imageStream.ToArray());
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                // Try alternative conversion if first attempt fails
+        //                pdfBytes = ConvertImageToPdf(imageStream.ToArray());
+        //            }
+        //            //emailTo = "infotech.bmr@gmail.com,bmr.client2021@gmail.com";
+        //            emailTo = string.Join(",", new[] { emailTo }
+        //                 .Where(x => !string.IsNullOrWhiteSpace(x))
+        //                 .Select(x => x.Trim()));
+        //            string body = $@"
+        //                Dear Sir,<br/>
+        //                Please find the attachment from {CompanyName}.<br/><br/>
+        //                Regards,<br/>
+        //                {CompanyName} Team
+        //                ";
+        //            var emailToList = emailTo.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+        //                           .Select(e => e.Trim())
+        //                           .ToList();
+        //            // Send email
+        //            //_emailService.SendEmailAsync(
+        //            //    emailTo,
+        //            //    "Soft Copy Of Challan No: " +Challanno + " From AutoComponent",
+        //            //    CC1,
+        //            //    CC2,
+        //            //    CC3,
+        //            //    body,
+        //            //    pdfBytes,
+        //            //    "Report.pdf").Wait();
+        //            foreach (var recipient in emailToList)
+        //            {
+        //                _emailService.SendEmailAsync(
+        //                   EmailFrom,
+        //                   CompanyName,
+        //                    recipient,
+        //                    "Soft Copy Of Short & Excess Of MRN No: " + MRNNo + " From  " + CompanyName,
+        //                    CC1,
+        //                    CC2,
+        //                    CC3,
+        //                     CC4,
+        //                    CC5,
+        //                    CC6,
+        //                    body,
+        //                     EmailFrom,
+        //                    EmailSmtpServer,
+        //                    EmailSmtpPort,
+        //                    EmailSmtpUsername,
+        //                    EmailSmtpPassword,
+        //                        EmailFromName,
+        //                    pdfBytes,
+        //                    "Report.pdf").Wait();
+        //            }
 
-                    return Content("Report sent successfully");
-                }
-            }
-            catch (Exception ex)
-            {
-                return Content($"Error: {ex.Message}\n\nStack Trace: {ex.StackTrace}");
-            }
-        }
+        //            return Content("Report sent successfully");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Content($"Error: {ex.Message}\n\nStack Trace: {ex.StackTrace}");
+        //    }
+        //}
 
         public async Task SendEmailAsync(string emailTo, string subject, string message, byte[] attachment = null, string attachmentName = null, string CC1 = "", string CC2 = "", string CC3 = "")
         {
@@ -406,14 +585,25 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
             var webReport = new WebReport();
             webReport.Report.Clear();
             // var ReportName = _IMaterialReceipt.GetReportName();
+
+            var ReportName = _IMaterialReceipt.GetMRNTagReportName();
             webReport.Report.Dispose();
             webReport.Report = new Report();
 
-            webReport.Report.Load(webRootPath + "\\MRNTAGFinal.frx"); 
+            //webReport.Report.Load(webRootPath + "\\MRNMultiReportYauto.frx");
+            if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0].ToString() + ".frx");
+            }
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\MRNTAGFinal.frx");
+            }
+
             my_connection_string = _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
-           // webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
+            // webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
             webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
             webReport.Report.SetParameterValue("entryidparam", EntryId);
             //webReport.Report.SetParameterValue("accountcodeparam", AccountCode);
@@ -422,7 +612,12 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
             return View(webReport);
         }
 
-
+        public async Task<JsonResult> GetFeatureOption()
+        {
+            var JSON = await _IMaterialReceipt.GetFeatureOption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0, string MrnNo = "")
         {
             using (Report report = new Report())
@@ -534,10 +729,19 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
 
                     if (Result != null)
                     {
+                        var dt = Result?.Result;
+
+                        string? mrnNo = null;
+
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
                         {
+                            if (dt != null && dt.Rows.Count > 0)
+                            {
+                                mrnNo = (dt.Rows[0]["MRNNO"]);
+
+                            }
                             ViewBag.isSuccess = true;
-                            TempData["200"] = "200";
+                            TempData["302"] = $"Data save successfully of MRNNO: {mrnNo}";
                             var MainModel = new MaterialReceiptModel();
                             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
@@ -561,15 +765,21 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
                                     status = "Success",
                                     entryId = model.EntryID,
                                     yearCode = model.YearCode,
-                                    mrnno = model.MRNNo
+                                    mrnno = model.MRNNo,
+                                    message = $"Data save successfully of MRNNO: {mrnNo}"
                                 });
                             }
-                            return Json(new { status = "Success" });
+                            return Json(new { status = "Success", message = $"Data save successfully of MRNNO: {mrnNo}" });
                         }
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
+                            if (dt != null && dt.Rows.Count > 0)
+                            {
+                                mrnNo = (dt.Rows[0]["MRNNO"]);
+
+                            }
                             ViewBag.isSuccess = true;
-                            TempData["202"] = "202";
+                            TempData["302"] = $"Data save successfully of MRNNO: {mrnNo}";
                             var MainModel = new MaterialReceiptModel();
                             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
@@ -593,10 +803,11 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
                                     status = "Success",
                                     entryId = model.EntryID,
                                     yearCode = model.YearCode,
-                                    mrnno = model.MRNNo
+                                    mrnno = model.MRNNo,
+                                    message = $"Data save successfully of MRNNO: {mrnNo}"
                                 });
                             }
-                            return Json(new { status = "Success" });
+                            return Json(new { status = "Success", message = $"Data save successfully of MRNNO: {mrnNo}" });
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
@@ -633,7 +844,7 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
 
                     model.FromDate = fromDt;
                     model.ToDate = toDt;
-                   
+
                     return Json(new { status = "Success" });
                 }
             }
@@ -656,7 +867,7 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
         public async Task<ActionResult> MaterialReceipt(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string GateNo = "", string PartCode = "", string ItemName = "", string MrnNo = "", string PoNo = "", string Type = "", string Searchbox = "")
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
-            TempData.Clear();
+            //TempData.Clear();
             var MainModel = new MaterialReceiptModel();
             MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
@@ -697,6 +908,8 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
                 MainModel.UpdatedByName = HttpContext.Session.GetString("EmpName");
                 MainModel.UpdatedOn = DateTime.Now;
             }
+            MainModel.FinFromDate = ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+            MainModel.FinToDate = ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
             MainModel.VendorNameBack = VendorName;
@@ -715,7 +928,7 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
             {
                 string materialGrid = HttpContext.Session.GetString("KeyMaterialReceiptGrid");
                 List<MaterialReceiptDetail> MaterialReceiptDetail = new List<MaterialReceiptDetail>();
-                
+
                 if (!string.IsNullOrEmpty(materialGrid))
                 {
                     MaterialReceiptDetail = JsonConvert.DeserializeObject<List<MaterialReceiptDetail>>(materialGrid);
@@ -738,7 +951,7 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
                         }
                         else
                         {
-                            if (MaterialReceiptDetail.Where(x => x.ItemNumber == item.ItemNumber &&  x.SaleBillNo == item.SaleBillNo
+                            if (MaterialReceiptDetail.Where(x => x.ItemNumber == item.ItemNumber && x.SaleBillNo == item.SaleBillNo
                             && x.PONO == item.PONO
                  && x.SchNo == item.SchNo).Any())
                             {
@@ -752,6 +965,7 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
                                 MaterialReceiptDetail.Add(item);
                             }
                         }
+                        MaterialReceiptDetail = MaterialReceiptDetail.OrderBy(item => item.SeqNo).ToList();
                         MainModel.ItemDetailGrid = MaterialReceiptDetail;
 
                         HttpContext.Session.SetString("KeyMaterialReceiptGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
@@ -879,9 +1093,9 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
                 //return Json(formattedDate);
 
                 //  var time = CommonFunc.ParseFormattedDate(DateTime.Now.ToString());
-                 var time = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                var time = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                 //return Json(DateTime.Now.ToString("yyyy-MM-dd"));
-                 return Json(time);
+                return Json(time);
                 //return Json(DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture));
 
             }
@@ -927,7 +1141,7 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
                 foreach (var item in MaterialReceiptGrid)
                 {
                     Indx++;
-                    item.SeqNo = Indx;
+                    // item.SeqNo = Indx;
                 }
                 MainModel.ItemDetailGrid = MaterialReceiptGrid;
 
@@ -935,7 +1149,7 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
                 {
                     HttpContext.Session.Remove("KeyMaterialReceiptGrid");
                 }
-                
+
                 HttpContext.Session.SetString("KeyMaterialReceiptGrid", JsonConvert.SerializeObject(MaterialReceiptGrid));
             }
             return PartialView("_MaterialReceiptGrid", MainModel);
@@ -1188,7 +1402,7 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
         }
         public async Task<JsonResult> GetGateMainData(string GateNo, string GateYearCode, int GateEntryId)
         {
-            
+
             var JSON = await _IMaterialReceipt.GetGateMainData("GATEMAINDATA", "SP_MRN", GateNo, GateYearCode, GateEntryId);
             string JsonString = JsonConvert.SerializeObject(JSON);
             //HttpContext.Session.SetString("KeyMaterialReceiptGrid", JsonString);
@@ -1322,7 +1536,7 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
             //    return NotFound("No data available to export.");
             //}
             string cacheKey = $"KeyMRNList_{ReportType}";
-            if (!_MemoryCache.TryGetValue(cacheKey, out IList<MRNDashboard> modelList) )
+            if (!_MemoryCache.TryGetValue(cacheKey, out IList<MRNDashboard> modelList))
             {
                 return NotFound("No data available to export.");
             }

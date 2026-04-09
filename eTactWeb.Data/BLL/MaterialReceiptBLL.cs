@@ -25,13 +25,33 @@ namespace eTactWeb.Data.BLL
         {
             return await _MaterialReceiptDAL.GetReportName();
         }
-        public async Task<ResponseResult> GetGateNo(string Flag,string SPName,string FromDate,string ToDate)
+        public async Task<ResponseResult> GetMRNTagReportName()
         {
-            return await _MaterialReceiptDAL.GetGateNo(Flag, SPName,FromDate, ToDate);
+            return await _MaterialReceiptDAL.GetMRNTagReportName();
         }
-        public async Task<ResponseResult> GetGateMainData(string Flag, string SPName, string GateNo, string GateYearCode,int GateEntryId)
+        public async Task<ResponseResult> GetFeatureOption()
         {
-            return await _MaterialReceiptDAL.GetGateMainData(Flag, SPName,GateNo,GateYearCode,GateEntryId);
+            return await _MaterialReceiptDAL.GetFeatureOption();
+        }
+        public async Task<ResponseResult> GetGateNo(string Flag, string SPName, string FromDate, string ToDate)
+        {
+            return await _MaterialReceiptDAL.GetGateNo(Flag, SPName, FromDate, ToDate);
+        }
+        public async Task<ResponseResult> GetMRNPrintStatus(int EntryId, int YearCode)
+        {
+            return await _MaterialReceiptDAL.GetMRNPrintStatus(EntryId, YearCode);
+        }
+        public async Task<ResponseResult> GetMRNPrintStatusByMRNNo(string MrnNo, int YearCode)
+        {
+            return await _MaterialReceiptDAL.GetMRNPrintStatusByMRNNo(MrnNo, YearCode);
+        }
+        public async Task<ResponseResult> UpdatePrintStatus(int EntryId, int YearCode)
+        {
+            return await _MaterialReceiptDAL.UpdatePrintStatus(EntryId, YearCode);
+        }
+        public async Task<ResponseResult> GetGateMainData(string Flag, string SPName, string GateNo, string GateYearCode, int GateEntryId)
+        {
+            return await _MaterialReceiptDAL.GetGateMainData(Flag, SPName, GateNo, GateYearCode, GateEntryId);
         }
 
         public async Task<ResponseResult> GetGateItemData(string Flag, string SPName, string GateNo, string GateYearCode, int GateEntryId)
@@ -40,11 +60,11 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ResponseResult> GetDeptAndEmp(string Flag, string SPName, int DeptId, int resEmp)
         {
-            return await _MaterialReceiptDAL.GetDeptAndEmp(Flag, SPName,DeptId,resEmp);
+            return await _MaterialReceiptDAL.GetDeptAndEmp(Flag, SPName, DeptId, resEmp);
         }
         public async Task<ResponseResult> SaveMaterialReceipt(MaterialReceiptModel model, DataTable MRGRid, DataTable BatchGrid)
         {
-            return await _MaterialReceiptDAL.SaveMaterialReceipt(model, MRGRid,BatchGrid);
+            return await _MaterialReceiptDAL.SaveMaterialReceipt(model, MRGRid, BatchGrid);
         }
         public async Task<ResponseResult> CheckFeatureOption()
         {
@@ -56,18 +76,18 @@ namespace eTactWeb.Data.BLL
             return await _MaterialReceiptDAL.GetDashboardData();
         }
 
-        public async Task<ResponseResult> BindDept(string flag,string spname)
+        public async Task<ResponseResult> BindDept(string flag, string spname)
         {
-            return await _MaterialReceiptDAL.BindDept(flag,spname);
+            return await _MaterialReceiptDAL.BindDept(flag, spname);
         }
 
         public async Task<MRNQDashboard> GetDashboardData(string VendorName, string MrnNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate, int FromMRNNo, int ToMRNNo)
         {
-            return await _MaterialReceiptDAL.GetDashboardData(VendorName, MrnNo,GateNo,PONo, ItemName, PartCode,  FromDate, ToDate, FromMRNNo,  ToMRNNo);
+            return await _MaterialReceiptDAL.GetDashboardData(VendorName, MrnNo, GateNo, PONo, ItemName, PartCode, FromDate, ToDate, FromMRNNo, ToMRNNo);
         }
         public async Task<MRNQDashboard> GetDetailDashboardData(string VendorName, string MrnNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate)
         {
-            return await _MaterialReceiptDAL.GetDetailDashboardData(VendorName, MrnNo,GateNo,PONo, ItemName, PartCode,  FromDate, ToDate);
+            return await _MaterialReceiptDAL.GetDetailDashboardData(VendorName, MrnNo, GateNo, PONo, ItemName, PartCode, FromDate, ToDate);
         }
         public async Task<MaterialReceiptModel> GetViewByID(int ID, int YearCode)
         {
@@ -79,20 +99,20 @@ namespace eTactWeb.Data.BLL
         {
             return await _MaterialReceiptDAL.GetFormRights(ID);
         }
-        
-        public async Task<ResponseResult> AltUnitConversion(int ItemCode,decimal AltQty,decimal UnitQty)
+
+        public async Task<ResponseResult> AltUnitConversion(int ItemCode, decimal AltQty, decimal UnitQty)
         {
-            return await _MaterialReceiptDAL.AltUnitConversion(ItemCode,AltQty,UnitQty);
+            return await _MaterialReceiptDAL.AltUnitConversion(ItemCode, AltQty, UnitQty);
         }
 
 
-        public async Task<ResponseResult> DeleteByID(int ID, int YC,string IPAddress,int EmpId)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, string IPAddress, int EmpId)
         {
-            return await _MaterialReceiptDAL.DeleteByID(ID,  YC, IPAddress,EmpId);
+            return await _MaterialReceiptDAL.DeleteByID(ID, YC, IPAddress, EmpId);
         }
         public async Task<ResponseResult> FillEntryandMRN(string Flag, int YearCode, string SPName)
         {
-            return await _MaterialReceiptDAL.FillEntryandMRN(Flag, YearCode,SPName);
+            return await _MaterialReceiptDAL.FillEntryandMRN(Flag, YearCode, SPName);
         }
 
         public Task<ResponseResult> GetSearchData(MRNQDashboard model)
@@ -105,7 +125,7 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ResponseResult> CheckBeforeInsert(string GateNo, int GateYearCode)
         {
-            return await _MaterialReceiptDAL.CheckBeforeInsert(GateNo,GateYearCode);
+            return await _MaterialReceiptDAL.CheckBeforeInsert(GateNo, GateYearCode);
         }
         public async Task<IList<TextValue>> GetEmployeeList()
         {
@@ -113,7 +133,7 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ResponseResult> GenerateMultiMRNPrint(string MRNNo, int YearCode)
         {
-            return await _MaterialReceiptDAL.GenerateMultiMRNPrint( MRNNo,  YearCode);
+            return await _MaterialReceiptDAL.GenerateMultiMRNPrint(MRNNo, YearCode);
         }
 
     }

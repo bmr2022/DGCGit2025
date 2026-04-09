@@ -1,7 +1,10 @@
 ﻿@model eTactWeb.DOM.Models.GateInwardDashboard
 @using Microsoft.AspNetCore.Http
 @using System.Reflection.PortableExecutable
+@using eTactWeb.Data.Common
 @inject IHttpContextAccessor HttpContextAccessor
+@inject EncryptDecrypt encryptDecrypt
+
 @{
     var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
 }
@@ -67,7 +70,8 @@ else
                                             </a>
                                         </div>
                                         <div id="viewCursorDiv-@Cntr">
-                                            <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="GateInward" asp-route-Mode="V" asp-route-ID="@item.entryId" asp-route-YC="@item.yearcode" onclick="BackButtonData(event,'@item.Gateno','@item.yearcode');">
+                                            <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="GateInward" asp-route-Mode="@encryptDecrypt.Encrypt("V")" asp-route-ID="@EncryptDecrypt.EncodeID(Convert.ToInt32(item.entryId))"
+                                                   asp-route-YC="@EncryptDecrypt.EncodeID(@item.yearcode ?? 0)" onclick="BackButtonData(event,'@item.Gateno','@item.yearcode');">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -77,7 +81,8 @@ else
                                         @if (item.yearcode == yearCode)
                                         {
                                             <div id="editCursorDiv-@Cntr">
-                                                <a class="table-link link-primary" id="editCursor-@Cntr" onclick="confirmEdit(event,'@item.Gateno','@item.yearcode')" asp-action="GateInward" asp-route-Mode="U" asp-route-ID="@item.entryId" asp-route-YC="@item.yearcode">
+                                                <a class="table-link link-primary" id="editCursor-@Cntr" onclick="confirmEdit(event,'@item.Gateno','@item.yearcode')" asp-action="GateInward" asp-route-Mode="@encryptDecrypt.Encrypt("U")" asp-route-ID="@EncryptDecrypt.EncodeID(Convert.ToInt32(item.entryId))"
+                                                       asp-route-YC="@EncryptDecrypt.EncodeID(@item.yearcode ?? 0)">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -146,7 +151,7 @@ else
         displayedRows = Model.TotalRecords;
     }
 
-<center><strong>TOTAL ROWS : <span>@displayedRows</span></strong></center>
+    <center><strong>TOTAL ROWS : <span>@displayedRows</span></strong></center>
 
 }
 @{
@@ -193,6 +198,7 @@ else
         }
     </ul>
 }
+
 <style>
     #container {
         display: flex;

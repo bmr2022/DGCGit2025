@@ -45,15 +45,18 @@ else
                     </a>
                 }
             </td>
+            <td>@item.SeqNo</td>
             <td onclick="redirectToPOEdit( '@item.PoYear','@item.PoEntryId')">@item.PoNo</td>
             <td>@item.PoYear</td>
+            <td>@item.PoDate</td>
             <td>@item.SchNo</td>
             <td>@item.SchYearCode</td>
+            <td>@item.SchDate</td>
             <td>@item.ItemName</td>
             <td>@item.PartCode</td>
             <td>@item.Unit</td>
            
-            <td id="Qty-@item.SeqNo">@item.Qty</td>
+            <td id="Qty-@item.SeqNo" class="GridQty">@item.Qty</td>
             <td id="Rate-@item.SeqNo">@item.Rate</td>
             <td id="UnitRate-@item.SeqNo">@item.UnitRate</td>
             <td>@item.AltUnit</td>

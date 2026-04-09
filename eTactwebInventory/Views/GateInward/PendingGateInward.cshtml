@@ -1,4 +1,6 @@
-﻿@model eTactWeb.DOM.Models.PendingGateEntryDashboard
+﻿@using eTactWeb.Data.Common
+@model eTactWeb.DOM.Models.PendingGateEntryDashboard
+@inject EncryptDecrypt encryptDecrypt
 @{
 	ViewData["Title"] = "Gate Inward";
 	Layout = "~/Views/Shared/_LayoutMain.cshtml";
@@ -39,7 +41,10 @@
 			<div class="card-body">
 				<div class="card overflow-auto">
 					<div class="card-body">
+
 						<form id="SParam">
+							
+							
 							<div class="accordion-item">
 								<h2 class="accordion-header" id="H_GateEntry">
 									<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_GateEntry" aria-expanded="true" aria-controls="B_GateEntry">
@@ -50,9 +55,11 @@
 									<div class="accordion-body">
 
 										<div class="row">
-									<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+												
 												<div class="row">
 													<div class="col">
+														
 														<label class="form-label">From Date</label>
 														<input asp-for="FromDate" value="@Model.FromDate" class="form-control" />
 													</div>
@@ -73,20 +80,20 @@
 													<option value="VendorPortal">VendorPortal</option>
 												</select>
 											</div>
-												<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-													<input type="hidden" asp-for="SessionYearCode" value="@Model.SessionYearCode" />
+											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+												<input type="hidden" asp-for="SessionYearCode" value="@Model.SessionYearCode" />
 												<label asp-for="VendorName" class="form-label" style="color: red;">Vendor Name*</label>
-												<select class="form-select" asp-for="VendorName" data-abcd="1" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
+												<select class="form-select" asp-for="VendorName" data-abcd="1" asp-items="@(new SelectList(Model.AccountList, "Value", "Text"))">
 													<option value="" disabled selected>-Select-</option>
 												</select>
-													@*<input asp-for="VendorName" class="form-control" />*@
-												</div>
+												@*<input asp-for="VendorName" class="form-control" />*@
+											</div>
 											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
 												<label class="form-label" style="color: red;">
 													document type*
 												</label>
 
-												<select class="form-select" data-abcd="4" id="docTypeId" asp-items="@(new SelectList(Model.DocumentList,"Value","Text"))">
+												<select class="form-select" data-abcd="4" id="docTypeId" asp-items="@(new SelectList(Model.DocumentList, "Value", "Text"))">
 													<option value="" disabled selected>-select-</option>
 												</select>
 											</div>
@@ -94,12 +101,12 @@
 											
 											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
 												<label asp-for="Invoiceno" class="form-label">Invoiceno</label>
-												<select class="form-select" asp-for="Invoiceno" data-abcd="1" asp-items="@(new SelectList(Model.InvoiceList,"Value","Text"))">
+												<select class="form-select" asp-for="Invoiceno" data-abcd="1" asp-items="@(new SelectList(Model.InvoiceList, "Value", "Text"))">
 													<option value="" disabled selected>-Select-</option>
 												</select>
 											</div>
 											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="PONo" class="form-label" >PO NO</label>
+												<label asp-for="PONo" class="form-label">PO NO</label>
 												@*  <input asp-for="NeedPo" type="hidden"/> *@
 												<select class="form-select" data-abcd="7" asp-for="PONo" id="PONO">
 													<option value="" disabled>-Select-</option>
@@ -134,7 +141,7 @@
 												</a>
 												<div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
 													<button class="btn btn-sm btn-outline-primary GotoMainPage
-													" style="margin-top:15px;height:30px;width:150px;margin-left:20px;" type="button" >
+														" style="margin-top:15px;height:30px;width:150px;margin-left:20px;" type="button">
 														<i class="fa fa-check-circle" aria-hidden="true"></i> Gate Entry
 													</button>
 												</div>
@@ -168,432 +175,506 @@
 @section Scripts
 {
 	<script>
-		$('.GotoMainPage').on('click', function () {
-			if ($('#GetDataFrom').val() == 'PendingPO') {
-				getCheckedRowData();
-			}
-            else if ($('#GetDataFrom').val() == 'VendorPortal') {
-                gotoMainGateForVendorPortal();
-            }
-            else {
-                alert("Please select GetDataFrom.");
-                $('#GetDataFrom').focus();
-                return;
-            }
-		});
-	 
-			  function getCheckedRowData() {
-						var selectedData = [];
-		var rows = document.querySelectorAll('#GateDataTable tbody tr');
-		var seqCounter = 1;
-			var isValid = true;
+			//added for encrypte and decrpted by sajni
+				function encodeID(id) {
+					var obfuscated = id * 12345 + 6789;
+					var bytes = new Uint8Array(4);
+					bytes[0] = obfuscated & 0xFF;
+					bytes[1] = (obfuscated >> 8) & 0xFF;
+					bytes[2] = (obfuscated >> 16) & 0xFF;
+					bytes[3] = (obfuscated >> 24) & 0xFF;
+
+					var binary = String.fromCharCode.apply(null, bytes);
+					return btoa(binary)
+						.replace(/=/g, '')
+						.replace(/\+/g, '-')
+						.replace(/\//g, '_');
+				}
+
+				function decodeID(encoded) {
+					var padded = encoded.replace(/-/g, '+').replace(/_/g, '/');
+					while (padded.length % 4) padded += '=';
+					var bytes = atob(padded).split('').map(c => c.charCodeAt(0));
+					var obfuscated = bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24);
+					return (obfuscated - 6789) / 12345;
+				}
+
+				function modeToNumber(mode) {
+					if (mode === "V") return 1;
+					if (mode === "U") return 2;
+					if (mode === "I") return 3;
+					return 0;
+				}
+
+				function encodeMode(mode) {
+					return encodeID(modeToNumber(mode));
+				}
 
 
-		for (var i = 0; i < rows.length; i++) {
-			var row = rows[i];
-			var checkbox = row.querySelector('input[type="checkbox"]');
 
-			if (checkbox && checkbox.checked) {
-				var cells = row.querySelectorAll('td');
-				var qtyInput = cells[13].querySelector('input');
-					var pendQty = parseFloat(cells[12].textContent.trim()) || 0;
-					var qty = qtyInput ? parseFloat(qtyInput.value.trim()) || 0 : 0;
-
-					// ✅ Validation check
-					if (qty <= 0) {
-						alert(`❌ Error: Quantity must be greater than 0 in row ${i + 1}.`);
-						isValid = false;
-						break;
+				$('.GotoMainPage').on('click', function () {
+					if ($('#GetDataFrom').val() == 'PendingPO') {
+						getCheckedRowData();
 					}
-					if (qty > pendQty) {
-						alert(`❌ Error: Quantity cannot be greater than Pending Quantity in row ${i + 1}.`);
-						isValid = false;
-						break;
+					else if ($('#GetDataFrom').val() == 'VendorPortal') {
+						gotoMainGateForVendorPortal();
 					}
-
-
-				var rowData = {
-			SeqNo: seqCounter,
-			AccountCode: document.getElementById("VendorName").value,
-			docTypeId: document.getElementById("docTypeId").value,
-			PoNo: cells[3].textContent.trim(),
-			PoYear: parseInt(cells[5].textContent.trim()),
-			SchNo: cells[6].textContent.trim(),
-			SchYearCode: cells[8].textContent.trim(),
-			ItemName: cells[9].textContent.trim(),
-			PartCode: cells[10].textContent.trim(),
-			Unit: cells[11].textContent.trim(),
-			PendQty: parseFloat(cells[12].textContent.trim()),
-			Qty: qtyInput ? parseFloat(qtyInput.value.trim()) : 0,
-			Rate: parseFloat(cells[14].textContent.trim()),
-			AltUnit: cells[15].textContent.trim(),
-			AltQty: parseFloat(cells[16].textContent.trim()),
-			ItemSize: cells[17].textContent.trim(),
-			ItemColor: cells[18].textContent.trim(),
-			Remarks: cells[19].textContent.trim(),
-			ProcessName: cells[20].textContent.trim(),
-			SaleBillNo: cells[21].textContent.trim(),
-			SaleBillYearCode: parseInt(cells[22].textContent.trim()),
-			SaleBillQty: parseFloat(cells[23].textContent.trim()),
-			AgainstChallanNo: cells[24].textContent.trim(),
-			AgainstChallanYearcode: parseInt(cells[25].textContent.trim()),
-			ChallanQty: parseFloat(cells[26].textContent.trim()),
-			SupplierBatchNo: cells[27].textContent.trim(),
-			ShelfLife: parseFloat(cells[28].textContent.trim()),
-			NoOfBoxes: parseInt(cells[29].textContent.trim()),
-			ItemCode: parseInt(cells[1].textContent.trim()) // hidden column
-		};
-
-				selectedData.push(rowData);
-				seqCounter++; // Only increment if checkbox is checked
-			}
-		}
-			// Stop execution if any invalid qty
-			if (!isValid) return;
-
-			// ✅ Proceed only if data is valid
-			if (selectedData.length === 0) {
-				alert("⚠️ Please select at least one item.");
-				return;
-			}
-
-
-			// AJAX call to send to session
-			$.ajax({
-				url: "@Url.Action("StoreCheckedRowsToSession")",
-				   type: "POST",
-				data: { model: selectedData },
-				async: false,
-				success: function (response) {
-
-
-							var accountCode = document.getElementById("VendorName").value;
-		var docTypeId = document.getElementById("docTypeId").value;
-
-		window.location.href = `/GateInward/GateInward?Mode=I&AccountCode=${accountCode}&docTypeId=${docTypeId}`;
-
-				},
-				error: function (xhr, status, error) {
-					console.error("Failed to store in session:", error);
-				}
-			});
-					
-		}
-
-
-		function gotoMainGateForVendorPortal() {
-
-			var AccountCode = document.getElementById("VendorName").value;
-            var docTypeId = document.getElementById("docTypeId").value;
-			var VPSaleBillEntryId = document.getElementById("Invoiceno").value;
-			var InvoiceNo = ($("#Invoiceno")[0].selectedIndex === 0)
-				? ""
-				: $("#Invoiceno option:selected").text().trim();
-			var VPSaleBillEntryId = $("#Invoiceno").val();
-			if (!AccountCode) {
-				alert("Please select Vendor Name.");
-				document.getElementById("VendorName").focus();
-				return;
-				}
-				if (!docTypeId) {
-					alert("Please select Document Type.");
-					document.getElementById("docTypeId").focus();
-					return;
+					else {
+						alert("Please select GetDataFrom.");
+						$('#GetDataFrom').focus();
+						return;
 					}
-			 if ($('#GetDataFrom').val() == 'VendorPortal') {
-			if (!VPSaleBillEntryId) {
-						alert("Please enter Invoice No.");
-                        document.getElementById("Invoiceno").focus();
-                        return;
-                        }
-			 }
-
-
-
-
-			$.ajax({
-				url: "@Url.Action("GetPendingGateEntryVPDetailData")",
-				type: "POST",
-				data: { AccountCode: AccountCode, InvoiceNo: InvoiceNo },
-				async: false,
-				success: function (response) {
-
-					window.location.href = `/GateInward/GateInward?Mode=I&AccountCode=${AccountCode}&docTypeId=${docTypeId}& &Invoiceno=${InvoiceNo}& &VPSaleBillEntryId=${VPSaleBillEntryId}`;
-
-				},
-				error: function (xhr, status, error) {
-					console.error("Failed to store in session:", error);
-				}
-			});
-
-
-			/* window.location.href = `/GateInward/GateInward?Mode=I&AccountCode=${accountCode}&docTypeId=${docTypeId}& &Invoiceno=${Invoiceno}`; */
-
-
-		}
-
-			function CheckacceptedQtySHA(i) {
-
-			var checkedtruevalues = [];
-			var rowCount = $('#PendinggateDashboardtable tr').length;
-			for (let i = 1; i <= rowCount; i++) {
-				checkedtruevalues.push({
-					"checked": $('#AcceptedQtySHA-' + i).is(':checked')
-				})
-			}
-
-			var checkedonlytrue = checkedtruevalues.filter(function (item) {
-				return item.checked;
-			}).length;
-			if (rowCount == checkedonlytrue) {
-				$('#checkuncheck').prop('checked', true)
-			} else {
-				$('#checkuncheck').prop('checked', false)
-			}
-		}
-			$(document).on('change', '#checkuncheck', function () {
-
-			var rowCount = $('#PendinggateDashboardtable tr').length;
-			if ($('#checkuncheck').is(':checked') == true) {
-				for (let i = 1; i <= rowCount; i++) {
-					$('#AcceptedQtySHA-' + i).prop('checked', true)
-				}
-			}
-			else {
-				for (let i = 1; i <= rowCount; i++) {
-					$('#AcceptedQtySHA-' + i).prop('checked', false)
-				}
-			}
-		})
-		$(function ()
-		   {
-			$('#VendorName').select2();
-			$('#docTypeId').select2();
-			$('#Invoiceno').select2();
-
-				  GetServerDate();
-			  var currentDate = new Date();
-
-			var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-			function formatDate(date)
-			{
-				var day = ("0" + date.getDate()).slice(-2);
-				var month = ("0" + (date.getMonth() + 1)).slice(-2);
-				var year = date.getFullYear();
-				var dateString = day + "/" + month + "/" + year;
-				return dateString;
-
-				
-			}
-			//$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-			  var finFromDate = $('#FromDate').val().split(" ")[0];
-			
-			var dateParts1 = finFromDate.split("/");
-			
-			var monthNames = {
-				"Jan": "01",
-				"Feb": "02",
-				"Mar": "03",
-				"Apr": "04",
-				"May": "05",
-				"Jun": "06",
-				"Jul": "07",
-				"Aug": "08",
-				"Sep": "09",
-				"Oct": "10",
-				"Nov": "11",
-				"Dec": "12"
-			};
-
-			var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
-			 $('#FromDate').val(formattedDate1);
-			$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (formattedDate1));
-					console.log($('#ToDate').val());
-			$('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-				console.log($('#ToDate').val());
-		  AutoComplete('VGateMainDetail', 'VendorName', 'Account_Name', null);
-		  AutoComplete('VGateMainDetail', 'ItemName', 'Item_Name', null);
-		  AutoComplete('VGateMainDetail', 'PartCode', 'PartCode', null);
-		  AutoComplete('VGateMainDetail', 'PONO', 'PONo', null);
-		  AutoComplete('VGateMainDetail', 'Gateno', 'GateNo', null);
-		  AutoComplete('VGateMainDetail', 'ScheduleNo', 'SchNo', null);
-		  if ($('#FromDate1').val() != "" && $('#ToDate1').val() != "") {
-
-				var inputFromDateString = $('#FromDate1').val().split(" ")[0];
-				var inputToDateString = $('#ToDate1').val().split(" ")[0];
-
-				var originalFromDate = new Date(inputFromDateString);
-				var originalToDate = new Date(inputToDateString);
-
-
-				//fromdate
-				var day = originalFromDate.getDate();
-				var month = originalFromDate.getMonth() + 1; // Months are zero-based
-				var year = originalFromDate.getFullYear();
-
-				var convertedFromDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
-
-				//todate
-				var day = originalToDate.getDate();
-				var month = originalToDate.getMonth() + 1; // Months are zero-based
-				var year = originalToDate.getFullYear();
-
-				var convertedToDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
-
-
-				$('#FromDate').val(convertedFromDateText);
-				$('#ToDate').val(convertedToDateText);
-
-			}
-				
-		   });
-			$('#sendToExcel').click(function () {
-			$("#GateDataTable").table2excel({
-				filename: "GateData.xls"
-			});
-		});
-			$("#VendorName").change(function () {
-			fillPONumber();
-		})
-
-			$("#docTypeId").change(function () {
-			fillPONumber();
-		})
-		  $("#search-box").on("input", function () {
-
-			var searchString = $(this).val().trim();
-
-			$.ajax({
-				url: "/GateInward/PendingGateEntryGlobalSearch?searchString=" + searchString,
-				type: "GET",
-				data: { searchString: searchString },
-				success: function (data) {
-
-					$('#divPendingEntryDashboardGrid').empty();
-					$('#divPendingEntryDashboardGrid').html(data);
-					$('#totalRows').text($('#PendinggateDashboardtable tr').length);
-					//countAllTotal();
-				},
-				error: function () {
-					console.log("Error fetching search results.");
-				}
-			});
-		});
-			 function GetServerDate() {
-			$.ajax({
-				type: "GET",
-				url: "@Url.Action("GetServerDate")",
-				async: false,
-				success: function (result, status, error) {
-					console.log(result);
-					if (result != null) {
-						var parts = result.split("-"); // ["2025", "08", "12"]
-				var formatted = parts[2] + "/" + parts[1] + "/" + parts[0]; // "12/08/2025"
-				 $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatted);
-						console.log($('#ToDate').val());
-						/* $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result); */
-					}
-				}
-			});
-		}
-		 var fillPONumber = function () {
-			$.ajax({
-				url: "@Url.Action("GetPOList", "GateInward")",
-				data: { Code: $('#VendorName').val(), Type: "Item", Year:$('#SessionYearCode').val(), DocTypeId: $('#docTypeId').val() },
-				success: function (result, status, xhr) {
-					if (result.length == 0) {
-						$('#ItemCheck').prop('disabled', false);
-					}
-					if (result != null) {
-						var obj = $.parseJSON(result);
-						$('#PONO').empty();
-						$('#PONO').append('<option  selected> </option>');
-						var i = 0;
-					 /*    $.each(obj.Result.Table, function (index, val) {
-													$('#PONO').append('<option value = "' + obj.Result.Table[i].PONO +  '" data-EntryId="' + val.EntryId+'"> ' + obj.Result.Table[i].PONO + ' </option>');
-							i++;
-						}); */
-					   $.each(obj.Result.Table, function (index, val) {
-					$('#PONO').append(
-										'<option value="' + obj.Result.Table[i].PONO + '" data-EntryId="' + obj.Result.Table[i].EntryId + '">' +
-							   obj.Result.Table[i].PONO +
-						'</option>'
-					);
-							i++;
 				});
+	 
+					  function getCheckedRowData() {
+								var selectedData = [];
+				var rows = document.querySelectorAll('#GateDataTable tbody tr');
+				var seqCounter = 1;
+					var isValid = true;
+
+
+				for (var i = 0; i < rows.length; i++) {
+					var row = rows[i];
+					var checkbox = row.querySelector('input[type="checkbox"]');
+
+					if (checkbox && checkbox.checked) {
+						var cells = row.querySelectorAll('td');
+						var qtyInput = cells[13].querySelector('input');
+							var pendQty = parseFloat(cells[12].textContent.trim()) || 0;
+							var qty = qtyInput ? parseFloat(qtyInput.value.trim()) || 0 : 0;
+
+							// ✅ Validation check
+							if (qty <= 0) {
+								alert(`❌ Error: Quantity must be greater than 0 in row ${i + 1}.`);
+								isValid = false;
+								break;
+							}
+							if (qty > pendQty) {
+								alert(`❌ Error: Quantity cannot be greater than Pending Quantity in row ${i + 1}.`);
+								isValid = false;
+								break;
+							}
+
+
+						var rowData = {
+					SeqNo: seqCounter,
+					AccountCode: document.getElementById("VendorName").value,
+					docTypeId: document.getElementById("docTypeId").value,
+					PoNo: cells[3].textContent.trim(),
+					PoYear: parseInt(cells[5].textContent.trim()),
+					SchNo: cells[6].textContent.trim(),
+					SchYearCode: cells[8].textContent.trim(),
+					ItemName: cells[9].textContent.trim(),
+					PartCode: cells[10].textContent.trim(),
+					Unit: cells[11].textContent.trim(),
+					PendQty: parseFloat(cells[12].textContent.trim()),
+					Qty: qtyInput ? parseFloat(qtyInput.value.trim()) : 0,
+					Rate: parseFloat(cells[14].textContent.trim()),
+					AltUnit: cells[15].textContent.trim(),
+					AltQty: parseFloat(cells[16].textContent.trim()),
+					ItemSize: cells[17].textContent.trim(),
+					ItemColor: cells[18].textContent.trim(),
+					Remarks: cells[19].textContent.trim(),
+					ProcessName: cells[20].textContent.trim(),
+					SaleBillNo: cells[21].textContent.trim(),
+					SaleBillYearCode: parseInt(cells[22].textContent.trim()),
+					SaleBillQty: parseFloat(cells[23].textContent.trim()),
+					AgainstChallanNo: cells[24].textContent.trim(),
+					AgainstChallanYearcode: parseInt(cells[25].textContent.trim()),
+					ChallanQty: parseFloat(cells[26].textContent.trim()),
+					SupplierBatchNo: cells[27].textContent.trim(),
+					ShelfLife: parseFloat(cells[28].textContent.trim()),
+					NoOfBoxes: parseInt(cells[29].textContent.trim()),
+					ItemCode: parseInt(cells[1].textContent.trim()) // hidden column
+				};
+
+						selectedData.push(rowData);
+						seqCounter++; // Only increment if checkbox is checked
+					}
+				}
+					// Stop execution if any invalid qty
+					if (!isValid) return;
+
+					// ✅ Proceed only if data is valid
+					if (selectedData.length === 0) {
+						alert("⚠️ Please select at least one item.");
+						return;
+					}
+
+		
+					// AJAX call to send to session
+					$.ajax({
+						url: "@Url.Action("StoreCheckedRowsToSession")",
+						   type: "POST",
+						data: { model: selectedData },
+						async: false,
+						success: function (response) {
+							//code by sajni
+							var accountCode = document.getElementById("VendorName").value;
+							var docTypeId = document.getElementById("docTypeId").value;
+
+				
+							var accountCodeInt = parseInt(accountCode, 10);
+							var docTypeIdInt = parseInt(docTypeId, 10);
+
+							var accountCodeEnc = encodeID(accountCodeInt);
+							var docTypeIdEnc = encodeID(docTypeIdInt);
+
+							var modeEnc = '@encryptDecrypt.Encrypt("I")'
+
+							var url =
+								'/GateInward/GateInward?' +
+								'Mode=' + modeEnc +
+								'&AccountCode=' + accountCodeEnc +
+								'&docTypeId=' + docTypeIdEnc;
+
+							window.location.href = url;
+
+		/* by sajni comment
+									var accountCode = document.getElementById("VendorName").value;
+				var docTypeId = document.getElementById("docTypeId").value;
+
+				window.location.href = `/GateInward/GateInward?Mode=I&AccountCode=${accountCode}&docTypeId=${docTypeId}`; */
+
+						},
+						error: function (xhr, status, error) {
+							console.error("Failed to store in session:", error);
+						}
+					});
+					
+				}
+
+
+				function gotoMainGateForVendorPortal() {
+
+					var AccountCode = document.getElementById("VendorName").value;
+					var docTypeId = document.getElementById("docTypeId").value;
+					var VPSaleBillEntryId = document.getElementById("Invoiceno").value;
+					var InvoiceNo = ($("#Invoiceno")[0].selectedIndex === 0)
+						? ""
+						: $("#Invoiceno option:selected").text().trim();
+					var VPSaleBillEntryId = $("#Invoiceno").val();
+					if (!AccountCode) {
+						alert("Please select Vendor Name.");
+						document.getElementById("VendorName").focus();
+						return;
+						}
+						if (!docTypeId) {
+							alert("Please select Document Type.");
+							document.getElementById("docTypeId").focus();
+							return;
+							}
+					 if ($('#GetDataFrom').val() == 'VendorPortal') {
+					if (!VPSaleBillEntryId) {
+								alert("Please enter Invoice No.");
+								document.getElementById("Invoiceno").focus();
+								return;
+								}
+					 }
+
+					$.ajax({
+						url: "@Url.Action("GetPendingGateEntryVPDetailData")",
+						type: "POST",
+						data: { AccountCode: AccountCode, InvoiceNo: InvoiceNo },
+						async: false,
+						success: function (response) {
+							var accountCodeInt = parseInt(AccountCode, 10);
+							var docTypeIdInt = parseInt(docTypeId, 10);
+							var vpSaleBillEntryIdInt = parseInt(VPSaleBillEntryId, 10);
+
+							// 🔐 Encrypt
+							var accountCodeEnc = encodeID(accountCodeInt);
+							var docTypeIdEnc = encodeID(docTypeIdInt);
+							var vpSaleBillEntryIdEnc = encodeID(vpSaleBillEntryIdInt);
+							var invoiceNoEnc = encodeURIComponent(InvoiceNo); // text → URI encode
+
+							var modeEnc = '@encryptDecrypt.Encrypt("I")';
+							var url =
+								'/GateInward/GateInward?' +
+								'Mode=' + modeEnc +
+								'&AccountCode=' + accountCodeEnc +
+								'&docTypeId=' + docTypeIdEnc +
+								'&VPSaleBillEntryId=' + vpSaleBillEntryIdEnc +
+								'&InvoiceNo=' + invoiceNoEnc;
+
+							window.location.href = url;
+							/* comment by sajni */
+						/* 	window.location.href = `/GateInward/GateInward?Mode=I&AccountCode=${AccountCode}&docTypeId=${docTypeId}& &Invoiceno=${InvoiceNo}& &VPSaleBillEntryId=${VPSaleBillEntryId}`; */
+
+						},
+						error: function (xhr, status, error) {
+							console.error("Failed to store in session:", error);
+						}
+					});
+
+
+					/* window.location.href = `/GateInward/GateInward?Mode=I&AccountCode=${accountCode}&docTypeId=${docTypeId}& &Invoiceno=${Invoiceno}`; */
+
+
+				}
+
+					function CheckacceptedQtySHA(i) {
+
+					var checkedtruevalues = [];
+					var rowCount = $('#PendinggateDashboardtable tr').length;
+					for (let i = 1; i <= rowCount; i++) {
+						checkedtruevalues.push({
+							"checked": $('#AcceptedQtySHA-' + i).is(':checked')
+						})
+					}
+
+					var checkedonlytrue = checkedtruevalues.filter(function (item) {
+						return item.checked;
+					}).length;
+					if (rowCount == checkedonlytrue) {
+						$('#checkuncheck').prop('checked', true)
+					} else {
+						$('#checkuncheck').prop('checked', false)
+					}
+				}
+					$(document).on('change', '#checkuncheck', function () {
+
+					var rowCount = $('#PendinggateDashboardtable tr').length;
+					if ($('#checkuncheck').is(':checked') == true) {
+						for (let i = 1; i <= rowCount; i++) {
+							$('#AcceptedQtySHA-' + i).prop('checked', true)
+						}
+					}
+					else {
+						for (let i = 1; i <= rowCount; i++) {
+							$('#AcceptedQtySHA-' + i).prop('checked', false)
+						}
+					}
+				})
+				$(function ()
+				   {
+					$('#VendorName').select2();
+					$('#docTypeId').select2();
+					$('#Invoiceno').select2();
+
+						  GetServerDate();
+					  var currentDate = new Date();
+
+					var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+					function formatDate(date)
+					{
+						var day = ("0" + date.getDate()).slice(-2);
+						var month = ("0" + (date.getMonth() + 1)).slice(-2);
+						var year = date.getFullYear();
+						var dateString = day + "/" + month + "/" + year;
+						return dateString;
+
+				
+					}
+					//$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+					  var finFromDate = $('#FromDate').val().split(" ")[0];
+			
+					var dateParts1 = finFromDate.split("/");
+			
+					var monthNames = {
+						"Jan": "01",
+						"Feb": "02",
+						"Mar": "03",
+						"Apr": "04",
+						"May": "05",
+						"Jun": "06",
+						"Jul": "07",
+						"Aug": "08",
+						"Sep": "09",
+						"Oct": "10",
+						"Nov": "11",
+						"Dec": "12"
+					};
+
+					var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+					 $('#FromDate').val(formattedDate1);
+					$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (formattedDate1));
+							console.log($('#ToDate').val());
+					$('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+						console.log($('#ToDate').val());
+				  AutoComplete('VGateMainDetail', 'VendorName', 'Account_Name', null);
+				  AutoComplete('VGateMainDetail', 'ItemName', 'Item_Name', null);
+				  AutoComplete('VGateMainDetail', 'PartCode', 'PartCode', null);
+				  AutoComplete('VGateMainDetail', 'PONO', 'PONo', null);
+				  AutoComplete('VGateMainDetail', 'Gateno', 'GateNo', null);
+				  AutoComplete('VGateMainDetail', 'ScheduleNo', 'SchNo', null);
+				  if ($('#FromDate1').val() != "" && $('#ToDate1').val() != "") {
+
+						var inputFromDateString = $('#FromDate1').val().split(" ")[0];
+						var inputToDateString = $('#ToDate1').val().split(" ")[0];
+
+						var originalFromDate = new Date(inputFromDateString);
+						var originalToDate = new Date(inputToDateString);
+
+
+						//fromdate
+						var day = originalFromDate.getDate();
+						var month = originalFromDate.getMonth() + 1; // Months are zero-based
+						var year = originalFromDate.getFullYear();
+
+						var convertedFromDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
+
+						//todate
+						var day = originalToDate.getDate();
+						var month = originalToDate.getMonth() + 1; // Months are zero-based
+						var year = originalToDate.getFullYear();
+
+						var convertedToDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
+
+
+						$('#FromDate').val(convertedFromDateText);
+						$('#ToDate').val(convertedToDateText);
 
 					}
-				},
-				error: function (e) {
-					console.log(e);
+				
+				   });
+					$('#sendToExcel').click(function () {
+					$("#GateDataTable").table2excel({
+						filename: "GateData.xls"
+					});
+				});
+					$("#VendorName").change(function () {
+					fillPONumber();
+				})
+
+					$("#docTypeId").change(function () {
+					fillPONumber();
+				})
+				  $("#search-box").on("input", function () {
+
+					var searchString = $(this).val().trim();
+
+					$.ajax({
+						url: "/GateInward/PendingGateEntryGlobalSearch?searchString=" + searchString,
+						type: "GET",
+						data: { searchString: searchString },
+						success: function (data) {
+
+							$('#divPendingEntryDashboardGrid').empty();
+							$('#divPendingEntryDashboardGrid').html(data);
+							$('#totalRows').text($('#PendinggateDashboardtable tr').length);
+							//countAllTotal();
+						},
+						error: function () {
+							console.log("Error fetching search results.");
+						}
+					});
+				});
+					 function GetServerDate() {
+					$.ajax({
+						type: "GET",
+						url: "@Url.Action("GetServerDate")",
+						async: false,
+						success: function (result, status, error) {
+							console.log(result);
+							if (result != null) {
+								var parts = result.split("-"); // ["2025", "08", "12"]
+						var formatted = parts[2] + "/" + parts[1] + "/" + parts[0]; // "12/08/2025"
+						 $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatted);
+								console.log($('#ToDate').val());
+								/* $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result); */
+							}
+						}
+					});
 				}
-			});
-		}
+				 var fillPONumber = function () {
+					$.ajax({
+						url: "@Url.Action("GetPOList", "GateInward")",
+						data: { Code: $('#VendorName').val(), Type: "Item", Year:$('#SessionYearCode').val(), DocTypeId: $('#docTypeId').val() },
+						success: function (result, status, xhr) {
+							if (result.length == 0) {
+								$('#ItemCheck').prop('disabled', false);
+							}
+							if (result != null) {
+								var obj = $.parseJSON(result);
+								$('#PONO').empty();
+								$('#PONO').append('<option  selected> </option>');
+								var i = 0;
+							 /*    $.each(obj.Result.Table, function (index, val) {
+															$('#PONO').append('<option value = "' + obj.Result.Table[i].PONO +  '" data-EntryId="' + val.EntryId+'"> ' + obj.Result.Table[i].PONO + ' </option>');
+									i++;
+								}); */
+							   $.each(obj.Result.Table, function (index, val) {
+							$('#PONO').append(
+												'<option value="' + obj.Result.Table[i].PONO + '" data-EntryId="' + obj.Result.Table[i].EntryId + '">' +
+									   obj.Result.Table[i].PONO +
+								'</option>'
+							);
+									i++;
+						});
+
+							}
+						},
+						error: function (e) {
+							console.log(e);
+						}
+					});
+				}
 
 	
-			   function GetSearchData(){
-					   let vendorName = $('#VendorName').val();
-					   let docType = $('#docTypeId').val();
-					   let searchBox = $('#search-box').val();
-				   let Invoiceno = $('#Invoiceno').val();
-						if (!vendorName) {
-			alert("Please select Vendor Name.");
-			$('#VendorName').focus();
-			return;
-		}
-		if (!docType) {
-			alert("Please select Document Type.");
-			$('#docTypeId').focus();
-			return;
-		}
-
-			/* if (!Invoiceno)
-			{
-				alert("Please select Invoice No.");
-				$('#Invoiceno').focus();
-				return;
-			} */
-		let data = {
-
-					AccountCode: $('#VendorName').val(),
-					PoNo: $('#PONO').val(),
-				docTypeId: $('#docTypeId').val(),
-					PoYearCode: $('#SessionYearCode').val(),
-					ItemCode: 0, // if needed, fetch from a dropdown
-					PartCode:$("#PartCode").val(),
-					ItemName:$("#ItemName").val(),
-					FromDate: $('#FromDate').val(),
-					ToDate: $('#ToDate').val(),
-					ScheduleNo: $('#ScheduleNo').val(),
-				GetDataFrom: $('#GetDataFrom').val(),
-				 Invoiceno : ($("#Invoiceno")[0].selectedIndex === 0)
-					? ""
-					: $("#Invoiceno option:selected").text().trim(),
-					DashboardType: "", // Add if needed
-					
-					SearchBox: searchBox
-				};
-			$.ajax({
-				url: '@Url.Action("GetPendingGateEntrySearchData")',
-				type: "POST",
-				data: data,
-				async:false,
-				success: function (data) {
-					   $('#divPendingEntryDashboardGrid').empty().append(data);
-					var dashGrid = $('#PendinggateDashboardtable tr').length;
-					$('#totalRows').text(dashGrid);
-					/* $('#divDashboardGrid').empty().append(data);
-					var dashGrid = $('#gateDashboardtable tr').length;
-					$('#totalRows').text(dashGrid); */
-				},
-				error: function (response) {
-					alert(response.responseText);
-				},
-				failure: function (response) {
-					alert(response.responseText);
+					   function GetSearchData(){
+							   let vendorName = $('#VendorName').val();
+							   let docType = $('#docTypeId').val();
+							   let searchBox = $('#search-box').val();
+						   let Invoiceno = $('#Invoiceno').val();
+								if (!vendorName) {
+					alert("Please select Vendor Name.");
+					$('#VendorName').focus();
+					return;
 				}
-			});
-		}
+				if (!docType) {
+					alert("Please select Document Type.");
+					$('#docTypeId').focus();
+					return;
+				}
+
+					/* if (!Invoiceno)
+					{
+						alert("Please select Invoice No.");
+						$('#Invoiceno').focus();
+						return;
+					} */
+				let data = {
+
+							AccountCode: $('#VendorName').val(),
+							PoNo: $('#PONO').val(),
+						docTypeId: $('#docTypeId').val(),
+							PoYearCode: $('#SessionYearCode').val(),
+							ItemCode: 0, // if needed, fetch from a dropdown
+							PartCode:$("#PartCode").val(),
+							ItemName:$("#ItemName").val(),
+							FromDate: $('#FromDate').val(),
+							ToDate: $('#ToDate').val(),
+							ScheduleNo: $('#ScheduleNo').val(),
+						GetDataFrom: $('#GetDataFrom').val(),
+						 Invoiceno : ($("#Invoiceno")[0].selectedIndex === 0)
+							? ""
+							: $("#Invoiceno option:selected").text().trim(),
+							DashboardType: "", // Add if needed
+					
+							SearchBox: searchBox
+						};
+					$.ajax({
+						url: '@Url.Action("GetPendingGateEntrySearchData")',
+						type: "POST",
+						data: data,
+						async:false,
+						success: function (data) {
+							   $('#divPendingEntryDashboardGrid').empty().append(data);
+							var dashGrid = $('#PendinggateDashboardtable tr').length;
+							$('#totalRows').text(dashGrid);
+							/* $('#divDashboardGrid').empty().append(data);
+							var dashGrid = $('#gateDashboardtable tr').length;
+							$('#totalRows').text(dashGrid); */
+						},
+						error: function (response) {
+							alert(response.responseText);
+						},
+						failure: function (response) {
+							alert(response.responseText);
+						}
+					});
+				}
 
 	</script>
 	<script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
@@ -608,19 +689,19 @@
 <style>
 
 	.sort-icon {
-		padding: 5px;
-		margin: 5px;
-		vertical-align: top;
+	padding: 5px;
+	margin: 5px;
+	vertical-align: top;
 	}
 
 	.ascCol {
-		font-size: 15px;
-		vertical-align: bottom;
+	font-size: 15px;
+	vertical-align: bottom;
 	}
 
 	.descCol {
-		font-size: 15px;
-		vertical-align: super;
+	font-size: 15px;
+	vertical-align: super;
 	}
 
 </style>

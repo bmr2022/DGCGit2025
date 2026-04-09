@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models;
+
 [Serializable]
 public class GateInwardDashboard
 {
@@ -31,14 +32,14 @@ public class GateInwardDashboard
     public string? EnteredBy { get; set; }
     public string? UpdatedBy { get; set; }
     public string? DashboardType { get; set; }
-    public float TareWeight { get; set; }
-    public float GrossWeight { get; set; }
-    public float NetWeight { get; set; }
-    public float Qty { get; set; }
-    public float Rate { get; set; }
-    public float AltQty { get; set; }
-    public float PendPOQty { get; set; }
-    public float AltPendQty { get; set; }
+    public decimal TareWeight { get; set; }
+    public decimal GrossWeight { get; set; }
+    public decimal NetWeight { get; set; }
+    public decimal Qty { get; set; }
+    public decimal Rate { get; set; }
+    public decimal AltQty { get; set; }
+    public decimal PendPOQty { get; set; }
+    public decimal AltPendQty { get; set; }
     public string? ShowPoTillDate { get; set; }
     public string? CC { get; set; }
     public string? PoNo { get; set; }
@@ -61,7 +62,7 @@ public class GateInwardDashboard
     public int SchYearCode { get; set; }
     public string? POtype { get; set; }
     public string? SchNo { get; set; }
-   
+
     public string? Unit { get; set; }
     public string? AltUnit { get; set; }
     public string? Size { get; set; }
@@ -118,13 +119,13 @@ public class PendingGateInwardDashboard
     public int? ItemCode { get; set; }
     public string? Unit { get; set; }
     public string? AltUnit { get; set; }
-    public float Rate { get; set; }
-    public float Qty { get; set; }
-    public float AltQty { get; set; }
-    public float PendPOQty { get; set; }
-    public float POQty { get; set; }
-    public float AltPOQty { get; set; }
-    public float AltPendQty { get; set; }
+    public decimal Rate { get; set; }
+    public decimal Qty { get; set; }
+    public decimal AltQty { get; set; }
+    public decimal PendPOQty { get; set; }
+    public decimal POQty { get; set; }
+    public decimal AltPOQty { get; set; }
+    public decimal AltPendQty { get; set; }
     public decimal? PendQty { get; set; }
     public string? Size { get; set; }
     public string? Color { get; set; }
@@ -132,9 +133,9 @@ public class PendingGateInwardDashboard
     public string? ItemColor { get; set; }
 
     // Weight info
-    public float TareWeight { get; set; }
-    public float GrossWeight { get; set; }
-    public float NetWeight { get; set; }
+    public decimal TareWeight { get; set; }
+    public decimal GrossWeight { get; set; }
+    public decimal NetWeight { get; set; }
 
     // PO and Schedule Info
     public string? PONo { get; set; }
@@ -187,6 +188,7 @@ public class PendingGateInwardDashboard
 public class PendingGateEntryDashboard : PendingGateInwardDashboard
 {
     public string? FromDate { get; set; }
+    public string? Mode { get; set; }
     public string? ItemName { get; set; }
     public string? ItemCode { get; set; }
     public string? PartCode { get; set; }
@@ -233,13 +235,13 @@ public class GateInwardItemDetail : TimeStamp
 {
     public string? PoNo { get; set; }
     public int PoYear { get; set; }
-    public int PoEntryId {  get; set; }
-    public string? PoDate {  get; set; }
+    public int PoEntryId { get; set; }
+    public string? PoDate { get; set; }
     public string? POType { get; set; }
     public string SchNo { get; set; }
     public int SchYearCode { get; set; }
-    public string? SchDate {  get; set; }
-    public int SchEntryId {  get; set; }
+    public string? SchDate { get; set; }
+    public int SchEntryId { get; set; }
     //public DateTime? SchDate { get; set; }
     public int? NoOfBoxes { get; set; }
     public int? ItemCode { get; set; }
@@ -267,9 +269,9 @@ public class GateInwardItemDetail : TimeStamp
     public int? SeqNo { get; set; }
     public string? OtherDetail { get; set; }
     public decimal? PendQty { get; set; }
-    public float? AltPendQty { get; set; }
+    public decimal? AltPendQty { get; set; }
     public int? AgainstChallanYearcode { get; set; }
-  
+
 
 }
 
@@ -319,7 +321,7 @@ public class GateInwardModel : GateInwardItemDetail
     public bool AC1 { get; set; }
     public bool ItemCheck { get; set; }
     public string? PoNo { get; set; }
-    public string? NeedPo {  get; set; }
+    public string? NeedPo { get; set; }
     public int PoYear { get; set; }
     public string? PODate { get; set; }
     public string SchNo { get; set; }
@@ -329,7 +331,7 @@ public class GateInwardModel : GateInwardItemDetail
     public string? Unit { get; set; }
     public decimal Qty { get; set; }
     public decimal Rate { get; set; }
-    public string ? UnitRate { get; set; }
+    public string? UnitRate { get; set; }
     public string? AltUnit { get; set; }
     public decimal? PendQty { get; set; }
 
@@ -373,9 +375,9 @@ public class GateInwardModel : GateInwardItemDetail
     public IList<TextValue>? AccountList { get; set; }
     public IList<TextValue>? DocumentList { get; set; }
     public IList<TextValue>? RecUnitList { get; set; }
-     public int TotalRecords { get; set; }
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
+    public int TotalRecords { get; set; }
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
     public IList<GateInwardItemDetail>? ItemDetailGrid { get; set; }
 
     public IList<TextValue>? PONO { get; set; }

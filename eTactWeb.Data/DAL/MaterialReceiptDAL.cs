@@ -37,7 +37,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@mrn_No", MRNNo));
                 SqlParams.Add(new SqlParameter("@Year_Code", YearCode));
-                
+
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SPMRNMIRDetailsReport", SqlParams);
             }
             catch (Exception ex)
@@ -69,8 +69,44 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetMRNTagReportName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetMRNTagReportName"));
 
-      
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_MRN", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> GetFeatureOption()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetFeatureOption"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_MRN", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetGateNo(string Flag, string SPName, string FromDate, string ToDate)
         {
             var _ResponseResult = new ResponseResult();
@@ -87,6 +123,72 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Todate", toDt));
                 //SqlParams.Add(new SqlParameter("@YearCode", DBNull.Value));
                 SqlParams.Add(new SqlParameter("@YearCode", SqlDbType.Int) { Value = 0 });
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_MRN", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetMRNPrintStatus(int EntryId, int YearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetMRNPrintStatus"));
+                SqlParams.Add(new SqlParameter("@EntryId", EntryId));
+                SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_MRN", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetMRNPrintStatusByMRNNo(string MrnNo, int YearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetMRNPrintStatusByMRNNo"));
+                SqlParams.Add(new SqlParameter("@MRNNo", MrnNo));
+                SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_MRN", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> UpdatePrintStatus(int EntryId, int YearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "UpdatePrintStatus"));
+                SqlParams.Add(new SqlParameter("@EntryId", EntryId));
+                SqlParams.Add(new SqlParameter("@YearCode", YearCode));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_MRN", SqlParams);
             }
@@ -234,9 +336,9 @@ namespace eTactWeb.Data.DAL
                 var FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
 
                 var ToDate = DateTime.Now.ToString("dd/MM/yyyy");
-                var currDT= CommonFunc.ParseFormattedDate(currentDate.ToString("dd/MM/yyyy"));
+                var currDT = CommonFunc.ParseFormattedDate(currentDate.ToString("dd/MM/yyyy"));
                 DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
-               var firstdt = CommonFunc.ParseFormattedDate(firstDateOfMonth.ToString("dd/MM/yyyy"));
+                var firstdt = CommonFunc.ParseFormattedDate(firstDateOfMonth.ToString("dd/MM/yyyy"));
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
                 SqlParams.Add(new SqlParameter("@FromDate", ParseFormattedDate(FromDate)));
@@ -291,7 +393,7 @@ namespace eTactWeb.Data.DAL
             DS.Tables[2].TableName = "BatchDetail";
             int cnt = 1;
             model.EntryID = Convert.ToInt32(DS.Tables[0].Rows[0]["EntryID"].ToString());
-            
+
             model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["YearCode"].ToString());
             model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString();
             model.EntryTime = Convert.ToDateTime(DS.Tables[0].Rows[0]["EntryTime"]).ToString("HH:mm:ss")?.Trim();
@@ -391,7 +493,7 @@ namespace eTactWeb.Data.DAL
                         QCCompleted = row["QCCompleted"].ToString().Trim(),
                         RetChallanPendQty = string.IsNullOrEmpty(row["RetChallanPendQty"].ToString()) ? 0 : Convert.ToDecimal(row["RetChallanPendQty"].ToString()),
                         BatchWise = row["batchWise"].ToString().Trim(),
-                        SaleBillNo= row["Salebillno"].ToString().Trim(),
+                        SaleBillNo = row["Salebillno"].ToString().Trim(),
                         SaleBillYearCode = string.IsNullOrEmpty(row["salebillYearCode"].ToString()) ? 0 : Convert.ToInt32(row["salebillYearCode"].ToString()),
                         AgainstChallanNo = row["AgainstChallanNo"].ToString().Trim(),
                         BatchNo = row["Batchno"].ToString().Trim(),
@@ -584,7 +686,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<MRNQDashboard> GetDashboardData(string VendorName, string MRNNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate,int FromMRNNo,int ToMRNNo)
+        public async Task<MRNQDashboard> GetDashboardData(string VendorName, string MRNNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate, int FromMRNNo, int ToMRNNo)
         {
             DataSet? oDataSet = new DataSet();
             var model = new MRNQDashboard();
@@ -758,7 +860,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC, string IPAddress,int EmpId)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, string IPAddress, int EmpId)
         {
             var _ResponseResult = new ResponseResult();
             try

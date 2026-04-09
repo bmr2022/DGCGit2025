@@ -1,5 +1,7 @@
-﻿using eTactWeb.DOM.Models;
+﻿using DocumentFormat.OpenXml.Vml.Office;
+using eTactWeb.DOM.Models;
 using Microsoft.AspNetCore.Mvc;
+using PdfSharp.Drawing.BarCodes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,23 +13,28 @@ namespace eTactWeb.Services.Interface
 {
     public interface IMaterialReceipt
     {
-        Task<ResponseResult> GetGateNo(string Flag,string SPName,string FromDate, string ToDate);
+        Task<ResponseResult> GetGateNo(string Flag, string SPName, string FromDate, string ToDate);
+        Task<ResponseResult> GetMRNPrintStatus(int EntryId, int YearCode);
+        Task<ResponseResult> GetMRNPrintStatusByMRNNo(string MrnNo, int YearCode);
+        Task<ResponseResult> UpdatePrintStatus(int EntryId, int YearCode);
         Task<ResponseResult> GetReportName();
+        Task<ResponseResult> GetMRNTagReportName();
+        Task<ResponseResult> GetFeatureOption();
         Task<ResponseResult> GetGateMainData(string Flag, string SPName, string GateNo, string GateyearCode, int GateEntryId);
 
         Task<ResponseResult> GetGateItemData(string Flag, string SPName, string GateNo, string GateyearCode, int GateEntryId);
 
-        Task<ResponseResult> GetDeptAndEmp(string Flag, string SPName, int Deptid,  int resEmp);
+        Task<ResponseResult> GetDeptAndEmp(string Flag, string SPName, int Deptid, int resEmp);
 
         Task<ResponseResult> SaveMaterialReceipt(MaterialReceiptModel model, DataTable MRGrid, DataTable BatchGrid);
 
         Task<ResponseResult> AltUnitConversion(int ItemCode, decimal AltQty, decimal UnitQty);
-        Task<ResponseResult> DeleteByID(int ID, int YC,string IPAddress,int EmpId);
-        Task<ResponseResult> FillEntryandMRN(string Flag,int YearCode, string SPName);
+        Task<ResponseResult> DeleteByID(int ID, int YC, string IPAddress, int EmpId);
+        Task<ResponseResult> FillEntryandMRN(string Flag, int YearCode, string SPName);
         Task<IList<TextValue>> GetEmployeeList();
 
         Task<ResponseResult> GetDashboardData();
-        Task<ResponseResult> BindDept(string flag,string SpName);
+        Task<ResponseResult> BindDept(string flag, string SpName);
 
         Task<MRNQDashboard> GetDashboardData(string VendorName, string MrnNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate, int FromMRNNo, int ToMRNNo);
         Task<MRNQDashboard> GetDetailDashboardData(string VendorName, string MrnNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate);

@@ -158,10 +158,10 @@ public class BatchDetailModel
     public decimal? VendorBatchQty { get; set; }
     public string? VendorBatchNo { get; set; }
     public string? UniqueBatchNO { get; set; }
-    public string? ManufactureDate {get; set; }
+    public string? ManufactureDate { get; set; }
     public string? ExpiryDate { get; set; }
     public string? CC { get; set; }
-   
+
 
 }
 public class MaterialReceiptModel : MaterialReceiptDetail
@@ -175,7 +175,7 @@ public class MaterialReceiptModel : MaterialReceiptDetail
     public string EntryTime { get; set; }
     public int YearCode { get; set; }
     public string MRNNo { get; set; }
-  
+
     public string GateNo { get; set; }
     public int GateEntryId { get; set; }
     public string GateDate { get; set; }
@@ -185,7 +185,7 @@ public class MaterialReceiptModel : MaterialReceiptDetail
     public string DocType { get; set; }
     public int DOCID { get; set; }
 
-    public string? DateIntact {  get; set; }
+    public string? DateIntact { get; set; }
     public string? FromDate { get; set; }
     public string? ToDate { get; set; }
     public int AccountID { get; set; }
@@ -202,7 +202,7 @@ public class MaterialReceiptModel : MaterialReceiptDetail
     public decimal GrossWeight { get; set; }
     public decimal NetWeight { get; set; }
     public int CurrencyID { get; set; }
-    
+
     public string CurrencyName { get; set; }
     public string? Address { get; set; }
 
@@ -270,8 +270,8 @@ public class MaterialReceiptModel : MaterialReceiptDetail
     public IList<BatchDetailModel>? BatchDetailGrid { get; set; }
     public string VendorNameBack { get; set; }
     public string FromDateBack { get; set; }
-    public string ToDateBack { get; set;}
-    public string GateNoBack { get; set; }  
+    public string ToDateBack { get; set; }
+    public string GateNoBack { get; set; }
     public string ItemNameBack { get; set; }
     public string PartCodeBack { get; set; }
     public string MrnNoBack { get; set; }
@@ -281,6 +281,7 @@ public class MaterialReceiptModel : MaterialReceiptDetail
     public string? CC1 { get; set; }
     public string? CC2 { get; set; }
     public string? CC3 { get; set; }
+    public string? CompanyName { get; set; }
     public string? EmailId { get; set; }
 }
 

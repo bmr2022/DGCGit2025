@@ -35,7 +35,7 @@ public class GateInwardDAL
 
         //DBConnectionString = configuration.GetConnectionString("eTactDB");
     }
-    public async Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEnteredBy,string EntryByMachineName,string gateno, string IPAddress)
+    public async Task<ResponseResult> DeleteByID(int ID, int YC, int ActualEnteredBy, string EntryByMachineName, string gateno, string IPAddress)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -91,7 +91,8 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@EmpId", userId));
             SqlParams.Add(new SqlParameter("@MainMenu", "Gate Inward"));
 
-            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_GateMainDetail", SqlParams);
+            //_ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
         }
         catch (Exception ex)
         {
@@ -101,7 +102,7 @@ public class GateInwardDAL
         }
         return _ResponseResult;
     }
-    public async Task<ResponseResult> GetDashboardData()
+    public async Task<ResponseResult> GetDashboardData(int userID)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -109,11 +110,12 @@ public class GateInwardDAL
             DateTime currentDate = DateTime.Today;
             DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
             var firstDt = CommonFunc.ParseFormattedDate(firstDateOfMonth.ToString("dd/MM/yyyy"));
-            var currDt= CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+            var currDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
             SqlParams.Add(new SqlParameter("@FromDate", firstDt));
             SqlParams.Add(new SqlParameter("@ToDate", currDt));
+            SqlParams.Add(new SqlParameter("@ActualEnteredBy", userID));
 
             _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_GateMainDetail", SqlParams);
         }
@@ -147,101 +149,102 @@ public class GateInwardDAL
     }
 
 
-	public async Task<PendingGateInwardDashboard> GetPendingGateEntryVPDetailData(int AccountCode,string InvoiceNo)
-	{
-		DataSet? oDataSet = new DataSet();
-		var model = new PendingGateInwardDashboard();
-		try
-		{
-			using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
-			{
-				SqlCommand oCmd = new SqlCommand("SP_GateMainDetail", myConnection)
-				{
-					CommandType = CommandType.StoredProcedure
-				};
-				
-				{ oCmd.Parameters.AddWithValue("@Flag", "PendVendorPortalSalebillForGateEntryDisplayData"); }
-				
+    public async Task<PendingGateInwardDashboard> GetPendingGateEntryVPDetailData(int AccountCode, string InvoiceNo)
+    {
+        DataSet? oDataSet = new DataSet();
+        var model = new PendingGateInwardDashboard();
+        try
+        {
+            using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+            {
+                SqlCommand oCmd = new SqlCommand("SP_GateMainDetail", myConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
 
-				oCmd.Parameters.AddWithValue("@AccountCode", AccountCode);
-				
-				oCmd.Parameters.AddWithValue("@VPSaleBillNo", InvoiceNo);
-				await myConnection.OpenAsync();
-				using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
-				{
-					oDataAdapter.Fill(oDataSet);
-				}
-			}
-			//if (DashboardType == "Summary")
-			//{
-			
-				if (oDataSet.Tables.Count > 0 && oDataSet.Tables[1].Rows.Count > 0)
-				{
-					model.PendingGateEntryDashboard = (from DataRow dr in oDataSet.Tables[1].Rows
-													   select new PendingGateInwardDashboard
-													   {
-														   PONo = dr["PONo"].ToString(),
-														   PoYear = string.IsNullOrEmpty(dr["POYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["POYearCode"]),
-														   PODate = dr["PODate"].ToString(),
-														   
-														   SchNo = dr["SchNo"].ToString(),
-														   SchYearCode = string.IsNullOrEmpty(dr["SchYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["SchYearCode"]),
-														   SeqNo = string.IsNullOrEmpty(dr["SeqNo"].ToString()) ? 0 : Convert.ToInt32(dr["SeqNo"]),
-														   seqno = string.IsNullOrEmpty(dr["SeqNo"].ToString()) ? 0 : Convert.ToInt32(dr["SeqNo"]),
-														   //SchDate = dr["SchDate"].ToString(),
-														   //SchEntryId = string.IsNullOrEmpty(dr["SchEntryId"].ToString()) ? 0 : Convert.ToInt64(dr["SchEntryId"]),
-														   PartCode = dr["PartCode"].ToString(),
-														   ItemName = dr["ItemName"].ToString(),
-														   ItemCode = string.IsNullOrEmpty(dr["ItemCode"].ToString()) ? 0 : Convert.ToInt32(dr["ItemCode"]),
-														   Unit = dr["Unit"].ToString(),
-														   Qty = string.IsNullOrEmpty(dr["Qty"].ToString()) ? 0 : Convert.ToSingle(dr["Qty"]),
-														   Rate = string.IsNullOrEmpty(dr["Rate"].ToString()) ? 0 : Convert.ToSingle(dr["Rate"]),
-														   AltQty = string.IsNullOrEmpty(dr["AltQty"].ToString()) ? 0 : Convert.ToSingle(dr["AltQty"]),
-														   AltUnit = dr["AltUnit"].ToString(),
-														   PendPOQty = string.IsNullOrEmpty(dr["PendPOQty"].ToString()) ? 0 : Convert.ToSingle(dr["PendPOQty"]),
-														   AltPendQty = string.IsNullOrEmpty(dr["AltPendQty"].ToString()) ? 0 : Convert.ToSingle(dr["AltPendQty"]),
-														   SaleBillNo = dr["SaleBillNo"].ToString(),
-														   SaleBillYearCode = string.IsNullOrEmpty(dr["SaleBillYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["SaleBillYearCode"]),
-														   SaleBillQty = string.IsNullOrEmpty(dr["SaleBillQty"].ToString()) ? 0 : Convert.ToDecimal(dr["SaleBillQty"]),
-														   Remarks = dr["Remarks"].ToString(),
-														   AgainstChallanNo = dr["AgainstChallanNo"].ToString(),
-														   ChallanQty = string.IsNullOrEmpty(dr["ChallanQty"].ToString()) ? 0 : Convert.ToDecimal(dr["ChallanQty"]),
-														   ProcessId = string.IsNullOrEmpty(dr["ProcessId"].ToString()) ? 0 : Convert.ToInt32(dr["ProcessId"]),
-														   Size = dr["Size"].ToString(),
-														   Color = dr["Color"].ToString(),
-														   SupplierBatchNo = dr["SupplierBatchNo"].ToString(),
-														   ShelfLife = string.IsNullOrEmpty(dr["AltPendQty"].ToString()) ? 0 : Convert.ToDecimal(dr["ShelfLife"]),
-														   POType = dr["POType"].ToString(),
-														   AgainstChallanYearCode = string.IsNullOrEmpty(dr["AgainstChallanYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["AgainstChallanYearCode"]),
-														   NoOfBoxes = string.IsNullOrEmpty(dr["NoOfBoxes"].ToString()) ? 0 : Convert.ToInt32(dr["NoOfBoxes"]),
-														   //unitrate = dr["UnitRate"].ToString()
+                { oCmd.Parameters.AddWithValue("@Flag", "PendVendorPortalSalebillForGateEntryDisplayData"); }
 
 
-													   }).ToList();
-				}
-			
+                oCmd.Parameters.AddWithValue("@AccountCode", AccountCode);
+
+                oCmd.Parameters.AddWithValue("@VPSaleBillNo", InvoiceNo);
+                await myConnection.OpenAsync();
+                using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                {
+                    oDataAdapter.Fill(oDataSet);
+                }
+            }
+            //if (DashboardType == "Summary")
+            //{
+
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[1].Rows.Count > 0)
+            {
+                model.PendingGateEntryDashboard = (from DataRow dr in oDataSet.Tables[1].Rows
+                                                   select new PendingGateInwardDashboard
+                                                   {
+                                                       PONo = dr["PONo"].ToString(),
+                                                       PoYear = string.IsNullOrEmpty(dr["POYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["POYearCode"]),
+                                                       PODate = dr["PODate"].ToString(),
+
+                                                       SchNo = dr["SchNo"].ToString(),
+                                                       SchYearCode = string.IsNullOrEmpty(dr["SchYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["SchYearCode"]),
+                                                       SeqNo = string.IsNullOrEmpty(dr["SeqNo"].ToString()) ? 0 : Convert.ToInt32(dr["SeqNo"]),
+                                                       seqno = string.IsNullOrEmpty(dr["SeqNo"].ToString()) ? 0 : Convert.ToInt32(dr["SeqNo"]),
+                                                       //SchDate = dr["SchDate"].ToString(),
+                                                       //SchEntryId = string.IsNullOrEmpty(dr["SchEntryId"].ToString()) ? 0 : Convert.ToInt64(dr["SchEntryId"]),
+                                                       PartCode = dr["PartCode"].ToString(),
+                                                       ItemName = dr["ItemName"].ToString(),
+                                                       ItemCode = string.IsNullOrEmpty(dr["ItemCode"].ToString()) ? 0 : Convert.ToInt32(dr["ItemCode"]),
+                                                       Unit = dr["Unit"].ToString(),
+                                                       Qty = string.IsNullOrEmpty(dr["Qty"].ToString()) ? 0m : Convert.ToDecimal(dr["Qty"]),
+                                                       Rate = string.IsNullOrEmpty(dr["Rate"].ToString()) ? 0m : Convert.ToDecimal(dr["Rate"]),
+                                                       AltQty = string.IsNullOrEmpty(dr["AltQty"].ToString()) ? 0m : Convert.ToDecimal(dr["AltQty"]),
+                                                       AltUnit = dr["AltUnit"].ToString(),
+                                                       PendPOQty = string.IsNullOrEmpty(dr["PendPOQty"].ToString()) ? 0m : Convert.ToDecimal(dr["PendPOQty"]),
+                                                       AltPendQty = string.IsNullOrEmpty(dr["AltPendQty"].ToString()) ? 0m : Convert.ToDecimal(dr["AltPendQty"]),
+
+                                                       SaleBillNo = dr["SaleBillNo"].ToString(),
+                                                       SaleBillYearCode = string.IsNullOrEmpty(dr["SaleBillYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["SaleBillYearCode"]),
+                                                       SaleBillQty = string.IsNullOrEmpty(dr["SaleBillQty"].ToString()) ? 0 : Convert.ToDecimal(dr["SaleBillQty"]),
+                                                       Remarks = dr["Remarks"].ToString(),
+                                                       AgainstChallanNo = dr["AgainstChallanNo"].ToString(),
+                                                       ChallanQty = string.IsNullOrEmpty(dr["ChallanQty"].ToString()) ? 0 : Convert.ToDecimal(dr["ChallanQty"]),
+                                                       ProcessId = string.IsNullOrEmpty(dr["ProcessId"].ToString()) ? 0 : Convert.ToInt32(dr["ProcessId"]),
+                                                       Size = dr["Size"].ToString(),
+                                                       Color = dr["Color"].ToString(),
+                                                       SupplierBatchNo = dr["SupplierBatchNo"].ToString(),
+                                                       ShelfLife = string.IsNullOrEmpty(dr["AltPendQty"].ToString()) ? 0 : Convert.ToDecimal(dr["ShelfLife"]),
+                                                       POType = dr["POType"].ToString(),
+                                                       AgainstChallanYearCode = string.IsNullOrEmpty(dr["AgainstChallanYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["AgainstChallanYearCode"]),
+                                                       NoOfBoxes = string.IsNullOrEmpty(dr["NoOfBoxes"].ToString()) ? 0 : Convert.ToInt32(dr["NoOfBoxes"]),
+                                                       //unitrate = dr["UnitRate"].ToString()
 
 
-
-		}
-		catch (Exception ex)
-		{
-			dynamic Error = new ExpandoObject();
-			Error.Message = ex.Message;
-			Error.Source = ex.Source;
-		}
-		finally
-		{
-			oDataSet.Dispose();
-		}
-		return model;
-	}
+                                                   }).ToList();
+            }
 
 
 
 
-	public async Task<PendingGateInwardDashboard>  GetPendingGateEntryDashboardData(int AccountCode,int docTypeId, string PoNo, int PoYearCode, int ItemCode,
-  string FromDate, string ToDate,string Partcode,string ItemName,string GetDataFrom,string Invoiceno)
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        finally
+        {
+            oDataSet.Dispose();
+        }
+        return model;
+    }
+
+
+
+
+    public async Task<PendingGateInwardDashboard> GetPendingGateEntryDashboardData(int AccountCode, int docTypeId, string PoNo, int PoYearCode, int ItemCode,
+  string FromDate, string ToDate, string Partcode, string ItemName, string GetDataFrom, string Invoiceno)
     {
         DataSet? oDataSet = new DataSet();
         var model = new PendingGateInwardDashboard();
@@ -261,9 +264,10 @@ public class GateInwardDAL
                 if (GetDataFrom == "PendingPO")
                 { oCmd.Parameters.AddWithValue("@Flag", "PendingGateEntryDashBoard"); }
                 else
-                { oCmd.Parameters.AddWithValue("@Flag", "PendVendorPortalSalebillForGateEntrySumm");
-					oCmd.Parameters.AddWithValue("@VPSaleBillNo", Invoiceno);
-				}
+                {
+                    oCmd.Parameters.AddWithValue("@Flag", "PendVendorPortalSalebillForGateEntrySumm");
+                    oCmd.Parameters.AddWithValue("@VPSaleBillNo", Invoiceno);
+                }
 
 
                 oCmd.Parameters.AddWithValue("@AccountCode", AccountCode);
@@ -290,17 +294,20 @@ public class GateInwardDAL
                     model.PendingGateEntryDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
                                                        select new PendingGateInwardDashboard
                                                        {
-                                                         
+
                                                            ItemCode = string.IsNullOrEmpty(dr["itemcode"].ToString()) ? 0 : Convert.ToInt32(dr["itemcode"]),
                                                            PartCode = dr["PartCode"].ToString(),
                                                            ItemName = dr["ItemName"].ToString(),
                                                            PONo = dr["PONo"].ToString(),
-                                                           POQty = string.IsNullOrEmpty(dr["POQty"].ToString()) ? 0 : Convert.ToSingle(dr["POQty"]),
-                                                           PendQty = string.IsNullOrEmpty(dr["PendQty"].ToString()) ? 0 : Convert.ToDecimal(dr["PendQty"]),
+                                                           POQty = dr["POQty"] == DBNull.Value ? 0m : Convert.ToDecimal(dr["POQty"]),
+
+                                                           PendQty = string.IsNullOrEmpty(dr["PendAfterGate"].ToString()) ? 0 : Convert.ToDecimal(dr["PendAfterGate"]),
                                                            Unit = dr["Unit"].ToString(),
-                                                           AltPOQty = string.IsNullOrEmpty(dr["AltPOQty"].ToString()) ? 0 : Convert.ToSingle(dr["AltPOQty"]),
+                                                           AltPOQty = dr["AltPOQty"] == DBNull.Value ? 0m : Convert.ToDecimal(dr["AltPOQty"]),
+
                                                            AltUnit = dr["AltUnit"].ToString(),
-                                                           Rate = string.IsNullOrEmpty(dr["Rate"].ToString()) ? 0 : Convert.ToSingle(dr["Rate"]),
+                                                           Rate = string.IsNullOrEmpty(dr["Rate"].ToString()) ? 0m : Convert.ToDecimal(dr["Rate"]),
+
                                                            POTypeServItem = dr["POTypeServItem"].ToString(),
                                                            SchNo = dr["ScheduleNo"].ToString(),
                                                            POType = dr["POType"].ToString(),
@@ -313,7 +320,8 @@ public class GateInwardDAL
                                                        }).ToList();
                 }
             }
-            else {
+            else
+            {
 
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
@@ -329,9 +337,10 @@ public class GateInwardDAL
                                                            DriverName = dr["DriverName"].ToString(),
                                                            Remarks = dr["Remark"].ToString(),
                                                            POTypeServItem = dr["POTypeServItem"].ToString(),
-                                                           TareWeight = string.IsNullOrEmpty(dr["TareWeight"].ToString()) ? 0 : Convert.ToSingle(dr["TareWeight"]),
-                                                           GrossWeight = string.IsNullOrEmpty(dr["GrossWeight"].ToString()) ? 0 : Convert.ToSingle(dr["GrossWeight"]),
-                                                           NetWeight = string.IsNullOrEmpty(dr["NetWeight"].ToString()) ? 0 : Convert.ToSingle(dr["NetWeight"]),
+                                                           TareWeight = dr["TareWeight"] == DBNull.Value ? 0m : Convert.ToDecimal(dr["TareWeight"]),
+                                                           GrossWeight = dr["GrossWeight"] == DBNull.Value ? 0m : Convert.ToDecimal(dr["GrossWeight"]),
+                                                           NetWeight = dr["NetWeight"] == DBNull.Value ? 0m : Convert.ToDecimal(dr["NetWeight"]),
+
                                                            address = dr["Address"].ToString(),
                                                            ModeOfTransport = dr["ModeOfTransport"].ToString(),
                                                            CC = dr["CC"].ToString(),
@@ -351,8 +360,8 @@ public class GateInwardDAL
                 }
             }
 
-        
-          
+
+
 
         }
         catch (Exception ex)
@@ -418,25 +427,25 @@ public class GateInwardDAL
         {
 
             var SqlParams = new List<dynamic>();
-            
-           var entDt = common.CommonFunc.ParseFormattedDate(model.EntryDate);
-           var bilDt = common.CommonFunc.ParseFormattedDate(model.BiltyDate);
-           var invDt = common.CommonFunc.ParseFormattedDate(model.InvoiceDate);
-           var  updDt = common.CommonFunc.ParseFormattedDate(model.UpdatedDate);
+
+            var entDt = common.CommonFunc.ParseFormattedDate(model.EntryDate);
+            var bilDt = common.CommonFunc.ParseFormattedDate(model.BiltyDate);
+            var invDt = common.CommonFunc.ParseFormattedDate(model.InvoiceDate);
+            var updDt = common.CommonFunc.ParseFormattedDate(model.UpdatedDate);
 
             //DateTime Invoicedt = DateTime.ParseExact(model.InvoiceDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
             if (model.Mode == "U" || model.Mode == "V")
             {
-               
+
                 SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
-                
+
             }
             else
             {
                 SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
-               //model.GateNo = _IDataLogic.GetEntryID("GateMain", Constants.FinincialYear, "GateNo").ToString();
-                model.GateNo = _IDataLogic.GetEntryID("GateMain", Constants.FinincialYear, "GateNo","Gateyearcode").ToString();
+                //model.GateNo = _IDataLogic.GetEntryID("GateMain", Constants.FinincialYear, "GateNo").ToString();
+                model.GateNo = _IDataLogic.GetEntryID("GateMain", model.YearCode, "GateNo", "Gateyearcode").ToString();
             }
 
             SqlParams.Add(new SqlParameter("@EntryID", model.EntryId));
@@ -494,7 +503,7 @@ public class GateInwardDAL
         try
         {
             var SqlParams = new List<dynamic>();
-           var invDt = common.CommonFunc.ParseFormattedDate(model.InvoiceDate);
+            var invDt = common.CommonFunc.ParseFormattedDate(model.InvoiceDate);
             SqlParams.Add(new SqlParameter("@Flag", "GetEwayBillDataforPo"));
             SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
             SqlParams.Add(new SqlParameter("@InvoiceDate", invDt == default ? string.Empty : invDt));
@@ -522,7 +531,10 @@ public class GateInwardDAL
                         AltUnit = row.Table.Columns.Contains("AltUnit") ? row["AltUnit"].ToString() : string.Empty,
                         AltQty = row.Table.Columns.Contains("AltQty") && row["AltQty"] != DBNull.Value ? Convert.ToDecimal(row["AltQty"]) : 0,
                         PendQty = row.Table.Columns.Contains("PendQty") && row["PendQty"] != DBNull.Value ? Convert.ToDecimal(row["PendQty"]) : 0,
-                        AltPendQty = row.Table.Columns.Contains("AltPendQty") && row["AltPendQty"] != DBNull.Value ? Convert.ToSingle(row["AltPendQty"].ToString()) : 0,
+                        AltPendQty = row.Table.Columns.Contains("AltPendQty") && row["AltPendQty"] != DBNull.Value
+    ? Convert.ToDecimal(row["AltPendQty"])
+    : 0m,
+
                         SchNo = row.Table.Columns.Contains("SchNo") ? row["SchNo"].ToString() : string.Empty,
                         SchYearCode = row.Table.Columns.Contains("SchYearCode") && row["SchYearCode"] != DBNull.Value ? Convert.ToInt32(row["SchYearCode"]) : 0,
                         SchEntryId = row.Table.Columns.Contains("SchEntryId") && row["SchEntryId"] != DBNull.Value ? Convert.ToInt32(row["SchEntryId"]) : 0,
@@ -539,7 +551,7 @@ public class GateInwardDAL
         }
         return model;
     }
-    public async Task<GateInwardDashboard> GetDashboardData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate,string DashboardType)
+    public async Task<GateInwardDashboard> GetDashboardData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, string DashboardType, int userID)
     {
         DataSet? oDataSet = new DataSet();
         var model = new GateInwardDashboard();
@@ -566,6 +578,7 @@ public class GateInwardDAL
                 oCmd.Parameters.AddWithValue("@ScheduleNo", ScheduleNo);
                 oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                 oCmd.Parameters.AddWithValue("@ToDate", toDt);
+                oCmd.Parameters.AddWithValue("@ActualEnteredBy", userID);
 
 
 
@@ -579,29 +592,29 @@ public class GateInwardDAL
             }
             //if (DashboardType == "Summary")
             //{
-                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                {
-                    model.GateDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
-                                           select new GateInwardDashboard
-                                           {
-                                               Gateno = dr["GateNo"].ToString(),
-                                               GDate = dr["GDate"].ToString().Split(" ")[0],
-                                               VendorName = dr["VendorName"].ToString(),
-                                               address = dr["address"].ToString(),
-                                               Invoiceno = dr["Invoiceno"].ToString(),
-                                               InvoiceDate = dr["InvoiceDate"].ToString().Split(" ")[0],
-                                               DocName = dr["DocName"].ToString(),
-                                               CompGateNo = dr["CompGateNo"].ToString(),
-                                               POTypeServItem = dr["POTypeServItem"].ToString(),
-                                               entryId = dr["entryId"].ToString(),
-                                               yearcode = Convert.ToInt32(dr["yearcode"]),
-                                               MrnNo = dr["MRNNO"].ToString(),
-                                               MRNYEARCODE = Convert.ToInt32(dr["MRNYEARCODE"]),
-                                               MRNDate = dr["MRNDate"].ToString().Split(" ")[0],
-                                               EnteredBy = dr["EnteredBy"].ToString(),
-                                               UpdatedBy = dr["UpdatedBy"].ToString()
-                                           }).ToList();
-                }
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+                model.GateDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
+                                       select new GateInwardDashboard
+                                       {
+                                           Gateno = dr["GateNo"].ToString(),
+                                           GDate = dr["GDate"].ToString().Split(" ")[0],
+                                           VendorName = dr["VendorName"].ToString(),
+                                           address = dr["address"].ToString(),
+                                           Invoiceno = dr["Invoiceno"].ToString(),
+                                           InvoiceDate = dr["InvoiceDate"].ToString().Split(" ")[0],
+                                           DocName = dr["DocName"].ToString(),
+                                           CompGateNo = dr["CompGateNo"].ToString(),
+                                           POTypeServItem = dr["POTypeServItem"].ToString(),
+                                           entryId = dr["entryId"].ToString(),
+                                           yearcode = Convert.ToInt32(dr["yearcode"]),
+                                           MrnNo = dr["MRNNO"].ToString(),
+                                           MRNYEARCODE = Convert.ToInt32(dr["MRNYEARCODE"]),
+                                           MRNDate = dr["MRNDate"].ToString().Split(" ")[0],
+                                           EnteredBy = dr["EnteredBy"].ToString(),
+                                           UpdatedBy = dr["UpdatedBy"].ToString()
+                                       }).ToList();
+            }
             //}
             //else
             //{
@@ -657,7 +670,7 @@ public class GateInwardDAL
         }
         return model;
     }
-    public async Task<GateInwardDashboard> GetDashboardDetailData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate)
+    public async Task<GateInwardDashboard> GetDashboardDetailData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate)
     {
         DataSet? oDataSet = new DataSet();
         var model = new GateInwardDashboard();
@@ -729,14 +742,15 @@ public class GateInwardDAL
                                            ItemName = string.IsNullOrEmpty(dr["ItemNamePartCode"].ToString()) ? "" : dr["ItemNamePartCode"].ToString(),
                                            EntryByMachineName = string.IsNullOrEmpty(dr["EntryByMachineName"].ToString()) ? "" : dr["EntryByMachineName"].ToString(),
                                            AltUnit = string.IsNullOrEmpty(dr["altunit"].ToString()) ? "" : dr["altunit"].ToString(),
-                                           TareWeight = string.IsNullOrEmpty(dr["TareWeight"].ToString()) ? 0 : Convert.ToSingle(dr["TareWeight"].ToString()),
-                                           GrossWeight = string.IsNullOrEmpty(dr["GrossWeight"].ToString()) ? 0 : Convert.ToSingle(dr["GrossWeight"].ToString()),
-                                           NetWeight = string.IsNullOrEmpty(dr["NetWeight"].ToString()) ? 0 : Convert.ToSingle(dr["NetWeight"].ToString()),
-                                           Qty = string.IsNullOrEmpty(dr["Qty"].ToString()) ? 0 : Convert.ToSingle(dr["Qty"].ToString()),
-                                           PendPOQty = string.IsNullOrEmpty(dr["PendPOQty"].ToString()) ? 0 : Convert.ToSingle(dr["PendPOQty"].ToString()),
-                                           AltPendQty = string.IsNullOrEmpty(dr["AltPendQty"].ToString()) ? 0 : Convert.ToSingle(dr["AltPendQty"].ToString()),
-                                           AltQty = string.IsNullOrEmpty(dr["altqty"].ToString()) ? 0 : Convert.ToSingle(dr["altqty"].ToString()),
-                                           Rate = string.IsNullOrEmpty(dr["Rate"].ToString()) ? 0 : Convert.ToSingle(dr["Rate"].ToString()),
+                                           TareWeight = dr["TareWeight"] == DBNull.Value ? 0m : Convert.ToDecimal(dr["TareWeight"]),
+                                           GrossWeight = dr["GrossWeight"] == DBNull.Value ? 0m : Convert.ToDecimal(dr["GrossWeight"]),
+                                           NetWeight = dr["NetWeight"] == DBNull.Value ? 0m : Convert.ToDecimal(dr["NetWeight"]),
+                                           Qty = dr["Qty"] == DBNull.Value ? 0m : Convert.ToDecimal(dr["Qty"]),
+                                           PendPOQty = dr["PendPOQty"] == DBNull.Value ? 0m : Convert.ToDecimal(dr["PendPOQty"]),
+                                           AltPendQty = dr["AltPendQty"] == DBNull.Value ? 0m : Convert.ToDecimal(dr["AltPendQty"]),
+                                           AltQty = dr["altqty"] == DBNull.Value ? 0m : Convert.ToDecimal(dr["altqty"]),
+                                           Rate = dr["Rate"] == DBNull.Value ? 0m : Convert.ToDecimal(dr["Rate"]),
+
                                            PoYearCode = string.IsNullOrEmpty(dr["POYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["POYearCode"].ToString()),
                                            SchYearCode = string.IsNullOrEmpty(dr["SchYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["SchYearCode"].ToString()),
                                            ChallanQty = string.IsNullOrEmpty(dr["ChallanQty"].ToString()) ? 0 : Convert.ToDecimal(dr["ChallanQty"].ToString()),
@@ -766,6 +780,27 @@ public class GateInwardDAL
             oDataSet.Dispose();
         }
         return model;
+    }
+    public async Task<ResponseResult> GetAllowBackDate()
+    {
+        var Result = new ResponseResult();
+
+        try
+        {
+            var SqlParams = new List<dynamic>();
+
+            SqlParams.Add(new SqlParameter("@Flag", "GetAllowBackDate"));
+
+            Result = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return Result;
     }
     public async Task<GateInwardModel> GetViewByID(int ID, int YearCode)
     {
@@ -873,7 +908,7 @@ public class GateInwardDAL
 
         return _List;
     }
-    public async Task<ResponseResult> FillSaleBillChallan(int AccountCode, int doctype, int ItemCode)
+    public async Task<ResponseResult> FillSaleBillChallan(int AccountCode, int doctype, int ItemCode, string ChallanNo)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -891,7 +926,7 @@ public class GateInwardDAL
             {
                 SqlParams.Add(new SqlParameter("@Flag", "CHALLAN"));
             }
-            else if(doctype == 11)
+            else if (doctype == 11)
             {
                 SqlParams.Add(new SqlParameter("@Flag", "CHALLAN"));
             }
@@ -900,6 +935,7 @@ public class GateInwardDAL
 
             SqlParams.Add(new SqlParameter("@itemcode", ItemCode));
             SqlParams.Add(new SqlParameter("@docTypeId", doctype));
+            SqlParams.Add(new SqlParameter("@ChallanNo", ChallanNo));
 
 
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
@@ -913,7 +949,7 @@ public class GateInwardDAL
 
         return _ResponseResult;
     }
-    public async Task<ResponseResult> FillChallanQty(int AccountCode, int ItemCode,string ChallanNo)
+    public async Task<ResponseResult> FillChallanQty(int AccountCode, int ItemCode, string ChallanNo)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -922,7 +958,7 @@ public class GateInwardDAL
             if (ChallanNo != "")
             {
                 SqlParams.Add(new SqlParameter("@Flag", "CHALLANQty"));
-            }           
+            }
 
             SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
 
@@ -939,7 +975,7 @@ public class GateInwardDAL
 
         return _ResponseResult;
     }
-    public async Task<ResponseResult> FillSaleBillQty(int AccountCode, int ItemCode, string SaleBillNo,int SaleBillYearCode)
+    public async Task<ResponseResult> FillSaleBillQty(int AccountCode, int ItemCode, string SaleBillNo, int SaleBillYearCode)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -964,17 +1000,17 @@ public class GateInwardDAL
         }
 
         return _ResponseResult;
-    } 
+    }
     public async Task<ResponseResult> GetAccountCode(string AccountName)
     {
         var _ResponseResult = new ResponseResult();
         try
         {
             var SqlParams = new List<dynamic>();
-           
-                SqlParams.Add(new SqlParameter("@Flag", "GetAccountCode"));
+
+            SqlParams.Add(new SqlParameter("@Flag", "GetAccountCode"));
             SqlParams.Add(new SqlParameter("@AccountName", AccountName));
-           
+
             _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_GateMainDetail", SqlParams);
         }
         catch (Exception ex)
@@ -992,10 +1028,10 @@ public class GateInwardDAL
         try
         {
             var SqlParams = new List<dynamic>();
-           
-                SqlParams.Add(new SqlParameter("@Flag", "GetItemCode"));
+
+            SqlParams.Add(new SqlParameter("@Flag", "GetItemCode"));
             SqlParams.Add(new SqlParameter("@ItemName", ItemName));
-           
+
             _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_GateMainDetail", SqlParams);
         }
         catch (Exception ex)
@@ -1007,7 +1043,7 @@ public class GateInwardDAL
 
         return _ResponseResult;
     }
-    public async Task<ResponseResult> GetItems(string Flag, int doctype, string Check,int AccountCode)
+    public async Task<ResponseResult> GetItems(string Flag, int doctype, string Check, int AccountCode, string SearchText)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -1018,6 +1054,7 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@docTypeId", doctype));
             SqlParams.Add(new SqlParameter("@ShowAll", Check));
             SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+            SqlParams.Add(new SqlParameter("@SearchText", SearchText));
 
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
         }
@@ -1029,7 +1066,7 @@ public class GateInwardDAL
         }
         return _ResponseResult;
     }
-    public async Task<ResponseResult> AltUnitConversion(int ItemCode, int AltQty, int UnitQty)
+    public async Task<ResponseResult> AltUnitConversion(int ItemCode, decimal AltQty, decimal UnitQty)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -1122,7 +1159,7 @@ public class GateInwardDAL
         }
         return _ResponseResult;
     }
-    public async Task<ResponseResult> GetScheDuleByYearCodeandAccountCode(string Flag, string AccountCode, string YearCode, string poNo,int docTypeId, string InvoiceDate,string ItemService, string EntryDate)
+    public async Task<ResponseResult> GetScheDuleByYearCodeandAccountCode(string Flag, string AccountCode, string YearCode, string poNo, int docTypeId, string InvoiceDate, string ItemService, string EntryDate)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -1139,8 +1176,8 @@ public class GateInwardDAL
             }
             SqlParams.Add(new SqlParameter("@PONO", poNo));
             SqlParams.Add(new SqlParameter("@docTypeId", docTypeId));
-            SqlParams.Add(new SqlParameter("@EntryDate",CommonFunc.ParseFormattedDate( EntryDate)));
-            SqlParams.Add(new SqlParameter("@InvoiceDate", CommonFunc.ParseFormattedDate( InvoiceDate)));
+            SqlParams.Add(new SqlParameter("@EntryDate", CommonFunc.ParseFormattedDate(EntryDate)));
+            SqlParams.Add(new SqlParameter("@InvoiceDate", CommonFunc.ParseFormattedDate(InvoiceDate)));
 
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
         }
@@ -1164,7 +1201,7 @@ public class GateInwardDAL
         model.EntryTime = Convert.ToDateTime(DS.Tables[0].Rows[0]["EntryTime"]).ToString("HH:mm:ss")?.Trim();
         //model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString().Split(" ")[0];
         model.GateNo = DS.Tables[0].Rows[0]["GateNo"].ToString();
-        model.CompGateNo = DS.Tables[0].Rows[0]["EntryID"].ToString();
+        model.CompGateNo = DS.Tables[0].Rows[0]["CompGateNo"].ToString();
         //isnull(, '') Remark,Uid,POTypeServItem,isnull(TareWeight, 0)TareWeight ,
         //isnull(GrossWeight, 0)GrossWeight ,isnull(NetWeight, 0)NetWeight ,
         //address,isnull(ShowPOTillDate, getdate()) ShowPOTillDate ,isnull(ModeOfTransport, '')ModeOfTransport,
@@ -1219,6 +1256,8 @@ public class GateInwardDAL
                     PoEntryId = Convert.ToInt32(row["PoEntryId"].ToString()),
                     POType = row["POTYpe"].ToString(),
                     SchNo = row["SchNo"].ToString(),
+                    SchDate = row["ScheduleDate"].ToString(),
+                    PoDate = row["PoDate"].ToString(),
                     SchYearCode = Convert.ToInt32(row["SchYearCode"].ToString()),
                     ItemCode = Convert.ToInt32(row["ItemCode"].ToString()),
                     Qty = Convert.ToDecimal(row["Qty"].ToString()),
@@ -1240,7 +1279,7 @@ public class GateInwardDAL
                     SaleBillQty = Convert.ToDecimal(row["SaleBillQty"].ToString()),
                     AgainstChallanNo = (row["AgainstChallanNo"].ToString()),
                     ChallanQty = Convert.ToDecimal(row["ChallanQty"].ToString()),
-                    AgainstChallanYearcode =Convert.ToInt32(row["AgainstChallanYearcode"].ToString()),
+                    AgainstChallanYearcode = Convert.ToInt32(row["AgainstChallanYearcode"].ToString()),
                     PendQty = Convert.ToDecimal(row["PendPOQty"].ToString()),
                     NoOfBoxes = row["NoOfBoxes"].ToString() == "" ? 0 : Convert.ToInt32(row["NoOfBoxes"].ToString())
                 });
@@ -1345,7 +1384,7 @@ public class GateInwardDAL
         }
         return _ResponseResult;
     }
-    public async Task<ResponseResult> GetPoNumberDropDownList(string Flag, string ServiceType, string SPName, string AccountCode, int Year ,int DocTypeId)
+    public async Task<ResponseResult> GetPoNumberDropDownList(string Flag, string ServiceType, string SPName, string AccountCode, int Year, int DocTypeId)
     {
         var _ResponseResult = new ResponseResult();
         try
