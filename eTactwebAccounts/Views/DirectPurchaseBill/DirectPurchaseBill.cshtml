@@ -1196,8 +1196,37 @@
             $('#netamt').val(NetAmount.toFixed(2));
         }
 
+        function FillStore() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillStore","SaleInvoice")",
+                dataType: "json",
+                async:false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#StoreId').empty();
+                        // $('#StoreId').append('<option value="0">-Select-</option>');
+                        if (obj.StatusCode != 500) {
+                            $.each(obj.Result, function (index, val) {
+                                $('#StoreId').append("<option value=" + val.StoreId + ">" + val.Store_Name + "</option>");
+                            });
+
+                           
+                        }
+
+                        if($('#Mode').val()=='U'||$('#Mode').val()=='V')
+                        {
+                                        $('#StoreId').val('@Model.StoreId').trigger('change');
+                        }
+
+                    }
+                }
+            });
+        }
 
         $(document).ready(function () {
+            FillStore();
             if ($('#DPBType').val() == 'Import') {
                 $('#Rate').prop("disabled", true);
                 $('#OtherRateCurr').prop("disabled", false);

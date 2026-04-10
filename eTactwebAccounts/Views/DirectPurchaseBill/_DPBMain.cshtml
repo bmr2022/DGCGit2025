@@ -79,6 +79,12 @@
                    class="form-control" onchange="onInvoiceChange('InvoiceNo')" />
 
         </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 AllowToChangeStoreOrNot">
+            <label asp-for="StoreId" class="form-label" style="color: red;">Store *</label>
+            <select asp-for="StoreId" class="form-control">
+                <option value="0">-Select-</option>
+            </select>
+        </div>
         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12 DirectPurchaseBillCustomerAddress">
             <label asp-for="VendorAddress" class="form-label">Vendor Address</label>
             <input asp-for="VendorAddress"  class="form-control" readonly />

@@ -1301,6 +1301,7 @@ public class DirectPurchaseBillDAL
             SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
             SqlParams.Add(new SqlParameter("@StateName", model.VendorStateName));
             SqlParams.Add(new SqlParameter("@GSTType", model.GstType));
+            SqlParams.Add(new SqlParameter("@StoreId", model.StoreId??0));
             SqlParams.Add(new SqlParameter("@TypeITEMSERVASSETS", model.DPBTypeServItem));
 
             SqlParams.Add(new SqlParameter("@DomesticImport", model.DPBType));

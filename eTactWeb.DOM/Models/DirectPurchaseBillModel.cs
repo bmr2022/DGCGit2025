@@ -411,6 +411,7 @@ public class DirectPurchaseBillModel : DPBItemDetail
     public string? PurchaseFromDatabase { get; set;}
     public string? BranchSaleBillNo { get; set;}
     public int? BranchSaleBillEntryId { get; set;}
+    public int? StoreId { get; set;}
     public string? BranchSaleBillDate { get; set;}
     public int? BranchSaleBillYearCode { get; set;}
     public string? AccountName { get; set; }
