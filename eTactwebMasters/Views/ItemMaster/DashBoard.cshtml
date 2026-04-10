@@ -12,7 +12,8 @@
                 <h5>
                     Dashboard <strong>Item Master Dashboard</strong>
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-action="ItemDetail" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                        <input type="hidden" id="currentPage" name="pageNumber" value="1" />
+                        <a asp-action="ItemDetail" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                             <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                             Add New
                         </a>
@@ -81,8 +82,8 @@
                     </ul>
                 }
             </div> *@
-    
-</form>
+        </div>
+    </form>
     <div id="fullPageLoader">
         <div class="loaderBox">
             <span>Processing...</span>
@@ -92,19 +93,75 @@
 
 @section Scripts
 {
+   
     <script type="text/javascript">
+        var page = ' ';
+        $(document).on('click', '.page-btn', function (e) {
+            e.preventDefault();
+            page = $(this).data('page');
+
+            GetSearchData(page);
+        });
         $(document).ready(function () {
             var dashGrid = $('#divDashboardGrid tr').length;
             $('#totalRows').text(dashGrid);
 
-            AutoComplete('VItemMaster', 'Item_Name', 'Item_Name', null);
+            // AutoComplete('VItemMaster', 'Item_Name', 'Item_Name', null);
             AutoComplete('VItemMaster', 'PartCode', 'PartCode', null);
             AutoComplete('Item_Master', 'UniversalPartCode', 'UniversalPartCode', null);
             AutoComplete('VItemMaster', 'HSNNO', 'HsnNo', null);
             AutoComplete('VItemMaster', 'ParentName', 'ParentGroupname', null);
             AutoComplete('Item_Master_Type', 'ItemTypeName', 'Type_Item', null);
 
-            // GetFormRights();
+
+
+            $("#Item_Name").autocomplete({
+            minLength: 2,          // 🔥 VERY IMPORTANT
+            delay: 300,            // Prevents too many calls
+            source: function (request, response) {
+
+                $.ajax({
+                    url: '@Url.Action("GetItemNameForDashboard", "ItemMaster")',
+                    type: 'POST',
+                    data: {
+                        SearchItemCode: '',
+                        SearchParam: request.term   // 🔥 MUST MATCH SP PARAM
+                    },
+                    success: function (result) {
+
+                        let obj = typeof result === "string"
+                            ? JSON.parse(result)
+                            : result;
+
+                        if (obj.StatusCode === 200 && obj.Result?.Table) {
+
+                            response($.map(obj.Result.Table, function (item) {
+                                return {
+                                    label: item.Item_Name,  // what user sees
+                                    value: item.Item_Name,  // what goes in textbox
+                                    itemCode: item.ItemCode
+                                };
+                            }));
+
+                        } else {
+                            response([]);
+                        }
+                    },
+                    error: function () {
+                        response([]);
+                    }
+                });
+            },
+            select: function (event, ui) {
+                $("#Item_Name").val(ui.item.value);
+                return false;
+            }
+        });
+
+            GetFormRights();
+
+             GetSearchData(page);
+           
         });
 
         function confirmDelete(event, IC) {
@@ -118,17 +175,26 @@
                 window.location.href = linkUrl;
             }
         }
+        function confirmEdit(event) {
+            event.preventDefault();
+
+            if (confirm("Are you sure you want to Edit this entry?")) {
+                var linkUrl = $(event.currentTarget).attr("href");
+
+                // Redirect without appending additional parameters manually
+                window.location.href = linkUrl;
+            }
+        }
 
         function GetFormRights() {
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
-                dataType: "json",
                 async: false,
-                success: function (obj) {
+                success: function (data) {
 
-                    if (obj != null) {
-                       // var obj = $.parseJSON(data);
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
                         if (obj.Result.Table.length == 0) {
                             var rowCounter = $('#divDashboardGrid tr').length;
                             for (var i = 0; i < rowCounter; i++) {
@@ -227,131 +293,121 @@
             window.location.href = '/ItemMaster/ExportItemMasterToExcel?showAll=' + showAll;
         });
 
-        function GetSearchData() {
+        function GetSearchData(pageNo = 1) {
+           
+            showLoader();
 
-            $('#ShowAllSwitch').prop("checked", false);
-
-            var btn = $('#btnSearch');
-            var oldText = btn.text();
-
-            btn.text("Processing...").prop("disabled", true);
-
-            if ($('#ShowAllSwitch').is(':checked') == true) {
                 $.ajax({
-                    url: '@Url.Action("GetAllColumns")',
+                url: '@Url.Action("GetSearchData")',
                     type: "POST",
                     async: true,
 
                     data: {
-                        Item_Name: $('#Item_Name').val(),
-                        PartCode: $('#PartCode').val(),
-                        ParentCode: $('#ParentName').val(),
-                        ItemType: $('#POServType').val(),
-                        HsnNo: $('#HSNNO').val(),
-                        UniversalPartCode: $('#UniversalPartCode').val(),
-                        pageSize: $('#PageSize').val(),
-                        Flag: "Search"
+                    Item_Name: $('#Item_Name').val(),
+                    PartCode: $('#PartCode').val(),
+                    ParentCode: $('#ParentName').val(),
+                    ItemType: $('#POServType').val(),
+                    HsnNo: $('#HSNNO').val(),
+                    UniversalPartCode: $('#UniversalPartCode').val(),
+                    pageSize: $('#PageSize').val(),
+                    pageNumber: pageNo,
+                    Flag: 'Dashboard',
+                    DashboardRepoType: $('#DashboardRepoType').val()
                     },
 
                     success: function (data) {
                         $('#divDashboardGrid').empty();
                         $('.ShowAllDiv').empty();
                         $('.ShowAllDiv').append(data);
-                        // GetFormRights();
+                        GetFormRights();
                     },
 
                     complete: function () {
-                        btn.text(oldText).prop("disabled", false);
+                        // btn.text(oldText).prop("disabled", false);
+                        hideLoader();
                     },
 
                     error: function (response) {
                         alert(response.responseText);
                     }
                 });
-            }
-            else {
-                $.ajax({
-                    url: '@Url.Action("GetSearchData")',
-                    type: "POST",
-                    async: true,
+         
 
-                    data: {
-                        Item_Name: $('#Item_Name').val(),
-                        PartCode: $('#PartCode').val(),
-                        ParentCode: $('#ParentName').val(),
-                        ItemType: $('#POServType').val(),
-                        HsnNo: $('#HSNNO').val(),
-                        UniversalPartCode: $('#UniversalPartCode').val(),
-                        pageSize: $('#PageSize').val(),
-                        Flag: "Search"
-                    },
-
-                    success: function (data) {
-                        $('#divDashboardGrid').empty();
-                        $('.ShowAllDiv').empty();
-                        $('.ShowAllDiv').append(data);
-                        var dashGrid = $('#divDashboardGrid tr').length;
-                        $('#totalRows').text(dashGrid);
-                        // GetFormRights();
-                    },
-
-                    complete: function () {
-                        btn.text(oldText).prop("disabled", false);
-                    },
-
-                    error: function (response) {
-                        alert(response.responseText);
-                    }
-                });
-            }
         }
 
 
 
         var isGlobalSearch = false;
         var globalSearchString = "";
-        $("#search-box").on("input", function () {
-            var searchString = $(this).val().trim();
-            var ShowAll = $('#ShowAllSwitch').is(':checked');
-            var pageSize= $('#PageSize').val();
-            globalSearchString = searchString;
-            isGlobalSearch = searchString !== "";
+        // $("#search-box").on("input", function () {
+        //     var searchString = $(this).val().trim();
+        //     var ShowAll = $('#ShowAllSwitch').is(':checked');
+        //     var pageSize= $('#PageSize').val();
+        //     globalSearchString = searchString;
+        //     isGlobalSearch = searchString !== "";
 
-            $.ajax({
-                url: "/ItemMaster/GlobalSearch",
-                type: "GET",
-                data: { searchString: searchString, pageNumber: 1, ShowAll: ShowAll, pageSize: pageSize }, // Always reset to first page on new search
-                success: function (data) {
-                    $('#divDashboardGrid').empty();
-                    $('.ShowAllDiv').empty().append(data);
-                    var dashGrid = $('#divDashboardGrid tr').length;
-                    $('#totalRows').text(dashGrid);
-                },
-                error: function () {
-                    console.log("Error fetching search results.");
-                }
-            });
-        });
-
-
-        // var currentSearchColumn = null;
-        // $("#search-box").on("keyup", function () {
-        //     var value = $(this).val().toLowerCase();
-        //     $("#divDashboardGrid tr").filter(function () {
-        //         if (currentSearchColumn !== null) {
-        //             var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
-        //             $(this).toggle(columnText.indexOf(value) > -1);
-        //         } else {
-        //             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        //     $.ajax({
+        //         url: "/ItemMaster/GlobalSearch",
+        //         type: "GET",
+        //         data: { searchString: searchString, pageNumber: 1, ShowAll: ShowAll, pageSize: pageSize }, //Always reset to first page on new search
+        //         success: function (data) {
+        //             $('#divDashboardGrid').empty();
+        //             $('.ShowAllDiv').empty().append(data);
+        //             var dashGrid = $('#divDashboardGrid tr').length;
+        //             $('#totalRows').text(dashGrid);
+        //         },
+        //         error: function () {
+        //             console.log("Error fetching search results.");
         //         }
         //     });
         // });
 
 
-        // $(document).on("click", "th[data-columnno]", function () {
-        //     currentSearchColumn = $(this).data('columnno');
-        //     $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
-        // });
+
+        let debounceTimer;
+
+        $("#search-box").on("input", function () {
+            clearTimeout(debounceTimer);
+
+            let searchString = $(this).val().trim();
+            let ShowAll = $('#ShowAllSwitch').is(':checked');
+            let pageSize = $('#PageSize').val();
+
+
+                    // 🔥 When emptied → Load normal list (no filter)
+        if (!searchString) {    // <--- MUCH BETTER
+            GetSearchData(page);
+            return;
+        }
+
+            // 🔥 Minimum 2 characters required to search
+            if (searchString.length < 2) {
+                return;
+            }
+
+            debounceTimer = setTimeout(() => {
+
+                $.ajax({
+                    url: "/ItemMaster/GlobalSearch",
+                    type: "GET",
+                    data: {
+                        searchString: searchString,
+                        pageNumber: 1,
+                        ShowAll: ShowAll,
+                        pageSize: pageSize
+                    },
+                    success: function (data) {
+                        $('#divDashboardGrid').empty();
+                        $('.ShowAllDiv').empty().append(data);
+                        $('#totalRows').text($('#divDashboardGrid tr').length);
+                    },
+                    error: function () {
+                        console.log("Error fetching search results.");
+                    }
+                });
+
+            }, 200); // Delay after user stops typing
+        });
 
         $(document).on("click", ".sortCol", function () {
             ;
@@ -413,7 +469,7 @@
         }
         // function loadPage(pageNumber) {
 
-        //      
+        //
         //     var dashboardType = $('#POServType').val();
         //     var url = '';
 
@@ -425,7 +481,7 @@
         //         url = '@Url.Action("GetSearchData", "ItemMaster")';
         //     } else  {
         //         url = '@Url.Action("Dashboard", "ItemMaster")';
-        //     } 
+        //     }
 
         //     var formData = $('#SParam').serializeArray();
         //     formData.push({ name: 'pageNumber', value: pageNumber });
@@ -493,57 +549,25 @@
             });
         }
 
-        $('#ShowAllSwitch').change(function () {
-            showLoader(); // ✅ Show full page loader
-            if ($(this).is(':checked') == true) {
-                $.ajax({
-                    url: '@Url.Action("GetAllColumns")',
-                    type: "POST",
-                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), pageSize: $('#PageSize').val(), Flag: "Search" },
-                    success: function (data) {
+        
+        $(document).on('change', '#DashboardRepoType', function () {
 
-                        $('#divDashboardGrid').empty();
-                        $('.ShowAllDiv').empty();
-                        $('.ShowAllDiv').append(data);
-                        var dashGrid = $('#divDashboardGrid tr').length;
-                        $('#totalRows').text(dashGrid);
-                        // GetFormRights();
-                    },
-                    complete: function () {
-                        hideLoader(); //  Hide after complete
-                    },
-                    error: function (response) {
-                        alert(response.responseText);
-                    },
-                    failure: function (response) {
-                        alert(response.responseText);
-                    }
-                });
-            }
-            else {
-                $.ajax({
-                    url: '@Url.Action("GetSearchData")',
-                    type: "POST",
-                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), pageSize: $('#PageSize').val(), Flag: "Search" },
-                    success: function (data) {
-                        $('#divDashboardGrid').empty();
-                        $('.ShowAllDiv').empty();
-                        $('.ShowAllDiv').append(data);
-                        var dashGrid = $('#divDashboardGrid tr').length;
-                        $('#totalRows').text(dashGrid);
-                        // GetFormRights();
-                    },
-                    complete: function () {
-                        hideLoader(); //  Hide after complete
-                    },
-                    error: function (response) {
-                        alert(response.responseText);
-                    },
-                    failure: function (response) {
-                        alert(response.responseText);
-                    }
-                });
-            }
+            $('#currentPage').val(1);   // reset hidden page
+            GetSearchData(1);          // reload from page 1
+
+        });
+        $(document).on('change', '#POServType', function () {
+
+            $('#currentPage').val(1);   // reset hidden page
+            GetSearchData(1);          // reload from page 1
+
+        });
+        // $('#DashboardRepoType').on('change', function () {
+
+        //     console.log("Dropdown Changed");
+
+        //     GetSearchData(page);
+        // });
             function showLoader() {
                 $('#fullPageLoader').fadeIn(100);
             }
@@ -551,7 +575,6 @@
             function hideLoader() {
                 $('#fullPageLoader').fadeOut(100);
             }
-        });
     </script>
     <script src="~/Scripts/table2excel.js"></script>
 
@@ -580,6 +603,5 @@
         font-size: 18px;
         font-weight: bold;
     }
-
 
 </style>

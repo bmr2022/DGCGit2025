@@ -1,1 +1,1 @@
-server2\BMR
+SERVER2\BMR

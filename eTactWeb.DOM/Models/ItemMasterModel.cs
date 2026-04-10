@@ -64,6 +64,7 @@ namespace eTactWeb.DOM.Models
         public int PageNumber {  get; set; }
         public int PageSize { get; set; }
         public string? EntryByMachineName { get;set; }
+        public string? DashboardRepoType { get;set; }
         public string? Act { get; set; }
         public bool HidePartCodeOnReport { get; set; }
         public string? BatchWiseInventory { get; set; }
@@ -243,6 +244,7 @@ namespace eTactWeb.DOM.Models
         public string? SaleAccountName { get; set; }
         public string? PurchaseAccountName { get; set; }
         public string? ProdWorkCenterDescription { get; set; }
+        //public string? DashboardRepoType { get; set; }
         public string? ProdInhouseJW { get; set; }
         public string? BatchNO { get; set; }
 
@@ -261,6 +263,8 @@ namespace eTactWeb.DOM.Models
         public string? ProdInMachineName4 { get; set; }
         public string? usedinMachorVehicle { get; set; }
         public string? Barcode { get; set; }
+        public List<DashboardColumn> Headers { get; set; } = new();
+        public List<Dictionary<string, object>> Rows { get; set; } = new();
     }
     public class ImportItemViewModel
     {

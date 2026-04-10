@@ -13,14 +13,18 @@ public class ItemMasterBLL : IItemMaster
 {
     private ItemMasterDAL _ItemMasterDAL;
     private readonly IDataLogic _DataLogicDAL;
+    private readonly ICommon _common;
+
+
 
     //private readonly IConfiguration configuration;
 
-    public ItemMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
+    public ItemMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService, ICommon common)
     {
         //configuration = config;
-        _ItemMasterDAL = new ItemMasterDAL(config,dataLogicDAL, connectionStringService);
+        _ItemMasterDAL = new ItemMasterDAL(config, dataLogicDAL, connectionStringService,common);
         _DataLogicDAL = dataLogicDAL;
+        _common = common;
     }
 
     public async Task<ResponseResult> DeleteItemByID(int ID)
@@ -105,9 +109,14 @@ public class ItemMasterBLL : IItemMaster
         return await _ItemMasterDAL.GetAllItemMaster(Flag);
     }
 
-    public async Task<IList<ItemMasterModel>> GetDashBoardData(string ItemName, string PartCode, string ItemGroup, string ItemCategory, string HsnNo, string UniversalPartCode, string Flag)
+    //public async Task<IList<ItemMasterModel>> GetDashBoardData(string ItemName, string PartCode, string ItemGroup, string ItemCategory, string HsnNo, string UniversalPartCode, string Flag)
+    //{
+    //    return await _ItemMasterDAL.GetDashBoardData(ItemName, PartCode, ItemGroup, ItemCategory, HsnNo,UniversalPartCode, Flag);
+    //}
+
+    public async Task<ResponseResult> GetDashBoardData(string ItemName, string PartCode, string ItemGroup, string ItemCategory, string HsnNo, string UniversalPartCode, string Flag, string DashboardRepoType, int userID)
     {
-        return await _ItemMasterDAL.GetDashBoardData(ItemName, PartCode, ItemGroup, ItemCategory, HsnNo,UniversalPartCode, Flag);
+        return await _ItemMasterDAL.GetDashBoardData(ItemName, PartCode, ItemGroup, ItemCategory, HsnNo, UniversalPartCode, Flag, DashboardRepoType, userID);
     }
 
     public FeatureOption GetFeatureOption()

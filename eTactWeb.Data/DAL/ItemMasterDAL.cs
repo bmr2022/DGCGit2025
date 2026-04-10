@@ -20,14 +20,16 @@ namespace eTactWeb.Data.DAL
         private readonly ConnectionStringService _connectionStringService;
 
         private IDataReader? Reader;
+        private readonly ICommon _common;
 
-        public ItemMasterDAL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
+        public ItemMasterDAL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService, ICommon common)
         {
             //configuration = config;
             //DBConnectionString = config.GetConnectionString("eTactDB");
             _DataLogicDAL = dataLogicDAL;
             _connectionStringService = connectionStringService;
             DBConnectionString = _connectionStringService.GetConnectionString();
+            _common = common;
         }
 
         public string GetBranchConnectionString(string branchDatabaseName)
@@ -543,163 +545,200 @@ namespace eTactWeb.Data.DAL
 
             return ItemMasterList;
         }
-        public async Task<IList<ItemMasterModel>> GetDashBoardData(
-    string ItemName,
-    string PartCode,
-    string ItemGroup,
-    string ItemCategory,
-    string HsnNo,
-    string UniversalPartCode,
-    string Flag)
+        public async Task<ResponseResult> GetDashBoardData(
+  string ItemName,
+  string PartCode,
+  string ItemGroup,
+  string ItemCategory,
+  string HsnNo,
+  string UniversalPartCode,
+  string Flag,
+  string DashboardRepoType,
+  int userID)
         {
-            List<ItemMasterModel> ItemMasterList = new List<ItemMasterModel>();
-            DataSet oDataSet = new DataSet();
+            var flag = "DASHBOARD";
+            var dashboardType =
+    !string.IsNullOrEmpty(DashboardRepoType) &&
+    DashboardRepoType.ToUpper() == "DETAIL"
+    ? "DETAIL"
+    : "SUMMARY";
+            var parameters = new Dictionary<string, object>
+    {
 
-            try
-            {
-                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
-                {
-                    SqlCommand oCmd = new SqlCommand("SP_FiletrItemMaster", myConnection)
-                    {
-                        CommandType = CommandType.StoredProcedure,
-                        CommandTimeout = 400
-                    };
+        { "@DashboardRepoType", dashboardType  },
 
-                    oCmd.Parameters.AddWithValue("@ItemName", ItemName ?? (object)DBNull.Value);
-                    oCmd.Parameters.AddWithValue("@PartCode", PartCode ?? (object)DBNull.Value);
-                    oCmd.Parameters.AddWithValue("@ItemGroup", ItemGroup ?? (object)DBNull.Value);
-                    oCmd.Parameters.AddWithValue("@ItemCategory", ItemCategory ?? (object)DBNull.Value);
-                    oCmd.Parameters.AddWithValue("@HsnNo", HsnNo ?? (object)DBNull.Value);
-                    oCmd.Parameters.AddWithValue("@UniversalPartCode", UniversalPartCode ?? (object)DBNull.Value);
-                    oCmd.Parameters.AddWithValue("@Flag", Flag ?? (object)DBNull.Value);
+        { "@Item_Name", (object)ItemName ?? DBNull.Value },
+        { "@PartCode" ,(object)PartCode ?? DBNull.Value },
+        { "@GroupCode", ItemGroup ?? "" },
+        { "@ItemTypeName", ItemCategory ?? "" },
+        { "@HsnNo", HsnNo ?? "" },
 
-                    await myConnection.OpenAsync();
+        { "@ActualEnteredBy", userID }
+    };
 
-                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
-                    {
-                        oDataAdapter.Fill(oDataSet);
-                    }
-                }
-                int rowIndex = 0;
-
-
-                // If no data returned
-                if (oDataSet.Tables.Count == 0 || oDataSet.Tables[0].Rows.Count == 0)
-                    return ItemMasterList;
-
-                foreach (DataRow row in oDataSet.Tables[0].Rows)
-                {
-                    try
-                    {
-                        rowIndex++;
-                        ItemMasterList.Add(new ItemMasterModel
-                        {
-                            Item_Code = SafeToInt(row[0]),
-                            PartCode = SafeToString(row[1]),
-                            Item_Name = SafeToString(row[2]),
-                            ParentCode = SafeToInt(row[3]),
-                            ItemGroup = SafeToString(row[4]),
-                            EntryDate = SafeToString(row[5]),
-                            LastUpdatedDate = SafeToString(row[6]),
-                            LeadTime = SafeToInt(row[7]),
-                            CC = SafeToString(row[8]),
-                            Unit = SafeToString(row[9]),
-                            SalePrice = SafeToInt(row[10]),
-                            PurchasePrice = SafeToInt(row[11]),
-                            CostPrice = SafeToInt(row[12]),
-                            WastagePercent = SafeToInt(row[13]),
-                            WtSingleItem = SafeToInt(row[14]),
-                            NoOfPcs = SafeToInt(row[15]),
-                            QcReq = SafeToString(row[16]),
-                            ItemType = SafeToInt(row[17]),
-                            TypeName = SafeToString(row[18]),
-                            ImageURL = SafeToString(row[19]),
-                            UID = SafeToString(row[20]),
-                            DrawingNo = SafeToString(row[21]),
-                            MinimumLevel = SafeToInt(row[22]),
-                            MaximumLevel = SafeToInt(row[23]),
-                            ReorderLevel = SafeToInt(row[24]),
-                            YearCode = SafeToInt(row[25]),
-                            AlternateUnit = SafeToString(row[26]),
-                            RackID = SafeToString(row[27]),
-                            BinNo = SafeToString(row[28]),
-                            ItemSize = SafeToString(row[29]),
-                            Colour = SafeToString(row[30]),
-                            NeedPO = SafeToString(row[31]),
-                            StdPacking = SafeToInt(row[32]),
-                            PackingType = SafeToString(row[33]),
-                            ModelNo = SafeToString(row[34]),
-                            YearlyConsumedQty = SafeToInt(row[35]),
-                            DispItemName = SafeToString(row[36]),
-                            PurchaseAccountcode = SafeToString(row[37]),
-                            SaleAccountcode = SafeToString(row[38]),
-                            MinLevelDays = SafeToInt(row[39]),
-                            MaxLevelDays = SafeToInt(row[40]),
-                            EmpName = SafeToString(row[41]),
-                            DailyRequirment = SafeToInt(row[42]),
-                            Stockable = SafeToString(row[43]),
-                            WipStockable = SafeToString(row[44]),
-                            Store = SafeToString(row[45]),
-                            ProductLifeInus = SafeToInt(row[46]),
-                            ItemDesc = SafeToString(row[47]),
-                            MaxWipStock = SafeToInt(row[48]),
-                            NeedSo = SafeToString(row[49]),
-                            BomRequired = SafeToString(row[50]),
-                            JobWorkItem = SafeToString(row[51]),
-                            HSNNO = SafeToString(row[52]),
-                            CreatedByName = SafeToString(row[53]),
-                            CreatedOn = SafeToDateTime(row[54]),
-                            UpdatedOn = SafeToDateTime(row[55]),
-                            UpdatedByName = SafeToString(row[56]),
-                            Active = SafeToString(row[57]),
-                            UniversalPartCode = SafeToString(row[58]),
-                            UniversalDescription = SafeToString(row[59]),
-                            ProdWorkCenterDescription = SafeToString(row[60]),
-                            ProdInWorkcenter = SafeToInt(row[61]),
-                            ProdInhouseJW = SafeToString(row[62]),
-                            BatchNO = SafeToString(row[63]),
-                            VoltageVlue = SafeToString(row[64]),
-                            OldPartCode = SafeToString(row[65]),
-                            SerialNo = SafeToString(row[66]),
-                            Package = SafeToString(row[67]),
-                            IsCustJWAdjMandatory = SafeToString(row[68]),
-                            ItemServAssets = SafeToString(row[69]),
-                            StoreName = SafeToString(row[70]),
-                            SaleAccountName = SafeToString(row[71]),
-                            PurchaseAccountName = SafeToString(row[72]),
-                            BranchName = SafeToString(row[73]),
-                            NoOfCavity = SafeToInt(row[74]),
-                            ProdInMachineGroupName = SafeToString(row[75]),
-                            ProdInMachineName1 = SafeToString(row[76]),
-                            ProdInMachineName2 = SafeToString(row[77]),
-                            ProdInMachineName3 = SafeToString(row[78]),
-                            ProdInMachineName4 = SafeToString(row[79]),
-                            NoOfshotsHours = SafeToInt(row[80]),
-                            ChildBom = SafeToString(row[81]),
-                            ProdInMachineGroupId = SafeToInt(row[82]),
-                            ProdInMachine1 = SafeToInt(row[83]),
-                            ProdInMachine2 = SafeToInt(row[84]),
-                            ProdInMachine3 = SafeToInt(row[85]),
-                            ProdInMachine4 = SafeToInt(row[86]),
-                            Hardness = SafeToString(row[87])
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception($"Error at Row #{rowIndex}. Message: {ex.Message}");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-                // Optional: log this error somewhere
-            }
-
-            return ItemMasterList;
+            return await _common.GetDashboardData(
+                "SP_ItemMasterData",
+                flag,
+                parameters
+            );
         }
+        //    public async Task<IList<ItemMasterModel>> GetDashBoardData(
+        //string ItemName,
+        //string PartCode,
+        //string ItemGroup,
+        //string ItemCategory,
+        //string HsnNo,
+        //string UniversalPartCode,
+        //string Flag)
+        //    {
+        //        List<ItemMasterModel> ItemMasterList = new List<ItemMasterModel>();
+        //        DataSet oDataSet = new DataSet();
+
+        //        try
+        //        {
+        //            using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+        //            {
+        //                SqlCommand oCmd = new SqlCommand("SP_FiletrItemMaster", myConnection)
+        //                {
+        //                    CommandType = CommandType.StoredProcedure,
+        //                    CommandTimeout = 400
+        //                };
+
+        //                oCmd.Parameters.AddWithValue("@ItemName", ItemName ?? (object)DBNull.Value);
+        //                oCmd.Parameters.AddWithValue("@PartCode", PartCode ?? (object)DBNull.Value);
+        //                oCmd.Parameters.AddWithValue("@ItemGroup", ItemGroup ?? (object)DBNull.Value);
+        //                oCmd.Parameters.AddWithValue("@ItemCategory", ItemCategory ?? (object)DBNull.Value);
+        //                oCmd.Parameters.AddWithValue("@HsnNo", HsnNo ?? (object)DBNull.Value);
+        //                oCmd.Parameters.AddWithValue("@UniversalPartCode", UniversalPartCode ?? (object)DBNull.Value);
+        //                oCmd.Parameters.AddWithValue("@Flag", Flag ?? (object)DBNull.Value);
+
+        //                await myConnection.OpenAsync();
+
+        //                using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+        //                {
+        //                    oDataAdapter.Fill(oDataSet);
+        //                }
+        //            }
+        //            int rowIndex = 0;
+
+
+        //            // If no data returned
+        //            if (oDataSet.Tables.Count == 0 || oDataSet.Tables[0].Rows.Count == 0)
+        //                return ItemMasterList;
+
+        //            foreach (DataRow row in oDataSet.Tables[0].Rows)
+        //            {
+        //                try
+        //                {
+        //                    rowIndex++;
+        //                    ItemMasterList.Add(new ItemMasterModel
+        //                    {
+        //                        Item_Code = SafeToInt(row[0]),
+        //                        PartCode = SafeToString(row[1]),
+        //                        Item_Name = SafeToString(row[2]),
+        //                        ParentCode = SafeToInt(row[3]),
+        //                        ItemGroup = SafeToString(row[4]),
+        //                        EntryDate = SafeToString(row[5]),
+        //                        LastUpdatedDate = SafeToString(row[6]),
+        //                        LeadTime = SafeToInt(row[7]),
+        //                        CC = SafeToString(row[8]),
+        //                        Unit = SafeToString(row[9]),
+        //                        SalePrice = SafeToInt(row[10]),
+        //                        PurchasePrice = SafeToInt(row[11]),
+        //                        CostPrice = SafeToInt(row[12]),
+        //                        WastagePercent = SafeToInt(row[13]),
+        //                        WtSingleItem = SafeToInt(row[14]),
+        //                        NoOfPcs = SafeToInt(row[15]),
+        //                        QcReq = SafeToString(row[16]),
+        //                        ItemType = SafeToInt(row[17]),
+        //                        TypeName = SafeToString(row[18]),
+        //                        ImageURL = SafeToString(row[19]),
+        //                        UID = SafeToString(row[20]),
+        //                        DrawingNo = SafeToString(row[21]),
+        //                        MinimumLevel = SafeToInt(row[22]),
+        //                        MaximumLevel = SafeToInt(row[23]),
+        //                        ReorderLevel = SafeToInt(row[24]),
+        //                        YearCode = SafeToInt(row[25]),
+        //                        AlternateUnit = SafeToString(row[26]),
+        //                        RackID = SafeToString(row[27]),
+        //                        BinNo = SafeToString(row[28]),
+        //                        ItemSize = SafeToString(row[29]),
+        //                        Colour = SafeToString(row[30]),
+        //                        NeedPO = SafeToString(row[31]),
+        //                        StdPacking = SafeToInt(row[32]),
+        //                        PackingType = SafeToString(row[33]),
+        //                        ModelNo = SafeToString(row[34]),
+        //                        YearlyConsumedQty = SafeToInt(row[35]),
+        //                        DispItemName = SafeToString(row[36]),
+        //                        PurchaseAccountcode = SafeToString(row[37]),
+        //                        SaleAccountcode = SafeToString(row[38]),
+        //                        MinLevelDays = SafeToInt(row[39]),
+        //                        MaxLevelDays = SafeToInt(row[40]),
+        //                        EmpName = SafeToString(row[41]),
+        //                        DailyRequirment = SafeToInt(row[42]),
+        //                        Stockable = SafeToString(row[43]),
+        //                        WipStockable = SafeToString(row[44]),
+        //                        Store = SafeToString(row[45]),
+        //                        ProductLifeInus = SafeToInt(row[46]),
+        //                        ItemDesc = SafeToString(row[47]),
+        //                        MaxWipStock = SafeToInt(row[48]),
+        //                        NeedSo = SafeToString(row[49]),
+        //                        BomRequired = SafeToString(row[50]),
+        //                        JobWorkItem = SafeToString(row[51]),
+        //                        HSNNO = SafeToString(row[52]),
+        //                        CreatedByName = SafeToString(row[53]),
+        //                        CreatedOn = SafeToDateTime(row[54]),
+        //                        UpdatedOn = SafeToDateTime(row[55]),
+        //                        UpdatedByName = SafeToString(row[56]),
+        //                        Active = SafeToString(row[57]),
+        //                        UniversalPartCode = SafeToString(row[58]),
+        //                        UniversalDescription = SafeToString(row[59]),
+        //                        ProdWorkCenterDescription = SafeToString(row[60]),
+        //                        ProdInWorkcenter = SafeToInt(row[61]),
+        //                        ProdInhouseJW = SafeToString(row[62]),
+        //                        BatchNO = SafeToString(row[63]),
+        //                        VoltageVlue = SafeToString(row[64]),
+        //                        OldPartCode = SafeToString(row[65]),
+        //                        SerialNo = SafeToString(row[66]),
+        //                        Package = SafeToString(row[67]),
+        //                        IsCustJWAdjMandatory = SafeToString(row[68]),
+        //                        ItemServAssets = SafeToString(row[69]),
+        //                        StoreName = SafeToString(row[70]),
+        //                        SaleAccountName = SafeToString(row[71]),
+        //                        PurchaseAccountName = SafeToString(row[72]),
+        //                        BranchName = SafeToString(row[73]),
+        //                        NoOfCavity = SafeToInt(row[74]),
+        //                        ProdInMachineGroupName = SafeToString(row[75]),
+        //                        ProdInMachineName1 = SafeToString(row[76]),
+        //                        ProdInMachineName2 = SafeToString(row[77]),
+        //                        ProdInMachineName3 = SafeToString(row[78]),
+        //                        ProdInMachineName4 = SafeToString(row[79]),
+        //                        NoOfshotsHours = SafeToInt(row[80]),
+        //                        ChildBom = SafeToString(row[81]),
+        //                        ProdInMachineGroupId = SafeToInt(row[82]),
+        //                        ProdInMachine1 = SafeToInt(row[83]),
+        //                        ProdInMachine2 = SafeToInt(row[84]),
+        //                        ProdInMachine3 = SafeToInt(row[85]),
+        //                        ProdInMachine4 = SafeToInt(row[86]),
+        //                        Hardness = SafeToString(row[87])
+        //                    });
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    throw new Exception($"Error at Row #{rowIndex}. Message: {ex.Message}");
+        //                }
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            dynamic Error = new ExpandoObject();
+        //            Error.Message = ex.Message;
+        //            Error.Source = ex.Source;
+        //            // Optional: log this error somewhere
+        //        }
+
+        //        return ItemMasterList;
+        //    }
         private static int SafeToInt(object value)
         {
             return value == DBNull.Value || value == null || value.ToString() == "" ? 0 : Convert.ToInt32(value);

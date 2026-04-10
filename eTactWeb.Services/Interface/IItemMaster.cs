@@ -11,8 +11,10 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> DeleteItemByID(int ID);
 
         Task<IList<ItemMasterModel>> GetAllItemMaster(string Flag);
+        Task<ResponseResult> GetDashBoardData(string ItemName, string PartCode, string ItemGroup, string ItemCategory, string HsnNo, string UniversalPartCode, string Flag, string DashboardRepoType, int userID);
 
-        Task<IList<ItemMasterModel>> GetDashBoardData(string ItemName, string PartCode, string ItemGroup, string ItemCategory, string HsnNo,string UniversalPartCode, string Flag);
+
+        //Task<IList<ItemMasterModel>> GetDashBoardData(string ItemName, string PartCode, string ItemGroup, string ItemCategory, string HsnNo,string UniversalPartCode, string Flag);
 
         FeatureOption GetFeatureOption();
 

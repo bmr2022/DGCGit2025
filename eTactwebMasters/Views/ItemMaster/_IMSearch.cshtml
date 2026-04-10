@@ -4,54 +4,72 @@
     <div class="card-body">
         <div class="row">
             <form id="SParam">
-            <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
-                <label for="state" class="control-label">Item Name</label>
-                <input asp-for="Item_Name" class="form-control form-control-sm" data-val="false" />
-            </div>
-            <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
-                <label for="state" class="control-label">Part Code</label>
-                <input asp-for="PartCode" class="form-control form-control-sm" data-val="false" />
-            </div>
-            <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
-                <label for="state" class="control-label">Universal Part Code</label>
-                <input asp-for="UniversalPartCode" class="form-control form-control-sm" data-val="false" />
-            </div>
-            <div class="col col-md-2 col-sm-6 col-xs-6">
-                <label for="state" class="control-label">Item Group</label>
-                <input class="form-control" asp-for="ParentName" />
-            </div>
-            @*<div class="col col-md-2 col-sm-6 col-xs-6">
+                <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
+                    <label for="state" class="control-label">Item Name</label>
+                    <input asp-for="Item_Name" class="form-control form-control-sm" data-val="false" />
+                </div>
+                <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
+                    <label for="state" class="control-label">Part Code</label>
+                    <input asp-for="PartCode" class="form-control form-control-sm" data-val="false" />
+                </div>
+                <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
+                    <label for="state" class="control-label">Universal Part Code</label>
+                    <input asp-for="UniversalPartCode" class="form-control form-control-sm" data-val="false" />
+                </div>
+                <div class="col col-md-2 col-sm-6 col-xs-6">
+                    <label for="state" class="control-label">Item Group</label>
+                    <input class="form-control" asp-for="ParentName" />
+                </div>
+                @*<div class="col col-md-2 col-sm-6 col-xs-6">
                 <label for="state" class="control-label">Item Category</label>
                 <input class="form-control" asp-for="ItemTypeName" />
             </div>*@
-            <div class="col-md-2 col-sm-6 col-xs-6">
-                <label for="state" class="control-label">Hsn No</label>
-                <input asp-for="HSNNO" class="form-control form-control-sm" />
-            </div>
-            <div class="col-md-2 col-sm-6 col-xs-6">
-                <label for="state" class="control-label">Type</label>
-                <select asp-for="POServType" class="form-control form-control-sm">
-                    <option selected disabled>-Select-</option>
-                    <option value="Item">Item</option>
-                    <option value="Services">Service</option>
-                    <option value="Assets">Asset</option>
-                </select>
-            </div>
-            <div class="col-md-1 col-sm-6 col-xs-6">
-                    <label for="state" class="control-label">PageSize</label>
-                <select asp-for="PageSize" class="form-control form-control-sm">
-                    <option value="15">15</option>
-                        <option value="50" selected>50</option>
-                        <option value="100">100</option>
-                        <option value="150">150</option>
-                </select>
-            </div>
+                <div class="col-md-2 col-sm-6 col-xs-6">
+                    <label for="state" class="control-label">Hsn No</label>
+                    <input asp-for="HSNNO" class="form-control form-control-sm" />
+                </div>
+                <div class="col-md-2 col-sm-6 col-xs-6">
+                    <label for="state" class="control-label">Type</label>
+                    <select asp-for="POServType" class="form-control form-control-sm">
+                        <option selected disabled>-Select-</option>
+                        <option value="Item">Item</option>
+                        <option value="Service">Service</option>
+                        <option value="Assets">Asset</option>
+                    </select>
+                </div>
+                @* <div class="col-md-1 col-sm-6 col-xs-6"> *@
+                @*         <label for="state" class="control-label">PageSize</label> *@
+                @*     <select asp-for="PageSize" class="form-control form-control-sm"> *@
+                @*         <option value="15">15</option> *@
+                @*             <option value="50" selected>50</option> *@
+                @*             <option value="100">100</option> *@
+                @*             <option value="150">150</option> *@
+                @*     </select> *@
+                @* </div> *@
+                <div class="col-md-1 col-sm-6 col-xs-6">
+                    <label for="PageSize" class="control-label">PageSize</label>
+                    <input asp-for="PageSize" value="500" class="form-control form-control-sm"
+                           inputmode="numeric" pattern="[0-9]*"
+                           oninput="this.value = this.value.replace(/[^0-9]/g,'');" />
+
+
+
+
+                </div>
                 <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
                     <label class="form-label">Global search</label>
                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                 </div>
-                <div class=" d-flex justify-content-center mt-3" width="inherit">
-                    <button type="button" id="btnSearch" class="btn btn-sm btn-outline-primary" onclick="GetSearchData();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                    <label asp-for="DashboardRepoType" class="form-label">Dashboard Type</label>
+                    <select class="form-select" asp-for="DashboardRepoType">
+                        <option value="" disabled>-Select-</option>
+                        <option value="SUMMARY" selected>Summary</option>
+                        <option value="Detail">Detail</option>
+                    </select>
+                </div>
+                <div class="col-sm-2 col-md-6 col-lg-4 col-xl-5  mt-3" width="inherit">
+                    <button type="button" id="btnSearch" class="btn btn-sm btn-outline-primary" onclick="GetSearchData(page);" style="padding:3px;height:30px;width:100px;margin-left:20px;">
                         <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
                     </button>
                     <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
@@ -60,9 +78,10 @@
                     <button type="reset" class="btn btn-sm btn-outline-danger" onclick="Reload();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                     </button>
-                    <div class="form-check form-switch d-flex justify-content-center mt-2" style="padding:3px;margin-left:50px;">
+                    
+                    @*  <div class="form-check form-switch d-flex justify-content-center mt-2" style="padding:3px;margin-left:50px;">
                         <input id="ShowAllSwitch" class="form-check-input" type="checkbox" role="switch" />&nbsp;&nbsp;&nbsp;&nbsp;<label class="form-label">Show/Hide All Columns</label>
-                    </div>
+                    </div> *@
                 </div>
             </form>
         </div>

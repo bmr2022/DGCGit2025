@@ -10,9 +10,9 @@ namespace eTactWeb.DOM.Models
     public class AccountHeadMasterModel : TimeStamp
     {
         public int Account_Code { get; set; }
-        public string Account_Name { get; set; }
+        public string? Account_Name { get; set; }
         public int Parent_Account_Code { get; set; }
-        public string Main_Group { get; set; }
+        public string? Main_Group { get; set; }
         public int OpeningForYear { get; set; }
         public string? EntryByMachine { get; set; }
         public string? ActualEntryDate { get; set; }

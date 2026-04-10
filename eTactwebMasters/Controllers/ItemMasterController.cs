@@ -61,9 +61,24 @@ public class ItemMasterController : Controller
 
         return Json(Result);
     }
-
-    public async Task<IActionResult> Dashboard(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string Flag, string Package, string OldPartCode, string SerialNo, string VoltageVlue, string UniversalPartCode = "", int pageNumber = 1, int pageSize = 50)
+    public async Task<IActionResult> Dashboard(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string Flag, string DashboardRepoType, string Package, string OldPartCode, string SerialNo, string VoltageVlue, string UniversalPartCode = "", int pageNumber = 1, int pageSize = 50)
     {
+        int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+        var rights = await _IItemMaster.GetFormRights(userID);
+        if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+        {
+            return RedirectToAction("Dashboard", "Home");
+        }
+        var table = rights.Result.Tables[0];
+        bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+        bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+        bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+        bool optDelete = Convert.ToBoolean(table.Rows[0]["OptDelete"]);
+
+        if (!(optView || optUpdate || optDelete))
+        {
+            return RedirectToAction("Dashboard", "Home");
+        }
         ItemMasterModel model = new ItemMasterModel
         {
             ParentGroupList = await _IDataLogic.GetDropDownList("Itemgroup_master", "SP_GetDropDownList"),
@@ -75,14 +90,39 @@ public class ItemMasterController : Controller
         ParentCode = ParentCode == "0" || ParentCode == null ? null : ParentCode;
         HsnNo = HsnNo == "0" || HsnNo == null ? null : HsnNo;
 
-        var allData = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo, UniversalPartCode, Flag);
+        // var allData = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo, UniversalPartCode, Flag, DashboardRepoType, userID);
+        // if (allData == null || !(allData.Result is DataTable dt))
+        // {
+        //     model.TotalRecords = 0;
+        //     //model.PageNumber = pageNumber;
+        //     //model.PageSize = pageSize;
+        //     model.Rows = new List<Dictionary<string, object>>();
+        //     //model.Headers = new List<DashboardColumn>();
+        //     return PartialView("_IMGrid", model);
+        // }
+        // // 🔹 Pagination
+        // model.TotalRecords = dt.Rows.Count;
+        // model.PageNumber = pageNumber;
+        // model.PageSize = pageSize > 0 ? pageSize : dt.Rows.Count;
 
-        HttpContext.Session.SetString("KeyItemListSearch", JsonConvert.SerializeObject(allData));
+        // // 🔹 Dynamic headers
+        // model.Headers = dt.Columns
+        //     .Cast<DataColumn>()
+        //     .Select(c => new DashboardColumn
+        //     {
+        //         Title = c.ColumnName,
+        //         Field = c.ColumnName
+        //     })
+        //     .ToList();
+        // model.Rows = dt.AsEnumerable()
+        //.Skip((pageNumber - 1) * model.PageSize)
+        //.Take(model.PageSize)
+        //.Select(r => dt.Columns
+        //    .Cast<DataColumn>()
+        //    .ToDictionary(c => c.ColumnName, c => r[c] == DBNull.Value ? null : r[c]))
+        //.ToList();
+        // HttpContext.Session.SetString("KeyItemListSearch", JsonConvert.SerializeObject(dt));
 
-        model.TotalRecords = allData.Count();
-        model.PageNumber = pageNumber;
-        model.PageSize = pageSize;
-        model.MasterList = allData.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         model.Item_Name = Item_Name;
         model.PartCode = PartCode;
         model.ParentName = ParentCode;
@@ -95,74 +135,212 @@ public class ItemMasterController : Controller
         //model.HSNNO = HsnNo == null ? 0 : Convert.ToInt32(HsnNo);
 
         // return View(model);
-        if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-        {
-            return PartialView("_IMGrid", model); // Your partial grid view
-        }
+        //if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        //{
+        //    return PartialView("_IMGrid", model); 
+        //}
 
         return View(model);
     }
-    public async Task<IActionResult> GetSearchData(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string UniversalPartCode, string Flag, int pageNumber = 1, int pageSize = 50)
-    {
-        ItemMasterModel model = new ItemMasterModel();
-        model.SwitchAll = "false";
-        Item_Name = string.IsNullOrEmpty(Item_Name) ? "" : Item_Name.Trim();
-        PartCode = string.IsNullOrEmpty(PartCode) ? "" : PartCode.Trim();
-        ItemType = ItemType == "0" || ItemType == null ? null : ItemType;
-        ParentCode = ParentCode == "0" || ParentCode == null ? null : ParentCode;
-        HsnNo = HsnNo == "0" || HsnNo == null ? null : HsnNo;
-        model.MasterList = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo, UniversalPartCode, "Search");
-        var allData = model.MasterList;
-        HttpContext.Session.SetString("KeyItemListSearch", JsonConvert.SerializeObject(allData));
 
-        model.TotalRecords = allData.Count();
-        model.PageNumber = pageNumber;
-        model.PageSize = pageSize;
-        model.MasterList = allData.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-        return PartialView("_IMGrid", model);
-    }
-    public async Task<IActionResult> GetAllColumns(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string UniversalPartCode, string Flag, int pageNumber = 1, int pageSize = 0)
-    {
-        ItemMasterModel model = new ItemMasterModel();
-        model.SwitchAll = "true";
-        Item_Name = string.IsNullOrEmpty(Item_Name) ? "" : Item_Name.Trim();
-        PartCode = string.IsNullOrEmpty(PartCode) ? "" : PartCode.Trim();
-        ItemType = ItemType == "0" || ItemType == null ? null : ItemType;
-        ParentCode = ParentCode == "0" || ParentCode == null ? null : ParentCode;
-        HsnNo = HsnNo == "0" || HsnNo == null ? null : HsnNo;
-        model.MasterList = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo, UniversalPartCode, "Search");
-        var allData = model.MasterList;
-        HttpContext.Session.SetString("KeyItemListSearch", JsonConvert.SerializeObject(allData));
 
-        model.TotalRecords = allData.Count();
-        model.PageNumber = pageNumber;
-        model.PageSize = pageSize;
-        model.MasterList = allData.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-        return PartialView("_IMGridAllColumns", model);
-    }
-    public IActionResult ExportItemMasterToExcel(bool showAll)
-    {
-        string modelListJson = HttpContext.Session.GetString("KeyItemListSearch");
+    //public async Task<IActionResult> Dashboard(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string Flag, string Package, string OldPartCode, string SerialNo, string VoltageVlue, string UniversalPartCode = "", int pageNumber = 1, int pageSize = 50)
+    //{
+    //    ItemMasterModel model = new ItemMasterModel
+    //    {
+    //        ParentGroupList = await _IDataLogic.GetDropDownList("Itemgroup_master", "SP_GetDropDownList"),
+    //        ItemTypeList = await _IDataLogic.GetDropDownList("Item_Master_Type", "SP_GetDropDownList")
+    //    };
+    //    Item_Name = string.IsNullOrEmpty(Item_Name) ? "" : Item_Name.Trim();
+    //    PartCode = string.IsNullOrEmpty(PartCode) ? "" : PartCode.Trim();
+    //    ItemType = ItemType == "0" || ItemType == null ? null : ItemType;
+    //    ParentCode = ParentCode == "0" || ParentCode == null ? null : ParentCode;
+    //    HsnNo = HsnNo == "0" || HsnNo == null ? null : HsnNo;
 
-        List<ItemMasterModel> modelList = new List<ItemMasterModel>();
-        if (!string.IsNullOrEmpty(modelListJson))
+    //    var allData = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo, UniversalPartCode, Flag);
+
+    //    HttpContext.Session.SetString("KeyItemListSearch", JsonConvert.SerializeObject(allData));
+
+    //    model.TotalRecords = allData.Count();
+    //    model.PageNumber = pageNumber;
+    //    model.PageSize = pageSize;
+    //    model.MasterList = allData.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+    //    model.Item_Name = Item_Name;
+    //    model.PartCode = PartCode;
+    //    model.ParentName = ParentCode;
+    //    model.ItemTypeName = ItemType;
+    //    model.VoltageVlue = VoltageVlue;
+    //    model.SerialNo = SerialNo;
+    //    model.OldPartCode = OldPartCode;
+    //    model.Package = Package;
+    //    model.HSNNO = HsnNo;
+    //    //model.HSNNO = HsnNo == null ? 0 : Convert.ToInt32(HsnNo);
+
+    //    // return View(model);
+    //    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+    //    {
+    //        return PartialView("_IMGrid", model); // Your partial grid view
+    //    }
+
+    //    return View(model);
+    //}
+
+    public async Task<IActionResult> GetSearchData(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string UniversalPartCode, string Flag, string DashboardRepoType, int pageNumber = 1, int pageSize = 200)
+    {
+        try
         {
-            modelList = JsonConvert.DeserializeObject<List<ItemMasterModel>>(modelListJson);
+            var model = new ItemMasterModel();
+            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+
+            // 🔹 Null/Zero Handling
+            Item_Name = string.IsNullOrEmpty(Item_Name) ? "" : Item_Name.Trim();
+            PartCode = string.IsNullOrEmpty(PartCode) ? "" : PartCode.Trim();
+            ParentCode = ParentCode == "0" || ParentCode == null ? null : ParentCode;
+            ItemType = ItemType == "0" || ItemType == null ? null : ItemType;
+            HsnNo = HsnNo == "0" || HsnNo == null ? null : HsnNo;
+            UniversalPartCode = string.IsNullOrEmpty(UniversalPartCode) ? "" : UniversalPartCode.Trim();
+
+
+            DashboardRepoType = string.IsNullOrEmpty(DashboardRepoType) ? "SUMMARY" : DashboardRepoType.ToUpper();
+
+            // 🔹 Call BLL
+            var results = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo, UniversalPartCode, Flag, DashboardRepoType, userID);
+
+            if (results == null || !(results.Result is DataTable dt))
+            {
+                model.TotalRecords = 0;
+                model.Rows = new List<Dictionary<string, object>>();
+                model.Headers = new List<DashboardColumn>();
+                return PartialView("_IMGrid", model);
+            }
+
+            // 🔹 Pagination
+            model.TotalRecords = dt.Rows.Count;
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+
+            // 🔹 Dynamic Headers
+            model.Headers = dt.Columns
+                .Cast<DataColumn>()
+                .Select(c => new DashboardColumn
+                {
+                    Title = c.ColumnName,
+                    Field = c.ColumnName
+                })
+                .ToList();
+
+            // 🔹 Dynamic Rows with Pagination
+            model.Rows = dt.AsEnumerable()
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(r => dt.Columns
+                    .Cast<DataColumn>()
+                    .ToDictionary(
+                        c => c.ColumnName,
+                        c => r[c] == DBNull.Value ? null : r[c]
+                    ))
+                .ToList();
+
+            // 🔹 Store in session if needed
+            HttpContext.Session.SetString("KeyItemListSearch", JsonConvert.SerializeObject(dt));
+
+            return PartialView("_IMGrid", model);
         }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+    //public async Task<IActionResult> GetSearchData(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string UniversalPartCode, string Flag, int pageNumber = 1, int pageSize = 50)
+    //{
+    //    ItemMasterModel model = new ItemMasterModel();
+    //    model.SwitchAll = "false";
+    //    Item_Name = string.IsNullOrEmpty(Item_Name) ? "" : Item_Name.Trim();
+    //    PartCode = string.IsNullOrEmpty(PartCode) ? "" : PartCode.Trim();
+    //    ItemType = ItemType == "0" || ItemType == null ? null : ItemType;
+    //    ParentCode = ParentCode == "0" || ParentCode == null ? null : ParentCode;
+    //    HsnNo = HsnNo == "0" || HsnNo == null ? null : HsnNo;
+    //    model.MasterList = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo, UniversalPartCode, "Search");
+    //    var allData = model.MasterList;
+    //    HttpContext.Session.SetString("KeyItemListSearch", JsonConvert.SerializeObject(allData));
+
+    //    model.TotalRecords = allData.Count();
+    //    model.PageNumber = pageNumber;
+    //    model.PageSize = pageSize;
+    //    model.MasterList = allData.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+    //    return PartialView("_IMGrid", model);
+    //}
+    //public async Task<IActionResult> GetAllColumns(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string UniversalPartCode, string Flag, int pageNumber = 1, int pageSize = 0)
+    //{
+    //    ItemMasterModel model = new ItemMasterModel();
+    //    model.SwitchAll = "true";
+    //    Item_Name = string.IsNullOrEmpty(Item_Name) ? "" : Item_Name.Trim();
+    //    PartCode = string.IsNullOrEmpty(PartCode) ? "" : PartCode.Trim();
+    //    ItemType = ItemType == "0" || ItemType == null ? null : ItemType;
+    //    ParentCode = ParentCode == "0" || ParentCode == null ? null : ParentCode;
+    //    HsnNo = HsnNo == "0" || HsnNo == null ? null : HsnNo;
+    //    model.MasterList = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo, UniversalPartCode, "Search");
+    //    var allData = model.MasterList;
+    //    HttpContext.Session.SetString("KeyItemListSearch", JsonConvert.SerializeObject(allData));
+
+    //    model.TotalRecords = allData.Count();
+    //    model.PageNumber = pageNumber;
+    //    model.PageSize = pageSize;
+    //    model.MasterList = allData.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+    //    return PartialView("_IMGridAllColumns", model);
+    //}
+    public IActionResult ExportItemMasterToExcel()
+    {
+        string json = HttpContext.Session.GetString("KeyItemListSearch");
+
+        if (string.IsNullOrEmpty(json))
+            return Content("No data available for export.");
+
+        var data = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(json);
 
         using var workbook = new XLWorkbook();
         var worksheet = workbook.Worksheets.Add("Item Master");
 
-        // Choose export method based on 'showAll'
-        if (showAll)
+        if (data != null && data.Count > 0)
         {
-            EXPORT_AllColumnsGrid(worksheet, modelList);
-        }
-        else
-        {
-            EXPORT_SearchGrid(worksheet, modelList);
+            int col = 1;
+
+            // STEP 1: Add Headers
+            foreach (var key in data[0].Keys)
+            {
+                worksheet.Cell(1, col).Value = key;
+                col++;
+            }
+
+            // STEP 2: Apply Yellow Highlight to Entire Header Row
+            int totalColumns = data[0].Keys.Count;
+
+            var headerRange = worksheet.Range(1, 1, 1, totalColumns);
+            headerRange.Style.Fill.BackgroundColor = XLColor.Yellow;
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            headerRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+            worksheet.Row(1).Height = 14;
+            // Freeze Header Row
+            worksheet.SheetView.FreezeRows(1);
+
+            // STEP 3: Add Data Rows
+            int row = 2;
+            foreach (var item in data)
+            {
+                col = 1;
+                foreach (var value in item.Values)
+                {
+                    worksheet.Cell(row, col).Value = value?.ToString();
+                    col++;
+                }
+                row++;
+            }
         }
 
+        // STEP 4: Auto Adjust Column Width
         worksheet.Columns().AdjustToContents();
 
         using var stream = new MemoryStream();
@@ -934,9 +1112,22 @@ public class ItemMasterController : Controller
         string? HSNNO = "";
         string? UniversalPartCode = "";
         string? Flag = "";
-         var model = new ItemMasterModel();
+        string? DashboardRepoType = "";
+        var model = new ItemMasterModel();
+        int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+
         model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-        model.MasterList = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HSNNO, UniversalPartCode, Flag);
+        var response = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HSNNO, UniversalPartCode, Flag, DashboardRepoType, userID);
+
+        if (response.IsSuccess && response.Result != null)
+        {
+            // Convert the Data object to your collection
+            model.MasterList = JsonConvert.DeserializeObject<List<ItemMasterModel>>(response.Result.ToString());
+        }
+        else
+        {
+            model.MasterList = new List<ItemMasterModel>(); // empty list if no data
+        }
         HttpContext.Session.SetString("KeyItemListSearch", JsonConvert.SerializeObject(model.MasterList));
         return PartialView("_DisplayExcelselectedItemData", model);
     }
