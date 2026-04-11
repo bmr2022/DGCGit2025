@@ -80,11 +80,11 @@ namespace eTactwebAdmin.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetSlipNoData(string MainTableName)
+        public async Task<JsonResult> GetSlipNoData(string MainTableName, string formname, int YearCode)
         {
             try
             {
-                var result = await _IDeleteTransaction.GetSlipNoData("GetSlipNoData", MainTableName);
+                var result = await _IDeleteTransaction.GetSlipNoData("GetSlipNoData", MainTableName, formname, YearCode);
                 // Manually serialize the result
                 string jsonString = JsonConvert.SerializeObject(result);
 

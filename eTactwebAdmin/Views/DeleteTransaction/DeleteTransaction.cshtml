@@ -38,7 +38,10 @@
                                     <label asp-for="FormName" class="form-label">Form Name</label>
                                     <select id="FormName" name="FormName" class="form-select">
                                         <option value="">-- Select Form --</option>
+
                                     </select>
+                                    <input type="hidden" asp-for="TableName" />
+                                    <input type="hidden" asp-for="OiginalFormName" />
                                 </div>
                                 <div class="col-lg-2">
                                     <label asp-for="YearCode" class="form-label">Year Code</label>
@@ -160,8 +163,8 @@
                                     <div class="card overflow-auto">
                                         <div class="card-body" id="salebillDashboardGrid">
                                             <a asp-controller="SaleInvoice"
-                                               asp-action="SaleBillOnCounterDashboard"
-                                               asp-route-redirectFrom="admindelete">
+                                                   asp-action="SaleBillOnCounterDashboard"
+                                                   asp-route-redirectFrom="admindelete">
                                                 Open Dashboard
                                             </a>
                                         </div>
@@ -215,7 +218,8 @@
             FillFormName();
         });
         $('#FormName').change(function () {
-            $('#SlipNolable').text('Slip No');
+            $('#TableName').val($(this).val());
+               $('#SlipNolable').text('Slip No');
             if ($('#FormName').val() == "ProductionEntryMain" || $('#FormName').val() == "Item_Master") {
                 $('#AccountNameLable').text('Item Name')
             }
@@ -256,10 +260,11 @@
             else if ($('#FormName').val() == "Item_Master" || $('#FormName').val() == "Account_Head_Master") {
 
                 // slipno text change
-                if ($('#FormName').val() == "Item_Master") {
+                if($('#FormName').val() == "Item_Master"){
                     $('#SlipNolable').text('PartCode');
                 }
-                else {
+                else
+                {
                     $('#SlipNolable').text('Account Name');
                 }
                 $('.BomNo').hide();
@@ -317,6 +322,7 @@
                                 text: item.FormName
                             }));
                         });
+                        
                     }
 
                 },
@@ -354,10 +360,33 @@
                 }
             });
         }
+        var globalSlipList = [];
+                  $("#SlipNo").on("blur", function () {
 
-        $('#SlipNo').focus(function () {
-            $('#AccountName, #AccountCode, #EntryId, #BasicAmount, #NetAmount, #EntryDate, #NewSlipNo,#NewSlipPrefix').val('');
+            var enteredValue = $(this).val().trim();
+
+            if (enteredValue === "") {
+                 $('#AccountName, #AccountCode, #EntryId, #BasicAmount, #NetAmount, #EntryDate, #NewSlipNo,#NewSlipPrefix').val('');
+                return;
+            }
+
+            // Find matching slip
+            // var matchedItem = globalSlipList.find(x => x.value === enteredValue);//kinjal -- this compares type of data and value so when int type data fills in slip no then not work.
+            var matchedItem = globalSlipList.find(x => x.value == enteredValue);
+
+            if (matchedItem) {
+                FillSlipDetails(matchedItem);
+                GetBomNo();
+            } else {
+                // If invalid slip number
+               $('#AccountName, #AccountCode, #EntryId, #BasicAmount, #NetAmount, #EntryDate, #NewSlipNo,#NewSlipPrefix').val('');
+            }
         });
+
+        // $('#SlipNo').focus(function () {
+        //      $('#AccountName, #AccountCode, #EntryId, #BasicAmount, #NetAmount, #EntryDate, #NewSlipNo,#NewSlipPrefix').val('');
+        //      });
+        
 
         function FillSlipNoAutoSuggest() {
             const mainTableName = $('#FormName').val();
@@ -369,7 +398,7 @@
             $.ajax({
                 url: '/DeleteTransaction/GetSlipNoData',
                 type: 'GET',
-                data: { MainTableName: mainTableName },
+                data: { MainTableName: mainTableName ,formname:$('#FormName option:selected').text(),YearCode: $('#YearCode').val()},
                 dataType: 'json',
                 success: function (data) {
                     const obj = typeof data === "string" ? JSON.parse(data) : data;
@@ -377,7 +406,7 @@
 
                     if (result.length === 0) return;
 
-                    const slipList = result.map(item => ({
+                    globalSlipList= result.map(item => ({
                         label: item.SlipNo,
                         value: item.SlipNo,
                         accountName: item.Account_Name, // match SP output
@@ -396,7 +425,7 @@
                     }));
 
                     $("#SlipNo").autocomplete({
-                        source: slipList,
+                        source: globalSlipList,
                         minLength: 1,
                         select: function (event, ui) {
                             $("#SlipNo").val(ui.item.value);
@@ -522,7 +551,8 @@
                 $('#IssueToWCName').val('');
                 $('#IssueToStoreWC').val('');
                 $('#EntryDate').val('');
-                $('#SlipNo').val('');
+                 $('#SlipNo').val('');
+                 $("#OiginalFormName").val($("#FormName option:selected").text());
 
                 FillSlipNoAutoSuggest();
             });

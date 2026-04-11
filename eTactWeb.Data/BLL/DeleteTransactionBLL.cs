@@ -36,9 +36,9 @@ namespace eTactWeb.Data.BLL
         }
 
 
-        public async Task<ResponseResult> GetSlipNoData(string Flag, string MainTableName)
+        public async Task<ResponseResult> GetSlipNoData(string Flag, string MainTableName, string Formname, int YearCode)
         {
-            return await _DeleteTransactionDAL.GetSlipNoData(Flag, MainTableName);
+            return await _DeleteTransactionDAL.GetSlipNoData(Flag, MainTableName, Formname, YearCode);
         }
 
         public async Task<ResponseResult> InsertAndDeleteTransaction(DeleteTransactionModel model)

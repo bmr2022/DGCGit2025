@@ -85,7 +85,7 @@ namespace eTactWeb.Data.DAL
         }
 
 
-        public async Task<ResponseResult> GetSlipNoData(string Flag, string MainTableName)
+        public async Task<ResponseResult> GetSlipNoData(string Flag, string MainTableName, string Formname, int YearCode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -93,6 +93,8 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
                 SqlParams.Add(new SqlParameter("@MainTableName", MainTableName));
+                SqlParams.Add(new SqlParameter("@FormName", Formname));
+                SqlParams.Add(new SqlParameter("@YearCode", YearCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable(SP_NAME, SqlParams);
             }
             catch (Exception ex)
@@ -113,7 +115,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>
         {
             new SqlParameter("@Flag", model.Flag),
-            new SqlParameter("@FormName", model.FormName),
+            new SqlParameter("@FormName", model.OiginalFormName),
             new SqlParameter("@Action", model.Action),
             new SqlParameter("@SlipNo", model.SlipNo),
             new SqlParameter("@newSlipNo", model.newSlipNo),
