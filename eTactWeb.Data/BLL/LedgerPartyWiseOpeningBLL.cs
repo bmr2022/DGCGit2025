@@ -12,7 +12,7 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL
 {
-    public  class LedgerPartyWiseOpeningBLL:ILedgerPartyWiseOpening
+    public class LedgerPartyWiseOpeningBLL : ILedgerPartyWiseOpening
     {
         private LedgerPartyWiseOpeningDAL _LedgerPartyWiseOpeningDAL;
         private readonly IDataLogic _DataLogicDAL;
@@ -23,11 +23,11 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = dataLogicDAL;
         }
 
-		public async Task<ResponseResult> FillEntryId(int YearCode, string EntryDate)
-		{
-			return await _LedgerPartyWiseOpeningDAL.FillEntryId( YearCode,  EntryDate);
-		}
-		public async Task<ResponseResult> FillLedgerName(int OpeningYearCode)
+        public async Task<ResponseResult> FillEntryId(int YearCode, string EntryDate)
+        {
+            return await _LedgerPartyWiseOpeningDAL.FillEntryId(YearCode, EntryDate);
+        }
+        public async Task<ResponseResult> FillLedgerName(int OpeningYearCode)
         {
             return await _LedgerPartyWiseOpeningDAL.FillLedgerName(OpeningYearCode);
         }
@@ -41,37 +41,42 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ResponseResult> GetOpeningAmt(int OpeningYearCode, int AccountCode)
         {
-            return await _LedgerPartyWiseOpeningDAL.GetOpeningAmt(OpeningYearCode,  AccountCode);
+            return await _LedgerPartyWiseOpeningDAL.GetOpeningAmt(OpeningYearCode, AccountCode);
         }
         public async Task<ResponseResult> FillDueDate(int AccountCode)
         {
-            return await _LedgerPartyWiseOpeningDAL.FillDueDate(  AccountCode);
+            return await _LedgerPartyWiseOpeningDAL.FillDueDate(AccountCode);
         }
         public async Task<ResponseResult> SaveLedgerPartyWiseOpening(LedgerPartyWiseOpeningModel model, DataTable GIGrid)
         {
-            return await _LedgerPartyWiseOpeningDAL.SaveLedgerPartyWiseOpening(model,GIGrid);
+            return await _LedgerPartyWiseOpeningDAL.SaveLedgerPartyWiseOpening(model, GIGrid);
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _LedgerPartyWiseOpeningDAL.GetFormRights(ID);
+        }
+
         public async Task<ResponseResult> GetDashboardData()
         {
             return await _LedgerPartyWiseOpeningDAL.GetDashboardData();
         }
         public async Task<LedgerPartyWiseOpeningDashBoardModel> GetDashboardDetailData(string LedgerName, string BillNo)
         {
-            return await _LedgerPartyWiseOpeningDAL.GetDashboardDetailData( LedgerName,  BillNo);
+            return await _LedgerPartyWiseOpeningDAL.GetDashboardDetailData(LedgerName, BillNo);
 
         }
         public async Task<LedgerPartyWiseOpeningModel> GetViewByID(int OpeningYearCode, int LedgerOpnEntryId)
         {
-            return await _LedgerPartyWiseOpeningDAL.GetViewByID( OpeningYearCode,  LedgerOpnEntryId);
+            return await _LedgerPartyWiseOpeningDAL.GetViewByID(OpeningYearCode, LedgerOpnEntryId);
 
         }
         public async Task<ResponseResult> DeleteByID(string EntryByMachine, int OpeningYearCode, int LedgerOpnEntryId, int AccountCode, int ActualEntryBy)
         {
-            return await _LedgerPartyWiseOpeningDAL.DeleteByID( EntryByMachine,  OpeningYearCode,  LedgerOpnEntryId,  AccountCode, ActualEntryBy);
+            return await _LedgerPartyWiseOpeningDAL.DeleteByID(EntryByMachine, OpeningYearCode, LedgerOpnEntryId, AccountCode, ActualEntryBy);
         }
         public Task<LedgerPartyWiseOpeningModel> GetAllDataAccountCodeWise(int OpeningYearCode, int AccountCode)
         {
-            return _LedgerPartyWiseOpeningDAL.GetAllDataAccountCodeWise( OpeningYearCode,  AccountCode);
+            return _LedgerPartyWiseOpeningDAL.GetAllDataAccountCodeWise(OpeningYearCode, AccountCode);
         }
     }
 }

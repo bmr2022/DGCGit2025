@@ -15,6 +15,7 @@ namespace eTactWeb.Controllers
     public class LedgerPartyWiseOpeningController : Controller
     {
         private readonly IDataLogic _IDataLogic;
+        public EncryptDecrypt EncryptDecrypt { get; }
         public ILedgerPartyWiseOpening _ILedgerPartyWiseOpening { get; }
         private readonly ILogger<LedgerPartyWiseOpeningController> _logger;
         private readonly IConfiguration iconfiguration;
@@ -26,6 +27,7 @@ namespace eTactWeb.Controllers
             _ILedgerPartyWiseOpening = iLedgerPartyWiseOpening;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+            EncryptDecrypt = encryptDecrypt;
         }
         [Route("{controller}/Index")]
         [HttpGet]
@@ -33,8 +35,66 @@ namespace eTactWeb.Controllers
         double OpeningAmt, string BillNo, string BillDate, float BillNetAmt, float PendAmt, string Type,
         string TransactionType, string DueDate, string CC, int ActualEntryBy, DateTime ActualEntryDate, int UpdatedBy, string LastUpdatedDate, string EntryByMachine, string AccountNarration, string Unit)
         {
+
+            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var rights = await _ILedgerPartyWiseOpening.GetFormRights(userID);
+            if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+            {
+                return RedirectToAction("Dashboard", "Home");
+            }
+
+            var table = rights.Result.Tables[0];
+            string encID = Request.Query["ID"].ToString();
+            string encOpeningYearCode = Request.Query["OpeningYearCode"].ToString();
+
+            if (!string.IsNullOrEmpty(encID))
+            {
+                int decryptedID = EncryptDecrypt.DecodeID(encID);
+                int decryptedOpeningYearCode = EncryptDecrypt.DecodeID(encOpeningYearCode);
+                string decryptedMode = EncryptDecrypt.Decrypt(Mode);
+                ID = decryptedID;
+                OpeningYearCode = decryptedOpeningYearCode;
+                Mode = decryptedMode;
+
+            }
+
+            bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+            bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+            bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+            bool optSave = Convert.ToBoolean(table.Rows[0]["OptSave"]);
+
+
+            if (Mode == "U")
+            {
+                if (!(optUpdate))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+            }
+            else if (Mode == "V")
+            {
+                if (!(optView))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+            }
+
+            else if (ID <= 0)
+            {
+                if (!optSave)
+                {
+                    return RedirectToAction("LedgerPartyWiseOpeningDashBoard", "LedgerPartyWiseOpening");
+                }
+                //if (!(optAll || optSave))
+                //{
+                //    return RedirectToAction("Dashboard", "Home");
+                //}
+
+            }
+
+
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
-            TempData.Clear();
+            //TempData.Clear();
             var MainModel = new LedgerPartyWiseOpeningModel();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
@@ -42,10 +102,11 @@ namespace eTactWeb.Controllers
             MainModel.EntryDate = DateTime.Now.ToString();
             //MainModel.OpeningYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
-            int currentYear = DateTime.Now.Year;
-            int currentMonth = DateTime.Now.Month;
-            int financialYearStart = (currentMonth < 4) ? currentYear - 1 : currentYear;
-            MainModel.OpeningYearCode = financialYearStart - 1;
+            //int currentYear = DateTime.Now.Year;
+            int currentYear = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            //int currentMonth = DateTime.Now.Month;
+            //int financialYearStart = currentYear - 1 ;
+            MainModel.OpeningYearCode = currentYear - 1;
 
 
             MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
@@ -57,6 +118,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeyLedgerPartyWiseOpeningGrid");
             MainModel.AccountCode = AccountCode;
             MainModel.Mode = Mode;
+            MainModel.LastUpdatedBy = HttpContext.Session.GetString("EmpName");
             if (!string.IsNullOrEmpty(Mode) && (Mode == "U" || Mode == "V"))
             {
 
@@ -96,13 +158,23 @@ namespace eTactWeb.Controllers
 
             return View(MainModel);
         }
+
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _ILedgerPartyWiseOpening.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
         [Route("{controller}/Index")]
         [HttpPost]
         public async Task<IActionResult> LedgerPartyWiseOpening(LedgerPartyWiseOpeningModel model)
-        
+
         {
             try
             {
+                model.ActualEntryDate = DateTime.Now;
                 var GIGrid = new DataTable();
                 string modelJson = HttpContext.Session.GetString("KeyLedgerPartyWiseOpeningGrid");
                 List<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail = new List<LedgerPartyWiseOpeningDetailModel>();
@@ -111,15 +183,17 @@ namespace eTactWeb.Controllers
                     LedgerPartyWiseOpeningDetail = JsonConvert.DeserializeObject<List<LedgerPartyWiseOpeningDetailModel>>(modelJson);
                 }
 
-                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                 if (model.Mode == "U")
                 {
                     GIGrid = GetDetailTable(LedgerPartyWiseOpeningDetail);
+                    model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                 }
                 else
                 {
                     GIGrid = GetDetailTable(LedgerPartyWiseOpeningDetail);
                 }
+                model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                 var Result = await _ILedgerPartyWiseOpening.SaveLedgerPartyWiseOpening(model, GIGrid);
                 if (Result != null)
                 {
@@ -132,10 +206,10 @@ namespace eTactWeb.Controllers
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
-                        var msg=Result.StatusText.ToString();
+                        var msg = Result.StatusText.ToString();
                         TempData["202"] = msg;
                     }
-                    else if (Result.StatusText != "Success"&& Result.StatusText!= "Error" && Result.StatusCode == HttpStatusCode.Accepted)
+                    else if (Result.StatusText != "Success" && Result.StatusText != "Error" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         var msg = Result.StatusText.ToString();
@@ -147,6 +221,16 @@ namespace eTactWeb.Controllers
                         TempData["500"] = "500";
                         _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
                         //return View("Error", Result);
+                    }
+                    else if (!string.IsNullOrEmpty(Result.StatusText))
+                    {
+                        // If SP returned a message (like adjustment error)
+                        TempData["ErrorMessage"] = Result.StatusText;
+                        //return View(model);
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "Error while deleting transaction.";
                     }
                 }
 
@@ -487,6 +571,23 @@ namespace eTactWeb.Controllers
         {
             try
             {
+
+                int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                var rights = await _ILedgerPartyWiseOpening.GetFormRights(userID);
+                if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
+                var table = rights.Result.Tables[0];
+
+                bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+                bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+                bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+                bool optDelete = Convert.ToBoolean(table.Rows[0]["OptDelete"]);
+                if (!(optAll || optView || optUpdate || optDelete))
+                {
+                    return RedirectToAction("Dashboard", "Home");
+                }
                 var model = new LedgerPartyWiseOpeningDashBoardModel();
                 var result = await _ILedgerPartyWiseOpening.GetDashboardData().ConfigureAwait(true);
                 DateTime now = DateTime.Now;
@@ -519,7 +620,10 @@ namespace eTactWeb.Controllers
         }
         public async Task<IActionResult> DeleteByID(string EntryByMachine, int OpeningYearCode, int LedgerOpnEntryId, int AccountCode, int ActualEntryBy)
         {
-            var Result = await _ILedgerPartyWiseOpening.DeleteByID(EntryByMachine, OpeningYearCode, LedgerOpnEntryId, AccountCode,ActualEntryBy);
+
+            ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
+            var Result = await _ILedgerPartyWiseOpening.DeleteByID(EntryByMachine, OpeningYearCode, LedgerOpnEntryId, AccountCode, ActualEntryBy);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

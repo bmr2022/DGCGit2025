@@ -1,10 +1,12 @@
 ﻿@model eTactWeb.DOM.Models.LedgerPartyWiseOpeningModel;
-@if (Model.LedgerPartyWiseOpeningDetails == null){
+@if (Model.LedgerPartyWiseOpeningDetails == null)
+{
     <tr class="text-center">
         <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
     </tr>
 }
-else{
+else
+{
     var @Cntr = 0;
     foreach (var item in Model.LedgerPartyWiseOpeningDetails)
     {
@@ -34,7 +36,7 @@ else{
                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                         </span>
                     </a>
-                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SrNO);" >
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SrNO);">
                         <span class="fa-stack">
                             <i class="fa fa-square fa-stack-2x"></i>
                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -50,17 +52,17 @@ else{
             </td>
             <td>
                 @* @(string.IsNullOrEmpty(item.BillDate) ? item.InvoiceDate : item.BillDate) *@
-            @item.BillDate    
+                @item.BillDate
             </td>
             
             <td>@item.BillYear</td>
             <td id="totNetAmtG-@Cntr">
-               @*  @(item.BillNetAmt != 0 ? item.BillNetAmt : item.InvNetAmt) *@
+                @*  @(item.BillNetAmt != 0 ? item.BillNetAmt : item.InvNetAmt) *@
                 @item.BillNetAmt
             </td>
             <td id="totPendAmtG-@Cntr">
-               @*  @(item.PendAmt != 0 ? item.PendAmt : item.InvPendAmt) *@
-               @item.PendAmt
+                @*  @(item.PendAmt != 0 ? item.PendAmt : item.InvPendAmt) *@
+                @item.PendAmt
             </td>
             <td id="typeG-@Cntr">
                 @* @(string.IsNullOrEmpty(item.Type) ? item.DrCrType : item.Type) *@

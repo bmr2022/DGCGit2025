@@ -1,4 +1,6 @@
-﻿@model eTactWeb.DOM.Models.LedgerPartyWiseOpeningModel;
+﻿@using eTactWeb.Data.Common
+@model eTactWeb.DOM.Models.LedgerPartyWiseOpeningModel;
+@inject EncryptDecrypt encryptDecrypt
 @{
     ViewData["Title"] = "Ledger PartyWise Opening";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
@@ -91,7 +93,7 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="OpeningYearCode" class="form-label">YearCode</label>
-                                        <input asp-for="OpeningYearCode" class="form-control" readonly />
+                                        <input asp-for="OpeningYearCode" class="form-control" value="@Model.OpeningYearCode" readonly />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:380px;">
                                         <label asp-for="ShowAllParty" class="form-label col-sm-6">
@@ -165,7 +167,7 @@
                                                     <label asp-for="Type" class="form-label">Type</label>
                                                     <select class="form-control" id="Type" asp-for="Type" style="width:100px;">
                                                         <option value="">-Select-</option>
-                                                        <option value="DR" >DR</option>
+                                                        <option value="DR">DR</option>
                                                         <option value="CR">CR</option>
                                                     </select>
                                                 </div>
@@ -374,7 +376,7 @@
     </form>
 </div>
 
-
+@* <script src="crypto-js.min.js"></script> *@
 
 @section Scripts {
     <script>
@@ -385,6 +387,9 @@
 
                 countAllTotal();
                 // ClearItems();
+                $('#PendAmt').val($('#Balance').val());
+                $('#BillNetAmt').val($('#Balance').val());
+
 
             }
 
@@ -586,26 +591,51 @@
             GetOpeningAmtDRCR();
         });
 
-        $('#BillNo').focusout(function () {
-            ;
-            var BillNetAmt;
-            var TotNetAmt = $('#TotNetAmt').val().trim();
-            var Balance = $('#Balance').val().trim();
+        // $('#BillNo').focusout(function () {
+        //     ;
+        //     var BillNetAmt;
+        //     var TotNetAmt = $('#TotNetAmt').val().trim();
+        //     var Balance = $('#Balance').val().trim();
 
-            if (TotNetAmt != 0) {
-                BillNetAmt = parseFloat(Balance) - parseFloat(TotNetAmt);
+        //     if (TotNetAmt != 0) {
+               
+        //         BillNetAmt = parseFloat(Balance) - parseFloat(TotNetAmt);
 
-                if (BillNetAmt >= 0) {  // Only set values if BillNetAmt is non-negative
-                    $("#BillNetAmt").val(BillNetAmt);
-                    $("#PendAmt").val(BillNetAmt);
-                } else {
-                    $("#BillNetAmt").val(""); // Clear or keep it unchanged
-                    $("#PendAmt").val("");
-                }
+        //         if (BillNetAmt >= 0) {  // Only set values if BillNetAmt is non-negative
+        //             $("#BillNetAmt").val(BillNetAmt);
+        //             $("#PendAmt").val(BillNetAmt);
+        //         } else {
+        //             $("#BillNetAmt").val(""); // Clear or keep it unchanged
+        //             $("#PendAmt").val("");
+        //         }
+        //     }
+        // });
+
+        $('#BillNo').on('focusout', function () {
+
+            var balance = parseFloat($('#Balance').val().replace(/,/g, '')) || 0;
+            var totalCr = parseFloat($('#TotCrAmt').val().replace(/,/g, '')) || 0;
+            var totalDr = parseFloat($('#TotDrAmt').val().replace(/,/g, '')) || 0;
+
+            // Type dropdown/textbox (Bill DR/CR)
+            var billType = $('#DRCR').val().trim().toLowerCase();
+
+            var pending = 0;
+
+            if (billType === "cr") {
+                // CR LOGIC
+                pending = balance - totalCr + totalDr;
             }
+            else if (billType === "dr") {
+                // DR LOGIC
+                pending = balance + totalCr - totalDr;
+            }
+
+            if (pending < 0) pending = 0;
+
+            $("#BillNetAmt").val(pending.toFixed(2));
+            $("#PendAmt").val(pending.toFixed(2));
         });
-
-
 
 
         //  $('#LedgerName').change(function () {
@@ -731,6 +761,66 @@
                 }
             });
         }
+        function encodeID(id) {
+            var obfuscated = id * 12345 + 6789;
+            var bytes = new Uint8Array(4);
+            bytes[0] = obfuscated & 0xFF;
+            bytes[1] = (obfuscated >> 8) & 0xFF;
+            bytes[2] = (obfuscated >> 16) & 0xFF;
+            bytes[3] = (obfuscated >> 24) & 0xFF;
+
+            var binary = String.fromCharCode.apply(null, bytes);
+            var base64 = btoa(binary)
+                .replace(/=/g, '')
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_');
+            return base64;
+        }
+
+        // Decode back to numeric ID (if needed)
+        function decodeID(encoded) {
+            var padded = encoded.replace(/-/g, '+').replace(/_/g, '/');
+            switch (padded.length % 4) {
+                case 2: padded += "=="; break;
+                case 3: padded += "="; break;
+            }
+            var bytes = atob(padded).split('').map(c => c.charCodeAt(0));
+            var obfuscated = bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24);
+            return (obfuscated - 6789) / 12345;
+        }
+        function modeToNumber(mode) {
+            if (mode === "V") return 1;
+            if (mode === "U") return 2;
+            return 0;
+        }
+        // Encode Mode
+        function encodeMode(mode) {
+            return encodeID(modeToNumber(mode));
+        }
+        // function encryptJS(plainText) {
+        //     var cipherKey = '@Html.Raw("@B?M&R$")';
+        //     var md5Key = CryptoJS.MD5(CryptoJS.enc.Utf8.parse(cipherKey));
+        //     var key24 = CryptoJS.lib.WordArray.create(
+        //         md5Key.words.concat(md5Key.words.slice(0, 2)),
+        //         24
+        //     );
+        //     var encrypted = CryptoJS.TripleDES.encrypt(
+        //         CryptoJS.enc.Utf8.parse(plainText),
+        //         key24,
+        //         {
+        //             mode: CryptoJS.mode.ECB,
+        //             padding: CryptoJS.pad.Pkcs7
+        //         }
+        //     );
+        //     return encrypted.ciphertext.toString(CryptoJS.enc.Base64);
+        // }
+        // Decode Mode back to string
+        function decodeMode(encodedMode) {
+            var num = decodeID(encodedMode);
+            if (num === 1) return "V";
+            if (num === 2) return "U";
+            return "";
+        }
 
         function GetAllDataAccountCodeWise() {
 
@@ -750,13 +840,20 @@
 
                     if (result > 0) {
                         var EntryId = result;
+
+                        var entryIDEnc = encodeID(EntryId);
+                        var yearCodeEnc = encodeID(OpeningYearCode);
+                        var modeEnc = "@encryptDecrypt.Encrypt("U")";
+
                         var currentLocation = window.location.href;
                         currentLocation = currentLocation.replace('/Index', '');
 
+                       
+
                         var extraParams = {
-                            Mode: "U",
-                            ID: EntryId,
-                            OpeningYearCode: OpeningYearCode,
+                            Mode: modeEnc,
+                            ID: entryIDEnc,
+                            OpeningYearCode: yearCodeEnc,
                             LedgerOpnEntryId: EntryId,
                             //AccBookTransEntryId: AccBookTransEntryId,
                             //AccBookTransYearCode: AccBookTransYearCode,

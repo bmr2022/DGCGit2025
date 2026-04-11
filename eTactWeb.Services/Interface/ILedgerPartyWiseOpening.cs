@@ -10,17 +10,19 @@ namespace eTactWeb.Services.Interface
 {
     public interface ILedgerPartyWiseOpening
     {
-		Task<ResponseResult> FillEntryId(int YearCode, string EntryDate);
-		Task<ResponseResult> FillLedgerName(int OpeningYearCode);
+        Task<ResponseResult> FillEntryId(int YearCode, string EntryDate);
+        Task<ResponseResult> FillLedgerName(int OpeningYearCode);
         Task<ResponseResult> FillAccountNameForDashBoard();
         Task<ResponseResult> FillInvoiceForDashBoard();
         Task<ResponseResult> GetOpeningAmt(int OpeningYearCode, int AccountCode);
-        Task<ResponseResult> FillDueDate( int AccountCode);
+        Task<ResponseResult> FillDueDate(int AccountCode);
+        Task<ResponseResult> GetFormRights(int ID);
+
         Task<ResponseResult> SaveLedgerPartyWiseOpening(LedgerPartyWiseOpeningModel model, DataTable GIGrid);
         Task<ResponseResult> GetDashboardData();
         Task<LedgerPartyWiseOpeningDashBoardModel> GetDashboardDetailData(string LedgerName, string BillNo);
         Task<LedgerPartyWiseOpeningModel> GetViewByID(int OpeningYearCode, int LedgerOpnEntryId);
-        Task<ResponseResult> DeleteByID(string EntryByMachine,int OpeningYearCode,int LedgerOpnEntryId,int AccountCode, int ActualEntryBy);
+        Task<ResponseResult> DeleteByID(string EntryByMachine, int OpeningYearCode, int LedgerOpnEntryId, int AccountCode, int ActualEntryBy);
         Task<LedgerPartyWiseOpeningModel> GetAllDataAccountCodeWise(int OpeningYearCode, int AccountCode);
     }
 }

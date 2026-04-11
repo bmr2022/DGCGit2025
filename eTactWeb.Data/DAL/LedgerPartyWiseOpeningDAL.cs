@@ -148,6 +148,27 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetFormRights(int userId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
+                SqlParams.Add(new SqlParameter("@EmpId", userId));
+                SqlParams.Add(new SqlParameter("@MainMenu", "Ledger PartyWise Opening"));
+                //SqlParams.Add(new SqlParameter("@SubMenu", ""));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> SaveLedgerPartyWiseOpening(LedgerPartyWiseOpeningModel model, DataTable GIGrid)
         {
             var _ResponseResult = new ResponseResult();
@@ -170,6 +191,8 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@OpeningAmt", model.Balance));
                     sqlParams.Add(new SqlParameter("@LastUpdatedDate", upDt));
                     sqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedByEmp));
+                    sqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
+                    sqlParams.Add(new SqlParameter("@ActualEntryDate", CommonFunc.ParseFormattedDate(model.ActualEntryDate.ToString())));
                     //sqlParams.Add(new SqlParameter("@SeqNo", model.SrNO));
                     sqlParams.Add(new SqlParameter("@dt", GIGrid));
                 }
@@ -199,9 +222,10 @@ namespace eTactWeb.Data.DAL
                     //sqlParams.Add(new SqlParameter("@AccountNarration", model.AccountNarration));
                     //sqlParams.Add(new SqlParameter("@Unit", model.Unit));
                     sqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
-                    sqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));
+                    sqlParams.Add(new SqlParameter("@ActualEntryDate", CommonFunc.ParseFormattedDate(DateTime.Now.ToString())));
                     sqlParams.Add(new SqlParameter("@dt", GIGrid));
                 }
+
 
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", sqlParams);
@@ -266,26 +290,28 @@ namespace eTactWeb.Data.DAL
                                                                    {
                                                                        EntryId = Convert.ToInt32(dr["LedgerOpnEntryId"]),
                                                                        OpeningYearCode = Convert.ToInt32(dr["LedgerOpnYearCode"]),
-                                                                       AccBookTransEntryId = Convert.ToInt32(dr["AccBookTransEntryId"]),
-                                                                       AccBookTransYearCode = Convert.ToInt32(dr["AccBookTransYearCode"]),
-                                                                       AccountCode = Convert.ToInt32(dr["AccountCode"].ToString()),
+                                                                       //AccBookTransEntryId = Convert.ToInt32(dr["AccBookTransEntryId"]),
+                                                                       //AccBookTransYearCode = Convert.ToInt32(dr["AccBookTransYearCode"]),
+                                                                       //AccountCode = Convert.ToInt32(dr["AccountCode"].ToString()),
                                                                        LedgerName = dr["Account_Name"].ToString(),
                                                                        OpeningAmt = Convert.ToDouble(dr["OpeningAmt"]),
-                                                                       BillNo = dr["InvoiceNo"].ToString(),
-                                                                       BillDate = dr.IsNull("InvoiceDate") ? string.Empty : Convert.ToDateTime(dr["InvoiceDate"]).ToString("dd-MM-yyyy"),
-                                                                       BillNetAmt = Convert.ToDecimal(dr["InvNetAmt"]),
-                                                                       PendAmt = Convert.ToDecimal(dr["InvPendAmt"]),
-                                                                       Type = dr["DrCrType"].ToString(),
-                                                                       TransactionType = dr["TransactionType"].ToString(),
-                                                                       DueDate = dr["DueDate"] == DBNull.Value ? null : Convert.ToDateTime(dr["DueDate"]).ToString("dd-MM-yyyy"),
+                                                                       //BillNo = dr["InvoiceNo"].ToString(),
+                                                                       //BillDate = dr.IsNull("InvoiceDate") ? string.Empty : Convert.ToDateTime(dr["InvoiceDate"]).ToString("dd-MM-yyyy"),
+                                                                       //BillNetAmt = Convert.ToDecimal(dr["InvNetAmt"]),
+                                                                       //PendAmt = Convert.ToDecimal(dr["InvPendAmt"]),
+                                                                       //Type = dr["DrCrType"].ToString(),
+                                                                       //TransactionType = dr["TransactionType"].ToString(),
+                                                                       //DueDate = dr["DueDate"] == DBNull.Value ? null : Convert.ToDateTime(dr["DueDate"]).ToString("dd-MM-yyyy"),
                                                                        CC = dr["CC"].ToString(),
-                                                                       ActualEntryBy = Convert.ToInt32(dr["ActualEntryBy"]),
+                                                                       //ActualEntryBy = Convert.ToInt32(dr["ActualEntryBy"]),
+                                                                       ActualEntryByName = dr["ActualEntryBy"].ToString(),
                                                                        ActualEntryDate = dr["ActualEntryDate"] == DBNull.Value ? null : Convert.ToDateTime(dr["ActualEntryDate"]).ToString("dd-MM-yyyy"),
-                                                                       UpdatedBy = Convert.ToInt32(dr["UpdatedBy"]),
+                                                                       //UpdatedBy = Convert.ToInt32(dr["UpdatedBy"]),
+                                                                       UpdatedByName = dr["UpdatedBy"].ToString(),
                                                                        LastUpdatedDate = dr["LastUpdatedDate"] == DBNull.Value ? null : Convert.ToDateTime(dr["LastUpdatedDate"]).ToString("dd-MM-yyyy"),
                                                                        EntryByMachine = dr["EntryByMachine"].ToString(),
-                                                                       AccountNarration = dr["AccountNarration"].ToString(),
-                                                                       Unit = dr["SaveUpdate"].ToString()
+                                                                       //AccountNarration = dr["AccountNarration"].ToString(),
+                                                                       //Unit = dr["SaveUpdate"].ToString()
                                                                    }).ToList();
                 }
             }
@@ -302,26 +328,26 @@ namespace eTactWeb.Data.DAL
             return model;
         }
 
-		public async Task<ResponseResult> FillEntryId(int YearCode,string EntryDate)
-		{
-			var _ResponseResult = new ResponseResult();
-			try
-			{
-				var SqlParams = new List<dynamic>();
-				SqlParams.Add(new SqlParameter("@flag", "NewEntryId"));
-				SqlParams.Add(new SqlParameter("@OpeningYearCode", YearCode));
-				SqlParams.Add(new SqlParameter("@LedgerOpnEntryDate",EntryDate));
-				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", SqlParams);
-			}
-			catch (Exception ex)
-			{
-				dynamic Error = new ExpandoObject();
-				Error.Message = ex.Message;
-				Error.Source = ex.Source;
-			}
-			return _ResponseResult;
-		}
-		public async Task<LedgerPartyWiseOpeningModel> GetViewByID(int OpeningYearCode, int LedgerOpnEntryId)
+        public async Task<ResponseResult> FillEntryId(int YearCode, string EntryDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "NewEntryId"));
+                SqlParams.Add(new SqlParameter("@OpeningYearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@LedgerOpnEntryDate", EntryDate));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<LedgerPartyWiseOpeningModel> GetViewByID(int OpeningYearCode, int LedgerOpnEntryId)
         {
             var model = new LedgerPartyWiseOpeningModel();
             try
@@ -359,8 +385,9 @@ namespace eTactWeb.Data.DAL
                 //model.EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["LedgerOpnEntryId"].ToString());
                 //model.OpeningYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["LedgerOpnYearCode"].ToString());
                 //model.ActualEntryDate = DS.Tables[0].Rows[0]["LedgerOpnEntryDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(DS.Tables[0].Rows[0]["LedgerOpnEntryDate"]);
-                //model.Balance = Convert.ToInt32(DS.Tables[0].Rows[0]["OpeningAmt"].ToString());
-                //model.LedgerName = DS.Tables[0].Rows[0]["Account_Name"].ToString();
+                //model.Balance =Convert.ToInt32(DS.Tables[0].Rows[0]["OpeningAmt"].ToString());
+                model.EntryByEmpName = (DS.Tables[0].Rows[0]["EntryByEmpName"].ToString());
+                model.ActualEntryBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());
                 if (DS.Tables.Count > 0 && DS.Tables[0].Rows.Count > 0)
                 {
                     foreach (DataRow row in DS.Tables[0].Rows)
@@ -382,6 +409,7 @@ namespace eTactWeb.Data.DAL
                             TransactionType = row["TransactionType"] == DBNull.Value ? string.Empty : row["TransactionType"].ToString(),
                             DueDate = row["DueDate"] == DBNull.Value ? null : Convert.ToDateTime(row["DueDate"]).ToString("dd-MM-yyyy"),
                             CC = row["CC"] == DBNull.Value ? string.Empty : row["CC"].ToString(),
+                            EntryByEmpName = row["EntryByEmpName"] == DBNull.Value ? string.Empty : row["EntryByEmpName"].ToString(),
                             ActualEntryBy = row["ActualEntryBy"] == DBNull.Value ? 0 : Convert.ToInt32(row["ActualEntryBy"]),
                             ActualEntryDate = row["ActualEntryDate"] == DBNull.Value ? null : row["ActualEntryDate"].ToString(),
                             UpdatedBy = row["UpdatedBy"] == DBNull.Value ? 0 : Convert.ToInt32(row["UpdatedBy"]),
@@ -415,7 +443,6 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@LedgerOpnEntryId", LedgerOpnEntryId));
                 SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
-                SqlParams.Add(new SqlParameter("", AccountCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", SqlParams);
             }
             catch (Exception ex)
