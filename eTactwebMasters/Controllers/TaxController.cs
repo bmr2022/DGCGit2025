@@ -1439,6 +1439,15 @@ public class TaxController : Controller
                 
             }
 
+            foreach (var item in TaxGrid)
+            {
+                if (SN == "SaleInvoice")
+                {
+                    Amt += item.TxAmount;
+                }
+
+            }
+
             string modelJson = HttpContext.Session.GetString("KeyTaxGrid");
             List<TaxModel> TdsGrid = new List<TaxModel>();
             if (!string.IsNullOrEmpty(modelJson))
