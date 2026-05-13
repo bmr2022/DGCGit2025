@@ -287,6 +287,7 @@ namespace eTactWeb
             services.TryAddTransient<IReceiveItem, ReceiveItemBLL>();
             services.TryAddTransient<ITransferFromWorkCenter, TransferFromWorkCenterBLL>();
             services.TryAddTransient<ISaleBill, SaleBillBLL>();
+            services.TryAddTransient<IImportBillsFromExcel, ImportBillsFromExcelBLL>();
             services.TryAddTransient<IGateEntryRegister, GateEntryRegisterBLL>();
             services.TryAddTransient<ISaleOrderAmendHistory, SaleOrderAmendHistoryBLL>();
             services.TryAddTransient<ISaleBillRegister, SaleBillRegisterBLL>();

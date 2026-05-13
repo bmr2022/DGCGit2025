@@ -2549,7 +2549,23 @@
                             <a class="dropdown-item" href="#">Export Invoice &raquo; </a>
                             <ul class="submenu dropdown-menu">
                             </ul>
+
+
                             </li> *@
+                            <li id="ImportBillsFromExcelHide">
+                                <a class="dropdown-item" href="#">Import Bills &raquo; </a>
+                                <ul class="submenu dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="ImportBillsFromExcel" asp-action="ImportBillsFromExcel" id="ImportBillsFromExcel">
+                                            <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Import Bills
+                                        </a>
+                                    </li>
+                                    
+                                    @* <input class="userRightsPermission" type="hidden" value="ImportBillsFromExcel" /> *@
+                                </ul>
+                            </li>
+
+
 
                             <li id="CreditNoteHide">
                                 <a class="dropdown-item" href="#">Credit Note &raquo; </a>
