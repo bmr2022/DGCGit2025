@@ -50,6 +50,10 @@ namespace eTactWeb.Data.DAL
                 {
                     _ResponseResult = await _IDataLogic.ExecuteDataTable("AccImportBillsdatafromExcelToTables", SqlParams);
                 }
+                if (ReportType == "PURCHASEREPORT")
+                {
+                    _ResponseResult = await _IDataLogic.ExecuteDataTable("AccImportPurchaseBillsdatafromExcelToTables", SqlParams);
+                }
 
             }
             catch (Exception ex)
