@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Import To Tally Register";
+    ViewData["Title"] = "ImportBills From Excel";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <style>
@@ -107,11 +107,12 @@
                     // Success from controller
                     if (response.success) {
 
-                        if (response.redirectUrl) {
+                        // if (response.redirectUrl) {
+                           alert(response.message);
 
-                            window.location.href = response.redirectUrl;
+                            // window.location.href = response.redirectUrl;
 
-                        }
+                        // }
 
 
                         $('#ajaxLoader').hide();
@@ -120,7 +121,7 @@
                     }
                     else {
                         // SP StatusText / validation error
-                        $.notify(response.message, "error");
+                        alert(response.message);
                         $('#ajaxLoader').hide();
                     }
                 },

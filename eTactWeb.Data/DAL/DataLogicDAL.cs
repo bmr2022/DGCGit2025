@@ -1066,7 +1066,7 @@ namespace eTactWeb.Data.DAL
                 _ResponseResult = new ResponseResult()
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
-                    StatusText = "Error",
+                    StatusText = ex.Message,
                     Result = ex
                 };
             }
