@@ -1047,7 +1047,7 @@ public class DirectPurchaseBillDAL
                     MainModel.TaxableExpenss = Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["TaxableExpenss"]);
                     MainModel.OtherExpenss = Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["OtherExpenss"]);
                     MainModel.TotalRoundOffAmt = Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["RoundOffAmt"]);
-                    MainModel.AdditionalDiscount = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["AdditionalDiscount"].ToString());
+                    MainModel.AdditionalDiscount = Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["AdditionalDiscount"].ToString());
                     MainModel.CretaedByName = oDataSet.Tables[0].Rows[0]["EntryByMachine"].ToString();
 
                     MainModel.Remark = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["Remark"].ToString()) ? string.Empty : oDataSet.Tables[0].Rows[0]["Remark"].ToString();
