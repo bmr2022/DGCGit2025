@@ -72,7 +72,7 @@ else *@
 
                                     <div id="printData-@Cntr">
                                         <a href="javascript:void(0);"
-                                           onclick="openPopup('@Url.Action("PrintReport", new { SaleBillNo = row.ContainsKey("SaleBillNo") ? row["SaleBillNo"] : "", YearCode = row.ContainsKey("SaleBillYearCode") ? row["SaleBillYearCode"] : "" })')"
+                                           onclick="openPopup('@Url.Action("PrintReport", new { EntryId = row.ContainsKey("SaleBillEntryId") ? row["SaleBillEntryId"] : "", YearCode = row.ContainsKey("SaleBillYearCode") ? row["SaleBillYearCode"] : "" })')"
                                            class="table-link link-dark">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
