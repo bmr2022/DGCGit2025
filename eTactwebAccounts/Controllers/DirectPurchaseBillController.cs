@@ -332,7 +332,7 @@ namespace eTactWeb.Controllers
                     isError = false;
                     if (MainModel.ItemDetailGrid != null && MainModel.ItemDetailGrid.Any())
                     {
-                        var hasDupes = MainModel.ItemDetailGrid.GroupBy(x => new { x.ItemCode, x.docTypeId, x.Description })
+                        var hasDupes = MainModel.ItemDetailGrid.GroupBy(x => new { x.ItemCode, x.docTypeId, x.Description,x.Rate })
                        .Where(x => x.Skip(1).Any()).Any();
                         if (hasDupes)
                         {
@@ -834,7 +834,7 @@ namespace eTactWeb.Controllers
 
             if (MainModel != null && MainModel.ItemDetailGrid != null)
             {
-                TF = MainModel.ItemDetailGrid.Any(x => x.ItemCode == model.ItemCode && x.docTypeId == model.docTypeId && x.Description == model.Description);
+                TF = MainModel.ItemDetailGrid.Any(x => x.ItemCode == model.ItemCode && x.docTypeId == model.docTypeId && x.Description == model.Description && x.Rate == model.Rate);
             }
 
             if (TF)

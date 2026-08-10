@@ -117,9 +117,10 @@
                                 <button class="btn btn-sm btn-outline-info" type="button" onclick="GetSearchData();">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
                                 </button>
-                                <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="btnGridExcel">
-                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
-                                </button>
+                                <a href="/SaleInvoice/ExportDashboardToExcel"
+                                   class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button">
+                                    <i class="fa fa-file-excel"></i>Excel
+                                </a>
                                 <a class="btn btn-sm btn-outline-danger" asp-controller="SaleInvoice" asp-action="SaleBillOnCounterDashboard">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
@@ -340,7 +341,7 @@
 
         });
 
-            GetTotalAmounts();
+            // calculateFooterTotalsSafe();
             var deleteMessage = '@TempData["DeleteMessage"]';
 
             if (deleteMessage) {
@@ -416,7 +417,7 @@
          
             GetFeatureOption();
             //CalculateTotalAmt();
-            GetTotalAmounts();
+            // GetTotalAmounts();
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
             sessionStorage.removeItem('PartCodeBack');
@@ -878,7 +879,9 @@
                 'toDate': $('#FinToDate').val(),
                 'redirectFrom': '@ViewBag.RedirectFrom',
                         // 'SubInvoicetype': $('#SubInvoicetype').val(),
-                'SaleBillEntryFrom': "EntryFromCounter"
+                'SaleBillEntryFrom': "EntryFromCounter",
+                'pageNumber': 1,
+                'pageSize': $('#PageSize').val(),
                 // 'SubInvoicetype': $('#SubInvoicetype').val() ? $('#SubInvoicetype').val().join(',') : ''
             };
 
@@ -895,7 +898,7 @@
                      GetFeatureOptions();
                     GetFormRights();
                     GetFeatureOption();
-                    GetTotalAmounts();
+                    // calculateFooterTotalsSafe();
                     CheckInv();
                     YearEditDeleteRight();
                 },
@@ -907,7 +910,15 @@
                 }
             });
         }
+        $(document).on('click', '.page-btn', function (e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            loadPage(page);
+        });
 
+                $('#PageSize').on('change', function () {
+            loadPage(1);
+        });
         function loadPage(pageNumber) {
             console.log("page", pageNumber);
 
@@ -955,10 +966,77 @@
                     $('#divDashboardGrid').html(result);
                     GetFormRights();
                     GetFeatureOption();
-                    GetTotalAmounts();
+                    // calculateFooterTotalsSafe();
                     GetFeatureOptions();
                 }
             });
+        }
+
+
+        function calculateFooterTotalsSafe() {
+
+            const excludedFields = [
+                "SaleBillEntryId", "SaleBillYearCode"
+            ];
+
+            let totals = {};
+
+            // clear footer first
+            $('#PODashboardGrid tfoot td').text('');
+
+            $('#PODashboardGrid tbody tr').each(function() {
+
+                $(this).find('td[data-field]').each(function() {
+
+                    let field = $(this).data('field');
+
+                    if (!field)
+                        return;
+
+                    // skip excluded fields
+                    if (excludedFields.includes(field))
+                        return;
+
+                    let text = $(this).text().trim();
+
+                    // remove commas and currency symbols
+                    text = text
+                        .replace(/,/g, '')
+                        .replace(/₹/g, '')
+                        .trim();
+
+                    // skip blank
+                    if (text === '')
+                        return;
+
+                    // allow only pure numeric values
+                    if (!/^-?\d+(\.\d+)?$/.test(text))
+                        return;
+
+                    let value = parseFloat(text);
+
+                    if (isNaN(value))
+                        return;
+
+                    if (!totals[field]) {
+                        totals[field] = 0;
+                    }
+
+                    totals[field] += value;
+
+                });
+
+            });
+
+            // set totals in footer
+            for (let field in totals) {
+
+                let safeField = field.replace(/[^a-zA-Z0-9]/g, '_');
+
+                $('#tfoot_' + safeField).text(
+                    totals[field].toFixed(2)
+                );
+            }
         }
 
         $("#search-box").on("input", function () {
@@ -980,7 +1058,7 @@
                     GetFeatureOption();
                     GetFormRights();
                     GetFeatureOptions();
-                    GetTotalAmounts();
+                    // calculateFooterTotalsSafe();
                     CheckInv();
                     YearEditDeleteRight();
 

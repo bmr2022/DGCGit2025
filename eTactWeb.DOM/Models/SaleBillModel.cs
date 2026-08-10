@@ -62,6 +62,8 @@ namespace eTactWeb.DOM.Models
 
         public IList<TextValue>? SubInvoicetypeList { get; set; }
         public List<SaleBillDashboard>? SaleBillDataDashboard { get; set; }
+        public List<DashboardColumn> Headers { get; set; }
+        public List<Dictionary<string, object>> Rows { get; set; }
     }
     public class SaleBillDetail : TaxModel
     {

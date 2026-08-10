@@ -16,12 +16,14 @@ namespace eTactWeb.Data.DAL
     public class SaleBillDAL
     {
         private readonly ConnectionStringService _connectionStringService;
-        public SaleBillDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
+        private readonly ICommon _common;
+        public SaleBillDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService, ICommon common)
         {
             //BConnectionString = configuration.GetConnectionString("eTactDB");
             _connectionStringService = connectionStringService;
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
+            _common = common;
         }
         public IDataLogic? _IDataLogic { get; }
 
@@ -1243,41 +1245,77 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ,string SubInvoicetype, string fromdate, string toDate,string SaleBillEntryFrom)
+        public static string EmptyIfNull(string value)
+        {
+            return value ?? string.Empty;
+        }
+        public async Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string SubInvoicetype, string fromdate, string toDate, string SaleBillEntryFrom)
         {
             var _ResponseResult = new ResponseResult();
-            try
-            {
-                fromdate = CommonFunc.ParseFormattedDate(fromdate);
-                toDate = CommonFunc.ParseFormattedDate(toDate);
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
-                SqlParams.Add(new SqlParameter("@SummDetail", summaryDetail));
-                SqlParams.Add(new SqlParameter("@partcode", partCode ?? ""));
-                SqlParams.Add(new SqlParameter("@ItemName", itemName ?? ""));
-                SqlParams.Add(new SqlParameter("@salebillno", saleBillno ?? ""));
-                SqlParams.Add(new SqlParameter("@customerName", customerName ?? ""));
-                SqlParams.Add(new SqlParameter("@SOno", sono));
-                SqlParams.Add(new SqlParameter("@SaleBillEntryFrom", SaleBillEntryFrom));
-                SqlParams.Add(new SqlParameter("@custOrderNo", custOrderNo ?? ""));
-                SqlParams.Add(new SqlParameter("@ScheduleNo", schNo ?? ""));
-                SqlParams.Add(new SqlParameter("@PerformaInvNo", performaInvNo ?? ""));
-                SqlParams.Add(new SqlParameter("@SaleQuotNo", saleQuoteNo ?? ""));
-                SqlParams.Add(new SqlParameter("@DomesticExportNEPZ", domensticExportNEPZ ?? ""));
-                SqlParams.Add(new SqlParameter("@FromDate", fromdate));
-                SqlParams.Add(new SqlParameter("@ToDate", toDate));
-                SqlParams.Add(new SqlParameter("@SubInvoicetype", SubInvoicetype));
-                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
+            var SqlParams = new List<dynamic>();
+            string flag = "DASHBOARD";
+            fromdate = CommonFunc.ParseFormattedDate(fromdate);
+            toDate = CommonFunc.ParseFormattedDate(toDate);
 
-            return _ResponseResult;
+            var parameters = new Dictionary<string, object>
+            {
+                { "@SummDetail",EmptyIfNull(summaryDetail)},
+                { "@partcode", EmptyIfNull(partCode)},
+                { "@itemName", EmptyIfNull(itemName) },
+                { "@saleBillno", EmptyIfNull(saleBillno) },
+                { "@customerName", EmptyIfNull(customerName) },
+                { "@sono", EmptyIfNull(sono) },
+                { "@SaleBillEntryFrom", EmptyIfNull(SaleBillEntryFrom) },
+                { "@custOrderNo", EmptyIfNull(custOrderNo) },
+                { "@PerformaInvNo", EmptyIfNull(performaInvNo) },
+                { "@SaleQuotNo", EmptyIfNull(saleQuoteNo) },
+                { "@DomesticExportNEPZ", EmptyIfNull(domensticExportNEPZ) },
+                { "@FromDate", fromdate },
+                { "@ToDate", toDate },
+                { "@SubInvoicetype", EmptyIfNull(SubInvoicetype) }
+            };
+
+            return await _common.GetDashboardData(
+                "SP_SaleBillMainDetail",
+                flag,
+                parameters
+            );
         }
+        //public async Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ,string SubInvoicetype, string fromdate, string toDate,string SaleBillEntryFrom)
+        //{
+        //    var _ResponseResult = new ResponseResult();
+        //    try
+        //    {
+        //        fromdate = CommonFunc.ParseFormattedDate(fromdate);
+        //        toDate = CommonFunc.ParseFormattedDate(toDate);
+        //        var SqlParams = new List<dynamic>();
+        //        SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
+        //        SqlParams.Add(new SqlParameter("@SummDetail", summaryDetail));
+        //        SqlParams.Add(new SqlParameter("@partcode", partCode ?? ""));
+        //        SqlParams.Add(new SqlParameter("@ItemName", itemName ?? ""));
+        //        SqlParams.Add(new SqlParameter("@salebillno", saleBillno ?? ""));
+        //        SqlParams.Add(new SqlParameter("@customerName", customerName ?? ""));
+        //        SqlParams.Add(new SqlParameter("@SOno", sono));
+        //        SqlParams.Add(new SqlParameter("@SaleBillEntryFrom", SaleBillEntryFrom));
+        //        SqlParams.Add(new SqlParameter("@custOrderNo", custOrderNo ?? ""));
+        //        SqlParams.Add(new SqlParameter("@ScheduleNo", schNo ?? ""));
+        //        SqlParams.Add(new SqlParameter("@PerformaInvNo", performaInvNo ?? ""));
+        //        SqlParams.Add(new SqlParameter("@SaleQuotNo", saleQuoteNo ?? ""));
+        //        SqlParams.Add(new SqlParameter("@DomesticExportNEPZ", domensticExportNEPZ ?? ""));
+        //        SqlParams.Add(new SqlParameter("@FromDate", fromdate));
+        //        SqlParams.Add(new SqlParameter("@ToDate", toDate));
+        //        SqlParams.Add(new SqlParameter("@SubInvoicetype", SubInvoicetype));
+        //        _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        dynamic Error = new ExpandoObject();
+        //        Error.Message = ex.Message;
+        //        Error.Source = ex.Source;
+        //    }
+
+        //    return _ResponseResult;
+        //}
         public async Task<ResponseResult> FILLSOScheduleDate(string sono, int accountCode, int soYearCode, string schNo, int schYearCode)
         {
             var _ResponseResult = new ResponseResult();

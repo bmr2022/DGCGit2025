@@ -1514,123 +1514,88 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetSearchData( string redirectFrom,string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate, string SaleBillEntryFrom, List<string> SubInvoicetype, int pageNumber = 1, int pageSize = 15, string SearchBox = "")
+        public async Task<IActionResult> GetSearchData( string redirectFrom, string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate, string SaleBillEntryFrom, List<string> SubInvoicetype, int pageNumber = 1, int pageSize = 15, string SearchBox = "")
         {
+            
+
             try
             {
                 var model = new SaleBillDashboard();
+                
                 ViewBag.RedirectFrom = redirectFrom;
                 model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                 string selectedInvoiceTypes = SubInvoicetype != null
    ? string.Join(",", SubInvoicetype)
    : "";
                 var Result = await _SaleBill.GetDashboardData(summaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, selectedInvoiceTypes, ParseFormattedDate((fromdate).Split(" ")[0]), ParseFormattedDate(toDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
-                if (Result != null)
-                {
-                    var _List = new List<TextValue>();
-                    DataSet DS = Result.Result;
-                    if (DS != null)
-                    {
-                        if (summaryDetail == "Summary")
-                        {
-                            var DT = DS.Tables[0].DefaultView.ToTable(true, "SaleBillNo", "SaleBillDate", "GSTNO", "AccountCode", "AccountName", "SupplyType", "CustAddress", "StateNameofSupply", "AgainstVoucherNo"
-                                    , "CityofSupply", "DocumentHead", "ConsigneeAccountName", "ConsigneeAddress", "PaymentTerm", "Currency", "BillAmt", "TaxableAmt", "GSTAmount", "RoundType", "RoundOffAmt", "INVNetAmt"
-                                    , "Ewaybillno", "EInvNo", "EinvGenerated", "CountryOfSupply", "TransporterdocNo", "TransportModeBYRoadAIR", "DispatchTo", "DispatchThrough", "Remark", "Approved", "ApprovDate", "ApprovedBy", "ExchangeRate"
-                                    , "SaleBillEntryId", "SaleBillYearCode", "SaleBillEntryDate", "Shippingdate", "DistanceKM", "vehicleNo", "TransporterName", "DomesticExportNEPZ", "PaymentCreditDay", "ReceivedAmt", "pendAmount"
-                                    , "CancelBill", "Canceldate", "CancelBy", "Cancelreason", "BankName", "FreightPaid", "DispatchDelayReason", "AttachmentFilePath1", "AttachmentFilePath2", "AttachmentFilePath3", "DocketNo", "DispatchDelayreson", "Commodity", "CC"
-                                    , "Uid", "MachineName", "ActualEnteredByName", "ActualEntryDate", "LastUpdatedByName", "VarifiedSaleBill"
-                                    , "LastUpdationDate", "TypeItemServAssets", "SaleBillJobwork", "PerformaInvNo", "PerformaInvDate", "PerformaInvYearCode"
-                                    , "BILLAgainstWarrenty", "ExportInvoiceNo", "InvoiceTime", "RemovalDate", "RemovalTime", "EntryFreezToAccounts", "BalanceSheetClosed", "SaleQuotNo", "SaleQuotDate", "salesperson_name", "SalesPersonMobile", "SaleBillEntryFrom","PurchaseBillBookedinBranch"
-                                    );
-                            model.SaleBillDataDashboard = CommonFunc.DataTableToList<SaleBillDashboard>(DT, "SaleBillSummTable");
-
-                            model.SaleBillDataDashboard = model.SaleBillDataDashboard
-                                .GroupBy(psd => psd.SaleBillEntryId)
-                                .Select(group => group.First())
-                                .ToList();
-
-                        }
-                        else
-                        {
-                            var DT = DS.Tables[0].DefaultView.ToTable(true, "SaleBillNo", "SaleBillDate", "CustomerName", "GSTNO", "SupplyType", "CustAddress", "StateNameofSupply"
-                                    , "CityofSupply", "DocumentHead", "ConsigneeName", "AgainstVoucherNo", "ConsigneeAddress", "ProdSchEntryId", "ProdSchDate", "SchdeliveryDate"
-                                    , "PaymentTerm", "currency", "BillAmt", "SONO", "CustOrderNo", "SODate", "SchNo", "Schdate", "SOAmendNo", "SchAmendNo", "SchAmendDate", "PartCode", "ItemName", "CustomerPartCode", "HSNNO"
-                                    , "Unit", "NoofCase", "Qty", "Rate", "ItemAmount", "StoreId", "StoreName", "batchno", "uniquebatchno"
-                                    , "LotStock", "TotalStock", "RateInOtherCurr", "AltUnit", "AltQty", "SOPendQty", "AltSOPendQty", "AccountName"
-                                    , "DiscountPer", "DiscountAmt", "Itemcolor", "ItemSize", "PacketsDetail", "OtherDetail", "ItemRemark", "TaxableAmt"
-                                    , "GSTAmount", "RoundType", "RoundOffAmt", "INVNetAmt", "Ewaybillno", "EInvNo", "EinvGenerated", "CountryOfSupply"
-                                    , "TransporterdocNo", "TransportModeBYRoadAIR", "DispatchTo", "DispatchThrough", "Remark", "Approved", "ApprovDate", "ApprovedBy"
-                                    , "ExchangeRate", "SaleBillEntryId", "SaleBillYearCode", "SaleBillEntryDate", "Shippingdate", "DistanceKM", "vehicleNo"
-                                    , "TransporterName", "DomesticExportNEPZ", "PaymentCreditDay", "ReceivedAmt", "pendAmount", "CancelBill", "Canceldate"
-                                    , "CancelBy", "Cancelreason", "BankName", "FreightPaid", "DispatchDelayReason", "AttachmentFilePath1", "AttachmentFilePath2"
-                                    , "AttachmentFilePath3", "DocketNo", "DispatchDelayreson", "Commodity", "CC", "Uid", "MachineName", "ActualEnteredByName"
-                                    , "ActualEntryDate", "LastUpdatedByName", "LastUpdationDate", "TypeItemServAssets", "SaleBillJobwork", "PerformaInvNo",
-                                    "AgainstProdPlanNo", "AgainstProdPlanYearCode", "AgaisntProdPlanDate", "GSTPer", "GSTType", "ProdSchno", "CostCenterId", "ProdSchYearcode"
-                                    , "PerformaInvDate", "PerformaInvYearCode", "BILLAgainstWarrenty", "ExportInvoiceNo", "InvoiceTime", "RemovalDate", "ProcessId"
-                                    , "RemovalTime", "EntryFreezToAccounts", "BalanceSheetClosed", "SaleQuotNo", "SaleQuotDate", "AdviceNo", "AdviceYearCode", "AdviseDate", "AdviseEntryId", "SaleBillEntryFrom"
-                                );
-                            model.SaleBillDataDashboard = CommonFunc.DataTableToList<SaleBillDashboard>(DT, "SaleBillDetailTable");
-                        }
-                    }
-                }
-                if (model.SaleBillDataDashboard != null && model.SaleBillDataDashboard.Any())
-                {
-                    if (!string.IsNullOrWhiteSpace(SearchBox))
-                    {
-                        var filteredResults = model.SaleBillDataDashboard
-                            .Where(item => item.GetType().GetProperties()
-                                .Where(prop => prop.PropertyType == typeof(string))
-                                .Select(prop => prop.GetValue(item)?.ToString())
-                                .Any(val => !string.IsNullOrEmpty(val) &&
-                                            val.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
-                            .ToList();
-
-                        if (filteredResults.Any())
-                        {
-                            model.SaleBillDataDashboard = filteredResults;
-                        }
-                    }
-
-                    var fullData = model.SaleBillDataDashboard.ToList();  // full list before paging
-                    HttpContext.Session.SetString("KeySBDashboard",
-                        JsonConvert.SerializeObject(fullData));
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-                    if (summaryDetail == "Summary")
-                    {
-                        _MemoryCache.Set("KeySaleBillList_Summary", fullData, cacheEntryOptions);
-
-                    }
-                    else
-                    {
-                        _MemoryCache.Set("KeySaleBillList_Detail", fullData, cacheEntryOptions);
-
-                    }
-
-                    model.TotalRecords = model.SaleBillDataDashboard.Count;
-                    model.PageNumber = pageNumber;
-                    model.PageSize = pageSize;
-                    
-                    model.SaleBillDataDashboard = model.SaleBillDataDashboard
-                        .Skip((pageNumber - 1) * pageSize)
-                        .Take(pageSize)
-                        .ToList();
-                }
-                else
-                {
-                    model.SaleBillDataDashboard = new List<SaleBillDashboard>();
-                    model.TotalRecords = 0;
-                    model.PageNumber = pageNumber;
-                    model.PageSize = pageSize;
-                }
-               
                 
-                //HttpContext.Session.SetString("KeySBDashboard", JsonConvert.SerializeObject(model.SaleBillDataDashboard));
 
+                if (Result == null || !(Result.Result is DataTable dt))
+                {
+                    model.TotalRecords = 0;
+                    model.Rows = new List<Dictionary<string, object>>();
+                    return PartialView("_SBDashboardGrid", model);
+                }
+                // ✅ SEARCH (on DataTable)
+                var filteredRows = string.IsNullOrWhiteSpace(SearchBox)
+                    ? dt.AsEnumerable()
+                    : dt.AsEnumerable().Where(r =>
+                        dt.Columns.Cast<DataColumn>()
+                            .Any(c => r[c] != DBNull.Value &&
+                                      r[c].ToString()
+                                          .Contains(SearchBox, StringComparison.OrdinalIgnoreCase)));
+
+                var sessionRows = filteredRows
+        .Select(r => dt.Columns
+            .Cast<DataColumn>()
+            .ToDictionary(
+                c => c.ColumnName,
+                c => r[c] == DBNull.Value ? null : r[c]
+            ))
+        .ToList();
+
+                HttpContext.Session.SetString(
+                    "KeySaleBillDashboard",
+                    JsonConvert.SerializeObject(sessionRows)
+                );
+                decimal totalNetAmt = filteredRows
+    .Where(r => r["INVNetAmt"] != DBNull.Value)
+    .Sum(r => Convert.ToDecimal(r["INVNetAmt"]));
+
+                ViewBag.TotalNetAmt = totalNetAmt;
+                // ✅ TOTAL RECORDS (before pagination)
+                model.TotalRecords = filteredRows.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+
+                model.Headers = dt.Columns
+                .Cast<DataColumn>()
+                .Select(c => new DashboardColumn
+                {
+                    Title = c.ColumnName,
+                    Field = c.ColumnName
+                })
+                .ToList();
+
+                //model.Rows = dt.AsEnumerable()
+                //    .Select(r => dt.Columns
+                //        .Cast<DataColumn>()
+                //        .ToDictionary(
+                //            c => c.ColumnName,
+                //            c => r[c] == DBNull.Value ? null : r[c]
+                //        ))
+                //    .ToList();
+
+                model.Rows = filteredRows
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(r => dt.Columns
+                        .Cast<DataColumn>()
+                        .ToDictionary(
+                            c => c.ColumnName,
+                            c => r[c] == DBNull.Value ? null : r[c]
+                        ))
+                    .ToList();
                 model.SummaryDetail = summaryDetail;
                 return PartialView("_SBDashboardGrid", model);
             }
@@ -1640,50 +1605,67 @@ namespace eTactWeb.Controllers
             }
         }
         [HttpGet]
-        public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 15)
+        public IActionResult GlobalSearch( string searchString, int pageNumber = 1, int pageSize = 100)
         {
             SaleBillDashboard model = new SaleBillDashboard();
-            if (string.IsNullOrWhiteSpace(searchString))
+           
+            // 1️⃣ Get session data
+            string modelJson = HttpContext.Session.GetString("KeySaleBillDashboard");
+
+            if (string.IsNullOrWhiteSpace(modelJson))
             {
-                return PartialView("_SBDashboardGrid", new List<SaleBillDashboard>());
+                model.Rows = new List<Dictionary<string, object>>();
+                model.Headers = new List<DashboardColumn>();
+                model.TotalRecords = 0;
+                return PartialView("_SBDashboardGrid", model);
             }
-            string cacheKey = $"KeySaleBillList_{dashboardType}";
-            if (!_MemoryCache.TryGetValue(cacheKey, out IList<SaleBillDashboard> saleBillDashboard) || saleBillDashboard == null)
+
+            // 2️⃣ Deserialize rows
+            var allRows = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(modelJson);
+
+            if (allRows == null || allRows.Count == 0)
             {
-                return PartialView("_SBDashboardGrid", new List<SaleBillDashboard>());
+                model.Rows = new List<Dictionary<string, object>>();
+                model.Headers = new List<DashboardColumn>();
+                model.TotalRecords = 0;
+                return PartialView("_SBDashboardGrid", model);
             }
 
-            List<SaleBillDashboard> filteredResults;
+            // 3️⃣ Dynamic search (all columns)
+            var filteredRows = string.IsNullOrWhiteSpace(searchString)
+                ? allRows
+                : allRows.Where(row =>
+                    row.Values.Any(val =>
+                        val != null &&
+                        val.ToString()
+                           .Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                  .ToList();
 
-            if (string.IsNullOrWhiteSpace(searchString))
-            {
-                filteredResults = saleBillDashboard.ToList();
-            }
-            else
-            {
-                filteredResults = saleBillDashboard
-                    .Where(i => i.GetType().GetProperties()
-                        .Where(p => p.PropertyType == typeof(string))
-                        .Select(p => p.GetValue(i)?.ToString())
-                        .Any(value => !string.IsNullOrEmpty(value) &&
-                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
-                    .ToList();
+            // fallback → show all
+            if (filteredRows.Count == 0)
+                filteredRows = allRows;
 
-
-                if (filteredResults.Count == 0)
+            // 4️⃣ Dynamic headers (from keys)
+            model.Headers = filteredRows.First()
+                .Keys
+                .Select(k => new DashboardColumn
                 {
-                    filteredResults = saleBillDashboard.ToList();
-                }
-            }
+                    Title = k,
+                    Field = k
+                })
+                .ToList();
 
-            model.TotalRecords = filteredResults.Count;
-            model.SaleBillDataDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            // 5️⃣ Pagination
+            model.TotalRecords = filteredRows.Count;
             model.PageNumber = pageNumber;
             model.PageSize = pageSize;
 
+            model.Rows = filteredRows
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             return PartialView("_SBDashboardGrid", model);
-
         }
         public async Task<JsonResult> GetBatchInventory()
         {
@@ -3604,6 +3586,57 @@ namespace eTactWeb.Controllers
                 "SaleBillDashboard.xlsx"
             );
         }
+
+        public IActionResult ExportDashboardToExcel()
+        {
+            var sessionData = HttpContext.Session.GetString("KeySaleBillDashboard");
+
+            if (string.IsNullOrEmpty(sessionData))
+            {
+                return BadRequest("No data available to export.");
+            }
+
+            var rows = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(sessionData);
+
+            using (var workbook = new ClosedXML.Excel.XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("SaleBillDashboard");
+
+                if (rows != null && rows.Any())
+                {
+                    // Add Header
+                    var headers = rows.First().Keys.ToList();
+                    for (int i = 0; i < headers.Count; i++)
+                    {
+                        worksheet.Cell(1, i + 1).Value = headers[i];
+                        worksheet.Cell(1, i + 1).Style.Font.Bold = true;
+                    }
+
+                    // Add Data
+                    for (int row = 0; row < rows.Count; row++)
+                    {
+                        var values = rows[row].Values.ToList();
+                        for (int col = 0; col < values.Count; col++)
+                        {
+                            worksheet.Cell(row + 2, col + 1).Value = values[col]?.ToString();
+                        }
+                    }
+
+                    worksheet.Columns().AdjustToContents();
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+
+                    return File(content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "SaleBillDashboard.xlsx");
+                }
+            }
+        }
+
 
     }
 

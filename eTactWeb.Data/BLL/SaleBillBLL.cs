@@ -18,6 +18,12 @@ namespace eTactWeb.Data.BLL
         private readonly IDataLogic _DataLogicDAL;
 
         private readonly SaleBillDAL _SaleBillDAL;
+        private readonly ICommon _common;
+        public SaleBillBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService, ICommon common)
+        {
+            _SaleBillDAL = new SaleBillDAL(configuration, iDataLogic, connectionStringService,common);
+            _DataLogicDAL = iDataLogic;
+        }
         public async Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode, string SONo, string PartCode,string CompanyType)
         {
             return await _SaleBillDAL.ShowPendingSaleorderforBill( Flag,  CurrentYear,  FromDate,  Todate,  InvoiceDate,  BillFromStoreId,  accountCode,  SONo,  PartCode, CompanyType);
@@ -61,11 +67,7 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.GetReportName();
         }
-        public SaleBillBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
-        {
-            _SaleBillDAL = new SaleBillDAL(configuration, iDataLogic,connectionStringService);
-            _DataLogicDAL = iDataLogic;
-        }
+        
         public async Task<ResponseResult> NewEntryId(int YearCode, string SubInvoicetype)
         {
             return await _SaleBillDAL.NewEntryId(YearCode, SubInvoicetype);
