@@ -219,7 +219,7 @@ else
                                     : string.Empty)
                                 </td>
                                 <td>@item.EnteredBy</td>
-                               
+
                                 <td class="DirectPurchaseBillEntryDetail">@item.UpdatedByName</td>
                             </tr>
                             srNo++;
@@ -417,7 +417,7 @@ else
                         foreach (var col in Model.Headers)
                         {
                             if (col.Field == "PurchBillEntryId" ||
-        col.Field == "PurchBillYearCode")
+col.Field == "PurchBillYearCode" || col.Field == "PurchaseFromDiffBranch")
                             {
                                 continue;
                             }
@@ -464,10 +464,10 @@ else
 
                                     </div>
                                     <a class="table-link link-success"
-                                       target="_blank"
-                                       asp-action="ExportToExcel"
-                                       asp-route-PurchVouchNo="@(row.ContainsKey("PurchVouchNo") ? row["PurchVouchNo"] : "")"
-                                       title="Export to Excel">
+                                    target="_blank"
+                                    asp-action="ExportToExcel"
+                                    asp-route-PurchVouchNo="@(row.ContainsKey("PurchVouchNo") ? row["PurchVouchNo"] : "")"
+                                    title="Export to Excel">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa-solid fa-file-excel fa-stack-1x fa-inverse"></i>
@@ -481,17 +481,28 @@ else
                                             </span>
                                         </a>
                                     </div>
-                                    
-                                        <div id="editCursorDiv-@Cntr">
 
-                                        <a class="table-link link-primary btnEditData" asp-action="DirectPurchaseBill" asp-route-Mode="U" asp-route-ID="@(row.ContainsKey("PurchBillEntryId") ? (Convert.ToInt32(row["PurchBillEntryId"])) : "")" asp-route-YearCode="@(row.ContainsKey("PurchBillYearCode") ? (Convert.ToInt32(row["PurchBillYearCode"])) : "")">
+                                  @if (row.ContainsKey("PurchaseFromDiffBranch") &&
+     Convert.ToString(row["PurchaseFromDiffBranch"]) != "Y")
+{
+    <div id="editCursorDiv-@Cntr">
+        <a class="table-link link-primary btnEditData"
+           asp-action="DirectPurchaseBill"
+           asp-route-Mode="U"
+           asp-route-ID="@(row.ContainsKey("PurchBillEntryId")
+               ? Convert.ToInt32(row["PurchBillEntryId"])
+               : 0)"
+           asp-route-YearCode="@(row.ContainsKey("PurchBillYearCode")
+               ? Convert.ToInt32(row["PurchBillYearCode"])
+               : 0)">
 
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                        </div>
+            <span class="fa-stack">
+                <i class="fa fa-square fa-stack-2x"></i>
+                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+            </span>
+        </a>
+    </div>
+}
                                     
                                     
                                 </div>
@@ -505,7 +516,7 @@ else
                                 foreach (var col in Model.Headers)
                                 {
                                     if (col.Field == "PurchBillEntryId" ||
-        col.Field == "PurchBillYearCode")
+        col.Field == "PurchBillYearCode" || col.Field == "PurchaseFromDiffBranch")
                                     {
                                         continue;
                                     }

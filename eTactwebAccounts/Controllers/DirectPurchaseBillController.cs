@@ -1375,7 +1375,7 @@ namespace eTactWeb.Controllers
                 {
                     model.TotalRecords = 0;
                     model.Rows = new List<Dictionary<string, object>>();
-                    return PartialView("_SBDashboardGrid", model);
+                    return PartialView("_DashBoardGrid", model);
                 }
                 // ✅ SEARCH (on DataTable)
                 var filteredRows = string.IsNullOrWhiteSpace(SearchBox)
