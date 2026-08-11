@@ -350,21 +350,21 @@
                     var AgainstInvNo = $('#AgainstInvNo-' + i).val();
                     var AgainstVoucherNo = $('#AgainstVoucherNo-' + i).val();
                     var AgainstVoucherDate = $('#AgainstVoucherDate-' + i).val();
-                    if ((ammApproval == "N" || ammApproval == null || ammApproval == "null" || ammApproval == "") && mainApproval == "Y") {
-                        $('#approvedRow-' + i).css("color", "blue");
-                    }
-                    else if (mainApproval == "Y") {
-                        $('#approvedRow-' + i).css("color", "green");
-                    } else {
-                        if (ammApproval == "Y")
-                            $('#approvedRow-' + i).css("color", "blue");
-                        else if (firstLevelApproval == "Y")
-                            $('#approvedRow-' + i).css("color", "purple");
-                        else if ((AgainstInvNo != null && AgainstInvNo != undefined && AgainstInvNo != '') || (AgainstVoucherNo != null && AgainstVoucherNo != undefined && AgainstVoucherNo != '') || (AgainstVoucherDate != null && AgainstVoucherDate != undefined && AgainstVoucherDate != ''))
-                            $('#approvedRow-' + i).css("color", "#0dcaf0");
-                        else
-                            $('#approvedRow-' + i).css("color", "red");
-                    }
+                    // if ((ammApproval == "N" || ammApproval == null || ammApproval == "null" || ammApproval == "") && mainApproval == "Y") {
+                    //     $('#approvedRow-' + i).css("color", "blue");
+                    // }
+                    // else if (mainApproval == "Y") {
+                    //     $('#approvedRow-' + i).css("color", "green");
+                    // } else {
+                    //     if (ammApproval == "Y")
+                    //         $('#approvedRow-' + i).css("color", "blue");
+                    //     else if (firstLevelApproval == "Y")
+                    //         $('#approvedRow-' + i).css("color", "purple");
+                    //     else if ((AgainstInvNo != null && AgainstInvNo != undefined && AgainstInvNo != '') || (AgainstVoucherNo != null && AgainstVoucherNo != undefined && AgainstVoucherNo != '') || (AgainstVoucherDate != null && AgainstVoucherDate != undefined && AgainstVoucherDate != ''))
+                    //         $('#approvedRow-' + i).css("color", "#0dcaf0");
+                    //     else
+                    //         $('#approvedRow-' + i).css("color", "red");
+                    // }
                 }
             }
         }
@@ -481,20 +481,17 @@
         //     });
         // });
 
-        $('#sendToExcel').click(function () {
-            var dashboardType = $('#DashboardType').val();
-            // Send DashboardType in query string
-            window.location.href = '/DirectPurchaseBill/ExportDPBDashboardToExcel?dashboardType=' + dashboardType;
-        });
+        // $('#sendToExcel').click(function () {
+        //     var dashboardType = $('#DashboardType').val();
+        //     // Send DashboardType in query string
+        //     window.location.href = '/DirectPurchaseBill/ExportDPBDashboardToExcel?dashboardType=' + dashboardType;
+        // });
         function GetSearchData() {
-            if ($('#DashboardType').val() == "Summary") {
+           
                 GetSummaryData();
 
 
-            } else {
-                GetDetailData();
-
-            }
+            
         }
 
         function GetGridData() {
@@ -536,8 +533,8 @@
                     $('#totalRows').text(dashGrid);
                     GetFormRights();
                     GetFeatureOption();
-                    CalculateTotalAmt();
-                    GetTotalAmounts();
+                    // CalculateTotalAmt();
+                    // GetTotalAmounts();
 
                 },
                 error: function (response) {
@@ -573,20 +570,20 @@
                 }
             });
         }
+        $(document).on('click', '.page-btn', function(e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            loadPage(page);
+        });
         function loadPage(pageNumber) {
 
 
             var dashboardType = $('#DashboardType').val();
             var url = '';
 
-            if (dashboardType === "Summary") {
+           
                 url = '@Url.Action("GetSearchData", "DirectPurchaseBill")';
-            } else if (dashboardType === "Detail") {
-                url = '@Url.Action("GetDetailData", "DirectPurchaseBill")';
-            } else if (dashboardType === "TAXDetail") {
-                url = '@Url.Action("GetDetailData", "DirectPurchaseBill")';
-            }
-
+            
             var formData = $('#SParam').serializeArray();
             formData.push({ name: 'pageNumber', value: pageNumber });
             $.ajax({

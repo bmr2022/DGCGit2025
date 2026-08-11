@@ -4,9 +4,12 @@
 @using System.Globalization
 @inject IHttpContextAccessor HttpContextAccessor
 @{
+    var TotalNetAmt = ViewBag.TotalNetAmt;
+    var TotalBillAmt = ViewBag.TotalBillAmt;
+
     var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
 }
-@if (Model.DashboardType == "Detail" || Model.DashboardType == "TAXDetail")
+@* @if (Model.DashboardType == "Detail" || Model.DashboardType == "TAXDetail")
 {
     <partial name="_DashboardDetailGrid" />
 }
@@ -397,4 +400,284 @@ else
     .page - link: hover: not(.disabled): not(.active) {
         background - color: #ddd;
     }
+</style> *@
+
+
+@{
+    <div class="table-responsive" style="max-height:400px;">
+        <table class="table table-bordered TbCss text-nowrap mb-0" id="PODashboardGrid">
+
+            <thead class="bg-gradient card-headerBG text-light" id="dashPOThead">
+                <tr>
+                    <th>Sr#</th>
+                    <th>Action<input type="checkbox" id="selectAll" /></th>
+                    @if (Model.Headers != null && Model.Headers.Any())
+                    {
+                        var colIndex = 1;
+                        foreach (var col in Model.Headers)
+                        {
+                            if (col.Field == "PurchBillEntryId" ||
+        col.Field == "PurchBillYearCode")
+                            {
+                                continue;
+                            }
+                            <th data-columnno="@colIndex" data-sortorder="asc" class="sortCol">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
+                                @col.Title
+                            </th>
+                            colIndex++;
+                        }
+                    }
+                </tr>
+            </thead>
+            <tbody id="divDashboardGrid1">
+
+                @if (Model.Rows == null || Model.Rows.Count == 0)
+                {
+                    <tr class="text-center">
+                        <td colspan="@((Model.Headers?.Count ?? 0) + 2)" class="text-black-50">
+                            <strong>NO DATA FOUND</strong>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    int Cntr = 0;
+
+                    foreach (var row in Model.Rows)
+                    {
+                        Cntr++;
+                        <tr id="approvedRow-@Cntr">
+                            <th>
+                                @Cntr
+                            </th>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+
+                                    <div id="printData-@Cntr">
+                                        <a class="table-link link-dark" target="_blank" asp-action="PrintReport" asp-route-EntryId="@(row.ContainsKey("PurchBillEntryId") ? (Convert.ToInt32(row["PurchBillEntryId"])) : "")" asp-route-YearCode="@(row.ContainsKey("PurchBillYearCode") ? (Convert.ToInt32(row["PurchBillYearCode"])) : "")">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+
+                                    </div>
+                                    <a class="table-link link-success"
+                                       target="_blank"
+                                       asp-action="ExportToExcel"
+                                       asp-route-PurchVouchNo="@(row.ContainsKey("PurchVouchNo") ? row["PurchVouchNo"] : "")"
+                                       title="Export to Excel">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-file-excel fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-action="DirectPurchaseBill" asp-route-Mode="V" asp-route-ID="@(row.ContainsKey("PurchBillEntryId") ? (Convert.ToInt32(row["PurchBillEntryId"])) : "")" asp-route-YearCode="@(row.ContainsKey("PurchBillYearCode") ? (Convert.ToInt32(row["PurchBillYearCode"])) : "")" onclick="BackButtonData(event)">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    
+                                        <div id="editCursorDiv-@Cntr">
+
+                                        <a class="table-link link-primary btnEditData" asp-action="DirectPurchaseBill" asp-route-Mode="U" asp-route-ID="@(row.ContainsKey("PurchBillEntryId") ? (Convert.ToInt32(row["PurchBillEntryId"])) : "")" asp-route-YearCode="@(row.ContainsKey("PurchBillYearCode") ? (Convert.ToInt32(row["PurchBillYearCode"])) : "")">
+
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    
+                                    
+                                </div>
+                            </td>
+
+                            
+
+
+                            @if (Model.Headers != null && Model.Headers.Any())
+                            {
+                                foreach (var col in Model.Headers)
+                                {
+                                    if (col.Field == "PurchBillEntryId" ||
+        col.Field == "PurchBillYearCode")
+                                    {
+                                        continue;
+                                    }
+                                    <td>
+                                        @{
+                                            if (row.ContainsKey(col.Field) && row[col.Field] != null)
+                                            {
+                                                var value = row[col.Field];
+
+                                                if (value is decimal || value is double || value is float)
+                                                {
+                                                    @string.Format("{0:0.00}", value)
+                                                }
+                                                else
+                                                {
+                                                    @value
+                                                }
+                                            }
+                                        }
+                                    </td>
+                                }
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+            <tfoot class="bg-light fw-bold">
+                <tr>
+
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>@TotalBillAmt</td>
+                    <td>@TotalNetAmt</td>
+                    <td></td>
+
+
+                    
+
+                </tr>
+            </tfoot>
+
+
+        </table>
+
+    </div>
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+    @*     <center><strong>TOTAL ROWS: <span>@displayedRows</span></strong></center> *@
+
+    <center>
+        <strong>
+            <span style="margin-right: 30px;">TOTAL ROWS  : <span>@displayedRows</span></span>
+            <span>TOTAL RECORDS : <span>@Model.TotalRecords</span></span>
+        </strong>
+    </center>
+
+}
+
+
+
+
+@{
+    int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+}
+@if (Model.TotalRecords > 0)
+{
+    //int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+
+    <ul class="pagination d-flex align-items-center">
+
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="@(Model.PageNumber - 1)" href="#">Previous</a>
+            </li>
+        }
+
+        @if (Model.PageNumber > 3)
+        {
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="1" href="#">1</a>
+            </li>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+        }
+
+        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link page-btn" data-page="@i" href="#">@i</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages - 2)
+        {
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="@totalPages" href="#">@totalPages</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="@(Model.PageNumber + 1)" href="#">Next</a>
+            </li>
+        }
+
+    </ul>
+}
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            /* margin-right: 10px; /* Adjust margin as needed */ */
+        }
+
+    #PODashboardGrid {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashPOThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+    table tfoot {
+        position: sticky;
+        bottom: 0;
+        background: linear-gradient(180deg, #b3e0f5, #80d4f0) !important;
+        color: #222;
+        z-index: 1;
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        height: 30px;
+    }
+
+        table tfoot td {
+            font-weight: bold;
+            border-top: 2px solid #dee2e6;
+            font-size: 13px;
+            color: #222;
+        }
+
 </style>

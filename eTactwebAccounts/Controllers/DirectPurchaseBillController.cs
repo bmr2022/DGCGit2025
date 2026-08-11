@@ -1301,64 +1301,157 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetSearchData(DPBDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
+        public async Task<IActionResult> GetSearchData(DPBDashBoard model, int pageNumber = 1, int pageSize = 15, string SearchBox = "")
         {
-            model.Mode = "SEARCH";
-            model = await IDirectPurchaseBill.GetSummaryData(model);
-            model.DashboardType = "Summary";
-            var modelList = model?.DPBDashboard ?? new List<DPBDashBoard>();
+            //model.Mode = "SEARCH";
+            //model = await IDirectPurchaseBill.GetSummaryData(model);
+            //model.DashboardType = "Summary";
+            //var modelList = model?.DPBDashboard ?? new List<DPBDashBoard>();
 
 
-            if (string.IsNullOrWhiteSpace(SearchBox))
+            //if (string.IsNullOrWhiteSpace(SearchBox))
+            //{
+            //    model.TotalRecords = modelList.Count();
+            //    model.PageNumber = pageNumber;
+            //    model.PageSize = pageSize;
+            //    model.DPBDashboard = modelList
+            //    .Skip((pageNumber - 1) * pageSize)
+            //       .Take(pageSize)
+            //       .ToList();
+            //}
+            //else
+            //{
+            //    List<DPBDashBoard> filteredResults;
+            //    if (string.IsNullOrWhiteSpace(SearchBox))
+            //    {
+            //        filteredResults = modelList.ToList();
+            //    }
+            //    else
+            //    {
+            //        filteredResults = modelList
+            //            .Where(i => i.GetType().GetProperties()
+            //                .Where(p => p.PropertyType == typeof(string))
+            //                .Select(p => p.GetValue(i)?.ToString())
+            //                .Any(value => !string.IsNullOrEmpty(value) &&
+            //                              value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+            //            .ToList();
+
+
+            //        if (filteredResults.Count == 0)
+            //        {
+            //            filteredResults = modelList.ToList();
+            //        }
+            //    }
+
+            //    model.TotalRecords = filteredResults.Count;
+            //    model.DPBDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            //    model.PageNumber = pageNumber;
+            //    model.PageSize = pageSize;
+            //}
+            //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            //{
+            //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+            //    SlidingExpiration = TimeSpan.FromMinutes(55),
+            //    Size = 1024,
+            //};
+
+            //_MemoryCache.Set("KeyDirectPurchaseBillList_Summary", modelList, cacheEntryOptions);
+            //HttpContext.Session.SetString("KeyDPBDashboard",JsonConvert.SerializeObject(modelList));
+            //HttpContext.Session.SetString("KeyDPBDashboardType", model.DashboardType);
+            //return PartialView("_DashBoardGrid", model);
+
+            try
             {
-                model.TotalRecords = modelList.Count();
+                //var model = new DPBDashboard();
+
+   //             ViewBag.RedirectFrom = redirectFrom;
+   //             model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+   //             string selectedInvoiceTypes = SubInvoicetype != null
+   //? string.Join(",", SubInvoicetype)
+   //: "";
+                var Result = await  IDirectPurchaseBill.GetSummaryData(model);
+
+                if (Result == null || !(Result.Result is DataTable dt))
+                {
+                    model.TotalRecords = 0;
+                    model.Rows = new List<Dictionary<string, object>>();
+                    return PartialView("_SBDashboardGrid", model);
+                }
+                // ✅ SEARCH (on DataTable)
+                var filteredRows = string.IsNullOrWhiteSpace(SearchBox)
+                    ? dt.AsEnumerable()
+                    : dt.AsEnumerable().Where(r =>
+                        dt.Columns.Cast<DataColumn>()
+                            .Any(c => r[c] != DBNull.Value &&
+                                      r[c].ToString()
+                                          .Contains(SearchBox, StringComparison.OrdinalIgnoreCase)));
+
+                var sessionRows = filteredRows
+        .Select(r => dt.Columns
+            .Cast<DataColumn>()
+            .ToDictionary(
+                c => c.ColumnName,
+                c => r[c] == DBNull.Value ? null : r[c]
+            ))
+        .ToList();
+
+                HttpContext.Session.SetString(
+                    "KeyDPBDashboard",
+                    JsonConvert.SerializeObject(sessionRows)
+                );
+                decimal totalNetAmt = filteredRows
+    .Where(r => r["NetAmt"] != DBNull.Value)
+    .Sum(r => Convert.ToDecimal(r["NetAmt"]));
+
+                ViewBag.TotalNetAmt = totalNetAmt;
+                decimal TotalBillAmt = filteredRows
+    .Where(r => r["BillAmt"] != DBNull.Value)
+    .Sum(r => Convert.ToDecimal(r["BillAmt"]));
+
+                ViewBag.TotalBillAmt = TotalBillAmt;
+                // ✅ TOTAL RECORDS (before pagination)
+                model.TotalRecords = filteredRows.Count();
                 model.PageNumber = pageNumber;
                 model.PageSize = pageSize;
-                model.DPBDashboard = modelList
-                .Skip((pageNumber - 1) * pageSize)
-                   .Take(pageSize)
-                   .ToList();
-            }
-            else
-            {
-                List<DPBDashBoard> filteredResults;
-                if (string.IsNullOrWhiteSpace(SearchBox))
+
+                model.Headers = dt.Columns
+                .Cast<DataColumn>()
+                .Select(c => new DashboardColumn
                 {
-                    filteredResults = modelList.ToList();
-                }
-                else
-                {
-                    filteredResults = modelList
-                        .Where(i => i.GetType().GetProperties()
-                            .Where(p => p.PropertyType == typeof(string))
-                            .Select(p => p.GetValue(i)?.ToString())
-                            .Any(value => !string.IsNullOrEmpty(value) &&
-                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
-                        .ToList();
+                    Title = c.ColumnName,
+                    Field = c.ColumnName
+                })
+                .ToList();
 
+                //model.Rows = dt.AsEnumerable()
+                //    .Select(r => dt.Columns
+                //        .Cast<DataColumn>()
+                //        .ToDictionary(
+                //            c => c.ColumnName,
+                //            c => r[c] == DBNull.Value ? null : r[c]
+                //        ))
+                //    .ToList();
 
-                    if (filteredResults.Count == 0)
-                    {
-                        filteredResults = modelList.ToList();
-                    }
-                }
-
-                model.TotalRecords = filteredResults.Count;
-                model.DPBDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-                model.PageNumber = pageNumber;
-                model.PageSize = pageSize;
+                model.Rows = filteredRows
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(r => dt.Columns
+                        .Cast<DataColumn>()
+                        .ToDictionary(
+                            c => c.ColumnName,
+                            c => r[c] == DBNull.Value ? null : r[c]
+                        ))
+                    .ToList();
+                //model.SummaryDetail = summaryDetail;
+                return PartialView("_DashBoardGrid", model);
             }
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
+                throw;
+            }
 
-            _MemoryCache.Set("KeyDirectPurchaseBillList_Summary", modelList, cacheEntryOptions);
-            HttpContext.Session.SetString("KeyDPBDashboard",JsonConvert.SerializeObject(modelList));
-            HttpContext.Session.SetString("KeyDPBDashboardType", model.DashboardType);
-            return PartialView("_DashBoardGrid", model);
+
+
         }
 
         [HttpGet]
@@ -1643,7 +1736,7 @@ namespace eTactWeb.Controllers
 
 
 
-        public async Task<IActionResult> GetDetailData(DPBDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
+        public async Task<IActionResult> GetDetailData(DPBDashBoard model, int pageNumber = 1, int pageSize = 15, string SearchBox = "")
         {
             model.Mode = "SEARCH";
             var type = model.DashboardType;
@@ -1719,48 +1812,70 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_DashBoardGrid", new List<DPBDashBoard>());
             }
-            string cacheKey = $"KeyDirectPurchaseBillList_{dashboardType}";
-            if (!_MemoryCache.TryGetValue(cacheKey, out IList<DPBDashBoard> dPBDashBoard) || dPBDashBoard == null)
+            //string cacheKey = $"KeyDPBDashboard";
+            //if (!_MemoryCache.TryGetValue(cacheKey, out IList<DPBDashBoard> dPBDashBoard) || dPBDashBoard == null)
+            //{
+            //    return PartialView("_DashBoardGrid", new List<DPBDashBoard>());
+            //}
+            string modelJson = HttpContext.Session.GetString("KeyDPBDashboard");
+
+            if (string.IsNullOrWhiteSpace(modelJson))
             {
-                return PartialView("_DashBoardGrid", new List<DPBDashBoard>());
-            }
-
-            List<DPBDashBoard> filteredResults;
-
-            if (string.IsNullOrWhiteSpace(searchString))
-            {
-                filteredResults = dPBDashBoard.ToList();
-            }
-            else
-            {
-                filteredResults = dPBDashBoard
-                    .Where(i => i.GetType().GetProperties()
-                        .Where(p => p.PropertyType == typeof(string))
-                        .Select(p => p.GetValue(i)?.ToString())
-                        .Any(value => !string.IsNullOrEmpty(value) &&
-                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
-                    .ToList();
-
-
-                if (filteredResults.Count == 0)
-                {
-                    filteredResults = dPBDashBoard.ToList();
-                }
-            }
-
-            model.TotalRecords = filteredResults.Count;
-            model.DPBDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-            model.PageNumber = pageNumber;
-            model.PageSize = pageSize;
-            if (dashboardType == "Summary")
-            {
-
+                model.Rows = new List<Dictionary<string, object>>();
+                model.Headers = new List<DashboardColumn>();
+                model.TotalRecords = 0;
                 return PartialView("_DashBoardGrid", model);
             }
-            else
+
+
+
+            // 2️⃣ Deserialize rows
+            var allRows = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(modelJson);
+
+            if (allRows == null || allRows.Count == 0)
             {
-                return PartialView("_DashboardDetailGrid", model);
+                model.Rows = new List<Dictionary<string, object>>();
+                model.Headers = new List<DashboardColumn>();
+                model.TotalRecords = 0;
+                return PartialView("_DashBoardGrid", model);
             }
+
+            // 3️⃣ Dynamic search (all columns)
+            var filteredRows = string.IsNullOrWhiteSpace(searchString)
+                ? allRows
+                : allRows.Where(row =>
+                    row.Values.Any(val =>
+                        val != null &&
+                        val.ToString()
+                           .Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                  .ToList();
+
+            // fallback → show all
+            if (filteredRows.Count == 0)
+                filteredRows = allRows;
+
+            // 4️⃣ Dynamic headers (from keys)
+            model.Headers = filteredRows.First()
+                .Keys
+                .Select(k => new DashboardColumn
+                {
+                    Title = k,
+                    Field = k
+                })
+                .ToList();
+
+            // 5️⃣ Pagination
+            model.TotalRecords = filteredRows.Count;
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+
+            model.Rows = filteredRows
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return PartialView("_DashBoardGrid", model);
+            
         }
         public async Task<IActionResult> GetAmmCompSearchData(DPBDashBoard model)
         {
@@ -2643,6 +2758,57 @@ namespace eTactWeb.Controllers
 
             return sw.ToString();
         }
+
+        public IActionResult ExportDashboardToExcel()
+        {
+            var sessionData = HttpContext.Session.GetString("KeyDPBDashboard");
+
+            if (string.IsNullOrEmpty(sessionData))
+            {
+                return BadRequest("No data available to export.");
+            }
+
+            var rows = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(sessionData);
+
+            using (var workbook = new ClosedXML.Excel.XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Purchase Bill");
+
+                if (rows != null && rows.Any())
+                {
+                    // Add Header
+                    var headers = rows.First().Keys.ToList();
+                    for (int i = 0; i < headers.Count; i++)
+                    {
+                        worksheet.Cell(1, i + 1).Value = headers[i];
+                        worksheet.Cell(1, i + 1).Style.Font.Bold = true;
+                    }
+
+                    // Add Data
+                    for (int row = 0; row < rows.Count; row++)
+                    {
+                        var values = rows[row].Values.ToList();
+                        for (int col = 0; col < values.Count; col++)
+                        {
+                            worksheet.Cell(row + 2, col + 1).Value = values[col]?.ToString();
+                        }
+                    }
+
+                    worksheet.Columns().AdjustToContents();
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+
+                    return File(content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "PurchaseBill.xlsx");
+                }
+            }
+        }
+
         [HttpGet]
         public IActionResult ExportDPBDashboardToExcel(string dashboardType)
         {

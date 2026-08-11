@@ -1,10 +1,12 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.VariantTypes;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
+using PdfSharp.Drawing.BarCodes;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices.JavaScript;
@@ -18,11 +20,13 @@ public class DirectPurchaseBillDAL
     private readonly IDataLogic _IDataLogic;
     private readonly string DBConnectionString = string.Empty;
     private readonly ConnectionStringService _connectionStringService;
-    public DirectPurchaseBillDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
+    private readonly ICommon _common;
+    public DirectPurchaseBillDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService, ICommon common)
     {
         _IDataLogic = iDataLogic;
         _connectionStringService = connectionStringService;
         DBConnectionString = _connectionStringService.GetConnectionString();
+        _common = common;
         //DBConnectionString = configuration.GetConnectionString("eTactDB");
     }
     public async Task<string> GetItemServiceFORPO(string ItemService)
@@ -676,95 +680,144 @@ public class DirectPurchaseBillDAL
 
         return DashBoardData;
     }
-    public async Task<DPBDashBoard> GetSummaryData(DPBDashBoard model)
+    public static string EmptyIfNull(string value)
     {
-        var DashBoardData = new DPBDashBoard();
-        DataSet? oDataSet = new DataSet();
-        try
-        {
-            var fromDt = CommonFunc.ParseFormattedDate(model.FromDate);
-            var toDt = CommonFunc.ParseFormattedDate(model.ToDate);
-            using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
-            {
-                DateTime now = DateTime.Now;
-                DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
-                SqlCommand oCmd = new SqlCommand("SP_DirectPurchaseBillMainDetail", myConnection)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
-                oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
-                oCmd.Parameters.AddWithValue("@YearCode", now.Year);
-                oCmd.Parameters.AddWithValue("@SummDetail", model.DashboardType.ToLower());
-                oCmd.Parameters.AddWithValue("@PurchVoucherNo", model.PurchVouchNo);
-                oCmd.Parameters.AddWithValue("@InvNo", model.InvoiceNo);
-                oCmd.Parameters.AddWithValue("@partcode", model.PartCode);
-                oCmd.Parameters.AddWithValue("@Vendorname", model.VendorName);
-                oCmd.Parameters.AddWithValue("@ItemName", model.ItemName);
-                oCmd.Parameters.AddWithValue("@GSTType", model.GSTType);
-                oCmd.Parameters.AddWithValue("@TypeITEMSERVASSETS", model.TypeITEMSERVASSETS);
-                oCmd.Parameters.AddWithValue("@DocumentType", model.DocumentType);
-                oCmd.Parameters.AddWithValue("@HSNNo", model.HsnNo);
-                oCmd.Parameters.AddWithValue("@FromDate",fromDt);
-                oCmd.Parameters.AddWithValue("@ToDate",toDt);
-                await myConnection.OpenAsync();
-                using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
-                {
-                    oDataAdapter.Fill(oDataSet);
-                }
-            }
+        return value ?? string.Empty;
+    }
+    public async Task<ResponseResult> GetSummaryData(DPBDashBoard model)
+    {
+        //var DashBoardData = new DPBDashBoard();
+        //DataSet? oDataSet = new DataSet();
+        //try
+        //{
+        //    var fromDt = CommonFunc.ParseFormattedDate(model.FromDate);
+        //    var toDt = CommonFunc.ParseFormattedDate(model.ToDate);
+        //    using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+        //    {
+        //        DateTime now = DateTime.Now;
+        //        DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+        //        SqlCommand oCmd = new SqlCommand("SP_DirectPurchaseBillMainDetail", myConnection)
+        //        {
+        //            CommandType = CommandType.StoredProcedure
+        //        };
+        //        oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
+        //        oCmd.Parameters.AddWithValue("@YearCode", now.Year);
+        //        oCmd.Parameters.AddWithValue("@SummDetail", model.DashboardType.ToLower());
+        //        oCmd.Parameters.AddWithValue("@PurchVoucherNo", model.PurchVouchNo);
+        //        oCmd.Parameters.AddWithValue("@InvNo", model.InvoiceNo);
+        //        oCmd.Parameters.AddWithValue("@partcode", model.PartCode);
+        //        oCmd.Parameters.AddWithValue("@Vendorname", model.VendorName);
+        //        oCmd.Parameters.AddWithValue("@ItemName", model.ItemName);
+        //        oCmd.Parameters.AddWithValue("@GSTType", model.GSTType);
+        //        oCmd.Parameters.AddWithValue("@TypeITEMSERVASSETS", model.TypeITEMSERVASSETS);
+        //        oCmd.Parameters.AddWithValue("@DocumentType", model.DocumentType);
+        //        oCmd.Parameters.AddWithValue("@HSNNo", model.HsnNo);
+        //        oCmd.Parameters.AddWithValue("@FromDate",fromDt);
+        //        oCmd.Parameters.AddWithValue("@ToDate",toDt);
+        //        await myConnection.OpenAsync();
+        //        using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+        //        {
+        //            oDataAdapter.Fill(oDataSet);
+        //        }
+        //    }
 
-            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+        //    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+        //    {
+        //        DashBoardData.DPBDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
+        //                                      select new DPBDashBoard
+        //                                      {
+        //                                          EntryID = !string.IsNullOrEmpty(dr["PurchBillEntryId"].ToString()) ? Convert.ToInt32(dr["PurchBillEntryId"]) : 0,
+        //                                          PurchVouchNo = dr["purvoucherno"].ToString(),
+        //                                          EntryDate = string.IsNullOrEmpty(dr["EntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["EntryDate"]),
+        //                                          InvoiceNo = dr["InvoiceNo"].ToString(),
+        //                                          InvoiceDate = string.IsNullOrEmpty(dr["InvoiceDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["InvoiceDate"]),
+        //                                          YearCode = !string.IsNullOrEmpty(dr["PurchBillYearCode"].ToString()) ? Convert.ToInt32(dr["PurchBillYearCode"]) : 0,
+        //                                          VendorName = dr["VendorName"].ToString(),
+        //                                          VendorAddress = dr["VendorAddress"].ToString(),
+        //                                          StateName = dr["StateName"].ToString(),
+        //                                          GSTType = dr["GSTType"].ToString(),
+        //                                          Currency = dr["Currency"].ToString(),
+        //                                          TypeITEMSERVASSETS = dr["TypeITEMSERVASSETS"].ToString(),
+        //                                          CC = dr["Branch"].ToString(),
+        //                                          PurchaseFromDiffBranch = dr["PurchaseFromDiffBranch"].ToString(),
+        //                                          DomesticImport = dr["DomesticImport"].ToString(),
+        //                                          PaymentTerms = dr["PaymentTerm"].ToString(),
+        //                                          Transporter = dr["Transporter"].ToString(),
+        //                                          VehicleNo = dr["Vehicleno"].ToString(),
+        //                                          ModeOfTrans = dr["ModeOfTrans"].ToString(),
+        //                                          BalanceSheetClosed = dr["BalanceSheetClosed"].ToString(),
+        //                                          VoucherDate = dr["VoucherDate"].ToString(),
+        //                                          Approved = dr["Approved"].ToString(),
+        //                                          UpdatedByName = dr["EntryByMachine"].ToString(),
+        //                                          //MachineName = dr["EntryByMachine"].ToString(),
+        //                                          UpdatedBy = !string.IsNullOrEmpty(dr["UpdatedBy"].ToString()) ? 0 : Convert.ToInt32(dr["UpdatedBy"].ToString()),
+        //                                          EnteredBy = dr["ActualEntryByName"].ToString(),
+        //                                          UpdatedOn = string.IsNullOrEmpty(dr["LastUpdatedDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["LastUpdatedDate"]),
+        //                                          CreatedBy = !string.IsNullOrEmpty(dr["ActualEntryBy"].ToString()) ? 0 : Convert.ToInt32(dr["ActualEntryBy"].ToString()),
+        //                                          CreatedOn = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
+        //                                          BasicAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToDecimal(dr["BillAmt"]) : 0,
+        //                                          NetAmount = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToDecimal(dr["NetAmt"]) : 0,
+        //                                          AgainstVoucherNo = dr["AgainstVoucherNo"].ToString(),
+        //                                          AgainstInvNo = dr["AgainstInvNo"].ToString()
+        //                                      }).OrderByDescending(a => a.EntryID).ToList();
+        //    }
+        //}
+        //catch (Exception ex)
+        //{
+        //    dynamic Error = new ExpandoObject();
+        //    Error.Message = ex.Message;
+        //    Error.Source = ex.Source;
+        //}
+        //finally
+        //{
+        //    oDataSet.Dispose();
+        //}
+        //return DashBoardData;
+
+        var _ResponseResult = new ResponseResult();
+        var SqlParams = new List<dynamic>();
+        string flag = "DASHBOARD";
+        //fromdate = CommonFunc.ParseFormattedDate(fromdate);
+        //toDate = CommonFunc.ParseFormattedDate(toDate);
+        //oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
+        //        oCmd.Parameters.AddWithValue("@YearCode", now.Year);
+        //        oCmd.Parameters.AddWithValue("@SummDetail", model.DashboardType.ToLower());
+        //        oCmd.Parameters.AddWithValue("@PurchVoucherNo", model.PurchVouchNo);
+        //        oCmd.Parameters.AddWithValue("@InvNo", model.InvoiceNo);
+        //        oCmd.Parameters.AddWithValue("@partcode", model.PartCode);
+        //        oCmd.Parameters.AddWithValue("@Vendorname", model.VendorName);
+        //        oCmd.Parameters.AddWithValue("@ItemName", model.ItemName);
+        //        oCmd.Parameters.AddWithValue("@GSTType", model.GSTType);
+        //        oCmd.Parameters.AddWithValue("@TypeITEMSERVASSETS", model.TypeITEMSERVASSETS);
+        //        oCmd.Parameters.AddWithValue("@DocumentType", model.DocumentType);
+        //        oCmd.Parameters.AddWithValue("@HSNNo", model.HsnNo);
+        //        oCmd.Parameters.AddWithValue("@FromDate",fromDt);
+        //        oCmd.Parameters.AddWithValue("@ToDate",toDt);
+        var fromDt = CommonFunc.ParseFormattedDate(model.FromDate);
+           var toDt = CommonFunc.ParseFormattedDate(model.ToDate);
+        var parameters = new Dictionary<string, object>
             {
-                DashBoardData.DPBDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
-                                              select new DPBDashBoard
-                                              {
-                                                  EntryID = !string.IsNullOrEmpty(dr["PurchBillEntryId"].ToString()) ? Convert.ToInt32(dr["PurchBillEntryId"]) : 0,
-                                                  PurchVouchNo = dr["purvoucherno"].ToString(),
-                                                  EntryDate = string.IsNullOrEmpty(dr["EntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["EntryDate"]),
-                                                  InvoiceNo = dr["InvoiceNo"].ToString(),
-                                                  InvoiceDate = string.IsNullOrEmpty(dr["InvoiceDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["InvoiceDate"]),
-                                                  YearCode = !string.IsNullOrEmpty(dr["PurchBillYearCode"].ToString()) ? Convert.ToInt32(dr["PurchBillYearCode"]) : 0,
-                                                  VendorName = dr["VendorName"].ToString(),
-                                                  VendorAddress = dr["VendorAddress"].ToString(),
-                                                  StateName = dr["StateName"].ToString(),
-                                                  GSTType = dr["GSTType"].ToString(),
-                                                  Currency = dr["Currency"].ToString(),
-                                                  TypeITEMSERVASSETS = dr["TypeITEMSERVASSETS"].ToString(),
-                                                  CC = dr["Branch"].ToString(),
-                                                  PurchaseFromDiffBranch = dr["PurchaseFromDiffBranch"].ToString(),
-                                                  DomesticImport = dr["DomesticImport"].ToString(),
-                                                  PaymentTerms = dr["PaymentTerm"].ToString(),
-                                                  Transporter = dr["Transporter"].ToString(),
-                                                  VehicleNo = dr["Vehicleno"].ToString(),
-                                                  ModeOfTrans = dr["ModeOfTrans"].ToString(),
-                                                  BalanceSheetClosed = dr["BalanceSheetClosed"].ToString(),
-                                                  VoucherDate = dr["VoucherDate"].ToString(),
-                                                  Approved = dr["Approved"].ToString(),
-                                                  UpdatedByName = dr["EntryByMachine"].ToString(),
-                                                  //MachineName = dr["EntryByMachine"].ToString(),
-                                                  UpdatedBy = !string.IsNullOrEmpty(dr["UpdatedBy"].ToString()) ? 0 : Convert.ToInt32(dr["UpdatedBy"].ToString()),
-                                                  EnteredBy = dr["ActualEntryByName"].ToString(),
-                                                  UpdatedOn = string.IsNullOrEmpty(dr["LastUpdatedDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["LastUpdatedDate"]),
-                                                  CreatedBy = !string.IsNullOrEmpty(dr["ActualEntryBy"].ToString()) ? 0 : Convert.ToInt32(dr["ActualEntryBy"].ToString()),
-                                                  CreatedOn = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
-                                                  BasicAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToDecimal(dr["BillAmt"]) : 0,
-                                                  NetAmount = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToDecimal(dr["NetAmt"]) : 0,
-                                                  AgainstVoucherNo = dr["AgainstVoucherNo"].ToString(),
-                                                  AgainstInvNo = dr["AgainstInvNo"].ToString()
-                                              }).OrderByDescending(a => a.EntryID).ToList();
-            }
-        }
-        catch (Exception ex)
-        {
-            dynamic Error = new ExpandoObject();
-            Error.Message = ex.Message;
-            Error.Source = ex.Source;
-        }
-        finally
-        {
-            oDataSet.Dispose();
-        }
-        return DashBoardData;
+                { "@SummDetail",EmptyIfNull(model.DashboardType.ToLower())},
+                { "@PurchVoucherNo", EmptyIfNull(model.PurchVouchNo)},
+                { "@InvNo", EmptyIfNull(model.InvoiceNo) },
+                { "@partcode", EmptyIfNull(model.PartCode) },
+                { "@Vendorname", EmptyIfNull(model.VendorName) },
+                { "@ItemName", EmptyIfNull(model.ItemName) },
+                { "@GSTType", EmptyIfNull(model.GSTType) },
+                { "@TypeITEMSERVASSETS", EmptyIfNull(model.TypeITEMSERVASSETS) },
+                { "@DocumentType", EmptyIfNull(model.DocumentType) },
+                { "@HSNNo", EmptyIfNull(model.HsnNo) },
+                //{ "@DomesticExportNEPZ", EmptyIfNull(domensticExportNEPZ) },
+                { "@FromDate", fromDt },
+                { "@ToDate", toDt },
+                
+            };
+
+        return await _common.GetDashboardData(
+            "SP_DirectPurchaseBillMainDetail",
+            flag,
+            parameters
+        );
     }
 
     public async Task<ResponseResult> GetTotalAmount(DPBDashBoard model)

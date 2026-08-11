@@ -11,12 +11,13 @@ namespace eTactWeb.Data.BLL
     public class DirectPurchaseBillBLL : IDirectPurchaseBill
     {
         private readonly IDataLogic _DataLogicDAL;
+        private readonly ICommon _common;
 
         private readonly DirectPurchaseBillDAL _DirectPurchaseBillDAL;
 
-        public DirectPurchaseBillBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
+        public DirectPurchaseBillBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService, ICommon common)
         {
-            _DirectPurchaseBillDAL = new DirectPurchaseBillDAL(configuration, iDataLogic,  connectionStringService);
+            _DirectPurchaseBillDAL = new DirectPurchaseBillDAL(configuration, iDataLogic,  connectionStringService, common);
             _DataLogicDAL = iDataLogic;
         }
         //public async Task<ResponseResult> GetItemServiceFORPO(string ItemSErv)
@@ -160,7 +161,7 @@ namespace eTactWeb.Data.BLL
         {
             return await _DirectPurchaseBillDAL.GetTotalAmount(model);
         }
-        async Task<DPBDashBoard> IDirectPurchaseBill.GetSummaryData(DPBDashBoard model)
+        async  Task<ResponseResult> IDirectPurchaseBill.GetSummaryData(DPBDashBoard model)
         {
             return await _DirectPurchaseBillDAL.GetSummaryData(model);
         }

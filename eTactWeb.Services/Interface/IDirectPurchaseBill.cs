@@ -40,7 +40,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> AltUnitConversion(int ItemCode, decimal AltQty, decimal UnitQty);
         Task<ResponseResult> GetTotalAmount(DPBDashBoard model);
 
-        Task<DPBDashBoard> GetSummaryData(DPBDashBoard model);
+         Task<ResponseResult> GetSummaryData(DPBDashBoard model);
         Task<DPBDashBoard> GetDetailData(DPBDashBoard model);
         Task<DPBDashBoard> GetSearchCompData(DPBDashBoard model);
 

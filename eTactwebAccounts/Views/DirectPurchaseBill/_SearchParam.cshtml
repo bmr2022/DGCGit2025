@@ -69,9 +69,10 @@
         <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" onclick="GetSearchData();">
             <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
         </button>
-        <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
-            <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
-        </button>
+        <a href="/DirectPurchaseBill/ExportDashboardToExcel"
+           class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button">
+            <i class="fa fa-file-excel"></i>Excel
+        </a>
         <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="DirectPurchaseBill" asp-action="DashBoard">
             <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
         </a>
