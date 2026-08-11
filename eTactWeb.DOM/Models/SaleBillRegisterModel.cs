@@ -10,11 +10,13 @@ namespace eTactWeb.DOM.Models
     {
         public string? FromDate { get; set; }
         public string? ReportType { get; set; }
-        public string? ToDate { get; set;} 
-         public string? PartCode { get; set; }
+        public string? ToDate { get; set; }
+        public string? PartCode { get; set; }
         public string? ItemName { get; set; }
-         public string? ReportMode { get; set; }
-        public string? SaleBillNo {  get; set; }
+        public string? ReportMode { get; set; }
+        public string? SaleBillNo { get; set; }
+        public string? ItemParentGroupName { get; set; }
+        public string? ItemParentGroup { get; set; }
         public string? docname { get; set; }
         public string? SONo { get; set; }
         public string? Schno { get; set; }
@@ -22,11 +24,17 @@ namespace eTactWeb.DOM.Models
         public string? HSNNO { get; set; }
         public string? CustomerName { get; set; }
         public List<string> DynamicHeaders { get; set; }
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+
+        public List<DashboardColumn> Headers { get; set; } = new();
+        public List<Dictionary<string, object>> Rows { get; set; } = new();
         public IList<SaleBillRegisterDetail>? SaleBillRegisterDetail { get; set; }
     }
     public class SaleBillRegisterDetail
     {
-        public string? Description {  get; set; }
+        public string? Description { get; set; }
         public decimal? forTheDuration { get; set; }
         public decimal? ForFinYear { get; set; }
 
@@ -54,8 +62,8 @@ namespace eTactWeb.DOM.Models
         public string? SchNo { get; set; }
         public string? ItemRemark { get; set; }
 
-        
-        public decimal? BillAmt { get; set;}
+
+        public decimal? BillAmt { get; set; }
         public decimal? TaxableAmt { get; set; }
         public decimal? GSTAmount { get; set; }
         public decimal? TotalBillQty { get; set; }
@@ -71,23 +79,23 @@ namespace eTactWeb.DOM.Models
         public decimal? IGSTAmt { get; set; }
 
         public decimal? ExpenseAmt { get; set; }
-        public decimal? InvAmt { get; set; }  
+        public decimal? InvAmt { get; set; }
         public string? TypeItemServAssets { get; set; }
         public string? DomesticExportNEPZ { get; set; }
         public string? SupplyType { get; set; }
         public string? LastUpdatedByEmp { get; set; }
         public string? LastUpdationDate { get; set; }
-         
+
         public Int16? EntryId { get; set; }
         public Int16? YearCode { get; set; }
         public string? Unit { get; set; }
-        public decimal? Rate { get; set;}
+        public decimal? Rate { get; set; }
         public decimal? AltQty { get; set; }
         public decimal? PendPOQty { get; set; }
         public decimal? AltPendQty { get; set; }
         public int? SaleBillYearCode { get; set; }
         public decimal? SaleBillQty { get; set; }
- 
+
         public string? ItemSize { get; set; }
         public string? ItemColor { get; set; }
         public string? BatchNo { get; set; }
@@ -106,18 +114,18 @@ namespace eTactWeb.DOM.Models
         public int SOYearCode { get; set; }
         public int SchYearCode { get; set; }
 
-        public decimal Total { get; set; } 
+        public decimal Total { get; set; }
         public int SeqNum { get; set; }
         public string? FromDate { get; set; }
         public string? LastUpdatedDate { get; set; }
         public string? ToDate { get; set; }
         public decimal? Amount { get; set; }
-        public string? ActualEntryByEMp {  get; set; }
+        public string? ActualEntryByEMp { get; set; }
         public string? UpdatedByEMp { get; set; }
         public string? AltUnit { get; set; }
-        public string? Ewaybillno {  get; set; }
+        public string? Ewaybillno { get; set; }
         public string? EInvNo { get; set; }
-        public string? EinvGenerated {  get; set; }
+        public string? EinvGenerated { get; set; }
         public string? CancelBill { get; set; }
         public string? Canceldate { get; set; }
         public string? CancelReason { get; set; }

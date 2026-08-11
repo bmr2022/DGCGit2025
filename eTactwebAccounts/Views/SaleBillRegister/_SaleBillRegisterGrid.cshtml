@@ -1,4 +1,4 @@
-﻿@model eTactWeb.DOM.Models.SaleBillRegisterModel
+﻿@* @model eTactWeb.DOM.Models.SaleBillRegisterModel
 
 @if (Model.ReportMode == "SALESUMMARY" || Model.ReportMode == "SALE SUMMARY"  )
 {
@@ -16,7 +16,7 @@ else if (Model.ReportMode == "CustomerItemWiseMonthlyData")
 
 else if (Model.ReportMode == "CustomerWiseMonthlyTrend")
 {
-    <partial name="_SaleBillRegisterCustomerWiseMonthlyTrend" /> 
+    <partial name="_SaleBillRegisterCustomerWiseMonthlyTrend" />
 }
 else if (Model.ReportMode == "SaleCompleteDetail")
 {
@@ -36,8 +36,8 @@ else if (Model.ReportMode == "SALESUMMARYREG" || Model.ReportType == "GSTSALESUM
         <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
             <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
                 <tr>
-                   
-                    <th>Sr#</th>
+
+<th>Sr#</th>
                     <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>InvoiceNo</th>
                     <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>InvDate </th>
                     <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustomerName</th>
@@ -64,8 +64,8 @@ else if (Model.ReportMode == "SALESUMMARYREG" || Model.ReportType == "GSTSALESUM
                     <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IGSTAmt</th>
                     <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ExpenseAmt</th>
                     <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>InvAmt</th>
-                   
-                    <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MachineName</th>
+
+<th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MachineName</th>
                     <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TypeItemServAssets</th>
                     <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DomesticExportNEPZ</th>
                     <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SupplyType</th>
@@ -91,8 +91,8 @@ else if (Model.ReportMode == "SALESUMMARYREG" || Model.ReportType == "GSTSALESUM
                             Cntr = Cntr + 1;
 
                             <tr id="SAGridRow-@Cntr">
-                                
-                                <th>@Cntr</th>
+
+<th>@Cntr</th>
 
 
                                 <td style="background-color: #e09ef0;">@item.SaleBillNo</td>
@@ -102,15 +102,15 @@ else if (Model.ReportMode == "SALESUMMARYREG" || Model.ReportType == "GSTSALESUM
                                 <td>@item.CustAddress</td>
                                 <td>@item.State</td>
                                 <td>@item.StateCode</td>
-                                <td>@item.Country</td>    
-                                 
-                           <td>@item.ConsigneeName</td>
+                                <td>@item.Country</td>
+
+<td>@item.ConsigneeName</td>
                                 <td>@item.ConsigneeAddress</td>
-                                <td>@item.BillAmt</td>
+                                <td id="billAmt-@Cntr">@item.BillAmt</td>
                                 <td>@item.TaxableAmt</td>
                                 <td>@item.GSTAmount</td>
                                 <td>@item.Currency</td>
-                                <td>@item.TotalBillQty</td>
+                                <td id="billQty-@Cntr">@item.TotalBillQty</td>
                                   <td>@item.TotalDisAmt</td>
                                 <td>@item.TotalItemAmt</td>
                                 <td>@item.CGSTPer</td>
@@ -122,8 +122,8 @@ else if (Model.ReportMode == "SALESUMMARYREG" || Model.ReportType == "GSTSALESUM
 
                                 <td>@item.ExpenseAmt</td>
                                 <td>@item.InvAmt</td>
-                                 
-                                <td>@item.EntryByMachineName</td>
+
+<td>@item.EntryByMachineName</td>
                                 <td>@item.TypeItemServAssets</td>
                                 <td>@item.DomesticExportNEPZ</td>
                                 <td>@item.SupplyType</td>
@@ -172,4 +172,270 @@ else
         top: 0;
         z-index: 1;
     }
+</style> *@
+@model eTactWeb.DOM.Models.SaleBillRegisterModel
+@using eTactWeb.Data.Common
+@inject EncryptDecrypt encryptDecrypt
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+        }
+
+    .table-container {
+        max-height: 350px; /* 👈 set max height here */
+        overflow-y: auto;
+    }
+
+    table tfoot {
+        position: sticky;
+        bottom: 0;
+        background: linear-gradient(180deg, #b3e0f5, #80d4f0) !important;
+        color: #222;
+        z-index: 1;
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        height: 30px;
+    }
+
+        table tfoot td {
+            font-weight: bold;
+            border-top: 2px solid #dee2e6;
+            font-size: 13px;
+            color: #222;
+        }
+
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #ReportTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashRThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    #divStockRegisterBody tbody td {
+        font-weight: normal !important;
+    }
 </style>
+
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0"
+           id="ReportTable">
+
+        <thead class="bg-gradient card-headerBG text-light" id="dashRThead">
+            <tr>
+                <th>Sr#</th>
+
+                @if (Model.Headers != null && Model.Headers.Any())
+                {
+                    var colIndex = 1;
+                    foreach (var col in Model.Headers)
+                    {
+                        <th data-columnno="@colIndex" data-sortorder="asc" class="sortCol">
+                            <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
+                            @col.Title
+                        </th>
+                        colIndex++;
+                    }
+                }
+            </tr>
+        </thead>
+
+        <tbody id="divStockRegisterBody">
+            @if (Model.Rows == null || Model.Rows.Count == 0)
+            {
+                <tr class="text-center">
+                    <td colspan="@((Model.Headers?.Count ?? 0) + 2)" class="text-black-50">
+                        <strong>NO DATA FOUND</strong>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                int Cntr = 0;
+
+                foreach (var row in Model.Rows)
+                {
+                    Cntr++;
+
+                    <tr>
+                        <th>@Cntr</th>
+
+
+                        @if (Model.Headers != null && Model.Headers.Any())
+                        {
+                            foreach (var col in Model.Headers)
+                            {
+                                <td class="grid-cell" data-field="@col.Field">
+                                    @{
+                                        if (row.ContainsKey(col.Field) && row[col.Field] != null)
+                                        {
+                                            var value = row[col.Field];
+
+                                            if (value is decimal || value is double || value is float)
+                                            {
+                                                <span class="num">@string.Format("{0:0.00}", value)</span>
+                                            }
+                                            else
+                                            {
+                                                @value
+                                            }
+                                        }
+                                    }
+                                </td>
+
+                            }
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+
+        @* <tfoot class="bg-light fw-bold">
+            <tr>
+                <!-- Sr# column -->
+                <td></td>
+
+                @if (Model.Headers != null && Model.Headers.Any())
+                {
+                    bool isFirst = true;
+                    foreach (var col in Model.Headers)
+                    {
+                        if (isFirst)
+                        {
+                            <td>Total</td>
+                            isFirst = false;
+                        }
+                        else
+                        {
+                            <td id="tfoot_@col.Field"></td>
+                        }
+                    }
+                }
+            </tr>
+        </tfoot> *@
+        <tfoot class="bg-light fw-bold">
+            <tr>
+
+                <td></td>
+
+                @if (Model.Headers != null && Model.Headers.Any())
+                {
+                    bool isFirst = true;
+
+                    foreach (var col in Model.Headers)
+                    {
+                        var safeField = System.Text.RegularExpressions.Regex
+                        .Replace(col.Field, @"[^a-zA-Z0-9]", "_");
+
+                        if (isFirst)
+                        {
+                            <td>Total</td>
+                            isFirst = false;
+                        }
+                        else
+                        {
+                            <td id="tfoot_@safeField"></td>
+                        }
+                    }
+                }
+
+            </tr>
+        </tfoot>
+
+    </table>
+</div>
+@{
+    int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+}
+
+<center>
+    <strong>
+        <span style="margin-right: 30px;">TOTAL ROWS  : <span>@displayedRows</span></span>
+        <span>TOTAL RECORDS : <span>@Model.TotalRecords</span></span>
+    </strong>
+</center>
+
+
+
+@if (Model.TotalRecords > 0)
+{
+    <ul class="pagination d-flex align-items-center">
+
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="@(Model.PageNumber - 1)" href="#">Previous</a>
+            </li>
+        }
+
+        @if (Model.PageNumber > 3)
+        {
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="1" href="#">1</a>
+            </li>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+        }
+
+        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link page-btn" data-page="@i" href="#">@i</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages - 2)
+        {
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="@totalPages" href="#">@totalPages</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="@(Model.PageNumber + 1)" href="#">Next</a>
+            </li>
+        }
+
+    </ul>
+}
+
