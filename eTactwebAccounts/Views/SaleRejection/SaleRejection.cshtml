@@ -1192,7 +1192,9 @@
                     select: function (event, ui) {
 
                         let row = $(this).closest("tr");
-
+                         // Store old values before changing the row
+    let oldItemCode = row.find(".ItemCode-input").val();
+    let oldPartCode = row.find(".partcode-input").val();
                         if (isItemAlreadyAdded(ui.item.itemCode, row)) {
 
                             $.notify("Item already added in grid");
@@ -1210,7 +1212,13 @@
                         row.find(".itemname-input").val(ui.item.onlyItemName);
                         row.find(".ItemCode-input").val(ui.item.itemCode);
 
+                         // Call only if item/part code has changed
+                    if (oldItemCode !=ui.item.itemCode ||
+                            oldPartCode != ui.item.onlyPartCode) {
+
                         FillSOItemRate(row);
+                    }
+                        
                        
                         return false;
                     }
@@ -1267,6 +1275,10 @@
                     select: function (event, ui) {
 
                         let row = $(this).closest("tr");
+                        // Store old values before changing the row
+                        let oldItemCode = row.find(".ItemCode-input").val();
+                        let oldPartCode = row.find(".partcode-input").val();
+
                         if (isItemAlreadyAdded(ui.item.itemCode, row)) {
 
                             $.notify("Item already added in grid");
@@ -1284,7 +1296,11 @@
                         row.find(".partcode-input").val(ui.item.onlyPartCode);
                         row.find(".ItemCode-input").val(ui.item.itemCode);
 
+                        if (oldItemCode !=ui.item.itemCode ||
+                        oldPartCode != ui.item.onlyPartCode) {
+
                         FillSOItemRate(row);
+                    }
                      
 
                         return false;
@@ -1302,6 +1318,11 @@
                 let entered = input.val().trim().toLowerCase();
                 if (entered === "") return;
 
+                // Store old values before changing the row
+                let oldItemCode = row.find(".ItemCode-input").val();
+                let oldPartCode = row.find(".partcode-input").val();
+                console.log('oldItemCode:'+oldItemCode);
+                console.log('oldPartCode:' + oldPartCode);
                 $.ajax({
                     url: '/PurchaseOrder/FillItems',
                     type: 'POST',
@@ -1345,7 +1366,12 @@
                                 row.find(".itemname-input").val(match.OnlyItemName);
                                 row.find(".ItemCode-input").val(match.Item_Code);
 
-                                FillSOItemRate(row);
+                                 // Call only if item/part code has changed
+                    if (oldItemCode != match.Item_Code ||
+                        oldPartCode != match.OnlyPartCode) {
+                            console.log('inside if');
+                        FillSOItemRate(row);
+                    }
                                
                             }
                         }
@@ -1361,8 +1387,12 @@
                 let row = input.closest("tr");
 
                 let entered = input.val().trim().toLowerCase();
-                if (entered === "") return;
 
+
+                if (entered === "") return;
+                // Store old values before changing the row
+                let oldItemCode = row.find(".ItemCode-input").val();
+                let oldPartCode = row.find(".partcode-input").val();
                 $.ajax({
                     url: '/PurchaseOrder/FillItems',
                     type: 'POST',
@@ -1399,7 +1429,12 @@
                                 row.find(".partcode-input").val(match.OnlyPartCode);
                                 row.find(".ItemCode-input").val(match.Item_Code);
 
-                                FillSOItemRate(row);
+                                 // Call only if item/part code has changed
+                    if (oldItemCode != match.Item_Code ||
+                        oldPartCode != match.OnlyPartCode) {
+                            
+                        FillSOItemRate(row);
+                    }
                               
                             }
                         }
