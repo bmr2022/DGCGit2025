@@ -1107,6 +1107,21 @@ namespace eTactWeb.Controllers
                                         break;
                                     }
                                 }
+
+                                else if (dbCol == "DiscountCategory")
+                                {
+                                    var st = await _IAccountMaster.GetCustomerDiscountCategoryId(value.ToString());
+                                    if (st?.Result != null && st.Result.Rows.Count > 0)
+                                        value = st.Result.Rows[0][0].ToString();
+                                    else
+                                    {
+                                        errorList.Add(new { Row = rowIndex, Column = "DiscountCategory", Message = $"Invalid DiscountCategory '{rowIndex}' " });
+
+
+                                        rowHasError = true;
+                                        break;
+                                    }
+                                }
                                 else if (dbCol == "ParentAccount")
                                 {
                                     var acc = await _IAccountMaster.GetAccountGroupDetail(value.ToString());

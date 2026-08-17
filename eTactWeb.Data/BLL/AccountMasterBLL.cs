@@ -70,6 +70,10 @@ public class AccountMasterBLL : IAccountMaster
     {
         return _AccountMasterDAL.GetItemGroupCode(GroupCode);
     }
+    public Task<ResponseResult> GetCustomerDiscountCategoryId(string DiscountCategoryName)
+    {
+        return _AccountMasterDAL.GetCustomerDiscountCategoryId(DiscountCategoryName);
+    }
     public Task<ResponseResult> GetItemCatCode(string CatCode)
     {
         return _AccountMasterDAL.GetItemCatCode(CatCode);

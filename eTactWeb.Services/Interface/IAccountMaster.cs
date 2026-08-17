@@ -26,6 +26,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> GetItemCatCode(string CatCode);
         Task<ResponseResult> GetItemGroupCode(string GroupCode);
+        Task<ResponseResult> GetCustomerDiscountCategoryId(string DiscountCategoryName);
         Task<ResponseResult> UpdateMultipleItemDataFromExcel(DataTable ItemDetailGrid, string flag);
 
     }

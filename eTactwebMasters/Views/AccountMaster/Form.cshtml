@@ -654,6 +654,10 @@
                     OnParentGroup(parentID);  
                 }
             }
+            if("@Model.Mode=='U' || @Model.Mode=='V'")
+            {
+                $('#DiscountCategory').val("@Model.DiscountCategory").trigger('change');
+            }
             // $('#GSTRegistered').val("N").trigger('change');
             // $('#TDS').val("N").trigger('change');
         });

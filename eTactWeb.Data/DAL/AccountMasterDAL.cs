@@ -213,9 +213,12 @@ namespace eTactWeb.Data.DAL
                         _AccountMasterModel.Commodity = dr["Commodity"].ToString();
                         _AccountMasterModel.WorkingAdd1 = dr["WorkingAdd1"].ToString();
                         _AccountMasterModel.WorkingAdd2 = dr["WorkingAdd2"].ToString();
-                        _AccountMasterModel.RateOfInt = Convert.ToDecimal(dr["RateOfInt"].ToString());
-                        _AccountMasterModel.CreditLimit = Convert.ToDecimal(dr["CreditLimit"].ToString());
-                       
+                        //_AccountMasterModel.RateOfInt = Convert.ToDecimal(dr["RateOfInt"].ToString());
+                        //_AccountMasterModel.CreditLimit = Convert.ToDecimal(dr["CreditLimit"].ToString());
+                        _AccountMasterModel.CreditLimit = dr["CreditLimit"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["CreditLimit"].ToString());
+                        _AccountMasterModel.RateOfInt = dr["RateOfInt"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["RateOfInt"].ToString());
+
+
                         _AccountMasterModel.CreditDays = dr["CreditDays"].ToString();
                         _AccountMasterModel.SSL = dr["SSL"].ToString();
                         _AccountMasterModel.BankAccount_No = dr["BankAccount_No"].ToString();
@@ -231,11 +234,16 @@ namespace eTactWeb.Data.DAL
                         _AccountMasterModel.ApprovalDate = dr["ApprovalDate"].ToString();
                         _AccountMasterModel.BlackListed = dr["BlackListed"].ToString();
                         _AccountMasterModel.BlackListed_By = dr["BlackListed_By"].ToString();
-                        _AccountMasterModel.YearCode = Convert.ToInt32(dr["YearCode"].ToString());
-                        _AccountMasterModel.SalePersonEmpId = Convert.ToInt32(dr["SalePersonEmpId"].ToString());
+                        //_AccountMasterModel.YearCode = Convert.ToInt32(dr["YearCode"].ToString());
+                        //_AccountMasterModel.SalePersonEmpId = Convert.ToInt32(dr["SalePersonEmpId"].ToString());
+                        _AccountMasterModel.SalePersonEmpId = dr["SalePersonEmpId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["SalePersonEmpId"].ToString());
+                        _AccountMasterModel.YearCode = dr["YearCode"] == DBNull.Value ? 0 : Convert.ToInt32(dr["YearCode"].ToString());
+
                         _AccountMasterModel.Uid = dr["Uid"].ToString();
                         _AccountMasterModel.CC = dr["CC"].ToString();
-                        _AccountMasterModel.CreatedBy = Convert.ToInt32(dr["CreatedBy"]);
+                        //_AccountMasterModel.CreatedBy = Convert.ToInt32(dr["CreatedBy"]);
+                        _AccountMasterModel.CreatedBy = dr["CreatedBy"] == DBNull.Value ? 0 : Convert.ToInt32(dr["CreatedBy"].ToString());
+
                         _AccountMasterModel.CreatedOn = Convert.ToDateTime(dr["CreatedOn"]);
                         _AccountMasterModel.CreatedByName = dr["UserName"].ToString();
                         _AccountMasterModel.MSMENo = dr["MSMENo"].ToString();
@@ -831,6 +839,24 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetGroupCode"));
                 SqlParams.Add(new SqlParameter("@GroupCodeName", GName));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_AccountMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetCustomerDiscountCategoryId(string DiscountCategoryName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetCustomerDiscountCategoryId"));
+                SqlParams.Add(new SqlParameter("@DiscountCategoryName", DiscountCategoryName));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_AccountMaster", SqlParams);
             }
             catch (Exception ex)
