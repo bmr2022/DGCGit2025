@@ -1563,6 +1563,15 @@ namespace eTactWeb.Controllers
     .Sum(r => Convert.ToDecimal(r["INVNetAmt"]));
 
                 ViewBag.TotalNetAmt = totalNetAmt;
+
+
+                decimal totalBasicAmt = filteredRows
+    .Where(r => r["BasicAmt"] != DBNull.Value)
+    .Sum(r => Convert.ToDecimal(r["BasicAmt"]));
+
+                ViewBag.totalBasicAmt = totalBasicAmt;
+
+                
                 // ✅ TOTAL RECORDS (before pagination)
                 model.TotalRecords = filteredRows.Count();
                 model.PageNumber = pageNumber;

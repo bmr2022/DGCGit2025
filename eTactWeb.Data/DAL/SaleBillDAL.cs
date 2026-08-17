@@ -1867,6 +1867,7 @@ namespace eTactWeb.Data.DAL
                             TxPartName = row["PartCode"]?.ToString(),
                             TxItemName = row["Item_Name"]?.ToString(),
                             TxItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
+                            TxPartCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
                             TxTaxTypeName = row["TaxTypeID"]?.ToString(),
                             TxAccountCode = row["TaxAccountCode"] != DBNull.Value ? Convert.ToInt32(row["TaxAccountCode"]) : 0,
                             TxAccountName = row["TaxAccountName"]?.ToString(),

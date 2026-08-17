@@ -8,6 +8,8 @@
 @{
     
     var TotalNetAmt=ViewBag.TotalNetAmt;
+    var totalBasicAmt = ViewBag.totalBasicAmt;
+    
     var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));    // var PoallowtoprintWithoutApproval = HttpContextAccessor.HttpContext.Session.GetString("PoallowtoprintWithoutApproval");
     // string PoallowtoprintWithoutApproval = HttpContextAccessor.HttpContext.Request.Query["PoallowtoprintWithoutApproval"];
 }
@@ -157,7 +159,10 @@ else *@
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td>@totalBasicAmt</td>
+                    
                     <td>@TotalNetAmt</td>
+                    <td></td>
                     <td></td>
 
 
