@@ -20,6 +20,7 @@ public class DPBDashBoard : TimeStamp
     public string? Currency { get; set; }
     public string? DeliveryDate { get; set; }
     public int? EntryID { get; set; }
+    public int? StoreId { get; set; }
     public string? FOC { get; set; }
     public string? PurchaseFromDiffBranch { get; set; }
     public string? FromDate { get; set; }
@@ -414,6 +415,7 @@ public class DirectPurchaseBillModel : DPBItemDetail
     public string? BranchSaleBillNo { get; set;}
     public int? BranchSaleBillEntryId { get; set;}
     public int? StoreId { get; set;}
+    public string? SubInvoiceType { get; set;}
     public string? BranchSaleBillDate { get; set;}
     public int? BranchSaleBillYearCode { get; set;}
     public string? AccountName { get; set; }

@@ -1207,32 +1207,29 @@ namespace eTactWeb.Controllers
             _Logger.LogError(JsonConvert.SerializeObject(JSON));
             return Json(JSONString);
         }
-        public async Task<JsonResult> FillEntryandPONumber(int YearCode, string VODate)
+        public async Task<JsonResult> FillEntryandPONumber(int YearCode, string VODate,string subvoucher)
         {
-            var JSON = await IDirectPurchaseBill.FillEntryandVouchNoNumber(YearCode, VODate);
+            var JSON = await IDirectPurchaseBill.FillEntryandVouchNoNumber(YearCode, VODate, subvoucher);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> ClearTaxGrid(int YearCode, string VODate)
         {
             HttpContext.Session.Remove("KeyTaxGrid");
-            var JSON = await IDirectPurchaseBill.FillEntryandVouchNoNumber(YearCode, VODate);
-            string JsonString = JsonConvert.SerializeObject(JSON);
-            return Json(JsonString);
+            
+            return Json("done");
         }
         public async Task<JsonResult> ClearTDSGrid(int YearCode, string VODate)
         {
             HttpContext.Session.Remove("KeyTDSGrid");
-            var JSON = await IDirectPurchaseBill.FillEntryandVouchNoNumber(YearCode, VODate);
-            string JsonString = JsonConvert.SerializeObject(JSON);
-            return Json(JsonString);
+            
+            
+            return Json("done");
         }
         public async Task<JsonResult> ClearItemGrid(int YearCode, string VODate)
         {
             HttpContext.Session.Remove("DirectPurchaseBill");
-            var JSON = await IDirectPurchaseBill.FillEntryandVouchNoNumber(YearCode, VODate);
-            string JsonString = JsonConvert.SerializeObject(JSON);
-            return Json(JsonString);
+            return Json("done");
         }
         public async Task<JsonResult> FillPONumber(int YearCode, string OrderType, string PODate)
         {

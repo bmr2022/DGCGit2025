@@ -56,9 +56,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _DirectPurchaseBillDAL.CheckDuplicateEntry(YearCode,AccountCode, InvNo, EntryId);
         }
-        public async Task<ResponseResult> FillEntryandVouchNoNumber(int YearCode, string VODate)
+        public async Task<ResponseResult> FillEntryandVouchNoNumber(int YearCode, string VODate,string subvoucher)
         {
-            return await _DirectPurchaseBillDAL.FillEntryandVouchNoNumber(YearCode, VODate);
+            return await _DirectPurchaseBillDAL.FillEntryandVouchNoNumber(YearCode, VODate, subvoucher);
         }
         public async Task<ResponseResult> GetItemCode(string PartCode)
         {

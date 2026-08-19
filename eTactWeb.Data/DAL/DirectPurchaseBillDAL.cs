@@ -161,7 +161,7 @@ public class DirectPurchaseBillDAL
         }
         return _ResponseResult;
     }
-    public async Task<ResponseResult> FillEntryandVouchNoNumber(int YearCode, string VODate)
+    public async Task<ResponseResult> FillEntryandVouchNoNumber(int YearCode, string VODate,string subvoucher)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -171,6 +171,7 @@ public class DirectPurchaseBillDAL
             SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
             SqlParams.Add(new SqlParameter("@YearCode", YearCode));
             SqlParams.Add(new SqlParameter("@EntryDate", vodt));
+            SqlParams.Add(new SqlParameter("@subvoucher", subvoucher));
 
             _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_DirectPurchaseBillMainDetail", SqlParams);
         }
@@ -807,6 +808,7 @@ public class DirectPurchaseBillDAL
                 { "@TypeITEMSERVASSETS", EmptyIfNull(model.TypeITEMSERVASSETS) },
                 { "@DocumentType", EmptyIfNull(model.DocumentType) },
                 { "@HSNNo", EmptyIfNull(model.HsnNo) },
+                { "@StoreId", model.StoreId },
                 //{ "@DomesticExportNEPZ", EmptyIfNull(domensticExportNEPZ) },
                 { "@FromDate", fromDt },
                 { "@ToDate", toDt },
@@ -1351,6 +1353,7 @@ public class DirectPurchaseBillDAL
             SqlParams.Add(new SqlParameter("@InvoiceTime", InvDate == default ? string.Empty : InvDate));
             SqlParams.Add(new SqlParameter("@InvoiceDate", InvDate == default ? string.Empty : InvDate));
             SqlParams.Add(new SqlParameter("@PurchVoucherNo", model.PurchVouchNo));
+            SqlParams.Add(new SqlParameter("@subvoucher", model.SubInvoiceType));
             SqlParams.Add(new SqlParameter("@VoucherDate", VouchDate == default ? string.Empty : VouchDate));
             SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
             SqlParams.Add(new SqlParameter("@StateName", model.VendorStateName));

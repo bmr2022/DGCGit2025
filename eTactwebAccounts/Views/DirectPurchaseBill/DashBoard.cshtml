@@ -265,6 +265,7 @@
                 $('#search-box').val(GlobalSearchBack);
             }
 
+            FillStore();
             GetSearchData();
             GetFeatureOption();
             CalculateTotalAmt();
@@ -308,6 +309,31 @@
             var linkUrl = urlHref;
             linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&DashboardType=" + $('#DashboardType').val() + "&TypeITEMSERVASSETS=" + $('#TypeITEMSERVASSETS').val() + "&DocumentType=" + $('#DocumentType').val() + "&VendorName=" + $('#VendorName').val() + "&PurchVouchNo=" + $('#PurchVouchNo').val() + "&InvoiceNo=" + $('#InvoiceNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&HSNNo=" + $('#HSNNo').val() + "&Searchbox=" + $('#search-box').val();
             window.location.href = linkUrl;
+        }
+        function FillStore() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillStore", "SaleInvoice")",
+                dataType: "json",
+                async: false,
+                success: function(result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#StoreId').empty();
+                         $('#StoreId').append('<option value="0">-Select-</option>');
+                        if (obj.StatusCode != 500) {
+                            $.each(obj.Result, function(index, val) {
+                                $('#StoreId').append("<option value=" + val.StoreId + ">" + val.Store_Name + "</option>");
+                            });
+
+                           
+                        }
+
+                        
+
+                    }
+                }
+            });
         }
         function CheckEditOrDelete(urlHref, EntryId, YearCode) {
             $.ajax({

@@ -28,6 +28,7 @@ public class PODashBoard : TimeStamp
     public string? Currency { get; set; }
     public string? DeliveryDate { get; set; }
     public int EntryID { get; set; }
+    public int StoreId { get; set; }
     public string? FOC { get; set; }
     public string? FromDate { get; set; }
     public string? ItemName { get; set; }

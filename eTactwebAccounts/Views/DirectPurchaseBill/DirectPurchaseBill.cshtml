@@ -908,12 +908,14 @@
         var actualRate = 0;
         var LocationRequired = '';
                 var GstNoRequired = '';
+                var ChangeVoucnoOnchangeInvtype='';
 
               function GetFeatureOption() {
             $.ajax({
                 type: "POST",
                 data: {},
                 url: "@Url.Action("GetFeatureOption")",
+                async:false,
                 dataType: "json",
                 success: function (result, status, error) {
                     if (result != null) {
@@ -982,6 +984,13 @@
                             } else {
                                 // $('.DirectPurchaseBillCustomerGSTNo').show();
                                 GstNoRequired = 'N';
+                            }
+                            if (feature.ChangeVoucnoOnchangeInvtype === "Y") {
+                                // $('.DirectPurchaseBillCustomerGSTNo').hide();
+                                ChangeVoucnoOnchangeInvtype = 'Y';
+                            } else {
+                                // $('.DirectPurchaseBillCustomerGSTNo').show();
+                                    ChangeVoucnoOnchangeInvtype = 'N';
                             }
                             if (feature.HideShowDirectPurchaseBillLocation === "N") {
                                 $('.DirectPurchaseBillLocation').hide();
@@ -1219,14 +1228,32 @@
                         {
                                         $('#StoreId').val('@Model.StoreId').trigger('change');
                         }
+                        else
+                        {
+                            fillEntryandPONO();
+                        }
 
                     }
                 }
             });
         }
 
+        $('#StoreId').change(function(){
+            fillEntryandPONO();
+            var subvoucherno=''
+            if(ChangeVoucnoOnchangeInvtype=='Y')
+            {
+                subvoucherno=$('#StoreId option:selected').text().trim();
+            }
+            else
+            {
+                subvoucherno='DirectPurchaseBill';
+
+            }
+            $('#SubInvoiceType').val(subvoucherno);
+        });
         $(document).ready(function () {
-            FillStore();
+            
             if ($('#DPBType').val() == 'Import') {
                 $('#Rate').prop("disabled", true);
                 $('#OtherRateCurr').prop("disabled", false);
@@ -1264,6 +1291,7 @@
 
 
                     GetFeatureOption();
+                    FillStore();
             AutoFillPARTYNAMELIST();
           
             GetFormRights();
@@ -2592,12 +2620,22 @@
         }
 
         function fillEntryandPONO() {
+            var subvoucherno=''
+            if(ChangeVoucnoOnchangeInvtype=='Y')
+            {
+                subvoucherno=$('#StoreId option:selected').text().trim();
+            }
+            else
+            {
+                subvoucherno='DirectPurchaseBill';
+
+            }
             //ENTRYID
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("FillEntryandPONumber")",
                 dataType: "json",
-                data: { "YearCode": $('#YearCode').val(), "VODate": $('#VouchDate').val() },
+                    data: { "YearCode": $('#YearCode').val(), "VODate": $('#VouchDate').val(), "subvoucher": subvoucherno },
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);

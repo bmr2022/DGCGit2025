@@ -30,7 +30,7 @@ namespace eTactWeb.Services.Interface
           
         Task<DirectPurchaseBillModel> GetViewPOCcompletedByID(int iD, int yC,string PONO, string v);
          
-        Task<ResponseResult> FillEntryandVouchNoNumber(int YearCode, string VODate);
+        Task<ResponseResult> FillEntryandVouchNoNumber(int YearCode, string VODate, string subvoucher);
         Task<ResponseResult> FillItems(string Type,string ShowAllItem);
         Task<ResponseResult> FILLDocumentList(string ShowAll);
         Task<ResponseResult> FillPONumber(int YearCode, string Ordertype, string Podate);
