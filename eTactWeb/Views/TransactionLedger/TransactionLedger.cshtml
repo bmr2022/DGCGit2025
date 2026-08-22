@@ -28,7 +28,7 @@
         color: #000;
 </style>
 <head>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/js/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 </head>
@@ -55,6 +55,9 @@
                                     <div class="row">
                                         <div class="col">
                                             <label class="form-label">From Date</label>
+                                             <input type="hidden" id="formKey" value="@ViewBag.formKey" />
+     <input type="hidden" id="uniqueKey" value="@ViewBag.uniqueKey" />
+
                                             <input asp-for="FromDate" class="form-control" />
                                             <input id="FinFromDate" value="@Model.FromDate" type="hidden" class="form-control" />
                                             <input id="FinToDate" value="@Model.ToDate" type="hidden" class="form-control" />
@@ -110,6 +113,13 @@
                                     </select>
                                     @* <input asp-for="VoucherType" class="form-control" /> *@
                                 </div>
+                                <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 ">
+            <label  class="form-label">Unit </label>
+            <select id="SubVoucherType" class="form-control">
+                <option value="">-Select-</option>
+            </select>
+           
+        </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
                                     <label asp-for="VoucherNo" class="form-label">Voucher No</label>
                                     <input asp-for="VoucherNo" class="form-control" />
@@ -148,7 +158,8 @@
                                     <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                         <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                     </button>
-                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="TransactionLedger" asp-action="TransactionLedger">
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="TransactionLedger" asp-route-formKey="@ViewBag.formKey"
+ asp-action="TransactionLedger">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
                                     <a class="btn btn-sm btn-outline-danger" onclick="downloadLedger()" id="LedgerPDF" style="padding:3px;height:30px;width:100px;margin-left:20px;">
@@ -232,7 +243,12 @@
 {
     <script>
 
-        $(document).ready(function () {
+   var formKey=$('#formKey').val();
+             var uniqueKey=$('#uniqueKey').val();
+$(document).ready(function () 
+{
+    formKey=$('#formKey').val();
+            uniqueKey=$('#uniqueKey').val();
             var FromDate = new Date($("#FromDate").val());
             var ToDate = new Date($("#ToDate").val());
 
@@ -274,7 +290,7 @@
             $('#ReportType').empty();
             var ReqType = $('#ReqType').val();
             FillReportType("TransactionLedgerReport", "");
-
+            FillSubVoucherType();
             $.when(
                 FillParentLedgerName(),
                 FillVoucherName(),
@@ -432,6 +448,7 @@
             var AccountCode = $('#LedgerName').val();
             var AccountName = $('#LedgerName option:selected').text();
             var VoucherType = $('#VoucherType').val();
+            var SubVoucherType = $('#SubVoucherType').val();
 
 
             var url = '/TransactionLedger/DownloadLedgerPdf?' +
@@ -442,6 +459,7 @@
                 '&ParentAccountCode=' + encodeURIComponent(ParentAccountCode) +
                 '&VoucherType=' + encodeURIComponent(VoucherType) +
                 '&AccountName=' + encodeURIComponent(AccountName) +
+                '&SubVoucherType=' + encodeURIComponent(SubVoucherType) +
                 '&AccountCode=' + encodeURIComponent(AccountCode);
 
             window.location.href = url;  // This triggers download
@@ -460,7 +478,7 @@
 
             } */
 
-            if ($('#ReportType').val() == "TransactionLedgerSummary" || $('#ReportType').val() == "TransactionLedgerDetail") {
+            if ($('#ReportType').val() == "TransactionLedgerSummary" || $('#ReportType').val() == "TransactionLedgerDetail" || $('#ReportType').val() == "BalanceConfirmationSummary") {
                 /* if ($('#LedgerName').val() == 0 || $('#LedgerName').prop('selectedIndex') == 0) {
                     $.notify('Account Code is mandatory to display details data', "error");
                     $('#BackButton').hide();
@@ -642,6 +660,8 @@
         }
 
         function GetDetailsData() {
+                                $('#divStockMainRegister').empty();
+
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetDetailsData", "TransactionLedger")',
@@ -653,10 +673,13 @@
                     GroupOrLedger: $('#Group_Ledger').val(),
                     ParentAccountCode: $('#ParentLedgerName').val(),
                     AccountCode: $('#LedgerName').val(),
-                    VoucherType: $('#VoucherType').val()
+                    VoucherType: $('#VoucherType').val(),
+                    SubVoucherType: $('#SubVoucherType').val(),
+                    formKey:formKey
                 },
                 success: function (partialHtml) {
 
+                    console.log('partialHtml:' +partialHtml);
                     $('#divStockMainRegister').html(partialHtml);
                     $('#opnamtDiv').show();
                     $('#opnDRDiv').show();
@@ -690,6 +713,7 @@
                     FromentryDate: FromentryDate,
                     ToEntryDate: ToEntryDate,
                     AccountCode: AccountCode,
+                    formKey:formKey
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
@@ -724,7 +748,8 @@
                     ReportType: ReportType,
                     ParentAccountCode: ParentAccountCode,
                     AccountCode: AccountCode,
-                    VoucherType: VoucherType
+                    VoucherType: VoucherType,
+                    formKey:formKey
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
@@ -790,8 +815,9 @@
         $('#sendToExcel').click(function () {
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
-            var LedgerCode = $('#LedgerName option:selected').val(); // example, adjust as needed
-            var AccountCode = $('#AccountName option:selected').val(); // example
+            var totBal = parseFloat($('#totBal').val());
+            var LedgerCode = $('#LedgerName option:selected').text(); // example, adjust as needed
+            var AccountCode = $('#AccountName option:selected').text(); // example
             var ReportType = $('#ReportType').val(); // "SUMMARY" or "DETAIL"
 
             $.ajax({
@@ -802,7 +828,8 @@
                     ToDate: ToDate,
                     LedgerCode: LedgerCode,
                     AccountCode: AccountCode,
-                    ReportType: ReportType
+                    ReportType: ReportType,
+                    totBal:totBal
                 },
                 xhrFields: {
                     responseType: 'blob' // important for file download
@@ -902,9 +929,13 @@
             var TotCr = 0;
             var TotDr = 0;
 
+
+            var Totremainigbalance=0;
+
             for (var i = 1; i <= rowCount; i++) {
                 TotCr += $('#totCrG-' + i).text() == '' ? 0 : parseFloat($('#totCrG-' + i).text());
                 TotDr += $('#totDrG-' + i).text() == '' ? 0 : parseFloat($('#totDrG-' + i).text());
+                Totremainigbalance += $('#totBalG-' + i).text() == '' ? 0 : parseFloat($('#totBalG-' + i).text());
             }
             var VoucherType=($('#VoucherType-1').text());
              var opnTotalBal=0;
@@ -915,17 +946,17 @@
 
             
 
-           /*  if(OpeningType=='DR')
-            {
-                TotDr=TotDr+opnTotalBal;
-            }
-            if(OpeningType=='CR')
-            {
-                TotCr=TotCr+opnTotalBal;
-            } */
+                    if(OpeningType=='CR')
+                    {
+                        opnTotalBal=parseFloat(-opnTotalBal).toFixed(2);
+                    }
+                    else if(OpeningType=='DR')
+                    {
+                        opnTotalBal=parseFloat(opnTotalBal).toFixed(2);
+                    }
             }
             $('#totOpenAmt').val(opnTotalBal);
-            var TotBal = (TotDr - TotCr)+opnTotalBal;
+            var TotBal = parseFloat(TotDr - TotCr)+parseFloat(opnTotalBal);
             $('#totCr').val(0);
             $('#totDr').val(0);
             $('#totBal').val(0);
@@ -933,7 +964,15 @@
 
             $('#totCr').val(isNaN(TotCr) ? 0 : TotCr.toFixed(2));
             $('#totDr').val(isNaN(TotDr) ? 0 : TotDr.toFixed(2));
+            if($('#ReportType').val()=="BalanceConfirmationSummary")
+            {
+$('#totBal').val(isNaN(Totremainigbalance) ? 0 : Totremainigbalance.toFixed(2));
+            }
+            else
+            {
             $('#totBal').val(isNaN(TotBal) ? 0 : TotBal.toFixed(2));
+
+            }
         }
 
         function countGroupAllTotal() {
@@ -1014,10 +1053,36 @@
             };
         }
 
+        function FillSubVoucherType() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillStore","SaleInvoice")",
+                dataType: "json",
+                async:false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#SubVoucherType').empty();
+                        $('#SubVoucherType').append('<option value="">-Select-</option>');
+                        if (obj.StatusCode != 500) {
+                            $.each(obj.Result, function (index, val) {
+                                $('#SubVoucherType').append("<option value=" + val.Store_Name + ">" + val.Store_Name + "</option>");
+                            });
+
+                           
+                        }
+
+                       
+
+                    }
+                }
+            });
+        }
+
     </script>
 
 }
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/jquery-3.6.0.min.js"></script>
 
 <style>
 

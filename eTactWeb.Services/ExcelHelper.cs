@@ -14,6 +14,7 @@ namespace eTactWeb.Services
         string sheetName,
         string companyName,
         string branchName,
+        string LedgerCode,
         string fromDate = "",
         string toDate = "")
         {
@@ -24,7 +25,7 @@ namespace eTactWeb.Services
                 int totalColumns = dt.Columns.Count;
 
                 // 🔹 Company + Branch
-                ws.Cell(1, 1).Value = $"Company: {companyName}    Branch: {branchName}";
+                ws.Cell(1, 1).Value = $"Company: {companyName}    Branch: {branchName}  Ledger Name: {LedgerCode}";
                 ws.Range(1, 1, 1, totalColumns).Merge();
                 ws.Row(1).Style.Fill.BackgroundColor = XLColor.FromHtml("#6c9dc6");
                 ws.Row(1).Style.Font.FontColor = XLColor.White;
@@ -71,6 +72,11 @@ namespace eTactWeb.Services
                     {
                         var dataColumn = dt.Columns[col - 1]; // DataTable is 0-based
                                                               // Check if numeric type
+                                                              // ❌ skip Balance column
+                        if (dataColumn.ColumnName.Equals("Balance", StringComparison.OrdinalIgnoreCase))
+                        {
+                            continue;
+                        }
                         if (
                             dataColumn.DataType == typeof(decimal) ||
                             dataColumn.DataType == typeof(double) ||

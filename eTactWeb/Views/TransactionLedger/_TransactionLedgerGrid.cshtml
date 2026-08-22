@@ -1,10 +1,137 @@
 ﻿   @model eTactWeb.DOM.Models.TransactionLedgerModel
 @using Microsoft.AspNetCore.Http
 @using System.Reflection.PortableExecutable
+@inject EncryptDecrypt encryptDecrypt
+
 @inject IHttpContextAccessor HttpContextAccessor
 @{
+    string formKey =ViewBag.formKey;
+
     var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+   var ReportType = HttpContextAccessor.HttpContext.Session.GetString("ReportType");
+
 }
+@{
+    decimal totalDr = Model.TransactionLedgerGrid.Sum(x => x.DrAmt);
+    decimal totalCr = Model.TransactionLedgerGrid.Sum(x => x.CrAmt);
+
+    decimal openingBalance = 0;
+
+    var openingRow = Model.TransactionLedgerGrid
+        .FirstOrDefault(x => x.VoucherType.Contains("Opening"));
+
+    if (openingRow != null)
+    {
+        if (openingRow.Types == "DR")
+        {
+            openingBalance = openingRow.Balance;
+        }
+        else if (openingRow.Types == "CR")
+        {
+            openingBalance = -openingRow.Balance;
+        }
+    }
+
+    decimal closingBalance = openingBalance + totalDr - totalCr;
+}
+
+@if(Model.ReportType=="BalanceConfirmationSummary")
+{
+    <div class="card-body table-responsive" style="max-height:300px;overflow-y:auto;">
+    <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable" style="background-color: aquamarine;">
+        <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
+            <tr>
+                
+                <th>Sr#</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Ledger Name</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher No</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Date</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Type</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DR Amt</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CR Amt</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Adjusted DrAmt</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Adjusted CrAmt</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remaining Balance Amt</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Due Date</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill NetAmt</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SubVoucher Name</th>
+            </tr>
+        </thead>
+        <tbody id="divStockRegisterBody">
+            @{
+                var @Cntr = 0;
+                if (Model.TransactionLedgerGrid == null)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.TransactionLedgerGrid)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr id="@Cntr" onclick="selection(this)" style="background-color:#8ec8db">
+                           
+                            <th>@Cntr</th>
+                            <td>@item.LedgerName</td>
+                            <td>@item.VoucherNo</td>
+                            <td>@item.VoucherDocDate</td>
+                            <td id="VoucherType-@Cntr">@item.VoucherType</td>
+                           
+                            <td id="totDrG-@Cntr">@item.DrAmt</td>
+                            <td id="totCrG-@Cntr">@item.CrAmt</td>
+                            <td id="AdjustedDrAmt-@Cntr">@item.AdjustedDrAmt</td>
+                            <td id="AdjustedCrAmt-@Cntr">@item.AdjustedCrAmt</td>
+                            <td id="totBalG-@Cntr">@item.Balance</td>
+                            
+                            <td>@item.DueDate</td>
+                            <td>@item.NetAmount</td>
+                            <td>@item.SubVoucherName</td>
+                           
+                        </tr>
+                    }
+                }
+            }
+
+        </tbody>
+        @* Add this after </tbody> *@
+<tfoot class="bg-gradient card-headerBG text-light PMRPThead">
+    <tr>
+        <td colspan="5" class="text-end fw-bold">Total :</td>
+
+        <td class="text-end fw-bold">
+            @((Model.TransactionLedgerGrid?.Sum(x => x.DrAmt) ?? 0).ToString("0.00"))
+        </td>
+
+        <td class="text-end fw-bold">
+            @((Model.TransactionLedgerGrid?.Sum(x => x.CrAmt) ?? 0).ToString("0.00"))
+        </td>
+
+        <td class="text-end fw-bold">
+            @((Model.TransactionLedgerGrid?.Sum(x => x.AdjustedDrAmt) ?? 0).ToString("0.00"))
+        </td>
+
+        <td class="text-end fw-bold">
+            @((Model.TransactionLedgerGrid?.Sum(x => x.AdjustedCrAmt) ?? 0).ToString("0.00"))
+        </td>
+
+        <td class="text-end fw-bold">
+            @((Model.TransactionLedgerGrid?.Sum(x => x.Balance) ?? 0).ToString("0.00"))
+        </td>
+
+        <td></td>
+
+        <td class="text-end fw-bold">
+            @((Model.TransactionLedgerGrid?.Sum(x => x.NetAmount) ?? 0).ToString("0.00"))
+        </td>
+
+        <td></td>
+    </tr>
+</tfoot>
+    </table>
+</div>
+}
+else
+{
 
 <div class="card-body table-responsive" style="max-height:300px;overflow-y:auto;">
     <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable" style="background-color: aquamarine;">
@@ -51,6 +178,7 @@
                                     @{
                                         var ControllerName = "";
                                         var ActionName = "";
+                                        var voucherno="";
                                     }
                                     @if (item.AccEntryYearCode == yearCode)
                                     {
@@ -60,46 +188,57 @@
                                             case "BANK-RECEIPT":
                                                 ControllerName = "BankReceipt";
                                                 ActionName = "Index";
+                                                voucherno = encryptDecrypt.Encrypt(item.InvoiceVoucherNo);
                                                 break;
                                             case "BANK-PAYMENT":
                                                 ControllerName = "BankPayment";
                                                 ActionName = "Index";
+                                                voucherno = encryptDecrypt.Encrypt(item.InvoiceVoucherNo);
                                                 break;
                                             case "CASH-RECEIPT":
                                                 ControllerName = "CashReceipt";
                                                 ActionName = "Index";
+                                                voucherno = encryptDecrypt.Encrypt(item.InvoiceVoucherNo);
                                                 break;
                                             case "CASH-PAYMENT":
                                                 ControllerName = "CashPayment";
                                                 ActionName = "Index";
+                                                voucherno = encryptDecrypt.Encrypt(item.InvoiceVoucherNo);
                                                 break;
                                             case "SALE-BILL":
                                                 ControllerName = "SaleInvoice";
                                                 ActionName = "SaleInvoice";
+                                                voucherno = encryptDecrypt.Encrypt(item.InvoiceVoucherNo);
                                                 break;
                                             case "PURCHASE-BILL":
                                                 ControllerName = "PurchaseBill";
                                                 ActionName = "Index";
+                                                voucherno = encryptDecrypt.Encrypt(item.InvoiceVoucherNo);
                                                 break;
                                             case "PURCHASE-DIRECT":
                                                 ControllerName = "DirectPurchaseBill";
                                                 ActionName = "DirectPurchaseBill";
+                                                voucherno = encryptDecrypt.Encrypt(item.InvoiceVoucherNo);
                                                 break;
                                             case "SALE-REJECTION":
                                                 ControllerName = "SaleRejection";
                                                 ActionName = "SaleRejectionEdit";
+                                                voucherno = item.InvoiceVoucherNo;
                                                 break;
-                                            case "CREDIT-NOTE ":
+                                            case "CREDIT-NOTE":
                                                 ControllerName = "CreditNote";
                                                 ActionName = "Index";
+                                                voucherno = item.InvoiceVoucherNo;
                                                 break;
                                             case "JOURNAL-VOUCHER":
                                                 ControllerName = "JournalVoucher";
                                                 ActionName = "Index";
+                                                voucherno = encryptDecrypt.Encrypt(item.InvoiceVoucherNo);
                                                 break;
                                             case "PURCHASE-REJECTION":
                                                 ControllerName = "PurchaseRejection";
                                                 ActionName = "Index";
+                                                voucherno = encryptDecrypt.Encrypt(item.InvoiceVoucherNo);
                                                 break;
                                         }
                                         <div id="deleteCursorDiv-@Cntr">
@@ -139,11 +278,13 @@
                                        class="drillDownLink"
                                        data-controller="@ControllerName"
                                        data-action="@ActionName"
-                                       data-mode="U"
-                                       data-ID="@item.DocEntryId"
+                                       data-mode="@encryptDecrypt.Encrypt("V")"
+                                       data-ID="@EncryptDecrypt.EncodeID(@item.DocEntryId)"
+                                       data-EntryId="@EncryptDecrypt.EncodeID(@item.DocEntryId)"
                                        data-accountcode="@item.AccountCodeBack"
-                                       data-YearCode="@item.AccEntryYearCode"
-                                       data-voucherno="@item.InvoiceVoucherNo"
+                                       data-YearCode="@EncryptDecrypt.EncodeID(@item.AccEntryYearCode)"
+                                       data-voucherno="@voucherno"
+                                       data-formKey="@formKey"
                                        onclick="callDrillDown(this,'TransactionLedgerVoucher', getTransactionLedgerFilters())">
                                         @item.InvoiceVoucherNo
                                     </a>
@@ -170,8 +311,27 @@
             }
 
         </tbody>
+       <tfoot class="bg-gradient card-headerBG text-light PMRPThead">
+    <tr>
+        <td colspan="6" class="text-end fw-bold">Total :</td>
+
+        <td class="text-end fw-bold">
+            @((Model.TransactionLedgerGrid?.Sum(x => x.DrAmt) ?? 0).ToString("0.00"))
+        </td>
+
+        <td class="text-end fw-bold">
+            @((Model.TransactionLedgerGrid?.Sum(x => x.CrAmt) ?? 0).ToString("0.00"))
+        </td>
+
+        <td class="text-end fw-bold">
+    @closingBalance.ToString("0.00")
+</td>
+        <td colspan="12"></td>
+    </tr>
+</tfoot>
     </table>
 </div>
+}
 
 <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
 
@@ -199,4 +359,15 @@
         top: -18px;
         z-index: 1;
     }
+    #ReportTable tfoot {
+    position: sticky;
+    bottom: -15px;
+    z-index: 2;
+}
+
+#ReportTable tfoot td {
+    background: #127387;
+    color: #fff;
+    font-weight: bold;
+}
 </style>
