@@ -113,6 +113,60 @@
             </h5>
         </div>
 
+
+         <ul class="nav nav-tabs google-tabs mb-3" id="erpTabs" role="tablist">
+
+            <li class="nav-item">
+                <button type="button" class="nav-link active"
+                        data-bs-toggle="tab"
+                        data-bs-target="#tabRequired">
+                    Required Parameter
+                </button>
+            </li>
+
+           
+            <li class="nav-item">
+                <button type="button" class="nav-link"
+                        data-bs-toggle="tab"
+                        data-bs-target="#tabTax">
+                    Tax Detail
+                </button>
+            </li>
+
+            <li class="nav-item">
+                <button type="button" class="nav-link"
+                        data-bs-toggle="tab"
+                        data-bs-target="#tabDrCr">
+                    Dr / Cr
+                </button>
+            </li>
+
+
+             <li class="nav-item">
+                <button type="button" class="nav-link"
+                        data-bs-toggle="tab"
+                        data-bs-target="#tabTDS">
+                    TDS Details
+                </button>
+            </li>
+            <li class="nav-item">
+                <button type="button" class="nav-link"
+                        data-bs-toggle="tab"
+                        data-bs-target="#tabAdjustment">
+                    Adjustment
+                </button>
+            </li>
+
+            <li class="nav-item">
+                <button type="button" class="nav-link"
+                        data-bs-toggle="tab"
+                        data-bs-target="#tabOther">
+                    Other Detail
+                </button>
+            </li>
+
+        </ul>
+
         <div class="card-body bg-light pt-0">
             <div class="accordion shadow-lg">
                 <div class="accordion-item">
@@ -134,6 +188,9 @@
                         <input type="hidden" asp-for="BranchSaleBillYearCode" />
                     </div>
                 </div>
+
+                 <div class="tab-content">
+                     <div class="tab-pane fade show active" id="tabRequired">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="HPanel2">
                         <button class="accordion-button collapsed text-light pnl1BG bg-gradient" tabindex="-1" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
@@ -152,13 +209,15 @@
 
                                     <strong class="me-2">TOTAL NO OF ITEMS:</strong>
                                 <span id="lblItemCount" class="text-warning">0</span>
+                                        <label asp-for="NetTotal" class="form-label">Net Total</label>
+                                        <input asp-for="NetTotal" style="width:100px; background-color:ghostwhite !important" class="form-control NetTotal" onchange="onNetTotalChange()" readonly />
                                 </div>
                             
                         </button>
                     </h2>
                     <div id="BPanel2" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel2">
                         <div class="accordion-body">
-                            <partial name="_DPBItemDetail" />
+                            @* <partial name="_DPBItemDetail" />
                             <div class="progress my-2 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
@@ -243,10 +302,100 @@
                                     <ul id="excelErrorList"></ul>
                                 </div>
 
-                            </div>
+                            </div> *@
+
+                            @* MONIKA *@
+                                               <div class="row align-items-center mb-2">
+
+                                        <!-- LEFT SIDE -->
+                                        <div class="col-md-4">
+                                            <button type="button"
+                                                    id="btnAddNew"
+                                                    onclick="addRow()"
+                                                    class="erp-btn erp-btn-add btn-sm-add">
+                                                + Add Item(Alt+A)
+                                            </button>
+                                        </div>
+
+                                        <!-- RIGHT SIDE -->
+                                        <div class="col-md-8 d-flex justify-content-end align-items-center gap-2">
+
+                                            <!-- File Upload -->
+                                            <input class="form-control form-control-sm w-auto" type="file" id="ExcelFile" />
+
+                                            <!-- Upload Excel (Icon Only) -->
+                                            <button type="button"
+                                                    class="btn btn-outline-success btn-sm"
+                                                    onclick="UploadExcel()"
+                                                    title="Upload Excel">
+                                                <i class="fa-solid fa-upload"></i>
+                                            </button>
+
+                                            <!-- Import Format (Icon Only) -->
+                                            <button type="button"
+                                                    class="btn btn-outline-secondary btn-sm"
+                                                    onclick="ExportPOFormate()"
+                                                    title="Download Import Format">
+                                                <i class="fa-solid fa-file-arrow-down"></i>
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="card">
+
+
+                                        @* <button class="add-btn" onclick="addRow()">+ Add Item</button> *@
+
+                                        <div class="erp-grid-wrapper">
+                                            <div class="erp-table-container">
+                                                <table id="ItemDetailTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width:3%">SNo</th>
+                                                            <th style="width:14%">Item Code</th>
+
+                                                            <th style="width:6%">Qty</th>
+                                                            <th style="width:5%">Unit</th>
+                                                            <th style="width:5%">Rate</th>
+
+                                                   
+                                                            <th style="width:8%">Disc % / Amount</th>
+                                                            <th style="width:6%">ItemAmount</th>
+                                                            <th style="width:8%">IGRP/Location</th>
+
+
+                                                            
+
+                                                            <th style="width:6%">IG % / IG Amt</th>
+                                                            <th style="width:6%">CG % / CG Amt</th>
+                                                            <th style="width:6%">SG % / SG Amt</th>
+
+                                                            <th style="width:2%">X</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="SaleRejectionBody">
+                                                        <partial name="_AddDirectPurchaseBill" />
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="row g-2 gx-3">
+                                                <div id="excelErrorBox" class="alert alert-danger" style="display:none;">
+                                                    <ul id="excelErrorList"></ul>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                            @* MONIKA END *@
                         </div>
                     </div>
                 </div>
+                </div>
+                <div class="tab-pane fade" id="tabTax">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_TaxDetail">
                         <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TaxDetail" aria-expanded="true" aria-controls="B_TaxDetail">
@@ -310,6 +459,8 @@
                         </div>
                     </div>
                 </div>
+                </div>
+                <div class="tab-pane fade" id="tabTDS">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_TDSDetail">
                         <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TDSDetail" aria-expanded="true" aria-controls="B_TDSDetail">
@@ -325,6 +476,8 @@
                         </div>
                     </div>
                 </div>
+                </div>
+                <div class="tab-pane fade" id="tabOther">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="HPanel4">
                         <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel4" aria-expanded="true" aria-controls="BPanel4">
@@ -336,11 +489,17 @@
                         <partial name="_DPBOtherDetail" />
                     </div>
                 </div>
+                </div>
+                <div class="tab-pane fade" id="tabDrCr">
                 <div class="accordion-item">
                     <partial name="_DrCrTable" />
                 </div>
+                </div>
+                <div class="tab-pane fade" id="tabAdjustment">
                 <div class="accordion-item">
                     @await Html.PartialAsync("_AdjustmentGrid", Model.adjustmentModel)
+                </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -751,6 +910,846 @@
 @section Scripts
 {
     <script>
+
+
+
+        
+
+            let rowIndex = 0;
+
+            function addRow() {
+
+                let table = $("#ItemDetailTable tbody");
+                let rows = table.find("tr");
+
+                // 🔹 If at least one row exists → validate last row
+                if (rows.length > 0) {
+
+                    let lastRow = rows.last();
+
+                    let itemCode = lastRow.find(".ItemCode-input").val();
+                    let RejRate = parseFloat(lastRow.find(".rate").val()) || 0;
+                   let qty = parseFloat(lastRow.find(".qty").val()) || 0;
+
+                    if (!itemCode || itemCode.trim() === "") {
+                        alert("Please select Item before adding new row.");
+                        lastRow.find(".itemname-input").focus();
+                        return;
+                    }
+
+                    if (RejRate <= 0 || qty <= 0) {
+                        alert("Please enter Qty/Rate to calculate Amount before adding new row.");
+                        lastRow.find(".qty").focus();
+                        return;
+                    }
+                }
+
+                // ✅ If validation passed → Add new row
+                // let index = rows.length;
+                let index = $("#ItemDetailTable tbody tr").length;
+
+                let row = `
+                    <tr>
+                    <td>${index + 1}
+                    <input type="hidden"
+                       name="ItemDetailGrid[${index}].SeqNo"
+                       value="${index + 1}" />
+                    </td>
+
+                    <td>
+                              <div style="display:flex; flex-direction:column;">
+                    <input name="ItemDetailGrid[${index}].PartText"
+                           class="partcode-input" />
+                                    <input name="ItemDetailGrid[${index}].ItemText"
+                                                   class="itemname-input" tabindex="-1" readonly />
+                            <input type="hidden"
+                                   name="ItemDetailGrid[${index}].ItemCode"
+                                   class="ItemCode-input" />
+
+                           </div>
+                    </td>
+
+      
+
+                    <td>
+                    <input name="ItemDetailGrid[${index}].BillQty"
+                           class="qty"
+                                   onfocusout="calculateRow(this)" />
+                    </td>
+
+                           <td>
+                                <div style="display:flex; flex-direction:column;">
+                                            <input name="ItemDetailGrid[${index}].Unit"
+                                                            readonly class='Unit' tabindex="-1"
+                                    />
+                                            <input name="ItemDetailGrid[${index}].HSNNo"
+                                                        readonly class='HSNNo' tabindex="-1" />
+                                    </div>
+                            </td>
+
+                    <td>
+                               
+                       <div style="display:flex; flex-direction:column;">
+                    <input name="ItemDetailGrid[${index}].Rate"
+                                   class="rate" onfocusout="calculateRow(this)"  />
+
+                                           </div>
+                    </td>
+
+      
+      
+                                     <td>
+                                <div style="display:flex; flex-direction:DiscPer;">
+                                            <input name="ItemDetailGrid[${index}].DiscPer"
+
+                                                   class="discPer"
+                                                   onfocusout="calculateRow(this)" />
+
+                                                    <input name="ItemDetailGrid[${index}].DiscRs"
+
+                                                   class="discamt"
+                                                   readonly  tabindex="-1"/>
+                                </div>
+                    </td>
+
+        
+                    <td>
+                    <input name="ItemDetailGrid[${index}].Amount"
+                                   class="amount" readonly tabindex="-1" />
+                    </td>
+
+                              <td>
+                                <div style="display:flex; flex-direction:column;">
+                                                    <input name="ItemDetailGrid[${index}].GroupName"
+
+                                           class="GroupName"
+                                           readonly />
+                                            <input name="ItemDetailGrid[${index}].ItemLocation"
+
+                                           class="ItemLocation" tabindex="-1"
+                                           readonly />
+                                </div>
+                            </td>
+
+
+                   
+
+                            <td>
+                        <div style="display:flex; flex-direction:column;">
+                                    <input name="ItemDetailGrid[${index}].IGSTPer"
+
+                                   class="igstp"
+                                   oninput="calculateRow(this)" tabindex="-1" readonly/>
+
+                                    <input name="ItemDetailGrid[${index}].IGSTAmt"
+
+                                           class="igsta" tabindex="-1"
+                                   readonly />
+                        </div>
+                    </td>
+
+
+                            <td>
+                        <div style="display:flex; flex-direction:column;">
+                                    <input name="ItemDetailGrid[${index}].CGSTPer"
+                                   class="cgstp"
+                                   oninput="calculateRow(this)" tabindex="-1" readonly />
+
+                                    <input name="ItemDetailGrid[${index}].CGSTAmt"
+                                   class="cgsta" tabindex="-1"
+                                   readonly />
+                        </div>
+                    </td>
+
+                          <td>
+                        <div style="display:flex; flex-direction:column;">
+                                    <input name="ItemDetailGrid[${index}].SGSTPer"
+
+                                   class="sgstp" tabindex="-1" readonly
+                                   oninput="calculateRow(this)" />
+
+                                    <input name="ItemDetailGrid[${index}].SGSTAmt"
+
+                                   class="sgsta" tabindex="-1"
+                                   readonly />
+                        </div>
+                    </td>
+
+                    <td>
+                            <button type="button" tabindex="-1" onclick="deleteRow(this)">X</button>
+                    </td>
+                    </tr>
+                    `;
+
+                $("#ItemDetailTable tbody").append(row);
+                $("#ItemDetailTable tbody tr:last .partcode-input").focus();
+            }
+
+
+                    document.addEventListener("keydown", function (e) {
+    // Check for Alt + A
+    if (e.altKey && (e.key === 'a' || e.key === 'A')) {
+        e.preventDefault(); // prevent default browser behavior
+        addRow();
+    }
+});
+
+            function calculateRow(el) {
+
+                let row = $(el).closest("tr");
+
+                let qty = parseFloat(row.find(".qty").val()) || 0;
+                let rate = parseFloat(row.find(".rate").val()) || 0;
+                let discPer = parseFloat(row.find(".discPer").val()) || 0;
+
+           
+                let basicAmount = qty * rate;
+
+                // Step 2: Discount Amount
+                let discAmount = basicAmount * discPer / 100;
+
+                // Set Discount Amount field
+                row.find(".discamt").val(discAmount.toFixed(2));
+
+                // Step 3: Net Amount after discount
+                let amount = basicAmount - discAmount;
+
+                row.find(".amount").val(amount.toFixed(2));
+
+           
+
+                let ig = parseFloat(row.find(".igstp").val()) || 0;
+                let cg = parseFloat(row.find(".cgstp").val()) || 0;
+                let sg = parseFloat(row.find(".sgstp").val()) || 0;
+
+                if ($('#AccountCode').val() != 0) {
+                    row.find(".igsta").val((amount * ig / 100).toFixed(2));
+                    row.find(".cgsta").val((amount * cg / 100).toFixed(2));
+                    row.find(".sgsta").val((amount * sg / 100).toFixed(2));
+                }
+                else {
+                    row.find(".igsta").val("0.00");
+                    row.find(".cgsta").val("0.00");
+                    row.find(".sgsta").val("0.00");
+                }
+
+                calculateTotals();
+            }
+
+            function calculateTotals() {
+
+                let basicTotal = 0;
+                let totalGST = 0;
+                let totalQty = 0;
+                let itemCount = 0;
+
+                $("#ItemDetailTable tbody tr").each(function() {
+
+                    let amt = parseFloat($(this).find(".amount").val()) || 0;
+                    let ig = parseFloat($(this).find(".igsta").val()) || 0;
+                    let cg = parseFloat($(this).find(".cgsta").val()) || 0;
+                    let sg = parseFloat($(this).find(".sgsta").val()) || 0;
+                    let qty = parseFloat($(this).find(".qty").val()) || 0;
+                    let itemCode = $(this).find(".ItemCode-input").val();
+
+
+                    basicTotal += amt;
+                    totalGST += ig + cg + sg;
+
+                    totalQty += qty;
+
+                    if (itemCode && itemCode.trim() !== "") {
+                        itemCount++;
+                    }
+                });
+
+                let netTotal = basicTotal + totalGST;
+
+                $("#lblItemNetAmount").text(basicTotal.toFixed(2));
+                $("#ItemNetAmount").val(basicTotal.toFixed(2));
+                $("#NetTotal").val(netTotal.toFixed(2));
+                calculateroundoffnettotal();
+                $("#TotalQty").text(totalQty);
+                $("#lblItemCount").text(itemCount);
+            }
+            function deleteRow(btn) {
+                let row = btn.parentNode.parentNode;
+                row.remove();
+                reindexRows();
+                calculateTotals();
+            }
+
+            function reindexRows() {
+
+                $("#ItemDetailTable tbody tr").each(function(i) {
+
+                    $(this).find("input").each(function() {
+
+                        let name = $(this).attr("name");
+                        if (name) {
+                            let newName = name.replace(/\[\d+\]/, "[" + i + "]");
+                            $(this).attr("name", newName);
+                        }
+                    });
+
+                    $(this).find("td:first").contents().first()[0].textContent = i + 1;
+                });
+            }
+
+        
+
+
+       function UpdateSession()
+       {
+                           $.ajax({
+                    url: '/DirectPurchaseBill/UpdateDirectpurchasebillSession',
+                    type: 'POST',
+                    data: $('form').serialize(),
+                    success: function () {
+
+                        // ==========================
+                        // STEP 3: APPLY TAX + ADJ
+                        // ==========================
+                        btnClearTax();
+
+                        ApplyTax4HSN();
+                        ClearAdjustmentGrid();
+                        AddAdjstmntDetail1();
+
+                        // Small safe delay to ensure DOM updated
+                        setTimeout(function () {
+
+                            // ==========================
+                            // STEP 4: FINAL VALIDATION
+                            // ==========================
+
+
+                            let AdjustAmount = parseFloat($('#AdjAdjstedAmt1').text());
+                            let TotalAmount = parseFloat($('#AdjTotalAmt1').text());
+                            let NetAmount = parseFloat($('.NetTotal').val());
+                            var drcrrowCount = $('#divdbCrItemList tr').length;
+                            var drAmt = 0;
+                            var crAmt = 0;
+
+                            for (var i = 1; i <= drcrrowCount; i++) {
+                                drAmt += $('#drcrRow-' + i + ' .dramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .dramt').text());
+                                crAmt += $('#drcrRow-' + i + ' .cramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .cramt').text());
+                            }
+
+
+
+
+                            var drCrGrid = $('#divdbCrItemList tr').length;
+                            if ($('#SaleRejectionBody tr').length < 1) {
+                                $.notify('Sale Rejection Grid Should Have Atleast 1 Item...!', "error");
+                                return;
+                            }
+                            // else if (AdjustAmount !== TotalAmount || TotalAmount !== NetAmount) {
+                            //     $.notify("AdjustAmount, TotalAmount, and NetAmount must all be equal....!", "error");
+                            //     return false;
+                            // }
+                            // else if (drAmt.toFixed(2) != crAmt.toFixed(2)) {
+                            //     $.notify("Debit and Credit are not maintained...!", "error");
+                            //     return false;
+                            // }
+
+                            else if ($('#GSTRegistered').val() === 'Y') {
+                                if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() === "DOMESTIC") {
+                                    $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
+                                    return;
+                                }
+
+
+                            }
+                            else if ($('#divAdjItemList tr td').length <= 1) {
+                                $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
+                                return;
+                            }
+
+
+
+                            // Check for CR in Adjustment Grid
+                            else if (drCrGrid <= 1) {
+                                $.notify("Debit And Credit Amount Status Grid should at least have one item", "error");
+                                return;
+                            }
+                            // else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
+                            //     $.notify("Total Debit And Total Credit Amount should be same", "error");
+                            //     return;
+                            // }
+
+                            // ==========================
+                            // STEP 5: FINAL SUBMIT
+                            // ==========================
+                          
+
+                        }, 500); // safe delay
+
+                    }
+                });
+
+       }
+
+
+            function ApplyGridAutoFill() {
+
+                // 🔹 PART CODE SEARCH
+                $(document).on("focus", ".partcode-input", function() {
+
+                    if ($(this).data("ui-autocomplete")) return;
+
+                    $(this).autocomplete({
+                        minLength: 2,
+                        source: function(request, response) {
+
+                            $.ajax({
+                                url: '/PurchaseOrder/FillItems',
+                                type: 'POST',
+                                data: {
+                                    Type: $('#POTypeServItem').val(),
+                                    ShowAllItem: 'N',
+                                    SearchItemCode: '',
+                                    SearchPartCode: request.term
+                                },
+                                success: function(result) {
+
+                                    let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                                    if (obj.StatusCode === 200 && Array.isArray(obj.Result.Table)) {
+
+                                        let filtered = obj.Result.Table.filter(item =>
+                                            googleMatch(request.term, item)
+                                        );
+
+                                        response($.map(filtered, function(item) {
+                                            return {
+                                                label: item.PartCode + " - " + item.ItemName,
+                                                value: item.PartCode,
+                                                itemName: item.ItemName,
+                                                itemCode: item.Item_Code,
+                                                onlyPartCode: item.OnlyPartCode,
+                                                onlyItemName: item.OnlyItemName,
+                                            };
+                                        }));
+                                    }
+                                    else {
+                                        response([]);
+                                    }
+                                }
+                            });
+                        },
+
+                        select: function(event, ui) {
+
+                            let row = $(this).closest("tr");
+                            // Store old values before changing the row
+                            let oldItemCode = row.find(".ItemCode-input").val();
+                            let oldPartCode = row.find(".partcode-input").val();
+                            if (isItemAlreadyAdded(ui.item.itemCode, row)) {
+
+                                $.notify("Item already added in grid");
+
+                                row.find(".partcode-input").val('');
+                                row.find(".itemname-input").val('');
+                                row.find(".ItemCode-input").val('');
+
+                                row.find(".partcode-input").focus();
+
+                                return false;
+                            }
+
+                            row.find(".partcode-input").val(ui.item.onlyPartCode);
+                            row.find(".itemname-input").val(ui.item.onlyItemName);
+                            row.find(".ItemCode-input").val(ui.item.itemCode);
+
+                            // Call only if item/part code has changed
+                            if (oldItemCode != ui.item.itemCode ||
+                                oldPartCode != ui.item.onlyPartCode) {
+
+                                FillSOItemRate(row);
+                            }
+
+                        
+                            return false;
+                        }
+                    });
+                });
+
+
+                // 🔹 ITEM NAME SEARCH
+                $(document).on("focus", ".itemname-input", function() {
+
+                    if ($(this).data("ui-autocomplete")) return;
+
+                    $(this).autocomplete({
+                        minLength: 2,
+                        source: function(request, response) {
+
+                            $.ajax({
+                                url: '/PurchaseOrder/FillItems',
+                                type: 'POST',
+                                data: {
+                                    Type: $('#POTypeServItem').val(),
+                                    ShowAllItem: 'N',
+                                    SearchItemCode: request.term,
+                                    SearchPartCode: ''
+                                },
+                                success: function(result) {
+
+                                    let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                                    if (obj.StatusCode === 200 && Array.isArray(obj.Result.Table)) {
+
+                                        let filtered = obj.Result.Table.filter(item =>
+                                            googleMatch(request.term, item)
+                                        );
+
+                                        response($.map(filtered, function(item) {
+                                            return {
+                                                label: item.ItemName + " - " + item.PartCode,
+                                                value: item.ItemName,
+                                                partCode: item.PartCode,
+                                                itemCode: item.Item_Code,
+                                                onlyPartCode: item.OnlyPartCode,
+                                                onlyItemName: item.OnlyItemName,
+                                            };
+                                        }));
+                                    }
+                                    else {
+                                        response([]);
+                                    }
+                                }
+                            });
+                        },
+
+                        select: function(event, ui) {
+
+                            let row = $(this).closest("tr");
+                            // Store old values before changing the row
+                            let oldItemCode = row.find(".ItemCode-input").val();
+                            let oldPartCode = row.find(".partcode-input").val();
+
+                            if (isItemAlreadyAdded(ui.item.itemCode, row)) {
+
+                                $.notify("Item already added in grid");
+
+                                row.find(".partcode-input").val('');
+                                row.find(".itemname-input").val('');
+                                row.find(".ItemCode-input").val('');
+
+                                row.find(".partcode-input").focus();
+
+                                return false;
+                            }
+
+                            row.find(".itemname-input").val(ui.item.onlyItemName);
+                            row.find(".partcode-input").val(ui.item.onlyPartCode);
+                            row.find(".ItemCode-input").val(ui.item.itemCode);
+
+                            if (oldItemCode != ui.item.itemCode ||
+                                oldPartCode != ui.item.onlyPartCode) {
+
+                                 FillSOItemRate(row);
+                            }
+
+                     
+                            return false;
+                        }
+                    });
+                });
+
+
+                // 🔹 PART CODE FOCUSOUT (Manual entry validation)
+                $(document).on("focusout", ".partcode-input", function() {
+
+                    let input = $(this);
+                    let row = input.closest("tr");
+
+                    let entered = input.val().trim().toLowerCase();
+                    if (entered === "") return;
+
+                    // Store old values before changing the row
+                    let oldItemCode = row.find(".ItemCode-input").val();
+                    let oldPartCode = row.find(".partcode-input").val();
+                    console.log('oldItemCode:' + oldItemCode);
+                    console.log('oldPartCode:' + oldPartCode);
+                    $.ajax({
+                        url: '/PurchaseOrder/FillItems',
+                        type: 'POST',
+                        data: {
+                            Type: $('#POTypeServItem').val(),
+                            ShowAllItem: 'N',
+                            SearchItemCode: '',
+                            SearchPartCode: entered
+                        },
+                        success: function(result) {
+
+                            let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                            if (obj.StatusCode === 200 && Array.isArray(obj.Result.Table)) {
+
+                                let list = obj.Result.Table.map(item => ({
+                                    ...item,
+                                    real: (item.RealPartCode || "").trim().toLowerCase()
+                                }));
+
+                                let match =
+                                    list.find(i => i.real === entered) ||
+                                    list.find(i => i.real.startsWith(entered + " ")) ||
+                                    list.find(i => i.real.startsWith(entered));
+
+                                if (match) {
+                                    if (isItemAlreadyAdded(match.Item_Code, row)) {
+
+                                        $.notify("Item already added in grid");
+
+                                        row.find(".partcode-input").val('');
+                                        row.find(".itemname-input").val('');
+                                        row.find(".ItemCode-input").val('');
+
+                                        row.find(".partcode-input").focus();
+
+                                        return;
+                                    }
+
+                                    row.find(".partcode-input").val(match.OnlyPartCode);
+                                    row.find(".itemname-input").val(match.OnlyItemName);
+                                    row.find(".ItemCode-input").val(match.Item_Code);
+
+                                    // Call only if item/part code has changed
+                                    if (oldItemCode != match.Item_Code ||
+                                        oldPartCode != match.OnlyPartCode) {
+                                        console.log('inside if');
+                                        FillSOItemRate(row);
+                                    }
+
+                                }
+                            }
+                        }
+                    });
+                });
+
+
+                // 🔹 ITEM NAME FOCUSOUT (Manual entry validation)
+                $(document).on("focusout", ".itemname-input", function() {
+
+                    let input = $(this);
+                    let row = input.closest("tr");
+
+                    let entered = input.val().trim().toLowerCase();
+
+
+                    if (entered === "") return;
+                    // Store old values before changing the row
+                    let oldItemCode = row.find(".ItemCode-input").val();
+                    let oldPartCode = row.find(".partcode-input").val();
+                    $.ajax({
+                        url: '/PurchaseOrder/FillItems',
+                        type: 'POST',
+                        data: {
+                            Type: $('#POTypeServItem').val(),
+                            ShowAllItem: 'N',
+                            SearchItemCode: entered,
+                            SearchPartCode: ''
+                        },
+                        success: function(result) {
+
+                            let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                            if (obj.StatusCode === 200 && Array.isArray(obj.Result.Table)) {
+
+                                let match = obj.Result.Table.find(item =>
+                                    (item.ItemName || "").toLowerCase().includes(entered)
+                                );
+
+                                if (match) {
+                                    if (isItemAlreadyAdded(match.Item_Code, row)) {
+
+                                        $.notify("Item already added in grid");
+
+                                        row.find(".partcode-input").val('');
+                                        row.find(".itemname-input").val('');
+                                        row.find(".ItemCode-input").val('');
+
+                                        row.find(".partcode-input").focus();
+
+                                        return;
+                                    }
+                                    row.find(".itemname-input").val(match.OnlyItemName);
+                                    row.find(".partcode-input").val(match.OnlyPartCode);
+                                    row.find(".ItemCode-input").val(match.Item_Code);
+
+                                    // Call only if item/part code has changed
+                                    if (oldItemCode != match.Item_Code ||
+                                        oldPartCode != match.OnlyPartCode) {
+
+                                         FillSOItemRate(row);
+                                    }
+
+                                }
+                            }
+                        }
+                    });
+                });
+
+            }
+
+
+            function isItemAlreadyAdded(itemCode, currentRow) {
+
+                let exists = false;
+
+                $("#ItemDetailTable tbody tr").each(function() {
+
+                    let row = $(this);
+
+                    if (row[0] !== currentRow[0]) {
+
+                        let code = row.find(".ItemCode-input").val();
+
+                        if (code && code == itemCode) {
+                            exists = true;
+                            return false;
+                        }
+                    }
+                });
+
+                return exists;
+            }
+
+
+
+                    function FillSOItemRate(row) {
+
+            var sono = $("#SONO").val() == '0' ? '' : $("#SONO").val();
+            var itemCode = $(row).find('.ItemCode-input').val();   // get item from row
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillSOItemRate","SaleInvoice")",
+                data: {
+                    "sono": sono,
+                    "soYearCode": $('#SOYearCode').val(),
+                    "accountCode": $('#AccountCode').val(),
+                    "custOrderNo": $('#CustOrderNo').val(),
+                    "itemCode": itemCode,
+                    "SubInvoicetype": $('#SubInvoicetype').val()
+                },
+                dataType: "json",
+                success: function (result) {
+
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+
+                        if (obj.StatusCode == 200 && obj.Result.length > 0) {
+
+                            var data = obj.Result[0];
+
+                            var rate = data.Rate == '' ? 0 : parseFloat(data.Rate);
+                            var igst = data.IGST == '' ? 0 : parseFloat(data.IGST);
+
+                            var stateCode = $('#StateCode').val();          // Party State
+                            var companyStateCode = $('#CompanyStateCode').val();  // Company State
+
+
+
+
+                            // ✅ Fill Grid Fields
+                            $(row).find('.rate').val(rate.toFixed(2));
+                            $(row).find('.RejRate').val(rate.toFixed(2));
+                            $(row).find('.Unit').val(data.unit);
+                            $(row).find('.HSNNo').val(data.HsnNo);
+                            $(row).find('.GroupName').val(data.Group_name);
+                            $(row).find('.ItemLocation').val(data.Location);
+                            // $(row).find('.igstp').val(data.IGST);
+
+                            if ($('#GSTNO').val()!='')
+                            {
+                            // ✅ GST Logic
+                            if (stateCode === companyStateCode ) {
+                                // Same state → CGST + SGST (half-half)
+                                var halfGST = igst / 2;
+
+                                $(row).find('.cgstp').val(halfGST.toFixed(2));
+                                $(row).find('.sgstp').val(halfGST.toFixed(2));
+                                $(row).find('.igstp').val(0);
+
+                            } else {
+                                // Different state → IGST only
+                                $(row).find('.igstp').val(igst.toFixed(2));
+                                $(row).find('.cgstp').val(0);
+                                $(row).find('.sgstp').val(0);
+                            }
+                            }
+                            else
+                            {
+                                // If GST number not available → Set all taxes to 0
+                                $(row).find('.igstp').val(0);
+                                $(row).find('.cgstp').val(0);
+                                $(row).find('.sgstp').val(0);
+                            }
+                            validateQtyByUnit($(row).find('.Unit').val(),'qty');
+                          
+                        }
+                    }
+                },
+                complete: function () {
+                    calculateRow(row); // Trigger calculation after rate is set
+                },
+
+                error: function (xhr) {
+                    console.log("Error: " + xhr.responseText);
+                }
+            });
+        }
+
+
+        function recalculateGSTForAllRows() {
+
+            var stateCode = $('#StateCode').val();
+            var companyStateCode = $('#CompanyStateCode').val();
+
+            $("#ItemDetailTable tbody tr").each(function () {
+
+                let row = $(this);
+
+                let igst = parseFloat(row.find(".igstp").val()) ||
+                    parseFloat(row.find(".cgstp").val()) * 2 || 0;
+
+                if (stateCode === companyStateCode && stateCode != 0) {
+
+                    // Same state → CGST + SGST
+                    let halfGST = igst / 2;
+
+                    row.find('.cgstp').val(halfGST.toFixed(2));
+                    row.find('.sgstp').val(halfGST.toFixed(2));
+                    row.find('.igstp').val(0);
+
+                }
+                else if (stateCode != companyStateCode && stateCode != 0) {
+
+                    // Different state → IGST
+                    row.find('.igstp').val(igst.toFixed(2));
+                    row.find('.cgstp').val(0);
+                    row.find('.sgstp').val(0);
+                }
+                else {
+
+                    // State not available
+                    row.find('.igstp').val(0);
+                    row.find('.cgstp').val(0);
+                    row.find('.sgstp').val(0);
+                }
+
+                calculateRow(row); // Recalculate row
+            });
+
+            calculateTotals();
+        }
+            
+
+
                   $('#sendToExcel').click(function () {
                   let table = $("#poTable");
                   console.log(table);
@@ -1265,6 +2264,7 @@
             const myInput = document.getElementById("TotalDiscountPercentage");
             calculateitembasicnettaxable();
             itemwisetaxcalculation();
+                ApplyGridAutoFill();
             myInput.addEventListener("input", function (event) {
                 const inputValue = parseInt(event.target.value);
                 if (isNaN(inputValue) || inputValue > 100) {
@@ -1287,6 +2287,10 @@
                          if (code !== null && code !== undefined && code !== "" && Number(code) > 0) {
                              $("#RoundOff").show();
                          }
+                     }
+                     else
+                     {
+                         addRow();
                      }
 
 
@@ -1334,7 +2338,7 @@
             }
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "INSERT") {
                 onInvoiceChange('InvoiceNo');
-                setInterval(checkNetTotalChange, 500);
+                // setInterval(checkNetTotalChange, 500);
             }
             setYearList('POYear', 2000);
             setYearList('ScheduleYear', 2000);
@@ -1773,12 +2777,12 @@
 
 
 
-        document.getElementById("btnAddToGrid").addEventListener("keydown", function (event) {
-            if (event.key === "Enter") {
-                event.preventDefault(); // prevent accidental form submit if inside form
-                ItemBtn();
-            }
-        });
+        // document.getElementById("btnAddToGrid").addEventListener("keydown", function (event) {
+        //     if (event.key === "Enter") {
+        //         event.preventDefault(); // prevent accidental form submit if inside form
+        //         ItemBtn();
+        //     }
+        // });
         function GetCompanyType() {
 
                   $.ajax({
@@ -3601,6 +4605,7 @@
                                 $('#VendorAddress').val('');
                             }
                                DueDateCalculation();
+                               recalculateGSTForAllRows();
                         }
                         else {
                             $('#GstType').val('');
@@ -4300,53 +5305,53 @@
             //     return false;
             // }
              
-                if ($('#divTaxGrid tr td').length <= 1 && $('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '') {
-                                      $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                    isError = true;
-                    return false;
-                                  }
+            //     if ($('#divTaxGrid tr td').length <= 1 && $('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '') {
+            //                           $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
+            //         isError = true;
+            //         return false;
+            //                       }
               
 
-            else if (resultforadj.toString().toLowerCase() == "true") {
-                $.notify("Please add Adjust amount properly, And total should be less then or equal to Net Total.", "error");
-                isError = true;
-                return false;
-            }
-            else if (poGrid <= 1) {
-                $.notify("DPB Grid should at least have one item", "error");
-                return;
-            }
-            else if (drCrGrid <= 1) {
-                $.notify("Debit And Credid Amount Status Grid should at least have one item", "error");
-                return;
-            }
-            // else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
-            //     $.notify("Total Debit And Total Credit Amount should be same", "error");
+            // else if (resultforadj.toString().toLowerCase() == "true") {
+            //     $.notify("Please add Adjust amount properly, And total should be less then or equal to Net Total.", "error");
+            //     isError = true;
+            //     return false;
+            // }
+            // else if (poGrid <= 1) {
+            //     $.notify("DPB Grid should at least have one item", "error");
             //     return;
             // }
-            else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
-                $.notify("Tax Grid should at least have one item", "error");
-                return;
-            }
-               else if (AdjustGrid < 1) {
-                 $.notify("Adjustment Amount Status Grid should at least have one item", "error");
-                return;
-            }
-            else if ($('#AccountCode').val() == '0') {
-                $.notify("Vendor Name is required", "error");
-            }
-             else if (parseInt($("#PaymentDays").val())<=0) {
-                 $.notify("PaymentDays should not be 0", "error");
-                return;
-            }
+            // else if (drCrGrid <= 1) {
+            //     $.notify("Debit And Credid Amount Status Grid should at least have one item", "error");
+            //     return;
+            // }
+            // // else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
+            // //     $.notify("Total Debit And Total Credit Amount should be same", "error");
+            // //     return;
+            // // }
+            // else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
+            //     $.notify("Tax Grid should at least have one item", "error");
+            //     return;
+            // }
+            //    else if (AdjustGrid < 1) {
+            //      $.notify("Adjustment Amount Status Grid should at least have one item", "error");
+            //     return;
+            // }
+            // else if ($('#AccountCode').val() == '0') {
+            //     $.notify("Vendor Name is required", "error");
+            // }
+            //  else if (parseInt($("#PaymentDays").val())<=0) {
+            //      $.notify("PaymentDays should not be 0", "error");
+            //     return;
+            // }
          
-            else {
+            // else {
                
                        
                              checkDuplicateEntry();
                           //  $("form").submit();
                       
-                }
+                // }
               
           
         });
@@ -5306,19 +6311,19 @@
             });
         }
 
-        let previousValue = document.getElementById('NetTotal').value;
+        // let previousValue = document.getElementById('NetTotal').value;
 
-        function checkNetTotalChange() {
-            const netTotalInput = document.getElementById('NetTotal');
-            const currentValue = netTotalInput.value;
+        // function checkNetTotalChange() {
+        //     const netTotalInput = document.getElementById('NetTotal');
+        //     const currentValue = netTotalInput.value;
 
-            if (currentValue !== previousValue) {
-                previousValue = currentValue;
+        //     if (currentValue !== previousValue) {
+        //         previousValue = currentValue;
 
-                const netTotalValue = parseFloat(currentValue);
-                onNetTotalChange();
-            }
-        }
+        //         const netTotalValue = parseFloat(currentValue);
+        //         onNetTotalChange();
+        //     }
+        // }
     </script>
 
     <script type="text/javascript">
@@ -5364,5 +6369,316 @@
         line-height: 28px;
         width: 200px;
     }
+
+        .select2-container--default .select2-results > .select2-results__options {
+            background-color: #e0f2f1; /* Dropdown background color */
+            color: #000;
+        }
+
+        #divTaxGrid tr td {
+            font-weight: 300;
+        }
+
+        #divSaleRejectionList tr td {
+            font-weight: 200;
+        }
+
+        #divAddSaleRejectionList tr td {
+            font-weight: 300;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #444;
+            line-height: 28px;
+            width: 200px;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            background: #f2f6f9;
+        }
+
+        /* Top Bar */
+        .header {
+            background: #1f4e79;
+            color: white;
+            padding: 6px 12px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .small-btn {
+            background: #2e75b6;
+            border: none;
+            color: white;
+            padding: 4px 8px;
+            font-size: 11px;
+            cursor: pointer;
+            border-radius: 2px;
+            margin-left: 4px;
+        }
+
+            .small-btn.green {
+                background: #2e8b57;
+            }
+
+            .small-btn.red {
+                background: #c00000;
+            }
+
+        /* Grid Section */
+        .grid-header {
+            background: #4f81bd;
+            color: white;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; /* Important - no scroll */
+            font-size: 11px;
+        }
+
+        th {
+            background: #dbe5f1;
+            border: 1px solid #b8cce4;
+            padding: 3px;
+        }
+
+        td {
+            border: 1px solid #d0d7e5;
+            padding: 2px;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 11px;
+            padding: 2px;
+            border: 1px solid #c5c5c5;
+            background: #ffffe0;
+            height: 20px;
+        }
+
+        td input {
+            height: 22px;
+            font-size: 12px;
+        }
+
+        .readonly {
+            background: #f5f5f5;
+        }
+
+        .delete-btn {
+            background: #c00000;
+            color: white;
+            border: none;
+            font-size: 10px;
+            padding: 2px 5px;
+            cursor: pointer;
+        }
+
+        /* Footer */
+        .footer {
+            background: #e7eff9;
+            padding: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+        /* Accordion Grid Wrapper */
+        .erp-grid-wrapper {
+            border: 1px solid #cfd8e3;
+            background: #ffffff;
+            margin-top: 8px;
+        }
+
+        /* Header */
+        .erp-grid-header {
+            background: linear-gradient(to right,#2f5597,#1f4e79);
+            color: white;
+            padding: 6px 10px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Summary Right Side */
+        .erp-summary {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Add Button */
+        .erp-btn {
+            padding: 4px 10px;
+            font-size: 12px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .erp-btn-add {
+            background: #2e8b57;
+            color: white;
+        }
+
+            .erp-btn-add:hover {
+                background: #256f46;
+            }
+
+        /* Table container */
+        .erp-table-container {
+            width: 100%;
+            overflow: hidden; /* NO SCROLL */
+        }
+
+            /* Compact Table */
+            .erp-table-container table {
+                width: 100%;
+                table-layout: fixed;
+                border-collapse: collapse;
+                font-size: 11px;
+            }
+
+            /* Header */
+            .erp-table-container th {
+                background: #dde6f5;
+                border: 1px solid #c5d0e6;
+                padding: 4px 3px;
+                text-align: center;
+                font-weight: 600;
+            }
+
+            /* Body */
+            .erp-table-container td {
+                border: 1px solid #e0e6f2;
+                padding: 2px;
+                text-align: center;
+            }
+
+            /* Compact Inputs */
+            .erp-table-container input,
+            .erp-table-container select {
+                width: 100%;
+                height: 20px;
+                font-size: 11px;
+                padding: 2px;
+                border: 1px solid #c8ccd4;
+                background: #fffde6;
+                box-sizing: border-box;
+            }
+
+                /* Readonly fields */
+                .erp-table-container input[readonly] {
+                    background: #f4f4f4;
+                }
+
+        /* Delete Button */
+        .erp-delete {
+            background: #c00000;
+            color: white;
+            border: none;
+            font-size: 10px;
+            padding: 2px 6px;
+            cursor: pointer;
+        }
+
+        /* Small numeric fields */
+        input.qty,
+        input.disc,
+        input.igstp,
+        input.cgstp,
+        input.sgstp {
+            text-align: right;
+        }
+
+        /* Very small columns */
+        .erp-table-container th:nth-child(1),
+        .erp-table-container td:nth-child(1) {
+            text-align: center;
+        }
+
+        /* Unit column */
+        .erp-table-container td:nth-child(5) input {
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        /* Tax % small */
+        .erp-table-container td:nth-child(11) input,
+        .erp-table-container td:nth-child(13) input,
+        .erp-table-container td:nth-child(15) input {
+            text-align: right;
+        }
+
+        /* Delete column */
+        .erp-table-container td:nth-child(17) {
+            padding: 0;
+        }
+        /* Increase tbody row height */
+        .erp-table-container tbody td {
+            height: 28px; /* adjust here */
+            vertical-align: middle;
+        }
+
+        /* Increase input height slightly */
+        .erp-table-container tbody input,
+        .erp-table-container tbody select {
+            height: 24px;
+        }
+
+        .vertical-pair {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+            .vertical-pair input {
+                width: 100%;
+            }
+
+        .google-tabs .nav-link {
+            border: none;
+            color: #555;
+            font-weight: 500;
+        }
+
+            .google-tabs .nav-link.active {
+                border-bottom: 3px solid #4285F4;
+                color: #4285F4;
+                font-weight: 600;
+            }
+
+            .google-tabs .nav-link:hover {
+                background: #f5f5f5;
+            }
+
+        .erp-table-container {
+            max-height: 400px; /* height where scroll starts */
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        #ItemDetailTable {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+            #ItemDetailTable thead th {
+                position: sticky;
+                top: 0;
+                /* background: #fff; /* important so rows don't show through */ */ z-index: 10;
+            }
 </style>
 

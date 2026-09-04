@@ -124,6 +124,12 @@
                 <input asp-for="ModeOfTransport" class="form-control" />
             }
         </div>
+        <div class="col-xl-6  col-lg-6 col-md-6 col-sm-6 col-xs-12" > 
+            <select class="form-select" asp-for="docTypeId" style="height:190px;width:190px;" asp-items="@(new SelectList(Model.DocumentList,"Value","Text"))">
+                <option value="0">-Select-</option>
+            </select>
+        </div>
+                      
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillCurrency">
             <label asp-for="Currency" class="form-label">Currency</label>
             <input type="hidden" id="hiddenCurrency" value="@Model.Currency" />
@@ -154,6 +160,7 @@
         </div>
 
         <a href="javascript:void(0)" onclick="ListOfPendingSaleBillFromOtherBranch()">DPB from Other Branch</a>
+        <button type="button" onclick="UpdateSession()">Update Session</button>
         <input type="hidden" asp-for="Approved" class="form-control" />
         <input type="hidden" asp-for="ApprovedDate" class="form-control" />
         <input type="hidden" asp-for="Approvedby" class="form-control" />

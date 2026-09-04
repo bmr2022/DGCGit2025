@@ -1,0 +1,143 @@
+﻿@model eTactWeb.DOM.Models.DirectPurchaseBillModel
+
+<input type="hidden" asp-for="ItemNetAmount" class="form-control" />
+@for (int i = 0; i < (Model?.ItemDetailGrid?.Count ?? 0); i++)
+{
+    <tr>
+        <td>
+            @(i + 1)
+            @Html.HiddenFor(m => m.ItemDetailGrid[i].SeqNo)
+        </td>
+
+        <td>
+            <div style="display:flex; flex-direction:column;">
+                <input name="ItemDetailGrid[@i].PartText"
+                       value="@Model.ItemDetailGrid[i].PartText"
+                       class="partcode-input" />
+                <input name="ItemDetailGrid[@i].ItemText"
+                       value="@Model.ItemDetailGrid[i].ItemText" tabindex="-1"
+                       class="itemname-input" />
+
+                <input name="ItemDetailGrid[@i].ItemCode"
+                       value="@Model.ItemDetailGrid[i].ItemCode"
+                       class="ItemCode-input " type="hidden" />
+            </div>
+        </td>
+
+     
+        <td>
+            <input name="ItemDetailGrid[@i].BillQty"
+                   value="@Model.ItemDetailGrid[i].BillQty"
+                   class="qty"
+                   onfocusout="calculateRow(this)" />
+        </td>
+
+        <td>
+            <div style="display:flex; flex-direction:column;">
+                <input name="ItemDetailGrid[@i].Unit" tabindex="-1"
+                       value="@Model.ItemDetailGrid[i].Unit" class="Unit" readonly />
+                <input name="ItemDetailGrid[@i].HSNNo" tabindex="-1"
+                       value="@Model.ItemDetailGrid[i].HSNNo" class="HSNNo" readonly />
+            </div>
+        </td>
+
+        <td>
+            <div style="display:flex; flex-direction:column;">
+                <input name="ItemDetailGrid[@i].Rate"
+                       value="@Model.ItemDetailGrid[i].Rate"
+                       class="rate"
+                       onfocusout="calculateRow(this)" />
+             
+            </div>
+        </td>
+
+       
+        <td>
+            <div style="display:flex; flex-direction:column;">
+                <input name="ItemDetailGrid[@i].DiscPer"
+                       value="@Model.ItemDetailGrid[i].DiscPer"
+                       class="discPer"
+                       onfocusout="calculateRow(this)" />
+
+                <input name="ItemDetailGrid[@i].DiscRs"
+                       value="@Model.ItemDetailGrid[i].DiscRs"
+                       class="discamt" tabindex="-1"
+                       readonly />
+            </div>
+        </td>
+
+        <td>
+            <input name="ItemDetailGrid[@i].Amount"
+                   value="@Model.ItemDetailGrid[i].Amount"
+                   class="amount" tabindex="-1"
+                   readonly />
+        </td>
+
+        <td>
+            <div style="display:flex; flex-direction:column;">
+                <input name="ItemDetailGrid[@i].GroupName"
+                       value="@Model.ItemDetailGrid[i].GroupName"
+                       class="GroupName"
+                       readonly />
+                <input name="ItemDetailGrid[@i].ItemLocation"
+                       value="@Model.ItemDetailGrid[i].ItemLocation"
+                       class="ItemLocation" tabindex="-1"
+                       readonly />
+            </div>
+        </td>
+
+        
+
+        <td>
+            <div style="display:flex; flex-direction:column;">
+                <input name="ItemDetailGrid[@i].IGSTPer"
+                       value="@Model.ItemDetailGrid[i].IGSTPer"
+                       class="igstp" readonly tabindex="-1"
+                       oninput="calculateRow(this)" />
+
+                <input name="ItemDetailGrid[@i].IGSTAmt"
+                       value="@Model.ItemDetailGrid[i].IGSTAmt"
+                       class="igsta"
+                       readonly />
+            </div>
+        </td>
+
+
+        <td>
+            <div style="display:flex; flex-direction:column;">
+                <input name="ItemDetailGrid[@i].CGSTPer"
+                       value="@Model.ItemDetailGrid[i].CGSTPer"
+                       class="cgstp" tabindex="-1"
+                       oninput="calculateRow(this)"
+                       readonly />
+
+                <input name="ItemDetailGrid[@i].CGSTAmt"
+                       value="@Model.ItemDetailGrid[i].CGSTAmt"
+                       class="cgsta" tabindex="-1"
+                       readonly />
+            </div>
+        </td>
+
+        <td>
+            <div style="display:flex; flex-direction:column;">
+                <input name="ItemDetailGrid[@i].SGSTPer"
+                       value="@Model.ItemDetailGrid[i].SGSTPer"
+                       class="sgstp" tabindex="-1"
+                       oninput="calculateRow(this)"
+                       readonly />
+
+                <input name="ItemDetailGrid[@i].SGSTAmt"
+                       value="@Model.ItemDetailGrid[i].SGSTAmt"
+                       class="sgsta"
+                       readonly tabindex="-1" />
+            </div>
+        </td>
+
+        <td>
+            <button type="button" tabindex="-1"
+                    onclick="deleteRow(this)">
+                X
+            </button>
+        </td>
+    </tr>
+}

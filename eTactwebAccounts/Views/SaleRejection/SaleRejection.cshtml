@@ -460,7 +460,8 @@
                    
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="HPanel1">
-                        <button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel1" aria-expanded="true" aria-controls="BPanel1">
+                        <button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#BPanel1" aria-expanded="true" aria-controls="BPanel1">
                             <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
                             Required Parameter
                             <small class="p-3"></small>
@@ -504,86 +505,88 @@
 
                            <div class="row align-items-center mb-2">
 
-    <!-- LEFT SIDE -->
-    <div class="col-md-4">
-        <button type="button"
-                id="btnAddNew"
-                onclick="addRow()"
-                class="erp-btn erp-btn-add btn-sm-add">
-            + Add Item(Alt+A)
-        </button>
-    </div>
+                                        <!-- LEFT SIDE -->
+                                        <div class="col-md-4">
+                                            <button type="button"
+                                                    id="btnAddNew"
+                                                    onclick="addRow()"
+                                                    class="erp-btn erp-btn-add btn-sm-add">
+                                                + Add Item(Alt+A)
+                                            </button>
+                                        </div>
 
-    <!-- RIGHT SIDE -->
-    <div class="col-md-8 d-flex justify-content-end align-items-center gap-2">
+                                        <!-- RIGHT SIDE -->
+                                        <div class="col-md-8 d-flex justify-content-end align-items-center gap-2">
 
-        <!-- File Upload -->
-        <input class="form-control form-control-sm w-auto" type="file" id="ExcelFile" />
+                                            <!-- File Upload -->
+                                            <input class="form-control form-control-sm w-auto" type="file" id="ExcelFile" />
 
-        <!-- Upload Excel (Icon Only) -->
-        <button type="button"
-                class="btn btn-outline-success btn-sm"
-                onclick="UploadExcel()"
-                title="Upload Excel">
-            <i class="fa-solid fa-upload"></i>
-        </button>
+                                            <!-- Upload Excel (Icon Only) -->
+                                            <button type="button"
+                                                    class="btn btn-outline-success btn-sm"
+                                                    onclick="UploadExcel()"
+                                                    title="Upload Excel">
+                                                <i class="fa-solid fa-upload"></i>
+                                            </button>
 
-        <!-- Import Format (Icon Only) -->
-        <button type="button"
-                class="btn btn-outline-secondary btn-sm"
-                onclick="ExportPOFormate()"
-                title="Download Import Format">
-            <i class="fa-solid fa-file-arrow-down"></i>
-        </button>
+                                            <!-- Import Format (Icon Only) -->
+                                            <button type="button"
+                                                    class="btn btn-outline-secondary btn-sm"
+                                                    onclick="ExportPOFormate()"
+                                                    title="Download Import Format">
+                                                <i class="fa-solid fa-file-arrow-down"></i>
+                                            </button>
 
-    </div>
-
-</div>
-                            <div class="card">
-
-
-                    @* <button class="add-btn" onclick="addRow()">+ Add Item</button> *@
-                                
-                                            <div class="erp-grid-wrapper">
-                                 <div class="erp-table-container">
-                                        <table id="ItemDetailTable">
-                                            <thead>
-                                                <tr>
-                                                    <th style="width:3%">SNo</th>
-                                                    <th style="width:14%">Item Code</th>
-                                                  
-                                                    <th style="width:6%">Qty</th>
-                                                    <th style="width:5%">Unit</th>
-                                                    <th style="width:5%">Rate</th>
-                                                   
-
-                                                    <th style="width:8%">Disc % / Amount</th>
-                                                    <th style="width:6%">ItemAmount</th>
-                                                    <th style="width:8%">IGRP/Location</th>
-
-
-                                                    <th style="width:7%">Bill No</th>
-
-                                                    <th style="width:6%">IG % / IG Amt</th>
-                                                    <th style="width:6%">CG % / CG Amt</th>
-                                                    <th style="width:6%">SG % / SG Amt</th>
-
-                                                    <th style="width:2%">X</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="SaleRejectionBody">
-                                                <partial name="_AddSaleRejectionGrid" />
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="row g-2 gx-3">
-                                        <div id="excelErrorBox" class="alert alert-danger" style="display:none;">
-                                            <ul id="excelErrorList"></ul>
                                         </div>
 
                                     </div>
-</div>
-</div>
+
+
+                                                                <div class="card">
+
+
+                                                        @* <button class="add-btn" onclick="addRow()">+ Add Item</button> *@
+                                
+                                                                                <div class="erp-grid-wrapper">
+                                                                     <div class="erp-table-container">
+                                                                            <table id="ItemDetailTable">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th style="width:3%">SNo</th>
+                                                                                        <th style="width:14%">Item Code</th>
+                                                  
+                                                                                        <th style="width:6%">Qty</th>
+                                                                                        <th style="width:5%">Unit</th>
+                                                                                        <th style="width:5%">Rate</th>
+                                                   
+
+                                                                                        <th style="width:8%">Disc % / Amount</th>
+                                                                                        <th style="width:6%">ItemAmount</th>
+                                                                                        <th style="width:8%">IGRP/Location</th>
+
+
+                                                                                        <th style="width:7%">Bill No</th>
+
+                                                                                        <th style="width:6%">IG % / IG Amt</th>
+                                                                                        <th style="width:6%">CG % / CG Amt</th>
+                                                                                        <th style="width:6%">SG % / SG Amt</th>
+
+                                                                                        <th style="width:2%">X</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody id="SaleRejectionBody">
+                                                                                    <partial name="_AddSaleRejectionGrid" />
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                    <div class="row g-2 gx-3">
+                                                                            <div id="excelErrorBox" class="alert alert-danger" style="display:none;">
+                                                                                <ul id="excelErrorList"></ul>
+                                                                            </div>
+
+                                                                        </div>
+                                    </div>
+                                    </div>
                       
                         </div>
                     </div>

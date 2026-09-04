@@ -351,6 +351,12 @@ public class DPBItemDetail : TaxModel, ITDSModel
 
     [Column(TypeName = "decimal(18, 6)")]
     public decimal? DPBQty { get; set; }
+    public decimal? IGSTPer { get; set; }
+    public decimal? IGSTAmt { get; set; }
+    public decimal? CGSTPer { get; set; }
+    public decimal? CGSTAmt { get; set; }
+    public decimal? SGSTPer { get; set; }
+    public decimal? SGSTAmt { get; set; }
 
     public int? Process { get; set; }
     public string? ProcessName { get; set; }

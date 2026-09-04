@@ -321,25 +321,29 @@ namespace eTactWeb.Controllers
                 var cc = stat.CurrentEntryCount;
                 var pp = stat.CurrentEstimatedSize;
 
-                ModelState.Clear();
+                //ModelState.Clear();
 
-                if (MainModel.ItemDetailGrid != null && MainModel.ItemDetailGrid.Count > 0)
+                if (model.ItemDetailGrid != null && model.ItemDetailGrid.Count > 0)
                 {
-                    DS = GetItemDetailTable(MainModel.ItemDetailGrid, model.Mode, MainModel.EntryID, MainModel.YearCode);
+                    foreach (var item in model.ItemDetailGrid)
+                    {
+                        item.docTypeId = model.docTypeId;
+                    }
+                    DS = GetItemDetailTable(model.ItemDetailGrid, model.Mode, model.EntryID, model.YearCode);
                     ItemDetailDT = DS.Tables[0];
-                    model.ItemDetailGrid = MainModel.ItemDetailGrid;
+                    //model.ItemDetailGrid = MainModel.ItemDetailGrid;
 
                     isError = false;
-                    if (MainModel.ItemDetailGrid != null && MainModel.ItemDetailGrid.Any())
-                    {
-                        var hasDupes = MainModel.ItemDetailGrid.GroupBy(x => new { x.ItemCode, x.docTypeId, x.Description,x.Rate })
-                       .Where(x => x.Skip(1).Any()).Any();
-                        if (hasDupes)
-                        {
-                            isError = true;
-                            ErrList.Add("ItemDetailGrid", "Document Type + ItemCode + Description In ItemDetails can not be Duplicate...!");
-                        }
-                    }
+                    //if (MainModel.ItemDetailGrid != null && MainModel.ItemDetailGrid.Any())
+                    //{
+                    //    var hasDupes = MainModel.ItemDetailGrid.GroupBy(x => new { x.ItemCode, x.docTypeId, x.Description,x.Rate })
+                    //   .Where(x => x.Skip(1).Any()).Any();
+                    //    if (hasDupes)
+                    //    {
+                    //        isError = true;
+                    //        ErrList.Add("ItemDetailGrid", "Document Type + ItemCode + Description In ItemDetails can not be Duplicate...!");
+                    //    }
+                    //}
                 }
                 else
                 {
@@ -850,6 +854,23 @@ namespace eTactWeb.Controllers
             }
 
             return PartialView("_DPBItemGrid", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateDirectpurchasebillSession(DirectPurchaseBillModel Model)
+        {
+            if (Model != null)
+            {
+                foreach (var item in Model.ItemDetailGrid)
+                {
+                    item.docTypeId = Model.docTypeId;
+                }
+                HttpContext.Session.Remove("DirectPurchaseBill");
+                HttpContext.Session.SetString("DirectPurchaseBill", JsonConvert.SerializeObject(Model));
+
+            }
+
+            return Json(new { success = true });
         }
 
         [HttpPost]
