@@ -117,7 +117,7 @@
          <ul class="nav nav-tabs google-tabs mb-3" id="erpTabs" role="tablist">
 
             <li class="nav-item">
-                <button type="button" class="nav-link active"
+                <button type="button" class="nav-link active" onclick="UpdateSession()"
                         data-bs-toggle="tab"
                         data-bs-target="#tabRequired">
                     Required Parameter
@@ -126,7 +126,7 @@
 
            
             <li class="nav-item">
-                <button type="button" class="nav-link"
+                <button type="button" class="nav-link" onclick="UpdateSession()"
                         data-bs-toggle="tab"
                         data-bs-target="#tabTax">
                     Tax Detail
@@ -134,7 +134,7 @@
             </li>
 
             <li class="nav-item">
-                <button type="button" class="nav-link"
+                <button type="button" class="nav-link" onclick="UpdateSession()"
                         data-bs-toggle="tab"
                         data-bs-target="#tabDrCr">
                     Dr / Cr
@@ -143,14 +143,14 @@
 
 
              <li class="nav-item">
-                <button type="button" class="nav-link"
+                <button type="button" class="nav-link" onclick="UpdateSession()"
                         data-bs-toggle="tab"
                         data-bs-target="#tabTDS">
                     TDS Details
                 </button>
             </li>
             <li class="nav-item">
-                <button type="button" class="nav-link"
+                <button type="button" class="nav-link" onclick="UpdateSession()"
                         data-bs-toggle="tab"
                         data-bs-target="#tabAdjustment">
                     Adjustment
@@ -158,7 +158,7 @@
             </li>
 
             <li class="nav-item">
-                <button type="button" class="nav-link"
+                <button type="button" class="nav-link" onclick="UpdateSession()"
                         data-bs-toggle="tab"
                         data-bs-target="#tabOther">
                     Other Detail
@@ -202,16 +202,7 @@
 
                             <!-- Center: Totals -->
                             
-                                <div class="d-flex justify-content-center align-items-center flex-grow-1">
-                                    <strong class="me-2">BASIC TOTAL:</strong>
-                                <span id="lblItemNetAmount" class="me-4 text-warning">0.00</span>
-                                <strong class="me-4">Total Qty : <span id="TotalQty"></span></strong>    
-
-                                    <strong class="me-2">TOTAL NO OF ITEMS:</strong>
-                                <span id="lblItemCount" class="text-warning">0</span>
-                                        <label asp-for="NetTotal" class="form-label">Net Total</label>
-                                        <input asp-for="NetTotal" style="width:100px; background-color:ghostwhite !important" class="form-control NetTotal" onchange="onNetTotalChange()" readonly />
-                                </div>
+                                
                             
                         </button>
                     </h2>
@@ -405,13 +396,10 @@
                                 <input asp-for="NetTotal" class="form-control" onchange="onNetTotalChange()" readonly />
                             </div> *@
 
-                            <div class="d-flex justify-content-center align-items-center flex-grow-1">
-                                <label asp-for="NetTotal" class="form-label">Net Total</label>
-                                <input asp-for="NetTotal" style="width:100px; background-color:ghostwhite !important" class="form-control" onchange="onNetTotalChange()" readonly />
-                            </div>
+                            
                         </button>
                     </h2>
-                    <div id="B_TaxDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_TaxDetail">
+                    <div id="B_TaxDetail" class="accordion-collapse collapse pnl4 bg-gradient show" aria-labelledby="H_TaxDetail">
                         <div class="accordion-body">
                             <partial name="_TaxDetail" />
                             <div class="progress my-3" style="height: 4px;">
@@ -460,6 +448,11 @@
                     </div>
                 </div>
                 </div>
+                <div class="tab-pane fade" id="tabDrCr">
+                <div class="accordion-item">
+                    <partial name="_DrCrTable" />
+                </div>
+                </div>
                 <div class="tab-pane fade" id="tabTDS">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_TDSDetail">
@@ -477,6 +470,11 @@
                     </div>
                 </div>
                 </div>
+                    <div class="tab-pane fade" id="tabAdjustment">
+                        <div class="accordion-item">
+                            @await Html.PartialAsync("_AdjustmentGrid", Model.adjustmentModel)
+                        </div>
+                    </div>
                 <div class="tab-pane fade" id="tabOther">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="HPanel4">
@@ -490,16 +488,8 @@
                     </div>
                 </div>
                 </div>
-                <div class="tab-pane fade" id="tabDrCr">
-                <div class="accordion-item">
-                    <partial name="_DrCrTable" />
-                </div>
-                </div>
-                <div class="tab-pane fade" id="tabAdjustment">
-                <div class="accordion-item">
-                    @await Html.PartialAsync("_AdjustmentGrid", Model.adjustmentModel)
-                </div>
-                </div>
+                
+                
                 </div>
             </div>
         </div>
@@ -1207,83 +1197,7 @@
                     data: $('form').serialize(),
                     success: function () {
 
-                        // ==========================
-                        // STEP 3: APPLY TAX + ADJ
-                        // ==========================
-                        btnClearTax();
-
-                        ApplyTax4HSN();
-                        ClearAdjustmentGrid();
-                        AddAdjstmntDetail1();
-
-                        // Small safe delay to ensure DOM updated
-                        setTimeout(function () {
-
-                            // ==========================
-                            // STEP 4: FINAL VALIDATION
-                            // ==========================
-
-
-                            let AdjustAmount = parseFloat($('#AdjAdjstedAmt1').text());
-                            let TotalAmount = parseFloat($('#AdjTotalAmt1').text());
-                            let NetAmount = parseFloat($('.NetTotal').val());
-                            var drcrrowCount = $('#divdbCrItemList tr').length;
-                            var drAmt = 0;
-                            var crAmt = 0;
-
-                            for (var i = 1; i <= drcrrowCount; i++) {
-                                drAmt += $('#drcrRow-' + i + ' .dramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .dramt').text());
-                                crAmt += $('#drcrRow-' + i + ' .cramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .cramt').text());
-                            }
-
-
-
-
-                            var drCrGrid = $('#divdbCrItemList tr').length;
-                            if ($('#SaleRejectionBody tr').length < 1) {
-                                $.notify('Sale Rejection Grid Should Have Atleast 1 Item...!', "error");
-                                return;
-                            }
-                            // else if (AdjustAmount !== TotalAmount || TotalAmount !== NetAmount) {
-                            //     $.notify("AdjustAmount, TotalAmount, and NetAmount must all be equal....!", "error");
-                            //     return false;
-                            // }
-                            // else if (drAmt.toFixed(2) != crAmt.toFixed(2)) {
-                            //     $.notify("Debit and Credit are not maintained...!", "error");
-                            //     return false;
-                            // }
-
-                            else if ($('#GSTRegistered').val() === 'Y') {
-                                if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() === "DOMESTIC") {
-                                    $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                                    return;
-                                }
-
-
-                            }
-                            else if ($('#divAdjItemList tr td').length <= 1) {
-                                $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
-                                return;
-                            }
-
-
-
-                            // Check for CR in Adjustment Grid
-                            else if (drCrGrid <= 1) {
-                                $.notify("Debit And Credit Amount Status Grid should at least have one item", "error");
-                                return;
-                            }
-                            // else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
-                            //     $.notify("Total Debit And Total Credit Amount should be same", "error");
-                            //     return;
-                            // }
-
-                            // ==========================
-                            // STEP 5: FINAL SUBMIT
-                            // ==========================
-                          
-
-                        }, 500); // safe delay
+                        
 
                     }
                 });
@@ -1762,20 +1676,21 @@
                   });
               });
 
-              function ExportPOFormate() {
+                      function ExportPOFormate() {
 
-                  $('#divPOItemList').empty();
-                  var wb = XLSX.utils.book_new();
+            $('#divSaleBillList').empty();
+            var wb = XLSX.utils.book_new();
 
 
-                        var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code","Item Name", "Rate", "Qty", "Dis%",  "Location ","DocumentType"] });
-                  
-                  //ws['!ref'] = 'A1:I1';
+            var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "Rate", "Qty", "Dis%","Location"] });
 
-                  XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+            //ws['!ref'] = 'A1:I1';
 
-                  XLSX.writeFile(wb, "ImportDirectPurchaseBillFormat.xlsx");
-              }
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+            XLSX.writeFile(wb, "ImportPurchaseBillFormat.xlsx");
+        }
+
         //               function UploadExcel() {
         //     var fileInput = $('#ExcelFile');
         //     var file = fileInput.prop("files")[0];
@@ -2360,22 +2275,22 @@
                
                 $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy'}).datepicker("setDate", InvDate);
 
-                var PODt = $('#PODate').val().split("-").join("/");
-                PODt = parseDateToFormat(PODt.split(" ")[0]);
-                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", PODt);
+                // var PODt = $('#PODate').val().split("-").join("/");
+                // PODt = parseDateToFormat(PODt.split(" ")[0]);
+                // $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", PODt);
 
-                var ScheduleDt = $('#ScheduleDate').val().split("-").join("/");
-                PODt = parseDateToFormat(ScheduleDt.split(" ")[0]);
-                $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ScheduleDt);
+                // var ScheduleDt = $('#ScheduleDate').val().split("-").join("/");
+                // PODt = parseDateToFormat(ScheduleDt.split(" ")[0]);
+                // $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ScheduleDt);
 
                 var VODt = $('#VouchDate').val().split("-").join("/");
                 VODt = (VODt.split(" ")[0]);
                 $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy'}).datepicker("setDate", VODt);
-
+                console.log('adjdate:'+$('#AdjDueDate').val());
                 var AdjDueDate = $('#AdjDueDate').val().split("-").join("/");
                 AdjDueDate = parseDateToFormat(AdjDueDate.split(" ")[0]);
                 $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AdjDueDate);
-
+                DueDateCalculation();
                 var AdjAgnstVouchDate = ($('#AdjAgnstVouchDate').val() != null && $('#AdjAgnstVouchDate').val() != undefined) ? $('#AdjAgnstVouchDate').val().split("-").join("/") : formatDateToDDMMYY(new (Date));
                 AdjAgnstVouchDate = parseDateToFormat(AdjAgnstVouchDate.split(" ")[0]);
                 $('#AdjAgnstVouchDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AdjAgnstVouchDate);
@@ -3424,6 +3339,10 @@
             formData.append("AccountCode", $('#AccountCode').val());
             formData.append("SchNo", "");
             formData.append("SchYearCode", 0);
+            var stateCode = $('#StateCode').val();          // Party State
+ var companyStateCode = $('#CompanyStateCode').val();  // Company State
+                    formData.append("stateCode", stateCode);
+            formData.append("companyStateCode", companyStateCode);
             formData.append("Flag", "DirectPurchaseBill");
             formData.append("Currency", $('#Currency').find(":selected").text());
             formData.append("docTypeName", $('#docTypeId').find(":selected").text().trim());
@@ -3487,106 +3406,40 @@
                 data: formData,
                 processData: false,
                 contentType: false,
+
                 success: function (result) {
-                    // if (result == "Not Done") {
-                    //     $.notify("Pend Qty cannot be less than 0!Please Try again!", "error");
-                    // }
-                    // else if (result == "Duplicate") {
-                    //     $.notify("Duplicate Item Not allowed", "error");
-                    // }
-                    // else if (result == "Partcode not available") {
-                    //     $.notify("Imported Partcode is not available, Please check!!!", "error");
-                    // }
-                     // else {
-                    // 🔥 SHOW ERRORS
-                    // 🔹 Show error list
+                    console.log(result.html);
+
+                    // ===== SHOW ERRORS IN DIV =====
                     if (result.errorList && result.errorList.length > 0) {
                         $("#excelErrorList").empty();
-
                         result.errorList.forEach(function (msg) {
                             $("#excelErrorList").append("<li>" + msg + "</li>");
                         });
-
                         $("#excelErrorBox").show();
                     } else {
                         $("#excelErrorBox").hide();
                     }
 
-                    // LOAD PARTIAL VIEW
+                    // ===== LOAD PARTIAL VIEW =====
                     if (result.html) {
-                        $('#divPOItemList').empty();
-                        $("#divPOItemList").html(result.html);
+                        $('#SaleRejectionBody').empty();
+                        $('#SaleRejectionBody').html(result.html);
                     }
 
-                    // if (result.errorList.length > 0) {
-                    //     $("#excelErrorList").empty();
-                    //     result.errorList.forEach(function (err) {
-                    //         $("#excelErrorList").append("<li>" + err + "</li>");
-                    //     });
-
-                    //     $("#excelErrorBox").show();
-                    // } else {
-                    //     $("#excelErrorBox").hide();
-                    // }
-                    //     $('#divPOItemList').empty();
-                    //     $('#divPOItemList').html(result);
-
-                    calculateitembasicnettaxable();
-                    itemwisetaxcalculation();
-                               var rowCount = $('#divPOItemList tr').length;
-                             var columnCount = $('#divPOItemList tr td').length;
-                             var taxRowCount = $('#divTaxGrid tr').length;
-                             var sum = 0;
-
-                             //noofitems
-                             if (columnCount > 1)
-                                 $('#lblItemCount').text(rowCount);
-                             else
-                                 $('#lblItemCount').text(0);
-
-                             for (var i = 1; i <= rowCount; i++) {
-
-                                 sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
-                             }
-                             $('#ItemNetAmount').val(sum);
-                             var txSum = 0;
-                             if ($('#divTaxGrid tr td').length > 1) {
-                                 for (var i = 1; i <= taxRowCount; i++) {
-                                     txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
-                                 }
-                             }
-                             $('#lblItemNetAmount').text(sum.toFixed(2));
-
-
-                             var txTotal = sum + txSum;
-                             $('#NetTotal').val(txTotal.toFixed(2));
-                             $('#TotalDiscountPercentage').val(0);
-                             $('#TotalAmtAftrDiscount').val(0);
-                             $('#TotalRoundOffAmt').val(0.00);
-                             
-                             // $('#PartCode').select2('open').select2('focus');
-                             CalculateRate();
-                    calculatetotalqty();
-                                    GetTaxPartItem();
-                         GetDbCrDetail();
-                         GetFeatureOption();
-                          var AdjGrid = $('#divAdjItemList tr td').length;
-                   if (AdjGrid >= 1 ) {
-                ClearAdjustmentGrid();
-                   }
-                       //   ClearAdjustmentGrid();
-                         AddAdjstmntDetail1();
-                    // }
+                    calculateTotals();
+                    
                 },
-                     error: function (xhr) {
-              // ✅ This will catch your C# BadRequest messages
-              if (xhr.status === 400) {
-                  // The message from BadRequest() in controller
-                  $.notify(xhr.responseText, "error");
-              } else {
-                  $.notify("Unexpected error occurred while uploading Excel.", "error");
-              }
-          }
+
+                error: function (xhr) {
+                    if (xhr.status === 400) {
+                        // Show controller BadRequest message in error div
+                        $("#excelErrorList").empty().append("<li>" + xhr.responseText + "</li>");
+                        $("#excelErrorBox").show();
+                    } else {
+                        $.notify("Unexpected error occurred while uploading Excel.", "error");
+                    }
+                }
             });
         }
 
@@ -4576,6 +4429,18 @@
                                 }
                                 else {
                                     $('#VendorStateName').val('');
+                                }
+                                if (obj.Result[0].State != null && obj.Result[0].State != undefined && obj.Result[0].State != '') {
+                                    $('#StateCode').val(obj.Result[0].State);
+                                }
+                                else {
+                                    $('#StateCode').val('');
+                                }
+                                if (obj.Result[0].CompanyStatecode != null && obj.Result[0].CompanyStatecode != undefined && obj.Result[0].CompanyStatecode != '') {
+                                    $('#CompanyStateCode').val(obj.Result[0].CompanyStatecode);
+                                }
+                                else {
+                                    $('#CompanyStateCode').val('');
                                 }
                                 if (obj.Result[0].Address != null && obj.Result[0].Address != undefined && obj.Result[0].Address != '') {
                                     $('#VendorAddress').val(obj.Result[0].Address);
@@ -6680,5 +6545,67 @@
                 top: 0;
                 /* background: #fff; /* important so rows don't show through */ */ z-index: 10;
             }
+            .dpb-compact-total {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.dpb-summary-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.dpb-summary-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+
+.dpb-summary-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+}
+
+.dpb-summary-input {
+    /* width: 100px !important; */
+    height: 27px !important;
+    padding: 2px 6px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    text-align: right;
+    background-color: #fff !important;
+    border: 1px solid #999 !important;
+    border-radius: 3px !important;
+    color: #000 !important;
+}
+
+.dpb-net-total {
+    padding-left: 10px;
+    border-left: 1px solid #999;
+}
+
+/* Responsive */
+@@media (max-width: 768px) {
+    .dpb-compact-total {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 10px 15px;
+    }
+
+    .dpb-net-total {
+        border-left: none;
+        padding-left: 0;
+    }
+}
+
+
 </style>
 

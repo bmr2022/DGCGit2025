@@ -54,6 +54,8 @@ namespace eTactWeb.Controllers
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration iconfiguration;
         private readonly IMemoryCache _MemoryCache;
+        private readonly ISaleBill _SaleBill;
+
         private readonly ConnectionStringService _connectionStringService;
         private readonly ICompositeViewEngine _viewEngine;
 
@@ -65,7 +67,7 @@ namespace eTactWeb.Controllers
         private readonly ICommon _ICommon;
         public IDirectPurchaseBill IDirectPurchaseBill { get; set; }
 
-        public DirectPurchaseBillController(IEinvoiceService IEinvoiceService, IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService, ICompositeViewEngine viewEngine, ICommon ICommon)
+        public DirectPurchaseBillController(IEinvoiceService IEinvoiceService, IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService, ICompositeViewEngine viewEngine, ICommon ICommon, ISaleBill iSaleBill)
         {
             _IEinvoiceService = IEinvoiceService;
             _iMemoryCacheService = iMemoryCacheService;
@@ -80,6 +82,7 @@ namespace eTactWeb.Controllers
             _connectionStringService = connectionStringService;
             _viewEngine = viewEngine;
             _ICommon = ICommon;
+            _SaleBill = iSaleBill;
         }
 
         [HttpGet]
@@ -2025,6 +2028,12 @@ namespace eTactWeb.Controllers
                 Table.Columns.Add("HoldQty", typeof(decimal));
                 Table.Columns.Add("ItemLocation", typeof(string));
                 Table.Columns.Add("GSTPer", typeof(decimal));
+                Table.Columns.Add("ItemCGSTAmt", typeof(decimal));
+                Table.Columns.Add("ItemSGSTAmt", typeof(decimal));
+                Table.Columns.Add("ItemIGSTAmt", typeof(decimal));
+                Table.Columns.Add("IGSTPer", typeof(decimal));
+                Table.Columns.Add("CGSTPer", typeof(decimal));
+                Table.Columns.Add("SGSTPer", typeof(decimal));
 
                 foreach (DPBItemDetail Item in itemDetailList)
                 {
@@ -2113,7 +2122,13 @@ namespace eTactWeb.Controllers
                     Item.HoldQty,
                 Item.ReworkQty,
                 Item.ItemLocation ?? string.Empty,
-                Item.GSTPer
+                Item.GSTPer,
+                Item.CGSTAmt,
+                Item.SGSTAmt,
+                Item.IGSTAmt,
+                Item.IGSTPer,
+                Item.CGSTPer,
+                Item.SGSTPer,
                         });
                 }
 
@@ -2497,14 +2512,8 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> UploadExcel()
         {
             var excelFile = Request.Form.Files[0];
-            string pono = Request.Form["PoNo"];
-            int poYearcode = Convert.ToInt32(Request.Form["POYearcode"]);
-            int AccountCode = Convert.ToInt32(Request.Form["AccountCode"]);
-            string SchNo = Request.Form["SchNo"];
-            int SchYearCode = Convert.ToInt32(Request.Form["SchYearCode"]);
-            string Currency = Request.Form["Currency"];
-            string Flag = Request.Form["Flag"];
-            string docTypeName = Request.Form["docTypeName"];
+            int stateCode = Convert.ToInt32(Request.Form["stateCode"]);
+            int companyStateCode = Convert.ToInt32(Request.Form["companyStateCode"]);
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -2515,59 +2524,91 @@ namespace eTactWeb.Controllers
             using (var package = new ExcelPackage(stream))
             {
                 var sheet = package.Workbook.Worksheets[0];
-                int cnt = 1;
+                int seq = 1;
 
                 for (int row = 2; row <= sheet.Dimension.Rows; row++)
                 {
                     try
                     {
-                        string partText = sheet.Cells[row, 1].Value?.ToString();
-                        string itemName = sheet.Cells[row, 2].Value?.ToString()?.Trim();
-                        string rateValue = sheet.Cells[row, 3].Value?.ToString();
-                        string qtyValue = sheet.Cells[row, 4].Value?.ToString();
-                        string locationValue = sheet.Cells[row, 6].Value?.ToString();
+                        string partCode = sheet.Cells[row, 1].Value?.ToString()?.Trim();
+                        string rateStr = sheet.Cells[row, 2].Value?.ToString()?.Trim();
+                        string qtyStr = sheet.Cells[row, 3].Value?.ToString()?.Trim();
+                        string disStr = sheet.Cells[row, 4].Value?.ToString()?.Trim();
+                        string ItemLocation = sheet.Cells[row, 5].Value?.ToString()?.Trim();
+                        //string storename = sheet.Cells[row, 5]?.Value?.ToString()?.Trim() ?? "";
 
-                        // ❗✔ VALIDATE REQUIRED FIELDS
-                        if (string.IsNullOrEmpty(qtyValue) ||
-                            !decimal.TryParse(qtyValue, out decimal qty) || qty <= 0)
+                        if (string.IsNullOrEmpty(partCode))
                         {
-                            errorList.Add($"Row {row} → Invalid Quantity for partcode: {partText} qty : {qtyValue} Rate:{rateValue} ");
+                            errorList.Add($"Row {row} → Part Code missing");
                             continue;
                         }
 
-                        if (string.IsNullOrEmpty(docTypeName))
+                        if (!decimal.TryParse(qtyStr, out decimal qty) || qty <= 0)
                         {
-                            errorList.Add($"Row {row} → Document Type missing for partcode: {partText} qty : {qtyValue} Rate:{rateValue}  ");
+                            errorList.Add($"Row {row} → Invalid Quantity: {qtyStr}");
                             continue;
                         }
 
-                        // FETCH ITEM CODE
-                        var itemCodeRes = IDirectPurchaseBill.GetItemCode(partText);
-                        int partcode = itemCodeRes.Result.Result.Rows.Count <= 0
-                                        ? 0
-                                        : (int)itemCodeRes.Result.Result.Rows[0].ItemArray[0];
+                        //if (!decimal.TryParse(rateStr, out decimal rate))
+                        //{
+                        //    errorList.Add($"Row {row} → Invalid Rate: {rateStr}");
+                        //    continue;
+                        //}
 
-                        if (partcode == 0)
+                        if (!decimal.TryParse(disStr, out decimal discountPer))
+                            discountPer = 0;
+
+                        // Check duplicate
+                        if (successList.Any(x => x.PartText == partCode))
                         {
-                            errorList.Add($"Row {row} → Invalid Part Code: {partText} qty : {qtyValue} Rate:{rateValue}");
+                            errorList.Add($"Row {row} → Duplicate Part Code: {partCode}");
                             continue;
                         }
 
-                        var GetExchange = GetExchangeRate(Currency);
-                        var GetDocTypeId1 = GetDocTypeId(docTypeName);
-                        var GetItem = GetItemDetail(partText);
+                        // Fetch item details
+                        var itemData = await _SaleBill.AutoFillitem("AutoFillPartCode", partCode);
 
-                        JObject json = JObject.Parse(GetItem.Result.Value.ToString());
-                        var Unit = json["Result"][0]["Unit"];
-                        var HsnNo = json["Result"][0]["HsnNo"];
-                        var AltUnit = json["Result"][0]["AlternateUnit"];
-                        var Rackid = json["Result"][0]["Rackid"]?.ToString();
-                        var purchaseprice = json["Result"][0]["purchaseprice"].ToString();
-                        var item_name = json["Result"][0]["item_name"].ToString();
-                        var Group_name = json["Result"][0]["Group_name"].ToString();
-                        decimal GSTPer =Convert.ToDecimal(json["Result"][0]["GSTPer"].ToString());
+                        if (itemData?.Result == null || itemData.Result.Rows.Count == 0)
+                        {
+                            errorList.Add($"Row {row} → Part code not found: {partCode}");
+                            continue;
+                        }
 
-                        var unitparameter = _ICommon.CheckRoundOff(Unit.ToString());
+                        // Access first row
+                        var rowData = itemData.Result.Rows[0];
+                        string itemName = rowData["ItemName"].ToString();
+                        int itemCode = Convert.ToInt32(rowData["Item_Code"]);
+                        // Get store ID
+                        //var storeData = await _SaleBill.GetStoreId(storename);
+                        //JObject storeJson = JObject.Parse(JsonConvert.SerializeObject(storeData));
+                        //var storeRes = storeJson["Result"][0];
+                        //int storeId = Convert.ToInt32(storeRes["storeid"]);
+
+                        // Get more item details
+                        var getItem = GetItemDetail(partCode);
+                        JObject jsonDetail = JObject.Parse(getItem.Result.Value.ToString());
+                        var unit = jsonDetail["Result"][0]["Unit"];
+                        var hsnNo = jsonDetail["Result"][0]["HsnNo"];
+                        var GroupCode = jsonDetail["Result"][0]["GroupCode"];
+                        var Rackid = jsonDetail["Result"][0]["Rackid"]?.ToString();
+                        var Group_name = jsonDetail["Result"][0]["Group_name"]?.ToString();
+                        var saleprice = jsonDetail["Result"][0]["saleprice"].ToString();
+                        decimal GSTPer = Convert.ToDecimal(jsonDetail["Result"][0]["GSTPer"].ToString());
+                        decimal CGST = 0;
+                        decimal SGCT = 0;
+                        decimal IGST = 0;
+
+                        if(ItemLocation!="")
+                        {
+                            Rackid = ItemLocation;
+                        }
+
+
+
+
+
+
+                        var unitparameter = _ICommon.CheckRoundOff(unit.ToString());
                         var roundoff = "N";
 
                         if (unitparameter != null &&
@@ -2581,154 +2622,112 @@ namespace eTactWeb.Controllers
 
                         }
 
-                        if (!string.IsNullOrEmpty(qtyValue) && decimal.TryParse(qtyValue, out decimal parsedQty))
+                        if (!string.IsNullOrEmpty(qtyStr) && decimal.TryParse(qtyStr, out decimal parsedQty))
                         {
                             qty = parsedQty;
 
                             // 🔴 Check for decimal when roundoff = Y
                             if (roundoff == "Y" && qty % 1 != 0)
                             {
-                                errorList.Add($"Row {row} → Qty should not contain decimal when RoundOff = Y. Qty: {qtyValue}");
+                                errorList.Add($"Row {row} → Qty should not contain decimal when RoundOff = Y. Qty: {qtyStr}");
                                 continue;
                             }
                         }
                         else
                         {
-                            errorList.Add($"Row {row} → Invalid Qty: {qtyValue}");
-                            continue;
-                        }
-
-
-                        string location = !string.IsNullOrEmpty(locationValue)
-                                            ? locationValue
-                                            : (!string.IsNullOrEmpty(Rackid) ? Rackid : null);
-
-                        var LocationParameter = IDirectPurchaseBill.GetFeatureOption();
-
-                        if (LocationParameter != null &&
-                            LocationParameter.Result != null &&
-                            LocationParameter.Result.Result != null &&
-                            LocationParameter.Result.Result.Rows.Count > 0)
-                        {
-                            DataRow Locationrow = LocationParameter.Result.Result.Rows[0];
-                            var isLocationMandatory = Locationrow["HideShowDirectPurchaseBillLocation"]?.ToString() ?? "";
-
-                             if (isLocationMandatory =="Y")
-                             {
-                                 errorList.Add($"Row {row} → Location missing for partcode :{partText} qty : {qtyValue} Rate:{rateValue}");
-                                 continue;
-                             }
-                        }
-                        //    if (string.IsNullOrEmpty(location))
-                        //{
-                        //    errorList.Add($"Row {row} → Location missing for partcode :{partText} qty : {qtyValue} Rate:{rateValue}");
-                        //    continue; 
-                        //}
-
-                        if (string.IsNullOrEmpty(itemName)) itemName = item_name;
-
-                        if (string.IsNullOrEmpty(itemName))
-                        {
-                            errorList.Add($"Row {row} → Item Name missing  for partcode :{partText} qty : {qtyValue} Rate:{rateValue}");
-                            continue;
-                        }
-
-                        // *************** DUPLICATE PARTCODE CHECK ***************
-                        if (successList.Any(x => x.PartCode == partcode))
-                        {
-                            errorList.Add($"Row {row} → Duplicate Part Code: {partcode} qty : {qtyValue} Rate:{rateValue}");
+                            errorList.Add($"Row {row} → Invalid Qty: {qtyStr}");
                             continue;
                         }
 
                         decimal rate;
-                        if (!string.IsNullOrEmpty(rateValue) && decimal.TryParse(rateValue, out decimal excelRate))
+                        if (!string.IsNullOrEmpty(rateStr) && decimal.TryParse(rateStr, out decimal excelRate))
                             rate = excelRate;
-                        else if (!string.IsNullOrEmpty(purchaseprice) && decimal.TryParse(purchaseprice, out decimal dbRate))
+                        else if (!string.IsNullOrEmpty(saleprice) && decimal.TryParse(saleprice, out decimal dbRate))
                             rate = dbRate;
                         else
                         {
-                            errorList.Add($"Row {row} → Invalid Rate qty : {qtyValue} Rate:{rateValue}");
+                            errorList.Add($"Row {row} → Invalid Rate qty : {qtyStr} Rate:{rateStr}");
                             continue;
                         }
 
-                        JObject AltRate = JObject.Parse(GetExchange.Result.Value.ToString());
-                        decimal AltRateToken = (decimal)AltRate["Result"][0]["IndianValue"];
-                        decimal OtherRate = rate * AltRateToken;
+                        decimal basicAmt = qty * rate;
+                        decimal discountAmt = basicAmt * (discountPer / 100);
+                        decimal netAmt = basicAmt - discountAmt;
 
-                        JObject DocTypeJson = JObject.Parse(GetDocTypeId1.Result.Value.ToString());
-                        int DocTypeId = (int)DocTypeJson["Result"][0]["DocTypeId"];
+                        decimal CGSTAmt = 0;
+                        decimal SGSTAmt = 0;
+                        decimal IGSTAmt = 0;
 
-                        decimal discountPer = Convert.ToDecimal(sheet.Cells[row, 5].Value?.ToString() ?? "0");
+                        if (stateCode == companyStateCode)
+                        {
+                            // Same state → CGST + SGST (half-half)
+                            decimal halfGST = GSTPer / 2;
+                            CGST = halfGST;
+                            SGCT = halfGST;
+                            CGSTAmt = netAmt * CGST / 100;
+                            SGSTAmt = netAmt * SGCT / 100;
 
-                        decimal basicAmount = Math.Round(qty * rate, 2);
+                        }
+                        else
+                        {
+                            IGST = GSTPer;
+                            IGSTAmt = netAmt * IGST / 100;
+                            // Different state → IGST only
 
-                        decimal discountRs = Math.Round(basicAmount * discountPer / 100, 2);
+                        }
 
-                        decimal amount = Math.Round(basicAmount - discountRs, 2);
-                        //decimal discountRs = qty * rate * (discountPer / 100);
-                        //decimal amount = (qty * rate) - discountRs;
-
-                        // ADD TO SUCCESS LIST
                         successList.Add(new DPBItemDetail
                         {
-                            SeqNo = cnt++,
-                            PartText = partText,
+                            SeqNo = seq++,
+                            PartText = partCode,
                             ItemText = itemName,
-                            ItemCode = partcode,
-                            PartCode = partcode,
-                            HSNNo = string.IsNullOrEmpty(HsnNo?.ToString()) ? 0 : Convert.ToInt32(HsnNo),
-                            DPBQty = qty,
-                            BillQty = qty,
-                            Unit = Unit.ToString(),
-                            AltQty = 0,
-                            AltUnit = AltUnit.ToString(),
-                            AltPendQty = 0,
-                            Process = 0,
-                            Rate = rate,
-                            GroupName = Group_name,
-                            OtherRateCurr = OtherRate,
-                            UnitRate = "",
-                            DiscPer = discountPer,
-                            DiscRs = Math.Round(discountRs, 2),
-                            Amount = Math.Round(amount, 2),
-                            TxRemark = "",
-                            Description = "",
-                            AdditionalRate = 0,
-                            Color = "",
-                            CostCenter = 0,
-                            ItemLocation = location,
-                            DocTypeText = docTypeName,
-                            docTypeId = DocTypeId,
-                            GSTPer= Math.Round(GSTPer,2)
+                            ItemCode = itemCode,
+                            Unit = unit.ToString(),
+                            ItemLocation = Rackid.ToString(),
+                            GroupName = Group_name.ToString(),
+
+                            HSNNo = string.IsNullOrEmpty(hsnNo?.ToString()) ? 0 : Convert.ToInt32(hsnNo),
+                            BillQty = Math.Round((decimal)qty, 4),
+                            Rate = Math.Round((decimal)rate, 2),
+                            DiscPer = Math.Round((decimal)discountPer, 2),
+                            Amount = Math.Round((decimal)netAmt, 2),
+                            DiscRs = Math.Round((decimal)discountAmt, 2),
+                            ItemNetAmount = Math.Round((decimal)netAmt, 2),
+                            CGSTPer = Math.Round((decimal)CGST, 2),
+                            SGSTPer = Math.Round((decimal)SGCT, 2),
+                            IGSTPer = Math.Round((decimal)IGST, 2),
+                            CGSTAmt = Math.Round((decimal)CGSTAmt, 2),
+                            SGSTAmt = Math.Round((decimal)SGSTAmt, 2),
+                            IGSTAmt = Math.Round((decimal)IGSTAmt, 2),
+
+
+
+
+
                         });
-                       
                     }
                     catch (Exception ex)
                     {
                         errorList.Add($"Row {row} → Error: {ex.Message}");
-                        continue;
                     }
                 }
             }
-           
 
-            // SAVE ONLY SUCCESS ROWS
-            var MainModel = new DirectPurchaseBillModel
+            // Prepare model
+            DirectPurchaseBillModel sbModel = new DirectPurchaseBillModel
             {
                 ItemDetailGrid = successList,
-                ErrorList = errorList  // ← add this property in your model
+
+                ErrorList = errorList // Add ErrorList property to your SaleBillModel
             };
 
-            DirectPurchaseBillModel vm = new DirectPurchaseBillModel();
-            vm.ItemDetailGrid = successList;
+            HttpContext.Session.SetString("DirectPurchaseBill", JsonConvert.SerializeObject(sbModel));
 
-
-            HttpContext.Session.SetString("DirectPurchaseBill", JsonConvert.SerializeObject(MainModel));
-            // ⭐ Render partial view HTML
+            // Render partial view
             string html = "";
             try
             {
-                html = await RenderViewToStringAsync("_DPBItemGrid", vm);
+                html = await RenderViewToStringAsync("_AddDirectPurchaseBill", sbModel);
             }
             catch (Exception ex)
             {

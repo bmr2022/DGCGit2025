@@ -124,7 +124,7 @@
                 <input asp-for="ModeOfTransport" class="form-control" />
             }
         </div>
-        <div class="col-xl-6  col-lg-6 col-md-6 col-sm-6 col-xs-12" > 
+        <div class="col-xl-6  col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display:none"> 
             <select class="form-select" asp-for="docTypeId" style="height:190px;width:190px;" asp-items="@(new SelectList(Model.DocumentList,"Value","Text"))">
                 <option value="0">-Select-</option>
             </select>
@@ -145,25 +145,42 @@
             <label asp-for="PaymentDays" class="form-label">Credit Days</label>
             <input asp-for="PaymentDays" class="form-control" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-            <label class="form-label" style="color: red;">Basic Amount*</label>
-            <input id="itembasicamount" class="form-control" readonly style="background-color:#FFFACD" />
-        </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-            <label class="form-label" style="color: red;">GST Amount*</label>
-            <input id="itemtaxableamount" class="form-control" readonly style="background-color:#FFFACD" />
-        </div>
+        <!-- Compact Total Summary -->
+        <div class="col-12 mt-1">
+            <div class="dpb-compact-total">
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-            <label class="form-label" style="color: red;">Net Amount*</label>
-            <input id="itemnetamount" class="form-control" readonly style="background-color:#FFFACD" />
+                <div class="dpb-summary-item">
+                    <span class="dpb-summary-label">Basic Total:</span>
+                    <span id="lblItemNetAmount" class="dpb-summary-value">0.00</span>
+                </div>
+
+                <div class="dpb-summary-item">
+                    <span class="dpb-summary-label">Total Qty:</span>
+                    <span id="TotalQty" class="dpb-summary-value">0</span>
+                </div>
+
+                <div class="dpb-summary-item">
+                    <span class="dpb-summary-label">Total Items:</span>
+                    <span id="lblItemCount" class="dpb-summary-value">0</span>
+                </div>
+
+                <div class="dpb-summary-item dpb-net-total">
+                    <span class="dpb-summary-label">Net Total:</span>
+                    <input asp-for="NetTotal"
+                           class="NetTotal dpb-summary-input"
+                           onchange="onNetTotalChange()"
+                           readonly />
+                </div>
+
+            </div>
         </div>
 
         <a href="javascript:void(0)" onclick="ListOfPendingSaleBillFromOtherBranch()">DPB from Other Branch</a>
-        <button type="button" onclick="UpdateSession()">Update Session</button>
         <input type="hidden" asp-for="Approved" class="form-control" />
         <input type="hidden" asp-for="ApprovedDate" class="form-control" />
         <input type="hidden" asp-for="Approvedby" class="form-control" />
+        <input type="hidden" asp-for="StateCode" class="form-control" readonly />
+        <input class="form-control" id="CompanyStateCode" readonly type="hidden" />
     </div>
 </div>
 
