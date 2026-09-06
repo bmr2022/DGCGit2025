@@ -114,58 +114,6 @@
         </div>
 
 
-         <ul class="nav nav-tabs google-tabs mb-3" id="erpTabs" role="tablist">
-
-            <li class="nav-item">
-                <button type="button" class="nav-link active" onclick="UpdateSession()"
-                        data-bs-toggle="tab"
-                        data-bs-target="#tabRequired">
-                    Required Parameter
-                </button>
-            </li>
-
-           
-            <li class="nav-item">
-                <button type="button" class="nav-link" onclick="UpdateSession()"
-                        data-bs-toggle="tab"
-                        data-bs-target="#tabTax">
-                    Tax Detail
-                </button>
-            </li>
-
-            <li class="nav-item">
-                <button type="button" class="nav-link" onclick="UpdateSession()"
-                        data-bs-toggle="tab"
-                        data-bs-target="#tabDrCr">
-                    Dr / Cr
-                </button>
-            </li>
-
-
-             <li class="nav-item">
-                <button type="button" class="nav-link" onclick="UpdateSession()"
-                        data-bs-toggle="tab"
-                        data-bs-target="#tabTDS">
-                    TDS Details
-                </button>
-            </li>
-            <li class="nav-item">
-                <button type="button" class="nav-link" onclick="UpdateSession()"
-                        data-bs-toggle="tab"
-                        data-bs-target="#tabAdjustment">
-                    Adjustment
-                </button>
-            </li>
-
-            <li class="nav-item">
-                <button type="button" class="nav-link" onclick="UpdateSession()"
-                        data-bs-toggle="tab"
-                        data-bs-target="#tabOther">
-                    Other Detail
-                </button>
-            </li>
-
-        </ul>
 
         <div class="card-body bg-light pt-0">
             <div class="accordion shadow-lg">
@@ -189,6 +137,61 @@
                     </div>
                 </div>
 
+                <ul class="nav nav-tabs google-tabs mb-3" id="erpTabs" role="tablist">
+
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" onclick="UpdateSession()"
+                                data-bs-toggle="tab"
+                                data-bs-target="#tabRequired">
+                            Required Parameter
+                        </button>
+                    </li>
+
+           
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" onclick="UpdateSession()"
+                                data-bs-toggle="tab"
+                                data-bs-target="#tabTax">
+                            Tax Detail
+                        </button>
+                    </li>
+
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" onclick="UpdateSession()"
+                                data-bs-toggle="tab"
+                                data-bs-target="#tabDrCr">
+                            Dr / Cr
+                        </button>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" onclick="UpdateSession()"
+                                data-bs-toggle="tab"
+                                data-bs-target="#tabTDS">
+                            TDS Details
+                        </button>
+                    </li>
+                   
+
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" onclick="UpdateSession()"
+                                data-bs-toggle="tab"
+                                data-bs-target="#tabOtherDetail">
+                            Other Detail
+                        </button>
+                    </li>
+                     <li class="nav-item">
+                        <button type="button" class="nav-link" onclick="UpdateSession()"
+                                data-bs-toggle="tab"
+                                data-bs-target="#tabAdjustment">
+                            Adjustment
+                        </button>
+                    </li>
+
+                </ul>
+
+
                  <div class="tab-content">
                      <div class="tab-pane fade show active" id="tabRequired">
                 <div class="accordion-item">
@@ -206,7 +209,7 @@
                             
                         </button>
                     </h2>
-                    <div id="BPanel2" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel2">
+                    <div id="BPanel2" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="HPanel2">
                         <div class="accordion-body">
                             @* <partial name="_DPBItemDetail" />
                             <div class="progress my-2 mb-3" style="height: 4px;">
@@ -275,7 +278,7 @@
 
                                                 </tr>
                                             </thead>
-                                            <tbody id="divPOItemList">
+                                            <tbody id="DirectPurchaseBillBody">
                                                 <partial name="_DPBItemGrid" />
                                               
 
@@ -367,7 +370,7 @@
                                                             <th style="width:2%">X</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody id="SaleRejectionBody">
+                                                    <tbody id="DirectPurchaseBillBody">
                                                         <partial name="_AddDirectPurchaseBill" />
                                                     </tbody>
                                                 </table>
@@ -386,317 +389,116 @@
                     </div>
                 </div>
                 </div>
-                <div class="tab-pane fade" id="tabTax">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="H_TaxDetail">
-                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TaxDetail" aria-expanded="true" aria-controls="B_TaxDetail">
-                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Tax Detail</strong>
-                           @*  <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                <label asp-for="NetTotal" class="form-label">Net Total</label>
-                                <input asp-for="NetTotal" class="form-control" onchange="onNetTotalChange()" readonly />
-                            </div> *@
+                    <div class="tab-pane fade" id="tabTax">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_TaxDetail">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TaxDetail" aria-expanded="true" aria-controls="B_TaxDetail">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Tax Detail</strong>
+                               @*  <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="NetTotal" class="form-label">Net Total</label>
+                                    <input asp-for="NetTotal" class="form-control" onchange="onNetTotalChange()" readonly />
+                                </div> *@
 
                             
-                        </button>
-                    </h2>
-                    <div id="B_TaxDetail" class="accordion-collapse collapse pnl4 bg-gradient show" aria-labelledby="H_TaxDetail">
-                        <div class="accordion-body">
-                            <partial name="_TaxDetail" />
-                            <div class="progress my-3" style="height: 4px;">
-                                <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <div class="row g-2 gx-3 justify-content-around">
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="TotalRoundOff" class="form-label">RoundOff</label>
-                                    <select class="form-select" asp-for="TotalRoundOff" asp-items="Model.YesNoList">
-                                        <option value="">-Select-</option>
-                                    </select>
-                                </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" id="RoundOff">
-                                    <div class="d-flex align-items-center">
-                                        <label asp-for="RoundOffAccountCode" class="form-label text-danger mb-0">Account*</label>
-                                        <div class="form-check form-switch">
-                                            <input asp-for="RDT" class="form-check-input" type="checkbox" role="switch" />
-                                            <label class="form-check-label">Show All</label>
-                                        </div>
-                                    </div>
-
-                                    <select asp-for="RoundOffAccountCode" class="form-select mt-1">
-                                        <option value="0">-Select-</option>
-                                    </select>
-                                    @if (Model.Mode == "U" || Model.Mode == "V")
-                                    {
-                                        <input type="hidden" asp-for="RoundOffAccountCode" id="hiddenRoundOffAccountCode" />
-                                    }
-                                </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="display:none">
-                                    <label asp-for="TotalDiscountPercentage" class="form-label">Discount %</label>
-                                    <input asp-for="TotalDiscountPercentage" class="form-control" min="0" max="100" />
-                                </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="display:none">
-                                    <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
-
-                                    <input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
-                                </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="TotalRoundOffAmt" class="form-label">(+/-) RoundOff Amount</label>
-                                    <input asp-for="TotalRoundOffAmt" class="form-control" readonly />
-                                </div>
-                               
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                </div>
-                <div class="tab-pane fade" id="tabDrCr">
-                <div class="accordion-item">
-                    <partial name="_DrCrTable" />
-                </div>
-                </div>
-                <div class="tab-pane fade" id="tabTDS">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="H_TDSDetail">
-                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TDSDetail" aria-expanded="true" aria-controls="B_TDSDetail">
-                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>TDS Detail</strong>
-                        </button>
-                    </h2>
-                    <div id="B_TDSDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_TDSDetail">
-                        <div class="accordion-body">
-                            @await Html.PartialAsync("_TDSDetail", Model.TDSModel)
-                            <div class="progress my-3" style="height: 4px;">
-                                <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                </div>
-                    <div class="tab-pane fade" id="tabAdjustment">
-                        <div class="accordion-item">
-                            @await Html.PartialAsync("_AdjustmentGrid", Model.adjustmentModel)
-                        </div>
-                    </div>
-                <div class="tab-pane fade" id="tabOther">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="HPanel4">
-                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel4" aria-expanded="true" aria-controls="BPanel4">
-                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
-                            <small class="p-3"></small>
-                        </button>
-                    </h2>
-                    <div id="BPanel4" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel4">
-                        <partial name="_DPBOtherDetail" />
-                    </div>
-                </div>
-                </div>
-                
-                
-                </div>
-            </div>
-        </div>
-
-
-        <div class="modal fade" id="GenerateBarcodeModel"
-             data-bs-backdrop="static" data-bs-keyboard="false"
-             tabindex="-1" aria-hidden="true">
-
-            <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content shadow-lg">
-
-                    <!-- HEADER -->
-                    <div class="modal-header bg-light">
-                        <h5 class="modal-title fw-bold">
-                            <i class="fa-solid fa-barcode me-2"></i> Generate Barcode
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <!-- BODY -->
-                    <div class="modal-body">
-
-                      
-                        <!-- ITEM DETAILS -->
-                        <div class="card border-0 shadow-sm mb-3">
-                            <div class="card-body">
-
-                                <div class="row g-3">
-
-                                    <div class="col-md-2">
-                                        <label class="form-label fw-semibold">Part Code</label>
-                                        <input id="BPartCode" class="form-control form-control-sm" readonly>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <label class="form-label fw-semibold">Part Code</label>
-                                        <input id="BItemName" class="form-control form-control-sm" readonly>
-                                        <input type="hidden" id="BItemCode" class="form-control form-control-sm" readonly>
-
-
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label fw-semibold">Location</label>
-                                        <input id="BLocation" class="form-control form-control-sm" readonly>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <label class="form-label fw-semibold">Unit</label>
-                                        <input id="BUnit" class="form-control form-control-sm" readonly>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <label class="form-label fw-semibold">Rate</label>
-                                        <input id="BRate" class="form-control form-control-sm" readonly>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <label class="form-label fw-semibold">Qty</label>
-                                        <input id="BQty" class="form-control form-control-sm">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label fw-semibold">Remark</label>
-                                        <textarea id="BRemark" class="form-control form-control-sm"></textarea>
-                                    </div>
-
-
-                                </div>
-
-                            </div>
-                        </div>
-
-                      
-
-                    </div>
-
-                    <!-- FOOTER -->
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-sm btn-outline-success"
-                                onclick="GenerateBarCodeBtn(event)">
-                            <i class="fa-solid fa-angles-down me-1"></i> Generate BarCode
-                        </button>
-
-                        <button type="button"
-                                class="btn btn-sm btn-outline-danger"
-                                data-bs-dismiss="modal">
-                            Close
-                        </button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-
-        @* ---------------------*@
-
-        @* Pend PO For Purchase Bill*@
-
-
-        <div class="modal fade" style="display:none" id="PendSOForSaleBill" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl" role="document" ">
-                <div class="modal-content">
-                    <div class="modal-header">
-
-
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
-                    </div>
-                    <div class="modal-body">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row g-2 gx-3">
-
-                                    <div class="card-body text-center overflow-auto pb-0   ">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <button class="btn btn-sm btn-outline-warning mb-2" type="button" id="CheckAll" style="display: flex; align-items: center;">
-                                                <i class="fa fa-check-square" aria-hidden="true"></i>
-                                                <span style="margin-left: 5px;">Ch/UnCh All</span>
-                                            </button>
-                                            <div class="col-md-2 me-3" style="margin-left:50px">
-                                                <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
-                                            </div>
-
-                                        </div>
-                                        <div class="table-responsive" style="max-height:350px;">
-                                            <table class="table table-hover table-bordered table-striped" id="GateDataTable" style="table-layout: fixed;">
-                                                <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
-                                                    <tr>
-                                                        <th style="width:70px;">Action <input id="checkuncheck" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
-
-                                                        <th style="width:70px;">PO No</th>
-
-
-                                                        <th style="width:150px;">Part Code</th>
-                                                        <th style="width:250px;">Item Name</th>
-                                                        <th style="width:100px;">Bill Qty</th>
-                                                        <th style="width:100px;">Rate</th>
-
-                                                        <th style="width:70px;">Disc %</th>
-
-                                                        <th style="width:100px;">Disc Amount</th>
-                                                        <th style="width:120px;">Item Amount</th>
-                                                        <th style="width:70px;">Order Qty</th>
-                                                        <th style="width:70px;">Pending Qty</th>
-
-
-                                                        <th style="width:70px;">Unit</th>
-                                                        <th style="width:70px;">Location</th>
-                                                        <th style="width:70px;">POYear </th>
-                                                        @* <th style="width:90px;">Order No</th> *@
-                                                        <th style="width:70px;">Sch No</th>
-                                                        <th style="width:70px;">Sch Year </th>
-                                                        <th style="width:70px;">PO Type</th>
-                                                        <th style="width:70px;">PO For</th>
-
-                                                        <th style="width:70px;">HSN No</th>
-                                                        <th style="width:80px;">TotalStock</th>
-                                                        <th style="width:150px;">Batch No</th>
-                                                        <th style="width:150px;">Unique Batch No</th>
-                                                        <th style="width:70px;">Batch Stock</th>
-
-
-                                                        <th style="width:100px;">AltQty</th>
-                                                        <th style="width:100px;">StoreId</th>
-                                                        <th style="width:150px;">StoreName</th>
-                                                        <th style="width:200px;">Customer Name</th>
-                                                        <th style="width:120px;">Account Code</th>
-                                                        <th style="width:120px;">Item Code</th>
-
-
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="divPendMRNGrid">
-                                                    <tr class="text-center">
-                                                        <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div class="progress my-2" style="height: 4px;">
-                                <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <div class="row g-2 gx-3">
-                                <div class="col-12 text-center">
-                                    <strong>Total No Of Items : <span id="lblTotalNoOfItemsPendSO"></span></strong>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class=" btn btn-sm btn-outline-success me-2" onclick="AddPendPOToGrid(event)">
-                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
                             </button>
+                        </h2>
+                        <div id="B_TaxDetail" class="accordion-collapse collapse pnl4 bg-gradient show" aria-labelledby="H_TaxDetail">
+                            <div class="accordion-body">
+                                <partial name="_TaxDetail" />
+                                <div class="progress my-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="row g-2 gx-3 justify-content-around">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="TotalRoundOff" class="form-label">RoundOff</label>
+                                        <select class="form-select" asp-for="TotalRoundOff" asp-items="Model.YesNoList">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" id="RoundOff">
+                                        <div class="d-flex align-items-center">
+                                            <label asp-for="RoundOffAccountCode" class="form-label text-danger mb-0">Account*</label>
+                                            <div class="form-check form-switch">
+                                                <input asp-for="RDT" class="form-check-input" type="checkbox" role="switch" />
+                                                <label class="form-check-label">Show All</label>
+                                            </div>
+                                        </div>
 
-                            <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                                        <select asp-for="RoundOffAccountCode" class="form-select mt-1">
+                                            <option value="0">-Select-</option>
+                                        </select>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <input type="hidden" asp-for="RoundOffAccountCode" id="hiddenRoundOffAccountCode" />
+                                        }
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="display:none">
+                                        <label asp-for="TotalDiscountPercentage" class="form-label">Discount %</label>
+                                        <input asp-for="TotalDiscountPercentage" class="form-control" min="0" max="100" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="display:none">
+                                        <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
+
+                                        <input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="TotalRoundOffAmt" class="form-label">(+/-) RoundOff Amount</label>
+                                        <input asp-for="TotalRoundOffAmt" class="form-control" readonly />
+                                    </div>
+                               
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                    </div>
+                    <div class="tab-pane fade" id="tabDrCr">
+                    <div class="accordion-item">
+                        <partial name="_DrCrTable" />
+                    </div>
+                    </div>
+                    <div class="tab-pane fade" id="tabTDS">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_TDSDetail">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TDSDetail" aria-expanded="true" aria-controls="B_TDSDetail">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>TDS Detail</strong>
+                            </button>
+                        </h2>
+                        <div id="B_TDSDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_TDSDetail">
+                            <div class="accordion-body">
+                                @await Html.PartialAsync("_TDSDetail", Model.TDSModel)
+                                <div class="progress my-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+             
+                    <div class="tab-pane fade" id="tabOtherDetail">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="HPanel4">
+                                <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel4" aria-expanded="true" aria-controls="BPanel4">
+                                    <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                                    <small class="p-3"></small>
+                                </button>
+                            </h2>
+                            <div id="BPanel4" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="HPanel4">
+                                <partial name="_DPBOtherDetail" />
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="tab-pane fade" id="tabAdjustment">
+                            <div class="accordion-item">
+                                @await Html.PartialAsync("_AdjustmentGrid", Model.adjustmentModel)
+                            </div>
                     </div>
                 </div>
             </div>
         </div>
-            @* ----------------------------
- *@
+
+
+        
 
 
         <div class="card-header card-headerBG text-light bg-gradient">
@@ -776,7 +578,208 @@
     </form>
 </div>
 
+    <div class="modal fade" id="GenerateBarcodeModel"
+         data-bs-backdrop="static" data-bs-keyboard="false"
+         tabindex="-1" aria-hidden="true">
 
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content shadow-lg">
+
+                <!-- HEADER -->
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fa-solid fa-barcode me-2"></i> Generate Barcode
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- BODY -->
+                <div class="modal-body">
+
+                      
+                    <!-- ITEM DETAILS -->
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-body">
+
+                            <div class="row g-3">
+
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold">Part Code</label>
+                                    <input id="BPartCode" class="form-control form-control-sm" readonly>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold">Part Code</label>
+                                    <input id="BItemName" class="form-control form-control-sm" readonly>
+                                    <input type="hidden" id="BItemCode" class="form-control form-control-sm" readonly>
+
+
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold">Location</label>
+                                    <input id="BLocation" class="form-control form-control-sm" readonly>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold">Unit</label>
+                                    <input id="BUnit" class="form-control form-control-sm" readonly>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold">Rate</label>
+                                    <input id="BRate" class="form-control form-control-sm" readonly>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold">Qty</label>
+                                    <input id="BQty" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold">Remark</label>
+                                    <textarea id="BRemark" class="form-control form-control-sm"></textarea>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                      
+
+                </div>
+
+                <!-- FOOTER -->
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-sm btn-outline-success"
+                            onclick="GenerateBarCodeBtn(event)">
+                        <i class="fa-solid fa-angles-down me-1"></i> Generate BarCode
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-sm btn-outline-danger"
+                            data-bs-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    @* ---------------------*@
+
+    @* Pend PO For Purchase Bill*@
+
+
+    <div class="modal fade" style="display:none" id="PendSOForSaleBill" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document" ">
+            <div class="modal-content">
+                <div class="modal-header">
+
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row g-2 gx-3">
+
+                                <div class="card-body text-center overflow-auto pb-0   ">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <button class="btn btn-sm btn-outline-warning mb-2" type="button" id="CheckAll" style="display: flex; align-items: center;">
+                                            <i class="fa fa-check-square" aria-hidden="true"></i>
+                                            <span style="margin-left: 5px;">Ch/UnCh All</span>
+                                        </button>
+                                        <div class="col-md-2 me-3" style="margin-left:50px">
+                                            <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
+                                        </div>
+
+                                    </div>
+                                    <div class="table-responsive" style="max-height:350px;">
+                                        <table class="table table-hover table-bordered table-striped" id="GateDataTable" style="table-layout: fixed;">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                <tr>
+                                                    <th style="width:70px;">Action <input id="checkuncheck" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+
+                                                    <th style="width:70px;">PO No</th>
+
+
+                                                    <th style="width:150px;">Part Code</th>
+                                                    <th style="width:250px;">Item Name</th>
+                                                    <th style="width:100px;">Bill Qty</th>
+                                                    <th style="width:100px;">Rate</th>
+
+                                                    <th style="width:70px;">Disc %</th>
+
+                                                    <th style="width:100px;">Disc Amount</th>
+                                                    <th style="width:120px;">Item Amount</th>
+                                                    <th style="width:70px;">Order Qty</th>
+                                                    <th style="width:70px;">Pending Qty</th>
+
+
+                                                    <th style="width:70px;">Unit</th>
+                                                    <th style="width:70px;">Location</th>
+                                                    <th style="width:70px;">POYear </th>
+                                                    @* <th style="width:90px;">Order No</th> *@
+                                                    <th style="width:70px;">Sch No</th>
+                                                    <th style="width:70px;">Sch Year </th>
+                                                    <th style="width:70px;">PO Type</th>
+                                                    <th style="width:70px;">PO For</th>
+
+                                                    <th style="width:70px;">HSN No</th>
+                                                    <th style="width:80px;">TotalStock</th>
+                                                    <th style="width:150px;">Batch No</th>
+                                                    <th style="width:150px;">Unique Batch No</th>
+                                                    <th style="width:70px;">Batch Stock</th>
+
+
+                                                    <th style="width:100px;">AltQty</th>
+                                                    <th style="width:100px;">StoreId</th>
+                                                    <th style="width:150px;">StoreName</th>
+                                                    <th style="width:200px;">Customer Name</th>
+                                                    <th style="width:120px;">Account Code</th>
+                                                    <th style="width:120px;">Item Code</th>
+
+
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divPendMRNGrid">
+                                                <tr class="text-center">
+                                                    <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="progress my-2" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="row g-2 gx-3">
+                            <div class="col-12 text-center">
+                                <strong>Total No Of Items : <span id="lblTotalNoOfItemsPendSO"></span></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class=" btn btn-sm btn-outline-success me-2" onclick="AddPendPOToGrid(event)">
+                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                        </button>
+
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ----------------------------
+ *@
 <div class="modal fade" id="PasswordAllowPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
@@ -1207,10 +1210,33 @@
 
             function ApplyGridAutoFill() {
 
+                
+                
+
                 // 🔹 PART CODE SEARCH
                 $(document).on("focus", ".partcode-input", function() {
 
                     if ($(this).data("ui-autocomplete")) return;
+
+                    if ($("#InvoiceNo").val() == "") {
+                                        $.notify("Please Add Invoice No First!", "error");
+                                        AddErrorCls('InvoiceNo');
+                                        $("#InvoiceNo").focus();
+                                        return false;
+                                    }
+                                    else {
+                                        RemoveErrorCls('InvoiceNo');
+                                    }
+
+                                    if ($("#AccountCode").val() == "" || $("#AccountCode").val() == 0) {
+                                        $.notify("Please Add Vendor Name!", "error");
+                                        $("#AccountCodeText").focus();
+                                        AddErrorCls('AccountCodeText');
+                                        return false;
+                                    }
+                                    else {
+                                        RemoveErrorCls('AccountCodeText');
+                                    }
 
                     $(this).autocomplete({
                         minLength: 2,
@@ -1271,6 +1297,8 @@
 
                                 return false;
                             }
+                            
+
 
                             row.find(".partcode-input").val(ui.item.onlyPartCode);
                             row.find(".itemname-input").val(ui.item.onlyItemName);
@@ -1356,6 +1384,9 @@
                                 return false;
                             }
 
+                            
+
+
                             row.find(".itemname-input").val(ui.item.onlyItemName);
                             row.find(".partcode-input").val(ui.item.onlyPartCode);
                             row.find(".ItemCode-input").val(ui.item.itemCode);
@@ -1426,6 +1457,8 @@
                                         return;
                                     }
 
+                                    
+
                                     row.find(".partcode-input").val(match.OnlyPartCode);
                                     row.find(".itemname-input").val(match.OnlyItemName);
                                     row.find(".ItemCode-input").val(match.Item_Code);
@@ -1489,6 +1522,8 @@
 
                                         return;
                                     }
+
+                                    
                                     row.find(".itemname-input").val(match.OnlyItemName);
                                     row.find(".partcode-input").val(match.OnlyPartCode);
                                     row.find(".ItemCode-input").val(match.Item_Code);
@@ -1741,10 +1776,10 @@
         //                 $.notify("Qty Should be Greater Then 0, Please check!!!", "error");
         //             } else {
         //                 // ✅ Replace the div with the updated grid partial view
-        //                 $('#divPOItemList').html(result);
+        //                 $('#DirectPurchaseBillBody').html(result);
         //                        var INA = parseFloat($('#ItemNetAmount').val());
-        //                      var rowCount = $('#divPOItemList tr').length;
-        //                      var columnCount = $('#divPOItemList tr td').length;
+        //                      var rowCount = $('#DirectPurchaseBillBody tr').length;
+        //                      var columnCount = $('#DirectPurchaseBillBody tr td').length;
         //                      var taxRowCount = $('#divTaxGrid tr').length;
         //                      var sum = 0;
 
@@ -2082,7 +2117,7 @@
             var TotalGSTAmount = 0;
 
             // 🔹 Loop grid rows
-            $('#divPOItemList tr').each(function () {
+            $('#DirectPurchaseBillBody tr').each(function () {
 
                 var GridAmount = parseFloat($(this).find('.GridAmount').text()) || 0;
                 var GridGstPer = parseFloat($(this).find('.GSTPer').text()) || 0;
@@ -2369,7 +2404,7 @@
 
             $('.hasDatepicker').datepicker("option", "showAnim", "clip");
             $('.hasDatepicker').on('keydown', function (e) { return false });
-            //$('#divPOItemList tr td:first-child').text() == 'NO DATA ADDED' ? $('.Schedule').fadeOut() : $('.Schedule').fadeIn();
+            //$('#DirectPurchaseBillBody tr td:first-child').text() == 'NO DATA ADDED' ? $('.Schedule').fadeOut() : $('.Schedule').fadeIn();
 
             if ($('#Mode').val() == "PAU" || $('#Mode').val() == "POA") {
                 if ($('#POType').val() == 'Open') {
@@ -2389,8 +2424,8 @@
             if ($('#Mode').val() == "V" || $('#Mode').val() == "U") { GetDbCrDetail(); }
             if ($('#Mode').val() != "U" && $('#Mode').val() != 'POA' && $('#Mode').val() != 'PAU') {
                 if ($('#Mode').val() == "V") {
-                    var rowCount = $('#divPOItemList tr').length;
-                    var columnCount = $('#divPOItemList tr td').length;
+                    var rowCount = $('#DirectPurchaseBillBody tr').length;
+                    var columnCount = $('#DirectPurchaseBillBody tr td').length;
 
 
                     //noofitems
@@ -2405,8 +2440,8 @@
                     fillEntryandPONO();
                     var hiddenCurrency = $('#hiddenCurrency').val();
                     $('#Currency').val(hiddenCurrency);
-                    var rowCount = $('#divPOItemList tr').length;
-                    var columnCount = $('#divPOItemList tr td').length;
+                    var rowCount = $('#DirectPurchaseBillBody tr').length;
+                    var columnCount = $('#DirectPurchaseBillBody tr td').length;
 
 
                     //noofitems
@@ -2434,8 +2469,8 @@
             else {
                 var hiddenCurrency = $('#hiddenCurrency').val();
                 $('#Currency').val(hiddenCurrency);
-                var rowCount = $('#divPOItemList tr').length;
-                var columnCount = $('#divPOItemList tr td').length;
+                var rowCount = $('#DirectPurchaseBillBody tr').length;
+                var columnCount = $('#DirectPurchaseBillBody tr td').length;
 
 
 
@@ -2579,45 +2614,15 @@
 
 
 
-                    $('#divPOItemList').html(data);
+                    $('#DirectPurchaseBillBody').html(data);
                     $('#PendingSaleBillFromOtherBranchModel').modal('hide');
                     $.notify('Item Added To Grid.', "success");
                     ClearItem();
 
-                    $('#TotalRoundOff').prop('selectedIndex', 0);
-                    var INA = parseFloat($('#ItemNetAmount').val());
-                    var rowCount = $('#divPOItemList tr').length;
-                    var columnCount = $('#divPOItemList tr td').length;
-                    var taxRowCount = $('#divTaxGrid tr').length;
-                    var sum = 0;
-
-                    //noofitems
-                    if (columnCount > 1)
-                        $('#lblItemCount').text(rowCount);
-                    else
-                        $('#lblItemCount').text(0);
-
-                    for (var i = 1; i <= rowCount; i++) {
-
-                        sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
-                    }
-                    $('#ItemNetAmount').val(sum);
-                    var txSum = 0;
-                    if ($('#divTaxGrid tr td').length > 1) {
-                        for (var i = 1; i <= taxRowCount; i++) {
-                            txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
-                        }
-                    }
-                    $('#lblItemNetAmount').text(sum.toFixed(2));
-
-
-                    var txTotal = sum + txSum;
-                    $('#NetTotal').val(txTotal.toFixed(2));
-                    $('#TotalDiscountPercentage').val(0);
-                    $('#TotalAmtAftrDiscount').val(0);
-                    $('#TotalRoundOffAmt').val(0.00);
-                    // $('#PartCode').select2('open').select2('focus');
-                    CalculateRate();
+                        // Calculate all rows
+                        $('#DirectPurchaseBillBody tr').each(function() {
+                            calculateRow($(this).find('.qty')[0]);
+                        });
                     $('#InvoiceNo').val(SaleBillNo).prop('readonly', true);
                     $('#PurchaseFromDatabase').val(DatabaseName).prop('readonly', true);
                     $('#BranchSaleBillNo').val(SaleBillNo).prop('readonly', true);
@@ -2630,9 +2635,7 @@
                     alert(xhr.responseText);
                 }
             }).done(function () {
-                calculatetotalqty();
-                GetTaxPartItem();
-                GetDbCrDetail();
+                
                 GetFeatureOption();
                 var AdjGrid = $('#divAdjItemList tr td').length;
                 if (AdjGrid >= 1) {
@@ -2960,17 +2963,17 @@
                               }
                               else {
                                   if (!DelSeqNo && DelSeqNo != 0) {
-                                      $('#divPOItemList ."' + DelSeqNo + "'").remove();
+                                      $('#DirectPurchaseBillBody ."' + DelSeqNo + "'").remove();
                                   }
-                                  $('#divPOItemList').html(data);
+                                  $('#DirectPurchaseBillBody').html(data);
                                   $.notify('Item Added To Grid.', "success");
                                   ClearItem();
                               }
                                 $('#PendSOForSaleBill').modal('hide');
                               $('#TotalRoundOff').prop('selectedIndex', 0);
                               var INA = parseFloat($('#ItemNetAmount').val());
-                              var rowCount = $('#divPOItemList tr').length;
-                              var columnCount = $('#divPOItemList tr td').length;
+                              var rowCount = $('#DirectPurchaseBillBody tr').length;
+                              var columnCount = $('#DirectPurchaseBillBody tr td').length;
                               var taxRowCount = $('#divTaxGrid tr').length;
                               var sum = 0;
 
@@ -3320,7 +3323,7 @@
             var totalQty = 0;
 
             // Loop through each row inside tbody (to skip table header)
-            $('#divPOItemList tr').each(function () {
+            $('#DirectPurchaseBillBody tr').each(function () {
                 var billQty = parseFloat($(this).find('.billQty').text()) || 0;
                 totalQty += billQty;
             });
@@ -3423,8 +3426,8 @@
 
                     // ===== LOAD PARTIAL VIEW =====
                     if (result.html) {
-                        $('#SaleRejectionBody').empty();
-                        $('#SaleRejectionBody').html(result.html);
+                        $('#DirectPurchaseBillBody').empty();
+                        $('#DirectPurchaseBillBody').html(result.html);
                     }
 
                     calculateTotals();
@@ -3685,7 +3688,7 @@
         var currentSearchColumn = null;
         $("#search-box").on("keyup", function () {
             var value = $(this).val().toLowerCase();
-            $("#divPOItemList tr").filter(function () {
+            $("#DirectPurchaseBillBody tr").filter(function () {
                 if (currentSearchColumn !== null) {
                     var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
                     $(this).toggle(columnText.indexOf(value) > -1);
@@ -3740,7 +3743,7 @@
         function sortTable(columnIndex, ascending) {
 
             var table = $('#poTable');
-            var rows = table.find('#divPOItemList > tr').toArray();
+            var rows = table.find('#DirectPurchaseBillBody > tr').toArray();
 
             rows.sort(function (a, b) {
                 var aValue = $(a).find('td').eq(columnIndex).text();
@@ -3769,7 +3772,7 @@
             });
 
             $.each(rows, function (index, row) {
-                table.children('#divPOItemList').append(row);
+                table.children('#DirectPurchaseBillBody').append(row);
             });
         }
 
@@ -4197,7 +4200,7 @@
             var type = $(this).val();
             $('#type').val("order");
             $('#type2').val(type);
-            var rowCount = $('#divPOItemList tr td').length;
+            var rowCount = $('#DirectPurchaseBillBody tr td').length;
             var TaxrowCount = $('#divTaxGrid tr td').length;
             if (rowCount > 1 || TaxrowCount > 1) {
                 $('#DPBConfirmationBox').modal("show");
@@ -4232,7 +4235,7 @@
             var type = $(this).val();
             $('#type').val("PO");
             $('#type2').val(type);
-            var rowCount = $('#divPOItemList tr td').length;
+            var rowCount = $('#DirectPurchaseBillBody tr td').length;
             var TaxrowCount = $('#divTaxGrid tr td').length;
             if (rowCount > 1 || TaxrowCount > 1) {
                 $('#DPBConfirmationBox').modal("show");
@@ -4336,7 +4339,7 @@
                     if (result == 200) {
                         ClearItem();
                         var NoData = '<tr class="text-center"><td colspan="28" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
-                        $('#divPOItemList').html(NoData);
+                        $('#DirectPurchaseBillBody').html(NoData);
                         $('#ItemNetAmount').val('0.00'), $('#TotalTaxAmt').val('0.00'), $('#lblItemNetAmount').text('0.00'), $('#NetTotal').val('0.00'), $('#TotalRoundOff').prop('selectedIndex', 0), $('#TotalDiscountAmt').val('0'), $('#TotalRoundOffAmt').val('0.00');
                     }
                     $('#ItemNetAmount').val('0.00'), $('#TotalTaxAmt').val('0.00'), $('#lblItemNetAmount').text('0.00'), $('#NetTotal').val('0.00'),
@@ -5019,7 +5022,7 @@
         $('.PartialSave').click(function (e) {
             e.preventDefault();
             $('#TypeOfSave').val("PS");
-            var poGrid = $('#divPOItemList tr td').length;
+            var poGrid = $('#DirectPurchaseBillBody tr td').length;
             var taxGrid = $('#divTaxGrid tr td').length;
             var txRowCount = $('#divTaxGrid tr').length;
             // if (!checkPartCodeMusthaveAtLeastOneTax()) {
@@ -5099,35 +5102,89 @@
                 }
             });
         }
-        function checkPartCodeMusthaveAtLeastOneTax() {
-            var errorPartCode = [];
-            $('.divPOItemListPartCode').each(function (i, data) {
-                var partcode = $(data).text().trim();
-                var taxes = $("td[data-txPartCode='" + partcode + "']");
-                if ((!taxes || taxes.length == 0) && (partcode != taxes.text()) && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
-                    errorPartCode.push(partcode)
+        // function checkPartCodeMusthaveAtLeastOneTax() {
+        //     var errorPartCode = [];
+        //     $('.divPOItemListPartCode').each(function (i, data) {
+        //         var partcode = $(data).text().trim();
+        //         var taxes = $("td[data-txPartCode='" + partcode + "']");
+        //         if ((!taxes || taxes.length == 0) && (partcode != taxes.text()) && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
+        //             errorPartCode.push(partcode)
+        //         }
+        //     });
+        //     if (errorPartCode.length > 0 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
+        //         $.notify("No tax available for " + errorPartCode.join(", ") + " part code(s).", "error");
+        //     }
+        //     return errorPartCode.length == 0;
+        // }
+
+            function checkAllItemsAvailableInTaxGrid() {
+
+                let gstType = $('#GstType').val();
+
+                // Tax validation only when GST Type is selected
+                if (!gstType) {
+                    return true;
                 }
-            });
-            if (errorPartCode.length > 0 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
-                $.notify("No tax available for " + errorPartCode.join(", ") + " part code(s).", "error");
+
+                let missingItems = [];
+
+                // Get all item codes from Item Detail Grid
+                $("#ItemDetailTable tbody tr").each(function() {
+
+                    let itemCode = $(this)
+                        .find(".partcode-input")
+                        .val()
+                        ?.trim();
+
+                    if (!itemCode) {
+                        return;
+                    }
+
+                    // Check whether this item exists in Tax Grid
+                    let taxItem = $("#divTaxGrid tr").filter(function() {
+
+                        return $(this)
+                            .find("[data-txPartCode]")
+                            .filter(function() {
+                                return $(this).attr("data-txPartCode")?.trim() === itemCode;
+                            })
+                            .length > 0;
+
+                    }).length > 0;
+
+                    if (!taxItem) {
+                        missingItems.push(itemCode);
+                    }
+                });
+
+                if (missingItems.length > 0) {
+
+                    $.notify(
+                        "Tax Detail not available for item(s): " +
+                        missingItems.join(", "),
+                        "error"
+                    );
+
+                    return false;
+                }
+
+                return true;
             }
-            return errorPartCode.length == 0;
-        }
 
         $('button[type="submit"]').click(function (e) {
             e.preventDefault();
             $('#TypeOfSave').val("NS");
 
             let isError = false;
-            var poGrid = $('#divPOItemList tr td').length;
+            var poGrid = $('#DirectPurchaseBillBody tr td').length;
             var taxGrid = $('#divTaxGrid tr td').length;
             var txRowCount = $('#divTaxGrid tr').length;
             var drCrGrid = $('#divdbCrItemList tr').length;
             var AdjustGrid= $('#divAdjItemList tr').length;
             var hasEmptyLocation = false;
 
-            $('#divPOItemList tr').each(function () {
-                var txtLocation = $(this).find('input[type="text"]'); // ItemLocation textbox
+            $('#DirectPurchaseBillBody tr').each(function () {
+                var txtLocation = $(this).find('.ItemLocation'); // ItemLocation textbox
 
                 if (txtLocation.length > 0) {
                     var val = txtLocation.val()?.trim();
@@ -5165,171 +5222,64 @@
             var AdjPendAmt = $('#AdjPendAmt').val();
             AdjPendAmt = (AdjPendAmt != null && AdjPendAmt != '' && AdjPendAmt != undefined) ? parseFloat(AdjPendAmt) : 0;
             var resultforadj = CheckAndValidateAdjAmtAtTimeofAdd('NetTotal', AdjPendAmt);
-            // if (!checkPartCodeMusthaveAtLeastOneTax()) {
-            //     isError = true;
-            //     return false;
-            // }
-             
-            //     if ($('#divTaxGrid tr td').length <= 1 && $('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '') {
-            //                           $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-            //         isError = true;
-            //         return false;
-            //                       }
+                if (!checkAllItemsAvailableInTaxGrid()) {
+                    isError = true;
+                    return false;
+                }
+
+                if ($('#divTaxGrid tr td').length <= 1 && $('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '') {
+                                      $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
+                    isError = true;
+                    return false;
+                                  }
               
 
-            // else if (resultforadj.toString().toLowerCase() == "true") {
-            //     $.notify("Please add Adjust amount properly, And total should be less then or equal to Net Total.", "error");
-            //     isError = true;
-            //     return false;
-            // }
-            // else if (poGrid <= 1) {
-            //     $.notify("DPB Grid should at least have one item", "error");
+            else if (resultforadj.toString().toLowerCase() == "true") {
+                $.notify("Please add Adjust amount properly, And total should be less then or equal to Net Total.", "error");
+                isError = true;
+                return false;
+            }
+            else if (poGrid <= 1) {
+                $.notify("DPB Grid should at least have one item", "error");
+                return;
+            }
+            else if (drCrGrid <= 1) {
+                $.notify("Debit And Credid Amount Status Grid should at least have one item", "error");
+                return;
+            }
+            // else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
+            //     $.notify("Total Debit And Total Credit Amount should be same", "error");
             //     return;
             // }
-            // else if (drCrGrid <= 1) {
-            //     $.notify("Debit And Credid Amount Status Grid should at least have one item", "error");
-            //     return;
-            // }
-            // // else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
-            // //     $.notify("Total Debit And Total Credit Amount should be same", "error");
-            // //     return;
-            // // }
-            // else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
-            //     $.notify("Tax Grid should at least have one item", "error");
-            //     return;
-            // }
-            //    else if (AdjustGrid < 1) {
-            //      $.notify("Adjustment Amount Status Grid should at least have one item", "error");
-            //     return;
-            // }
-            // else if ($('#AccountCode').val() == '0') {
-            //     $.notify("Vendor Name is required", "error");
-            // }
-            //  else if (parseInt($("#PaymentDays").val())<=0) {
-            //      $.notify("PaymentDays should not be 0", "error");
-            //     return;
-            // }
+            else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
+                $.notify("Tax Grid should at least have one item", "error");
+                return;
+            }
+               else if (AdjustGrid < 1) {
+                 $.notify("Adjustment Amount Status Grid should at least have one item", "error");
+                return;
+            }
+            else if ($('#AccountCode').val() == '0') {
+                $.notify("Vendor Name is required", "error");
+            }
+             else if (parseInt($("#PaymentDays").val())<=0) {
+                 $.notify("PaymentDays should not be 0", "error");
+                return;
+            }
          
-            // else {
+            else {
                
                        
                              checkDuplicateEntry();
-                          //  $("form").submit();
+                           // $("form").submit();
                       
-                // }
+                }
               
           
         });
 
 
-        function checkTAX() {
-
-        }
-
-        // $('#submitBTN').click(function (e) {
-        //     e.preventDefault();
-        //     $('#TypeOfSave').val("NS");
-
-        //     var poGrid = $('#divPOItemList tr td').length;
-        //     var taxGrid = $('#divTaxGrid tr td').length;
-        //     var txRowCount = $('#divTaxGrid tr').length;
-
-        //     //if ($('#AccountCode').find(':selected').data('gstregister') == 'Y') {
-
-        //         if (!checkPartCodeMusthaveAtLeastOneTax()) {
-        //             return false;
-        //         }
-        //         else if (poGrid <= 1) {
-        //             $.notify("DPB Grid should at least have one item", "error");
-        //             return;
-        //         }
-        //         else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
-        //             $.notify("Tax Grid should at least have one item", "error");
-        //             return;
-        //         }
-        //         else if ($('#AccountCode').val() == '0') {
-        //             $.notify("Vendor Name is required", "error");
-        //         }
-        //         else {
-        //             for (var i = 1; i <= txRowCount; i++) {
-        //                 var txType = $('#txGridType-' + i).text();
-        //                 var txname = $('#txGridName-' + i).text();
-        //                 if (txType == '' || txname == '') {
-        //                     $.notify("TaxType Or TaxName cannot be null", "error");
-        //                     return;
-        //                 }
-        //                 else {
-        //                     $("form").submit();
-        //                 }
-        //             }
-
-        //         }
-        //     // }
-        //     // else {
-        //     //     if (poGrid <= 1) {
-        //     //         $.notify("DPB Grid should at least have one item", "error");
-        //     //         return;
-        //     //     }
-        //     //     else if ($('#AccountCode').val() == '0') {
-        //     //         $.notify("Vendor Name is required", "error");
-        //     //     }
-        //     //     else {
-        //     //         $("form").submit();
-        //     //     }
-        //     // }
-        // });
-
-        // $('#UpdateButton').click(function(){
-        //     $('#TypeOfSave').val("NS");
-
-        //     var poGrid = $('#divPOItemList tr td').length;
-        //     var taxGrid = $('#divTaxGrid tr td').length;
-        //     var txRowCount = $('#divTaxGrid tr').length;
-
-        //     //if ($('#AccountCode').find(':selected').data('gstregister') == 'Y') {
-
-        //     if (!checkPartCodeMusthaveAtLeastOneTax()) {
-        //         return false;
-        //     }
-        //     else if (poGrid <= 1) {
-        //         $.notify("DPB Grid should at least have one item", "error");
-        //         return;
-        //     }
-        //     else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
-        //         $.notify("Tax Grid should at least have one item", "error");
-        //         return;
-        //     }
-        //     else if ($('#AccountCode').val() == '0') {
-        //         $.notify("Vendor Name is required", "error");
-        //     }
-        //     else {
-        //         for (var i = 1; i <= txRowCount; i++) {
-        //             var txType = $('#txGridType-' + i).text();
-        //             var txname = $('#txGridName-' + i).text();
-        //             if (txType == '' || txname == '') {
-        //                 $.notify("TaxType Or TaxName cannot be null", "error");
-        //                 return;
-        //             }
-        //             else {
-        //                 $("form").submit();
-        //             }
-        //         }
-
-        //     }
-        //     // }
-        //     // else {
-        //     //     if (poGrid <= 1) {
-        //     //         $.notify("DPB Grid should at least have one item", "error");
-        //     //         return;
-        //     //     }
-        //     //     else if ($('#AccountCode').val() == '0') {
-        //     //         $.notify("Vendor Name is required", "error");
-        //     //     }
-        //     //     else {
-        //     //         $("form").submit();
-        //     //     }
-        //     // }
-        // });
+        
            function DueDateCalculation() {
             var VouchDateVal = $('#VouchDate').val();
 
@@ -5594,16 +5544,16 @@
                         }
                         else {
                             if (!DelSeqNo && DelSeqNo != 0) {
-                                $('#divPOItemList ."' + DelSeqNo + "'").remove();
+                                $('#DirectPurchaseBillBody ."' + DelSeqNo + "'").remove();
                             }
-                            $('#divPOItemList').html(data);
+                            $('#DirectPurchaseBillBody').html(data);
                             $.notify('Item Added To Grid.', "success");
                             ClearItem();
                         }
                         $('#TotalRoundOff').prop('selectedIndex', 0);
                         var INA = parseFloat($('#ItemNetAmount').val());
-                        var rowCount = $('#divPOItemList tr').length;
-                        var columnCount = $('#divPOItemList tr td').length;
+                        var rowCount = $('#DirectPurchaseBillBody tr').length;
+                        var columnCount = $('#DirectPurchaseBillBody tr td').length;
                         var taxRowCount = $('#divTaxGrid tr').length;
                         var sum = 0;
 
@@ -5667,7 +5617,7 @@
          var EditEachItem = false;
         async function EditItemRow(SeqNo) {
             $('.btnClearTax').trigger('click');
-              var RowCount = $('#divPOItemList tr').length;
+              var RowCount = $('#DirectPurchaseBillBody tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
                 $('#editButton-' + RowCount).prop("disabled", true);
@@ -5802,9 +5752,9 @@
                 data: { YearCode: $('#YearCode').val(), "VODate": $('#VouchDate').val() },
                 dataType: "json",
                 success: function (result, status, error) {
-                    $('#divPOItemList').empty();
+                    $('#DirectPurchaseBillBody').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
-                    $('#divPOItemList').html(NoData);
+                    $('#DirectPurchaseBillBody').html(NoData);
                        if($('#divTaxGrid tr td').length>1){
                            btnClearTax();
                         }
@@ -5898,25 +5848,25 @@
                     }
                     else {
 
-                        $('#divPOItemList').html(data);
-                        if ($('#divPOItemList').children('tr').length === 0) {
+                        $('#DirectPurchaseBillBody').html(data);
+                        if ($('#DirectPurchaseBillBody').children('tr').length === 0) {
                             //$('.Schedule').fadeOut();
                             var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                             $('#lblItemNetAmount').text("0.00");
-                            $('#divPOItemList').html(NoData);
+                            $('#DirectPurchaseBillBody').html(NoData);
                         }
                         GetTaxPartItem();
                         $('#lblItemNetAmount').text($('#ItemNetAmount').val());
                         $('#TotalRoundOff').prop('selectedIndex', 0);
                         $('#TotalRoundOffAmt').val(0.00);
                         //var INA = parseFloat($('#ItemNetAmount').val());
-                        var rowCount = $('#divPOItemList tr').length;
-                        var rowCountGrid = $('#divPOItemList tr td').length;
+                        var rowCount = $('#DirectPurchaseBillBody tr').length;
+                        var rowCountGrid = $('#DirectPurchaseBillBody tr td').length;
                         var taxRowCount = $('#divTaxGrid tr').length;
                         var taxRowCountGrid = $('#divTaxGrid tr td').length;
                         var sum = 0;
                         var txSum = 0;
-                        var columnCount = $('#divPOItemList tr td').length;
+                        var columnCount = $('#DirectPurchaseBillBody tr td').length;
                         calculateitembasicnettaxable();
 
                         //noofitems

@@ -235,7 +235,7 @@ namespace eTactWeb.Controllers
             string serializedModel = JsonConvert.SerializeObject(model);
             HttpContext.Session.SetString("DirectPurchaseBill", serializedModel);
 
-            return PartialView("_DPBItemGrid", model);
+            return PartialView("_AddDirectPurchaseBill", model);
         }
 
 
