@@ -1015,12 +1015,12 @@
                                 <div style="display:flex; flex-direction:column;">
                                                     <input name="ItemDetailGrid[${index}].GroupName"
 
-                                           class="GroupName"
-                                           readonly />
+                                           class="GroupName" readonly tabindex="-1" 
+                                            />
                                             <input name="ItemDetailGrid[${index}].ItemLocation"
 
-                                           class="ItemLocation" tabindex="-1"
-                                           readonly />
+                                           class="ItemLocation" 
+                                            />
                                 </div>
                             </td>
 
@@ -1198,7 +1198,19 @@
                     url: '/DirectPurchaseBill/UpdateDirectpurchasebillSession',
                     type: 'POST',
                     data: $('form').serialize(),
+                    async:false,
                     success: function () {
+
+                         // ==========================
+                        // STEP 3: APPLY TAX + ADJ
+                        // ==========================
+                        // btnClearTax();
+
+                        // $('.btnClearTax').trigger('click');
+
+                        // ApplyTax4HSN();
+                        // ClearAdjustmentGrid();
+                        // AddAdjstmntDetail1();
 
                         
 
@@ -1309,6 +1321,7 @@
                                 oldPartCode != ui.item.onlyPartCode) {
 
                                 FillSOItemRate(row);
+                                GetDiscAccountGroupWise(row);
                             }
 
                         
@@ -1395,6 +1408,7 @@
                                 oldPartCode != ui.item.onlyPartCode) {
 
                                  FillSOItemRate(row);
+                                 GetDiscAccountGroupWise(row);
                             }
 
                      
@@ -1468,6 +1482,7 @@
                                         oldPartCode != match.OnlyPartCode) {
                                         console.log('inside if');
                                         FillSOItemRate(row);
+                                        GetDiscAccountGroupWise(row);
                                     }
 
                                 }
@@ -1533,6 +1548,7 @@
                                         oldPartCode != match.OnlyPartCode) {
 
                                          FillSOItemRate(row);
+                                        GetDiscAccountGroupWise(row);
                                     }
 
                                 }
@@ -1565,7 +1581,31 @@
 
                 return exists;
             }
+            function GetDiscAccountGroupWise(row) {
 
+            var AccountCode = $('#AccountCode').val();
+           var itemCode = $(row).find('.ItemCode-input').val();   // get item from row
+            $.ajax({
+                type: "POST",
+                    data: { "AccountCode": AccountCode, "itemcode": itemCode },
+                url: "@Url.Action("GetDiscAccountGroupWise","SaleOrder")",
+                dataType: "json",
+
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        // $('#DiscPer').val(0);
+                        // $('#DiscPer').val(obj.Result[0].SaleDiscount);
+
+                         
+                            $(row).find('.discPer').val(0);
+                            $(row).find('.discPer').val(obj.Result[0].PurchaseDiscount);
+                    
+                    }
+                }
+            });
+        }
 
 
                     function FillSOItemRate(row) {
@@ -1595,7 +1635,7 @@
 
                             var data = obj.Result[0];
 
-                            var rate = data.Rate == '' ? 0 : parseFloat(data.Rate);
+                            var rate = data.PurchasePrice == '' ? 0 : parseFloat(data.PurchasePrice);
                             var igst = data.IGST == '' ? 0 : parseFloat(data.IGST);
 
                             var stateCode = $('#StateCode').val();          // Party State
@@ -3989,6 +4029,7 @@
         });
 
         function submitForm(shouldPrint, shouldSend, ShouldEway, printWindow, sendWindow, GoToDashBoard, Partialview) {
+
             $('#ShouldPrint').val(shouldPrint); // Set hidden input
             $('#ShouldEway').val(ShouldEway); // Set hidden input
             const formData = $('form').serialize(); // Properly serialize full form
@@ -5175,6 +5216,7 @@
             e.preventDefault();
             $('#TypeOfSave').val("NS");
 
+            // UpdateSession();
             let isError = false;
             var poGrid = $('#DirectPurchaseBillBody tr td').length;
             var taxGrid = $('#divTaxGrid tr td').length;
