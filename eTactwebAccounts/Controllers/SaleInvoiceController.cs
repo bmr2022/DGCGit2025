@@ -101,7 +101,20 @@ namespace eTactWeb.Controllers
 
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateSaleBillSession(SaleBillModel Model)
+        {
+            if (Model != null)
+            {
+                Model.ItemDetailGrid = Model.saleBillDetails;
+               
+                HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(Model.saleBillDetails));
+                HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(Model));
 
+            }
+
+            return Json(new { success = true });
+        }
         public async Task<JsonResult> AutoFillVerifiedSaleBill(string Search)
        {
             var JSON = await _SaleBill.AutoFillVerifiedSaleBill(Search);
@@ -391,7 +404,7 @@ namespace eTactWeb.Controllers
                 HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(mainModel));
 
                 // 🔹 Step 7: Return updated partial
-                return PartialView("_SaleBillGrid", mainModel);
+                return PartialView("_AddSaleBillDetail", mainModel);
             }
             catch (Exception ex)
             {
@@ -913,11 +926,12 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
         [HttpPost]
+
         public async Task<IActionResult> UploadExcel()
         {
             var excelFile = Request.Form.Files[0];
-            string StoreName = Request.Form["StoreName"];
-            int StoreId = Convert.ToInt32(Request.Form["StoreId"]);
+            int stateCode = Convert.ToInt32(Request.Form["stateCode"]);
+            int companyStateCode = Convert.ToInt32(Request.Form["companyStateCode"]);
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -938,6 +952,7 @@ namespace eTactWeb.Controllers
                         string rateStr = sheet.Cells[row, 2].Value?.ToString()?.Trim();
                         string qtyStr = sheet.Cells[row, 3].Value?.ToString()?.Trim();
                         string disStr = sheet.Cells[row, 4].Value?.ToString()?.Trim();
+                        string ItemLocation = sheet.Cells[row, 5].Value?.ToString()?.Trim();
                         //string storename = sheet.Cells[row, 5]?.Value?.ToString()?.Trim() ?? "";
 
                         if (string.IsNullOrEmpty(partCode))
@@ -970,7 +985,7 @@ namespace eTactWeb.Controllers
 
                         // Fetch item details
                         var itemData = await _SaleBill.AutoFillitem("AutoFillPartCode", partCode);
-                      
+
                         if (itemData?.Result == null || itemData.Result.Rows.Count == 0)
                         {
                             errorList.Add($"Row {row} → Part code not found: {partCode}");
@@ -993,9 +1008,23 @@ namespace eTactWeb.Controllers
                         var unit = jsonDetail["Result"][0]["Unit"];
                         var hsnNo = jsonDetail["Result"][0]["HsnNo"];
                         var GroupCode = jsonDetail["Result"][0]["GroupCode"];
-                        var Rackid = jsonDetail["Result"][0]["Rackid"]?.ToString();
+                        var Rackid = jsonDetail["Result"][0]["Rackid"]?.ToString() ??"";
                         var Group_name = jsonDetail["Result"][0]["Group_name"]?.ToString();
                         var saleprice = jsonDetail["Result"][0]["saleprice"].ToString();
+                        decimal GSTPer = Convert.ToDecimal(jsonDetail["Result"][0]["GSTPer"].ToString());
+                        decimal CGST = 0;
+                        decimal SGCT = 0;
+                        decimal IGST = 0;
+
+                        if (ItemLocation != "")
+                        {
+                            Rackid = ItemLocation??"";
+                        }
+
+
+
+
+
 
                         var unitparameter = _ICommon.CheckRoundOff(unit.ToString());
                         var roundoff = "N";
@@ -1007,7 +1036,7 @@ namespace eTactWeb.Controllers
                         {
                             DataRow excelrow = unitparameter.Result.Result.Rows[0];
 
-                            roundoff= excelrow["Round_Off"]?.ToString() ?? "";
+                            roundoff = excelrow["Round_Off"]?.ToString() ?? "";
 
                         }
 
@@ -1043,6 +1072,28 @@ namespace eTactWeb.Controllers
                         decimal discountAmt = basicAmt * (discountPer / 100);
                         decimal netAmt = basicAmt - discountAmt;
 
+                        decimal CGSTAmt = 0;
+                        decimal SGSTAmt = 0;
+                        decimal IGSTAmt = 0;
+
+                        if (stateCode == companyStateCode)
+                        {
+                            // Same state → CGST + SGST (half-half)
+                            decimal halfGST = GSTPer / 2;
+                            CGST = halfGST;
+                            SGCT = halfGST;
+                            CGSTAmt = netAmt * CGST / 100;
+                            SGSTAmt = netAmt * SGCT / 100;
+
+                        }
+                        else
+                        {
+                            IGST = GSTPer;
+                            IGSTAmt = netAmt * IGST / 100;
+                            // Different state → IGST only
+
+                        }
+
                         successList.Add(new SaleBillDetail
                         {
                             SeqNo = seq++,
@@ -1050,21 +1101,25 @@ namespace eTactWeb.Controllers
                             ItemName = itemName,
                             ItemCode = itemCode,
                             Unit = unit.ToString(),
-                            RackID = Rackid.ToString(),
+                            ItemLocation = Rackid.ToString(),
                             Group_name = Group_name.ToString(),
-                            Group_Code = string.IsNullOrEmpty(GroupCode?.ToString()) ? 0 : Convert.ToInt32(GroupCode),
+
                             HSNNo = string.IsNullOrEmpty(hsnNo?.ToString()) ? 0 : Convert.ToInt32(hsnNo),
                             Qty = Math.Round((decimal)qty, 4),
                             Rate = Math.Round((decimal)rate, 2),
                             DiscountPer = Math.Round((decimal)discountPer, 2),
-                            Amount = Math.Round((decimal) netAmt,2),
-                            DiscountAmt = Math.Round((decimal)discountAmt,2),
-                            ItemNetAmount = Math.Round((decimal)netAmt,2),
-                            StoreName = StoreName,
-                            StoreId = StoreId,
-                            Batchno = "1",
-                            Uniquebatchno = "1",
-                           
+                            Amount = Math.Round((decimal)netAmt, 2),
+                            DiscountAmt = Math.Round((decimal)discountAmt, 2),
+                            ItemNetAmount = Math.Round((decimal)netAmt, 2),
+                            CGSTPer = Math.Round((decimal)CGST, 2),
+                            SGSTPer = Math.Round((decimal)SGCT, 2),
+                            IGSTPer = Math.Round((decimal)IGST, 2),
+                            CGSTAmt = Math.Round((decimal)CGSTAmt, 2),
+                            SGSTAmt = Math.Round((decimal)SGSTAmt, 2),
+                            IGSTAmt = Math.Round((decimal)IGSTAmt, 2),
+
+
+
 
 
                         });
@@ -1080,18 +1135,19 @@ namespace eTactWeb.Controllers
             SaleBillModel sbModel = new SaleBillModel
             {
                 ItemDetailGrid = successList,
-                saleBillDetails = successList,
+                saleBillDetails= successList,
+
                 ErrorList = errorList // Add ErrorList property to your SaleBillModel
             };
 
             HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(successList));
-            HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(sbModel));
+                HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(sbModel));
 
             // Render partial view
             string html = "";
             try
             {
-                html = await RenderViewToStringAsync("_SaleBillGrid", sbModel);
+                html = await RenderViewToStringAsync("_AddSaleBillDetail", sbModel);
             }
             catch (Exception ex)
             {
@@ -1104,6 +1160,197 @@ namespace eTactWeb.Controllers
                 errorList = errorList
             });
         }
+        //public async Task<IActionResult> UploadExcel()
+        //{
+        //    var excelFile = Request.Form.Files[0];
+        //    string StoreName = Request.Form["StoreName"];
+        //    int StoreId = Convert.ToInt32(Request.Form["StoreId"]);
+
+        //    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+        //    List<SaleBillDetail> successList = new List<SaleBillDetail>();
+        //    List<string> errorList = new List<string>();
+
+        //    using (var stream = excelFile.OpenReadStream())
+        //    using (var package = new ExcelPackage(stream))
+        //    {
+        //        var sheet = package.Workbook.Worksheets[0];
+        //        int seq = 1;
+
+        //        for (int row = 2; row <= sheet.Dimension.Rows; row++)
+        //        {
+        //            try
+        //            {
+        //                string partCode = sheet.Cells[row, 1].Value?.ToString()?.Trim();
+        //                string rateStr = sheet.Cells[row, 2].Value?.ToString()?.Trim();
+        //                string qtyStr = sheet.Cells[row, 3].Value?.ToString()?.Trim();
+        //                string disStr = sheet.Cells[row, 4].Value?.ToString()?.Trim();
+        //                //string storename = sheet.Cells[row, 5]?.Value?.ToString()?.Trim() ?? "";
+
+        //                if (string.IsNullOrEmpty(partCode))
+        //                {
+        //                    errorList.Add($"Row {row} → Part Code missing");
+        //                    continue;
+        //                }
+
+        //                if (!decimal.TryParse(qtyStr, out decimal qty) || qty <= 0)
+        //                {
+        //                    errorList.Add($"Row {row} → Invalid Quantity: {qtyStr}");
+        //                    continue;
+        //                }
+
+        //                //if (!decimal.TryParse(rateStr, out decimal rate))
+        //                //{
+        //                //    errorList.Add($"Row {row} → Invalid Rate: {rateStr}");
+        //                //    continue;
+        //                //}
+
+        //                if (!decimal.TryParse(disStr, out decimal discountPer))
+        //                    discountPer = 0;
+
+        //                // Check duplicate
+        //                if (successList.Any(x => x.PartCode == partCode))
+        //                {
+        //                    errorList.Add($"Row {row} → Duplicate Part Code: {partCode}");
+        //                    continue;
+        //                }
+
+        //                // Fetch item details
+        //                var itemData = await _SaleBill.AutoFillitem("AutoFillPartCode", partCode);
+
+        //                if (itemData?.Result == null || itemData.Result.Rows.Count == 0)
+        //                {
+        //                    errorList.Add($"Row {row} → Part code not found: {partCode}");
+        //                    continue;
+        //                }
+
+        //                // Access first row
+        //                var rowData = itemData.Result.Rows[0];
+        //                string itemName = rowData["ItemName"].ToString();
+        //                int itemCode = Convert.ToInt32(rowData["Item_Code"]);
+        //                // Get store ID
+        //                //var storeData = await _SaleBill.GetStoreId(storename);
+        //                //JObject storeJson = JObject.Parse(JsonConvert.SerializeObject(storeData));
+        //                //var storeRes = storeJson["Result"][0];
+        //                //int storeId = Convert.ToInt32(storeRes["storeid"]);
+
+        //                // Get more item details
+        //                var getItem = GetItemDetail(partCode);
+        //                JObject jsonDetail = JObject.Parse(getItem.Result.Value.ToString());
+        //                var unit = jsonDetail["Result"][0]["Unit"];
+        //                var hsnNo = jsonDetail["Result"][0]["HsnNo"];
+        //                var GroupCode = jsonDetail["Result"][0]["GroupCode"];
+        //                var Rackid = jsonDetail["Result"][0]["Rackid"]?.ToString();
+        //                var Group_name = jsonDetail["Result"][0]["Group_name"]?.ToString();
+        //                var saleprice = jsonDetail["Result"][0]["saleprice"].ToString();
+
+        //                var unitparameter = _ICommon.CheckRoundOff(unit.ToString());
+        //                var roundoff = "N";
+
+        //                if (unitparameter != null &&
+        //                    unitparameter.Result != null &&
+        //                    unitparameter.Result.Result != null &&
+        //                    unitparameter.Result.Result.Rows.Count > 0)
+        //                {
+        //                    DataRow excelrow = unitparameter.Result.Result.Rows[0];
+
+        //                    roundoff= excelrow["Round_Off"]?.ToString() ?? "";
+
+        //                }
+
+        //                if (!string.IsNullOrEmpty(qtyStr) && decimal.TryParse(qtyStr, out decimal parsedQty))
+        //                {
+        //                    qty = parsedQty;
+
+        //                    // 🔴 Check for decimal when roundoff = Y
+        //                    if (roundoff == "Y" && qty % 1 != 0)
+        //                    {
+        //                        errorList.Add($"Row {row} → Qty should not contain decimal when RoundOff = Y. Qty: {qtyStr}");
+        //                        continue;
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    errorList.Add($"Row {row} → Invalid Qty: {qtyStr}");
+        //                    continue;
+        //                }
+
+        //                decimal rate;
+        //                if (!string.IsNullOrEmpty(rateStr) && decimal.TryParse(rateStr, out decimal excelRate))
+        //                    rate = excelRate;
+        //                else if (!string.IsNullOrEmpty(saleprice) && decimal.TryParse(saleprice, out decimal dbRate))
+        //                    rate = dbRate;
+        //                else
+        //                {
+        //                    errorList.Add($"Row {row} → Invalid Rate qty : {qtyStr} Rate:{rateStr}");
+        //                    continue;
+        //                }
+
+        //                decimal basicAmt = qty * rate;
+        //                decimal discountAmt = basicAmt * (discountPer / 100);
+        //                decimal netAmt = basicAmt - discountAmt;
+
+        //                successList.Add(new SaleBillDetail
+        //                {
+        //                    SeqNo = seq++,
+        //                    PartCode = partCode,
+        //                    ItemName = itemName,
+        //                    ItemCode = itemCode,
+        //                    Unit = unit.ToString(),
+        //                    RackID = Rackid.ToString(),
+        //                    Group_name = Group_name.ToString(),
+        //                    Group_Code = string.IsNullOrEmpty(GroupCode?.ToString()) ? 0 : Convert.ToInt32(GroupCode),
+        //                    HSNNo = string.IsNullOrEmpty(hsnNo?.ToString()) ? 0 : Convert.ToInt32(hsnNo),
+        //                    Qty = Math.Round((decimal)qty, 4),
+        //                    Rate = Math.Round((decimal)rate, 2),
+        //                    DiscountPer = Math.Round((decimal)discountPer, 2),
+        //                    Amount = Math.Round((decimal) netAmt,2),
+        //                    DiscountAmt = Math.Round((decimal)discountAmt,2),
+        //                    ItemNetAmount = Math.Round((decimal)netAmt,2),
+        //                    StoreName = StoreName,
+
+        //                    Batchno = "1",
+        //                    Uniquebatchno = "1",
+
+
+
+        //                });
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                errorList.Add($"Row {row} → Error: {ex.Message}");
+        //            }
+        //        }
+        //    }
+
+        //    // Prepare model
+        //    SaleBillModel sbModel = new SaleBillModel
+        //    {
+        //        ItemDetailGrid = successList,
+        //        saleBillDetails = successList,
+        //        ErrorList = errorList // Add ErrorList property to your SaleBillModel
+        //    };
+
+        //    HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(successList));
+        //    HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(sbModel));
+
+        //    // Render partial view
+        //    string html = "";
+        //    try
+        //    {
+        //        html = await RenderViewToStringAsync("_SaleBillGrid", sbModel);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest("Render Error: " + ex.Message);
+        //    }
+
+        //    return Json(new
+        //    {
+        //        html = html,
+        //        errorList = errorList
+        //    });
+        //}
 
 
         private async Task<string> RenderViewToStringAsync(string viewName, object model)
@@ -1947,7 +2194,7 @@ namespace eTactWeb.Controllers
                 }
 
 
-                return PartialView("_SaleBillGrid", MainModel);
+                return PartialView("_AddSaleBillDetail", MainModel);
             }
             catch (Exception ex)
             {
@@ -2291,6 +2538,12 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("CustJWmanadatory", typeof(string));
             DTSSGrid.Columns.Add("StockableNonStockable", typeof(string));
             DTSSGrid.Columns.Add("ItemGroupCode", typeof(int));
+            DTSSGrid.Columns.Add("ItemCGSTAmt", typeof(decimal));
+            DTSSGrid.Columns.Add("ItemSGSTAmt", typeof(decimal));
+            DTSSGrid.Columns.Add("ItemIGSTAmt", typeof(decimal));
+            DTSSGrid.Columns.Add("IGSTPer", typeof(decimal));
+            DTSSGrid.Columns.Add("CGSTPer", typeof(decimal));
+            DTSSGrid.Columns.Add("SGSTPer", typeof(decimal));
 
             //DateTime DeliveryDt = new DateTime();
             foreach (var Item in DetailList)
@@ -2332,7 +2585,7 @@ namespace eTactWeb.Controllers
                     Item.DiscountAmt,
                     Item.ItemSize ?? string.Empty,
                     Item.Itemcolor ?? string.Empty,
-                    Item.StoreId,
+                    0,
                     Item.Amount,
                     Item.AdviceNo ?? string.Empty,
                     Item.AdviseEntryId,
@@ -2363,6 +2616,12 @@ namespace eTactWeb.Controllers
                     Item.CustJwAdjustmentMandatory ?? string.Empty,
                     Item.StockableNonStockable ?? string.Empty,
                     Item.Group_Code == null ? 0 : Item.Group_Code,
+                     Item.CGSTAmt,
+                    Item.SGSTAmt,
+                    Item.IGSTAmt,
+                    Item.IGSTPer,
+                    Item.CGSTPer,
+                    Item.SGSTPer,
                     });
             }
             DTSSGrid.Dispose();

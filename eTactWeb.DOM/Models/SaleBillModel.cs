@@ -111,6 +111,12 @@ namespace eTactWeb.DOM.Models
         public string? AltUnit { get; set; }
         public decimal AltQty { get; set; }
         public decimal ItemWeight { get; set; }
+        public decimal IGSTPer { get; set; }
+        public decimal IGSTAmt { get; set; }
+        public decimal CGSTPer { get; set; }
+        public decimal CGSTAmt { get; set; }
+        public decimal SGSTPer { get; set; }
+        public decimal SGSTAmt { get; set; }
         public int NoofPcs { get; set; }
         public string? CustomerPartCode { get; set; }
         public string? UnitRate { get; set; }
@@ -127,7 +133,7 @@ namespace eTactWeb.DOM.Models
         public decimal DiscountAmt { get; set; }
         public string? ItemSize { get; set; }
         public string? Itemcolor { get; set; }
-        public int StoreId { get; set; }
+        //public int StoreId { get; set; }
         public string? StoreName { get; set; }
         //public decimal ItemAmount { get; set; }
         public decimal Amount { get; set; }
@@ -198,6 +204,7 @@ namespace eTactWeb.DOM.Models
         public string? AgstInvNo { get; set; }
         public string? AgstInvDate { get; set; }
         public int AgstInvYearCode { get; set; }
+        public int StoreId { get; set; }
 
         public List<string> ErrorList { get; set; }
         public string? BILLAgainstWarrenty { get; set; }

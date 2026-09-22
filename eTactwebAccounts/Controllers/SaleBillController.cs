@@ -231,7 +231,7 @@ namespace eTactWeb.Controllers
                     }
                     else
                     {
-                        if (SaleBillDetail.Any(x => x.ItemCode == model.ItemCode && x.StoreId == model.StoreId && x.Batchno == model.Batchno))
+                        if (SaleBillDetail.Any(x => x.ItemCode == model.ItemCode  && x.Batchno == model.Batchno))
                         {
                             return StatusCode(207, "Duplicate");
                         }
@@ -665,6 +665,12 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("ProdSchDate", typeof(string));
             DTSSGrid.Columns.Add("SchdeliveryDate", typeof(string));
             DTSSGrid.Columns.Add("CostCenterid", typeof(int));
+            DTSSGrid.Columns.Add("ItemCGSTAmt", typeof(decimal));
+            DTSSGrid.Columns.Add("ItemSGSTAmt", typeof(decimal));
+            DTSSGrid.Columns.Add("ItemIGSTAmt", typeof(decimal));
+            DTSSGrid.Columns.Add("IGSTPer", typeof(decimal));
+            DTSSGrid.Columns.Add("CGSTPer", typeof(decimal));
+            DTSSGrid.Columns.Add("SGSTPer", typeof(decimal));
             //DateTime DeliveryDt = new DateTime();
             foreach (var Item in DetailList)
             {
@@ -703,7 +709,7 @@ namespace eTactWeb.Controllers
                     Item.DiscountAmt,
                     Item.ItemSize ?? string.Empty,
                     Item.Itemcolor ?? string.Empty,
-                    Item.StoreId,
+                    0,
                     Item.Amount,
                     Item.AdviceNo ?? string.Empty,
                     Item.AdviseEntryId,
@@ -727,7 +733,13 @@ namespace eTactWeb.Controllers
                     Item.ProdSchEntryId,
                     Item.ProdSchDate == null ? string.Empty : (Item.ProdSchDate.Split(" ")[0]),
                     Item.SchdeliveryDate == null ? string.Empty : (Item.SchdeliveryDate.Split(" ")[0]),
-                    Item.CostCenterId
+                    Item.CostCenterId,
+                    Item.CGSTAmt,
+                    Item.SGSTAmt,
+                    Item.IGSTAmt,
+                    Item.IGSTPer,
+                    Item.CGSTPer,
+                    Item.SGSTPer,
                     });
             }
             DTSSGrid.Dispose();

@@ -912,6 +912,10 @@
 
             function addRow() {
 
+                var taxGrid = $('#divTaxGrid tr td').length;
+              if (taxGrid >1 ) {
+                btnClearTax();
+            }
                 let table = $("#ItemDetailTable tbody");
                 let rows = table.find("tr");
 
@@ -1088,6 +1092,10 @@
 });
 
             function calculateRow(el) {
+                var taxGrid = $('#divTaxGrid tr td').length;
+                if (taxGrid > 1) {
+                    btnClearTax();
+                }
 
                 let row = $(el).closest("tr");
 

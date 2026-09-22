@@ -911,6 +911,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@VarifiedSaleBill", model.VarifiedSaleBill));
                
                     SqlParams.Add(new SqlParameter("@SaleBillEntryFrom", model.SaleBillEntryFrom));
+                    SqlParams.Add(new SqlParameter("@StoreId", model.StoreId));
                 
                 SqlParams.Add(new SqlParameter("@GRDate",CommonFunc.ParseFormattedDate( model.GRDate)));
                 SqlParams.Add(new SqlParameter("@SaleQuotDate", SaleQuotDate == default ? string.Empty : SaleQuotDate));
@@ -1818,7 +1819,7 @@ namespace eTactWeb.Data.DAL
                             DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToDecimal(row["DiscountAmt"]) : 0,
                             ItemSize = row["ItemSize"]?.ToString(),
                             Itemcolor = row["Itemcolor"]?.ToString(),
-                            StoreId = row["StoreId"] != DBNull.Value ? Convert.ToInt32(row["StoreId"]) : 0,
+                            //StoreId =0,
                             ItemNetAmount = row["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(row["ItemAmount"]) : 0,
                             AdviceNo = row["AdviceNo"]?.ToString(),
                             AdviseEntryId = row["AdviseEntryId"] != DBNull.Value ? Convert.ToInt32(row["AdviseEntryId"]) : 0,
@@ -1848,6 +1849,12 @@ namespace eTactWeb.Data.DAL
                             ItemGroupName = row["Group_name"]?.ToString(),
                             ItemLocation = row["ItemLocation"]?.ToString(),
                            VehicleNo = row["usedinMachorVehicle"]?.ToString(),
+                            CGSTAmt = row["ItemCGSTAmt"] != DBNull.Value ? Convert.ToDecimal(row["ItemCGSTAmt"]) : 0,
+                            SGSTAmt = row["ItemSGSTAmt"] != DBNull.Value ? Convert.ToDecimal(row["ItemSGSTAmt"]) : 0,
+                            IGSTAmt = row["ItemIGSTAmt"] != DBNull.Value ? Convert.ToDecimal(row["ItemIGSTAmt"]) : 0,
+                            IGSTPer = row["IGSTPer"] != DBNull.Value ? Convert.ToDecimal(row["IGSTPer"]) : 0,
+                            CGSTPer = row["CGSTPer"] != DBNull.Value ? Convert.ToDecimal(row["CGSTPer"]) : 0,
+                            SGSTPer = row["SGSTPer"] != DBNull.Value ? Convert.ToDecimal(row["SGSTPer"]) : 0,
 
                         });
                     }

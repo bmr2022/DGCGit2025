@@ -75,6 +75,8 @@
                 <option value="J">Sample Bill</option>
                 
             </select>
+            <input type="hidden" asp-for="StoreId" readonly class="form-control" tabindex="-1" />
+
         </div>
 
       @*   <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
@@ -111,12 +113,14 @@
 
             
             <input type="hidden" value="@Model.AccountCode" id="hiddenAccountCode" />
+            <input type="hidden" id="CompanyStateCode" />
         </div>
 
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCustomerGSTDetail">
             <label asp-for="GSTNO" class="form-label" style="color: blue;">GST No</label>
             <input asp-for="GSTNO" readonly class="form-control" tabindex="-1" />
         </div>
+       
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCustomerDetail">
             <label asp-for="StateNameofSupply" class="form-label">State </label>
             <input asp-for="StateNameofSupply" class="form-control" readonly />
@@ -260,20 +264,43 @@
                 <i class="bi bi-list"></i>ShowGroupItem
             </button>
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-            <label class="form-label" style="color: red;">Basic Amount*</label>
-            <input id="itembasicamount" class="form-control" readonly style="background-color:#FFFACD" />
-        </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-            <label class="form-label" style="color: red;">GST Amount*</label>
-            <input id="itemtaxableamount" class="form-control" readonly style="background-color:#FFFACD" />
-        </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-            <label class="form-label" style="color: red;">Net Amount*</label>
-            <input id="itemnetamount" class="form-control" readonly style="background-color:#FFFACD" />
+        <div class="col-sm-auto py-2 text-center divTax4HSN" style="">
+            <button type="button" class="btn btn-sm btn-outline-primary btnTax4HSN" onclick="UpdateSession();ApplyTax4HSN();" style="margin-top:10px;">
+                <i class="fa-solid fa-money-bill-trend-up fa-fw fa-lg"></i>
+                ADD HSN TAX
+            </button>
         </div>
+        <!-- Compact Total Summary -->
+        <div class="col-12 mt-1">
+            <div class="dpb-compact-total">
 
+                <div class="dpb-summary-item">
+                    <span class="dpb-summary-label">Basic Total:</span>
+                    <span id="lblItemNetAmount" class="dpb-summary-value">0.00</span>
+                </div>
+
+                <div class="dpb-summary-item">
+                    <span class="dpb-summary-label">Total Qty:</span>
+                    <span id="TotalQty" class="dpb-summary-value">0</span>
+                </div>
+
+                <div class="dpb-summary-item">
+                    <span class="dpb-summary-label">Total Items:</span>
+                    <span id="lblItemCount" class="dpb-summary-value">0</span>
+                </div>
+
+                <div class="dpb-summary-item dpb-net-total">
+                    <span class="dpb-summary-label">Net Total:</span>
+                    <input asp-for="NetTotal"
+                           class="NetTotal dpb-summary-input"
+                           onchange="onNetTotalChange()"
+                           readonly />
+                </div>
+
+            </div>
+        </div>
+       
     </div>
 </div>
 
