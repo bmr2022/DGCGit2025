@@ -577,6 +577,7 @@ public class HomeController : Controller
         var DepId = 0;
         var DepName = "";
         string RetailerOrManufacturar = string.Empty;
+        string CompanyStateCode = string.Empty;
         string empName = "";
         var userRole = "";
         var empCode = "";
@@ -828,7 +829,10 @@ public class HomeController : Controller
                 conn.Open();
 
 
-                sql = "SELECT isnull(RetailerOrManufacturar,'')  RetailerOrManufacturar  FROM Company_Detail";
+                sql = @"SELECT 
+            ISNULL(RetailerOrManufacturar, '') AS RetailerOrManufacturar,
+            ISNULL(StateCode, '') AS StateCode
+        FROM Company_Detail";
 
                 cmdAccountCode = new SqlCommand(sql, conn);
                 rdrAccount = cmdAccountCode.ExecuteReader();
@@ -836,9 +840,11 @@ public class HomeController : Controller
                 if (rdrAccount.HasRows)
                 {
                     IsDrOpen = true;
+
                     while (rdrAccount.Read())
                     {
-                        RetailerOrManufacturar = rdrAccount.GetString(0);
+                        RetailerOrManufacturar = rdrAccount["RetailerOrManufacturar"].ToString();
+                        CompanyStateCode = rdrAccount["StateCode"].ToString();
                     }
                 }
 
@@ -1020,6 +1026,7 @@ public class HomeController : Controller
             HttpContext.Session.SetString("DeptName", DepName);
             HttpContext.Session.SetString("DeptId", DepId.ToString());
             HttpContext.Session.SetString("RetailerOrManufacturar", RetailerOrManufacturar);
+            HttpContext.Session.SetString("CompanyStateCode", CompanyStateCode);
             var client = GetClientIpAddress(HttpContext);
             string host = client.Hostname;
             string ip = client.IpAddress;

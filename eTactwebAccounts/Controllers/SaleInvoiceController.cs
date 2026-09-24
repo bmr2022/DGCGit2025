@@ -1419,6 +1419,7 @@ namespace eTactWeb.Controllers
                 model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                
             }
             model.adjustmentModel = new AdjustmentModel();
 
@@ -1450,6 +1451,8 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(model.TaxDetailGridd == null ? new List<TaxModel>() : model.TaxDetailGridd));
             HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(model == null ? new SaleBillModel() : model));
             HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
+
+            ViewBag.CompanyStateCode = HttpContext.Session.GetString("CompanyStateCode");
 
             model.FromDateBack = FromDate;
             model.ToDateBack = ToDate;
@@ -1575,6 +1578,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(model.TaxDetailGridd == null ? new List<TaxModel>() : model.TaxDetailGridd));
             HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(model == null ? new SaleBillModel() : model));
             HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
+            ViewBag.CompanyStateCode = HttpContext.Session.GetString("CompanyStateCode");
 
             model.FromDateBack = fromDate;
             model.ToDateBack = toDate;

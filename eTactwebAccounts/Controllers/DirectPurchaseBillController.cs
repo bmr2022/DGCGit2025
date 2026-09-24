@@ -2534,7 +2534,7 @@ namespace eTactWeb.Controllers
                         string rateStr = sheet.Cells[row, 2].Value?.ToString()?.Trim();
                         string qtyStr = sheet.Cells[row, 3].Value?.ToString()?.Trim();
                         string disStr = sheet.Cells[row, 4].Value?.ToString()?.Trim();
-                        string ItemLocation = sheet.Cells[row, 5].Value?.ToString()?.Trim();
+                        string ItemLocation = sheet.Cells[row, 5].Value?.ToString()??"".Trim();
                         //string storename = sheet.Cells[row, 5]?.Value?.ToString()?.Trim() ?? "";
 
                         if (string.IsNullOrEmpty(partCode))
