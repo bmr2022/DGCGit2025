@@ -1305,7 +1305,7 @@
                             // Store old values before changing the row
                             let oldItemCode = row.find(".ItemCode-input").val();
                             let oldPartCode = row.find(".partcode-input").val();
-                            if (isItemAlreadyAdded(ui.item.itemCode, row)) {
+                            if (isItemAlreadyAdded(ui.item.itemCode,0, row)) {
 
                                 $.notify("Item already added in grid");
 
@@ -1392,7 +1392,7 @@
                             let oldItemCode = row.find(".ItemCode-input").val();
                             let oldPartCode = row.find(".partcode-input").val();
 
-                            if (isItemAlreadyAdded(ui.item.itemCode, row)) {
+                            if (isItemAlreadyAdded(ui.item.itemCode,0, row)) {
 
                                 $.notify("Item already added in grid");
 
@@ -1466,7 +1466,7 @@
                                     list.find(i => i.real.startsWith(entered));
 
                                 if (match) {
-                                    if (isItemAlreadyAdded(match.Item_Code, row)) {
+                                    if (isItemAlreadyAdded(match.Item_Code,0, row)) {
 
                                         $.notify("Item already added in grid");
 
@@ -1533,7 +1533,7 @@
                                 );
 
                                 if (match) {
-                                    if (isItemAlreadyAdded(match.Item_Code, row)) {
+                                    if (isItemAlreadyAdded(match.Item_Code,0, row)) {
 
                                         $.notify("Item already added in grid");
 
@@ -1568,7 +1568,7 @@
             }
 
 
-            function isItemAlreadyAdded(itemCode, currentRow) {
+            function isItemAlreadyAdded(itemCode,rate, currentRow) {
 
                 let exists = false;
 
@@ -1579,8 +1579,9 @@
                     if (row[0] !== currentRow[0]) {
 
                         let code = row.find(".ItemCode-input").val();
+                        let itemrate = row.find(".rate").val();
 
-                        if (code && code == itemCode) {
+                        if (code && code == itemCode && itemrate==rate) {
                             exists = true;
                             return false;
                         }
@@ -1589,6 +1590,38 @@
 
                 return exists;
             }
+
+
+                        $(document).on("change", "#ItemDetailTable .rate", function () {
+
+                let rateInput = $(this);
+                let currentRow = rateInput.closest("tr");
+
+                let itemCode = currentRow.find(".ItemCode-input").val();
+                let rate = rateInput.val();
+
+                if (!itemCode || !rate) {
+
+                    return;
+                }
+
+                if (isItemAlreadyAdded(itemCode, rate, currentRow)) {
+
+                    $.notify(
+                        "Same Item Code with same Rate is already added.",
+                        {
+                            className: "error",
+                            globalPosition: "top center",
+                            autoHideDelay: 3000
+                        }
+                    );
+
+                    // Optional: clear the changed rate
+                    rateInput.val("");
+
+                    return false;
+                }
+            });
             function GetDiscAccountGroupWise(row) {
 
             var AccountCode = $('#AccountCode').val();
@@ -1654,6 +1687,26 @@
 
                             // ✅ Fill Grid Fields
                             $(row).find('.rate').val(rate.toFixed(2));
+
+
+                            
+                                        if (isItemAlreadyAdded(itemCode,rate, row)) {
+
+                                            $.notify("Item already added in grid");
+
+                                            row.find(".partcode-input").val('');
+                                            row.find(".itemname-input").val('');
+                                            row.find(".other-detail-input").val('');
+                                            row.find(".ItemCode-input").val('');
+
+
+                                            row.find(".partcode-input").focus();
+
+                                            return false;
+                                        }
+
+
+
                             $(row).find('.RejRate').val(rate.toFixed(2));
                             $(row).find('.Unit').val(data.unit);
                             $(row).find('.HSNNo').val(data.HsnNo);

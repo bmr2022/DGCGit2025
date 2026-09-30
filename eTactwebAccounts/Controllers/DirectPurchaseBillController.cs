@@ -2558,12 +2558,7 @@ namespace eTactWeb.Controllers
                         if (!decimal.TryParse(disStr, out decimal discountPer))
                             discountPer = 0;
 
-                        // Check duplicate
-                        if (successList.Any(x => x.PartText == partCode))
-                        {
-                            errorList.Add($"Row {row} → Duplicate Part Code: {partCode}");
-                            continue;
-                        }
+                       
 
                         // Fetch item details
                         var itemData = await _SaleBill.AutoFillitem("AutoFillPartCode", partCode);
@@ -2647,6 +2642,13 @@ namespace eTactWeb.Controllers
                         else
                         {
                             errorList.Add($"Row {row} → Invalid Rate qty : {qtyStr} Rate:{rateStr}");
+                            continue;
+                        }
+
+                        // Check duplicate
+                        if (successList.Any(x => x.PartText == partCode && x.Rate==rate))
+                        {
+                            errorList.Add($"Row {row} → Duplicate Part Code: {partCode}");
                             continue;
                         }
 

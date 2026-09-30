@@ -967,22 +967,13 @@ namespace eTactWeb.Controllers
                             continue;
                         }
 
-                        //if (!decimal.TryParse(rateStr, out decimal rate))
-                        //{
-                        //    errorList.Add($"Row {row} → Invalid Rate: {rateStr}");
-                        //    continue;
-                        //}
+                        
+                        
 
                         if (!decimal.TryParse(disStr, out decimal discountPer))
                             discountPer = 0;
 
-                        // Check duplicate
-                        if (successList.Any(x => x.PartCode == partCode))
-                        {
-                            errorList.Add($"Row {row} → Duplicate Part Code: {partCode}");
-                            continue;
-                        }
-
+                        
                         // Fetch item details
                         var itemData = await _SaleBill.AutoFillitem("AutoFillPartCode", partCode);
 
@@ -1067,6 +1058,14 @@ namespace eTactWeb.Controllers
                             errorList.Add($"Row {row} → Invalid Rate qty : {qtyStr} Rate:{rateStr}");
                             continue;
                         }
+
+                        // Check duplicate
+                        if (successList.Any(x => x.PartCode == partCode && x.Rate == rate))
+                        {
+                            errorList.Add($"Row {row} → Duplicate Part Code: {partCode}");
+                            continue;
+                        }
+
 
                         decimal basicAmt = qty * rate;
                         decimal discountAmt = basicAmt * (discountPer / 100);
