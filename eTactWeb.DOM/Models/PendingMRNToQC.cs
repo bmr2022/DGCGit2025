@@ -9,9 +9,13 @@ namespace eTactWeb.DOM.Models
 {
     public class PendingMRNToQC
     {
+        public int YearCode { get; set; }
+        public int AccountCode { get; set; }
         public string? UserType { get; set; }
+        public string? formKey { get; set; }
+        public string? uniqueKey { get; set; }
         public string? FromDate { get; set; }
-        public string? ToDate { get; set;}
+        public string? ToDate { get; set; }
         public string? MrnJW { get; set; }
         public string? MrnNo { get; set; }
         public string? VendorName { get; set; }
@@ -19,8 +23,7 @@ namespace eTactWeb.DOM.Models
         public int? ItemCode { get; set; }
         public string? ItemName { get; set; }
         public string? PartCode { get; set; }
-        public int? DeptName { get; set; }  
-
+        public int? DeptName { get; set; }
         public IList<TextValue>? AccountList { get; set; }
         public IList<TextValue>? InvNoList { get; set; }
         public IList<TextValue>? MRNNoList { get; set; }

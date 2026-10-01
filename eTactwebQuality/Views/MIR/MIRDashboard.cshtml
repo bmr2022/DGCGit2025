@@ -10,7 +10,7 @@
             <h5>
                 MATERIAL INSPECTION REPORT - <strong>Dashboard</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="PendingMRNtoQc" asp-controller="PendingMRNtoQc" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="PendingMRNtoQc" asp-route-formKey="@ViewBag.formKey" asp-controller="PendingMRNtoQc" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                         Add New
                     </a>
@@ -27,6 +27,8 @@
                                     <div class="col">
                                         <label class="form-label">From Date</label>
                                         <input asp-for="FromDate" maxlength="10" class="form-control" />
+                                        <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                            <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                                     </div>
                                     <div class="col">
                                         <label class="form-label">To Date</label>
@@ -34,12 +36,21 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                            <div class="col-xxl-1 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                 <label asp-for="DashboardType" class="form-label">Dashboard Type</label>
                                 <select asp-for="DashboardType" class="form-select" onchange="GetSearchData();">
                                     <option value="" disabled>-Select-</option>
                                     <option value="Summary" selected>Summary</option>
                                     <option value="Detail">Detail</option>
+                                </select>
+                            </div>
+                            <div class="col-xxl-1 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <label asp-for="MRNJWCustJW" class="form-label">Mrn Type</label>
+                                <select asp-for="MRNJWCustJW" class="form-select" onchange="GetSearchData();">
+                                    <option value="" disabled>-Select-</option>
+                                    <option value="MRN" selected>MRN</option>
+                                    <option value="VENDOR JOBWORK">JW</option>
+                                    <option value="CUSTOMER JOBWORK">Customer JW</option>
                                 </select>
                             </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
@@ -48,21 +59,26 @@
                             </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="MRNNo" class="form-label">MRN No</label>
-                                <select class="form-select" asp-for="MRNNo" asp-items="@(new SelectList(Model.MRNList,"Value","Text"))">
+                                @* <select class="form-select" asp-for="MRNNo" asp-items="@(new SelectList(Model.MRNList,"Value","Text"))">
                                     <option value=''>-Select-</option>
-                                </select>
+                                </select> *@
+                                <input asp-for="MRNNo" class="form-control" />
                             </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="GateNo" class="form-label">Gate No</label>
-                                <select class="form-select" asp-for="GateNo" asp-items="@(new SelectList(Model.GateList,"Value","Text"))">
+                                @* <select class="form-select" asp-for="GateNo" asp-items="@(new SelectList(Model.GateList,"Value","Text"))">
                                     <option value=''>-Select-</option>
-                                </select>
+                                </select> *@
+                                <input asp-for="GateNo" class="form-control" />
+
                             </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="MIRNo" class="form-label">MIR No</label>
-                                <select class="form-select" asp-for="MIRNo" asp-items="@(new SelectList(Model.MIRList,"Value","Text"))">
+                                @* <select class="form-select" asp-for="MIRNo" asp-items="@(new SelectList(Model.MIRList,"Value","Text"))">
                                     <option value=''>-Select-</option>
-                                </select>
+                                </select> *@
+                                <input asp-for="MIRNo" class="form-control" />
+
                             </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="ItemName" class="form-label">Item Name</label>
@@ -114,8 +130,11 @@
 @section Scripts
 {
     <script>
+        var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
         $(function () {
-             
+              formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
             var FromDateBack = sessionStorage.getItem('FromDateBack');
             var ToDateBack = sessionStorage.getItem('ToDateBack');
             var ItemNameBack = sessionStorage.getItem('ItemNameBack');
@@ -138,12 +157,12 @@
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
 
-            AutoComplete('VMIRMainDetail', 'VendorName', 'Account_Name', null);
-            AutoComplete('VMIRMainDetail', 'ItemName', 'item_name', null);
-            AutoComplete('VMIRMainDetail', 'PartCode', 'partcode', null);
-            $('#MIRNo').select2();
-            $('#GateNo').select2();
-            $('#MRNNo').select2();
+            // AutoComplete('VMIRMainDetail', 'VendorName', 'Account_Name', null);
+            // AutoComplete('VMIRMainDetail', 'ItemName', 'item_name', null);
+            // AutoComplete('VMIRMainDetail', 'PartCode', 'partcode', null);
+            // $('#MIRNo').select2();
+            // $('#GateNo').select2();
+            // $('#MRNNo').select2();
 
             if (FromDateBack != null) {
                  
@@ -159,6 +178,17 @@
 
             }
             GetSearchData();
+                bindAutocomplete("#VendorName", '@Url.Action("GetVendorNameList")', "VendorName");
+
+                bindAutocomplete("#MRNNo", '@Url.Action("GetMRNNoList")', "MRNNo");
+       
+                bindAutocomplete("#GateNo", '@Url.Action("GetGateNoList")', "GateNo");
+       
+                bindAutocomplete("#MIRNo", '@Url.Action("GetMIRNoList")', "MIRNo");
+       
+                bindAutocomplete("#ItemName", '@Url.Action("GetItemNameList")', "ItemName");
+
+                bindAutocomplete("#PartCode", '@Url.Action("GetPartCodeList")', "PartCode");
         });
 
         function formatDate(date) {
@@ -401,6 +431,7 @@
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
+                data:{formKey:formKey},
                 success: function (data) {
                     console.log("data of right",data);
                     if (data != null) {
@@ -471,7 +502,59 @@
             });
         }
 
+        function bindAutocomplete(selector, urlAction, valueField) {
 
+            const sourceFn = function (request, response) {
+                $.ajax({
+                    url: urlAction,
+                    type: 'POST',
+                    data: { search: request.term },
+
+                    success: function (result) {
+
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        console.log("Parsed Result:", obj);
+                                
+                        if (obj.StatusCode === 200 &&
+                            obj.Result &&
+                            Array.isArray(obj.Result.Table)) {
+
+                            let term = request.term.toLowerCase();
+
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                return (item[valueField] || "")
+                                    .toLowerCase()
+                                    .includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item[valueField],
+                                    value: item[valueField]
+                                };
+                            }));
+
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            $(selector).autocomplete({
+                source: sourceFn,
+                minLength: 2,
+                select: function (event, ui) {
+                    $(this).val(ui.item.value);
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $(this).val(ui.item.value);
+                    return false;
+                }
+            });
+        }
 
 
     </script>

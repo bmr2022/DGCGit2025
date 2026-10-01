@@ -13,29 +13,38 @@ namespace eTactWeb.Services.Interface
         Task<DataSet> BindBranch(string Flag);
         Task<ResponseResult> GetMRNNo(string Flag, string SPName, string FromDate, string ToDate, string MRNCustJW);
         Task<ResponseResult> AddPassWord();
+        Task<ResponseResult> AllowBackDateONMIR();
 
-        Task<ResponseResult> GetMRNData(string Flag, string SPName, string MRNNo, int MRNYearCode,int GateNo,int GateYear,int GateEntryId, string MRNCustJW);
+        Task<ResponseResult> GetMRNData(string Flag, string SPName, string MRNNo, int MRNYearCode, int GateNo, int GateYear, int GateEntryId, string MRNCustJW);
         Task<MirModel> GetMIRMainItem(string Flag, string SPName, string MRNNo, int MRNYearCode, int GateNo, int GateYear, int GateEntryId, string MRNCustJW);
-        Task<ResponseResult> GetMIRFromPend(string Flag, string SPName, string MRNNo, int MRNYearCode,string MRNCustJW);
+        Task<ResponseResult> GetMIRFromPend(string Flag, string SPName, string MRNNo, int MRNYearCode, string MRNCustJW);
         Task<ResponseResult> GetStore(string Flag, string SPName);
         Task<ResponseResult> GetRewStore(string Flag, string SPName);
         Task<ResponseResult> GetHoldStore(string Flag, string SPName);
-        Task<ResponseResult> GetRecOkStore(int ItemCode,string Flag, string SPName);
-        Task<ResponseResult> GetGateData(string Flag, string SPName,string mrnNo, string MRNYearCode, string MRNCustJW);
+        Task<ResponseResult> GetRecOkStore(int ItemCode, string Flag, string SPName);
+        Task<ResponseResult> GetGateData(string Flag, string SPName, string mrnNo, string MRNYearCode, string MRNCustJW);
         Task<ResponseResult> GetEmployeeList(string Flag, string SPName);
         Task<ResponseResult> GetNewEntry(string Flag, int YearCode, string SPName);
         Task<ResponseResult> AllowUpdelete(int EntryId, string YearCode);
-        Task<MIRQDashboard> GetSearchData(string VendorName, string MrnNo,string GateNo,string MirNo, string ItemName, string FromDate, string ToDate);
-        Task<MIRQDashboard> GetDashboardDetailData(string VendorName, string MrnNo, string GateNo, string MirNo,string ItemName, string FromDate, string ToDate);
+        Task<MIRQDashboard> GetSearchData(string VendorName, string MrnNo, string GateNo, string MirNo, string ItemName, string FromDate, string ToDate, string MRNJWCustJW);
+        Task<MIRQDashboard> GetDashboardDetailData(string VendorName, string MrnNo, string GateNo, string MirNo, string ItemName, string FromDate, string ToDate, string MRNJWCustJW, string PartCode);
         Task<ResponseResult> SaveMIR(MirModel model, DataTable MIRGrid);
         Task<ResponseResult> CheckEditOrDelete(int EntryId, int YearCode);
         Task<ResponseResult> GetDashboardData();
         Task<ResponseResult> GetSearchData(MIRQDashboard model);
         Task<MirModel> GetViewByID(int ID, int YearCode);
         Task<ResponseResult> GetFormRights(int uId);
-        Task<ResponseResult> GetOkRecStore(int ItemCode,string ShowAllStore,string GateNo);
+        Task<ResponseResult> GetOkRecStore(int ItemCode, string ShowAllStore, string GateNo);
         Task<ResponseResult> DeleteByID(int ID, int YC);
-        Task<ResponseResult> GetReportName();
+        Task<ResponseResult> GetReportName(string MRNJWCustJW);
+        Task<ResponseResult> GetReportNameforbarcode();
         Task<ResponseResult> GenerateBarCodeTag(string MIRNo, int YearCode, string ItemCodes);
+        Task<ResponseResult> getMirItemCodes(string MIRNo, int YearCode);
+        Task<ResponseResult> GetVendorNameList(string search);
+        Task<ResponseResult> GetMRNNoList(string search);
+        Task<ResponseResult> GetGateNoList(string search);
+        Task<ResponseResult> GetMIRNoList(string search);
+        Task<ResponseResult> GetItemNameList(string search);
+        Task<ResponseResult> GetPartCodeList(string search);
     }
 }

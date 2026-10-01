@@ -3,8 +3,15 @@
 @using System.Reflection.PortableExecutable
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
-}
+var context = HttpContextAccessor.HttpContext;
+    string formKey =
+           context.Request.Query["formKey"].FirstOrDefault()
+        ?? context.Request.Headers["FormKey"].FirstOrDefault()
+
+        ??Model.formKey
+        ?? "";
+        string uniqueKey=Model.uniqueKey;
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"YearCode_{formKey}"));}
 @if (Model.DashboardType == "Detail")
 {
     <partial name="_MIRDetailDashboard" />
@@ -51,8 +58,17 @@
                             <th>@Cntr</th>
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
+                                        <div id="barcodeData-@Cntr">
+                                            <a class="table-link link-dark" asp-action="PrintBarcodeTag" target="_blank"
+                                               asp-route-MIRNo="@item.MIRNo" asp-route-YearCode="@item.YearCode" asp-route-ItemCodes="@item.partcode">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-barcode fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
                                         <div id="printData-@Cntr">
-                                            <a class="table-link link-dark" asp-action="PrintReport" target="_blank" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.YearCode" asp-route-MrnNo="@item.MRNNo">
+                                            <a class="table-link link-dark" asp-action="PrintReport" target="_blank" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.YearCode" asp-route-MrnNo="@item.MRNNo" asp-route-MRNJWCustJW="@item.MRNJWCustJW">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
@@ -60,7 +76,7 @@
                                             </a>
                                         </div>
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-action="MIR" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event,'@item.EntryId','@item.YearCode');">
+                                        <a class="table-link link-success" asp-action="MIR" asp-route-formKey="@formKey" asp-route-uniqueKey="@uniqueKey" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event,'@item.EntryId','@item.YearCode');">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -70,7 +86,7 @@
                                     @if (item.PurchaseBillBooked == "N" && item.MaterialIssued == "N" && item.YearCode == yearCode)
                                     {
                                             <div id="editCursorDiv-@Cntr">
-                                                <a class="table-link link-primary" onclick="confirmEdit(event,'@item.EntryId','@item.YearCode')" asp-action="MIR" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                                <a class="table-link link-primary" asp-route-formKey="@formKey" asp-route-uniqueKey="@uniqueKey" onclick="confirmEdit(event,'@item.EntryId','@item.YearCode')" asp-action="MIR" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>

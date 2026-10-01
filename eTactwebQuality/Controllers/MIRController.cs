@@ -38,14 +38,14 @@ namespace eTactWeb.Controllers
             this._iconfiguration = iconfiguration;
             _connectionStringService = connectionStringService;
         }
-        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo = "")
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo = "", string MRNJWCustJW = "")
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
             var webReport = new WebReport();
             webReport.Report.Clear();
-            var ReportName = _IMirModule.GetReportName();
+            var ReportName = _IMirModule.GetReportName(MRNJWCustJW);
             webReport.Report.Dispose();
             webReport.Report = new Report();
             if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
@@ -61,19 +61,33 @@ namespace eTactWeb.Controllers
             //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
-            webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
-            webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
+            if (MRNJWCustJW == "MRN")
+            {
+                webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
+                webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
+            }
+            else if (MRNJWCustJW == "VENDOR JOBWORK")
+            {
+                webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
+                webReport.Report.SetParameterValue("yearcodeparam", YearCode);
+            }
+            else
+            {
+
+            }
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             webReport.Report.Refresh();
             return View(webReport);
         }
         [Route("{controller}/Index")]
-        public async Task<IActionResult> MIR()
+        public async Task<IActionResult> MIR(string formKey, string uniqueKey)
         {
+            ViewBag.formKey = formKey;
+            ViewBag.uniqueKey = uniqueKey;
             ViewData["Title"] = "Quality Module Details";
             TempData.Clear();
-            //_MemoryCache.Remove("KeyMIRGrid");
-            HttpContext.Session.Remove("KeyMIRGrid");
+            //_MemoryCache.Remove($"KeyMIRGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyMIRGrid_{uniqueKey}");
             var MainModel = new MirModel();
             MainModel = await BindModel(MainModel);
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
@@ -82,15 +96,15 @@ namespace eTactWeb.Controllers
                 SlidingExpiration = TimeSpan.FromMinutes(55),
                 Size = 1024,
             };
-            //_MemoryCache.Set("KeyMIRGrid", MainModel, cacheEntryOptions);
+            //_MemoryCache.Set($"KeyMIRGrid_{uniqueKey}", MainModel, cacheEntryOptions);
 
             string serializedGrid = JsonConvert.SerializeObject(MainModel);
-            HttpContext.Session.SetString("KeyMIRGrid", serializedGrid);
+            HttpContext.Session.SetString($"KeyMIRGrid_{uniqueKey}", serializedGrid);
 
 
-            //_MemoryCache.TryGetValue("KeyMIRGrid", out List<MirDetail> MIRDetail);
+            //_MemoryCache.TryGetValue($"KeyMIRGrid_{uniqueKey}", out List<MirDetail> MIRDetail);
 
-            string modelJson = HttpContext.Session.GetString("KeyMIRGrid");
+            string modelJson = HttpContext.Session.GetString($"KeyMIRGrid_{uniqueKey}");
             List<MirDetail> MIRDetail = new List<MirDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
@@ -101,10 +115,12 @@ namespace eTactWeb.Controllers
             MainModel.FromPend = "Y";
             if (MainModel.Mode != "U")
             {
-                MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.ActualEnteredByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                 MainModel.CreatedOn = DateTime.Now;
             }
+            MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"FromDate_{formKey}"));
+            MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"ToDate_{formKey}"));
             return View(MainModel);
         }
         [HttpPost]
@@ -115,24 +131,26 @@ namespace eTactWeb.Controllers
             var modelFrmDate = model.FromDate;
             var modelToDate = model.ToDate;
             var qc = model.MRNJWCustJW;
-            if(qc == "MRN")
+            var formKey = model.formKey;
+            var uniqueKey = model.uniqueKey;
+            if (qc == "MRN")
             {
                 model.QcType = "M";
             }
-            else if(qc == "VENDOR JOBWORK")
+            else if (qc == "VENDOR JOBWORK")
             {
                 model.QcType = "V";
             }
-            else if(qc == "CUSTOMER JOBWORK")
+            else if (qc == "CUSTOMER JOBWORK")
             {
-                model.QcType= "C";
+                model.QcType = "C";
             }
             try
             {
                 var MIRGrid = new DataTable();
-                //_MemoryCache.TryGetValue("KeyMIRGrid", out List<MirDetail> MIRDetail);
+                //_MemoryCache.TryGetValue($"KeyMIRGrid_{uniqueKey}", out List<MirDetail> MIRDetail);
 
-                string modelJson = HttpContext.Session.GetString("KeyMIRGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyMIRGrid_{uniqueKey}");
                 List<MirDetail> MIRDetail = new List<MirDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -152,23 +170,25 @@ namespace eTactWeb.Controllers
                     MIRGrid = GetDetailTable(MIRDetail);
                     if (model.Mode == "U")
                     {
-                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        model.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                        model.UpdatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                     }
-                    model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
-                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                    model.EntryByMachineName = HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+                    model.IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
                     model = await BindModel(model);
                     var Result = await _IMirModule.SaveMIR(model, MIRGrid);
                     if (Result != null)
                     {
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
                         {
+                            HttpContext.Session.Remove($"KeyMIRGrid_{uniqueKey}");
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
                             TempData["SuccessMessage"] = "Data Saved successfully!";
                         }
                         else if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
+                            HttpContext.Session.Remove($"KeyMIRGrid_{uniqueKey}");
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
                             TempData["SuccessMessage"] = "Data Updated successfully!";
@@ -178,7 +198,7 @@ namespace eTactWeb.Controllers
                             ViewBag.isSuccess = false;
                             TempData["500"] = "500";
                             _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                            return View("Error", Result);
+                            // return View("Error", Result);
                         }
                         else if (!string.IsNullOrEmpty(Result.StatusText))
                         {
@@ -195,7 +215,7 @@ namespace eTactWeb.Controllers
                     model.DateIntact = "Y";
                     model.FromDate = modelFrmDate;
                     model.ToDate = modelToDate;
-                    return RedirectToAction("PendingMRNtoQc", "PendingMRNtoQC");
+                    return RedirectToAction("PendingMRNtoQc", "PendingMRNtoQC", new { formKey = formKey });
                 }
             }
             catch (Exception ex)
@@ -214,19 +234,21 @@ namespace eTactWeb.Controllers
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> MIR(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string ItemName = "", string MRNNO = "", string VendorName = "", string INVNo = "", string Deptname = "", string PartCode = "", string MRNJW = "")//, ILogger logger)
+        public async Task<ActionResult> MIR(string formKey, string uniqueKey, int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string ItemName = "", string MRNNO = "", string VendorName = "", string INVNo = "", string Deptname = "", string PartCode = "", string MRNJW = "")//, ILogger logger)
         {
+            ViewBag.formKey = formKey;
+            ViewBag.uniqueKey = uniqueKey;
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
             var MainModel = new MirModel();
-            //_MemoryCache.Remove("KeyMIRGrid");
-            HttpContext.Session.Remove("KeyMIRGrid");
+            //_MemoryCache.Remove($"KeyMIRGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyMIRGrid_{uniqueKey}");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IMirModule.GetViewByID(ID, YC).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
-                MainModel.YearCode= YC;
+                MainModel.YearCode = YC;
                 MainModel = await BindModel(MainModel).ConfigureAwait(false);
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
@@ -234,17 +256,17 @@ namespace eTactWeb.Controllers
                     SlidingExpiration = TimeSpan.FromMinutes(55),
                     Size = 1024,
                 };
-                //_MemoryCache.Set("KeyMIRGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                //_MemoryCache.Set($"KeyMIRGrid_{uniqueKey}", MainModel.ItemDetailGrid, cacheEntryOptions);
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                HttpContext.Session.SetString("KeyMIRGrid", serializedGrid);
+                HttpContext.Session.SetString($"KeyMIRGrid_{uniqueKey}", serializedGrid);
 
             }
             else
             {
                 ViewData["Title"] = "Quality Module Details";
                 TempData.Clear();
-                //_MemoryCache.Remove("KeyMIRGrid");
-                HttpContext.Session.Remove("KeyMIRGrid");
+                //_MemoryCache.Remove($"KeyMIRGrid_{uniqueKey}");
+                HttpContext.Session.Remove($"KeyMIRGrid_{uniqueKey}");
                 var MainModel1 = new MirModel();
                 MainModel1 = await BindModel(MainModel1);
                 MainModel1.FromDateBack = FromDate;
@@ -262,29 +284,31 @@ namespace eTactWeb.Controllers
                     SlidingExpiration = TimeSpan.FromMinutes(55),
                     Size = 1024,
                 };
-                //_MemoryCache.Set("KeyMIRGrid", MainModel1.ItemDetailGrid, cacheEntryOptions);
+                //_MemoryCache.Set($"KeyMIRGrid_{uniqueKey}", MainModel1.ItemDetailGrid, cacheEntryOptions);
                 string serializedGrid = JsonConvert.SerializeObject(MainModel1.ItemDetailGrid);
-                HttpContext.Session.SetString("KeyMIRGrid", serializedGrid);
+                HttpContext.Session.SetString($"KeyMIRGrid_{uniqueKey}", serializedGrid);
 
 
                 MainModel1.DateIntact = "N";
                 MainModel1.FromPend = "Y";
                 if (MainModel1.Mode != "U")
                 {
-                    MainModel1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    MainModel1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                    MainModel1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                    MainModel1.ActualEnteredByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                     MainModel1.CreatedOn = DateTime.Now;
-                    MainModel1.CC = HttpContext.Session.GetString("Branch");
-                   MainModel1.YearCode  =  Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                    MainModel1.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+                    MainModel1.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
                 }
-                //_MemoryCache.TryGetValue("KeyMIRGrid", out List<MirDetail> MIRDetail);
+                //_MemoryCache.TryGetValue($"KeyMIRGrid_{uniqueKey}", out List<MirDetail> MIRDetail);
 
-               string modelJson = HttpContext.Session.GetString("KeyMIRGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyMIRGrid_{uniqueKey}");
                 List<MirDetail> MIRDetail = new List<MirDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     MIRDetail = JsonConvert.DeserializeObject<List<MirDetail>>(modelJson);
                 }
+                MainModel1.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"FromDate_{formKey}"));
+                MainModel1.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"ToDate_{formKey}"));
 
                 return View(MainModel1);
             }
@@ -292,13 +316,15 @@ namespace eTactWeb.Controllers
             //MainModel.FromPend = "Y";
             if (MainModel.Mode != "U")
             {
-                MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.ActualEnteredByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                 MainModel.CreatedOn = DateTime.Now;
-                MainModel.CC = HttpContext.Session.GetString("Branch");
-                MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                MainModel.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+                MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
 
             }
+            MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"FromDate_{formKey}"));
+            MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"ToDate_{formKey}"));
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
             MainModel.ItemNameBack = ItemName;
@@ -307,12 +333,15 @@ namespace eTactWeb.Controllers
 
             return View(MainModel);
         }
-        public async Task<IActionResult> MIRDashboard(string Flag="True",string FromDate = "", string ToDate = "", string VendorName = "", string MRNNo = "", string GateNo = "", string MIRNo = "", string ItemName = "", string PartCode = "", string DashboardType = "", string Searchbox = "")
+        public async Task<IActionResult> MIRDashboard(string formKey, string Flag = "True", string FromDate = "", string ToDate = "", string VendorName = "", string MRNNo = "", string GateNo = "", string MIRNo = "", string ItemName = "", string PartCode = "", string DashboardType = "", string Searchbox = "")
         {
             try
             {
-                //_MemoryCache.Remove("KeyMIRGrid");
-                HttpContext.Session.Remove("KeyMIRGrid");
+                ViewBag.formKey = formKey;
+                var uniqueKey = Guid.NewGuid().ToString();
+                ViewBag.uniqueKey = uniqueKey;
+                //_MemoryCache.Remove($"KeyMIRGrid_{uniqueKey}");
+                HttpContext.Session.Remove($"KeyMIRGrid_{uniqueKey}");
                 var model = new MIRQDashboard();
                 var Result = await _IMirModule.GetDashboardData().ConfigureAwait(true);
                 if (Result != null)
@@ -366,13 +395,13 @@ namespace eTactWeb.Controllers
                 {
                     model.FromDate = FromDate;
                     model.ToDate = ToDate;
-                    model.VendorName=VendorName;
-                    model.ItemName=ItemName;
-                    model.PartCode=PartCode;
-                    model.MRNNo=MRNNo;
-                    model.MIRNo=MIRNo;
-                    model.Searchbox=Searchbox;
-                    model.DashboardType=DashboardType;
+                    model.VendorName = VendorName;
+                    model.ItemName = ItemName;
+                    model.PartCode = PartCode;
+                    model.MRNNo = MRNNo;
+                    model.MIRNo = MIRNo;
+                    model.Searchbox = Searchbox;
+                    model.DashboardType = DashboardType;
                     return View(model);
                 }
                 return View(model);
@@ -382,9 +411,9 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<JsonResult> GetNewEntry()
+        public async Task<JsonResult> GetNewEntry(string formKey)
         {
-            int YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            int YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
             var JSON = await _IMirModule.GetNewEntry("GETNEWENTRY", YearCode, "SPMIR");
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -435,12 +464,15 @@ namespace eTactWeb.Controllers
             MIRGrid.Columns.Add("AllowDebitNote", typeof(string));
             MIRGrid.Columns.Add("Rate", typeof(decimal));
             MIRGrid.Columns.Add("rateinother", typeof(decimal));
-            MIRGrid.Columns.Add("PODate", typeof(DateTime));
-           // MIRGrid.Columns.Add("ItemColor", typeof(string));
+            MIRGrid.Columns.Add("PODate", typeof(string));
+            // MIRGrid.Columns.Add("ItemColor", typeof(string));
             MIRGrid.Columns.Add("FilePath", typeof(string));
             MIRGrid.Columns.Add("MRNNO", typeof(string));
             MIRGrid.Columns.Add("MRNYearCode", typeof(int));
             MIRGrid.Columns.Add("MRNJWCUSTJW", typeof(string));
+            MIRGrid.Columns.Add("RejectedReason", typeof(string));
+            MIRGrid.Columns.Add("ReworkReason", typeof(string));
+            MIRGrid.Columns.Add("ItemManufacturingDate", typeof(string));
 
             foreach (var Item in DetailList)
             {
@@ -484,12 +516,15 @@ namespace eTactWeb.Controllers
                     Item.AllowDebitNote ?? "",
                     Item.Rate == 0?0:Item.Rate,
                     Item.RateInOtherCurr == 0 ? 0 :Item.RateInOtherCurr,
-                    DateTime.Today,
+                    CommonFunc.ParseFormattedDate(Item.PODate),
                    // Item.Itemcolor,
                     Item.PathOfFileURL??"",
                     Item.MRNNo ?? "",
                     Item.MRNYearCode == 0 ? 0 : Item.MRNYearCode,
-                    Item.MRNJwCust ?? ""
+                    Item.MRNJwCust ?? "",
+                    Item.RejectedReason ?? "",
+                    Item.ReworkReason ?? "",
+                     ParseFormattedDate(Item.ItemManufacturingDate) ?? ""
                     });
             }
             MIRGrid.Dispose();
@@ -500,6 +535,7 @@ namespace eTactWeb.Controllers
             var oDataSet = new DataSet();
             var _List = new List<TextValue>();
             oDataSet = await _IMirModule.BindBranch("BINDBRANCH");
+            model.EntryTime = DateTime.Now.ToString("hh:mm tt");
 
             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
             {
@@ -539,14 +575,14 @@ namespace eTactWeb.Controllers
             }
             return Ok(ImageArray);
         }
-        public IActionResult AddToMIRGrid(List<MirDetail> model, List<string> ImageList)
+        public IActionResult AddToMIRGrid(List<MirDetail> model, List<string> ImageList, string uniqueKey)
         {
 
             try
             {
 
-                //_MemoryCache.TryGetValue("KeyMIRGrid", out IList<MirDetail> MirDetail);
-                string modelJson = HttpContext.Session.GetString("KeyMIRGrid");
+                //_MemoryCache.TryGetValue($"KeyMIRGrid_{uniqueKey}", out IList<MirDetail> MirDetail);
+                string modelJson = HttpContext.Session.GetString($"KeyMIRGrid_{uniqueKey}");
                 List<MirDetail> MirDetail = new List<MirDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -662,10 +698,10 @@ namespace eTactWeb.Controllers
                         }
 
                         MainModel.ItemDetailGrid = MIRGrid;
-                        //_MemoryCache.Set("KeyMIRGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                        //_MemoryCache.Set($"KeyMIRGrid_{uniqueKey}", MainModel.ItemDetailGrid, cacheEntryOptions);
 
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                        HttpContext.Session.SetString("KeyMIRGrid", serializedGrid);
+                        HttpContext.Session.SetString($"KeyMIRGrid_{uniqueKey}", serializedGrid);
 
                     }
                 }
@@ -676,12 +712,12 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public IActionResult DeleteItemRow(int SeqNo)
+        public IActionResult DeleteItemRow(int SeqNo, string uniqueKey)
         {
             var MainModel = new MirModel();
-            //_MemoryCache.TryGetValue("KeyMIRGrid", out List<MirDetail> MirDetail);
+            //_MemoryCache.TryGetValue($"KeyMIRGrid_{uniqueKey}", out List<MirDetail> MirDetail);
 
-            string modelJson = HttpContext.Session.GetString("KeyMIRGrid");
+            string modelJson = HttpContext.Session.GetString($"KeyMIRGrid_{uniqueKey}");
             List<MirDetail> MirDetail = new List<MirDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
@@ -713,33 +749,37 @@ namespace eTactWeb.Controllers
 
                 if (MirDetail.Count == 0)
                 {
-                    HttpContext.Session.Remove("KeyMIRGrid");
-                    //_MemoryCache.Remove("KeyMIRGrid");
+                    HttpContext.Session.Remove($"KeyMIRGrid_{uniqueKey}");
+                    //_MemoryCache.Remove($"KeyMIRGrid_{uniqueKey}");
                 }
+
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString($"KeyMIRGrid_{uniqueKey}", serializedGrid);
                 //_MemoryCache.Set("KeyMaterialReceiptGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
             }
             return PartialView("_MIRGrid", MainModel);
         }
-        public IActionResult EditItemRow(int SeqNo)
+        public IActionResult EditItemRow(int SeqNo, string uniqueKey)
         {
-            //_MemoryCache.TryGetValue("KeyMIRGrid", out IList<MirDetail> MirDetail);
-            string modelJson = HttpContext.Session.GetString("KeyMIRGrid");
+            //_MemoryCache.TryGetValue($"KeyMIRGrid_{uniqueKey}", out IList<MirDetail> MirDetail);
+            string modelJson = HttpContext.Session.GetString($"KeyMIRGrid_{uniqueKey}");
             List<MirDetail> MirDetail = new List<MirDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
                 MirDetail = JsonConvert.DeserializeObject<List<MirDetail>>(modelJson);
             }
 
-            var SSGrid = MirDetail.Where(x => x.SeqNo == SeqNo);
+            object SSGrid = MirDetail.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(SSGrid);
+            JsonString = JsonString.Replace(":null", ":\"\"");
             return Json(JsonString);
         }
-        public IActionResult DeleteByItemCode(int ItemCode,int SeqNo)
+        public IActionResult DeleteByItemCode(int ItemCode, int SeqNo, string uniqueKey)
         {
             var MainModel = new MirModel();
-            //_MemoryCache.TryGetValue("KeyMIRGridOnLoad", out List<MirDetail> MirDetail);
+            //_MemoryCache.TryGetValue($"KeyMIRGridOnLoad_{uniqueKey}", out List<MirDetail> MirDetail);
 
-            string modelJson = HttpContext.Session.GetString("KeyMIRGrid");
+            string modelJson = HttpContext.Session.GetString($"KeyMIRGridOnLoad_{uniqueKey}");
             List<MirDetail> MirDetail = new List<MirDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
@@ -750,7 +790,7 @@ namespace eTactWeb.Controllers
 
             if (MirDetail != null && MirDetail.Count > 0)
             {
-               // foreach(var )
+                // foreach(var )
                 MirDetail.RemoveAt(Convert.ToInt32(Indx));
 
                 Indx = 0;
@@ -772,25 +812,32 @@ namespace eTactWeb.Controllers
 
                 if (MirDetail.Count == 0)
                 {
-                    HttpContext.Session.Remove("KeyMIRGridOnLoad");
-                    //_MemoryCache.Remove("KeyMIRGridOnLoad");
+                    HttpContext.Session.Remove($"KeyMIRGridOnLoad_{uniqueKey}");
+                    //_MemoryCache.Remove($"KeyMIRGridOnLoad_{uniqueKey}");
+                }
+                else
+                {
+                    HttpContext.Session.SetString(
+                        $"KeyMIRGridOnLoad_{uniqueKey}",
+                        JsonConvert.SerializeObject(MirDetail)
+                    );
                 }
                 //_MemoryCache.Set("KeyMaterialReceiptGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
             }
             return PartialView("_MIRDetailGrid", MainModel);
-            //_MemoryCache.TryGetValue("KeyMIRGrid", out IList<MirDetail> MirDetail);
+            //_MemoryCache.TryGetValue($"KeyMIRGrid_{uniqueKey}", out IList<MirDetail> MirDetail);
             //var SSGrid = MirDetail.Where(x => x.ItemCode == ItemCode);
             //string JsonString = JsonConvert.SerializeObject(SSGrid);
             //return Json(JsonString);
         }
-        public async Task<JsonResult> GetFormRights()
+        public async Task<JsonResult> GetFormRights(string formKey)
         {
-            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var JSON = await _IMirModule.GetFormRights(userID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetOkRecStore(int ItemCode,string ShowAllStore, string GateNo)
+        public async Task<JsonResult> GetOkRecStore(int ItemCode, string ShowAllStore, string GateNo)
         {
             var JSON = await _IMirModule.GetOkRecStore(ItemCode, ShowAllStore, GateNo);
             string JsonString = JsonConvert.SerializeObject(JSON);
@@ -809,6 +856,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> AllowBackDateONMIR()
+        {
+            var JSON = await _IMirModule.AllowBackDateONMIR();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> GetGateData(string MRNNo, string MRNYearCode, string MRNCustJW)
         {
             var JSON = await _IMirModule.GetGateData("GateMRNData", "SPMIR", MRNNo, MRNYearCode, MRNCustJW);
@@ -821,10 +874,10 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetMIRMainItem(string MRNNo, int MRNYearCode, int GateNo, int GateYear, int GateEntryId, string MRNCustJW, int start = 0, int pageSize = 0)
+        public async Task<IActionResult> GetMIRMainItem(string uniqueKey, string MRNNo, int MRNYearCode, int GateNo, int GateYear, int GateEntryId, string MRNCustJW, int start = 0, int pageSize = 0)
         {
-            //_MemoryCache.Remove("KeyMIRGridOnLoad");
-            HttpContext.Session.Remove("KeyMIRGridOnLoad");
+            //_MemoryCache.Remove($"KeyMIRGridOnLoad_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyMIRGridOnLoad_{uniqueKey}");
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpiration = DateTime.Now.AddMinutes(60),
@@ -832,14 +885,14 @@ namespace eTactWeb.Controllers
                 Size = 1024,
             };
             var model = await _IMirModule.GetMIRMainItem("MIRMAINITEM", "SPMIR", MRNNo, MRNYearCode, GateNo, GateYear, GateEntryId, MRNCustJW);
-            //_MemoryCache.Set("KeyMIRGridOnLoad", model.ItemDetail, cacheEntryOptions);
+            //_MemoryCache.Set($"KeyMIRGridOnLoad_{uniqueKey}", model.ItemDetail, cacheEntryOptions);
             string serializedGrid = JsonConvert.SerializeObject(model.ItemDetail);
-            HttpContext.Session.SetString("KeyMIRGridOnLoad", serializedGrid);
+            HttpContext.Session.SetString($"KeyMIRGridOnLoad_{uniqueKey}", serializedGrid);
 
             if (model.ItemDetail != null)
             {
                 model.ItemDetail = model.ItemDetail.ToList();
-                model.MirTotalRows= model.ItemDetail.Count; 
+                model.MirTotalRows = model.ItemDetail.Count;
                 model.ItemDetail = model.ItemDetail
                             .AsEnumerable()
                             .Skip(start)
@@ -861,27 +914,31 @@ namespace eTactWeb.Controllers
         //    model.ItemDetail = mirDetail;
         //    return PartialView("_MIRDetailGrid", model);
         //}
-        public async Task<IActionResult> GetSearchData(string VendorName, string MrnNo, string GateNo,string MirNo,string ItemName, string FromDate, string ToDate)
+        public async Task<IActionResult> GetSearchData(string formKey, string uniqueKey, string VendorName, string MrnNo, string GateNo, string MirNo, string ItemName, string FromDate, string ToDate, string MRNJWCustJW)
         {
             var model = new MIRQDashboard();
-            model = await _IMirModule.GetSearchData(VendorName, MrnNo,GateNo,MirNo, ItemName, FromDate, ToDate);
+            model = await _IMirModule.GetSearchData(VendorName, MrnNo, GateNo, MirNo, ItemName, FromDate, ToDate, MRNJWCustJW);
             model.DashboardType = "Summary";
+            model.formKey = formKey;
+            model.uniqueKey = uniqueKey;
             return PartialView("_MIRDashboardGrid", model);
         }
-        public async Task<IActionResult> GetDetailData(string VendorName, string MrnNo, string GateNo, string MirNo,string ItemName, string FromDate, string ToDate)
+        public async Task<IActionResult> GetDetailData(string formKey, string uniqueKey, string VendorName, string MrnNo, string GateNo, string MirNo, string ItemName, string FromDate, string ToDate, string MRNJWCustJW, string PartCode)
         {
             var model = new MIRQDashboard();
-            model = await _IMirModule.GetDashboardDetailData(VendorName, MrnNo,GateNo,MirNo, ItemName, FromDate, ToDate);
+            model = await _IMirModule.GetDashboardDetailData(VendorName, MrnNo, GateNo, MirNo, ItemName, FromDate, ToDate, MRNJWCustJW, PartCode);
             model.DashboardType = "Detail";
+            model.formKey = formKey;
+            model.uniqueKey = uniqueKey;
             return PartialView("_MIRDashboardGrid", model);
         }
-        public JsonResult FillGridFromMemoryCache()
+        public JsonResult FillGridFromMemoryCache(string uniqueKey)
         {
             try
             {
-                //_MemoryCache.TryGetValue("KeyPendingMRNToQC", out IList<MIRFromPend> grid);
+                //_MemoryCache.TryGetValue($"KeyPendingMRNToQC_{uniqueKey}", out IList<MIRFromPend> grid);
 
-                string modelJson = HttpContext.Session.GetString("KeyPendingMRNToQC");
+                string modelJson = HttpContext.Session.GetString($"KeyPendingMRNToQC_{uniqueKey}");
                 IList<MIRFromPend> grid = new List<MIRFromPend>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -889,17 +946,17 @@ namespace eTactWeb.Controllers
                 }
 
 
-                //_MemoryCache.TryGetValue("KeyMIRGridFromMRN", out IList<MIRFromPend> grid2);
+                //_MemoryCache.TryGetValue($"KeyMIRGridFromMRN_{uniqueKey}", out IList<MIRFromPend> grid2);
 
-                string modelJson1 = HttpContext.Session.GetString("KeyMIRGridFromMRN");
+                string modelJson1 = HttpContext.Session.GetString($"KeyMIRGridFromMRN_{uniqueKey}");
                 IList<MIRFromPend> grid2 = new List<MIRFromPend>();
                 if (!string.IsNullOrEmpty(modelJson1))
                 {
                     grid2 = JsonConvert.DeserializeObject<IList<MIRFromPend>>(modelJson1);
                 }
-                //_MemoryCache.TryGetValue("KeyIssWOBom", out IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid);
+                //_MemoryCache.TryGetValue($"KeyIssWOBom_{uniqueKey}", out IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid);
 
-                string modelJson2 = HttpContext.Session.GetString("KeyIssWOBom");
+                string modelJson2 = HttpContext.Session.GetString($"KeyIssWOBom_{uniqueKey}");
                 IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid = new List<IssueWithoutBomDetail>();
                 if (!string.IsNullOrEmpty(modelJson2))
                 {
@@ -930,8 +987,8 @@ namespace eTactWeb.Controllers
 
                     }
                 }
-                //_MemoryCache.Remove("KeyIssWOBom");
-                HttpContext.Session.Remove("KeyIssWOBom");
+                //_MemoryCache.Remove($"KeyIssWOBom_{uniqueKey}");
+                HttpContext.Session.Remove($"KeyIssWOBom_{uniqueKey}");
 
                 return Json(MainModel);
             }
@@ -960,7 +1017,7 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> GetRecOkStore(int ItemCode)
         {
-            var JSON = await _IMirModule.GetRecOkStore(ItemCode,"FillOkRecStore", "SPMIR");
+            var JSON = await _IMirModule.GetRecOkStore(ItemCode, "FillOkRecStore", "SPMIR");
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -970,7 +1027,7 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YC,string FromDate="",string ToDate="",string VendorName="",string MRNNo="",string GateNo="",string MIRNo="",string ItemName="",string PartCode="",string DashboardType="",string Searchbox="")
+        public async Task<IActionResult> DeleteByID(int ID, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string MRNNo = "", string GateNo = "", string MIRNo = "", string ItemName = "", string PartCode = "", string DashboardType = "", string Searchbox = "")
         {
             var Result = await _IMirModule.DeleteByID(ID, YC);
 
@@ -990,7 +1047,7 @@ namespace eTactWeb.Controllers
                 TempData["500"] = "500";
             }
 
-            return RedirectToAction("MIRDashboard", new {Flag = "False", FromDate = FromDate, ToDate = ToDate, VendorName = VendorName, ItemName = ItemName, PartCode = PartCode, MRNNo = MRNNo, GateNo = GateNo, MIRNO = MIRNo, Searchbox = Searchbox, DashboardType = DashboardType });
+            return RedirectToAction("MIRDashboard", new { Flag = "False", FromDate = FromDate, ToDate = ToDate, VendorName = VendorName, ItemName = ItemName, PartCode = PartCode, MRNNo = MRNNo, GateNo = GateNo, MIRNO = MIRNo, Searchbox = Searchbox, DashboardType = DashboardType });
         }
         public async Task<JsonResult> CheckEditOrDelete(int EntryId, int YearCode)
         {
@@ -1001,59 +1058,116 @@ namespace eTactWeb.Controllers
         }
         [HttpPost]
 
-		public async Task<JsonResult> GenerateBarCodeTag(string MIRNo, int YearCode, string ItemCodes)
-		{
-			var JSON = await _IMirModule.GenerateBarCodeTag(MIRNo, YearCode, ItemCodes);
+        public async Task<JsonResult> GenerateBarCodeTag(string MIRNo, int YearCode, string ItemCodes)
+        {
+            var JSON = await _IMirModule.GenerateBarCodeTag(MIRNo, YearCode, ItemCodes);
 
-			// if SP saved successfully, build PrintReport URL
-			if (JSON != null && JSON.Result != null && JSON.Result.Tables.Count > 0 && JSON.Result.Tables[0].Rows.Count > 0)
-			{
-				// Example: take EntryId from your SP result (adjust column name accordingly)
-				int entryId = Convert.ToInt32(JSON.Result.Tables[0].Rows[0]["EntryId"]);
+            // if SP saved successfully, build PrintReport URL
+            if (JSON != null && JSON.Result != null && JSON.Result.Tables.Count > 0 && JSON.Result.Tables[0].Rows.Count > 0)
+            {
+                // Example: take EntryId from your SP result (adjust column name accordingly)
+                int entryId = Convert.ToInt32(JSON.Result.Tables[0].Rows[0]["EntryId"]);
 
-				// Build PrintReport URL
-				string reportUrl = Url.Action("PrintBarcodeTag", "MIR", new
-				{
-					MIRNo = MIRNo,
-					YearCode = YearCode,
-					ItemCodes = ItemCodes
+                // Build PrintReport URL
+                string reportUrl = Url.Action("PrintBarcodeTag", "MIR", new
+                {
+                    MIRNo = MIRNo,
+                    YearCode = YearCode,
+                    ItemCodes = ItemCodes
                 }, protocol: Request.Scheme);
 
                 return Json(new { url = reportUrl });// return URL to AJAX
             }
 
-			return Json(null);
-		 }
-		public IActionResult PrintBarcodeTag(string MIRNo, int YearCode, string ItemCodes)
-		{
-			string my_connection_string;
-			string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-			string webRootPath = _IWebHostEnvironment.WebRootPath;
-			var webReport = new WebReport();
-			webReport.Report.Clear();
-			var ReportName = _IMirModule.GetReportName();
-			webReport.Report.Dispose();
-			webReport.Report = new Report();
-			
-				webReport.Report.Load(webRootPath + "\\MIRGenerateIncomingBarcode.frx"); 
-			
+            return Json(null);
+        }
+        public async Task<IActionResult> PrintBarcodeTag(string MIRNo, int YearCode, string ItemCodes)
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            var ReportName = _IMirModule.GetReportNameforbarcode();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+
+            webReport.Report.Load(webRootPath + "\\MIRGenerateIncomingBarcode.frx");
+
 
             my_connection_string = _connectionStringService.GetConnectionString();
-			//my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
-			webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-			webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
-			webReport.Report.SetParameterValue("MRINoparam", MIRNo);
-			webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
-			webReport.Report.SetParameterValue("Itemcodesparam", ItemCodes);
-			webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-			webReport.Report.Refresh();
-			return View(webReport);
-		}
-		//public async Task<JsonResult> GenerateBarCodeTag(string MIRNo, int YearCode, string ItemCodes)
-		//{
-		//    var JSON = await _IMirModule.GenerateBarCodeTag(MIRNo, YearCode, ItemCodes);
-		//    string JsonString = JsonConvert.SerializeObject(JSON);
-		//    return Json(JsonString);
-		//}
-	}
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+
+            if (ItemCodes == null)
+            {
+                var result = await _IMirModule.getMirItemCodes(MIRNo, YearCode);
+
+                if (result?.Result?.Tables.Count > 0 &&
+                    result.Result.Tables[0].Rows.Count > 0)
+                {
+                    ItemCodes = Convert.ToString(
+                        result.Result.Tables[0].Rows[0]["ItemCodes"]
+                    );
+                }
+            }
+            webReport.Report.SetParameterValue("MRINoparam", MIRNo);
+            webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
+            webReport.Report.SetParameterValue("Itemcodesparam", ItemCodes);
+            webReport.Report.SetParameterValue("MrnNoparam", "");
+            webReport.Report.SetParameterValue("MRNYearCode", 0);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+        }
+        //public async Task<JsonResult> GenerateBarCodeTag(string MIRNo, int YearCode, string ItemCodes)
+        //{
+        //    var JSON = await _IMirModule.GenerateBarCodeTag(MIRNo, YearCode, ItemCodes);
+        //    string JsonString = JsonConvert.SerializeObject(JSON);
+        //    return Json(JsonString);
+        //}
+
+        public async Task<JsonResult> GetVendorNameList(string search)
+        {
+            var JSON = await _IMirModule.GetVendorNameList(search);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GetMRNNoList(string search)
+        {
+            var JSON = await _IMirModule.GetMRNNoList(search);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GetGateNoList(string search)
+        {
+            var JSON = await _IMirModule.GetGateNoList(search);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GetMIRNoList(string search)
+        {
+            var JSON = await _IMirModule.GetMIRNoList(search);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        [HttpPost]
+        public async Task<JsonResult> GetItemNameList(string search)
+        {
+            var JSON = await _IMirModule.GetItemNameList(search);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GetPartCodeList(string search)
+        {
+            var JSON = await _IMirModule.GetPartCodeList(search);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+    }
 }

@@ -20,26 +20,29 @@ else
             <td><input id="ItemName-@item.SeqNo" value="@item.ItemName" readonly><input type="hidden" id="ItemCode-@item.SeqNo" value="@item.ItemCode"></td>
             <td><input style="width:50px !important;" id="BillQty-@item.SeqNo" value="@item.BillQty" readonly></td>
             <td><input style="width:50px !important;" id="RECQTY-@item.SeqNo" value="@item.RecQty" readonly></td>
-            <td><input style="width:50px !important;" onchange="ToggleOkRecStore(@item.SeqNo);AcceptedQtyChange(@item.SeqNo,@item.ItemCode)" value="@item.AcceptedQty" id="AcceptedQty-@item.SeqNo"></td>
-            <td><input style="width:50px !important;" id="AltAcceptedQty{@item.SeqNo}"></td>
-            <td><select style="width:150px;height:25px" id="OkRecStore-@item.SeqNo" onchange="StoreChange(@item.SeqNo)"></select></td>
+            <td><input style="width:50px !important;" oninput="this.value = this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/^(\d{18})\d+/, '$1').replace(/(\.\d{6})\d+/, '$1');" " onchange="ToggleOkRecStore(@item.SeqNo);AcceptedQtyChange(@item.SeqNo,@item.ItemCode)" value="@item.AcceptedQty" id="AcceptedQty-@item.SeqNo"></td>
+            <td><input style="width:50px !important;" id="AltAcceptedQty-@item.SeqNo"></td>
+            <td><select style="width:150px;height:25px" id="OkRecStore-@item.SeqNo" oninput="this.value = this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/^(\d{18})\d+/, '$1').replace(/(\.\d{6})\d+/, '$1');" onchange="StoreChange(@item.SeqNo)"></select></td>
             <td><input type="number" onchange="ToggleRejRecStore(@item.SeqNo);RejectedQtyChange(@item.SeqNo,@item.ItemCode)" style="width:50px !important;" id="RejectedQty-@item.SeqNo" /></td>
             <td><input style="width:50px !important;" type="number" id="AltRejectedQty-@item.SeqNo" /></td>
-            <td><select style="width:150px;height:25px" id="RejRecStore-@item.SeqNo" onchange="RejStoreChange(@item.SeqNo)"></select></td>
+            <td><select style="width:150px;height:25px" id="RejRecStore-@item.SeqNo" oninput="this.value = this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/^(\d{18})\d+/, '$1').replace(/(\.\d{6})\d+/, '$1');" onchange="RejStoreChange(@item.SeqNo)"></select></td>
             <td><input id="Remarks-@item.SeqNo" /></td>
-            <td><input id="RejReason-@item.SeqNo" /></td>
+            <td><input id="RejectedReason-@item.SeqNo" /></td>
            
-            <td><input type="number" style="width:50px !important;" onchange="ToggleHoldStore(@item.SeqNo);HoldQtyChange(@item.SeqNo,@item.ItemCode)" id="HoldQty-@item.SeqNo" /></td>
+            <td><input type="number" style="width:50px !important;" oninput="this.value = this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/^(\d{18})\d+/, '$1').replace(/(\.\d{6})\d+/, '$1');" " onchange="ToggleHoldStore(@item.SeqNo);HoldQtyChange(@item.SeqNo,@item.ItemCode)" id="HoldQty-@item.SeqNo" /></td>
             <td><select style="width:150px;height:25px" id="HoldStoreId-@item.SeqNo" onchange="HoldStoreChange(@item.SeqNo)"></select></td>
-            <td><input style="width:50px !important;" onchange="ToggleReworkStore(@item.SeqNo);ReworkQtyChange(@item.SeqNo,@item.ItemCode)" id="ReworkQty-@item.SeqNo" /></td>
+            <td>
+                <input style="width:50px !important;" oninput="this.value = this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/^(\d{18})\d+/, '$1').replace(/(\.\d{6})\d+/, '$1');" onchange="ToggleReworkStore(@item.SeqNo);ReworkQtyChange(@item.SeqNo,@item.ItemCode)" id="ReworkQty-@item.SeqNo" />
+            </td>
             <td><select style="width:150px;height:25px" readonly id="RewokStoreId-@item.SeqNo" onchange="ReworkStoreChange(@item.SeqNo)"></select></td>
-            <td><input id="ReworkReason(@item.SeqNo)" /></td>
+            <td><input id="ReworkReason-@item.SeqNo" /></td>
             <td><input style="width:50px !important;" onchange="ToggleDeviationQty(@item.SeqNo);DeviationQtyChange(@item.SeqNo,@item.ItemCode)" type="number" id="DeviationQty-@item.SeqNo" /></td>
             <td><input id="ResponsibleEmp-@item.SeqNo" /></td>
             <td><input style="width:70px;" id="PONo-@item.SeqNo" value="@item.PONo" readonly></td>
             <td><input style="width:70px;" id="POYearCode-@item.SeqNo" value="@item.POYearCode" readonly></td>
             <td><input style="width:70px;" id="SchNo-@item.SeqNo" readonly value=@item.SchNo></td>
             <td><input style="width:70px;" id="SchYearCode-@item.SeqNo" value="@item.SchYearCode" readonly></td>
+            <td><input style="width:80px;" id="ItemManufacturingDate-@item.SeqNo" value="@item.ItemManufacturingDate" readonly></td>
             <td><input style="width:70px;" id="Unit-@item.SeqNo" value="@item.Unit" readonly></td>
             <td><input style="width:70px;" id="AltUnit-@item.SeqNo" readonly value="@item.AltUnit"></td>
             <td><input style="width:70px !important;" id="AltRecQty-@item.SeqNo" value="@item.ALtRecQty" readonly></td>

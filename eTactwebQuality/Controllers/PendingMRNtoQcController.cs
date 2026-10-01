@@ -27,18 +27,21 @@ namespace eTactWeb.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
         }
 
-        public async Task<IActionResult> PendingMRNtoQc()
+        public async Task<IActionResult> PendingMRNtoQc(string formKey)
         {
+            ViewBag.formKey = formKey;
+            var uniqueKey = Guid.NewGuid().ToString();
+            ViewBag.uniqueKey = uniqueKey;
             ViewData["Title"] = "Pending MRN to QC Details";
-            ViewBag.YearCode = HttpContext.Session.GetString("YearCode");
+            ViewBag.YearCode = HttpContext.Session.GetString($"YearCode_{formKey}");
             //TempData.Clear();
-            //_MemoryCache.Remove("KeyPendingMRNToQC");
-            HttpContext.Session.Remove("KeyPendingMRNToQC");
+            //_MemoryCache.Remove($"KeyPendingMRNToQC_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyPendingMRNToQC_{uniqueKey}");
             var MainModel = new PendingMRNToQC();
             var model = new IssueWithoutBomDetail();
-            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            MainModel.UserType = HttpContext.Session.GetString("UserType");
+            MainModel.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            MainModel.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+            MainModel.UserType = HttpContext.Session.GetString($"UserType_{formKey}");
             MainModel = await BindModel(MainModel);
             //MainModel.CC = HttpContext.Session.GetString("Branch");
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
@@ -47,9 +50,9 @@ namespace eTactWeb.Controllers
                 SlidingExpiration = TimeSpan.FromMinutes(55),
                 Size = 1024,
             };
-            //_MemoryCache.Set("KeyPendingMRNToQC", model, cacheEntryOptions);
+            //_MemoryCache.Set($"KeyPendingMRNToQC_{uniqueKey}", model, cacheEntryOptions);
             string serializedGrid = JsonConvert.SerializeObject(model);
-            HttpContext.Session.SetString("KeyPendingMRNToQC", serializedGrid);
+            HttpContext.Session.SetString($"KeyPendingMRNToQC_{uniqueKey}", serializedGrid);
 
 
             return View(MainModel);
@@ -127,31 +130,31 @@ namespace eTactWeb.Controllers
                         Text = row["DeptName"].ToString()
                     });
                 }
-                model.DeptList = _List; 
+                model.DeptList = _List;
             }
             return model;
         }
 
-        public async Task<JsonResult> GetDataForPendingMRN(string Flag,string MRNJW, int YearCode, string FromDate, string ToDate, int AccountCode,string MrnNo,int ItemCode,string InvoiceNo,int DeptId)
+        public async Task<JsonResult> GetDataForPendingMRN(string Flag, string MRNJW, int YearCode, string FromDate, string ToDate, int AccountCode, string MrnNo, int ItemCode, string InvoiceNo, int DeptId)
         {
-            var JSON = await _IPendMRNToQC.GetDataForPendingMRN(Flag,MRNJW, YearCode, FromDate, ToDate, AccountCode,MrnNo,ItemCode,InvoiceNo,DeptId);
+            var JSON = await _IPendMRNToQC.GetDataForPendingMRN(Flag, MRNJW, YearCode, FromDate, ToDate, AccountCode, MrnNo, ItemCode, InvoiceNo, DeptId);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetDeptForUser()
+        public async Task<JsonResult> GetDeptForUser(string formKey)
         {
-            int Empid = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            int Empid = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var JSON = await _IPendMRNToQC.GetDeptForUser(Empid);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
 
-        public IActionResult AddPendingMRNToQc(MIRFromPend model, string FromDate = "", string ToDate = "", string ItemName = "", string MRNNo = "", string VendorName = "",string INVNo="",string DeptName="",string PartCode="",string MRNJW="")
+        public IActionResult AddPendingMRNToQc(MIRFromPend model, string uniqueKey, string FromDate = "", string ToDate = "", string ItemName = "", string MRNNo = "", string VendorName = "", string INVNo = "", string DeptName = "", string PartCode = "", string MRNJW = "")
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyPendingMRNToQC", out IList<MIRFromPend> MirModel);
-                //string modelJson = HttpContext.Session.GetString("KeyPendingMRNToQC");
+                _MemoryCache.TryGetValue($"KeyPendingMRNToQC_{uniqueKey}", out IList<MIRFromPend> MirModel);
+                //string modelJson = HttpContext.Session.GetString($"KeyPendingMRNToQC_{uniqueKey}");
                 //List<MIRFromPend> MirModel = new List<MIRFromPend>();
                 //if (!string.IsNullOrEmpty(modelJson))
                 //{
@@ -178,12 +181,12 @@ namespace eTactWeb.Controllers
                     else
                     {
                         MIRGrid = MirModel.Where(x => x != null).ToList();
-                            SSGrid.AddRange(MIRGrid);
+                        SSGrid.AddRange(MIRGrid);
                         MIRGrid.Add(model);
                     }
 
                     MainModel.MIRFromPendDetail = MIRGrid;
-                    
+
                     MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                     {
                         AbsoluteExpiration = DateTime.Now.AddMinutes(60),
@@ -191,47 +194,47 @@ namespace eTactWeb.Controllers
                         Size = 1024,
                     };
 
-                    //_MemoryCache.Set("KeyPendingMRNToQC", MainModel.MIRFromPendDetail, cacheEntryOptions);
+                    //_MemoryCache.Set($"KeyPendingMRNToQC_{uniqueKey}", MainModel.MIRFromPendDetail, cacheEntryOptions);
 
                     string serializedGrid2 = JsonConvert.SerializeObject(MainModel.MIRFromPendDetail);
-                    HttpContext.Session.SetString("KeyPendingMRNToQC", serializedGrid2);
+                    HttpContext.Session.SetString($"KeyPendingMRNToQC_{uniqueKey}", serializedGrid2);
 
 
                     if (MirModel == null)
-    MirModel = new List<MIRFromPend>();
+                        MirModel = new List<MIRFromPend>();
 
-MirModel.Add(model);
+                    MirModel.Add(model);
 
-// Serialize as LIST always
-string serialized = JsonConvert.SerializeObject(MirModel);
-HttpContext.Session.SetString("KeyPendingMRNToQC", serialized);
+                    // Serialize as LIST always
+                    string serialized = JsonConvert.SerializeObject(MirModel);
+                    HttpContext.Session.SetString($"KeyPendingMRNToQC_{uniqueKey}", serialized);
                 }
                 else
                 {
                     ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
                 }
-                //_MemoryCache.TryGetValue("KeyPendingMRNToQC", out IList<MIRFromPend> grid);
-                string modelJson1 = HttpContext.Session.GetString("KeyMIRGrid");
+                //_MemoryCache.TryGetValue($"KeyPendingMRNToQC_{uniqueKey}", out IList<MIRFromPend> grid);
+                string modelJson1 = HttpContext.Session.GetString($"KeyMIRGrid_{uniqueKey}");
                 List<MIRFromPend> grid = new List<MIRFromPend>();
                 if (!string.IsNullOrEmpty(modelJson1))
                 {
                     grid = JsonConvert.DeserializeObject<List<MIRFromPend>>(modelJson1);
                 }
 
-                //_MemoryCache.Set("KeyMIRGridFromMRN", MainModel.MIRFromPendDetail, cacheEntryOptions1);
+                //_MemoryCache.Set($"KeyMIRGridFromMRN_{uniqueKey}", MainModel.MIRFromPendDetail, cacheEntryOptions1);
 
                 string serializedGrid1 = JsonConvert.SerializeObject(MainModel.MIRFromPendDetail);
-                HttpContext.Session.SetString("KeyMIRGridFromMRN", serializedGrid1);
+                HttpContext.Session.SetString($"KeyMIRGridFromMRN_{uniqueKey}", serializedGrid1);
 
-                
+
                 MainModel.FromDateBack = FromDate;
-                MainModel.ToDateBack= ToDate;
-                MainModel.VendorNameBack= VendorName;
+                MainModel.ToDateBack = ToDate;
+                MainModel.VendorNameBack = VendorName;
                 MainModel.InvNoBack = INVNo;
-                MainModel.PartCodeBack= PartCode;
+                MainModel.PartCodeBack = PartCode;
                 MainModel.ItemNameBack = ItemName;
-                MainModel.DeptNameBack= DeptName;
-                MainModel.MRNJWBack= MRNJW;
+                MainModel.DeptNameBack = DeptName;
+                MainModel.MRNJWBack = MRNJW;
                 MainModel.MRNNoBack = MRNNo;
                 return Json("done");
             }

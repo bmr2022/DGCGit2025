@@ -229,7 +229,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
                 SqlParams.Add(new SqlParameter("@EmpId", userID));
-                SqlParams.Add(new SqlParameter("@MenuId", 275));
+                SqlParams.Add(new SqlParameter("@MainMenu", "Material Receipt Note"));
                 //SqlParams.Add(new SqlParameter("@SubMenu", "Sale Order"));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);

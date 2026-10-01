@@ -26,15 +26,18 @@ namespace eTactWeb.Data.DAL
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
             DBConnectionString = _connectionStringService.GetConnectionString();
         }
-        public async Task<ResponseResult> GetReportName()
+        public async Task<ResponseResult> GetReportNameforbarcode()
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+                //SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+                SqlParams.Add(new SqlParameter("@Flag", "GetMIRTagReportName"));
 
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_MRN", SqlParams);
+
+                //_ResponseResult = await _IDataLogic.ExecuteDataTable("SP_MRN", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPMIR", SqlParams);
 
             }
             catch (Exception ex)
@@ -45,7 +48,26 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetReportName(string MRNJWCustJW)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+                SqlParams.Add(new SqlParameter("@MRNJWCustJW", MRNJWCustJW));
 
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPMIR", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetFormRights(int userId)
         {
             var _ResponseResult = new ResponseResult();
@@ -54,10 +76,11 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
                 SqlParams.Add(new SqlParameter("@EmpId", userId));
-                SqlParams.Add(new SqlParameter("@MainMenu", "Quality"));
                 SqlParams.Add(new SqlParameter("@SubMenu", "MRIR"));
+                //SqlParams.Add(new SqlParameter("@MainMenu", "MRIR"));
+                //SqlParams.Add(new SqlParameter("@SubMenu", "MRIR"));
 
-                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_MRN", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
             }
             catch (Exception ex)
             {
@@ -67,7 +90,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetOkRecStore(int ItemCode,string ShowAllStore,string GateNo)
+        public async Task<ResponseResult> GetOkRecStore(int ItemCode, string ShowAllStore, string GateNo)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -124,7 +147,7 @@ namespace eTactWeb.Data.DAL
                 DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
                 var firstDt = CommonFunc.ParseFormattedDate(firstDateOfMonth.ToString("dd/MM/yyyy"));
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
+                SqlParams.Add(new SqlParameter("@Flag", "SEARCH"));
                 SqlParams.Add(new SqlParameter("@FromDate", firstDt));
                 SqlParams.Add(new SqlParameter("@Todate", currDt));
 
@@ -138,7 +161,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        internal async Task<MIRQDashboard> GetSearchData(string VendorName, string MrnNo, string GateNo, string MirNo, string ItemName, string FromDate, string ToDate)
+        internal async Task<MIRQDashboard> GetSearchData(string VendorName, string MrnNo, string GateNo, string MirNo, string ItemName, string FromDate, string ToDate, string MRNJWCustJW)
         {
             DataSet? oDataSet = new DataSet();
             var model = new MIRQDashboard();
@@ -165,6 +188,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ItemName", ItemName);
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
+                    oCmd.Parameters.AddWithValue("@MRNJWCustJW", MRNJWCustJW);
 
 
                     await myConnection.OpenAsync();
@@ -210,7 +234,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        internal async Task<MIRQDashboard> GetDashboardDetailData(string VendorName, string MrnNo, string GateNo, string MirNo, string ItemName, string FromDate, string ToDate)
+        internal async Task<MIRQDashboard> GetDashboardDetailData(string VendorName, string MrnNo, string GateNo, string MirNo, string ItemName, string FromDate, string ToDate, string MRNJWCustJW, string PartCode)
         {
             DataSet? oDataSet = new DataSet();
             var model = new MIRQDashboard();
@@ -234,8 +258,10 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@GateNo", GateNo);
                     oCmd.Parameters.AddWithValue("@MIRNo", MirNo);
                     oCmd.Parameters.AddWithValue("@ItemName", ItemName);
+                    oCmd.Parameters.AddWithValue("@PartCode", PartCode);
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
+                    oCmd.Parameters.AddWithValue("@MRNJWCustJW", MRNJWCustJW);
 
 
                     await myConnection.OpenAsync();
@@ -360,6 +386,8 @@ namespace eTactWeb.Data.DAL
             model.MRNNo = DS.Tables[0].Rows[0]["MRNNO"].ToString().Trim();
             model.MRNJWCustJW = DS.Tables[0].Rows[0]["MRNJWCustJW"].ToString().Trim();
             model.MIRDate = DS.Tables[0].Rows[0]["MIREntryDate"].ToString();
+            model.EntryTime = Convert.ToDateTime(DS.Tables[0].Rows[0]["EntryTime"]).ToString("HH:mm:ss")?.Trim();
+
             model.MRNYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["MRNYearcode"].ToString());
             if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["MRNDate"].ToString()))
             {
@@ -390,6 +418,7 @@ namespace eTactWeb.Data.DAL
             model.FromStoreId = Convert.ToInt32(DS.Tables[0].Rows[0]["FromStoreId"].ToString().Trim());
             model.ModeOfTransport = DS.Tables[0].Rows[0]["ModeOfTransport"].ToString().Trim();
             model.EntryByMachineName = DS.Tables[0].Rows[0]["EntryByMachineName"].ToString().Trim();
+            model.otherRemarks = DS.Tables[0].Rows[0]["otherRemarks"].ToString().Trim();
 
             model.CreatedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"].ToString());
             model.ActualEnteredByName = DS.Tables[0].Rows[0]["CreatedByName"].ToString();
@@ -435,7 +464,10 @@ namespace eTactWeb.Data.DAL
                         AltRejectedQty = string.IsNullOrEmpty(row["AltRejectedQty"].ToString()) ? 0 : Convert.ToDecimal(row["AltRejectedQty"]),
                         RejRecStore = string.IsNullOrEmpty(row["RejRecStore"].ToString()) ? 0 : Convert.ToInt32(row["RejRecStore"]),
                         Remarks = row["Remarks"].ToString().Trim(),
+                        ItemManufacturingDate = row["ItemManufacturingDate"].ToString().Trim(),
                         DefaultType = row["Defaulttype"].ToString().Trim(),
+                        ReworkReason = row["ReworkReason"].ToString().Trim(),
+                        RejectedReason = row["RejectedReason"].ToString().Trim(),
                         ApprovedByEmp = string.IsNullOrEmpty(row["ApprovedByEmp"].ToString()) ? 0 : Convert.ToInt32(row["ApprovedByEmp"]),
                         HoldQty = string.IsNullOrEmpty(row["HoldQty"].ToString()) ? 0 : Convert.ToDecimal(row["HoldQty"]),
                         HoldStoreId = string.IsNullOrEmpty(row["HoldStoreId"].ToString()) ? 0 : Convert.ToInt32(row["HoldStoreId"]),
@@ -587,10 +619,33 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 //DateTime fromdt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 //DateTime todt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                
+
                 SqlParams.Add(new SqlParameter("@Flag", "ALLOWSHOWALLSTORE"));
-               
+
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPMIR", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> AllowBackDateONMIR()
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                //DateTime fromdt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime todt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                SqlParams.Add(new SqlParameter("@Flag", "AllowBackDateONMIR"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SPMIR", SqlParams);
             }
             catch (Exception ex)
             {
@@ -668,6 +723,7 @@ namespace eTactWeb.Data.DAL
                                             ItemName = dr["Item_Name"].ToString() ?? "",
                                             PartCode = dr["PartCode"].ToString() ?? "",
                                             Unit = dr["unit"].ToString() ?? "",
+                                            ItemManufacturingDate = dr["ItemManufacturingDate"].ToString() ?? "",
                                             RateUnit = dr["RateUnit"].ToString() ?? "",
                                             AltUnit = dr["altunit"].ToString() ?? "",
                                             NoofCase = string.IsNullOrEmpty(dr["NoofCase"].ToString()) ? 0 : Convert.ToInt32(dr["NoofCase"].ToString()),
@@ -793,7 +849,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetRecOkStore(int ItemCode,string Flag, string SPName)
+        public async Task<ResponseResult> GetRecOkStore(int ItemCode, string Flag, string SPName)
         {
             var _ResponseResult = new ResponseResult();
 
@@ -899,16 +955,18 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-               // DateTime mirDt = new DateTime();
-               // DateTime mrnDt = new DateTime();
-               // DateTime invDt = new DateTime();
+                // DateTime mirDt = new DateTime();
+                // DateTime mrnDt = new DateTime();
+                // DateTime invDt = new DateTime();
                 // EntryDate = new DateTime();
 
 
-               var mirDt = CommonFunc.ParseFormattedDate(model.MIRDate);
-               var mrnDt = CommonFunc.ParseFormattedDate(model.MRNDate);
-               var invDt = CommonFunc.ParseFormattedDate(model.INVDate);
-               var EntryDate = CommonFunc.ParseFormattedDate(model.EntryDate);
+                var mirDt = CommonFunc.ParseFormattedDate(model.MIRDate);
+                var mrnDt = CommonFunc.ParseFormattedDate(model.MRNDate);
+                var invDt = CommonFunc.ParseFormattedDate(model.INVDate);
+                var EntryDate = CommonFunc.ParseFormattedDate(model.EntryDate);
+
+                var ActualEnrtyDate = CommonFunc.ParseFormattedDate(DateTime.Now.ToString());
 
 
                 if (model.Mode == "U")
@@ -928,6 +986,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@MIRDate", mirDt == default ? string.Empty : mirDt));
                 SqlParams.Add(new SqlParameter("@MRNJWCustJW", model.MRNJWCustJW == null ? "" : model.MRNJWCustJW));
                 SqlParams.Add(new SqlParameter("@MRNYearcode", model.MRNYearCode));
+                SqlParams.Add(new SqlParameter("@EntryTime", model.EntryTime ?? ""));
+
                 SqlParams.Add(new SqlParameter("@MRNNO", model.MRNNo == null ? "" : model.MRNNo));
                 SqlParams.Add(new SqlParameter("@MRNDate", mrnDt == default ? string.Empty : mrnDt));
                 SqlParams.Add(new SqlParameter("@GateNo", model.GateNo == null ? "" : model.GateNo));
@@ -943,9 +1003,10 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@EnteredEMPID", model.CreatedBy));
                 SqlParams.Add(new SqlParameter("@UID", model.Uid));
                 SqlParams.Add(new SqlParameter("@CC", model.CC == null ? "" : model.CC));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", model.CreatedOn));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", ActualEnrtyDate));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.CreatedBy));
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName == null ? "" : model.EntryByMachineName));
+                SqlParams.Add(new SqlParameter("@otherRemarks", model.otherRemarks == null ? "" : model.otherRemarks));
                 SqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));
                 //SqlParams.Add(new SqlParameter("@UpdatedOn", model.UpdatedOn== null ? "" : model.UpdatedOn));
 
@@ -981,5 +1042,142 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> getMirItemCodes(string MIRNo, int YearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@MIRNo", MIRNo));
+                SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@Flag", "getMirItemCodes"));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SPMIR", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> GetMRNNoList(string search)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@search", search));
+                SqlParams.Add(new SqlParameter("@Flag", "GetMRNNoList"));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SPMIR", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetGateNoList(string search)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@search", search));
+                SqlParams.Add(new SqlParameter("@Flag", "GetGateNoList"));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SPMIR", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetVendorNameList(string search)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@search", search));
+                SqlParams.Add(new SqlParameter("@Flag", "GetVendorNameList"));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SPMIR", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetMIRNoList(string search)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@search", search));
+                SqlParams.Add(new SqlParameter("@Flag", "GetMIRNoList"));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SPMIR", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetItemNameList(string search)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@search", search));
+                SqlParams.Add(new SqlParameter("@Flag", "GetItemNameList"));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SPMIR", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> GetPartCodeList(string search)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@search", search));
+                SqlParams.Add(new SqlParameter("@Flag", "GetPartCodeList"));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SPMIR", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
     }
 }

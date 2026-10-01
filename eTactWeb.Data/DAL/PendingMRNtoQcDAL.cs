@@ -56,7 +56,7 @@ namespace eTactWeb.Data.DAL
             return oDataSet;
         }
 
-        public async Task<ResponseResult> GetDataForPendingMRN(string Flag,string MRNJW, int YearCode, string FromDate, string ToDate, int AccountCode, string MrnNo, int ItemCode, string InvoiceNo, int DeptId)
+        public async Task<ResponseResult> GetDataForPendingMRN(string Flag, string MRNJW, int YearCode, string FromDate, string ToDate, int AccountCode, string MrnNo, int ItemCode, string InvoiceNo, int DeptId)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -69,7 +69,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
                 SqlParams.Add(new SqlParameter("@MRNJWCJ", MRNJW));
-                SqlParams.Add(new SqlParameter("@yeacode", YearCode));
+                SqlParams.Add(new SqlParameter("@YearCode", YearCode));
                 SqlParams.Add(new SqlParameter("@fromdate", fromDt));
                 SqlParams.Add(new SqlParameter("@todate", toDt));
                 SqlParams.Add(new SqlParameter("@accountcode", AccountCode));

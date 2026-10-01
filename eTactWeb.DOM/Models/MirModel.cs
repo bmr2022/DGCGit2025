@@ -76,6 +76,8 @@ public class MIRQDashboard : MIRDashboard
     public IList<MIRDashboard>? MIRDashboard { get; set; }
 
     public string? FromDate { get; set; }
+    public string? formKey { get; set; }
+    public string? uniqueKey { get; set; }
     public string? ItemName { get; set; }
     public string? PartCode { get; set; }
     //right
@@ -98,6 +100,7 @@ public class MirDetail : TimeStamp
     public string SchNo { get; set; }
     public int SchYearCode { get; set; }
     public string SchDate { get; set; }
+    public string ItemManufacturingDate { get; set; }
     public int ItemCode { get; set; }
     public string PartCode { get; set; }
     public string ItemName { get; set; }
@@ -129,6 +132,8 @@ public class MirDetail : TimeStamp
     public int OkRecStore { get; set; }//
     public string OkRecStoreName { get; set; }
     public string RejRecStoreName { get; set; }
+    public string? RejectedReason { get; set; }
+    public string? ReworkReason { get; set; }
     public string HoldStoreName { get; set; }
     public string RewokStoreName { get; set; }
     public string PoType { get; set; }
@@ -167,9 +172,14 @@ public class MirDetail : TimeStamp
 public class MirModel : MirDetail
 {
     public string? EntryByMachineName { get; set; }
+    public string? formKey { get; set; }
+    public string? EntryTime { get; set; }
+    public string? uniqueKey { get; set; }
+    public string? otherRemarks { get; set; }
     public string? IPAddress { get; set; }
     public string? ActualEnteredByName { get; set; }
     public string? FinFromDate { get; set; }
+    public string? FinToDate { get; set; }
     public string? UpdatedByName { get; set; }
     public string? DateIntact { get; set; }
     public int EntryId { get; set; }
@@ -190,10 +200,10 @@ public class MirModel : MirDetail
         set => _MRNCombo = value;
     }
 
-    public string? AccountName { get;set; }
+    public string? AccountName { get; set; }
     public string? FromPend { get; set; }
     public string? FromDate { get; set; }
-    public string? ToDate { get; set; } 
+    public string? ToDate { get; set; }
 
     public int MRNYearCode { get; set; }
     public int MRNEntryId { get; set; }
@@ -287,8 +297,8 @@ public class MirModel : MirDetail
     public string? PartCodeBack { get; set; }
     public string? InvNoBack { get; set; }
     public string? DeptNameBack { get; set; }
-    public string? DashboardTypeBack {  get; set; }
-    public string? Searchbox {  get; set; }
+    public string? DashboardTypeBack { get; set; }
+    public string? Searchbox { get; set; }
     public string OkRecStoreName { get; set; }
     public string RejRecStoreName { get; set; }
     public string HoldStoreName { get; set; }
@@ -315,6 +325,6 @@ public class MirModel : MirDetail
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public string GateNo { get; set; }
-        
+
     }
 }

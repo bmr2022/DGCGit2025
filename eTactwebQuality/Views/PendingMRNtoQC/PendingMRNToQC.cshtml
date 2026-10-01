@@ -20,6 +20,7 @@
     .select2-container--default .select2-results > .select2-results__options {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
+    }
 </style>
 <div class="spinner-border" style="width: 3rem; height: 3rem;" id="loader" role="status">
     <span class="visually-hidden">Loading...</span>
@@ -34,7 +35,7 @@
                     <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                     Add New
                     </a>*@
-                    <a asp-action="MIRDashboard" asp-controller="MIR" asp-route-FromDate="@DateTime.Now.AddMonths(-3)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="MIRDashboard" asp-route-formKey="@ViewBag.formKey" asp-controller="MIR" asp-route-FromDate="@DateTime.Now.AddMonths(-3)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -54,6 +55,8 @@
                                         <input type="hidden" value="@Model.FromDate" id="finFromDate" />
                                         <input type="hidden" value="@Model.ToDate" id="finToDate" />
                                         <input type="hidden" value="@Model.UserType" asp-for="UserType" />
+                                        <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                                        <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                                         <input asp-for="FromDate" maxlength="10" class="form-control" value="@Model.FromDate" />
                                     </div>
                                     <div class="col">
@@ -71,31 +74,31 @@
                             </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="ItemCode" class="form-label">Part Code</label>
-                                <select class="form-select" asp-for="ItemCode" style="width:190px;height:190px" asp-items="@(new SelectList(Model.PartCodeList,"Value","Text"))">
+                                <select class="form-select" asp-for="ItemCode" style="width:190px;height:190px">
                                     <option value="" selected disabled>-Select-</option>
                                 </select>
                             </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="ItemName" class="form-label">Item Name</label>
-                                <select class="form-select" asp-for="ItemName" style="width:190px;height:190px" asp-items="@(new SelectList(Model.ItemNameList,"Value","Text"))">
+                                <select class="form-select" asp-for="ItemName" style="width:190px;height:190px">
                                     <option value="" selected disabled>-Select-</option>
                                 </select>
                             </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="MrnNo" class="form-label">MRN NO</label>
-                                <select class="form-select" asp-for="MrnNo" asp-items="@(new SelectList(Model.MRNNoList,"Value","Text"))">
+                                <select class="form-select" asp-for="MrnNo">
                                     <option value="">-Select-</option>
                                 </select>
                             </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="VendorName" class="form-label">Vendor Name</label>
-                                <select class="form-select" asp-for="VendorName" style="width:190px;height:190px" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
+                                <select class="form-select" asp-for="VendorName" style="width:190px;height:190px">
                                     <option value="">-Select-</option>
                                 </select>
                             </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="InvoiceNo" class="form-label">Invoice No</label>
-                                <select class="form-select" asp-for="InvoiceNo" asp-items="@(new SelectList(Model.InvNoList,"Value","Text"))">
+                                <select class="form-select" asp-for="InvoiceNo">
                                     <option value="">-Select-</option>
                                 </select>
                             </div>
@@ -116,7 +119,8 @@
                                 <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
-                                <a class="btn btn-sm btn-outline-danger" asp-controller="PendingMRNtoQc" asp-action="PendingMRNtoQc" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                <a class="btn btn-sm btn-outline-danger" asp-controller="PendingMRNtoQc" asp-action="PendingMRNtoQc" asp-route-formKey="@ViewBag.formKey"
+                                   style="padding:3px;height:30px;width:100px;margin-left:20px;">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
                             </div>
@@ -127,41 +131,49 @@
         </div>
         <div class="progress my-3 mb-3" style="height: 4px;">
             <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-        </div> <div class="card">
-            <div class="card-body overflow-auto pb-0">
-                <div class="table-responsive" style="max-height:350px;">
-                    <table class="table table-hover table-bordered table-striped" id="PendingTable">
-                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
-                            <tr>
-                                <th>Action</th>
-                                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Name</th>
-                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN No</th>
-                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN Year</th>
-                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Date</th>
-                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Inv No</th>
-                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Inv Date</th>
-                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate No</th>
-                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate Date</th>
-                                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QC Completed</th>
-                            </tr>
-                        </thead>
-                        <tbody id="divPendMRNGrid">
-                            <tr class="text-center">
-                                <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
         </div>
+        <div class="card">
+        <div class="card-body overflow-auto pb-0">
+                <div class="card-body" id="divDashboardGrid">
+            <div class="table-responsive" style="max-height:350px;">
+                <table class="table table-hover table-bordered table-striped" id="PendingTable">
+                    <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                        <tr>
+                            <th>Action</th>
+                            <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Name</th>
+                            <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN No</th>
+                            <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN Year</th>
+                            <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Date</th>
+                            <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Inv No</th>
+                            <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Inv Date</th>
+                            <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate No</th>
+                            <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate Date</th>
+                            <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QC Completed</th>
+                        </tr>
+                    </thead>
+                    <tbody id="divPendMRNGrid">
+                        <tr class="text-center">
+                            <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+        <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
     </div>
+</div>
 </div>
 
 @section Scripts
-    {
+{
     <script>
+         var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
+         var yearCode = '@ViewBag.YearCode';
         $(function () {
+            formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
             $('#loader').hide();
             var FromDateBack = sessionStorage.getItem('FromDateBack');
             var ToDateBack = sessionStorage.getItem('ToDateBack');
@@ -177,6 +189,7 @@
             $('#ItemName').select2();
             $('#VendorName').select2();
             $('#MrnNo').select2();
+            $('#InvoiceNo').select2();
 
             var fromDate;
             var toDate;
@@ -207,8 +220,10 @@
             var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
               
-            $("#FromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(formattedDate1.split(" ")[0]));
+            // $("#FromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(formattedDate1.split(" ")[0]));kinjal date show 4/01/2026
+            $("#FromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (formattedDate1.split(" ")[0]));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(formattedDate2.split(" ")[0]));
+             fillItemPartCode();
             //$('#FromDate').datepicker("option", "minDate", formattedDate1);
             //$('#ToDate').datepicker("option", "maxDate", formattedDate2);
             //$('#FromDate').change(function () {
@@ -233,24 +248,27 @@
                 $('#DeptName').val(DeptNameBack);
                 $('#MrnJW').val(MRNJWBack);
                 //fillVendor();
-                //fillItemPartCode();
+                fillItemPartCode();
             }
          
             showDetail();
-     
+
+                    });
+
+        $('#MrnJW').change(function(){
+           // fillVendor();
+           fillItemPartCode();
+           // fillMRNno();
+           // fillInvoiceNo();
         });
-
-        //$('#MrnJW').change(function(){
-        //    fillVendor();
-        //    fillItemPartCode();
-        //    fillMRNno();
-        //    fillInvoiceNo();
-        //});
-
+                $(document).on('change', '#FromDate, #ToDate', function () {
+            fillItemPartCode();
+        });
         function FillDeptAccTOUser() {
             $.ajax({
                 url: '@Url.Action("GetDeptForUser")',
                 type: "POST",
+                data:{formKey:formKey},
                 success: function (data) {
                      
                     var obj = $.parseJSON(data);
@@ -274,13 +292,64 @@
                 }
             });
         }
+         function GetFormRights() {
+             console.log("call right");
+            $.ajax({
+                url: "@Url.Action("GetFormRights","MIR")",
+                type: "POST",
+                data:{formKey:formKey},
+                success: function (data) {
+                    console.log("data of right",data);
+                    if (data != null) {
+
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            //$("#submitBTN").prop("disabled", true);
+                        } else {
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            var rowCounter = $('#divPendMRNGrid tr').length;
+                            if (!optAll) {
+                               
+                                
+                                if (!(optUpdate||optSave)) {
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#editCursorDiv-' + i).empty();
+                                        $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>`);
+                                    }
+                                }
+                               
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $("#divDashboardGrid").css("display", "none");
+                                    $(".totalrows").css("display", "none");
+                                    $("#SParam").hide();
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
 
         function fillVendor() {
              
             var data = {
                 "Flag": "VENDOR",
                 "MRNJW": $('#MrnJW').val(),
-                "YearCode": 2023,
+                "YearCode": yearCode,
                 "FromDate": $('#FromDate').val(),
                 "ToDate": $('#ToDate').val(),
                 "AccountCode": $('#VendorName').val(),
@@ -311,14 +380,40 @@
                 }
             });
         }
+        var isSyncing = false;
 
+        $('#ItemCode').on('change', function () {
+
+        if (isSyncing) return;
+
+        isSyncing = true;
+
+        $('#ItemName')
+        .val($(this).val())
+        .trigger('change.select2');
+
+        isSyncing = false;
+        });
+
+        $('#ItemName').on('change', function () {
+
+        if (isSyncing) return;
+
+        isSyncing = true;
+
+        $('#ItemCode')
+        .val($(this).val())
+        .trigger('change.select2');
+
+        isSyncing = false;
+        });
         function fillItemPartCode() {
-
+              
             var data = {
                 
                 "Flag": "ITEMPARTCODE",
                 "MRNJW": $('#MrnJW').val(),
-                "YearCode": 2023,
+                "YearCode": yearCode,
                 "FromDate": $('#FromDate').val(),
                 "ToDate": $('#ToDate').val(),
                 "AccountCode": $('#VendorName').val(),
@@ -335,7 +430,8 @@
                     var obj = $.parseJSON(data);
                     console.log("SUCCESS");
                     $('#ItemName,#ItemCode').empty();
-                    $('#ItemName,#ItemCode').append("<select value='0' selected disabled>-Select-</select>");
+                    $('#ItemName').append('<option value="">-Select-</option>');
+                   $('#ItemCode').append('<option value="">-Select-</option>');
                     $.each(obj.Result.Table, function (index, val) {
                         $('#ItemName').append('<option value="' + val.Item_Code +
                             '">' + val.ItemName + '</option>');
@@ -357,7 +453,7 @@
             var data = {
                 "Flag": "MRNNO",
                 "MRNJW": $('#MrnJW').val(),
-                "YearCode": 2023,
+                "YearCode": yearCode,
                 "FromDate": $('#FromDate').val(),
                 "ToDate": $('#ToDate').val(),
                 "AccountCode": $('#VendorName').val(),
@@ -393,7 +489,7 @@
             var data = {
                 "Flag": "INVOICENO",
                 "MRNJW": $('#MrnJW').val(),
-                "YearCode": 2023,
+                "YearCode": yearCode,
                 "FromDate": $('#FromDate').val(),
                 "ToDate": $('#ToDate').val(),
                 "AccountCode": $('#VendorName').val(),
@@ -470,15 +566,80 @@
                         var obj = $.parseJSON(data);
                              /* alert(JSON.stringify(obj, null, 2)); */
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    let accountList = [...new Set(obj.Result.Table.map(x => x.account_name))];
+
+        $('#VendorName').empty();
+        $('#VendorName').append('<option value="">-Select-</option>');
+
+        $.each(accountList, function (i, item) {
+
+            $('#VendorName').append(
+                `<option value="${item}">
+                    ${item}
+                </option>`
+            );
+        });
+
+                let mrnList = [...new Set(obj.Result.Table.map(x => x.MRNNo))];
+
+        $('#MrnNo').empty();
+        $('#MrnNo').append('<option value="">-Select-</option>');
+
+        $.each(mrnList, function (i, item) {
+
+            $('#MrnNo').append(
+                `<option value="${item}">
+                    ${item}
+                </option>`
+            );
+        });
+
+                let invoiceList = [...new Set(obj.Result.Table.map(x => x.InvNo))];
+
+        $('#InvoiceNo').empty();
+        $('#InvoiceNo').append('<option value="">-Select-</option>');
+
+        $.each(invoiceList, function (i, item) {
+
+            $('#InvoiceNo').append(
+                `<option value="${item}">
+                    ${item}
+                </option>`
+            );
+        });
+
+              fillItemPartCode();
                             var html1 = '';
                             $('#divPendMRNGrid').empty();
                             //var i = 0;
                             for (var i = 0; i < obj.Result.Table.length; i++) {
                                  
-                                html1 += '<tr id="' + i + '"><td><button style="background: none;border: none;padding: 0;color: blue;text-decoration: underline;cursor: pointer;" onclick="TransferToMIR(' + i + ');"><span class="fa-stack"><i style="color:blue !important;" class="fa-solid fa-pen fa-fw fa-lg" aria-hidden="true"></i></span></button></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="AccountName' + i + '" readonly value=' + JSON.stringify(obj.Result.Table[i].account_name) + ' ></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " readonly id="MRNno' + i + '" value=' + obj.Result.Table[i].MRNNo + '></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="MRNYear' + i + '" readonly value=' + obj.Result.Table[i].MRNYear + '></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="EntryDate' + i + '" readonly value=' + obj.Result.Table[i].EntryDate.split("T")[0] + ' ></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="InvNo' + i + '" readonly value=' + obj.Result.Table[i].InvNo + '></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="InvDate' + i + '" readonly value=' + obj.Result.Table[i].InvDate.split("T")[0] + '  ></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="GateNo' + i + '" value=' + obj.Result.Table[i].GateNo + ' readonly></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="GateDate' + i + '" value=' + obj.Result.Table[i].GateDate.split("T")[0] + ' readonly ></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="QCCompleted' + i + '" value=' + obj.Result.Table[i].QCCompleted + ' readonly ></td><td></tr > ';
+                               // html1 += '<tr id="' + i + '"><td  id="editCursorDiv-' + i + '"><button style="background: none;border: none;padding: 0;color: blue;text-decoration: underline;cursor: pointer;" onclick="TransferToMIR(' + i + ');"><span class="fa-stack"><i style="color:blue !important;" class="fa-solid fa-pen fa-fw fa-lg" aria-hidden="true"></i></span></button></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="AccountName' + i + '" readonly value=' + JSON.stringify(obj.Result.Table[i].account_name) + ' ></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " readonly id="MRNno' + i + '" value=' + obj.Result.Table[i].MRNNo + '></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="MRNYear' + i + '" readonly value=' + obj.Result.Table[i].MRNYear + '></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="EntryDate' + i + '" readonly value=' + obj.Result.Table[i].EntryDate.split("T")[0] + ' ></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="InvNo' + i + '" readonly value=' + obj.Result.Table[i].InvNo + '></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="InvDate' + i + '" readonly value=' + obj.Result.Table[i].InvDate.split("T")[0] + '  ></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="GateNo' + i + '" value=' + obj.Result.Table[i].GateNo + ' readonly></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="GateDate' + i + '" value=' + obj.Result.Table[i].GateDate.split("T")[0] + ' readonly ></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="QCCompleted' + i + '" value=' + obj.Result.Table[i].QCCompleted + ' readonly ></td><td></tr > ';
+        html1 += '<tr id="' + i + '">' +
+            '<td id="editCursorDiv-' + i + '"><button style="background:none;border:none;padding:0;color:blue;text-decoration:underline;cursor:pointer;" onclick="TransferToMIR(' + i + ');"><span class="fa-stack"><i style="color:blue !important;" class="fa-solid fa-pen fa-fw fa-lg" aria-hidden="true"></i></span></button></td>' +
 
+            '<td style="max-width:200px;white-space:normal;word-break:break-word;">' + obj.Result.Table[i].account_name + '</td>' +
+
+            '<td><input style="border:none;background-color:transparent;outline:none;cursor:default;" readonly id="MRNno' + i + '" value="' + obj.Result.Table[i].MRNNo + '"></td>' +
+
+            '<td><input style="border:none;background-color:transparent;outline:none;cursor:default;" id="MRNYear' + i + '" readonly value="' + obj.Result.Table[i].MRNYear + '"></td>' +
+
+            '<td><input style="border:none;background-color:transparent;outline:none;cursor:default;" id="EntryDate' + i + '" readonly value="' + obj.Result.Table[i].EntryDate.split("T")[0] + '"></td>' +
+
+            '<td><input style="border:none;background-color:transparent;outline:none;cursor:default;" id="InvNo' + i + '" readonly value="' + obj.Result.Table[i].InvNo + '"></td>' +
+
+            '<td><input style="border:none;background-color:transparent;outline:none;cursor:default;" id="InvDate' + i + '" readonly value="' + obj.Result.Table[i].InvDate.split("T")[0] + '"></td>' +
+
+            '<td><input style="border:none;background-color:transparent;outline:none;cursor:default;" id="GateNo' + i + '" readonly value="' + obj.Result.Table[i].GateNo + '"></td>' +
+
+            '<td><input style="border:none;background-color:transparent;outline:none;cursor:default;" id="GateDate' + i + '" readonly value="' + obj.Result.Table[i].GateDate.split("T")[0] + '"></td>' +
+
+            '<td><input style="border:none;background-color:transparent;outline:none;cursor:default;" id="QCCompleted' + i + '" readonly value="' + obj.Result.Table[i].QCCompleted + '"></td>' +
+
+            '</tr>';
                             }
                             $('#divPendMRNGrid').append(html1);
+                            GetFormRights();
                             $('#TransertoMIRBtn').prop("disabled", false);
 
                             var count = $('#divPendMRNGrid tr').length;
@@ -509,10 +670,11 @@
                 "MRNJW": $('#MrnJW').val(),
                 "MRNYear": $('#MRNYear' + i).val(),
                 "FromDate": $('#FromDate').val(),
-                "ToDate": $('#ToDate').val()
+                "ToDate": $('#ToDate').val(),
+                "uniqueKey":uniqueKey
             }
             //$.ajax({
-            //    url: "@Url.Action("MIRFromPend","MIR")",
+            //    url: "@Url.Action("MIRFromPend", "MIR")",
             //    type: "POST",
             //    data: data,
             //    success: function (data, status, xhr) {+
@@ -548,13 +710,13 @@
             $.ajax({
                 url: "@Url.Action("AddPendingMRNToQc")",
                 type: "POST",
-                data: { model: data },
+                data: { model: data ,uniqueKey:uniqueKey},
                 success: function (data, status, xhr) {
                      
                      $('#loader').show();
                     console.log("SUCCESS");
                     var url = '/MIR/Index/?';
-                    url = url + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&VendorName=" + $('#VendorName').val() + "&ItemName=" + $('#ItemName').val() + "&MRNNo=" + $('#MrnNo').val() + "&MRNJW=" + $('#MrnJW').val() + "&PartCode=" + $('#ItemCode').val() + "&DeptName=" + $('#DeptName').val() + "&INVNo=" + $('#InvoiceNo').val()
+                    url = url +   "uniqueKey=" + uniqueKey + "&ToDate=" + $('#ToDate').val() + "&VendorName=" + $('#VendorName').val() + "&ItemName=" + $('#ItemName').val() + "&MRNNo=" + $('#MrnNo').val() + "&MRNJW=" + $('#MrnJW').val() + "&PartCode=" + $('#ItemCode').val() + "&DeptName=" + $('#DeptName').val() + "&INVNo=" + $('#InvoiceNo').val()
                     window.location.href = url;
                 },
                 error: function (result, status, xhr) {
@@ -706,26 +868,26 @@
 
     </script>
     <script src="~/Scripts/table2excel.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link href="~/css/toastr.min.css" rel="stylesheet" />
+    <script src="~/js/toastr.min.js"></script>
 
 
 }
 
 <style>
     .sort-icon {
-        padding: 5px;
-        margin: 5px;
-        vertical-align: top;
+    padding: 5px;
+    margin: 5px;
+    vertical-align: top;
     }
 
     .ascCol {
-        font-size: 15px;
-        vertical-align: bottom;
+    font-size: 15px;
+    vertical-align: bottom;
     }
 
     .descCol {
-        font-size: 15px;
-        vertical-align: super;
+    font-size: 15px;
+    vertical-align: super;
     }
 </style>

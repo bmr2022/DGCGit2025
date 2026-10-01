@@ -5,20 +5,20 @@
 }
 <div class="card bg-gradient mb-3 border-light shadow-lg">
 
-    <form asp-action="MIR" autocomplete="off" class="form-horizontal">
+    <form asp-action="MIR" asp-route-formKey="@ViewBag.formKey" autocomplete="off" class="form-horizontal">
 
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
-                <strong>Quality Module</strong>
+                <strong>Quality Module - Financial Year: @Model.YearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-action="PendingMRNtoQc" asp-controller="PendingMRNtoQc" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <a asp-action="PendingMRNtoQc" asp-route-formKey="@ViewBag.formKey" asp-controller="PendingMRNtoQc" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                             <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                             Add New
                         </a>
                     </span>
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-action="MIRDashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <a asp-action="MIRDashboard" asp-route-formKey="@ViewBag.formKey" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Dashboard
                         </a>
@@ -36,6 +36,8 @@
                                 <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
                                 <input asp-for="Searchbox" type="hidden" value="@Model.Searchbox" />
                                 <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                    <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                                    <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                                     <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                     BACK
                                 </a>
@@ -55,7 +57,8 @@
                             {
                                 <div class="col-auto">
                                     @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    <a class="btn btn-secondary btn-sm" asp-route-formKey="@ViewBag.formKey"
+>
                                         @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
                                         <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
                                         REFRESH
@@ -111,6 +114,7 @@
                                     <input type="hidden" asp-for="DateIntact" value="@Model.DateIntact" />
                                     <input type="hidden" asp-for="Mode" value="@Model.Mode" />
                                     <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
+                                    <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
                                     <label asp-for="EntryId" class="form-label">Entry Id</label>
                                     <input asp-for="EntryId " class="form-control" readonly />
                                     <input type="hidden" id="AddPassWord" />
@@ -124,6 +128,10 @@
                                     <label asp-for="EntryDate" class="form-label">Entry Date</label>
                                     <input asp-for="EntryDate " class="form-control" readonly disabled />
                                 </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryTime" class="form-label">Time</label>
+                                    <input asp-for="EntryTime" class="form-control" value="@Model.EntryTime" readonly />
+                                </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="MIRNo" class="form-label">MIR No</label>
                                     <input asp-for="MIRNo " class="form-control" readonly style="background-color: lightblue !important;" />
@@ -132,7 +140,7 @@
                                     <label asp-for="CC" class="form-label">Branch</label>
                                     <input asp-for="CC" class="form-control" readonly />
                                 </div>
-                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display:none">
                                     @if (Model.FromPend == "Y")
                                     {
                                         <label class="form-label">From Date</label>
@@ -144,7 +152,7 @@
                                         <input asp-for="FromDate" class="form-control" />
                                     }
                                 </div>
-                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display:none">
                                     @if (Model.FromPend == "Y")
                                     {
                                         <label class="form-label">To Date</label>
@@ -325,6 +333,7 @@
                                                         <th>PO Year Code</th>
                                                         <th>SchNo</th>
                                                         <th>Sch year Code</th>
+                                                        <th>ItemManufacturingDate</th>
                                                         <th>Unit</th>
                                                         <th>Alt Unit</th>
                                                         <th>Alt Rec Qty</th>
@@ -398,16 +407,19 @@
                                                     <th>Rejected Qty</th>
                                                     <th>Alt Rejected Qty</th>
                                                     <th>Rej Rec Store</th>
+                                                    <th>Rejected Reason</th>
                                                     <th>Hold Qty</th>
                                                     <th>Hold Store</th>
                                                     <th>Rework Qty</th>
                                                     <th>Rework Store</th>
+                                                    <th>Rework Reason</th>
                                                     <th>Deviation Qty</th>
                                                     <th>Responsible Emp for Deviation</th>
                                                     <th>PO NO</th>
                                                     <th>PO Year Code</th>
                                                     <th>SchNo</th>
                                                     <th>Sch year Code</th>
+                                                    <th>Item Manufacturing Date</th>
                                                     <th>Unit</th>
                                                     <th>Alt Unit</th>
                                                     <th>Alt Rec Qty</th>
@@ -473,6 +485,10 @@
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="UpdatedOn" class="form-label">Updated Date</label>
                                     <input asp-for="UpdatedOn" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="otherRemarks" class="form-label">Remarks </label>
+                                    <input asp-for="otherRemarks" class="form-control"  />
                                 </div>
                             </div>
                         </div>
@@ -554,7 +570,13 @@
         </div>
     </div>
 </div>
-
+<div id="ajaxLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+        <span class="spinner-border text-primary" role="status"></span>
+        <br />
+        <span>Processing...</span>
+    </div>
+</div>
 
 @section Scripts {
     <script>
@@ -570,6 +592,7 @@
             $.ajax({
                 url: "@Url.Action("GetFormRights", "GateInward")",
                 type: "POST",
+                data:{formKey:formKey},
                 success: function (data) {
                     if (!data) return;
                     var obj = $.parseJSON(data);
@@ -587,6 +610,7 @@
             $.ajax({
                 url: "@Url.Action("GetFormRights", "MaterialReceipt")",
                 type: "POST",
+                data:{formKey:formKey},
                 success: function (data) {
                     if (!data) return;
                     var obj = $.parseJSON(data);
@@ -600,8 +624,69 @@
                 }
             });
         }
-        $(document).ready(function () {
-            $('#loader').hide();
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate", "GateInward")",
+                async: false,
+                success: function (result, status, error) {
+
+                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate",parseDateToFormat(result));
+                    $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate",parseDateToFormat(result));
+                      
+                }
+            });
+        }
+
+        function AllowBackDateONMIR() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("AllowBackDateONMIR")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        var allowOption = obj.Result.Table[0].AllowBackDateONMIR;
+                        if (allowOption == 'Y') {
+                            // $('#EntryDate').css("pointer-events", "auto");
+                            $('#MIRDate').css("pointer-events", "auto");
+                            $('#EntryDate').css('color', 'rgb(248,255,178)');
+                            $('#ReqDate').css('color', 'rgb(248,255,178)');
+                        }
+                        else {
+                            // $('#EntryDate').css("pointer-events", "none");
+                            $('#MIRDate').css("pointer-events", "none");
+                            $('#EntryDate').css('color', 'rgb(248,255,178)');
+                            $('#ReqDate').css('color', 'rgb(248,255,178)');
+                            //$('#EntryDate').prop("disabled", true);
+                            //$('#ReqDate').prop("disabled", true);
+                        }
+                    }
+                }
+            });
+        }
+
+var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
+            $(document).ready(function () 
+            {
+                formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
+                                        if ('@Model.Mode' != '' && parseInt('@Model.EntryId') != 0) {
+
+                    }
+                    else {
+                        window.setInterval(function () {
+                            var Dat = new Date();
+                            let am_pm = (Dat.getHours() >= 12) ? "PM" : "AM";
+                            var time = Dat.getHours() + ":" + Dat.getMinutes() + ":" + Dat.getSeconds() + " - " + am_pm;
+                            //console.log(time);
+                            $('#EntryTime').val(time);
+                        }, 1000);
+                    }
+
+                        $('#loader').hide();
             $('#loader-container').hide();
             AddPassWord();
             GetGateNoFormRights();
@@ -658,6 +743,7 @@
             //   alert("before");
             if ($('#Mode').val() != 'U' && $('#Mode').val() != "V") {
                 // alert("inside");
+                GetServerDate();
                 GetNewEntry();
                 FillFromPend();
                 var now = new Date();
@@ -686,12 +772,9 @@
 
 
 
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                $("#MIRDate").datepicker("option", "maxDate", formatDate(today));
-                $("#MIRDate").datepicker("option", "minDate", formatDate(MIRmindate));
-                $("#EntryDate").datepicker("option", "maxDate", formatDate(today));
-                $("#EntryDate").datepicker("option", "minDate", formatDate(mindate));
+                // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                // $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+               
                 //fromDate & ToDate
                 $('#FromDate,#ToDate').datepicker({ dateFormat: 'dd/mm/yy' });
                 $('#FromDate').change(function () {
@@ -733,7 +816,7 @@
             $('#GateYearCode').rules("remove", "required");
             $('#ItemServTypes').rules("remove", "required");
 
-            if ($('#Mode').val() == 'U') {
+            if ($('#Mode').val() == 'U'||$('#Mode').val() == 'V') {
 
                 AllowUpdelete();
                 $('.addToGridHeading').click(function () {
@@ -746,10 +829,23 @@
                 // $('#YearCode').val(new Date().getFullYear());
                 // var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                 // var MIRDate = parseDateToFormat($('#MIRDate').val().split(" ")[0]);
-                  var EntryDate = ($('#EntryDate').val().split(" ")[0]);
-                var MIRDate = ($('#MIRDate').val().split(" ")[0]);
+                  var EntryDate = ($('#EntryDate').val());
+                var MIRDate = ($('#MIRDate').val());
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
                 $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", MIRDate);
+
+            }
+             if($('#Mode').val() != 'V')
+            {
+                var FinFromDate=$('#FinFromDate').val();
+                var FinToDate=$('#FinToDate').val();
+
+                 $("#MIRDate").datepicker("option", "minDate", parseDateToFormat(FinFromDate));
+                $("#MIRDate").datepicker("option", "maxDate", parseDateToFormat(FinToDate));
+                $("#EntryDate").datepicker("option", "minDate", parseDateToFormat(FinFromDate));
+                $("#EntryDate").datepicker("option", "maxDate", parseDateToFormat(FinToDate));
+
+                AllowBackDateONMIR();
             }
         });
 
@@ -806,7 +902,7 @@
             if (!MRNNo || !yearCode || !entryId) return;
 
             var checkUrl = isCustomerJW ? '/CustomerJWR/CheckEditOrDelete' : '/MaterialReceipt/CheckEditOrDelete';
-            var redirectUrl = isCustomerJW ? '/CustomerJWR/Index' : '/MaterialReceipt/MaterialReceipt';
+            var redirectUrl = isCustomerJW ? '/CustomerJWR/Index?formKey='+formKey : '/MaterialReceipt/MaterialReceipt?formKey'+formKey;
 
             $.ajax({
                 url: checkUrl,
@@ -866,6 +962,7 @@
                 type: "POST",
                 url: "@Url.Action("GetNewEntry")",
                 dataType: "json",
+                data:{formKey:formKey},
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -873,16 +970,17 @@
                         $('#EntryId').val("");
                         $('#EntryId').val(obj.Result[0].EntryId);
                         $('#MIRNo').val("");
-                        $('#MIRNo').val(obj.Result[0].EntryId);
+                        $('#MIRNo').val(obj.Result[0].MIRNo);
                     }
                 }
             });
         }
 
         $('#submitBTN').click(function (e) {
-
+             $('#ajaxLoader').show(); // ✅ Show loader
             e.preventDefault();
             if ($('#divMIRModuleGrid tr td').length <= 1) {
+                $('#ajaxLoader').hide();
                 $.notify('MIR Grid Should Have Atleast 1 Item...!', "error");
             }
             else {
@@ -896,6 +994,7 @@
                 url: "@Url.Action("FillGridFromMemoryCache")",
                 type: "POST",
                 async: false,
+                data:{uniqueKey:uniqueKey},
                 success: function (data) {
 
                     //$('#loader').show();
@@ -1143,12 +1242,31 @@
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetMIRMainItem")",
-                data: { "MRNNo": $('#MRNNo').val(), "MRNYearCode": $('#MRNYearCode').val(), "GateNo": $('#GateNo').val(), "GateYear": $('#GateYear').val(), "GateEntryId": $('#GateEntryId').val(), "MRNCustJW": $('#MRNJWCustJW').val(), start: start, pageSize: pageSize },
+                data: {"uniqueKey":uniqueKey, "MRNNo": $('#MRNNo').val(), "MRNYearCode": $('#MRNYearCode').val(), "GateNo": $('#GateNo').val(), "GateYear": $('#GateYear').val(), "GateEntryId": $('#GateEntryId').val(), "MRNCustJW": $('#MRNJWCustJW').val(), start: start, pageSize: pageSize },
                 async: false,
                 success: function (result, status, error) {
                     if (result != null && !result.includes('<tr class="text-center" id="nodata">')) {
 
                         $('#divMIRGrid').append(result);
+                        $("[id^='ItemManufacturingDate']").each(function () {
+
+            if (!$(this).hasClass("hasDatepicker")) {
+                $(this).datepicker({
+                    dateFormat: 'dd/mm/yy'
+                });
+            }
+
+            $(this).datepicker(
+                "option",
+                "maxDate",
+                $.datepicker.parseDate("dd/mm/yy", $('#INVDate').val())
+            );
+
+            // Set date from input value
+            if ($(this).val() !== '') {
+                $(this).datepicker("setDate", $(this).val());
+            }
+        });
                         start += pageSize;
                         isLoading = false;
                         var totalRows = $('#divMIRGrid tr').length;
@@ -1173,7 +1291,7 @@
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetMIRMainItem")",
-                data: { "MRNNo": $('#MRNNo').val(), "MRNYearCode": $('#MRNYearCode').val(), "GateNo": $('#GateNo').val(), "GateYear": $('#GateYear').val(), "GateEntryId": $('#GateEntryId').val(), "MRNCustJW": $('#MRNJWCustJW').val(), start: start, pageSize: pageSize },
+                data: {"uniqueKey":uniqueKey, "MRNNo": $('#MRNNo').val(), "MRNYearCode": $('#MRNYearCode').val(), "GateNo": $('#GateNo').val(), "GateYear": $('#GateYear').val(), "GateEntryId": $('#GateEntryId').val(), "MRNCustJW": $('#MRNJWCustJW').val(), start: start, pageSize: pageSize },
                 async: false,
                 success: function (result, status, error) {
                     if (result != null) {
@@ -1217,7 +1335,7 @@
             $.ajax({
                 url: '@Url.Action("DeleteByItemCode")',
                 type: "POST",
-                data: { "ItemCode": ItemCode, "SeqNo": SeqNo },
+                data: { "ItemCode": ItemCode, "SeqNo": SeqNo,"uniqueKey":uniqueKey },
                 async: false,
                 success: function (data, status, xhr) {
 
@@ -1268,7 +1386,7 @@
             $.ajax({
                 url: '@Url.Action("DeleteItemRow")',
                 type: "POST",
-                data: { "SeqNo": SeqNo },
+                data: { "SeqNo": SeqNo ,"uniqueKey":uniqueKey},
                 async: false,
                 success: function (data, status, xhr) {
                     $('#divMIRModuleGrid').html(data);
@@ -1322,7 +1440,7 @@
                 $.ajax({
                     url: '@Url.Action("EditItemRow")',
                     type: "POST",
-                    data: { "SeqNo": SeqNo },
+                    data: { "SeqNo": SeqNo,"uniqueKey":uniqueKey },
                     async: false,
                     success: function (data, status, xhr) {
 
@@ -1336,10 +1454,10 @@
 
                             if (obj[0].PathOfFileURL != "") {
                                 var pathUrl = obj[0].PathOfFileURL;
-                                html += '<tr id="' + i + '"><td><i class="fa fa-trash" aria-hidden="true" style="color: red; font-size: 18px;" onclick="deletebyitem(' + i + ')"></i></td><td>' + i + '</td><td><input id="PartCode-' + i + '" value=' + obj[0].PartCode + ' readonly ></td><td><input id="ItemName-' + i + '" value=' + JSON.stringify(obj[0].ItemName) + ' readonly ><input type="hidden"  id="ItemCode-' + i + '" value=' + obj[0].ItemCode + '></td><td><input id="BillQty-' + i + '" value=' + obj[0].BillQty + ' readonly style="width:50px"></td><td><input id="RECQTY-' + i + '" value=' + obj[0].RecQty + ' readonly style="width:50px"></td><td><input onchange="ToggleOkRecStore(' + i + ')" value=' + obj[0].AcceptedQty + '  id="AcceptedQty-' + i + '" style="width:50px"></td><td><input value=' + obj[0].AltAcceptedQty + ' id="AltAcceptedQty-' + i + '" style="width:50px"></td><td><select class=""  id="OkRecStore-' + i + '" style="width:150px;height:25px"></select></td><td><input type="number" onchange="ToggleRejRecStore(' + i + ')" value=' + obj[0].RejectedQty + ' id="RejectedQty-' + i + '" style="width:50px"/></td><td><input type="number" value=' + obj[0].AltRejectedQty + ' id="AltRejectedQty-' + i + '" style="width:50px"/></td><td><select id="RejRecStore-' + i + '" style="width:150px;height:25px"></select></td><td><input  id="Remarks-' + i + '" value=' + obj[0].Remarks + '></td><td><input  id="RejReason-' + i + '" /></td><td><input type="number" onchange="ToggleHoldStore(' + i + ')" value=' + obj[0].HoldQty + ' id="HoldQty-' + i + '" style="width:50px"/></td><td><select id="HoldStoreId-' + i + '" style="width:150px;height:25px"></select></td><td><input onchange="ToggleReworkStore(' + i + ')" value=' + obj[0].ReworkQty + ' id="ReworkQty-' + i + '" style="width:50px"/></td><td><select readonly  id="RewokStoreId-' + i + '" style="width:150px;height:25px"></select></td><td><input id="ReworkReason(' + i + ')" /></td><td><input onchange="ToggleDeviationQty(' + i + ')" type="number" value=' + obj[0].DeviationQty + ' id="DeviationQty-' + i + '" style="width:50px"/></td><td><input value=' + obj[0].ResponsibleEmpForDeviation + ' id="ResponsibleEmp-' + i + '" /></td><td><input id="PONo' + i + '" value=' + obj[0].PONo + ' readonly ></td><td><input id="POYearCode-' + i + '" value=' + obj[0].POYearCode + ' readonly style="width:50px"></td><td><input id="SchNo-' + i + '" readonly value=' + obj[0].SchNo + '  ></td><td><input id="SchYearCode-' + i + '" value=' + obj[0].SchYearCode + ' readonly style="width:50px"></td><td><input id="Unit-' + i + '" value=' + obj[0].Unit + ' readonly style="width:50px"></td><td><input style="width:50px" id="AltUnit-' + i + '" readonly value=' + obj[0].AltUnit + ' ></td><td><input id="AltRecQty-' + i + '" value=' + obj[0].ALtRecQty + ' readonly style="width:50px"></td><td><select id="DefaultType-' + i + '" style="width:150px;height:25px"></select></td><td><select id="ApprovedByEmp-' + i + '" style="width:150px;height:25px"></select></td><td><input value=' + obj[0].ProcessId + ' readonly id="ProcessId-' + i + '" ></td><td><input style="width:50px" readonly id="Color-' + i + '" value=' + obj[0].Color + ' ></td><td><input style="width:50px" readonly id="ItemSize-' + i + '" value=' + obj[0].ItemSize + ' ></td><td><input readonly  id="ResponsibleFactor-' + i + '" value=' + obj[0].ResponsibleFactor + '></td><td><input style="width:70px"  value="' + obj[0].SupplierBatchNo + '"  id="SupplierBatchNo-' + i + '" /></td><td><input  id="ShelfLife-' + i + '" value=' + obj[0].ShelfLife + ' style="width:50px"/></td><td><input style="width:70px" readonly id="BatchNo-' + i + '" value=' + obj[0].BatchNo + ' /></td><td><input style="width:280px" readonly id="uniquebatchno-' + i + '" value=' + obj[0].UniqueBatchNo + ' /></td><td><input value=' + JSON.stringify(obj[0].AllowDebitNote) + '  id="AllowDebitNote-' + i + '" readonly /></td><td><i onmouseover="displayreuploadbtn()" class="fa fa-eye" onclick="ViewFile1(\'' + pathUrl + '\')" aria-hidden="true"></i>&nbsp;<button id="hidebtn" onchange="ReUploadFile();"><i class="fa fa-plus" aria-hidden="true"></i></button><div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadFile"><input type="file" data-val="false" value="' + pathUrl + '" id="UploadedFilePath-' + i + '" /></div></td><td><a class="btn btn-primary" onclick="readURL(UploadedFilePath' + i + ')"><i class="fa fa-eye" aria-hidden="true"></i></a></td></tr>'
+                                html += '<tr id="MIRRowGrid-' + i + '"><td><i class="fa fa-trash" aria-hidden="true" style="color: red; font-size: 18px;" onclick="deletebyitem(' + i + ')"></i></td><td>' + i + '</td><td><input id="PartCode-' + i + '" value=' + obj[0].PartCode + ' readonly ></td><td><input id="ItemName-' + i + '" value=' + JSON.stringify(obj[0].ItemName) + ' readonly ><input type="hidden"  id="ItemCode-' + i + '" value=' + obj[0].ItemCode + '></td><td><input id="BillQty-' + i + '" value=' + obj[0].BillQty + ' readonly style="width:50px"></td><td><input id="RECQTY-' + i + '" value=' + obj[0].RecQty + ' readonly style="width:50px"></td><td><input onchange="ToggleOkRecStore(' + i + ')" value=' + obj[0].AcceptedQty + '  id="AcceptedQty-' + i + '" style="width:50px"></td><td><input value=' + obj[0].AltAcceptedQty + ' id="AltAcceptedQty-' + i + '" style="width:50px"></td><td><select class=""  id="OkRecStore-' + i + '" style="width:150px;height:25px"></select></td><td><input type="number" onchange="ToggleRejRecStore(' + i + ')" value=' + obj[0].RejectedQty + ' id="RejectedQty-' + i + '" style="width:50px"/></td><td><input type="number" value=' + obj[0].AltRejectedQty + ' id="AltRejectedQty-' + i + '" style="width:50px"/></td><td><select id="RejRecStore-' + i + '" style="width:150px;height:25px"></select></td><td><input  id="Remarks-' + i + '" value=' + obj[0].Remarks + '></td><td><input  id="RejectedReason-' + i + '" value=' + obj[0].RejectedReason + '></td><td><input type="number" onchange="ToggleHoldStore(' + i + ')" value=' + obj[0].HoldQty + ' id="HoldQty-' + i + '" style="width:50px"/></td><td><select id="HoldStoreId-' + i + '" style="width:150px;height:25px"></select></td><td><input onchange="ToggleReworkStore(' + i + ')" value=' + obj[0].ReworkQty + ' id="ReworkQty-' + i + '" style="width:50px"/></td><td><select readonly  id="RewokStoreId-' + i + '" style="width:150px;height:25px"></select></td><td><input  id="ReworkReason-' + i + '"value=' + obj[0].ReworkReason + ' ></td><td><input onchange="ToggleDeviationQty(' + i + ')" type="number" value=' + obj[0].DeviationQty + ' id="DeviationQty-' + i + '" style="width:50px"/></td><td><input value=' + obj[0].ResponsibleEmpForDeviation + ' id="ResponsibleEmp-' + i + '" /></td><td><input id="PONo-' + i + '" value="' + obj[0].PONo + '" readonly ></td><td><input id="POYearCode-' + i + '" value=' + obj[0].POYearCode + ' readonly style="width:50px"></td><td><input id="SchNo-' + i + '" readonly value=' + obj[0].SchNo + '  ></td><td><input id="SchYearCode-' + i + '" value=' + obj[0].SchYearCode + ' readonly style="width:50px"></td><td><input id="ItemManufacturingDate-' + i + '" readonly value=' + obj[0].ItemManufacturingDate + '  ></td><td><input id="Unit-' + i + '" value=' + obj[0].Unit + ' readonly style="width:50px"></td><td><input style="width:50px" id="AltUnit-' + i + '" readonly value=' + obj[0].AltUnit + ' ></td><td><input id="AltRecQty-' + i + '" value=' + obj[0].ALtRecQty + ' readonly style="width:50px"></td><td><select id="DefaultType-' + i + '" style="width:150px;height:25px"></select></td><td><select id="ApprovedByEmp-' + i + '" style="width:150px;height:25px"></select></td><td><input value=' + obj[0].ProcessId + ' readonly id="ProcessId-' + i + '" ></td><td><input style="width:50px" readonly id="Color-' + i + '" value=' + obj[0].Color + ' ></td><td><input style="width:50px" readonly id="ItemSize-' + i + '" value=' + obj[0].ItemSize + ' ></td><td><input readonly  id="ResponsibleFactor-' + i + '" value=' + obj[0].ResponsibleFactor + '></td><td><input style="width:70px"  value="' + obj[0].SupplierBatchNo + '"  id="SupplierBatchNo-' + i + '" /></td><td><input  id="ShelfLife-' + i + '" value=' + obj[0].ShelfLife + ' style="width:50px"/></td><td><input style="width:70px" readonly id="BatchNo-' + i + '" value=' + obj[0].BatchNo + ' /></td><td><input style="width:280px" readonly id="uniquebatchno-' + i + '" value=' + obj[0].UniqueBatchNo + ' /></td><td><input value=' + JSON.stringify(obj[0].AllowDebitNote) + '  id="AllowDebitNote-' + i + '" readonly /></td><td><i onmouseover="displayreuploadbtn()" class="fa fa-eye" onclick="ViewFile1(\'' + pathUrl + '\')" aria-hidden="true"></i>&nbsp;<button id="hidebtn" onchange="ReUploadFile();"><i class="fa fa-plus" aria-hidden="true"></i></button><div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadFile"><input type="file" data-val="false" value="' + pathUrl + '" id="UploadedFilePath-' + i + '" /></div></td><td><a class="btn btn-primary" onclick="readURL(UploadedFilePath' + i + ')"><i class="fa fa-eye" aria-hidden="true"></i></a></td></tr>'
                             }
                             else {
-                                html += '<tr id="' + i + '"><td><i class="fa fa-trash" aria-hidden="true" style="color: red; font-size: 18px;" onclick="deletebyitem(' + i + ')"></i></td><td>' + i + '</td><td><input id="PartCode-' + i + '" value=' + obj[0].PartCode + ' readonly ></td><td><input id="ItemName-' + i + '" value=' + JSON.stringify(obj[0].ItemName) + ' readonly ><input type="hidden" id="ItemCode-' + i + '" value=' + obj[0].ItemCode + '></td><td><input id="BillQty-' + i + '" value=' + obj[0].BillQty + ' readonly style="width:50px"></td><td><input id="RECQTY-' + i + '" value=' + obj[0].RecQty + ' readonly style="width:50px"></td><td><input onchange="ToggleOkRecStore(' + i + ')" value=' + obj[0].AcceptedQty + '  id="AcceptedQty-' + i + '" style="width:50px"></td><td><input value=' + obj[0].AltAcceptedQty + ' id="AltAcceptedQty-' + i + '" style="width:50px"></td><td><select class=""  id="OkRecStore-' + i + '" style="width:150px;height:25px"></select></td><td><input type="number" onchange="ToggleRejRecStore(' + i + ')" value=' + obj[0].RejectedQty + ' id="RejectedQty-' + i + '" style="width:50px"/></td><td><input type="number" value=' + obj[0].AltRejectedQty + ' id="AltRejectedQty-' + i + '" style="width:50px"/></td><td><select id="RejRecStore-' + i + '" style="width:150px;height:25px"></select></td><td><input  id="Remarks-' + i + '" value=' + obj[0].Remarks + '></td><td><input  id="RejReason-' + i + '" /></td><td><input type="number" onchange="ToggleHoldStore(' + i + ')" value=' + obj[0].HoldQty + ' id="HoldQty-' + i + '" style="width:50px"/></td><td><select id="HoldStoreId-' + i + '" style="width:150px;height:25px"></select></td><td><input onchange="ToggleReworkStore(' + i + ')" value=' + obj[0].ReworkQty + ' id="ReworkQty-' + i + '" style="width:50px"/></td><td><select readonly  id="RewokStoreId-' + i + '" style="width:150px;height:25px"></select></td><td><input id="ReworkReason(' + i + ')" /></td><td><input onchange="ToggleDeviationQty(' + i + ')" type="number" value=' + obj[0].DeviationQty + ' id="DeviationQty-' + i + '" style="width:50px"/></td><td><input value=' + obj[0].ResponsibleEmpForDeviation + ' id="ResponsibleEmp-' + i + '" /></td><td><input id="PONo' + i + '" value=' + obj[0].PONo + ' readonly ></td><td><input id="POYearCode-' + i + '" value=' + obj[0].POYearCode + ' readonly style="width:50px"></td><td><input id="SchNo-' + i + '" readonly value=' + obj[0].SchNo + '  ></td><td><input id="SchYearCode-' + i + '" value=' + obj[0].SchYearCode + ' readonly style="width:50px"></td><td><input id="Unit-' + i + '" value=' + obj[0].Unit + ' readonly style="width:50px"></td><td><input style="width:50px" id="AltUnit-' + i + '" readonly value=' + obj[0].AltUnit + ' ></td><td><input id="AltRecQty-' + i + '" value=' + obj[0].ALtRecQty + ' readonly style="width:50px"></td><td><select id="DefaultType-' + i + '" style="width:150px;height:25px"></select></td><td><select id="ApprovedByEmp-' + i + '" style="width:150px;height:25px"></select></td><td><input value=' + obj[0].ProcessId + ' readonly id="ProcessId-' + i + '" ></td><td><input style="width:50px" readonly id="Color-' + i + '" value=' + obj[0].Color + ' ></td><td><input style="width:50px" readonly id="ItemSize-' + i + '" value=' + obj[0].ItemSize + ' ></td><td><input readonly  id="ResponsibleFactor-' + i + '" value=' + obj[0].ResponsibleFactor + '></td><td><input style="width:70px"  value="' + obj[0].SupplierBatchNo + '"  id="SupplierBatchNo-' + i + '" /></td><td><input  id="ShelfLife-' + i + '" value=' + obj[0].ShelfLife + ' style="width:50px"/></td><td><input style="width:70px" readonly id="BatchNo-' + i + '" value=' + obj[0].BatchNo + ' /></td><td><input style="width:280px" readonly id="uniquebatchno-' + i + '" value=' + obj[0].UniqueBatchNo + ' /></td><td><input value=' + JSON.stringify(obj[0].AllowDebitNote) + '  id="AllowDebitNote-' + i + '" readonly /></td><td><input  style="width:150px" type="file" data-val="false" id="UploadedFilePath-' + i + '" /></td><td><a class="btn btn-primary" onclick="readURL(UploadedFilePath' + i + ')"><i class="fa fa-eye" aria-hidden="true"></i></a></td></tr>';
+                                html += '<tr id="MIRRowGrid-' + i + '"><td><i class="fa fa-trash" aria-hidden="true" style="color: red; font-size: 18px;" onclick="deletebyitem(' + i + ')"></i></td><td>' + i + '</td><td><input id="PartCode-' + i + '" value=' + obj[0].PartCode + ' readonly ></td><td><input id="ItemName-' + i + '" value=' + JSON.stringify(obj[0].ItemName) + ' readonly ><input type="hidden" id="ItemCode-' + i + '" value=' + obj[0].ItemCode + '></td><td><input id="BillQty-' + i + '" value=' + obj[0].BillQty + ' readonly style="width:50px"></td><td><input id="RECQTY-' + i + '" value=' + obj[0].RecQty + ' readonly style="width:50px"></td><td><input onchange="ToggleOkRecStore(' + i + ')" value=' + obj[0].AcceptedQty + '  id="AcceptedQty-' + i + '" style="width:50px"></td><td><input value=' + obj[0].AltAcceptedQty + ' id="AltAcceptedQty-' + i + '" style="width:50px"></td><td><select class=""  id="OkRecStore-' + i + '" style="width:150px;height:25px"></select></td><td><input type="number" onchange="ToggleRejRecStore(' + i + ')" value=' + obj[0].RejectedQty + ' id="RejectedQty-' + i + '" style="width:50px"/></td><td><input type="number" value=' + obj[0].AltRejectedQty + ' id="AltRejectedQty-' + i + '" style="width:50px"/></td><td><select id="RejRecStore-' + i + '" style="width:150px;height:25px"></select></td><td><input  id="Remarks-' + i + '" value=' + obj[0].Remarks + '></td><td><input  id="RejectedReason-' + i + '"value=' + obj[0].RejectedReason + ' ></td><td><input type="number" onchange="ToggleHoldStore(' + i + ')" value=' + obj[0].HoldQty + ' id="HoldQty-' + i + '" style="width:50px"/></td><td><select id="HoldStoreId-' + i + '" style="width:150px;height:25px"></select></td><td><input onchange="ToggleReworkStore(' + i + ')" value=' + obj[0].ReworkQty + ' id="ReworkQty-' + i + '" style="width:50px"/></td><td><select readonly  id="RewokStoreId-' + i + '" style="width:150px;height:25px"></select></td><td><input  id="ReworkReason-' + i + '"value=' + obj[0].ReworkReason + ' ></td><td><input onchange="ToggleDeviationQty(' + i + ')" type="number" value=' + obj[0].DeviationQty + ' id="DeviationQty-' + i + '" style="width:50px"/></td><td><input value=' + obj[0].ResponsibleEmpForDeviation + ' id="ResponsibleEmp-' + i + '" /></td><td><input id="PONo-' + i + '" value="' + obj[0].PONo + '" readonly ></td><td><input id="POYearCode-' + i + '" value=' + obj[0].POYearCode + ' readonly style="width:50px"></td><td><input id="SchNo-' + i + '" readonly value=' + obj[0].SchNo + '  ></td><td><input id="SchYearCode-' + i + '" value=' + obj[0].SchYearCode + ' readonly style="width:50px"></td><td><input id="ItemManufacturingDate-' + i + '" value="' + obj[0].ItemManufacturingDate + '" readonly style="width:80px"></td><td><input id="Unit-' + i + '" value=' + obj[0].Unit + ' readonly style="width:50px"></td><td><input style="width:50px" id="AltUnit-' + i + '" readonly value=' + obj[0].AltUnit + ' ></td><td><input id="AltRecQty-' + i + '" value=' + obj[0].ALtRecQty + ' readonly style="width:50px"></td><td><select id="DefaultType-' + i + '" style="width:150px;height:25px"></select></td><td><select id="ApprovedByEmp-' + i + '" style="width:150px;height:25px"></select></td><td><input value=' + obj[0].ProcessId + ' readonly id="ProcessId-' + i + '" ></td><td><input style="width:50px" readonly id="Color-' + i + '" value=' + obj[0].Color + ' ></td><td><input style="width:50px" readonly id="ItemSize-' + i + '" value=' + obj[0].ItemSize + ' ></td><td><input readonly  id="ResponsibleFactor-' + i + '" value=' + obj[0].ResponsibleFactor + '></td><td><input style="width:70px"  value="' + obj[0].SupplierBatchNo + '"  id="SupplierBatchNo-' + i + '" /></td><td><input  id="ShelfLife-' + i + '" value=' + obj[0].ShelfLife + ' style="width:50px"/></td><td><input style="width:70px" readonly id="BatchNo-' + i + '" value=' + obj[0].BatchNo + ' /></td><td><input style="width:280px" readonly id="uniquebatchno-' + i + '" value=' + obj[0].UniqueBatchNo + ' /></td><td><input value=' + JSON.stringify(obj[0].AllowDebitNote) + '  id="AllowDebitNote-' + i + '" readonly /></td><td><input  style="width:150px" type="file" data-val="false" id="UploadedFilePath-' + i + '" /></td><td><a class="btn btn-primary" onclick="readURL(UploadedFilePath' + i + ')"><i class="fa fa-eye" aria-hidden="true"></i></a></td></tr>';
                             }
 
                             $('#divMIRGrid').append(html);
@@ -1933,6 +2051,7 @@
                     "POYearCode": $('#POYearCode-' + i).val(),
                     "SchNo": $('#SchNo-' + i).val(),
                     "SchYearCode": $('#SchYearCode-' + i).val(),
+                    "ItemManufacturingDate": $('#ItemManufacturingDate-' + i).val(),
                     "PartCode": $('#PartCode-' + i).val(),
                     "ItemName": $('#ItemName-' + i).val(),
                     "ItemCode": $('#ItemCode-' + i).val(),
@@ -1948,6 +2067,8 @@
                     "RejectedQty": $('#RejectedQty-' + i).val(),
                     "AltRejectedQty": $('#AltRejectedQty-' + i).val(),
                     "RejRecStore": $('#RejRecStore-' + i).val(),
+                    "ReworkReason": $('#ReworkReason-' + i).val(),
+                    "RejectedReason": $('#RejectedReason-' + i).val(),
                     "Remarks": $('#Remarks-' + i).val(),
                     "DefaultType": $('#DefaultType-' + i).val(),
                     "ApprovedByEmp": $('#ApprovedByEmp-' + i).val(),
@@ -1977,7 +2098,7 @@
             $.ajax({
                 url: "@Url.Action("AddToMIRGrid")",
                 type: "POST",
-                data: { model: ItemData, ImageList: imageArray },
+                data: { model: ItemData, ImageList: imageArray ,uniqueKey:uniqueKey},
                 beforeSend: function (xhr) {
 
                 },

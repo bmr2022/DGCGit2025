@@ -25,9 +25,9 @@ namespace eTactWeb.Data.BLL
             return await _PendDal.BindData(Flag);
         }
 
-        public async Task<ResponseResult> GetDataForPendingMRN(string Flag,string MRNJW, int YearCode, string FromDate, string ToDate, int AccountCode, string MrnNo, int ItemCode, string InvoiceNo, int DeptId)
+        public async Task<ResponseResult> GetDataForPendingMRN(string Flag, string MRNJW, int YearCode, string FromDate, string ToDate, int AccountCode, string MrnNo, int ItemCode, string InvoiceNo, int DeptId)
         {
-            return await _PendDal.GetDataForPendingMRN(Flag,MRNJW, YearCode, FromDate, ToDate, AccountCode, MrnNo, ItemCode, InvoiceNo,DeptId);
+            return await _PendDal.GetDataForPendingMRN(Flag, MRNJW, YearCode, FromDate, ToDate, AccountCode, MrnNo, ItemCode, InvoiceNo, DeptId);
         }
         public async Task<ResponseResult> GetDeptForUser(int Empid)
         {
