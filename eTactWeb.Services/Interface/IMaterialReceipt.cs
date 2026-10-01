@@ -19,6 +19,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> UpdatePrintStatus(int EntryId, int YearCode);
         Task<ResponseResult> GetReportName();
         Task<ResponseResult> GetMRNTagReportName();
+        Task<ResponseResult> getPrintMIRTagFromMRN();
         Task<ResponseResult> GetFeatureOption();
         Task<ResponseResult> GetGateMainData(string Flag, string SPName, string GateNo, string GateyearCode, int GateEntryId);
 
@@ -45,6 +46,7 @@ namespace eTactWeb.Services.Interface
 
         Task<MaterialReceiptModel> GetViewByID(int ID, int YearCode);
         Task<ResponseResult> CheckFeatureOption();
+        Task<ResponseResult> AllowToChangeStoreInMRN();
         Task<ResponseResult> GenerateMultiMRNPrint(string MRNNo, int YearCode);
 
     }

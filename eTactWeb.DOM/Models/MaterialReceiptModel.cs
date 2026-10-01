@@ -16,6 +16,7 @@ public class MRNDashboard
     //mm.InvNo, mm.InvDate, mm.Docname,mm.MRNQCCompleted,TotalAmt,NetAmt
     public string? GateNo { get; set; }
     public string? VendorName { get; set; }
+    public string? formKey { get; set; }
     public string? EntryId { get; set; }
     public int? YearCode { get; set; }
     public string? MrnNo { get; set; }
@@ -80,6 +81,7 @@ public class MRNQDashboard : MRNDashboard
 {
     public string? FromDate { get; set; }
     public string? ItemName { get; set; }
+    public string? formKey { get; set; }
     public string? PartCode { get; set; }
     public string? PONo { get; set; }
     //right
@@ -94,10 +96,12 @@ public class MRNQDashboard : MRNDashboard
 public class MaterialReceiptDetail : TimeStamp
 {
     public string? VendorBatchMand { get; set; }
+    public string? formKey { get; set; }
     public string PONO { get; set; }
     public int PoYearCode { get; set; }
     public string SchNo { get; set; }
     public string SchDate { get; set; }
+    public string ItemManufacturingDate { get; set; }
     public int SchYearCode { get; set; }
     public string PoType { get; set; }
     public int POAmendNo { get; set; }
@@ -167,6 +171,8 @@ public class BatchDetailModel
 public class MaterialReceiptModel : MaterialReceiptDetail
 {
     public string? IPAddress { get; set; }
+    public string? formKey { get; set; }
+    public string? uniqueKey { get; set; }
     public string? IsError { get; set; }
     public string? FinFromDate { get; set; }
     public string? FinToDate { get; set; }

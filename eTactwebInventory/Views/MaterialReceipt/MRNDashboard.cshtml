@@ -31,7 +31,7 @@
             <h5>
                 MATERIAL RECEIPT NOTE - <strong>Dashboard</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="MaterialReceipt" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="MaterialReceipt" asp-route-formKey="@ViewBag.formKey" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                         Add New
                     </a>
@@ -43,6 +43,27 @@
                 <div class="card-body">
                     <form id="SParam">
                         <div class="row">
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-2">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input asp-for="FromDate"  maxlength="10" class="form-control" />
+                                        <input type="hidden" asp-for="formKey" id="formKey" name="formKey" value="@ViewBag.formKey" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate"  maxlength="10" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
+                                <label asp-for="DashboardType" class="form-label">Type</label>
+                                <select asp-for="DashboardType" class="form-select">
+                                    <option value="0" disabled>-Select-</option>
+                                    <option value="Summary" selected>Summary</option>
+                                    <option value="Detail">Detail</option>
+                                </select>
+                            </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="VendorName" class="form-label">Vendor Name</label>
                                 <input asp-for="VendorName" class="form-control" />
@@ -79,14 +100,7 @@
                                 <label asp-for="PartCode" class="form-label">Part Code</label>
                                 <input asp-for="PartCode" class="form-control" />
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
-                                <label asp-for="DashboardType" class="form-label">Type</label>
-                                <select asp-for="DashboardType" class="form-select">
-                                    <option value="0" disabled>-Select-</option>
-                                    <option value="Summary" selected>Summary</option>
-                                    <option value="Detail">Detail</option>
-                                </select>
-                            </div>
+                            
                             @* <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                             <label asp-for="ItemName" class="form-label">Item Name</label>
 
@@ -111,18 +125,7 @@
                             </div>
                             </div>
                             </div>*@
-                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4">
-                                <div class="row">
-                                    <div class="col">
-                                        <label class="form-label">From Date</label>
-                                        <input asp-for="FromDate" maxlength="10" class="form-control" />
-                                    </div>
-                                    <div class="col">
-                                        <label class="form-label">To Date</label>
-                                        <input asp-for="ToDate" maxlength="10" class="form-control" />
-                                    </div>
-                                </div>
-                            </div>
+                            
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label class="form-label">Global search</label>
                                 <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
@@ -134,15 +137,18 @@
                                 <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
-                                <a class="btn btn-sm btn-outline-danger" asp-controller="MaterialReceipt" asp-action="MRNDashboard" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                <a class="btn btn-sm btn-outline-danger" asp-controller="MaterialReceipt" asp-route-formKey="@ViewBag.formKey" asp-action="MRNDashboard" style="padding:3px;height:30px;width:100px;margin-left:20px;">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
 
                                 <a class="btn btn-sm btn-outline-danger" onclick="PrintReport()" style="padding:3px;height:30px;width:100px;margin-left:20px;">
                                     <i class="fas fa-barcode"></i>Print
                                 </a>
+                                <span style="color: #856404; font-size: 13px;" margin-left: 20px;>
+                                    <strong>Note:</strong> <span>Print will open only after QC:</span><strong><span id="PrintMRNOnlyAfterQC"></span></strong>
+                               <br /> <span> Print One-time only:</span> <strong><span id="PrintMRNOnlyOneTimePermission"></span></strong>
+                                </span>
 
-                              
                             </div>
 
                             @* <div >
@@ -175,20 +181,82 @@
     </div>
 </div>
 
+<div class="modal fade" id="PasswordAllowPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staticBackdropLabel">Enter Password</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Enter Password:</h6>
+                                            <input type="password" class="form-control" id="CheckDateForAction" placeholder="Enter Password" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-success" onclick="PasswordCheck();">Done</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal" onclick="RefreshSchedule('');">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts
 {
     <script>
-        $(document).ready(function () {
-            GetFormRights();
-            // if ($('#DashboardType').val() == "Summary") {
-            //     //GetFormRights();
-            //     GetSummaryData();
-            // } else {
-            //     //GetFormRights();
-            //     GetDetailData();
-            // }
-            // GetSearchData();
-        });
+        // $(document).ready(function () {
+        //     GetFormRights();
+        //     if ($('#DashboardType').val() == "Summary") {
+        //         GetFormRights();
+        //         GetSummaryData();
+        //     } else {
+        //         GetFormRights();
+        //         GetDetailData();
+        //     }
+        //     GetSearchData();
+        // });
+          function GetFeatureOption() {
+
+             $.ajax({
+                 type: "POST",
+                 data: {},
+                  url: "@Url.Action("GetFeatureOption")",
+                 dataType: "json",
+                 success: function (result, status, error) {
+
+                     if (result != null) {
+                         var obj = $.parseJSON(result);
+                         if (obj.Result != null) {
+                               $("#PrintMRNOnlyAfterQC").text(obj.Result[0].PrintMRNOnlyAfterQC );
+                               $("#PrintMRNOnlyOneTimePermission").text(obj.Result[0].PrintMRNOnlyOneTimePermission );
+                         }
+                     }
+                 }
+             });
+         }
+
+        var pendingAction = null;
+                  var printEntryId = 0;
+        var printYearCode = 0;
+        var printMrnNo = "";
         function PrintReport() {
             ;
 
@@ -216,7 +284,7 @@
                 type: 'POST',
                 data: {
                     
-                    "MRNNo": selectedItems.join(',')
+                      "MRNNo": selectedItems.join(','),"formKey":formKey
                 },
                 success: function (response) {
                     // Open report in new tab if server returns URL
@@ -237,10 +305,46 @@
                 }
             });
         }
-
-
+          var selectedMRN = [];
+           function updateSelectAllCheckbox() {
+                var total = $('#mrnTbody .checkManual').length;
+                var checked = $('#mrnTbody .checkManual:checked').length;
+                $('#selectAll').prop('checked', total > 0 && total === checked);
+            }
+            function reapplySelections() {
+                if (!selectedMRN.length) {
+                    updateSelectAllCheckbox();
+                    return;
+                }
+                selectedMRN.forEach(val => {
+                    $("#mrnTbody .checkManual[value='" + val + "']").prop("checked", true);
+                });
+                updateSelectAllCheckbox();
+            }
+            var formKey=$('#formKey').val();
         $(function () {
+             formKey=$('#formKey').val();
             GetFormRights();
+             GetFeatureOption();
+              var printError = '@TempData["PrintError"]';
+        var entryId = '@TempData["EntryId"]';
+        var yearCode = '@TempData["YearCode"]';
+        var mrnNo = '@TempData["MrnNo"]';
+          printEntryId = parseInt(entryId);
+        printYearCode = parseInt(yearCode);
+        printMrnNo = mrnNo;
+        if (printError === "PASSWORD_REQUIRED") {
+            $('#PasswordAllowPopup').modal('show');
+        }
+
+       else if (printError === "Wrong password") {
+
+            $.notify("Wrong password!", "error");
+          //  $('#PasswordAllowPopup').modal('show');
+        }
+        else{
+              $.notify(printError, "error");
+        }
             var fromDateBack = sessionStorage.getItem('FromDateBack');
             var toDateBack = sessionStorage.getItem('ToDateBack');
             var GateNoBack = sessionStorage.getItem('GateNoBack');
@@ -271,7 +375,7 @@
 
             //     $("#mrnTbody .checkManual").prop('checked', isChecked).trigger('change');
             // });
-            var selectedMRN = [];
+          
             $(document).on('change', '.checkManual', function () {
                 var val = $(this).val();
                 if ($(this).is(':checked')) {
@@ -293,29 +397,15 @@
                     selectedMRN = [];
                 }
             });
-            function updateSelectAllCheckbox() {
-                var total = $('#mrnTbody .checkManual').length;
-                var checked = $('#mrnTbody .checkManual:checked').length;
-                $('#selectAll').prop('checked', total > 0 && total === checked);
-            }
-            function reapplySelections() {
-                if (!selectedMRN.length) {
-                    updateSelectAllCheckbox();
-                    return;
-                }
-                selectedMRN.forEach(val => {
-                    $("#mrnTbody .checkManual[value='" + val + "']").prop("checked", true);
-                });
-                updateSelectAllCheckbox();
-            }
+ 
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-                 $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                   $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' ,changeMonth:true,changeYear:true}).datepicker("setDate", formatDate(firstDayOfMonth));
+             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy',changeMonth:true,changeYear:true }).datepicker("setDate", 'now');
             var dashGrid = $('#mrnTbody tr').length;
             $('#totalRows').text(dashGrid);
            // var currentDate = new Date();
 
-            var sessionYearCode = parseInt($('#SessionYearCode').val().split('/')[2].split(" ")[0]);
+            // var sessionYearCode = parseInt($('#SessionYearCode').val().split('/')[2].split(" ")[0]);
 
             var rowCount = $('#gateDashboardtable tr').length;
 
@@ -327,21 +417,27 @@
                 }
             }
         
-           var sessionYearCode = parseInt($('#SessionYearCode').val().split('/')[2].split(" ")[0]);
-            console.log(sessionYearCode);
+           // var sessionYearCode = parseInt($('#SessionYearCode').val().split('/')[2].split(" ")[0]);
+                   var sessionYearCode = null;
+        if ($('#SessionYearCode').length && $('#SessionYearCode').val()) {
+            sessionYearCode = parseInt(
+                $('#SessionYearCode').val().split('/')[2].split(" ")[0]
+            );
+        }
+            console.log("sessionYearCode",sessionYearCode);
             
             //$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
             //$('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
        
-            AutoComplete('VMRNMainDetail', 'VendorName', 'Account_Name', null);
-            AutoComplete('VMRNMainDetail', 'ItemName', 'item_name', null);
-            AutoComplete('VMRNMainDetail', 'PartCode', 'partcode', null);
-            AutoComplete('VMRNMainDetail', 'GateNo', 'GateNo', null);
-            AutoComplete('VMRNMainDetail', 'PONo', 'pono', null);
-            AutoComplete('VMRNMainDetail', 'MrnNo', 'MRNNo', null);
-            AutoComplete('VMRNMainDetail', 'FromMRNNo', 'MRNNo', null);
-            AutoComplete('VMRNMainDetail', 'ToMRNNo', 'MRNNo', null);
+             AutoComplete('VMRNMainDetail', 'VendorName', 'Account_Name', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
+              AutoComplete('VMRNMainDetail', 'ItemName', 'item_name', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
+              AutoComplete('VMRNMainDetail', 'PartCode', 'partcode', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
+              AutoComplete('VMRNMainDetail', 'GateNo', 'GateNo', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
+              AutoComplete('VMRNMainDetail', 'PONo', 'pono', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
+              AutoComplete('VMRNMainDetail', 'MrnNo', 'MRNNo', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
+              // AutoComplete('VMRNMainDetail', 'FromMRNNo', 'MRNNo', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
+              // AutoComplete('VMRNMainDetail', 'ToMRNNo', 'MRNNo', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
             //AutoComplete('VMRNMainDetail', 'ItemName', 'ItemName', null);
             if ($('#FromDate1').val() != "" && $('#ToDate1').val() != "") {
 
@@ -399,7 +495,16 @@
             sessionStorage.removeItem('DashboardTypeBack');
             sessionStorage.removeItem('PoNoBack');
         });
-
+          function PasswordCheck() {
+            var enteredPass = $('#CheckDateForAction').val().trim();
+            if (!enteredPass) {
+                $.notify("Enter password!", "error");
+                return;
+            }
+              var url = `/MaterialReceipt/PrintReport?EntryId=${printEntryId}&YearCode=${printYearCode}&MrnNo=${encodeURIComponent(printMrnNo)}&password=${encodeURIComponent(enteredPass)}&formKey=${encodeURIComponent(formKey)}`;
+            window.location.href = url;
+        }
+         
         // var currentSearchColumn = null;
 
         // $("#search-box").on("keyup", function () {
@@ -419,6 +524,17 @@
         //     currentSearchColumn = $(this).data('columnno');
         //     $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
         // });
+          $('#FromDate,#ToDate').change(function()
+         {
+                  AutoComplete('VMRNMainDetail', 'VendorName', 'Account_Name', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
+               AutoComplete('VMRNMainDetail', 'ItemName', 'item_name', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
+               AutoComplete('VMRNMainDetail', 'PartCode', 'partcode', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
+               AutoComplete('VMRNMainDetail', 'GateNo', 'GateNo', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
+               AutoComplete('VMRNMainDetail', 'PONo', 'pono', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
+               AutoComplete('VMRNMainDetail', 'MrnNo', 'MRNNo', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
+               // AutoComplete('VMRNMainDetail', 'FromMRNNo', 'MRNNo', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
+               // AutoComplete('VMRNMainDetail', 'ToMRNNo', 'MRNNo', null,$('#FromDate').val(),$('#ToDate').val(),"MRNEntryDate");
+         });
 
           $('#sendToExcel').click(function () {
             var reportType = $('#DashboardType').val(); // assuming there's a dropdown or input with id="ReportType"
@@ -434,7 +550,7 @@
 
             if (searchString !== '') {
                 url = '/MaterialReceipt/GlobalSearch';
-                data += '&searchString=' + encodeURIComponent(searchString) + '&dashboardType=' + dashboardType;
+                  data += '&searchString=' + encodeURIComponent(searchString) + '&dashboardType=' + dashboardType+ '&formKey=' + formKey;
             } else {
                 if (dashboardType === "Summary") {
                     url = '@Url.Action("GetSearchData", "MaterialReceipt")';
@@ -498,7 +614,7 @@
             $.ajax({
                 url: "/MaterialReceipt/GlobalSearch?searchString=" + searchString,
                 type: "GET",
-                data: { searchString: searchString, dashboardType: dashboardType },
+                data: { searchString: searchString, dashboardType: dashboardType,formKey:formKey },
                 success: function (data) {
 
                     $('#divDashboardGrid').empty();
@@ -521,7 +637,7 @@
                     if (result != null) {
                         // var firstDayOfMonth = getFirstDayOfMonth(result);
                         // $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
-                        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                         $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy',changeMonth:true,changeYear:true }).datepicker("setDate", result);
                     }
                 }
             });
@@ -631,6 +747,7 @@
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
+                data:{formKey:formKey},
                 async: false,
                 success: function (data) {
 

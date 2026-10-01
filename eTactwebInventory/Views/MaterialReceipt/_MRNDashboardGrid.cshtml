@@ -3,7 +3,15 @@
 @using System.Reflection.PortableExecutable
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+     var context = HttpContextAccessor.HttpContext;
+    string formKey =
+           context.Request.Query["formKey"].FirstOrDefault()
+        ?? context.Request.Headers["FormKey"].FirstOrDefault()
+        ??ViewBag.formKey
+        ??Model.formKey
+       
+        ?? "";
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"YearCode_{formKey}"));
 }
 @if (Model.DashboardType == "Detail")
 {
@@ -50,12 +58,23 @@ else
                         {
 
                             Cntr = Cntr + 1;
-                                            <tr onclick="selection(this)">
+                                            <tr onclick="selection(this)"
+                                             style="@(item.MRNQCCompleted == "N" ? "background-color:#FFFACD;" : "")">
                                 <th>@srNo</th>
                                                 <td style="text-align:center;white-space: nowrap;">
                                                     <div id="container">
+
+                                                        <div id="MrnTagData-@Cntr">
+                                            <a class="table-link link-dark" asp-action="MRNTag"  target="_blank" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.YearCode" asp-route-MrnNo="@item.MrnNo">
+                                                                <span class="fa-stack">
+                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                    <i class="fa-solid fa-barcode fa-stack-1x fa-inverse"></i>
+                                                                </span>
+                                                            </a>
+                                                        </div>
                                                         <div id="printData-@Cntr">
-                                            <a class="table-link link-dark" asp-action="PrintReport" target="_blank" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.YearCode" asp-route-MrnNo="@item.MrnNo">
+                                            <a class="table-link link-dark" asp-action="PrintReport" target="_blank" asp-route-EntryId="@item.EntryId" 
+                                               asp-route-YearCode="@item.YearCode" asp-route-MrnNo="@item.MrnNo" asp-route-formKey="@formKey">
                                                                 <span class="fa-stack">
                                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                                     <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
@@ -63,7 +82,7 @@ else
                                                             </a>
                                                         </div>
                                         <div id="viewCursorDiv-@Cntr">
-                                                            <a class="table-link link-success" asp-action="MaterialReceipt" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event,'@item.MrnNo','@item.YearCode');">
+                                                            <a class="table-link link-success" asp-route-formKey="@formKey" asp-action="MaterialReceipt" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event,'@item.MrnNo','@item.YearCode');">
                                                                 <span class="fa-stack">
                                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                                     <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -73,7 +92,7 @@ else
                                         @if (item.YearCode == yearCode)
                                         {
                                                                 <div id="editCursorDiv-@Cntr">
-                                                                    <a class="table-link link-primary" onclick="confirmEdit(event,'@item.MrnNo','@item.YearCode')" asp-action="MaterialReceipt" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                                                    <a class="table-link link-primary" asp-route-formKey="@formKey" onclick="confirmEdit(event,'@item.MrnNo','@item.YearCode')" asp-action="MaterialReceipt" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
                                                                         <span class="fa-stack">
                                                                             <i class="fa fa-square fa-stack-2x"></i>
                                                                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>

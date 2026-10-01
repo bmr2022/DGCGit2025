@@ -88,6 +88,25 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> getPrintMIRTagFromMRN()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "getPrintMIRTagFromMRN"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_MRN", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
 
         public async Task<ResponseResult> GetFeatureOption()
         {
@@ -210,7 +229,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
                 SqlParams.Add(new SqlParameter("@EmpId", userID));
-                SqlParams.Add(new SqlParameter("@MainMenu", "Material Receipt Note"));
+                SqlParams.Add(new SqlParameter("@MenuId", 275));
                 //SqlParams.Add(new SqlParameter("@SubMenu", "Sale Order"));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
@@ -473,6 +492,7 @@ namespace eTactWeb.Data.DAL
                         PoType = row["PoType"].ToString().Trim(),
                         POAmendNo = string.IsNullOrEmpty(row["PoAmendNo"].ToString()) ? 0 : Convert.ToInt32(row["PoAmendNo"].ToString()),
                         PODate = row["PODate"].ToString(),
+                        ItemManufacturingDate = row["ItemManufacturingDate"].ToString(),
                         // = row["ItemCode"].ToString().Trim(),
                         Unit = row["Unit"].ToString().Trim(),
                         RateUnit = row["RateUnit"].ToString().Trim(),
@@ -628,7 +648,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@CheckQc", model.CheckQC ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Remark", model.Remark ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@RecStoreid", model.RecStoreId));
-                SqlParams.Add(new SqlParameter("@QCCompleted", "N"));
+                SqlParams.Add(new SqlParameter("@QCCompleted", model.QCCompleted));
                 SqlParams.Add(new SqlParameter("@ItemSerType", model.ItemServType ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@TareWeight", model.TareWeight));
                 SqlParams.Add(new SqlParameter("@GrossWeight", model.GrossWeight));
@@ -674,6 +694,24 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FeatureOption"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_MRN", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> AllowToChangeStoreInMRN()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "AllowToChangeStoreInMRN"));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_MRN", SqlParams);
             }

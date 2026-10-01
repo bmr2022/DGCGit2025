@@ -1,6 +1,9 @@
 ﻿@model eTactWeb.DOM.Models.MaterialReceiptModel
 @{
     int Cntr = 0;
+    string MRNNo = Model.MRNNo;
+    int EntryID = Model.EntryID;
+    int YearCode = Model.YearCode;
 }
 @if (Model.ItemDetailGrid == null)
 {
@@ -15,7 +18,21 @@ else
         Cntr = Cntr + 1;
         <tr id="itemGrid" class="small @Cntr" style="white-space:nowrap">
             <td style="white-space:nowrap;">
-
+                @if (Model.Mode == "V" || Model.Mode == "U")
+                {
+                        <a class="table-link link-dark"
+                               asp-action="MRNTag"
+                               target="_blank"
+                               asp-route-EntryId="@EntryID"
+                               asp-route-YearCode="@YearCode"
+                               asp-route-ItemCode="@item.ItemCode"
+                               asp-route-MrnNo="@MRNNo">
+                            <span class="fa-stack">
+                                <i class="fa fa-square fa-stack-2x"></i>
+                                <i class="fa-solid fa-barcode fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                }
                 @if (Model.Mode == "V" && Model.ID > 0)
                 {
                     <a class="table-link link-primary noCursor" disabled>
@@ -72,6 +89,7 @@ else
             <td>@item.DisPer</td>
             <td>@item.DiscRs</td>
             <td>@item.Amount</td>
+            <td>@item.ItemManufacturingDate</td>
             <td>@item.PendPOQty</td>
             <td>@item.QCCompleted</td>
             <td>@item.RetChallanPendQty</td>

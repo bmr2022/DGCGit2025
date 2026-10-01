@@ -517,6 +517,7 @@ public static class CommonFunc
                      && typeProperty.PropertyInfo.Name != "HSNNO" && typeProperty.PropertyInfo.Name != "OtherRateCurr" && typeProperty.PropertyInfo.Name != "UnitRate" && typeProperty.PropertyInfo.Name != "TolLimit"
                      && typeProperty.PropertyInfo.Name != "Amount" && typeProperty.PropertyInfo.Name != "Remark" && typeProperty.PropertyInfo.Name != "StockQty" && typeProperty.PropertyInfo.Name != "StoreName" 
                      && typeProperty.PropertyInfo.Name != "Description"
+                     && typeProperty.PropertyInfo.Name != "Description"
                      //&& typeProperty.PropertyInfo.Name != "CreatedByName"
                      && typeProperty.PropertyInfo.Name != "ItemName" && typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "DiscPer"
                      && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize"
@@ -1665,6 +1666,7 @@ public static class CommonFunc
                     && typeProperty.PropertyInfo.Name != "ItemColor" && typeProperty.PropertyInfo.Name != "TotalRecords"
                     && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize"
                     && typeProperty.PropertyInfo.Name != "FromMRNNo" && typeProperty.PropertyInfo.Name != "ToMRNNo"
+                    && typeProperty.PropertyInfo.Name != "formKey"
                     )
 
                     {

@@ -29,6 +29,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _MaterialReceiptDAL.GetMRNTagReportName();
         }
+        public async Task<ResponseResult> getPrintMIRTagFromMRN()
+        {
+            return await _MaterialReceiptDAL.getPrintMIRTagFromMRN();
+        }
         public async Task<ResponseResult> GetFeatureOption()
         {
             return await _MaterialReceiptDAL.GetFeatureOption();
@@ -69,6 +73,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> CheckFeatureOption()
         {
             return await _MaterialReceiptDAL.CheckFeatureOption();
+        }
+        public async Task<ResponseResult> AllowToChangeStoreInMRN()
+        {
+            return await _MaterialReceiptDAL.AllowToChangeStoreInMRN();
         }
 
         public async Task<ResponseResult> GetDashboardData()
