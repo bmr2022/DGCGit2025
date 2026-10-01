@@ -12,8 +12,11 @@ else
 {
     foreach (var item in Model.ItemDetailGrid)
     {
-        <tr class="small @item.PoNo" style="white-space:nowrap">
+        <tr class="small @item.PoNo" id="gridRow-@item.SeqNo" style="white-space:nowrap">
             <td style="white-space:nowrap;">
+                 <input type="hidden"
+           id="GridIC-@item.SeqNo"
+           value="@item.ItemCode" />
                 @if (Model.ModeOfTransport == "V" && Model.ID > 0)
                 {
                     <a class="table-link link-primary noCursor" disabled>
@@ -46,21 +49,22 @@ else
                 }
             </td>
             <td>@item.SeqNo</td>
-            <td onclick="redirectToPOEdit( '@item.PoYear','@item.PoEntryId')">@item.PoNo</td>
+            <td id="GridPONO-@item.SeqNo"  onclick="redirectToPOEdit( '@item.PoYear','@item.PoEntryId')">@item.PoNo</td>
             <td>@item.PoYear</td>
             <td>@item.PoDate</td>
-            <td>@item.SchNo</td>
+            <td id="SchNo-@item.SeqNo">@item.SchNo</td>
             <td>@item.SchYearCode</td>
             <td>@item.SchDate</td>
             <td>@item.ItemName</td>
-            <td>@item.PartCode</td>
+            <td id="GridPartCode-@item.SeqNo" >@item.PartCode</td>
             <td>@item.Unit</td>
            
             <td id="Qty-@item.SeqNo" class="GridQty">@item.Qty</td>
             <td id="Rate-@item.SeqNo">@item.Rate</td>
+            <td>@item.ItemManufacturingDate</td>
             <td id="UnitRate-@item.SeqNo">@item.UnitRate</td>
             <td>@item.AltUnit</td>
-            <td id="AltQty-@item.SeqNo">@item.AltQty</td>
+            <td id="AltQty-@item.SeqNo" class="AltQty">@item.AltQty</td>
             <td>@item.ItemSize</td>
             <td>@item.ItemColor</td>
             <td>@item.Remarks</td>

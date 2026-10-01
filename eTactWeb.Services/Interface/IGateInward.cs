@@ -12,7 +12,7 @@ public interface IGateInward
     Task<ResponseResult> FillChallanQty(int AccountCode, int ItemCode, string ChallanNo);
     Task<ResponseResult> FillSaleBillQty(int AccountCode, int ItemCode, string SaleBillNo, int SaleBillYearCode);
     Task<ResponseResult> GetItems(string Flag, int doctype, string Check, int AccountCode, string SearchText);
-    Task<ResponseResult> GetPopUpData(string Flag, int AccountCode, string PONO);
+    Task<ResponseResult> GetPopUpData(string Flag, int AccountCode, string PONO, string EntryDate, string InvoiceDate);
     Task<ResponseResult> AltUnitConversion(int ItemCode, decimal AltQty, decimal UnitQty);
     Task<ResponseResult> GetScheDuleByYearCodeandAccountCode(string Flag, string AccountCode, string YearCode, string poNo, int docTypeId, string InvoiceDate, string ItemService, string EntryDate);
 
@@ -28,6 +28,7 @@ public interface IGateInward
 
     Task<ResponseResult> GetDashboardData(int userID);
     Task<ResponseResult> GetFeatureOption();
+    Task<ResponseResult> CheckSaleBillNoMandatory(int YearCode, string EntryDate);
 
     Task<GateInwardDashboard> GetDashboardData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, string DashboardType, int userID);
     Task<PendingGateInwardDashboard> GetPendingGateEntryDashboardData(int AccountCode, int docTypeId, string PoNo, int PoYearCode, int ItemCode,
@@ -51,5 +52,6 @@ public interface IGateInward
     Task<ResponseResult> GetFormRights(int userId);
     Task<ResponseResult> CheckDuplicateEntry(int YearCode, int AccountCode, string InvNo, int DocType);
     Task<ResponseResult> FillSaleBillRate(int AccountCode, int ItemCode, string SaleBillNo, int SaleBillYearCode);
+    Task<ResponseResult> GetReportName();
 
 }

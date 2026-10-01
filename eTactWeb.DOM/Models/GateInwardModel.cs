@@ -188,6 +188,7 @@ public class PendingGateInwardDashboard
 public class PendingGateEntryDashboard : PendingGateInwardDashboard
 {
     public string? FromDate { get; set; }
+    public string? formKey { get; set; }
     public string? Mode { get; set; }
     public string? ItemName { get; set; }
     public string? ItemCode { get; set; }
@@ -212,6 +213,7 @@ public class PendingGateEntryDashboard : PendingGateInwardDashboard
 public class GateDashboard : GateInwardDashboard
 {
     public string? FromDate { get; set; }
+    public string? formKey { get; set; }
     public string? ItemName { get; set; }
     public string? PartCode { get; set; }
     public string? DocName { get; set; }
@@ -237,6 +239,7 @@ public class GateInwardItemDetail : TimeStamp
     public int PoYear { get; set; }
     public int PoEntryId { get; set; }
     public string? PoDate { get; set; }
+    public string? ItemManufacturingDate { get; set; }
     public string? POType { get; set; }
     public string SchNo { get; set; }
     public int SchYearCode { get; set; }
@@ -280,8 +283,11 @@ public class GateInwardModel : GateInwardItemDetail
 {
     public string? FinFromDate { get; set; }
     public string? FinToDate { get; set; }
+    public string? formKey { get; set; }
+    public string? uniqueKey { get; set; }
     public string? EntrybyMachineName { get; set; }
     public string? IPAddress { get; set; }
+
     public int ID { get; set; }
     //public string? Mode { get; set; }
     public int EntryId { get; set; }
@@ -331,6 +337,7 @@ public class GateInwardModel : GateInwardItemDetail
     public string? Unit { get; set; }
     public decimal Qty { get; set; }
     public decimal Rate { get; set; }
+    public int? HSNNO { get; set; } //kinjal
     public string? UnitRate { get; set; }
     public string? AltUnit { get; set; }
     public decimal? PendQty { get; set; }
@@ -387,6 +394,7 @@ public class GateInwardModel : GateInwardItemDetail
         {
             new() { Value = "Item", Text = "Item" },
             new() { Value = "Service", Text = "Service" },
+            new() { Value = "Asset", Text = "Asset" },
         };
 
     public IList<SelectListItem> TypeList

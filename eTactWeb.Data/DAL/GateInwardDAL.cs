@@ -91,7 +91,7 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@EmpId", userId));
             SqlParams.Add(new SqlParameter("@MainMenu", "Gate Inward"));
 
-            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_GateMainDetail", SqlParams);
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
             //_ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
         }
         catch (Exception ex)
@@ -135,6 +135,29 @@ public class GateInwardDAL
             var SqlParams = new List<dynamic>();
 
             SqlParams.Add(new SqlParameter("@Flag", "FeatureOption"));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
+
+    public async Task<ResponseResult> CheckSaleBillNoMandatory(int YearCode, string EntryDate)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+
+            SqlParams.Add(new SqlParameter("@Flag", "CheckSaleBillNoMandatory"));
+            SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+            SqlParams.Add(new SqlParameter("@EntryDate", CommonFunc.ParseFormattedDate(EntryDate)));
 
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
         }
@@ -1117,16 +1140,19 @@ public class GateInwardDAL
         }
         return _ResponseResult;
     }
-    public async Task<ResponseResult> GetPopUpData(string Flag, int AccountCode, string PONO)
+    public async Task<ResponseResult> GetPopUpData(string Flag, int AccountCode, string PONO, string EntryDate, string InvoiceDate)
     {
         var _ResponseResult = new ResponseResult();
         try
         {
             var SqlParams = new List<dynamic>();
-
+            var EntryDt = CommonFunc.ParseFormattedDate(EntryDate);
+            var InvoiceDt = CommonFunc.ParseFormattedDate(InvoiceDate);
             SqlParams.Add(new SqlParameter("@Flag", Flag));
             SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
             SqlParams.Add(new SqlParameter("@PONO", PONO ?? ""));
+            SqlParams.Add(new SqlParameter("@EntryDate", EntryDt));
+            SqlParams.Add(new SqlParameter("@InvoiceDate", InvoiceDt));
 
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
         }
@@ -1258,6 +1284,7 @@ public class GateInwardDAL
                     SchNo = row["SchNo"].ToString(),
                     SchDate = row["ScheduleDate"].ToString(),
                     PoDate = row["PoDate"].ToString(),
+                    ItemManufacturingDate = row["ItemManufacturingDate"].ToString(),
                     SchYearCode = Convert.ToInt32(row["SchYearCode"].ToString()),
                     ItemCode = Convert.ToInt32(row["ItemCode"].ToString()),
                     Qty = Convert.ToDecimal(row["Qty"].ToString()),
@@ -1440,6 +1467,25 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@itemcode", ItemCode));
             SqlParams.Add(new SqlParameter("@SaleBillNo", SaleBillNo));
             SqlParams.Add(new SqlParameter("@SaleBillYearcode", SaleBillYearCode));
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
+    public async Task<ResponseResult> GetReportName()
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@flag", "GetReportName"));
+
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
         }
         catch (Exception ex)

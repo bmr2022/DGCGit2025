@@ -1027,6 +1027,24 @@ public class HomeController : Controller
             HttpContext.Session.SetString("DeptId", DepId.ToString());
             HttpContext.Session.SetString("RetailerOrManufacturar", RetailerOrManufacturar);
             HttpContext.Session.SetString("CompanyStateCode", CompanyStateCode);
+            string formKey = null;
+            HttpContext.Session.SetString($"Branch_{formKey}", model.Unit);
+            HttpContext.Session.SetString($"CompanyName_{formKey}", model.CompanyName);
+            HttpContext.Session.SetString($"YearCode_{formKey}", yearCode.ToString());
+            HttpContext.Session.SetString($"EmpID_{formKey}", EmpId.ToString());
+            HttpContext.Session.SetString($"EmpCode_{formKey}", empCode.ToString());
+            HttpContext.Session.SetString($"UID_{formKey}", EmpId.ToString());
+            HttpContext.Session.SetString($"UserName_{formKey}", model.UserName);
+            HttpContext.Session.SetString($"EmpName_{formKey}", EMPNAME);
+            HttpContext.Session.SetString($"FromDate_{formKey}", frmDt);
+            HttpContext.Session.SetString($"ToDate_{formKey}", toDt);
+            HttpContext.Session.SetString($"UserType_{formKey}", userRole);
+
+            HttpContext.Session.SetString($"DeptName_{formKey}", DepName);
+            HttpContext.Session.SetString($"DeptId_{formKey}", DepId.ToString());
+
+            HttpContext.Session.SetString($"RetailerOrManufacturar_{formKey}", RetailerOrManufacturar);
+         
             var client = GetClientIpAddress(HttpContext);
             string host = client.Hostname;
             string ip = client.IpAddress;
@@ -1034,6 +1052,9 @@ public class HomeController : Controller
             // Store in session
             HttpContext.Session.SetString("ClientIP", ip);
             HttpContext.Session.SetString("ClientMachineName", host);
+
+            HttpContext.Session.SetString($"ClientIP_{formKey}", ip);
+            HttpContext.Session.SetString($"ClientMachineName_{formKey}", host);
             //Task login = HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }

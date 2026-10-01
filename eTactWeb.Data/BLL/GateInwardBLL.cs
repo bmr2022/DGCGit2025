@@ -93,9 +93,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _GateInwardDAL.GetDashboardDetailData(VendorName, Gateno, ItemName, PartCode, DocName, PONO, ScheduleNo, FromDate, ToDate);
         }
-        public async Task<ResponseResult> GetPopUpData(string Flag, int AccountCode, string PONO)
+        public async Task<ResponseResult> GetPopUpData(string Flag, int AccountCode, string PONO, string EntryDate, string InvoiceDate)
         {
-            return await _GateInwardDAL.GetPopUpData(Flag, AccountCode, PONO);
+            return await _GateInwardDAL.GetPopUpData(Flag, AccountCode, PONO, EntryDate, InvoiceDate);
         }
         public async Task<ResponseResult> GetScheDuleByYearCodeandAccountCode(string Flag, string AccountCode, string YearCode, string poNo, int docTypeId, string InvoiceDate, string ItemService, string EntryDate)
         {
@@ -137,6 +137,11 @@ namespace eTactWeb.Data.BLL
             return await _GateInwardDAL.GetFeatureOption();
         }
 
+        public async Task<ResponseResult> CheckSaleBillNoMandatory(int YearCode, string EntryDate)
+        {
+            return await _GateInwardDAL.CheckSaleBillNoMandatory(YearCode, EntryDate);
+        }
+
 
         public async Task<ResponseResult> GetFormRights(int userId)
         {
@@ -166,6 +171,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetSearchData(GateDashboard model)
         {
             return await _GateInwardDAL.GetSearchData(model);
+        }
+        public async Task<ResponseResult> GetReportName()
+        {
+            return await _GateInwardDAL.GetReportName();
         }
     }
 }

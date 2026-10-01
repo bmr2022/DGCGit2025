@@ -50,20 +50,30 @@ namespace eTactWeb.Controllers
             _IEinvoiceService = IEinvoiceService;
             EncryptDecrypt = encryptDecrypt;
         }
-        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string gateinwardno = "")
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
             //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
+            var ReportName = _IGateInward.GetReportName();
             var webReport = new WebReport();
 
-            webReport.Report.Load(webRootPath + "\\GateEntry.frx"); // default report
+            //webReport.Report.Load(webRootPath + "\\GateEntry.frx"); // default report
+            if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+            }
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\GateEntry.frx"); // default report
 
+            }
 
             //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
+            webReport.Report.SetParameterValue("gateinwardnoparam", gateinwardno);
 
             my_connection_string = _connectionStringService.GetConnectionString();
             //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
@@ -77,6 +87,7 @@ namespace eTactWeb.Controllers
 
             // webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
             //ViewBag.WebReport = webReport;
+            webReport.Report.Refresh();
             return View(webReport);
         }
         [HttpGet]
@@ -314,37 +325,46 @@ namespace eTactWeb.Controllers
         //}
 
         //[Route("GateInward/Index")]
-        public async Task<IActionResult> GateInward()
-        {
-            ViewData["Title"] = "Inventory Details";
-            //TempData.Clear();
-            HttpContext.Session.Remove("KeyGateInwardGrid");
-            var model = await BindModels(null);
-            model.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
-            model.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
+        //public async Task<IActionResult> GateInward()
+        //{
+        //    ViewData["Title"] = "Inventory Details";
+        //    //TempData.Clear();
+        //    HttpContext.Session.Remove("KeyGateInwardGrid");
+        //    var model = await BindModels(null);
+        //    model.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+        //    model.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
 
-            model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            model.CC = HttpContext.Session.GetString("Branch");
-            model.PreparedByEmp = HttpContext.Session.GetString("EmpName");
-            model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-            model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+        //    model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+        //    model.CC = HttpContext.Session.GetString("Branch");
+        //    model.PreparedByEmp = HttpContext.Session.GetString("EmpName");
+        //    model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+        //    model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-            string serializedGrid = JsonConvert.SerializeObject(model);
-            HttpContext.Session.SetString("KeyGateInwardGrid", serializedGrid);
-            return View(model);
-        }
+        //    string serializedGrid = JsonConvert.SerializeObject(model);
+        //    HttpContext.Session.SetString("KeyGateInwardGrid", serializedGrid);
+        //    return View(model);
+        //}
         //[Route("GateInward/Index")]
         //added encrption and rights code by sajni
         [HttpGet]
-        public async Task<ActionResult> GateInward(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string GateNo = "", string PartCode = "", string ItemName = "", string DocName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "", string AccountCode = "", string docTypeId = "", string Invoiceno = "", int VPSaleBillEntryId = 0)//, ILogger logger)
+        public async Task<ActionResult> GateInward(int ID, string uniqueKey, string Mode, string formKey, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string GateNo = "", string PartCode = "", string ItemName = "", string DocName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "", string AccountCode = "", string docTypeId = "", string Invoiceno = "", int VPSaleBillEntryId = 0)//, ILogger logger)
         {
+            ViewBag.formKey = formKey;
+            if (uniqueKey == null)
+            {
+                uniqueKey = Guid.NewGuid().ToString();
+            }
+            ViewBag.uniqueKey = uniqueKey;
             //HttpContext.Session.Remove("KeyGateInwardGrid");
-            HttpContext.Session.Remove("KeyGateInwardItemDetail");
-            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            HttpContext.Session.Remove($"KeyGateInwardItemDetail_{uniqueKey}");
+            int userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var rights = await _IGateInward.GetFormRights(userID);
             if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
             {
-                return RedirectToAction("Dashboard", "Home");
+                return RedirectToAction("Dashboard", "Home", new
+                {
+                    formKey = formKey
+                });
             }
 
             var table = rights.Result.Tables[0];
@@ -398,21 +418,32 @@ namespace eTactWeb.Controllers
             {
                 if (!(optUpdate))
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new
+                    {
+                        formKey = formKey
+                    });
                 }
             }
             else if (Mode == "V")
             {
                 if (!(optView))
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new
+                    {
+                        formKey = formKey
+                    });
                 }
             }
             else if (ID <= 0)
             {
                 if (!optSave)
                 {
-                    return RedirectToAction("DashBoard", " GateInward");
+                    //return RedirectToAction("DashBoard", " GateInward");
+
+                    return RedirectToAction("DashBoard", "GateInward", new
+                    {
+                        formKey = formKey
+                    });
                 }
 
             }
@@ -420,13 +451,13 @@ namespace eTactWeb.Controllers
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             //TempData.Clear();
             var MainModel = new GateInwardModel();
-            MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.PreparedByEmp = HttpContext.Session.GetString("EmpName");
+            MainModel.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            MainModel.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+            MainModel.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+            MainModel.PreparedByEmp = HttpContext.Session.GetString($"EmpName_{formKey}");
             //MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-            MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
             if (Mode == "I" && ID == 0)
             {
                 MainModel.AccountCode = Convert.ToInt32(AccountCode.ToString());
@@ -434,7 +465,7 @@ namespace eTactWeb.Controllers
                 MainModel.Invoiceno = Invoiceno.ToString();
                 MainModel.VPSaleBillEntryId = Convert.ToInt32(VPSaleBillEntryId.ToString());
 
-                var selectedJson = HttpContext.Session.GetString("KeyGateInwardGrid");
+                var selectedJson = HttpContext.Session.GetString($"KeyGateInwardGrid_{uniqueKey}");
                 if (!string.IsNullOrEmpty(selectedJson))
                 {
                     var selectedItems = JsonConvert.DeserializeObject<List<GateInwardItemDetail>>(selectedJson);
@@ -445,7 +476,7 @@ namespace eTactWeb.Controllers
             if (Mode == "Eway" && ID == 0)
             {
 
-                var selectedJson = HttpContext.Session.GetString("KeyGateInwardGrid");
+                var selectedJson = HttpContext.Session.GetString($"KeyGateInwardGrid_{uniqueKey}");
                 if (!string.IsNullOrEmpty(selectedJson))
                 {
                     var mainModel = JsonConvert.DeserializeObject<GateInwardModel>(selectedJson);
@@ -466,32 +497,32 @@ namespace eTactWeb.Controllers
             }
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
-                HttpContext.Session.Remove("KeyGateInwardItemDetail");
+                HttpContext.Session.Remove($"KeyGateInwardItemDetail_{uniqueKey}");
 
                 MainModel = await _IGateInward.GetViewByID(ID, YC).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
-                MainModel = await BindModels(MainModel).ConfigureAwait(false);
-                MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
-                MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
+                MainModel = await BindModels(MainModel, formKey).ConfigureAwait(false);
+                MainModel.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                MainModel.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
 
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                HttpContext.Session.SetString("KeyGateInwardItemDetail", serializedGrid);
+                HttpContext.Session.SetString($"KeyGateInwardItemDetail_{uniqueKey}", serializedGrid);
             }
             else
             {
-                MainModel = await BindModels(MainModel);
+                MainModel = await BindModels(MainModel, formKey);
             }
             if (Mode != "U")
             {
-                MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.ActualEnteredByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                 MainModel.ActualEntryDate = DateTime.Now;
             }
             else
             {
-                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.UpdatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                 MainModel.UpdatedOn = DateTime.Now;
             }
             MainModel.FromDateBack = FromDate;
@@ -514,14 +545,15 @@ namespace eTactWeb.Controllers
             try
             {
                 var GIGrid = new DataTable();
-
-                string modelJson = HttpContext.Session.GetString("KeyGateInwardGrid");
+                var formKey = model.formKey;
+                var uniqueKey = model.uniqueKey;
+                string modelJson = HttpContext.Session.GetString($"KeyGateInwardGrid_{uniqueKey}");
                 List<GateInwardItemDetail> GateInwardItemDetail = new List<GateInwardItemDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     GateInwardItemDetail = JsonConvert.DeserializeObject<List<GateInwardItemDetail>>(modelJson);
                 }
-                string modelEditJson = HttpContext.Session.GetString("KeyGateInwardItemDetail");
+                string modelEditJson = HttpContext.Session.GetString($"KeyGateInwardItemDetail_{uniqueKey}");
                 List<GateInwardItemDetail> GateInwardItemDetailEdit = new List<GateInwardItemDetail>();
                 if (!string.IsNullOrEmpty(modelEditJson))
                 {
@@ -532,29 +564,29 @@ namespace eTactWeb.Controllers
                 {
                     ModelState.Clear();
                     ModelState.TryAddModelError("GateInwardItemDetail", "Gate Inward Grid Should Have Atleast 1 Item...!");
-                    model = await BindModels(model);
+                    model = await BindModels(model, formKey);
                     return View("GateInward", model);
                 }
 
                 else
                 {
-                    model.CC = HttpContext.Session.GetString("Branch");
-                    model.PreparedByEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                    model.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+                    model.PreparedByEmpId = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
                     //model.ActualEnteredBy   = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                    model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                    model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                    model.IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
                     if (model.Mode == "U")
                     {
-                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        model.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                        model.UpdatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                         GIGrid = GetDetailTable(GateInwardItemDetailEdit);
                     }
                     else
                     {
                         GIGrid = GetDetailTable(GateInwardItemDetail);
                     }
-                    model.EntrybyMachineName = HttpContext.Session.GetString("ClientMachineName");
-                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                    model.EntrybyMachineName = HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+                    model.IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
                     var Result = await _IGateInward.SaveGateInward(model, GIGrid);
 
                     if (Result != null)
@@ -576,8 +608,8 @@ namespace eTactWeb.Controllers
 
                             ViewBag.isSuccess = true;
                             TempData["200"] = $"Data saved successfully OF Gate No: {gateNo}";
-                            HttpContext.Session.Remove("KeyGateInwardItemDetail");
-                            HttpContext.Session.Remove("KeyGateInwardGrid");
+                            HttpContext.Session.Remove($"KeyGateInwardItemDetail_{uniqueKey}");
+                            HttpContext.Session.Remove($"KeyGateInwardGrid_{uniqueKey}");
                             model.AccountCode = 0;
                             return Json(new
                             {
@@ -585,7 +617,7 @@ namespace eTactWeb.Controllers
                                 message = $"Data saved successfully OF Gate No: {gateNo}",
                                 redirectUrl = Url.Action(
       "GateInward",
-      "GateInward"
+      "GateInward", new { formKey = formKey }
 
   )
                             });
@@ -606,7 +638,7 @@ namespace eTactWeb.Controllers
                                 message = $"Data saved successfully OF Gate No: {gateNo}",
                                 redirectUrl = Url.Action(
      "GateInward",
-     "GateInward"
+     "GateInward", new { formKey = formKey }
 
  )
                             });
@@ -657,14 +689,14 @@ namespace eTactWeb.Controllers
                                 ViewBag.isSuccess = false;
                                 TempData["2627"] = "2627";
                                 _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                                var model2 = await BindModels(null);
-                                model2.FinFromDate = HttpContext.Session.GetString("FromDate");
-                                model2.FinToDate = HttpContext.Session.GetString("ToDate");
-                                model2.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                                model2.CC = HttpContext.Session.GetString("Branch");
-                                model2.PreparedByEmp = HttpContext.Session.GetString("EmpName");
-                                model2.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                                model2.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                                var model2 = await BindModels(null, formKey);
+                                model2.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                                model2.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+                                model2.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+                                model2.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+                                model2.PreparedByEmp = HttpContext.Session.GetString($"EmpName_{formKey}");
+                                model2.ActualEnteredByName = HttpContext.Session.GetString($"EmpName_{formKey}");
+                                model2.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
                                 //return View(model2);
                                 return Json(new
                                 {
@@ -675,14 +707,14 @@ namespace eTactWeb.Controllers
                             else
                             {
                                 TempData["500"] = "500";
-                                model = await BindModels(model);
-                                model.FinFromDate = HttpContext.Session.GetString("FromDate");
-                                model.FinToDate = HttpContext.Session.GetString("ToDate");
-                                model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                                model.CC = HttpContext.Session.GetString("Branch");
-                                model.PreparedByEmp = HttpContext.Session.GetString("EmpName");
-                                model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                                model = await BindModels(model, formKey);
+                                model.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                                model.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+                                model.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+                                model.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+                                model.PreparedByEmp = HttpContext.Session.GetString($"EmpName_{formKey}");
+                                model.ActualEnteredByName = HttpContext.Session.GetString($"EmpName_{formKey}");
+                                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
                                 model.ItemDetailGrid = GateInwardItemDetail;
                                 //return View(model);
                                 return Json(new
@@ -698,15 +730,15 @@ namespace eTactWeb.Controllers
                             message = Result.StatusText
                         });
                     }
-                    var model1 = await BindModels(null);
+                    var model1 = await BindModels(null, formKey);
                     model1.AccountCode = 0;
-                    model1.FinFromDate = HttpContext.Session.GetString("FromDate");
-                    model1.FinToDate = HttpContext.Session.GetString("ToDate");
-                    model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                    model1.CC = HttpContext.Session.GetString("Branch");
-                    model1.PreparedByEmp = HttpContext.Session.GetString("EmpName");
-                    model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                    model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    model1.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                    model1.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+                    model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+                    model1.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+                    model1.PreparedByEmp = HttpContext.Session.GetString($"EmpName_{formKey}");
+                    model1.ActualEnteredByName = HttpContext.Session.GetString($"EmpName_{formKey}");
+                    model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
                     return Json(new
                     {
                         success = false,
@@ -735,17 +767,17 @@ namespace eTactWeb.Controllers
                 // return View("Error", ResponseResult);
             }
         }
-        public async Task<JsonResult> GetFormRights()
+        public async Task<JsonResult> GetFormRights(string formKey)
         {
-            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var JSON = await _IGateInward.GetFormRights(userID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
 
-        public IActionResult ClearGrid()
+        public IActionResult ClearGrid(string uniqueKey)
         {
-            HttpContext.Session.Remove("KeyGateInwardGrid");
+            HttpContext.Session.Remove($"KeyGateInwardGrid_{uniqueKey}");
             var MainModel = new GateInwardModel();
             return PartialView("_GateInwardGrid", MainModel);
         }
@@ -755,9 +787,17 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetSearchData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, string DashboardType, int pageNumber = 1, int pageSize = 10, string SearchBox = "")
+        public async Task<JsonResult> CheckSaleBillNoMandatory(int YearCode, string EntryDate)
         {
-            int userID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
+            var JSON = await _IGateInward.CheckSaleBillNoMandatory(YearCode, EntryDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<IActionResult> GetSearchData(string formKey, string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, string DashboardType, int pageNumber = 1, int pageSize = 10, string SearchBox = "")
+        {
+            int userID = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+            ViewBag.formKey = formKey;
 
             //model.Mode = "Search";
             var model = new GateInwardDashboard();
@@ -813,11 +853,13 @@ namespace eTactWeb.Controllers
             };
 
             string serializedGrid = JsonConvert.SerializeObject(modelList);
-            HttpContext.Session.SetString("KeyGateInardList", serializedGrid);
+            HttpContext.Session.SetString($"KeyGateInardList_{formKey}", serializedGrid);
             return PartialView("_GateInwardDashboardGrid", model);
         }
         public async Task<IActionResult> GetPendingGateEntrySearchData(
     int AccountCode,
+    string formKey,
+    string uniqueKey,
     int docTypeId,
     string PoNo,
     int PoYearCode,
@@ -889,7 +931,7 @@ namespace eTactWeb.Controllers
             };
 
             string serializedGrid = JsonConvert.SerializeObject(modelList);
-            HttpContext.Session.SetString("KeyPendingGateInwardList", serializedGrid);
+            HttpContext.Session.SetString($"KeyPendingGateInwardList_{uniqueKey}", serializedGrid);
             if (GetDataFrom == "PendingPO")
             {
                 return PartialView("_GateInwardDisplayDataDetail", model);
@@ -902,7 +944,7 @@ namespace eTactWeb.Controllers
         }
 
         [HttpGet]
-        public IActionResult PendingGateEntryGlobalSearch(string searchString, int pageNumber = 1, int pageSize = 10)
+        public IActionResult PendingGateEntryGlobalSearch(string searchString, string uniqueKey, string formKey, int pageNumber = 1, int pageSize = 10)
         {
             PendingGateInwardDashboard model = new PendingGateInwardDashboard();
             if (string.IsNullOrWhiteSpace(searchString))
@@ -910,7 +952,7 @@ namespace eTactWeb.Controllers
                 return PartialView("_GateInwardDisplayDataDetail", new List<GateInwardDashboard>());
             }
 
-            string modelJson = HttpContext.Session.GetString("KeyPendingGateInwardList");
+            string modelJson = HttpContext.Session.GetString($"KeyPendingGateInwardList_{uniqueKey}");
             List<PendingGateInwardDashboard> gateInwardDashboard = new List<PendingGateInwardDashboard>();
             if (!string.IsNullOrEmpty(modelJson))
             {
@@ -952,9 +994,11 @@ namespace eTactWeb.Controllers
             return PartialView("_GateInwardDisplayDataDetail", model);
         }
 
-        public async Task<IActionResult> GetDetailData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 10, string SearchBox = "")
+        public async Task<IActionResult> GetDetailData(string VendorName, string formKey, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 10, string SearchBox = "")
         {
             //model.Mode = "Search";
+            ViewBag.formKey = formKey;
+
             var model = new GateInwardDashboard();
             model = await _IGateInward.GetDashboardDetailData(VendorName, Gateno, ItemName, PartCode, DocName, PONO, ScheduleNo, FromDate, ToDate);
             // model = (await _IGateInward.GetDashboardDetailData(...))?.GateDashboard ?? new List<GateInwardDashboard>();
@@ -1009,19 +1053,21 @@ namespace eTactWeb.Controllers
             };
 
             string serializedGrid = JsonConvert.SerializeObject(modelList);
-            HttpContext.Session.SetString("KeyGateInardList", serializedGrid);
+            HttpContext.Session.SetString($"KeyGateInardList_{formKey}", serializedGrid);
             return PartialView("_GateInwardDashboardGrid", model);
         }
         [HttpGet]
-        public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 10)
+        public IActionResult GlobalSearch(string searchString, string formKey, int pageNumber = 1, int pageSize = 10)
         {
+            ViewBag.formKey = formKey;
+
             GateInwardDashboard model = new GateInwardDashboard();
             if (string.IsNullOrWhiteSpace(searchString))
             {
                 return PartialView("_GateInwardDashboardGrid", new List<GateInwardDashboard>());
             }
 
-            string modelJson = HttpContext.Session.GetString("KeyGateInardList");
+            string modelJson = HttpContext.Session.GetString($"KeyGateInardList_{formKey}");
             List<GateInwardDashboard> gateInwardDashboard = new List<GateInwardDashboard>();
             if (!string.IsNullOrEmpty(modelJson))
             {
@@ -1063,22 +1109,22 @@ namespace eTactWeb.Controllers
             return PartialView("_GateInwardDashboardGrid", model);
         }
 
-        public async Task<JsonResult> ClearGridAjax(int AccountCode, int docType, int ItemCode, string ChallanNo)
+        public async Task<JsonResult> ClearGridAjax(int AccountCode, string uniqueKey, int docType, int ItemCode, string ChallanNo)
         {
-            HttpContext.Session.Remove("KeyGateInwardGrid");
-            HttpContext.Session.Remove("KeyGateInwardItemDetail");
+            HttpContext.Session.Remove($"KeyGateInwardGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyGateInwardItemDetail_{uniqueKey}");
             var JSON = await _IGateInward.FillSaleBillChallan(AccountCode, docType, ItemCode, ChallanNo);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
 
-        public async Task<GateInwardModel> BindModels(GateInwardModel model)
+        public async Task<GateInwardModel> BindModels(GateInwardModel model, string formKey)
         {
             if (model == null)
             {
                 model = new GateInwardModel();
 
-                model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                model.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
                 model.EntryId = _IDataLogic.GetEntryID("GateDetail", model.YearCode, "GateEntryID", "Gateyearcode");
                 //model.EntryDate = DateTime.Today;
                 model.EntryTime = DateTime.Now.ToString("hh:mm tt");
@@ -1088,6 +1134,10 @@ namespace eTactWeb.Controllers
             model.AccountList = await _IDataLogic.GetDropDownList("CREDITORDEBTORLIST", "F", "SP_GetDropDownList");
             model.DocumentList = await _IDataLogic.GetDropDownList("DocumentList", "SP_GetDropDownList");
             model.RecUnitList = await _IDataLogic.GetDropDownList("RecUnitList", "SP_GetDropDownList");
+            if (model.RecUnitList != null && model.RecUnitList.Any())
+            {
+                model.RecUnit = int.Parse(model.RecUnitList.First().Value);
+            }
             model.ProcessList = await _IDataLogic.GetDropDownList("ProcessList", "SP_GetDropDownList");
             //model.PONO = await _IDataLogic.GetDropDownList("PENDINGPOLIST","I", "SP_GateMainDetail");
 
@@ -1122,9 +1172,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetDefaultBranch()
+        public async Task<JsonResult> GetDefaultBranch(string formKey)
         {
-            var username = HttpContext.Session.GetString("Branch");
+            var username = HttpContext.Session.GetString($"Branch_{formKey}");
 
             // Render profile page with username
             return Json(username);
@@ -1224,9 +1274,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetPopUpData(int AccountCode, string PONO)
+        public async Task<JsonResult> GetPopUpData(int AccountCode, string PONO, string EntryDate, string InvoiceDate)
         {
-            var JSON = await _IGateInward.GetPopUpData("POPUPDATA", AccountCode, PONO);
+            var JSON = await _IGateInward.GetPopUpData("POPUPDATA", AccountCode, PONO, EntryDate, InvoiceDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -1242,13 +1292,13 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult AddGateInwardDetail(GateInwardItemDetail model)
+        public IActionResult AddGateInwardDetail(GateInwardItemDetail model, string uniqueKey)
         {
             try
             {
                 if (model.Mode == "U" || model.Mode == "V")
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyGateInwardItemDetail");
+                    string modelJson = HttpContext.Session.GetString($"KeyGateInwardItemDetail_{uniqueKey}");
                     List<GateInwardItemDetail> GateInwardItemDetail = new List<GateInwardItemDetail>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -1269,28 +1319,59 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            if (model.docTypeId == 3 ? GateInwardItemDetail.Any(x =>
-                               string.Equals(x.PartCode?.Trim(), model.PartCode?.Trim(), StringComparison.OrdinalIgnoreCase) &&
-                               string.Equals(x.PoNo?.Trim(), model.PoNo?.Trim(), StringComparison.OrdinalIgnoreCase) &&
-                               x.PoYear == model.PoYear &&
-                                  string.Equals((x.SchNo ?? "").Trim(), (model.SchNo ?? "").Trim(), StringComparison.OrdinalIgnoreCase) &&
-                               //    string.Equals(x.SchNo?.Trim(), model.SchNo?.Trim(), StringComparison.OrdinalIgnoreCase) &&
-                               x.SchYearCode == model.SchYearCode &&
-                               string.Equals(x.AgainstChallanNo ?? "", model.AgainstChallanNo ?? "", StringComparison.OrdinalIgnoreCase) &&
-                               string.Equals(x.SaleBillNo ?? "", model.SaleBillNo ?? "", StringComparison.OrdinalIgnoreCase) &&
-                               x.SaleBillYearCode == model.SaleBillYearCode)
-                         : GateInwardItemDetail.Any(x =>
-                               string.Equals(x.PartCode?.Trim(), model.PartCode?.Trim(), StringComparison.OrdinalIgnoreCase) &&
-                               string.Equals(x.PoNo?.Trim(), model.PoNo?.Trim(), StringComparison.OrdinalIgnoreCase) &&
-                               x.PoYear == model.PoYear &&
-                               string.Equals((x.SchNo ?? "").Trim(), (model.SchNo ?? "").Trim(), StringComparison.OrdinalIgnoreCase)
-                               &&
-                               //   string.Equals(x.SchNo?.Trim(), model.SchNo?.Trim(), StringComparison.OrdinalIgnoreCase) &&
-                               x.SchYearCode == model.SchYearCode &&
-                               string.Equals(x.AgainstChallanNo ?? "", model.AgainstChallanNo ?? "", StringComparison.OrdinalIgnoreCase)))
+                            if (model.docTypeId == 3
+                                ? GateInwardItemDetail.Any(x =>
+
+                                    x.ItemCode == model.ItemCode &&
+
+
+                                    string.Equals((x.PoNo ?? "").Trim(), (model.PoNo ?? "").Trim(),
+                                    StringComparison.OrdinalIgnoreCase) &&
+                                    x.PoYear == model.PoYear &&
+                                    string.Equals((x.SchNo ?? "").Trim(), (model.SchNo ?? "").Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                    x.SchYearCode == model.SchYearCode &&
+                                    string.Equals(x.AgainstChallanNo ?? "", model.AgainstChallanNo ?? "", StringComparison.OrdinalIgnoreCase) &&
+                                    string.Equals(x.SaleBillNo ?? "", model.SaleBillNo ?? "", StringComparison.OrdinalIgnoreCase) &&
+                                    x.SaleBillYearCode == model.SaleBillYearCode)
+
+                                : GateInwardItemDetail.Any(x =>
+
+                                    x.ItemCode == model.ItemCode &&
+
+                                    string.Equals((x.PoNo ?? "").Trim(), (model.PoNo ?? "").Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                    string.Equals((x.SupplierBatchNo ?? "").Trim(), (model.SupplierBatchNo ?? "").Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                    x.PoYear == model.PoYear &&
+                                    string.Equals((x.SchNo ?? "").Trim(), (model.SchNo ?? "").Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                    x.SchYearCode == model.SchYearCode &&
+                                    string.Equals(x.AgainstChallanNo ?? "", model.AgainstChallanNo ?? "", StringComparison.OrdinalIgnoreCase)))
                             {
                                 return StatusCode(207, "Duplicate");
                             }
+                            //if (model.docTypeId == 3
+                            //    ? GateInwardItemDetail.Any(x =>
+                            //        string.Equals(x.PartCode?.Trim(), model.PartCode?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                            //        x.ItemCode == model.ItemCode &&
+                            //        string.Equals(x.ItemName?.Trim(), model.ItemName?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                            //        string.Equals(x.PoNo?.Trim(), model.PoNo?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                            //        x.PoYear == model.PoYear &&
+                            //        string.Equals((x.SchNo ?? "").Trim(), (model.SchNo ?? "").Trim(), StringComparison.OrdinalIgnoreCase) &&
+                            //        x.SchYearCode == model.SchYearCode &&
+                            //        string.Equals(x.AgainstChallanNo ?? "", model.AgainstChallanNo ?? "", StringComparison.OrdinalIgnoreCase) &&
+                            //        string.Equals(x.SaleBillNo ?? "", model.SaleBillNo ?? "", StringComparison.OrdinalIgnoreCase) &&
+                            //        x.SaleBillYearCode == model.SaleBillYearCode)
+
+                            //    : GateInwardItemDetail.Any(x =>
+                            //        string.Equals(x.PartCode?.Trim(), model.PartCode?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                            //        x.ItemCode == model.ItemCode &&
+                            //        string.Equals(x.ItemName?.Trim(), model.ItemName?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                            //        string.Equals(x.PoNo?.Trim(), model.PoNo?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                            //        x.PoYear == model.PoYear &&
+                            //        string.Equals((x.SchNo ?? "").Trim(), (model.SchNo ?? "").Trim(), StringComparison.OrdinalIgnoreCase) &&
+                            //        x.SchYearCode == model.SchYearCode &&
+                            //        string.Equals(x.AgainstChallanNo ?? "", model.AgainstChallanNo ?? "", StringComparison.OrdinalIgnoreCase)))
+                            //{
+                            //    return StatusCode(207, "Duplicate");
+                            //}
 
                             //if (model.docTypeId == 3 ? GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo && x.SaleBillNo == model.SaleBillNo && x.SaleBillYearCode == model.SaleBillYearCode) : GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo && x.PoNo == model.PoNo))
                             //{
@@ -1326,7 +1407,7 @@ namespace eTactWeb.Controllers
                         MainModel.ItemDetailGrid = GateGrid;
 
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                        HttpContext.Session.SetString("KeyGateInwardItemDetail", serializedGrid);
+                        HttpContext.Session.SetString($"KeyGateInwardItemDetail_{uniqueKey}", serializedGrid);
                     }
                     else
                     {
@@ -1337,7 +1418,7 @@ namespace eTactWeb.Controllers
                 }
                 else
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyGateInwardGrid");
+                    string modelJson = HttpContext.Session.GetString($"KeyGateInwardGrid_{uniqueKey}");
                     List<GateInwardItemDetail> GateInwardItemDetail = new List<GateInwardItemDetail>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -1358,7 +1439,7 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            if (model.docTypeId == 3 ? GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.PoNo == model.PoNo && x.PoYear == model.PoYear && x.SchNo == model.SchNo && x.SchYearCode == model.SchYearCode && x.AgainstChallanNo == model.AgainstChallanNo && x.SaleBillNo == model.SaleBillNo && x.SaleBillYearCode == model.SaleBillYearCode) : GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.PoNo == model.PoNo && x.PoYear == model.PoYear && x.SchNo == model.SchNo && x.SchYearCode == model.SchYearCode && x.AgainstChallanNo == model.AgainstChallanNo))
+                            if (model.docTypeId == 3 ? GateInwardItemDetail.Any(x => x.ItemCode == model.ItemCode && x.PoNo == model.PoNo && x.SupplierBatchNo == model.SupplierBatchNo && x.PoYear == model.PoYear && x.SchNo == model.SchNo && x.SchYearCode == model.SchYearCode && x.AgainstChallanNo == model.AgainstChallanNo && x.SaleBillNo == model.SaleBillNo && x.SaleBillYearCode == model.SaleBillYearCode) : GateInwardItemDetail.Any(x => x.ItemCode == model.ItemCode && x.PoNo == model.PoNo && x.SupplierBatchNo == model.SupplierBatchNo && x.PoYear == model.PoYear && x.SchNo == model.SchNo && x.SchYearCode == model.SchYearCode && x.AgainstChallanNo == model.AgainstChallanNo))
                             {
                                 return StatusCode(207, "Duplicate");
                             }
@@ -1394,7 +1475,7 @@ namespace eTactWeb.Controllers
                         MainModel.ItemDetailGrid = GateGrid;
 
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                        HttpContext.Session.SetString("KeyGateInwardGrid", serializedGrid);
+                        HttpContext.Session.SetString($"KeyGateInwardGrid_{uniqueKey}", serializedGrid);
                     }
                     else
                     {
@@ -1429,12 +1510,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult DeleteItemRow(int SeqNo, string Mode, bool IsEdit = false)
+        public IActionResult DeleteItemRow(int SeqNo, string uniqueKey, string Mode, bool IsEdit = false)
         {
             var MainModel = new GateInwardModel();
             if (Mode == "U" || Mode == "V")
             {
-                string modelJson = HttpContext.Session.GetString("KeyGateInwardItemDetail");
+                string modelJson = HttpContext.Session.GetString($"KeyGateInwardItemDetail_{uniqueKey}");
                 List<GateInwardItemDetail> GateInwardItemDetail = new List<GateInwardItemDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -1478,12 +1559,12 @@ namespace eTactWeb.Controllers
                     };
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                    HttpContext.Session.SetString("KeyGateInwardItemDetail", serializedGrid);
+                    HttpContext.Session.SetString($"KeyGateInwardItemDetail_{uniqueKey}", serializedGrid);
                 }
             }
             else
             {
-                string modelJson = HttpContext.Session.GetString("KeyGateInwardGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyGateInwardGrid_{uniqueKey}");
                 List<GateInwardItemDetail> GateInwardItemDetail = new List<GateInwardItemDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -1517,18 +1598,18 @@ namespace eTactWeb.Controllers
                     MainModel.ItemDetailGrid = GateInwardItemDetail;
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                    HttpContext.Session.SetString("KeyGateInwardGrid", serializedGrid);
+                    HttpContext.Session.SetString($"KeyGateInwardGrid_{uniqueKey}", serializedGrid);
                 }
             }
 
             return PartialView("_GateInwardGrid", MainModel);
         }
-        public IActionResult EditItemRow(int SeqNo, string Mode)
+        public IActionResult EditItemRow(int SeqNo, string Mode, string uniqueKey)
         {
             IList<GateInwardItemDetail> GateInwardItemDetail = new List<GateInwardItemDetail>();
             if (Mode == "U" || Mode == "V")
             {
-                string modelJson = HttpContext.Session.GetString("KeyGateInwardItemDetail");
+                string modelJson = HttpContext.Session.GetString($"KeyGateInwardItemDetail_{uniqueKey}");
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     GateInwardItemDetail = JsonConvert.DeserializeObject<List<GateInwardItemDetail>>(modelJson);
@@ -1536,7 +1617,7 @@ namespace eTactWeb.Controllers
             }
             else
             {
-                string modelJson = HttpContext.Session.GetString("KeyGateInwardGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyGateInwardGrid_{uniqueKey}");
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     GateInwardItemDetail = JsonConvert.DeserializeObject<List<GateInwardItemDetail>>(modelJson);
@@ -1552,15 +1633,22 @@ namespace eTactWeb.Controllers
         }
 
         //added rights code by sajni
-        public async Task<IActionResult> Dashboard(string FromDate = "", string ToDate = "", string Flag = "True", string VendorName = "", string GateNo = "", string PartCode = "", string DocName = "", string ItemName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "")
+        public async Task<IActionResult> Dashboard(string FromDate = "", string formKey = "", string ToDate = "", string Flag = "True", string VendorName = "", string GateNo = "", string PartCode = "", string DocName = "", string ItemName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "")
         {
             try
             {
-                int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+
+                ViewBag.formKey = formKey;
+                var uniqueKey = Guid.NewGuid().ToString();
+                ViewBag.uniqueKey = uniqueKey;
+                int userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
                 var rights = await _IGateInward.GetFormRights(userID);
                 if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new
+                    {
+                        formKey = formKey
+                    });
                 }
                 var table = rights.Result.Tables[0];
                 bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
@@ -1570,9 +1658,12 @@ namespace eTactWeb.Controllers
 
                 if (!(optView || optUpdate || optDelete))
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new
+                    {
+                        formKey = formKey
+                    });
                 }
-                HttpContext.Session.Remove("KeyGateInwardGrid");
+                HttpContext.Session.Remove($"KeyGateInwardGrid_{uniqueKey}");
 
                 var model = new GateDashboard();
                 var Result = await _IGateInward.GetDashboardData(userID).ConfigureAwait(true);
@@ -1597,7 +1688,7 @@ namespace eTactWeb.Controllers
                             });
                         }
                         //var dd = _List.Select(x => x.Value).Distinct();
-                        model.SessionYearCode = HttpContext.Session.GetString("FromDate");
+                        model.SessionYearCode = HttpContext.Session.GetString($"FromDate_{formKey}");
                         var _PONOList = _List.DistinctBy(x => x.Value).ToList();
                         model.GateNOList = _PONOList;
                         _List = new List<TextValue>();
@@ -1631,7 +1722,7 @@ namespace eTactWeb.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> GetPendingGateEntryVPDetailData(int AccountCode, string InvoiceNo)
+        public async Task<IActionResult> GetPendingGateEntryVPDetailData(int AccountCode, string InvoiceNo, string uniqueKey)
         {
             try
             {
@@ -1642,11 +1733,11 @@ namespace eTactWeb.Controllers
                 var pendingDetails = dataResult?.PendingGateEntryDashboard ?? new List<PendingGateInwardDashboard>();
 
                 // 2️⃣ Remove any old session data
-                HttpContext.Session.Remove("KeyGateInwardGrid");
+                HttpContext.Session.Remove($"KeyGateInwardGrid_{uniqueKey}");
 
                 // 3️⃣ Serialize and store new data
                 var serializedData = JsonConvert.SerializeObject(pendingDetails);
-                HttpContext.Session.SetString("KeyGateInwardGrid", serializedData);
+                HttpContext.Session.SetString($"KeyGateInwardGrid_{uniqueKey}", serializedData);
 
                 // 4️⃣ Optionally return data for confirmation/debug
                 return Json(new
@@ -1672,7 +1763,7 @@ namespace eTactWeb.Controllers
 
 
         [HttpPost]
-        public IActionResult StoreCheckedRowsToSession(List<PendingGateInwardDashboard> model)
+        public IActionResult StoreCheckedRowsToSession(List<PendingGateInwardDashboard> model, string uniqueKey)
         {
             try
             {
@@ -1681,8 +1772,8 @@ namespace eTactWeb.Controllers
                 //HttpContext.Session.SetString("KeyGateInwardItemDetail", serializedGrid);
                 //return PartialView("PendingGateInward", ItemData);
 
-                HttpContext.Session.Remove("KeyGateInwardGrid");
-                var sessionData = HttpContext.Session.GetString("KeyGateInwardGrid");
+                HttpContext.Session.Remove($"KeyGateInwardGrid_{uniqueKey}");
+                var sessionData = HttpContext.Session.GetString($"KeyGateInwardGrid_{uniqueKey}");
                 var PendingDetails = string.IsNullOrEmpty(sessionData)
     ? new List<PendingGateInwardDashboard>()
     : JsonConvert.DeserializeObject<List<PendingGateInwardDashboard>>(sessionData);
@@ -1719,7 +1810,7 @@ namespace eTactWeb.Controllers
                             }
 
 
-                            HttpContext.Session.SetString("KeyGateInwardGrid", JsonConvert.SerializeObject(IssueGrid));
+                            HttpContext.Session.SetString($"KeyGateInwardGrid_{uniqueKey}", JsonConvert.SerializeObject(IssueGrid));
 
                         }
 
@@ -1728,12 +1819,12 @@ namespace eTactWeb.Controllers
                     //var jsonData = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
                     //HttpContext.Session.SetString("KeyPendingProductionSchedule", jsonData);
                 }
-                var sessionGridData = HttpContext.Session.GetString("KeyGateInwardGrid");
+                var sessionGridData = HttpContext.Session.GetString($"KeyGateInwardGrid_{uniqueKey}");
                 var grid = string.IsNullOrEmpty(sessionGridData)
     ? new List<PendingGateInwardDashboard>()
     : JsonConvert.DeserializeObject<List<PendingGateInwardDashboard>>(sessionGridData);
                 var issueDataJson = JsonConvert.SerializeObject(IssueGrid);
-                HttpContext.Session.SetString("KeyGateInwardGrid", issueDataJson);
+                HttpContext.Session.SetString($"KeyGateInwardGrid_{uniqueKey}", issueDataJson);
 
 
                 return Json("done");
@@ -1745,18 +1836,21 @@ namespace eTactWeb.Controllers
 
         }
         [Route("{controller}/PendingGateInward")]
-        public async Task<IActionResult> PendingGateInward()
+        public async Task<IActionResult> PendingGateInward(string formKey)
         {
+            ViewBag.formKey = formKey;
+            var uniqueKey = Guid.NewGuid().ToString();
+            ViewBag.uniqueKey = uniqueKey;
             var model = new PendingGateEntryDashboard();
             model.PendingGateEntryDashboard = new List<PendingGateInwardDashboard>();
             model = await PendingBindModel(model);
-            model.FromDate = HttpContext.Session.GetString("FromDate");
+            model.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
             return View(model);
         }
 
         public async Task<IActionResult> DeleteByID(int ID, int YC, string GateNo, string FromDate = "", string ToDate = "", string VendorName = "", string PartCode = "", string ItemName = "", string DocName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "")
         {
-            int ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            int ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString($"EmpID"));
             int EmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             var EntryByMachineName = @Environment.MachineName;
             string IPAddress = HttpContext.Session.GetString("ClientIP");
@@ -1823,6 +1917,7 @@ namespace eTactWeb.Controllers
                 GIGrid.Columns.Add("PendPOQty", typeof(decimal));
                 GIGrid.Columns.Add("AltPendQty", typeof(decimal));
                 GIGrid.Columns.Add("NoOfBoxes", typeof(int));
+                GIGrid.Columns.Add("ItemManufacturingDate", typeof(string));
                 foreach (var Item in DetailList)
                 {
                     if (Item.PoNo == null || Item.PoNo == "null" || Item.PoNo == "")
@@ -1892,6 +1987,8 @@ namespace eTactWeb.Controllers
                     Item.PendQty == null ? 0.0 : Item.PendQty,
                     Item.AltPendQty == null ? 0.0 : Item.AltPendQty,
                     Item.NoOfBoxes== null ? 0.0 : Item.NoOfBoxes,
+                    Item.ItemManufacturingDate == null ? string.Empty : ParseFormattedDate(Item.ItemManufacturingDate.Split(" ")[0]),
+
                         });
                 }
                 GIGrid.Dispose();
@@ -1911,9 +2008,9 @@ namespace eTactWeb.Controllers
 
 
         [HttpGet]
-        public IActionResult ExportGateInwardDashboardToExcel()
+        public IActionResult ExportGateInwardDashboardToExcel(string formKey)
         {
-            string modelJson = HttpContext.Session.GetString("KeyGateInardList");
+            string modelJson = HttpContext.Session.GetString($"KeyGateInardList_{formKey}");
 
             List<GateInwardDashboard> gateList = new();
 
