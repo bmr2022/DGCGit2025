@@ -6,19 +6,26 @@
 }
 
 <div class="card bg-gradient mb-3 rounded shadow-lg">
-	<form asp-action="BomForm" asp-controller="Bom" autocomplete="off" class="form-horizontal" asp-antiforgery=true>
-		<input type="hidden" asp-for="Mode" id="Mode" />
+	<form asp-action="BomForm" asp-controller="Bom" autocomplete="off" class="form-horizontal" asp-route-formKey="@ViewBag.formKey" asp-antiforgery=true>
+		<input type="hidden" asp-for="Mode" value="@Model.Mode" />
+		<input type="hidden" asp-for="BMNo" value="@Model.BMNo" /> 
 		<div class="card border-light bg-gradient rounded shadow-lg">
 			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
 				<h4>
 					BOM (Bill Of Material)
 					<span class="d-flex float-end" style="margin-top:-2px;">
-						<a asp-action="Dashboard" asp-controller="Bom" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+						<a asp-action="Dashboard" asp-controller="Bom" asp-route-formKey="@ViewBag.formKey"
+						   asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
 							<i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
 							Dashboard
 						</a>
 
 						<div class="row justify-content-between g-2">
+							<div class="col-auto">
+								<button type="button" class="RefreshBom btn btn-secondary btn-sm">
+									<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Refresh Bom
+								</button>
+							</div>
 							<div class="col-auto">
 								<input asp-for="FGPartCodeBack" type="hidden" value="@Model.FGPartCodeBack" />
 								<input asp-for="FGItemNameBack" type="hidden" value="@Model.FGItemNameBack" />
@@ -27,6 +34,7 @@
 								<input asp-for="BomRevNoBack" type="hidden" value="@Model.BomRevNoBack" />
 								<input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
 								<input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+								<input type="hidden" id="AutoFillRMQtyFlag" value="@Model.AutoFillRMQtyFlag" />
 								@*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
 								<a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
 									<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
@@ -38,20 +46,28 @@
 							{
 								<div class="col-auto">
 									@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-									<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+									<a class="btn btn-secondary btn-sm" asp-controller="Bom" asp-route-formKey="@ViewBag.formKey" asp-action="BomForm">
 										@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
 										<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
 										REFRESH
 									</a>
 								</div>
+								
 								@if (Model.Mode == "U")
 								{
 									@*Model.Mode = "U";*@
 									<div class="col-auto">
 										@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-										<button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+										<button type="submit" class=" UpdateButton btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
 											<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
 											UPDATE
+										</button>
+									</div>
+									<div class="col-auto">
+										@*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+										<button type="submit"  style="display:none"class="submitBTN btn btn-primary btn-sm " id="submitBTN">
+											<i class="fa-solid fa-chevron-circle-right"></i>
+											SUBMIT
 										</button>
 									</div>
 								}
@@ -59,20 +75,20 @@
 								{
 									<div class="col-auto">
 										@*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-										<button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+										<button type="submit" class="submitBTN btn btn-primary btn-sm " id="submitBTN">
 											<i class="fa-solid fa-chevron-circle-right"></i>
 											SUBMIT
 										</button>
 									</div>
 								}
 							}
-
+						</div>
 					</span>
 				</h4>
 			</div>
 		</div>
 		<div class="card-body bg-light">
-			<div asp-validation-summary="All" class="text-danger"></div>
+			@* <div asp-validation-summary="All" class="text-danger"></div> *@
 			<div class="accordion shadow-lg" id="BomMaster">
 				<div class="accordion-item">
 					<h2 class="accordion-header" id="H_RParameter">
@@ -84,19 +100,22 @@
 						<div class="accordion-body">
 							<div class="row g-2 gx-3">
 								<div class="col-lg-6" id="DivFG1">
+									<input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+
 									<partial name="_FGItem1" />
 								</div>
+
 								<div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-									<label asp-for="BOMName" class="form-label">BOM Name</label>
+									<label asp-for="BOMName" class="form-label" style="color:red">BOM Name *</label>
 									<input asp-for="BOMName" class="form-control" />
 								</div>
 								<div class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
 									<label asp-for="BomNo" class="form-label">Bom No</label>
 									<input asp-for="BomNo" class="form-control" />
 								</div>
-								<div class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
+								<div id="bomqty" class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
 									<label asp-for="BomQty" class="form-label">Bom Qty</label>
-									<input asp-for="BomQty" class="form-control" type="number" value=1 step="0.01" min="0" oninput="validity.valid||(value='');" />
+									<input asp-for="BomQty" class="form-control"   min="0" oninput="this.value=this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/^(\d{18})\d+/, '$1').replace(/(\.\d{6})\d+/,'$1');" readonly/>
 								</div>
 								<div class="col col-lg-1 col-md-2 col-sm-6 col-xs-12">
 									<label asp-for="EntryDate" class="form-label">Entry Date</label>
@@ -104,7 +123,37 @@
 								</div>
 								<div class="col col-lg-1 col-md-2 col-sm-6 col-xs-12">
 									<label asp-for="EffectiveDate" class="form-label">Effective Date</label>
-									<input asp-for="EffectiveDate" class="form-control" />
+									<input asp-for="EffectiveDate" class="form-control"  />
+								</div>
+								<div id="masterbatchshowhide" class="row g-2 masterbatchshowhide" style="display:none">
+									<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="Ldash" class="form-label">l'</label>
+										<input asp-for="Ldash" class="form-control" oninput="this.value=this.value.replace(/[^0-9.-]/g,'').replace(/(?!^)-/g,'').replace(/(\..*)\./g,'$1').replace(/^(-?\d{0,10})(\.\d{0,4})?.*$/,'$1$2')" />
+									</div>
+									<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="Adash" class="form-label">a'</label>
+										<input asp-for="Adash" class="form-control" oninput="this.value=this.value.replace(/[^0-9.-]/g,'').replace(/(?!^)-/g,'').replace(/(\..*)\./g,'$1').replace(/^(-?\d{0,10})(\.\d{0,4})?.*$/,'$1$2')" />
+									</div>
+									<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="Bdash" class="form-label">b'</label>
+										<input asp-for="Bdash" class="form-control" oninput="this.value=this.value.replace(/[^0-9.-]/g,'').replace(/(?!^)-/g,'').replace(/(\..*)\./g,'$1').replace(/^(-?\d{0,10})(\.\d{0,4})?.*$/,'$1$2')" />
+									</div>
+									<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="LValue" class="form-label">L Value</label>
+										<input asp-for="LValue" class="form-control" oninput="this.value=this.value.replace(/[^0-9.-]/g,'').replace(/(?!^)-/g,'').replace(/(\..*)\./g,'$1').replace(/^(-?\d{0,10})(\.\d{0,4})?.*$/,'$1$2')" />
+									</div>
+									<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="AValue" class="form-label">A Value</label>
+										<input asp-for="AValue" class="form-control" oninput="this.value=this.value.replace(/[^0-9.-]/g,'').replace(/(?!^)-/g,'').replace(/(\..*)\./g,'$1').replace(/^(-?\d{0,10})(\.\d{0,4})?.*$/,'$1$2')" />
+									</div>
+									<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="BValue" class="form-label">B Value</label>
+										<input asp-for="BValue" class="form-control" oninput="this.value=this.value.replace(/[^0-9.-]/g,'').replace(/(?!^)-/g,'').replace(/(\..*)\./g,'$1').replace(/^(-?\d{0,10})(\.\d{0,4})?.*$/,'$1$2')" />
+									</div>
+									<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="DeltaE" class="form-label">▲  E</label>
+										<input asp-for="DeltaE" class="form-control" readonly />
+									</div>
 								</div>
 							</div>
 						</div>
@@ -155,7 +204,8 @@
 				<h4>
 					BOM (Bill Of Material)
 					<span class="d-flex float-end" style="margin-top:-2px;">
-						<a asp-action="Dashboard" asp-controller="Bom" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+						<a asp-action="Dashboard" asp-route-formKey="@ViewBag.formKey"
+						   asp-controller="Bom" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
 							<i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
 							Dashboard
 						</a>
@@ -169,6 +219,8 @@
 								<input asp-for="BomRevNoBack" type="hidden" value="@Model.BomRevNoBack" />
 								<input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
 								<input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+								<input type="hidden" id="IndustryTypeHidden" value="@ViewBag.IndustryType" />
+
 								@*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
 								<a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
 									<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
@@ -180,7 +232,7 @@
 							{
 								<div class="col-auto">
 									@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-									<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+									<a class="btn btn-secondary btn-sm" asp-controller="Bom" asp-route-formKey="@ViewBag.formKey" asp-action="BomForm">
 										@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
 										<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
 										REFRESH
@@ -191,9 +243,16 @@
 									@*Model.Mode = "U";*@
 									<div class="col-auto">
 										@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-										<button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+										<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
 											<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
 											UPDATE
+										</button>
+									</div>
+									<div class="col-auto">
+										@*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+										<button type="submit" style="display:none" class="submitBTN btn btn-primary btn-sm " id="submitBTN">
+											<i class="fa-solid fa-chevron-circle-right"></i>
+											SUBMIT
 										</button>
 									</div>
 								}
@@ -201,14 +260,14 @@
 								{
 									<div class="col-auto">
 										@*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-										<button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+										<button type="submit" class="submitBTN btn btn-primary btn-sm " id="submitBTN">
 											<i class="fa-solid fa-chevron-circle-right"></i>
 											SUBMIT
 										</button>
 									</div>
 								}
 							}
-
+							</div>
 					</span>
 				</h4>
 			</div>
@@ -225,122 +284,850 @@
 @section Scripts
 {
 	<script>
+		function mapItem(val, textField) {
+				return {
+					id: val.Item_Code,
+					text: val[textField],
+					partCode: val.PartCode,
+					itemName: val.ItemName
+				};
+			}
+		
+  var formKey=$('#formKey').val();
+             var uniqueKey=$('#uniqueKey').val();
+$(document).ready(function () 
+{
+    formKey=$('#formKey').val();
+            uniqueKey=$('#uniqueKey').val();
+			AllowChangeFGBomQtyfun();
+CalculateMasterBatchTotal();
+$('#FinishItemCode').select2({
+			   placeholder: '-Select Part Code-',
+			   minimumInputLength: 2,
+			   allowClear: true,
+			   ajax: {
+				   url: "@Url.Action("GetFGPartCodeList")",
+				   type: "POST",
+				   dataType: "json",
+				   data: function (params) {
+					   return {
+						   SearchText: params.term,
+						CTRL: $('#PN1').is(':checked') ? 'T' : 'F'
+					   };
+				   },
+				   processResults: function (result) {
+					   var obj = $.parseJSON(result);
+					   if (obj.StatusCode !== 200) return { results: [] };
 
-		 $(document).ready(function () {
-		 //          function bindAutocomplete(inputTextId, hiddenInputId, url, paramName, labelField, valueField, onSelectCallback) {
-		 //     $("#" + inputTextId).autocomplete({
-		 //         source: function (request, response) {
-		 //             let params = {};
-		 //             params[paramName] = request.term;
+					   return {
+						   results: $.map(obj.Result, function (v) {
+							   return mapItem(v, 'PartCode');
+						   })
+					   };
+				   }
+			   },
+			   templateSelection: function (item) {
+				 //  if (item.element) setData(item.element, item);
+				   return item.text;
+			   }
+		   });
 
-		 //             $.ajax({
-		 //                 url: url,
-		 //                 type: "GET",
-		 //                 data: params,
-		 //                 success: function (data) {
-		 //                     let result = [];
+		   $('#FinishedItemName').select2({
+			   placeholder: '-Select Item Name-',
+			   minimumInputLength: 2,
+			   allowClear: true,
+			   ajax: {
+				   url: "@Url.Action("GetFGItemNameList")",
+				   type: "POST",
+				   dataType: "json",
+				   data: function (params) {
+					   return {
+						   SearchText: params.term,
+									CTRL: $('#PN1').is(':checked') ? 'T' : 'F'
+					   };
+				   },
+				   processResults: function (result) {
+					   var obj = $.parseJSON(result);
+					   if (obj.StatusCode !== 200) return { results: [] };
 
-		 //                  try {
-		 //                  let parsed = typeof data === "string" ? JSON.parse(data) : data;
-		 //                  result = parsed.Result || []; // ✅ FIX: access Result property
-		 //              } catch (e) {
-		 //                  console.error("JSON parse error:", e);
-		 //              }
+					   return {
+						   results: $.map(obj.Result, function (v) {
+							   return mapItem(v, 'ItemName');
+						   })
+					   };
+				   }
+			   },
+			   templateSelection: function (item) {
+				  // if (item.element) setData(item.element, item);
+				   return item.text;
+			   }
+		   });
 
-		 //              console.log("API Result:", result);
+		   $('#FinishItemCode').on('select2:select', function (e) {
+				var d = e.params.data;
+				var opt = new Option(d.itemName, d.id, true, true);
+				//setData(opt, d);
+				$('#FinishedItemName').append(opt).trigger('change');
+			});
 
-		 //                     response($.map(result, function (item) {
-		 //                             let label = item[labelField];
-		 //                  let value = String(item[valueField]);
+			$('#FinishedItemName').on('select2:select', function (e) {
+				var d = e.params.data;
+				var opt = new Option(d.partCode, d.id, true, true);
+				$('#FinishItemCode').append(opt).trigger('change');
+			});
 
-		 //                   console.log("Mapped item:", { label, value,item});
 
-		 //                         return {
-		 //                              label: label,
-		 //                               value: value,
-		 //                             fullItem: item
-		 //                         };
-		 //                     }));
-		 //                 }
-		 //             });
-		 //         },
-		 //         minLength: 2,
-		 //         focus: function (event, ui) {
-		 //             $("#" + inputTextId).val(ui.item.label);
-		 //             return false;
-		 //         },
-		 //         select: function (event, ui) {
-		 //             $("#" + inputTextId).val(ui.item.label);
-		 //             $("#" + hiddenInputId).val(ui.item.value);
 
-		 //             if (typeof onSelectCallback === 'function') {
-		 //                 onSelectCallback(ui.item.fullItem);
-		 //             }
+		 $('#ItemCode').select2({
+			   placeholder: '-Select Part Code-',
+			   minimumInputLength: 2,
+			   allowClear: true,
+			   ajax: {
+				   url: "@Url.Action("GetRMPartCodeList")",
+				   type: "POST",
+				   dataType: "json",
+				   data: function (params) {
+					   return {
+						   SearchText: params.term,
+									CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+					   };
+				   },
+				   processResults: function (result) {
+					   var obj = $.parseJSON(result);
+					   if (obj.StatusCode !== 200) return { results: [] };
 
-		 //             return false;
-		 //         }
-		 //     });
-		 // }
+					   return {
+						   results: $.map(obj.Result, function (v) {
+							   return mapItem(v, 'PartCode');
+						   })
+					   };
+								 GetItemRate();
+				   }
+			   },
+			   templateSelection: function (item) {
+				 //  if (item.element) setData(item.element, item);
+				   return item.text;
+			   }
+		   });
 
-		 // // FG Part Code → auto-fill FG Item Name
-		 // bindAutocomplete(
-		 //       "FinishItemCodeText",   // visible
-		 // "FinishItemCode",       // hidden
-		 // "/Bom/GetFGPartCodeList",
-		 // "GetFGPartCodeList",
-		 // "PartCode",             // label field
-		 // "Item_Code",
-		 //     function (item) {
-		 //         $('#divBomGrid').empty();
-		 //         $('#FinishedItemNameText').val(item.ItemName);
-		 //         $('#FinishedItemName').val(item.Item_Code);
-		 //         FGNameChange("FinishItemCode");
-		 //     }
-		 // );
+		   $('#ItemName').select2({
+			   placeholder: '-Select Item Name-',
+			   minimumInputLength: 2,
+			   allowClear: true,
+			   ajax: {
+				   url: "@Url.Action("GetRMItemNameList")",
+				   type: "POST",
+				   dataType: "json",
+				   data: function (params) {
+					   return {
+						   SearchText: params.term,
+									CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+					   };
+				   },
+				   processResults: function (result) {
+					   var obj = $.parseJSON(result);
+					   if (obj.StatusCode !== 200) return { results: [] };
 
-		 // // FG Item Name → auto-fill FG Part Code
-		 // bindAutocomplete(
-		 //     "FinishedItemNameText",
-		 //     "FinishedItemName",
-		 //     "/Bom/GetFGItemNameList",
-		 //     "SearchFGItemName",
-		 //     "ItemName",
-		 //     "Item_Code",
-		 //     function (item) {
-		 //         $('#divBomGrid').empty();
-		 //         $('#FinishItemCodeText').val(item.PartCode);
-		 //         $('#FinishItemCode').val(item.Item_Code);
-		 //         FGCodeChange("FinishedItemName");
-		 //     }
-		 // );
+					   return {
+						   results: $.map(obj.Result, function (v) {
+							   return mapItem(v, 'ItemName');
+						   })
+					   };
+								 GetItemRate();
+				   }
+			   },
+			   templateSelection: function (item) {
+				  // if (item.element) setData(item.element, item);
+				   return item.text;
+			   }
+		   });
 
-		 // FG Item Name: text = ItemName, value = Item_Code
-		 // initAutocomplete("FinishedItemName", "/Bom/GetFGItemNameList", "GetFGItemNameList", "ItemName", "Item_Code");
 
-		 // // RM Part Code: text = PartCode, value = Item_Code
-		 // initAutocomplete("ItemCode", "/Bom/GetRMPartCodeList", "SearchRMPartcode", "PartCode", "Item_Code");
+		   $('#ItemCode').on('select2:select', function (e) {
+				var d = e.params.data;
+				var opt = new Option(d.itemName, d.id, true, true);
+				//setData(opt, d);
+				$('#ItemName').append(opt).trigger('change');
+						GetItemRate();
+			});
 
-		 // RM Item Name: text = ItemName, value = Item_Code
-		// initAutocomplete("ItemName", "/Bom/GetRMItemNameList", "SearchRMItemName", "ItemName", "Item_Code");
+			$('#ItemName').on('select2:select', function (e) {
+				var d = e.params.data;
+				var opt = new Option(d.partCode, d.id, true, true);
+				$('#ItemCode').append(opt).trigger('change');
+				GetItemRate();
+			});
+		
 
-			 $('#FinishItemCode').select2();
-			 $('#FinishedItemName').select2();
-			 $('#ItemCode').select2();
-			 $('#ItemName').select2();
-			 $('#AltItemCode1').select2();
-			 $('#AltItemName1').select2();
-			 $('#AltItemCode2').select2();
-			 $('#AltItemName2').select2();
-			 $('#Byprodpartcode1').select2();
-			 $('#ByprodItemCode1').select2();
-			 $('#Byprodpartcode2').select2();
-			 $('#ByprodItemCode2').select2();
 
+			/////////////////////////////////////
+			/////////////monika
+
+
+							$('#AltItemCode1').select2({
+					   placeholder: '-Select Alt Part Code1-',
+					   minimumInputLength: 2,
+					   allowClear: true,
+					   ajax: {
+						   url: "@Url.Action("GetRMPartCodeList")",
+						   type: "POST",
+						   dataType: "json",
+						   data: function (params) {
+							   return {
+								   SearchText: params.term,
+											CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+							   };
+						   },
+						   processResults: function (result) {
+							   var obj = $.parseJSON(result);
+							   if (obj.StatusCode !== 200) return { results: [] };
+
+							   return {
+								   results: $.map(obj.Result, function (v) {
+									   return mapItem(v, 'PartCode');
+								   })
+							   };
+																 SetPartCodeItem('AltItemCode1');
+						   }
+					   },
+					   templateSelection: function (item) {
+						 //  if (item.element) setData(item.element, item);
+						   return item.text;
+					   }
+				   });
+
+				   $('#AltItemName1').select2({
+					   placeholder: '-Select Item Name-',
+					   minimumInputLength: 2,
+					   allowClear: true,
+					   ajax: {
+						   url: "@Url.Action("GetRMItemNameList")",
+						   type: "POST",
+						   dataType: "json",
+						   data: function (params) {
+							   return {
+								   SearchText: params.term,
+											CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+							   };
+						   },
+						   processResults: function (result) {
+							   var obj = $.parseJSON(result);
+							   if (obj.StatusCode !== 200) return { results: [] };
+
+							   return {
+								   results: $.map(obj.Result, function (v) {
+									   return mapItem(v, 'ItemName');
+								   })
+							   };
+														  SetPartCodeItem('AltItemName1');
+						   }
+					   },
+					   templateSelection: function (item) {
+						  // if (item.element) setData(item.element, item);
+						   return item.text;
+					   }
+				   });
+
+
+						   $('#AltItemCode1').on('select2:select', function (e) {
+						var d = e.params.data;
+						var opt = new Option(d.itemName, d.id, true, true);
+						//setData(opt, d);
+								$('#AltItemName1').append(opt).trigger('change');
+												SetPartCodeItem('AltItemCode1');
+					});
+
+							$('#AltItemName1').on('select2:select', function (e) {
+						var d = e.params.data;
+						var opt = new Option(d.partCode, d.id, true, true);
+								$('#AltItemCode1').append(opt).trigger('change');
+										SetPartCodeItem('AltItemName1');
+					});
+
+		
+					//////////////////////////////monikaalt2
+
+
+								$('#AltItemCode2').select2({
+							   placeholder: '-Select Alt Part Code1-',
+							   minimumInputLength: 2,
+							   allowClear: true,
+							   ajax: {
+								   url: "@Url.Action("GetRMPartCodeList")",
+								   type: "POST",
+								   dataType: "json",
+								   data: function (params) {
+									   return {
+										   SearchText: params.term,
+													CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+									   };
+								   },
+								   processResults: function (result) {
+									   var obj = $.parseJSON(result);
+									   if (obj.StatusCode !== 200) return { results: [] };
+
+									   return {
+										   results: $.map(obj.Result, function (v) {
+											   return mapItem(v, 'PartCode');
+										   })
+									   };
+																		 SetPartCodeItem('AltItemCode2');
+								   }
+							   },
+							   templateSelection: function (item) {
+								 //  if (item.element) setData(item.element, item);
+								   return item.text;
+							   }
+						   });
+
+						   $('#AltItemName2').select2({
+							   placeholder: '-Select Item Name-',
+							   minimumInputLength: 2,
+							   allowClear: true,
+							   ajax: {
+								   url: "@Url.Action("GetRMItemNameList")",
+								   type: "POST",
+								   dataType: "json",
+								   data: function (params) {
+									   return {
+										   SearchText: params.term,
+													CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+									   };
+								   },
+								   processResults: function (result) {
+									   var obj = $.parseJSON(result);
+									   if (obj.StatusCode !== 200) return { results: [] };
+
+									   return {
+										   results: $.map(obj.Result, function (v) {
+											   return mapItem(v, 'ItemName');
+										   })
+									   };
+																  SetPartCodeItem('AltItemName2');
+								   }
+							   },
+							   templateSelection: function (item) {
+								  // if (item.element) setData(item.element, item);
+								   return item.text;
+							   }
+						   });
+
+
+								   $('#AltItemCode2').on('select2:select', function (e) {
+								var d = e.params.data;
+								var opt = new Option(d.itemName, d.id, true, true);
+								//setData(opt, d);
+										$('#AltItemName2').append(opt).trigger('change');
+														SetPartCodeItem('AltItemCode1');
+							});
+
+									$('#AltItemName2').on('select2:select', function (e) {
+								var d = e.params.data;
+								var opt = new Option(d.partCode, d.id, true, true);
+										$('#AltItemCode2').append(opt).trigger('change');
+												SetPartCodeItem('AltItemName1');
+							});
+
+
+
+									//////////////////////////////monikaalt3
+
+
+										$('#AltItemCode3').select2({
+									   placeholder: '-Select Alt Part Code1-',
+									   minimumInputLength: 2,
+									   allowClear: true,
+									   ajax: {
+										   url: "@Url.Action("GetRMPartCodeList")",
+										   type: "POST",
+										   dataType: "json",
+										   data: function (params) {
+											   return {
+												   SearchText: params.term,
+															CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+											   };
+										   },
+										   processResults: function (result) {
+											   var obj = $.parseJSON(result);
+											   if (obj.StatusCode !== 200) return { results: [] };
+
+											   return {
+												   results: $.map(obj.Result, function (v) {
+													   return mapItem(v, 'PartCode');
+												   })
+											   };
+																				 SetPartCodeItem('AltItemCode3');
+										   }
+									   },
+									   templateSelection: function (item) {
+										 //  if (item.element) setData(item.element, item);
+										   return item.text;
+									   }
+								   });
+
+								   $('#AltItemName3').select2({
+									   placeholder: '-Select Item Name-',
+									   minimumInputLength: 2,
+									   allowClear: true,
+									   ajax: {
+										   url: "@Url.Action("GetRMItemNameList")",
+										   type: "POST",
+										   dataType: "json",
+										   data: function (params) {
+											   return {
+												   SearchText: params.term,
+															CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+											   };
+										   },
+										   processResults: function (result) {
+											   var obj = $.parseJSON(result);
+											   if (obj.StatusCode !== 200) return { results: [] };
+
+											   return {
+												   results: $.map(obj.Result, function (v) {
+													   return mapItem(v, 'ItemName');
+												   })
+											   };
+																		  SetPartCodeItem('AltItemName3');
+										   }
+									   },
+									   templateSelection: function (item) {
+										  // if (item.element) setData(item.element, item);
+										   return item.text;
+									   }
+								   });
+
+
+										   $('#AltItemCode3').on('select2:select', function (e) {
+										var d = e.params.data;
+										var opt = new Option(d.itemName, d.id, true, true);
+										//setData(opt, d);
+												$('#AltItemName3').append(opt).trigger('change');
+																SetPartCodeItem('AltItemCode3');
+									});
+
+											$('#AltItemName3').on('select2:select', function (e) {
+										var d = e.params.data;
+										var opt = new Option(d.partCode, d.id, true, true);
+												$('#AltItemCode3').append(opt).trigger('change');
+														SetPartCodeItem('AltItemName3');
+									});
+
+
+
+											//////////////////////////////monikaalt4
+
+
+										$('#AltItemCode4').select2({
+									   placeholder: '-Select Alt Part Code1-',
+									   minimumInputLength: 2,
+									   allowClear: true,
+									   ajax: {
+										   url: "@Url.Action("GetRMPartCodeList")",
+										   type: "POST",
+										   dataType: "json",
+										   data: function (params) {
+											   return {
+												   SearchText: params.term,
+															CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+											   };
+										   },
+										   processResults: function (result) {
+											   var obj = $.parseJSON(result);
+											   if (obj.StatusCode !== 200) return { results: [] };
+
+											   return {
+												   results: $.map(obj.Result, function (v) {
+													   return mapItem(v, 'PartCode');
+												   })
+											   };
+																				 SetPartCodeItem('AltItemCode4');
+										   }
+									   },
+									   templateSelection: function (item) {
+										 //  if (item.element) setData(item.element, item);
+										   return item.text;
+									   }
+								   });
+
+								   $('#AltItemName4').select2({
+									   placeholder: '-Select Item Name-',
+									   minimumInputLength: 2,
+									   allowClear: true,
+									   ajax: {
+										   url: "@Url.Action("GetRMItemNameList")",
+										   type: "POST",
+										   dataType: "json",
+										   data: function (params) {
+											   return {
+												   SearchText: params.term,
+															CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+											   };
+										   },
+										   processResults: function (result) {
+											   var obj = $.parseJSON(result);
+											   if (obj.StatusCode !== 200) return { results: [] };
+
+											   return {
+												   results: $.map(obj.Result, function (v) {
+													   return mapItem(v, 'ItemName');
+												   })
+											   };
+																		  SetPartCodeItem('AltItemName4');
+										   }
+									   },
+									   templateSelection: function (item) {
+										  // if (item.element) setData(item.element, item);
+										   return item.text;
+									   }
+								   });
+
+
+										   $('#AltItemCode4').on('select2:select', function (e) {
+										var d = e.params.data;
+										var opt = new Option(d.itemName, d.id, true, true);
+										//setData(opt, d);
+												$('#AltItemName4').append(opt).trigger('change');
+																SetPartCodeItem('AltItemCode4');
+									});
+
+											$('#AltItemName4').on('select2:select', function (e) {
+										var d = e.params.data;
+										var opt = new Option(d.partCode, d.id, true, true);
+												$('#AltItemCode4').append(opt).trigger('change');
+														SetPartCodeItem('AltItemName4');
+									});
+
+											//////////////////////////////monikaalt5
+
+
+										$('#AltItemCode5').select2({
+									   placeholder: '-Select Alt Part Code1-',
+									   minimumInputLength: 2,
+									   allowClear: true,
+									   ajax: {
+										   url: "@Url.Action("GetRMPartCodeList")",
+										   type: "POST",
+										   dataType: "json",
+										   data: function (params) {
+											   return {
+												   SearchText: params.term,
+															CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+											   };
+										   },
+										   processResults: function (result) {
+											   var obj = $.parseJSON(result);
+											   if (obj.StatusCode !== 200) return { results: [] };
+
+											   return {
+												   results: $.map(obj.Result, function (v) {
+													   return mapItem(v, 'PartCode');
+												   })
+											   };
+																				 SetPartCodeItem('AltItemCode5');
+										   }
+									   },
+									   templateSelection: function (item) {
+										 //  if (item.element) setData(item.element, item);
+										   return item.text;
+									   }
+								   });
+
+								   $('#AltItemName5').select2({
+									   placeholder: '-Select Item Name-',
+									   minimumInputLength: 2,
+									   allowClear: true,
+									   ajax: {
+										   url: "@Url.Action("GetRMItemNameList")",
+										   type: "POST",
+										   dataType: "json",
+										   data: function (params) {
+											   return {
+												   SearchText: params.term,
+															CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+											   };
+										   },
+										   processResults: function (result) {
+											   var obj = $.parseJSON(result);
+											   if (obj.StatusCode !== 200) return { results: [] };
+
+											   return {
+												   results: $.map(obj.Result, function (v) {
+													   return mapItem(v, 'ItemName');
+												   })
+											   };
+																		  SetPartCodeItem('AltItemName5');
+										   }
+									   },
+									   templateSelection: function (item) {
+										  // if (item.element) setData(item.element, item);
+										   return item.text;
+									   }
+								   });
+
+
+										   $('#AltItemCode5').on('select2:select', function (e) {
+										var d = e.params.data;
+										var opt = new Option(d.itemName, d.id, true, true);
+										//setData(opt, d);
+												$('#AltItemName5').append(opt).trigger('change');
+																SetPartCodeItem('AltItemCode5');
+									});
+
+											$('#AltItemName5').on('select2:select', function (e) {
+										var d = e.params.data;
+										var opt = new Option(d.partCode, d.id, true, true);
+												$('#AltItemCode5').append(opt).trigger('change');
+														SetPartCodeItem('AltItemName5');
+									});
+
+
+
+
+									//////////////////////////////monikabyprod1
+
+
+												$('#Byprodpartcode1').select2({
+									   placeholder: '-Select Alt Part Code1-',
+									   minimumInputLength: 2,
+									   allowClear: true,
+									   ajax: {
+										   url: "@Url.Action("GetRMPartCodeList")",
+										   type: "POST",
+										   dataType: "json",
+										   data: function (params) {
+											   return {
+												   SearchText: params.term,
+															CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+											   };
+										   },
+										   processResults: function (result) {
+											   var obj = $.parseJSON(result);
+											   if (obj.StatusCode !== 200) return { results: [] };
+
+											   return {
+												   results: $.map(obj.Result, function (v) {
+													   return mapItem(v, 'PartCode');
+												   })
+											   };
+																						 SetPartCodeItem('Byprodpartcode1');
+										   }
+									   },
+									   templateSelection: function (item) {
+										 //  if (item.element) setData(item.element, item);
+										   return item.text;
+									   }
+								   });
+
+										   $('#ByprodItemCode1').select2({
+									   placeholder: '-Select Item Name-',
+									   minimumInputLength: 2,
+									   allowClear: true,
+									   ajax: {
+										   url: "@Url.Action("GetRMItemNameList")",
+										   type: "POST",
+										   dataType: "json",
+										   data: function (params) {
+											   return {
+												   SearchText: params.term,
+															CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+											   };
+										   },
+										   processResults: function (result) {
+											   var obj = $.parseJSON(result);
+											   if (obj.StatusCode !== 200) return { results: [] };
+
+											   return {
+												   results: $.map(obj.Result, function (v) {
+													   return mapItem(v, 'ItemName');
+												   })
+											   };
+																				  SetPartCodeItem('ByprodItemCode1');
+										   }
+									   },
+									   templateSelection: function (item) {
+										  // if (item.element) setData(item.element, item);
+										   return item.text;
+									   }
+								   });
+
+
+												   $('#Byprodpartcode1').on('select2:select', function (e) {
+										var d = e.params.data;
+										var opt = new Option(d.itemName, d.id, true, true);
+										//setData(opt, d);
+														$('#ByprodItemCode1').append(opt).trigger('change');
+																		SetPartCodeItem('Byprodpartcode1');
+									});
+
+													$('#ByprodItemCode1').on('select2:select', function (e) {
+										var d = e.params.data;
+										var opt = new Option(d.partCode, d.id, true, true);
+														$('#Byprodpartcode1').append(opt).trigger('change');
+																SetPartCodeItem('ByprodItemCode1');
+									});
+
+
+
+
+											//////////////////////////////monikabyprod2
+
+
+														$('#Byprodpartcode2').select2({
+											   placeholder: '-Select-',
+											   minimumInputLength: 2,
+											   allowClear: true,
+											   ajax: {
+												   url: "@Url.Action("GetRMPartCodeList")",
+												   type: "POST",
+												   dataType: "json",
+												   data: function (params) {
+													   return {
+														   SearchText: params.term,
+																	CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+													   };
+												   },
+												   processResults: function (result) {
+													   var obj = $.parseJSON(result);
+													   if (obj.StatusCode !== 200) return { results: [] };
+
+													   return {
+														   results: $.map(obj.Result, function (v) {
+															   return mapItem(v, 'PartCode');
+														   })
+													   };
+																								 SetPartCodeItem('Byprodpartcode2');
+												   }
+											   },
+											   templateSelection: function (item) {
+												 //  if (item.element) setData(item.element, item);
+												   return item.text;
+											   }
+										   });
+
+												   $('#ByprodItemCode2').select2({
+											   placeholder: '-Select Item Name-',
+											   minimumInputLength: 2,
+											   allowClear: true,
+											   ajax: {
+												   url: "@Url.Action("GetRMItemNameList")",
+												   type: "POST",
+												   dataType: "json",
+												   data: function (params) {
+													   return {
+														   SearchText: params.term,
+																	CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+													   };
+												   },
+												   processResults: function (result) {
+													   var obj = $.parseJSON(result);
+													   if (obj.StatusCode !== 200) return { results: [] };
+
+													   return {
+														   results: $.map(obj.Result, function (v) {
+															   return mapItem(v, 'ItemName');
+														   })
+													   };
+																						  SetPartCodeItem('ByprodItemCode2');
+												   }
+											   },
+											   templateSelection: function (item) {
+												  // if (item.element) setData(item.element, item);
+												   return item.text;
+											   }
+										   });
+
+
+														   $('#Byprodpartcode2').on('select2:select', function (e) {
+												var d = e.params.data;
+												var opt = new Option(d.itemName, d.id, true, true);
+												//setData(opt, d);
+																$('#ByprodItemCode2').append(opt).trigger('change');
+																				SetPartCodeItem('Byprodpartcode2');
+											});
+
+															$('#ByprodItemCode2').on('select2:select', function (e) {
+												var d = e.params.data;
+												var opt = new Option(d.partCode, d.id, true, true);
+																$('#Byprodpartcode2').append(opt).trigger('change');
+																		SetPartCodeItem('ByprodItemCode2');
+											});
+
+
+
+
+
+
+
+			////////////////////////////////////////////////runner
+
+
+			$('#RunnerItemCode').select2({
+							   placeholder: '-Select Alt Part Code1-',
+							   minimumInputLength: 2,
+							   allowClear: true,
+							   ajax: {
+								   url: "@Url.Action("GetRMPartCodeList")",
+								   type: "POST",
+								   dataType: "json",
+								   data: function (params) {
+									   return {
+										   SearchText: params.term,
+													CTRL: $('#PN2').is(':checked') ? 'T' : 'F'
+									   };
+								   },
+								   processResults: function (result) {
+									   var obj = $.parseJSON(result);
+									   if (obj.StatusCode !== 200) return { results: [] };
+
+									   return {
+										   results: $.map(obj.Result, function (v) {
+											   return mapItem(v, 'PartCode');
+										   })
+									   };
+																		 
+								   }
+							   },
+							   templateSelection: function (item) {
+								 //  if (item.element) setData(item.element, item);
+								   return item.text;
+							   }
+						   });
+
+
+
+
+
+			//////////////////////////////////////////////////////////////
+
+
+
+
+
+
+			 // $('#FinishItemCode').select2();
+			 // $('#FinishedItemName').select2();
+			 // $('#ItemCode').select2();
+			 // $('#ItemName').select2();
+			 // $('#AltItemCode1').select2();
+			 // $('#AltItemName1').select2();
+			 // $('#AltItemCode2').select2();
+			 // $('#AltItemName2').select2();
+			 // $('#Byprodpartcode1').select2();
+			 // $('#ByprodItemCode1').select2();
+			 // $('#Byprodpartcode2').select2();
+			 // $('#ByprodItemCode2').select2();
+			 // $('#RunnerItemCode').select2();
+			 hideshow();
+			
 			 GetFormRights();
 			 toggleSection();
 			 $("#EntryDate").attr('style', 'pointer-events:none;');
 			 $("#EntryDate").datepicker({ minDate: 0 });
-			 $("#EffectiveDate").datepicker({ minDate: 0 });
+			 // $("#EffectiveDate").datepicker({ minDate: 0 });
+			 if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+			 $('#EffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+			 }
 			  var mode = "@Model.Mode";
 			   if (mode === "U" || mode === "V") {
 				  // $("#B_Measurements").hide();
@@ -348,31 +1135,57 @@
 				 Itemcode = $('#hiddenItemCode').val();
 				 //AltItemCode1 = $('#hiddenAltItemCode1').val();
 				 //$('#FG1').trigger('change');
-				 FetchItem($('#FG1')[0]);
-				 FetchItem($('#FG2')[0]);
-				 FetchItem($('#FG3')[0]);
+				 // FetchItem($('#FG1')[0]);
+				 // FetchItem($('#FG2')[0]);
+				 // FetchItem($('#FG3')[0]);
 		 //                 if ($("#Mode").val() !== "U" && $("#Mode").val() !== "V") {
 		 //     FetchItem($('#FG1')[0]);
 		 //     FetchItem($('#FG2')[0]);
 		 //     FetchItem($('#FG3')[0]);
 		 // }
-				 GetByProdPartCode();
-				 GetByProdItemName();
-				 GetByProdPartCode2();
-				 GetByProdItemName2();
+				hideshow();
 
+				//comment by monika
+				 // GetByProdPartCode();
+				 // GetByProdItemName();
+				 // GetByProdPartCode2();
+				 // GetByProdItemName2();
+			
+					 var fgCode = "@Model.FinishItemCode";
+					 var fgPartCode = "@Model.FinishItemCodeText";
+		var fgItemName = "@Model.FinishedItemNameText";
 
-				 $('#FinishItemCode').val(FGItemcode).trigger('change');
-				 $('#FinishedItemName').val(FGItemcode).trigger('change');
+				var opt1 = new Option(fgPartCode, fgCode, true, true);
+
+		$('#FinishItemCode').append(opt1).trigger('change');
+		var opt2 = new Option(fgItemName, fgCode, true, true);
+		$('#FinishedItemName').append(opt2).trigger('change');
+				FGNameChange('FinishItemCode');
+
+										 var RMCode = "@Model.ItemCode";
+									 var RMPartCode = "@Model.PartCodeText";
+								var RMItemName = "@Model.ItemNameText";
+
+												var opt1 = new Option(RMPartCode, RMCode, true, true);
+
+						$('#ItemCode').append(opt1).trigger('change');
+								var opt2 = new Option(RMItemName, RMCode, true, true);
+						$('#ItemName').append(opt2).trigger('change');
+				 $('#FinishItemCode').prop('disabled', true);
+				 $('#FinishedItemName').prop('disabled', true);
+				 $("#BomNo").val( "@Model.BomNo")
 					 } else {
 		   $("#B_Measurements").show();
-					FetchItem($('#FG1')[0]);
-				  FetchItem($('#FG2')[0]);
-				  FetchItem($('#FG3')[0]);
+					// FetchItem($('#FG1')[0]);
+				 //  FetchItem($('#FG2')[0]);
+				 //  FetchItem($('#FG3')[0]);
 		 }
 
-			 $('#UpdateButton').click(function(){
-				 $('#Mode').val("U");
+			 $('.UpdateButton').click(function(){
+				 //$('#mode').val("u");
+				  if (!isCopyBom) {
+					  $('#Mode').val("U");
+				  }
 			 });
 
 			 //$('#FinishItemCode').change(function(){
@@ -418,6 +1231,9 @@
 
 			 $('#AltQty1').rules("remove", "required");
 			 $('#AltQty2').rules("remove", "required");
+			 $('#AltQty3').rules("remove", "required");
+			 $('#AltQty4').rules("remove", "required");
+			 $('#AltQty5').rules("remove", "required");
 			 $('#RunnerQty').rules("remove", "required");
 			 $('#RunnerItemCode').rules("remove", "required");
 			 $('#GrossWt').rules("remove", "required");
@@ -426,6 +1242,9 @@
 			 $('#BurnQty').rules("remove", "required");
 			 $('#AltItemCode1').rules("remove", "required");
 			 $('#AltItemCode2').rules("remove", "required");
+			 $('#AltItemCode3').rules("remove", "required");
+			 $('#AltItemCode4').rules("remove", "required");
+			 $('#AltItemCode5').rules("remove", "required");
 			 $('#FinishItemCode').rules("remove", "required");
 			 $('#FinishedItemName').rules("remove", "required");
 			 $('#ItemCode').rules("remove", "required");
@@ -438,6 +1257,7 @@
 			 $('#ByProdQty2').rules("remove", "required");
 			 $('#Dia').rules("remove", "required");
 			 $('#grade').rules("remove", "required");
+			  $('#Location').rules("remove", "required");
 			 $('#thickness').rules("remove", "required");
 			 $('#width').rules("remove", "required");
 			 $('#length').rules("remove", "required");
@@ -516,13 +1336,15 @@
 		 });
 
 
-		 $('#FinishedItemName').change(function () {
-			 GetByProdPartCode();
-			 GetByProdItemName();
-			 GetByProdPartCode2();
-			 GetByProdItemName2();
 
-		 })
+		 //comment by monika
+		 // $('#FinishedItemName').change(function () {
+			//  GetByProdPartCode();
+			//  GetByProdItemName();
+			//  GetByProdPartCode2();
+			//  GetByProdItemName2();
+
+		 // })
 		 $('.RefreshBom').click(function () {
 
 			 $.ajax({
@@ -574,9 +1396,45 @@
 					 }
 				 },
 				 error: function (xhr, status, error) {
-					 alert('Failed to load alternate part codes.');
+					 alert('Failed to load By Prod1 part codes.');
 				 }
 			 });
+		 }
+		 function hideshow(){
+			var industry = $("#IndustryTypeHidden").val();
+
+			if (industry && industry.trim().toLowerCase() === "masterbatch") {
+				$(".masterbatchshowhide").show();
+				$("#totalreq").show();
+				$("#BomQty").removeAttr("readonly");
+				// if ($("#Mode").val().toUpperCase() !== "U" && $("#Mode").val().toUpperCase() !== "V") {
+				// 	$("#BomQty").val(1);
+				// }
+
+				//for grid
+				$("#thReqBomQty").show();
+				$(".tdReqBomQty").show();
+			}
+			else {
+				$(".masterbatchshowhide").hide();
+				$("#totalreq").hide();
+				if (AllowChangeFGBomQty!='Y')
+				{
+				$("#BomQty").attr("readonly", "readonly").val(1);
+						// GRID HIDE
+						$("#thReqBomQty").hide();
+						$(".tdReqBomQty").hide();
+				}
+				else
+				{
+					$("#BomQty").removeAttr("readonly");
+							$("#thReqBomQty").show();
+									$("#totalreq").show();
+						$(".tdReqBomQty").show();
+
+				}
+				
+			}
 		 }
 		 $(document).on('select2:select', '#ByprodItemCode1,#Byprodpartcode1', function (e) {
 
@@ -681,7 +1539,7 @@
 					 }
 				 },
 				 error: function (xhr, status, error) {
-					 alert('Failed to load alternate part codes.');
+					 alert('Failed to load By Prod 2 part codes.');
 				 }
 			 });
 		 }
@@ -756,18 +1614,12 @@
 			 });
 		 }
 
-		 //end of proditem2
-
-
-
-
-
-
-
 		 $(document).on('select2:select', '#FinishItemCode,#FinishedItemName', function (e) {
 
 			 var cntId = e.target.id;
+			 if (!isCopyBom) {
 			 $('#divBomGrid').empty();
+			 }
 			 if (cntId == 'FinishItemCode') {
 				 FGNameChange(cntId);
 			 }
@@ -787,28 +1639,28 @@
 			 }
 			 $('#Qty').val('0.00');
 		 });
-		 $(document).on('select2:select', '#AltItemCode1,#AltItemName1', function (e) {
-			 var cntId = e.target.id;
+		 // $(document).on('select2:select', '#AltItemCode1,#AltItemName1', function (e) {
+			//  var cntId = e.target.id;
 
-			 if (cntId == 'AltItemCode1') {
-				 AltItemName1Change(cntId);
-			 }
-			 else {
-				 AltItemCode1Change(cntId);
-			 }
+			//  if (cntId == 'AltItemCode1') {
+			// 	 AltItemName1Change(cntId);
+			//  }
+			//  else {
+			// 	 AltItemCode1Change(cntId);
+			//  }
 
-		 });
-		 $(document).on('select2:select', '#AltItemCode2,#AltItemName2', function (e) {
-			 var cntId = e.target.id;
+		 // });
+		 // $(document).on('select2:select', '#AltItemCode2,#AltItemName2', function (e) {
+			//  var cntId = e.target.id;
 
-			 if (cntId == 'AltItemCode2') {
-				 AltItemName2Change(cntId);
-			 }
-			 else {
-				 AltItemCode2Change(cntId);
-			 }
+			//  if (cntId == 'AltItemCode2') {
+			// 	 AltItemName2Change(cntId);
+			//  }
+			//  else {
+			// 	 AltItemCode2Change(cntId);
+			//  }
 
-		 });
+		 // });
 		function toggleSection() {
 			const checkbox = document.getElementById("hideUnhideToggle");
 			const section = document.getElementById("B_Measurements");
@@ -832,10 +1684,12 @@
 		 }
 
 		 function FGNameChange(ID) {
-			 SetPartCodeItem(ID);
+			  $.when(SetPartCodeItem(ID)).done(function () { GetBomNo('FinishItemCode') }).done(function () { GetBomName('FinishedItemName') });
 			 GetGridData(ID);
-			 GetBomNo(ID);
-			 GetBomName(ID);
+			 // SetPartCodeItem(ID);
+			 // GetGridData(ID);
+			 // GetBomNo(ID);
+			 // GetBomName(ID);
 		 }
 
 		 function ItemCodeChange(ID) {
@@ -894,6 +1748,24 @@
 				 if (ID == "AltItemName2") {
 					 v == "" ? $('#AltItemCode2').val("") : $('#AltItemCode2').val(v).trigger("change");
 				 }
+				  if (ID == "AltItemCode3") {
+					 v == "" ? $('#AltItemName3').val("") : $('#AltItemName3').val(v).trigger("change");
+				 }
+				 if (ID == "AltItemName3") {
+					 v == "" ? $('#AltItemCode3').val("") : $('#AltItemCode3').val(v).trigger("change");
+				 }
+				  if (ID == "AltItemCode4") {
+					 v == "" ? $('#AltItemName4').val("") : $('#AltItemName4').val(v).trigger("change");
+				 }
+				 if (ID == "AltItemName4") {
+					 v == "" ? $('#AltItemCode4').val("") : $('#AltItemCode4').val(v).trigger("change");
+				 }
+						  if (ID == "AltItemCode5") {
+							 v == "" ? $('#AltItemName5').val("") : $('#AltItemName5').val(v).trigger("change");
+						 }
+						 if (ID == "AltItemName5") {
+							 v == "" ? $('#AltItemCode5').val("") : $('#AltItemCode5').val(v).trigger("change");
+						 }
 			 }
 		 }
 
@@ -903,6 +1775,7 @@
 			 $.ajax({
 				 url: "@Url.Action("GetFormRights", "Bom")",
 				 type: "POST",
+				 data:{formKey:formKey},
 				 success: function (data) {
 					 if (data != null) {
 
@@ -958,9 +1831,32 @@
 				 type: "GET",
 				 data: { "IC": ID, "BMNo": $('#BomNo').val()-1 },
 				 async:false,
-				 success: function (data) {
+				 success: function (res) {
+					  if (!isCopyBom && res.shouldClearGrid) {
 					 $('#divBomGrid').empty();
-					 $('#divBomGrid').append(data);
+					  $('#divBomGrid').append(res.html);
+						  hideshow();
+
+					 }
+							 // NO DATA
+		if (!res.shouldClearGrid) {
+
+			// Copy BOM + no data → do nothing
+			if (isCopyBom) {
+				return;
+			}
+			// Normal mode + no data → clear grid
+			$('#divBomGrid').empty();
+		$('#divBomGrid').append(res.html);
+						hideshow();
+		return;
+		}
+
+		// HAS DATA
+		$('#divBomGrid').empty();
+		$('#divBomGrid').append(res.html);
+					hideshow();
+
 					 //if (data) {
 					 //    $('#Unit').val(data.ic);
 					 //}
@@ -996,12 +1892,31 @@
 			 });
 		 }
 
+		 var AllowChangeFGBomQty=''
+		 function AllowChangeFGBomQtyfun() {
+
+					$.ajax({
+						type: "POST",
+						url: "@Url.Action("AllowChangeFGBomQty")",
+						dataType: "json",
+						async: false,
+						
+						success: function (result, status, error) {
+
+							if (result != null) {
+								var obj = $.parseJSON(result);
+								
+								AllowChangeFGBomQty=obj.Result[0].AllowChangeFGBomQty;
+							}
+						}
+					});
+				}
 		 function GetBomName(ID) {
 			 if ($('#' + ID).prop('selectedIndex') != 0) {
 				 $('#BOMName').val($('#' + ID + ' :selected').text().split(' --->')[0]);
-				 setTimeout(function () {
+				// setTimeout(function () {
 					 BindBomData();
-				 }, 500);
+				// }, 500);
 			 }
 			 else
 				 $('#BOMName').val(''), BindBomData();
@@ -1010,7 +1925,7 @@
 		 function FetchItem(ID) {
 					/*$('#BOMName').val('')*/
 					//$('#BomNo').val(0),
-					$('#BomQty').val(1);
+					$('#BomQty').val(1); 
 			 $.ajax({
 				 url: '@Url.Action("FetchAllItem", "Bom")',
 				 type: "POST",
@@ -1022,7 +1937,7 @@
 							 $('#FinishedItemName').select2();
 							 $('#FinishItemCode').select2();
 							 ID.checked == true ? $('#FG1').prop('checked', true) : $('#FG1').prop('checked', false);
-							 BindBomData();
+							 //BindBomData();
 							 //$('#FinishItemCode').change(function(){
 							 //    SetPartCodeItem(this.id);
 							 //    GetBomNo(this.id);
@@ -1030,6 +1945,8 @@
 							 //});
 							 //$('#FinishedItemName').change(function(){
 							 //    SetPartCodeItem(this.id);
+
+
 							 //    GetBomNo(this.id);
 							 //    GetBomName(this.id);
 							 //});
@@ -1051,10 +1968,10 @@
 						 }
 						 if (ID.id == "FG3") {
 							 $('#DivFG3').html(response);
-							 $('#AltItemCode1').select2();
-							 $('#AltItemName1').select2();
-							 $('#AltItemCode2').select2();
-							 $('#AltItemName2').select2();
+							 // $('#AltItemCode1').select2();
+							 // $('#AltItemName1').select2();
+							 // $('#AltItemCode2').select2();
+							 // $('#AltItemName2').select2();
 							 ID.checked == true ? $('#FG3').prop('checked', true) : $('#FG3').prop('checked', false);
 							 //$('#AltItemCode1').bind('change',function(){
 							 //    SetPartCodeItem(this.id);
@@ -1077,7 +1994,8 @@
 							 $('#ItemCode').val(Itemcode).trigger('change');
 							 // $('#ItemName').val(Itemname).trigger('change');
 							 $('#ItemName').val(Itemcode).trigger('change');
-
+							 $('#FinishItemCode').prop('disabled', true);
+				             $('#FinishedItemName').prop('disabled', true);
 
 						 }
 					 }
@@ -1091,9 +2009,11 @@
 			 });
 		 }
 
+
+
 				function BomValidation() {
 			 let IsErr = "";
-
+				EditEachItem = false;
 			 $(".valid").each(function () {
 				 $(this).removeClass('is-invalid');
 				 IsErr = 0;
@@ -1115,11 +2035,18 @@
 
 			 // Qty check only when ItemName exists
 			 if ($('#ItemName').val() != "" && $('#ItemName').val() != null) {
-				 if (!$('#Qty').val() || $('#Qty').val() == "0.00" || $('#Qty').val() == "0") {
-					 AddErrorCls('Qty');
-					 $.notify("Qty cannot be 0.", "error");
-					 IsErr = 1;
-				 }
+				 // if (!$('#Qty').val() || $('#Qty').val() == "0.00" || $('#Qty').val() == "0") {
+					//  AddErrorCls('Qty');
+					//  $.notify("Qty cannot be 0.", "error");
+					//  IsErr = 1;
+				 // }
+					 let qty = parseFloat($('#Qty').val());
+
+				if (isNaN(qty) || qty <= 0) {
+					AddErrorCls('Qty');
+					$.notify("Qty must be greater than 0.", "error");
+					IsErr = 1;
+				}
 			 }
 
 			 // Alt Qty1 when AltItemCode1 selected
@@ -1136,6 +2063,33 @@
 				 if (!$('#AltQty2').val() || $('#AltQty2').val() == "0.00" || $('#AltQty2').val() == "0") {
 					 AddErrorCls('AltQty2');
 					 $.notify("Alt Qty2 cannot be 0.", "error");
+					 IsErr = 1;
+				 }
+			 }
+
+			 // Alt Qty3 when AltItemCode3 selected
+			 if ($('#AltItemCode3').val() != "" && $('#AltItemCode3').val() != null) {
+				 if (!$('#AltQty3').val() || $('#AltQty3').val() == "0.00" || $('#AltQty3').val() == "0") {
+					 AddErrorCls('AltQty3');
+					 $.notify("Alt Qty3 cannot be 0.", "error");
+					 IsErr = 1;
+				 }
+			 }
+
+					 // Alt Qty4 when AltItemCode4 selected
+					 if ($('#AltItemCode4').val() != "" && $('#AltItemCode4').val() != null) {
+						 if (!$('#AltQty4').val() || $('#AltQty4').val() == "0.00" || $('#AltQty4').val() == "0") {
+							 AddErrorCls('AltQty4');
+							 $.notify("Alt Qty4 cannot be 0.", "error");
+							 IsErr = 1;
+						 }
+					 }
+
+					 // Alt Qty5 when AltItemCode5 selected
+			 if ($('#AltItemCode5').val() != "" && $('#AltItemCode5').val() != null) {
+				 if (!$('#AltQty5').val() || $('#AltQty5').val() == "0.00" || $('#AltQty5').val() == "0") {
+					 AddErrorCls('AltQty5');
+					 $.notify("Alt Qty5 cannot be 0.", "error");
 					 IsErr = 1;
 				 }
 			 }
@@ -1166,12 +2120,13 @@
 				 $.notify("Effective Date is required.", "error");
 				 IsErr = 1;
 			 }
-
+				
 			 // RM Item Code
 			 if (!$('#ItemCode').val()) {
 				 AddErrorCls('ItemCode');
 				 $.notify("RM Part Code is required.", "error");
 				 IsErr = 1;
+				 return false;
 			 }
 
 			 // RM Item Name
@@ -1179,21 +2134,92 @@
 				 AddErrorCls('ItemName');
 				 $.notify("RM Item Name is required.", "error");
 				 IsErr = 1;
+				return false;
 			 }
 
 			 // Qty check again for RM
-			 if (!$('#Qty').val() || $('#Qty').val() == "0.00" || $('#Qty').val() == "0") {
-				 AddErrorCls('Qty');
-				 $.notify("Qty cannot be 0.", "error");
-				 IsErr = 1;
-			 }
+			 // if (!$('#Qty').val() || $('#Qty').val() == "0.00" || $('#Qty').val() == "0") {
+				//  AddErrorCls('Qty');
+				//  $.notify("Qty cannot be 0.", "error");
+				//  IsErr = 1;
+			 // }
 
 			 // Unit
 			 if (!$('#Unit').val()) {
 				 AddErrorCls('Unit');
 				 $.notify("Unit is required.", "error");
 				 IsErr = 1;
+				return false;
 			 }
+			var qty = parseFloat($('#Qty').val());
+			var burn = parseFloat($('#BurnQty').val());
+			var scrap = parseFloat($('#Scrap').val());
+			var gross = parseFloat($('#GrossWt').val());
+			var net = parseFloat($('#NetWt').val());
+
+			// Burn Qty validations
+			if (!isNaN(burn) && burn != 0 && $('#BurnQty').val() != '') {
+
+				if (!isNaN(qty) && burn >= qty) {
+					AddErrorCls('BurnQty');
+					$.notify("Burn Qty should be less than RM Req  Qty.", "error");
+					IsErr = 1;
+				}
+
+				// if (!isNaN(gross) && burn >= gross) {
+				// 	AddErrorCls('BurnQty');
+				// 	$.notify("Burn Qty should be less than Gross Weight.", "error");
+				// 	IsErr = 1;
+				// }
+
+				// if (!isNaN(net) && burn >= net) {
+				// 	AddErrorCls('BurnQty');
+				// 	$.notify("Burn Qty should be less than Net Weight.", "error");
+				// 	IsErr = 1;
+				// }
+			}
+
+			// Scrap validations
+			if (!isNaN(scrap) && scrap != 0 && $('#Scrap').val() != '') {
+
+				if (!isNaN(qty) && scrap >= qty) {
+					AddErrorCls('Scrap');
+					$.notify("Scrap should be less than RM Req Qty.", "error");
+					IsErr = 1;
+				}
+
+				if (!isNaN(gross) && scrap >= gross) {
+					AddErrorCls('Scrap');
+					$.notify("Scrap should be less than Gross Weight.", "error");
+					IsErr = 1;
+				}
+
+				// if (!isNaN(net) && scrap >= net) {
+				// 	AddErrorCls('Scrap');
+				// 	$.notify("Scrap should be less than Net Weight.", "error");
+				// 	IsErr = 1;
+				// }
+			}
+
+
+				var netVal = $('#NetWt').val();
+		var grossVal = $('#GrossWt').val();
+
+		var net = parseFloat(netVal);
+		var gross = parseFloat(grossVal);
+
+		// check only if any value is > 0
+		if ((net > 0 && gross > 0)) {
+
+			if (isNaN(net) || isNaN(gross)) {
+				$.notify("Net weight and Gross weight must be numeric", "error");
+				IsErr = 1;
+			}
+			else if (gross <= net) {
+				$.notify("Gross weight must be greater than Net weight", "error");
+				IsErr = 1;
+			}
+		}
 
 			 console.log('IsErr : ' + IsErr);
 
@@ -1222,12 +2248,31 @@
 					 $.notify('FG Part Code and Alt Part Code2 cannot be same.', "info");
 					 IsErr = 1;
 				 }
+						  else if ($('#FinishItemCode').val() === $('#AltItemCode3').val()) {
+							 AddErrorCls('FinishItemCode');
+							 AddErrorCls('AltItemCode3');
+							 $.notify('FG Part Code and Alt Part Code3 cannot be same.', "info");
+							 IsErr = 1;
+						 }
+						  else if ($('#FinishItemCode').val() === $('#AltItemCode4').val()) {
+					 AddErrorCls('FinishItemCode');
+					 AddErrorCls('AltItemCode4');
+					 $.notify('FG Part Code and Alt Part Code4 cannot be same.', "info");
+					 IsErr = 1;
+				 }
+						  else if ($('#FinishItemCode').val() === $('#AltItemCode5').val()) {
+							 AddErrorCls('FinishItemCode');
+							 AddErrorCls('AltItemCode5');
+							 $.notify('FG Part Code and Alt Part Code5 cannot be same.', "info");
+							 IsErr = 1;
+						 }
 				 else {
 					 if ($('#ItemCode').val()) {
-						 if ($('#ItemCode').val() === $('#AltItemCode1').val()) {
+								 if ($('#ItemCode').val() === $('#AltItemCode1').val()  || $('#ItemCode').val() === $('#AltItemCode3').val()
+										 || $('#ItemCode').val() === $('#AltItemCode4').val() || $('#ItemCode').val() === $('#AltItemCode5').val()) {
 							 AddErrorCls('ItemCode');
-							 AddErrorCls('AltItemCode1');
-							 $.notify('Part Code and Alt Part Code1 cannot be same.', "info");
+							 // AddErrorCls('AltItemCode1');
+							 $.notify('Part Code and Alt Part Codes cannot be same.', "info");
 							 IsErr = 1;
 						 }
 						 else if ($('#ItemCode').val() === $('#AltItemCode2').val()) {
@@ -1236,57 +2281,124 @@
 							 $.notify('Part Code and Alt Part Code2 cannot be same.', "info");
 							 IsErr = 1;
 						 }
-						 else if ($('#AltItemCode1').val() && $('#AltItemCode1').val() === $('#AltItemCode2').val()) {
-							 AddErrorCls('AltItemCode1');
-							 AddErrorCls('AltItemCode2');
-							 $.notify('Alt Part Code1 and Alt Part Code2 cannot be same.', "info");
-							 IsErr = 1;
+						 else {
+							 var altFields = [
+    '#AltItemCode1',
+    '#AltItemCode2',
+    '#AltItemCode3',
+    '#AltItemCode4',
+    '#AltItemCode5'
+];
+
+for (var i = 0; i < altFields.length; i++) {
+    var val1 = $(altFields[i]).val().trim();
+
+    if (val1 === '') continue;
+
+    for (var j = i + 1; j < altFields.length; j++) {
+        var val2 = $(altFields[j]).val().trim();
+
+        if (val2 === '') continue;
+
+        if (val1 === val2) {
+            AddErrorCls(altFields[i].substring(1));
+            AddErrorCls(altFields[j].substring(1));
+
+            $.notify(
+                'Alternate Part Codes must all be different.',
+                'info'
+            );
+
+            IsErr = 1;
+            return;
+        }
+    }
+}
 						 }
 					 }
 				 }
 			 }
-
+	
 			 if (IsErr == 0) {
 				 BindBom();
 			 }
 		 }
 				 function BindBom() {
-
+					 
 			 var BomData = {
-				 "ItemCode": $('#ItemCode').val(),
+				"SeqNo": parseInt($('#SeqNo').val()) || 0,
+				"ItemCode": parseInt($('#ItemCode').val()) || 0,
 				 "Mode": $('#Mode').val(),
 				 "ICName": $('#ItemCode option:selected').text(),
 				 "ItemName": $('#ItemName option:selected').text(),
-				 "Qty": $('#Qty').val(),
+				"TotalRmQtyForTotBomQty": parseFloat($('#TotalRmQtyForTotBomQty').val()) || 0,
+
+				"Qty": parseFloat($('#Qty').val().replace(/,/g, '')) || 0,
 				 "Unit": $('#Unit').val(),
-				 "Location": $('#Location').val(),
+				 "Rate": $('#Rate').val(),
+						"Amount": $('#Amount').val(),
+
+				
+						 "Location": $('#Location').val(),
 				 "MPNNo": $('#MPNNo').val(),
-				 "AltItemCode1": $('#AltItemCode1').val(),
+				"AltItemCode1": parseInt($('#AltItemCode1').val()) || 0,
 				 "AICName1": $('#AltItemCode1 option:selected').text(),
+				"AltPartCode1": $('#AltItemCode1 option:selected').text(),
+						 
 				 "AltItemName1": $('#AltItemName1 option:selected').text(),
-				 "AltQty1": $('#AltQty1').val(),
+				"AltQty1": parseFloat($('#AltQty1').val()) || 0,
+
+
+				"AltItemCode3": parseInt($('#AltItemCode3').val()) || 0,
+				 "AICName3": $('#AltItemCode3 option:selected').text(),
+				"AltPartCode3": $('#AltItemCode3 option:selected').text(),
+						 
+				 "AltItemName3": $('#AltItemName3 option:selected').text(),
+				"AltQty3": parseFloat($('#AltQty3').val()) || 0,
+
+
+				"AltItemCode4": parseInt($('#AltItemCode4').val()) || 0,
+				 "AICName4": $('#AltItemCode4 option:selected').text(),
+				"AltPartCode4": $('#AltItemCode4 option:selected').text(),
+						 
+				 "AltItemName4": $('#AltItemName4 option:selected').text(),
+				"AltQty4": parseFloat($('#AltQty4').val()) || 0,
+
+
+
+				"AltItemCode5": parseInt($('#AltItemCode5').val()) || 0,
+				 "AICName5": $('#AltItemCode5 option:selected').text(),
+				"AltPartCode5": $('#AltItemCode5 option:selected').text(),
+						 
+				 "AltItemName5": $('#AltItemName5 option:selected').text(),
+				"AltQty5": parseFloat($('#AltQty5').val()) || 0,
+
+
+
 				 "UsedStageId": $('#UsedStageId').val(),
 
-				 "ByprodItemCode1": $('#ByprodItemCode1').val(),
+				"ByprodItemCode1": parseInt($('#ByprodItemCode1').val()) || 0,
 				 "ByprodItemName1": $('#ByprodItemCode1 option:selected').text(),
 
-				 "ByprodItemCode2": $('#ByprodItemCode2').val(),
+				"ByprodItemCode2": parseInt($('#ByprodItemCode2').val()) || 0,
 				 "ByprodItemName2": $('#ByprodItemCode2 option:selected').text(),
 
 
 
-				 "ByProdQty1": $('#ByProdQty1').val(),
-				 "ByProdQty2": $('#ByProdQty2').val(),
+				"ByProdQty1": parseFloat($('#ByProdQty1').val()) || 0,
+				"ByProdQty2": parseFloat($('#ByProdQty2').val()) || 0,
 				 "Dia": $('#Dia').val(),
 				 "grade": $('#grade').val(),
-				 "thickness": $('#thickness').val(),
-				 "width": $('#width').val(),
-				 "length": $('#length').val(),
+				"thickness": parseFloat($('#thickness').val()) || 0,
+				"width": parseFloat($('#width').val()) || 0,
+				"length": parseFloat($('#length').val()) || 0,
 
-				 "AltItemCode2": $('#AltItemCode2 option:selected').val(),
+				"AltItemCode2": parseInt($('#AltItemCode2').val()) || 0,
+				 //"AltItemCode2": $('#AltItemCode2 option:selected').val(),
 				 "AICName2": $('#AltItemCode2 option:selected').text(),
+						 "AltPartCode2": $('#AltItemCode2 option:selected').text(),
 				 "AltItemName2": $('#AltItemName2 option:selected').text(),
-				 "AltQty2": $('#AltQty2').val(),
+				"AltQty2": parseFloat($('#AltQty2').val()) || 0,
 				 "IssueToJOBwork": $('#IssueToJOBwork').val(),
 
 				 "DirectProcess": $('#DirectProcess').val(),
@@ -1294,21 +2406,27 @@
 				 "PkgItem": $('#PkgItem').val(),
 				 "Remark": $('#Remark').val(),
 
-				 "RunnerItemCode": $('#RunnerItemCode').val(),
-				 "RunnerQty": $('#RunnerQty').val(),
-				 "GrossWt": $('#GrossWt').val(),
-				 "NetWt": $('#NetWt').val(),
+				"RunnerItemCode": parseInt($('#RunnerItemCode').val()) || 0,
+				"RunnerPartCode":$('#RunnerItemCode option:selected').text(),
+				"RunnerQty": parseFloat($('#RunnerQty').val()) || 0,
+				"GrossWt": parseFloat($('#GrossWt').val()) || 0,
+				"NetWt": parseFloat($('#NetWt').val()) || 0,
 
-				 "Scrap": $('#Scrap').val(),
-				 "BurnQty": $('#BurnQty').val(),
+				"Scrap": parseFloat($('#Scrap').val()) || 0,
+				"BurnQty": parseFloat($('#BurnQty').val()) || 0,
 				 "CustJwAdjustmentMandatory":$('#CustJwAdjustmentMandatory').val()
+				
 			 }
 			 console.log("BomDataGrid", BomData);
 			 $.ajax({
 				 url: '@Url.Action("BomGrid", "Bom")',
 				 type: "POST",
 				 data: { model: BomData },
+					beforeSend: function () {
+						$('#ajaxLoader').show(); // ✅ Show loader
+					},
 				 success: function (data, status, xhr) {
+					  $('#ajaxLoader').hide();
 					 if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
 						 $.notify('Duplicate Item Not Allowed.', "info");
 					 }
@@ -1317,7 +2435,9 @@
 							 $('#divBomGrid ."' + DelSeqNo + "'").remove();
 						 }
 						 $('#divBomGrid').html(data);
+								 CalculateMasterBatchTotal();
 						 $.notify('Bom Detail Added To Grid.', "success");
+						 hideshow();
 						 ClearData();
 					 }
 
@@ -1338,12 +2458,20 @@
 			 $('#B_Measurements').toggleClass(' show');
 			 $('#AltItemCode1').val('').trigger('change');
 			 $('#AltItemCode2').val('').trigger('change');
+			 $('#AltItemCode3').val('').trigger('change');
+			 $('#AltItemCode4').val('').trigger('change');
+			 $('#AltItemCode5').val('').trigger('change');
 			 $('#AltItemName1').val('').trigger('change');
 			 $('#AltItemName2').val('').trigger('change');
+			 $('#AltItemName3').val('').trigger('change');
+			 $('#AltItemName4').val('').trigger('change');
+			 $('#AltItemName5').val('').trigger('change');
+			 $('#RunnerItemCode').val('').trigger('change');
 			 $('#ItemCode').val('').trigger('change');
 			 $('#ItemName').val('').trigger('change');
 			 $('#Qty').val('');
 			 $('#Unit').val('');
+			$('#TotalRmQtyForTotBomQty').val('');
 		 }
 
 		 function DeleteBomRow(SeqNo) {
@@ -1353,6 +2481,8 @@
 				 data: { "SeqNo": SeqNo },
 				 success: function (data) {
 					 $('#divBomGrid').html(data);
+							  CalculateMasterBatchTotal();
+					 hideshow();
 				 },
 				 error: function (response) {
 					 alert(response.responseText);
@@ -1371,6 +2501,7 @@
 			 if ($(this).val() < 0) {
 				 $(this).val('');
 			 }
+			// $("#GrossWt").val($("#Qty").val());
 		 });
 
 		 $('#AltQty1').on('input', function () {
@@ -1382,7 +2513,7 @@
 				 $(this).val('');
 			 }
 		 });
-		 $('#AltQty2').on('input', function () {
+		 $('#AltQty2,#AltQty3,#AltQty4,#AltQty5').on('input', function () {
 			 // Remove non-numeric characters except for decimal point
 			 $(this).val($(this).val().replace(/[^0-9.]/g, ''));
 
@@ -1446,15 +2577,23 @@
 				 $(this).val('');
 			 }
 		 });
-
+				 function setSelect2Value(selector, value, text) {
+			var opt = new Option(text, value, true, true);
+			$(selector).empty().append(opt).trigger('change');
+		}
 		 var DelSeqNo = 0;
-
+		   var EditEachItem = false;
 		 function EditBomSeq(SeqNo) {
-
+			 debugger
+			 if (EditEachItem) {
+							$.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+								// $('#editButton-' + RowCount).prop("disabled", true);
+						}
+						else {
 			 var BomNo = $('#BomNo').val();
 			 var ItemCode = $('#FinishItemCode').val();
 
-			 $("#B_Measurements").hide();
+			 // $("#B_Measurements").hide();
 
 			 $.ajax({
 				 url: '@Url.Action("EditBomSeq", "Bom")',
@@ -1464,30 +2603,68 @@
 
 					 var obj = $.parseJSON(data);
 					 if (obj != null && obj.length == 1) {
+							  EditEachItem = true;
+						 console.log("obj of editseq", obj);
 						 //$('#FinishItemCode').val(obj[0].FinishItemCode);
 						 //$('#FinishItemName').val(obj[0].FinishItemCode);
 						 //$('#BomQty').val(obj[0].BomQty);
+						 //DeleteBomRow(SeqNo);
+						  $('#SeqNo').val(SeqNo);
 
-						 $('#ItemCode').val(obj[0].ItemCode).change();
+						// $('#ItemCode').val(obj[0].ItemCode).change();
 						 // $('#ItemCode').val(obj[0].ItemCode);
 						 // $('#FinishItemCode').val(obj[0].FinishItemCode);
-						 $('#ByprodItemCode1').val(obj[0].ByprodItemCode1).change();
-						 $('#ByprodItemCode2').val(obj[0].ByprodItemCode2).change();
+						 // $('#ByprodItemCode1').val(obj[0].ByprodItemCode1).change();
+						 // $('#ByprodItemCode2').val(obj[0].ByprodItemCode2).change();
+
+
+														 setSelect2Value('#ByprodItemCode1', obj[0].ByprodItemCode1, obj[0].ByprodItemName1);
+								setSelect2Value('#ByprodItemCode2', obj[0].ByprodItemCode2, obj[0].ByprodItemName2);
+
+
 
 						 if (obj[0].AltItemCode1 != 0) {
-							 $('#AltItemCode1').val(obj[0].AltItemCode1).trigger('change');
-							 $('#AltItemName1').val(obj[0].AltItemCode1).trigger('change');
+							 // $('#AltItemCode1').val(obj[0].AltItemCode1).trigger('change');
+							 // $('#AltItemName1').val(obj[0].AltItemCode1).trigger('change');
+
+
+															  setSelect2Value('#AltItemCode1', obj[0].AltItemCode1, obj[0].AICName1);
+												setSelect2Value('#AltItemName1', obj[0].AltItemCode1, obj[0].AltItemName1);
+
 						 }
 						 if (obj[0].AltItemCode2 != 0) {
-							 $('#AltItemCode2').val(obj[0].AltItemCode2).trigger('change');
-							 $('#AltItemName2').val(obj[0].AltItemCode2).trigger('change');
+							 // $('#AltItemCode2').val(obj[0].AltItemCode2).trigger('change');
+							 // $('#AltItemName2').val(obj[0].AltItemCode2).trigger('change');
+
+													 setSelect2Value('#AltItemCode2', obj[0].AltItemCode2, obj[0].AICName2);
+																setSelect2Value('#AltItemName2', obj[0].AltItemCode2, obj[0].AltItemName2);
+
+
+																		 setSelect2Value('#AltItemCode3', obj[0].AltItemCode3, obj[0].AICName3);
+																		setSelect2Value('#AltItemName3', obj[0].AltItemCode3, obj[0].AltItemName3);
+
+																				 setSelect2Value('#AltItemCode4', obj[0].AltItemCode4, obj[0].AICName4);
+																		setSelect2Value('#AltItemName4', obj[0].AltItemCode4, obj[0].AltItemName4);
+
+																				 setSelect2Value('#AltItemCode5', obj[0].AltItemCode5, obj[0].AICName5);
+																		setSelect2Value('#AltItemName5', obj[0].AltItemCode5, obj[0].AltItemName5);
 						 }
 
-						 $('#ItemName').val(obj[0].ItemCode).trigger('change');
+						// $('#ItemName').val(obj[0].ItemCode).trigger('change');
+								 setSelect2Value('#ItemCode', obj[0].ItemCode, obj[0].ICName);
+		setSelect2Value('#ItemName', obj[0].ItemCode, obj[0].ItemName);
 						 // $('#ByprodItemName1').val(obj[0].ByprodItemCode1).trigger('change');
 						 // $('#ByprodItemName2').val(obj[0].ByprodItemCode2).trigger('change');
-						 $('#Byprodpartcode1').val(obj[0].ByprodItemCode1).trigger('change');
-						 $('#Byprodpartcode2').val(obj[0].ByprodItemCode2).trigger('change');
+						 // $('#Byprodpartcode1').val(obj[0].ByprodItemCode1).trigger('change');
+						 // $('#Byprodpartcode2').val(obj[0].ByprodItemCode2).trigger('change');
+
+														 setSelect2Value('#Byprodpartcode1', obj[0].ByprodItemCode2, obj[0].Byprodpartcode2);
+																				setSelect2Value('#Byprodpartcode2', obj[0].ByprodItemCode2, obj[0].Byprodpartcode2);
+
+
+
+
+																				setSelect2Value('#RunnerItemCode', obj[0].RunnerItemCode, obj[0].RunnerPartCode);
 
 
 
@@ -1495,12 +2672,16 @@
 						 $('#ByProdQty2').val(obj[0].ByProdQty2);
 						 $('#Dia').val(obj[0].Dia);
 						 $('#grade').val(obj[0].grade);
+						  $('#Location').val(obj[0].Location);
 						 $('#thickness').val(obj[0].thickness);
 						 $('#width').val(obj[0].width);
 						 $('#length').val(obj[0].length);
 
 						 $('#AltQty1').val(obj[0].AltQty1);
 						 $('#AltQty2').val(obj[0].AltQty2);
+						 $('#AltQty3').val(obj[0].AltQty3);
+						 $('#AltQty4').val(obj[0].AltQty4);
+						 $('#AltQty5').val(obj[0].AltQty5);
 						 $/*('#BOMName').val(obj[0].BOMName);*/
 						 $('#DirectProcess').val(obj[0].DirectProcess);
 						 $('#BurnQty').val(obj[0].BurnQty);
@@ -1511,22 +2692,29 @@
 						 $('#NetWt').val(obj[0].NetWt);
 						 $('#PkgItem').val(obj[0].PkgItem);
 						 $('#Qty').val(obj[0].Qty);
+						 $('#Rate').val(obj[0].Rate);
 						 $('#RecFrmCustJobwork').val(obj[0].RecFrmCustJobwork);
-						 $('#Remark').val(obj[0].Remark);
-						 $('#RunnerItemCode').val(obj[0].RunnerItemCode);
+							$('#Remark').val(obj[0].Remark);
+							$('#CustJwAdjustmentMandatory').val(obj[0].CustJwAdjustmentMandatory);
+						 // $('#RunnerItemCode').val(obj[0].RunnerItemCode).trigger('change');
 						 $('#RunnerQty').val(obj[0].RunnerQty);
 						 $('#Scrap').val(obj[0].Scrap);
 						 $('#Unit').val(obj[0].Unit);
+							$('#TotalRmQtyForTotBomQty').val(obj[0].TotalRmQtyForTotBomQty);
 						 $('#Location').val(obj[0].Location);
-						 $('#MPNNo').val(obj[0].MPNNo);
+							$('#MPNNo').val(obj[0].MPNNo);
 						 $('#UsedStageId').val(obj[0].UsedStageId);
 						 $('#Mode').val();
 						 DelSeqNo = SeqNo;
 						 $('#divBomGrid .' + DelSeqNo).remove();
+
+						 toggleSection();
 						 //if($('#divBomGrid')[0].childElementCount==0)
 						 if ($('#divBomGrid').children().length == 0) {
 							 var NoData = '<tr class="text-center"><td colspan="23" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
 							 $('#divBomGrid').html(NoData);
+
+							 
 						 }
 					 }
 				 },
@@ -1538,6 +2726,7 @@
 				 }
 			 });
 		 }
+		 }
 
 		 function BindBomData() {
 			 if ($('#CopyBom').is(':checked') != true) {
@@ -1548,9 +2737,13 @@
 					 url: '@Url.Action("BindBomData", "Bom")',
 					 type: "POST",
 					 data: { "FIC": FIC, "BMNo": BMNo },
+					//   beforeSend: function () {
+					// 	$('#ajaxLoader').show(); // ✅ Show loader
+					// },
 					 success: function (data) {
-						 //$('#DivBomForm').empty().html(data);
-						 $('#Mode').val('');
+						//  $('#ajaxLoader').hide();
+						// $('#DivBomForm').empty().html(data);
+						// $('#Mode').val('');
 						 //var pp = '<button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT </button>';
 						 //$('.col-auto')[4].innerHTML = pp;
 					 },
@@ -1565,28 +2758,37 @@
 			 else {
 				 $('#Mode').val('');
 				 // var pp = '<button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT </button>';
-				 $('.col-auto')[4].innerHTML = pp;
+				// $('.col-auto')[4].innerHTML = pp;
 			 }
 		 }
-
+		 var isCopyBom = false;
 		 function CopyBomFunc(ID) {
 			 if (ID.checked == true) {
+				 isCopyBom = true;
 				 $('#FinishItemCode').removeAttr('disabled');
 				 $('#FinishedItemName').removeAttr('disabled');
 				 $('#FG1').removeAttr('disabled');
 				 $('#Mode').val('');
-				 var pp = '<button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT </button>';
-				 $('.col-auto')[4].innerHTML = pp;
+				 $(".UpdateButton").hide();
+		        $(".submitBTN").show();
+
+				 $("#FinishedItemName").val("").trigger("change");
+				 $('#FinishItemCode').val("").trigger("change");
+				 $("#BOMName").val('');
+				 // var pp = '<button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT </button>';
+				 // $('.col-auto')[4].innerHTML = pp;
 				 $.datepicker.formatDate('dd/mm/yy', new Date());
 
 				 $("#EntryDate").datepicker({ dateFormat: "dd/mm/yy" }).datepicker("setDate", new Date());
 				 //$('#EntryDate').val($.datepicker.formatDate('dd/mm/yy', new Date()));
-				 $('#EffectiveDate').val($.datepicker.formatDate('mm/dd/yy', new Date()));
+				 $('#EffectiveDate').val($.datepicker.formatDate('dd/mm/yy', new Date()));
 			 }
 			 else {
 				 $('#FinishItemCode').prop('disabled', true);
 				 $('#FinishedItemName').prop('disabled', true);
 				 $('#FG1').prop('disabled', true);
+				 $(".UpdateButton").show();
+				$(".submitBTN").hide();
 			 }
 		 }
 
@@ -1616,5 +2818,317 @@
 			 window.history.back();
 		 }
 
+				 $('form').off('submit').on('submit', function (e) {
+
+
+			let fgPartCode = $('#FinishItemCode').val();
+			if (!fgPartCode || fgPartCode === "0") {
+				e.preventDefault();
+				$.notify("Please select FG Part Code",
+					{ position: "top center", className: "error" });
+				// $('#FinishItemCode').focus();
+				return false;
+			}
+			let mainItemName = $('#FinishedItemName').val();
+			if (!mainItemName || mainItemName === "0") {
+				e.preventDefault();
+				$.notify("Please select FG Item Name Name",
+					{ position: "top center", className: "error" });
+				// $('#FinishedItemName').focus();
+				return false;
+			}
+			let gridRowCount = $('#divBomGrid  tr.bom-row').length;
+
+			if (gridRowCount === 0) {
+				e.preventDefault();
+				$.notify("Please add at least one Item to the grid",
+					{ position: "top center", className: "error" });
+				return false;
+			}
+									
+			var industry = $("#IndustryTypeHidden").val();
+
+					
+			var industry = $("#IndustryTypeHidden").val();
+
+		if (industry &&
+			industry.trim().toLowerCase() === "masterbatch") {
+
+			let totalRMReqQty = 0;
+
+			$("#divBomGrid tr").each(function () {
+
+				totalRMReqQty += parseFloat(
+					$(this).find(".tdReqBomQty").text()
+				) || 0;
+
+			});
+
+			let bomQty = parseFloat($("#BomQty").val()) || 0;
+
+			console.log("TotalRMReqQty =", totalRMReqQty);
+			console.log("BomQty =", bomQty);
+
+			// prevent decimal mismatch
+			if (totalRMReqQty.toFixed(4) != bomQty.toFixed(4)) {
+
+				$.notify(
+					"BOM Qty should be equal to total RM Req Qty",
+					"error"
+				);
+
+				return false;
+			}
+		}
+			return true;
+		});
+		$(document).on("input", "input[name='TotalRmQtyForTotBomQty']", function () {
+
+			var reqQty = parseFloat($(this).val());
+
+			if (!isNaN(reqQty) && reqQty > 0) {
+				$("input[name='Qty']").prop("readonly", true);
+			}
+			else {
+				$("input[name='Qty']").prop("readonly", false);
+			}
+
+		});
+		function calculateRMQty() {
+
+			var reqQty = parseFloat($("#TotalRmQtyForTotBomQty").val());
+			var bomQty = parseFloat($("#BomQty").val());
+
+			if (!isNaN(reqQty) && reqQty > 0 && !isNaN(bomQty) && bomQty > 0) {
+
+				var rmQty = reqQty / bomQty;
+
+				$("#Qty")
+					.val(rmQty.toFixed(6))   // decimal control
+					.prop("readonly", true);
+
+			}
+			else {
+
+				$("#Qty")
+					.val('')
+					.prop("readonly", false);
+			}
+		}
+		$(document).on("input", "#TotalRmQtyForTotBomQty, #BomQty", function () {
+			calculateRMQty();
+		});
+		//for rmreqty same as gross weight when featureoption Y
+				$('#GrossWt').on('input', function () {
+
+			var flag = $('#AutoFillRMQtyFlag').val();
+
+			if (flag === "Y") {
+				var gross = parseFloat($(this).val()) || 0;
+				$('#Qty').val(gross.toFixed(6));
+			}
+		});
+		//on change gross
+				function updateRMQty() {
+
+			var flag = $('#AutoFillRMQtyFlag').val();
+
+			if (flag === "Y") {
+				var gross = parseFloat($('#GrossWt').val()) || 0;
+				$('#Qty').val(gross.toFixed(6));
+			}
+		}
+				$('#GrossWt').on('input change blur', function () {
+			updateRMQty();
+		});
+		
+
+		//when change rmreqqty then change gross weight
+				//for rmreqty same as gross weight when featureoption Y
+				$('#Qty').on('input', function () {
+
+			var flag = $('#AutoFillRMQtyFlag').val();
+
+			if (flag === "Y") {
+				var gross = parseFloat($(this).val()) || 0;
+				$('#GrossWt').val(gross.toFixed(6));
+			}
+		});
+		//on change gross
+				function updateGross() {
+
+			var flag = $('#AutoFillRMQtyFlag').val();
+
+			if (flag === "Y") {
+				var Qty = parseFloat($('#Qty').val()) || 0;
+				$('#GrossWt').val(Qty.toFixed(6));
+			}
+		}
+				$('#Qty').on('input change blur', function () {
+			updateGross();
+		});
+		
+		// function mastershowhide() {
+
+		// 	$.ajax({
+		// 		type: "POST",
+		// 		url: "@Url.Action("GetIndustryType", "Bom")",
+		// 		success: function (response) {
+		// 			debugger
+		// 			var obj = $.parseJSON(response);
+
+		// 			if (obj.StatusCode === 200 || obj.StatusText === "Success") {
+
+		// 				var industry = obj.Result.Table[0].IndustryType;
+
+		// 				if (industry === "MasterBatch") {
+		// 					$("#masterbatchshowhide").css("display", "flex");
+		// 					$("#totalreq").css("display", "block");
+		// 					$("#BomQty").removeAttr("readonly");
+
+		// 					// if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+		// 					// 	$("#BomQty").val('');
+		// 					// }
+		// 				}
+		// 				else {
+		// 					$("#masterbatchshowhide").css("display", "none");
+		// 					$("#totalreq").css("display", "none");
+		// 					// $("#BomQty")
+		// 					// 	.attr("readonly", "readonly")
+		// 					// 	.val(1);
+		// 					$("#BomQty")
+		// 						.attr("readonly", "readonly");
+		// 					if ($('#IndustryType').val() !== "MasterBatch") {
+		// 						$('#BomQty').val(1);
+		// 					}
+		// 				}
+		// 			}
+		// 			else {
+		// 				$("#masterbatchshowhide").css("display", "none");
+		// 				$("#totalreq").css("display", "none");
+		// 				$("#bomqty").css("display", "none");
+		// 			}
+		// 		},
+		// 		error: function (req) {
+		// 			console.log(req);
+		// 			$("#masterbatchshowhide").css("display", "none");
+		// 			$("#totalreq").css("display", "none");
+		// 		}
+		// 	});
+
+		// }
+
+				
+		function calculateDeltaE() {
+			const Ldash = parseFloat(document.querySelector('[name="Ldash"]').value) || 0;
+			const Adash = parseFloat(document.querySelector('[name="Adash"]').value) || 0;
+			const Bdash = parseFloat(document.querySelector('[name="Bdash"]').value) || 0;
+
+			const L = parseFloat(document.querySelector('[name="LValue"]').value) || 0;
+			const A = parseFloat(document.querySelector('[name="AValue"]').value) || 0;
+			const B = parseFloat(document.querySelector('[name="BValue"]').value) || 0;
+
+			const Dl = L - Ldash;
+			const Da = A - Adash;
+			const Db = B - Bdash;
+
+			const sumOfSquares = (Dl * Dl) + (Da * Da) + (Db * Db);
+			const deltaE = Math.sqrt(sumOfSquares);
+
+			document.querySelector('[name="DeltaE"]').value = deltaE.toFixed(4);
+		}
+			
+		document.querySelectorAll('[name="Ldash"], [name="Adash"], [name="Bdash"], [name="LValue"], [name="AValue"], [name="BValue"]')
+		.forEach(input => {
+			input.addEventListener('input', calculateDeltaE);
+		});
+				
+		function CalculateMasterBatchTotal() {
+
+			let totalReqQty = 0;
+			let totalAmount = 0;
+
+			// Loop all grid rows
+			$("#divBomGrid tr").each(function () {
+
+				let reqQty = parseFloat(
+					$(this).find(".tdReqBomQty").text()
+				) || 0;
+
+				let rate = parseFloat(
+					$(this).find(".tdRate").text()
+				) || 0;
+
+				totalReqQty += reqQty;
+				totalAmount += (reqQty * rate);
+
+			});
+
+			let materialCost = 0;
+
+			if (totalReqQty > 0) {
+				materialCost = totalAmount / totalReqQty;
+			}
+
+			$("#lblTotalReqAsBomQty").text(
+				totalReqQty.toFixed(4)
+			);
+
+			$("#lblTotalAmount").text(
+				totalAmount.toFixed(4)
+			);
+
+			$("#TotalAmount").val(
+				totalAmount.toFixed(4)
+			);
+
+			$("#lblMaterialCost").text(
+				materialCost.toFixed(4)
+			);
+
+			$("#MaterialCost").val(
+				materialCost.toFixed(4)
+			);
+		}
+				
+		function CalculateAmount() {
+
+			let qty = parseFloat($("#TotalRmQtyForTotBomQty").val()) || 0;
+
+			let rate = parseFloat($("#Rate").val()) || 0;
+
+			let amount = qty * rate;
+
+			$("#Amount").val(
+				amount.toFixed(4)
+			);
+		}
+						
+		function GetItemRate() {
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("GetItemRate", "DevlopmentBOM")",
+				data: { ItemCode: $('#ItemCode').val(), TillDate: $('#EffectiveDate').val(), YearCode: $('#YearCode').val() },
+				dataType: "json",
+				async: false,
+				success: function (result, status, error) {
+
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						if (obj.Result[0] == undefined) {
+							$('#Rate').prop("readonly", false);
+						}
+						else {
+							$('#Rate').val(obj.Result[0].Rate);
+
+							if (parseInt(obj.Result[0].Rate) == 0) {
+								$('#Rate').prop("readonly", false);
+							}
+						}
+
+					}
+				}
+			});
+		}
 	</script>
 }

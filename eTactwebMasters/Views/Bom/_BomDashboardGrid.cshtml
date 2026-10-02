@@ -1,5 +1,10 @@
 ﻿@model eTactWeb.DOM.Models.BomDashboard
+@using eTactWeb.Data.Common
+@inject EncryptDecrypt encryptDecrypt
+@{
+    string formKey = ViewBag.formKey;
 
+}
     <div class="table-responsive" style="max-height:350px;">
         <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="bomTable">
             <thead class="bg-gradient card-headerBG text-light" id="tableHead">
@@ -34,14 +39,15 @@
                                 <td style="text-align:center;white-space: nowrap;">
                                     <div id="container">
                                         <div id="viewCursorDiv-@Cntr">
-                                        <a  class="table-link link-success" asp-action="EditBomDetail" 
-                                        asp-route-FIC="@Model.DTDashboard.Rows[i]["FGPartCode"]" 
-                                        asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]"
-                                        asp-route-Mode="V"
+                                        <a  class="table-link link-success" asp-action="BomForm"
+                                           asp-route-FIC="@encryptDecrypt.Encrypt(Convert.ToString(@Model.DTDashboard.Rows[i]["FGPartCode"]))"
+                                           asp-route-BMNo="@EncryptDecrypt.EncodeID(Convert.ToInt32(@Model.DTDashboard.Rows[i]["BomNo"]))"
+                                        asp-route-Mode=@encryptDecrypt.Encrypt("V")
                                            asp-route-FGPartCode="@Model.DTDashboard.Rows[i]["FGPartCode"]"
                                            asp-route-FGItemName="@Model.DTDashboard.Rows[i]["FGItem"]"
                                            asp-route-RMPartCode="@Model.DTDashboard.Rows[i]["RMPartCode"]"
-                                           asp-route-RMItemName="@Model.DTDashboard.Rows[i]["RMItemName"]">
+                                           asp-route-RMItemName="@Model.DTDashboard.Rows[i]["RMItemName"]"
+                                           asp-route-formKey="@formKey">
                                             <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -49,25 +55,18 @@
                                             </a>
                                         </div>
                                         <div id="editCursorDiv-@Cntr">
-                                        <a class="table-link link-primary" asp-action="EditBomDetail" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGPartCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]" asp-route-Mode="U" asp-route-FGPartCode="@Model.DTDashboard.Rows[i]["FGPartCode"]"
+                                        <a class="table-link link-primary" asp-action="BomForm" asp-route-FIC="@encryptDecrypt.Encrypt(Convert.ToString(@Model.DTDashboard.Rows[i]["FGPartCode"]))"
+                                           asp-route-BMNo="@EncryptDecrypt.EncodeID(Convert.ToInt32(@Model.DTDashboard.Rows[i]["BomNo"]))" asp-route-Mode=@encryptDecrypt.Encrypt("U") asp-route-FGPartCode="@Model.DTDashboard.Rows[i]["FGPartCode"]"
                                            asp-route-FGItemName="@Model.DTDashboard.Rows[i]["FGItem"]"
                                            asp-route-RMPartCode="@Model.DTDashboard.Rows[i]["RMPartCode"]"
-                                           asp-route-RMItemName="@Model.DTDashboard.Rows[i]["RMItemName"]">
+                                           asp-route-RMItemName="@Model.DTDashboard.Rows[i]["RMItemName"]" asp-route-formKey="@formKey" onclick="confirmEdit(event)">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                 </span>
                                             </a> 
                                         </div>
-                                        <div id="deleteCursorDiv-@Cntr">
-                                            <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-controller="Bom" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGItemCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-
-                                        </div>
+                                        
                                     </div>
                                 </td>
                                 <td class="FWB">@Model.DTDashboard.Rows[i]["BomNo"]</td>
@@ -168,14 +167,14 @@
         @if (Model.PageNumber > 1)
         {
             <li class="page-item">
-                <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber - 1)); return false;">Previous</a>
+                <a class="page-link   page-btn" href="#" data-page="@(Model.PageNumber - 1)">Previous</a>
             </li>
         }
 
         @if (Model.PageNumber > 3)
         {
             <li class="page-item">
-                <a class="page-link" href="#" onclick="loadPage(1); return false;">1</a>
+                <a class="page-link  page-btn" href="#" data-page="1">1</a>
             </li>
             <li class="page-item disabled"><a class="page-link">...</a></li>
         }
@@ -183,7 +182,7 @@
         @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
         {
             <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                <a class="page-link" href="#" onclick="loadPage(@i); return false;">@i</a>
+                <a class="page-link  page-btn" href="#" data-page="@i">@i</a>
             </li>
         }
 
@@ -191,14 +190,14 @@
         {
             <li class="page-item disabled"><a class="page-link">...</a></li>
             <li class="page-item">
-                <a class="page-link" href="#" onclick="loadPage(@totalPages); return false;">@totalPages</a>
+                <a class="page-link  page-btn" href="#" data-page="@totalPages">@totalPages</a>
             </li>
         }
 
         @if (Model.PageNumber < totalPages)
         {
             <li class="page-item">
-                <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber + 1)); return false;">Next</a>
+                <a class="page-link  page-btn" href="#" data-page="@(Model.PageNumber + 1)">Next</a>
             </li>
         }
     </ul>
@@ -289,47 +288,47 @@
 
     .pagination {
         display: flex;
-        justify - content: center;
-        align - items: center;
-        list - style: none;
+        justify-content: center;
+        align-items: center;
+        list-style: none;
         padding: 0;
         margin: 20px auto;
         gap: 5px; /* Space between buttons */
-        white - space: nowrap; /* Keeps it in a single line */
+        white-space: nowrap; /* Keeps it in a single line */
     }
 
-    .page - item {
-        display: inline - block;
+    .page-item {
+        display: inline-block;
     }
 
-    .page - link {
+    .page-link {
         display: flex;
-        align - items: center;
-        justify - content: center;
+        align-items: center;
+        justify-content: center;
         width: 40px;
         height: 40px;
-        text - decoration: none;
+        text-decoration: none;
         color: black;
         border: 1px solid #ddd;
-        font - size: 16px;
-        background - color: white;
-        border - radius: 5px;
+        font-size: 16px;
+        background-color: white;
+        border-radius: 5px;
         transition: background 0.3s;
     }
 
-    .page - item.active.page - link {
-        background - color: #4CAF50;
+    .page-item.active.page-link {
+        background-color: #4CAF50;
         color: white;
         border: 1px solid #4CAF50;
     }
 
-    .page - item.disabled.page - link {
-        background - color: #f0f0f0;
+    .page-item.disabled.page-link {
+        background-color: #f0f0f0;
         color: #999;
         cursor: default;
     }
 
-    .page - link: hover: not(.disabled): not(.active) {
-        background - color: #ddd;
+    .page-link:hover:not(.disabled):not(.active) {
+        background-color: #ddd;
     }
     </style>

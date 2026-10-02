@@ -11,7 +11,7 @@ else
 {
     foreach (var item in Model.BomList)
     {
-        <tr class="small @item.SeqNo" style="white-space:nowrap">
+        <tr class="small bom-row @item.SeqNo" style="white-space:nowrap">
             <td style="white-space:nowrap;">
                 <a href="#" class="table-link link-primary" onclick="EditBomSeq(@item.SeqNo);">
                     <span class="fa-stack">
@@ -29,8 +29,11 @@ else
             <td>@item.SeqNo</td>
             <td>@item.ICName</td>
             <td>@item.ItemName</td>
+            <td class="tdReqBomQty">@item.TotalRmQtyForTotBomQty</td>
             <td>@item.Qty.ToString("F6")</td>
             <td>@item.Unit</td>
+            <td class="tdRate">@item.Rate</td>
+            <td>@item.Amount</td>
             <td>@item.Location</td>
             <td>@item.MPNNo</td>
             <td>@item.UsedStageId</td>
@@ -68,6 +71,59 @@ else
                 <td>@item.AltItemName2</td>
             }
             <td>@item.AltQty2</td>
+
+            @if (@item.AICName3 == "-Select-")
+            {
+                <td>NA</td>
+            }
+            else
+            {
+                <td>@item.AICName3</td>
+            }
+            @if (@item.AltItemName3 == "-Select-")
+            {
+                <td>NA</td>
+            }
+            else
+            {
+                <td>@item.AltItemName3</td>
+            }
+            <td>@item.AltQty3</td>
+
+            @if (@item.AICName4 == "-Select-")
+            {
+                <td>NA</td>
+            }
+            else
+            {
+                <td>@item.AICName4</td>
+            }
+            @if (@item.AltItemName4 == "-Select-")
+            {
+                <td>NA</td>
+            }
+            else
+            {
+                <td>@item.AltItemName4</td>
+            }
+            <td>@item.AltQty4</td>
+            @if (@item.AICName5 == "-Select-")
+            {
+                <td>NA</td>
+            }
+            else
+            {
+                <td>@item.AICName5</td>
+            }
+            @if (@item.AltItemName5 == "-Select-")
+            {
+                <td>NA</td>
+            }
+            else
+            {
+                <td>@item.AltItemName5</td>
+            }
+            <td>@item.AltQty5</td>
             <td>@item.IssueToJOBwork</td>
             <td>@item.DirectProcess</td>
             <td>@item.RecFrmCustJobwork</td>
@@ -76,10 +132,12 @@ else
             <td>@item.GrossWt</td>
             <td>@item.NetWt</td>
             <td>@item.Scrap</td>
-            <td>@item.RunnerItemCode</td>
+            <td>@item.RunnerPartCode</td>
+            <td style="display:none;">@item.RunnerItemCode</td>
             <td>@item.RunnerQty</td>
             <td>@item.BurnQty</td>
             <td>@item.CustJwAdjustmentMandatory</td>
+          
             <td>@item.ByprodItemName1<input type="hidden" value="@Model.ByprodItemCode1"/></td>
             <td>@item.ByprodItemName2<input type="hidden" value="@Model.ByprodItemCode2" /></td>
             <td>@item.ByProdQty1</td>

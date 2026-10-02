@@ -11,11 +11,13 @@ public class BomModuleBLL : IBomModule
 {
     private BomModuleDAL _BomModuleDAL;
     private readonly IDataLogic _DataLogicDAL;
+    private readonly ICommon _common;
 
-    public BomModuleBLL(IConfiguration configuration, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
+    public BomModuleBLL(IConfiguration configuration, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService, ICommon common)
     {
-        _BomModuleDAL = new BomModuleDAL(configuration,dataLogicDAL,connectionStringService);
+        _BomModuleDAL = new BomModuleDAL(configuration, dataLogicDAL, connectionStringService, common);
         _DataLogicDAL = dataLogicDAL;
+        _common = common;
     }
 
     public async Task<ResponseResult> DeleteByID(string FIC, int BMNo, string Flag)
@@ -27,10 +29,22 @@ public class BomModuleBLL : IBomModule
     {
         return await _BomModuleDAL.GetFormRights(ID);
     }
-    
-    public async Task<ResponseResult> GetItemCode(string FGPartCode, string RMPartCode)
+    public async Task<ResponseResult> FillItems(string Flag, string SearchPartCode)
     {
-        return await _BomModuleDAL.GetItemCode(FGPartCode,RMPartCode);
+        return await _BomModuleDAL.FillItems(Flag, SearchPartCode);
+    }
+    public async Task<ResponseResult> GetIndustryType()
+    {
+        return await _BomModuleDAL.GetIndustryType();
+    }
+
+    public async Task<ResponseResult> GetItemCode(string FGPartCode, string RMPartCode, string RunnerPartCode, string AltPartCode1, string AltPartCode2, string AltPartCode3, string AltPartCode4, string AltPartCode5)
+    {
+        return await _BomModuleDAL.GetItemCode(FGPartCode, RMPartCode, RunnerPartCode, AltPartCode1, AltPartCode2, AltPartCode3, AltPartCode4, AltPartCode5);
+    }
+    public async Task<ResponseResult> IsBomExists(string FGPartCode, string RMPartCode, int BomNo)
+    {
+        return await _BomModuleDAL.IsBomExists(FGPartCode, RMPartCode, BomNo);
     }
     public async Task<ResponseResult> GetAltItemCode(string AltPartCode)
     {
@@ -84,9 +98,9 @@ public class BomModuleBLL : IBomModule
         return await _BomModuleDAL.SaveMultipleBomData(BomDetailGrid);
     }
 
-    public async Task<BomDashboard> GetSearchData(BomDashboard model)
+    public async Task<ResponseResult> GetSearchData(BomDashboard model, int userID)
     {
-        return await _BomModuleDAL.GetSearchData(model);
+        return await _BomModuleDAL.GetSearchData(model, userID);
     }
     public async Task<BomDashboard> GetDetailSearchData(BomDashboard model)
     {
@@ -109,22 +123,41 @@ public class BomModuleBLL : IBomModule
     public async Task<ResponseResult> GetBomMultiLevelGrid()
     {
         return await _BomModuleDAL.GetBomMultiLevelGrid();
-    }  
-    public async Task<ResponseResult> GetRMPartCodeList(string SearchRMPartcode)
-    {
-        return await _BomModuleDAL.GetRMPartCodeList(SearchRMPartcode);
-    } 
-    public async Task<ResponseResult> GetRMItemNameList(string SearchRMItemName)
-    {
-        return await _BomModuleDAL.GetRMItemNameList(SearchRMItemName);
     }
-    public async Task<ResponseResult> GetFGItemNameList(string SearchFGItemName)
+    public async Task<ResponseResult> GetRMPartCodeList(string SearchRMPartcode, string CTRL)
     {
-        return await _BomModuleDAL.GetFGItemNameList(SearchFGItemName);
-    } 
-    public async Task<ResponseResult> GetFGPartCodeList(string SearchFGPartCode)
+        return await _BomModuleDAL.GetRMPartCodeList(SearchRMPartcode, CTRL);
+    }
+    public async Task<ResponseResult> GetRMItemNameList(string SearchRMItemName, string CTRL)
     {
-        return await _BomModuleDAL.GetFGPartCodeList(SearchFGPartCode);
+        return await _BomModuleDAL.GetRMItemNameList(SearchRMItemName, CTRL);
+    }
+    public async Task<ResponseResult> GetFGItemNameList(string SearchFGItemName, string CTRL)
+    {
+        return await _BomModuleDAL.GetFGItemNameList(SearchFGItemName, CTRL);
+    }
+    public async Task<ResponseResult> GetFGPartCodeList(string SearchFGPartCode, string CTRL)
+    {
+        return await _BomModuleDAL.GetFGPartCodeList(SearchFGPartCode, CTRL);
+    }
+    public async Task<ResponseResult> ChangeBomRMQtySameAsGrossWeight()
+    {
+        return await _BomModuleDAL.ChangeBomRMQtySameAsGrossWeight();
+    }
+    public async Task<ResponseResult> AllowChangeFGBomQty()
+    {
+        return await _BomModuleDAL.AllowChangeFGBomQty();
+    }
+
+    public async Task<BomModel> GetItemData(string FGPartCode, string FGItemName, string RMPartCode, string RMItemName)
+    {
+        return await _BomModuleDAL.GetItemData(FGPartCode, FGItemName, RMPartCode, RMItemName);
+    }
+
+    public async Task<ResponseResult> UpdateMultipleBOMData(DataTable ItemDetailGrid, int oldItemCode,
+        string ApplyType)
+    {
+        return await _BomModuleDAL.UpdateMultipleBOMData(ItemDetailGrid, oldItemCode, ApplyType);
     }
 
 }

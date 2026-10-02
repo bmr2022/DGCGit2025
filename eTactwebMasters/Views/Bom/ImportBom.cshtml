@@ -1,39 +1,18 @@
 ﻿@model eTactWeb.DOM.Models.BomModel
 
 @{
-    ViewData["Title"] = "Form";
+    ViewData["Title"] = "BOM";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
-<style>
-    #fullPageLoader {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.4);
-        display: none;
-        z-index: 99999;
-    }
 
-    .loaderBox {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        padding: 25px 40px;
-        border-radius: 8px;
-        font-size: 18px;
-        font-weight: bold;
-    }
 
-</style>
+
+
 
 <div class="rounded shadow-lg">
-    <form enctype="multipart/form-data" autocomplete="off" class="form-horizontal">
+    <form enctype="multipart/form-data" id="ImportBomForm" autocomplete="off" novalidate class="form-horizontal">
         @Html.AntiForgeryToken()
-        <input type="hidden" asp-for="Mode">
+        <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <div class="card border-light bg-gradient rounded shadow-lg">
             <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
                 <h4>
@@ -43,14 +22,34 @@
                         <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
                         Dashboard
                         </a>*@
-                            <div class="col-auto">
-                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                                <a class="btn btn-secondary btn-sm" onclick="ExportBom();">
-                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
-                                    <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
-                                    IMPORT FORMAT
-                                </a>
+                        <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+
+                   
+                        <div class="col-auto d-flex align-items-center">
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       id="UpdateRevNo"
+                                       style="cursor:pointer; width:2.2em; height:1.1em;">
+
+                                <label class="form-check-label ms-2 fw-semibold"
+                                       for="UpdateRevNo"
+                                       style="cursor:pointer;">
+                                    Update RevNo
+                                </label>
                             </div>
+                        </div>
+                      
+
+
+                        <div class="col-auto">
+                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                            <a class="btn btn-secondary btn-sm" onclick="ExportBom();">
+                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                IMPORT FORMAT
+                            </a>
+                        </div>
                         <div class="col-auto">
                             @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
                             <a class="btn btn-secondary btn-sm" onclick="UploadButton();" style="margin-left:10px !important;">
@@ -81,7 +80,7 @@
 
                                 <div class="col-auto">
                                     @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                    <button class="btn btn-primary btn-sm" id="BtnSubmit" onclick="SubmitData(event);">
+                                    <button type="button" class="btn btn-primary btn-sm" id="BtnSubmit" onclick="SubmitData(event);">
                                         <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
                                         SUBMIT
                                     </button>
@@ -105,37 +104,11 @@
                         <div id="B_BasicParameter" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_BasicParameter">
                             <div class="accordion-body">
                                 <div class="card">
-                                    <div class="card-body overflow-auto pb-0">
-                                        <div class="table-responsive" style="max-height:350px;">
-                                            <table class="table table-hover table-bordered" id="itemtable">
-                                                <thead class="bg-gradient card-headerBG text-light small" id="ItemHead" style="white-space:nowrap">
-                                                    <tr id="headerRow">
-                                                        <th>Action</th>
-                                                        <th>FG Part Code</th>
-                                                        <th>FG Item Name</th>
-                                                        <th>RM Part Code</th>
-                                                        <th>RM Item Name</th>
-                                                        <th>BOM Name</th>
-                                                        <th>RM Qty</th>
-                                                        <th>RM Unit</th>
-                                                        <th>Location</th>
-                                                        <th>MPN Number</th>
-                                                        <th>Alt PartCode 1</th>
-                                                        <th>Alt PartCode 2</th>
-                                                        <th>Alt Qty 1</th>
-                                                        <th>Alt Qty 2</th>
-                                                        <th>Scrap</th>
-                                                        <th>Gross Weight</th>
-                                                        <th>Net Weight</th>
-                                                        <th>Remark</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="divItemList">
-                                                    <partial name="_DisplayExcelData" />
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                    <div id="uploadResult">
+
+                                        <partial name="_DisplayExcelData" />
                                     </div>
+
                                     <center>
                                         <input class="form-control" type="file" id="ExcelFile" />
                                     </center>
@@ -143,6 +116,136 @@
                             </div>
                         </div>
                     </div>
+
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Get BOM Data</strong>
+                            </button>
+
+                        </h2>
+                        <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient show" aria-labelledby="H_SAGrid">
+                            <div class="accordion-body show">
+                                <div class="row">
+                                    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                                        <label asp-for="FGPartCode" class="form-label">FG Part Code</label>
+                                        <input type="text" class="form-control" asp-for="FGPartCode" />
+                                    </div>
+                                    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                                        <label asp-for="FGItemName" class="form-label">FG Item Name</label>
+                                        <input type="text" class="form-control" asp-for="FGItemName" />
+                                    </div>
+                                    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                                        <label class="form-label">RM Part Code</label>
+                                        <input type="text" class="form-control" asp-for="RMPartCode" />
+                                    </div>
+                                    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                                        <label asp-for="RMItemName" class="form-label">RM Item Name</label>
+                                        <input type="text" class="form-control" asp-for="RMItemName" />
+                                        <input type="hidden" class="form-control" id="RMItemCode" />
+
+                                    </div>
+                                    <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12">
+                                        <label for="ddlApplyType">Apply Changes To</label>
+
+                                        <select class="form-control" id="ddlApplyType">
+                                            <option value="">-- Select --</option>
+                                            <option value="updateRMQty">Update RM Quantity</option>
+                                            <option value="ChangeRMPartCode">Change RM Part Code</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-end" style="width:60px">
+                                        <button type="button" class="btn btn-success " onclick="GetItemData(1, '', true);">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="col-md-3" style="width:200px;">
+
+                                        <div class="input-group">
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="ALLRMQty"
+                                                   placeholder="RMQty..."
+                                                   style="background-color:#FFFACD;">
+
+                                            <button type="button"
+                                                    class="btn btn-success"
+                                                    id="btnApplyToAll"
+                                                    title="Apply To All">
+
+                                                <i class="fa fa-check"></i>
+
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-3" style="width:197px;">
+
+                                        <div class="input-group">
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="ALLRMChangePartCode"
+                                                   placeholder="New RM PartCode..."
+                                                   style="background-color:#FFFACD;">
+                                            <input type="hidden" id="ALLRMChangeItemName" />
+                                            <input type="hidden" id="ALLRMChangeItemCode" />
+
+                                            <button type="button"
+                                                    class="btn btn-success"
+                                                    id="btnApplyToAllRMItemCode"
+                                                    title="Apply To All">
+
+                                                <i class="fa fa-check"></i>
+
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="table-responsive" style="max-height:350px;">
+                                    <table class="table table-bordered table-striped table-hover align-middle text-center">
+                                        <thead class="bg-gradient card-headerBG text-light small sticky-top" style="white-space:nowrap; position:sticky; top:0; z-index:10;">
+                                            <tr>
+                                                <th style="min-width:70px">Sr#<input type="checkbox" id="checkAll" /> </th>
+
+                                                <th style="width:30px">BomNo</th>
+                                                <th style="width:200px">FG Part Code</th>
+                                                <th style="width:200px">FG Item Name</th>
+                                                <th style="width:200px">RM Part Code</th>
+                                                <th style="width:200px">RM Item Name</th>
+
+                                                <th>RM Qty</th>
+
+                                                
+                                              
+                                                <th>Scrap</th>
+                                                <th>Gross Weight</th>
+                                                <th>Net Weight</th>
+                                                <th>Burn Qty</th>
+
+                                                
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="MultiItemBody">
+                                            @* <partial name="_UpdateBOMFromGrid" /> *@
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="PaginationDiv" class="mt-2"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
             <div class="card-footer p-3">
@@ -200,7 +303,7 @@
 
                                             <div class="col-auto">
                                                 @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                                <button class="btn btn-primary btn-sm" id="FooterBtnSubmit" onclick="SubmitData(event);">
+                                                <button type="button" class="btn btn-primary btn-sm" id="FooterBtnSubmit" onclick="SubmitData(event);">
                                                     <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
                                                     SUBMIT
                                                 </button>
@@ -216,7 +319,6 @@
         </div>
     </form>
 </div>
-
 <div id="fullPageLoader">
     <div class="loaderBox">
         <span>Processing...</span>
@@ -224,9 +326,8 @@
 </div>
 </div>
 
-
 @section Scripts
-    {
+{
     <script>
         function showLoader() {
             $('#fullPageLoader').fadeIn(100);
@@ -237,10 +338,10 @@
         }
 
         function CheckNumberOfCols(file) {
-             
+
             var reader = new FileReader();
 
-            reader.onload = function (e) {
+            reader.onload = function(e) {
                 var data = e.target.result;
                 var workbook = XLSX.read(data, { type: 'binary' });
                 var sheetName = workbook.SheetNames[0];
@@ -261,17 +362,816 @@
 
             reader.readAsBinaryString(file);
         }
-        $(document).ready(function () {
+        function toggleButtons() {
+            var type = $('#ddlApplyType').val();
+
+            if (type === 'updateRMQty') {
+                $('#btnApplyToAll').prop('disabled', false);
+                $('#btnApplyToAllRMItemCode').prop('disabled', true);
+            }
+            else if (type === 'ChangeRMPartCode') {
+                $('#btnApplyToAll').prop('disabled', true);
+                $('#btnApplyToAllRMItemCode').prop('disabled', false);
+            }
+            else {
+                // Blank selection - enable both buttons
+                $('#btnApplyToAll').prop('disabled', false);
+                $('#btnApplyToAllRMItemCode').prop('disabled', false);
+            }
+        }
+
+        $('#ddlApplyType').change(function() {
+            toggleButtons();
+        });
+
+        // Initial load
+
+        function GeneratePagination(
+            currentPage,
+            totalPages,
+            searchText = '') {
+
+            let html = '';
+
+            if (currentPage > 1) {
+
+                html += `
+                <button  type="button" class="btn btn-sm btn-primary me-1"
+                onclick="GetItemData(${currentPage - 1}, '${searchText}')">
+                Prev
+                </button>`;
+            }
+
+            for (let i = 1; i <= totalPages; i++) {
+
+                if (
+                    i == 1 ||
+                    i == totalPages ||
+                    (i >= currentPage - 2 && i <= currentPage + 2)
+                ) {
+
+                    html += `
+                <button type="button" class="btn btn-sm ${i == currentPage ? 'btn-success' : 'btn-light'} me-1"
+                onclick="GetItemData(${i}, '${searchText}')">
+                ${i}
+                </button>`;
+                }
+            }
+
+            if (currentPage < totalPages) {
+
+                html += `
+                <button  type="button" class="btn btn-sm btn-primary"
+                onclick="GetItemData(${currentPage + 1}, '${searchText}')">
+                Next
+                </button>`;
+            }
+
+            $("#PaginationDiv").html(html);
+        }
+        let searchTimeout;
+
+        $("#search-box1").on("keyup", function() {
+
+            clearTimeout(searchTimeout);
+
+            let searchText = $(this).val();
+
+            if (
+                searchText.length > 0 &&
+                searchText.length < 2
+            ) {
+                return;
+            }
+
+            searchTimeout = setTimeout(function() {
+
+                GetItemData(1, searchText);
+
+            }, 500);
+        });
+
+
+        let allData = [];
+
+        // LOAD DATA
+        function GetItemData(page = 1, searchText = '', isNewFilter = false) {
+
+            var FGPartCode = $('#FGPartCode').val();
+            var FGItemName = $('#FGItemName').val();
+            var RMPartCode = $('#RMPartCode').val();
+            var RMItemName = $('#RMItemName').val();
+
+            if (isNewFilter) {
+
+                allData = [];
+            }
+            else {
+
+                SaveCurrentPageData();
+            }
+            showLoader();
+
+            $.ajax({
+
+                type: 'POST',
+
+                url: '@Url.Action("GetItemData")',
+
+                data: {
+                    page: page,
+                    pageSize: 1000,
+                    searchText: searchText,
+                    FGPartCode: FGPartCode,
+                    FGItemName: FGItemName,
+                    RMPartCode: RMPartCode,
+                    RMItemName: RMItemName
+
+                },
+
+                success: function(response) {
+
+                    $("#MultiItemBody").empty();
+
+                    $.each(response.data, function(i, item) {
+
+                        // STORE FIRST TIME DATA
+                        let exists = allData.find(x => x.FGItemCode == item.fgItemCode && x.RMItemCode == item.rmItemCode && x.BomNo == item.bomNo);
+
+                        if (!exists) {
+
+                            allData.push({
+
+                                FGItemCode: item.fgItemCode ?? 0,
+                                RMItemCode: item.rmItemCode ?? 0,
+                                BomNo: item.bomNo ?? 0,
+
+                                FGPartCode: item.fgPartCode ?? '',
+                                FGItemName: item.fgItemName ?? '',
+                                RMPartCode: item.rmPartCode ?? '',
+                                RMItemName: item.rmItemName ?? '',
+
+                                RMQty: item.rmQty ?? 0,
+                                Scrap: item.scrap ?? 0,
+                                GrossWeight: item.grossWeight ?? 0,
+                                NetWeight: item.netWeight ?? 0,
+
+                                BurnQty: item.burnQty ?? ''
+                            });
+                        }
+
+                        let row = `
+
+                <tr>
+
+                            <td> <input type="checkbox"
+                           class="form-check-input rowCheckbox"
+                           name="rowCheckbox"
+                           value="${item.fgItemCode ?? 0}" />
+
+                    <span class="ms-1">${i + 1}</span>
+                </td>
+                    <td style="min-width:70px">
+                        <input type="text"
+                        class="form-control form-control-sm" readonly
+                               name="BomNo"
+
+                               value="${item.bomNo ?? 0}" />
+                    </td>
+
+                    <td >
+                        <input type="hidden"
+                               name="FGItemCode"
+                               value="${item.fgItemCode ?? 0}" />
+
+                        <input type="text"
+                               class="form-control form-control-sm"
+                               name="FGPartCode" readonly
+                               value="${item.fgPartCode ?? ''}" />
+                    </td>
+
+                    <td>
+                        <input type="text"
+                               class="form-control form-control-sm"
+                               name="FGItemName" readonly
+                               value="${item.fgItemName ?? ''}" />
+                    </td>
+
+                    <td>
+                        <input type="hidden"
+                               name="RMItemCode"
+                               value="${item.rmItemCode ?? 0}" />
+
+                        <input type="text"
+                               class="form-control form-control-sm"
+                               name="RMPartCode" readonly
+                               value="${item.rmPartCode ?? ''}" />
+                    </td>
+
+                    <td>
+                        <input type="text"
+                               class="form-control form-control-sm"
+                               name="RMItemName" readonly
+                               value="${item.rmItemName ?? ''}" />
+                    </td>
+
+                    <td style="min-width:100px">
+                        <input type="text"
+                               class="form-control form-control-sm numberInput"
+                               name="RMQty"
+
+                               value="${item.rmQty ?? 0}" />
+                    </td>
+
+                    <td style="min-width:100px">
+                        <input type="text"
+                               class="form-control form-control-sm numberInput"
+                               name="Scrap"
+
+                               value="${item.scrap ?? 0}" />
+                    </td>
+
+                    <td style="min-width:100px">
+                        <input type="text"
+                               class="form-control form-control-sm numberInput"
+                               name="GrossWeight"
+
+                               value="${item.grossWeight ?? 0}" />
+                    </td>
+
+                    <td style="min-width:100px">
+                        <input type="text"
+                               class="form-control form-control-sm numberInput"
+                               name="NetWeight"
+
+                               value="${item.netWeight ?? 0}" />
+                    </td>
+
+                    <td>
+                        <input type="text"
+                               class="form-control form-control-sm numberInput"
+                               name="BurnQty"
+
+                               value="${item.burnQty ?? ''}" />
+                    </td>
+
+                </tr>
+                `;
+
+
+
+
+                        $("#MultiItemBody").append(row);
+
+                    });
+
+                    GeneratePagination(
+                        response.page,
+                        response.totalPages,
+                        searchText
+                    );
+
+                    $("#lblTotalNoOfItems1")
+                        .text(response.totalRecords);
+
+                    hideLoader();
+                },
+
+                error: function(xhr) {
+
+                    console.log(xhr.responseText);
+
+                    hideLoader();
+                }
+            });
+        }
+
+        $(document).on('keydown', '.numberInput', function(e) {
+
+            if (e.key === '-' || e.key === 'Minus') {
+                e.preventDefault();
+            }
+        });
+
+        $(document).on('input', '.numberInput', function() {
+
+            let value = $(this).val();
+
+            // remove invalid chars
+            value = value.replace(/[^0-9.]/g, '');
+
+            // allow only one decimal point
+            value = value.replace(/(\..*)\./g, '$1');
+
+            $(this).val(value);
+        });
+        function SaveCurrentPageData() {
+
+            $("#MultiItemBody tr").each(function() {
+
+                let fgItemCode = $(this)
+                    .find('[name="FGItemCode"]')
+                    .val();
+
+                let rmItemCode = $(this)
+                    .find('[name="RMItemCode"]')
+                    .val();
+                let bomNo = $(this)
+                    .find('[name="BomNo"]')
+                    .val();
+
+                let existing = allData.find(x =>
+                    x.FGItemCode == fgItemCode &&
+                    x.BomNo == bomNo &&
+                    x.RMItemCode == rmItemCode
+                );
+
+                if (existing) {
+                    existing.BomNo =
+                        $(this).find('[name="BomNo"]').val();
+
+
+                    existing.FGPartCode =
+                        $(this).find('[name="FGPartCode"]').val();
+
+                    existing.FGItemName =
+                        $(this).find('[name="FGItemName"]').val();
+
+                    existing.RMPartCode =
+                        $(this).find('[name="RMPartCode"]').val();
+
+                    existing.RMItemName =
+                        $(this).find('[name="RMItemName"]').val();
+
+                    existing.RMQty =
+                        $(this).find('[name="RMQty"]').val();
+
+                    existing.Scrap =
+                        $(this).find('[name="Scrap"]').val();
+
+                    existing.GrossWeight =
+                        $(this).find('[name="GrossWeight"]').val();
+
+                    existing.NetWeight =
+                        $(this).find('[name="NetWeight"]').val();
+
+                    existing.BurnQty =
+                        $(this).find('[name="BurnQty"]').val();
+                }
+
+            });
+
+        }
+
+        
+        function ValidateGridData() {
+
+            let IsErr = false;
+
+            $('#MultiItemBody tr').each(function(index) {
+
+                let row = $(this);
+
+                row.find('input').removeClass('border-danger');
+
+                let fgPartCode =
+                    row.find('[name="FGPartCode"]').val();
+
+                let rmPartCode =
+                    row.find('[name="RMPartCode"]').val();
+
+                let rowNo = index + 1;
+
+                let rmQty =
+                    parseFloat(row.find('[name="RMQty"]').val()) || 0;
+
+                let burnQty =
+                    parseFloat(row.find('[name="BurnQty"]').val()) || 0;
+
+                let scrap =
+                    parseFloat(row.find('[name="Scrap"]').val()) || 0;
+
+                let gross =
+                    parseFloat(row.find('[name="GrossWeight"]').val()) || 0;
+
+                let net =
+                    parseFloat(row.find('[name="NetWeight"]').val()) || 0;
+
+                // Burn Qty Validation
+                if (burnQty > 0 && burnQty >= rmQty) {
+
+                    row.find('[name="BurnQty"]')
+                        .addClass('border-danger');
+
+                    // Focus row
+                    row[0].scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    row.find('[name="BurnQty"]').focus();
+
+                    $.notify(
+
+                        `Row ${rowNo} | FG: ${fgPartCode} | RM: ${rmPartCode}
+                                 -> Burn Qty should be less than RM Req Qty.`,
+
+                        "error"
+                    );
+
+                    IsErr = true;
+
+                    return false;
+                }
+
+                // Scrap Validation
+                if (scrap > 0 && scrap >= rmQty) {
+
+                    row.find('[name="Scrap"]')
+                        .addClass('border-danger');
+
+                    // Focus row
+                    row[0].scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    row.find('[name="Scrap"]').focus();
+
+                    $.notify(
+
+                        `Row ${rowNo} | FG: ${fgPartCode} | RM: ${rmPartCode}
+                                 -> Scrap should be less than RM Req Qty.`,
+
+                        "error"
+                    );
+
+                    IsErr = true;
+
+                    return false;
+                }
+
+                if (scrap > 0 && gross > 0 && scrap >= gross) {
+
+                    row.find('[name="GrossWeight"]')
+                        .addClass('border-danger');
+
+                    row[0].scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    row.find('[name="GrossWeight"]').focus();
+
+                    $.notify(
+
+                        `Row ${rowNo} | FG: ${fgPartCode} | RM: ${rmPartCode}
+                                 -> Scrap should be less than Gross Weight.`,
+
+                        "error"
+                    );
+
+                    IsErr = true;
+
+                    return false;
+                }
+
+                // Gross > Net Validation
+                if (gross > 0 && net > 0 && gross <= net) {
+
+                    row.find('[name="GrossWeight"], [name="NetWeight"]')
+                        .addClass('border-danger');
+
+                    row[0].scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    row.find('[name="GrossWeight"]').focus();
+
+                    $.notify(
+
+                        `Row ${rowNo} | FG: ${fgPartCode} | RM: ${rmPartCode}
+                                 -> Gross Weight must be greater than Net Weight.`,
+
+                        "error"
+                    );
+
+                    IsErr = true;
+
+                    return false;
+                }
+
+            });
+
+            return !IsErr;
+        }
+
+        
+        $('#btnApplyToAll').on('click', function() {
+            $('#ddlApplyType').val('updateRMQty');
+            toggleButtons();
+            let allRMQty = $('#ALLRMQty').val();
+
+            $('#MultiItemBody tr').each(function() {
+
+                let row = $(this);
+
+                // Apply only checked rows
+                if (row.find('.rowCheckbox').is(':checked')) {
+
+                    row.find('[name="RMQty"]').val(allRMQty);
+
+                    let fgItemCode = row.find('[name="FGItemCode"]').val();
+                    let rmItemCode = row.find('[name="RMItemCode"]').val();
+                    let bomNo = row.find('[name="BomNo"]').val();
+
+                    // Update allData also
+                    let dataItem = allData.find(x =>
+                        x.FGItemCode == fgItemCode &&
+                        x.RMItemCode == rmItemCode &&
+                        x.BomNo == bomNo
+                    );
+
+                    if (dataItem) {
+
+                        dataItem.RMQty = allRMQty;
+                    }
+                }
+            });
+        });
+        $('#btnApplyToAllRMItemCode').on('click', function() {
+            $('#ddlApplyType').val('ChangeRMPartCode');
+            toggleButtons();
+            let ALLRMChangePartCode = $('#ALLRMChangePartCode').val();
+            let ALLRMChangeItemCode = $('#ALLRMChangeItemCode').val();
+            let ALLRMChangeItemName = $('#ALLRMChangeItemName').val();
+
+            // Set RMQty in all rows
+            $('#MultiItemBody tr').each(function() {
+
+                $(this)
+                    .find('[name="RMPartCode"]')
+                    .val(ALLRMChangePartCode);
+                $(this)
+                    .find('[name="RMItemCode"]')
+                    .val(ALLRMChangeItemCode);
+                $(this)
+                    .find('[name="RMItemName"]')
+                    .val(ALLRMChangeItemName);
+            });
+
+            // Update all pages data
+            allData.forEach(function(item) {
+
+                item.RMPartCode = ALLRMChangePartCode;
+                item.RMItemCode = ALLRMChangeItemCode;
+                item.RMItemName = ALLRMChangeItemName;
+            });
+
+        });
+
+        function FillItems() {
+            $("#FGPartCode").autocomplete({
+                minLength: 2,
+                source: function(request, response) {
+
+                    $.ajax({
+                        url: '@Url.Action("FillItems", "Bom")',
+                        type: 'POST',
+                        data: {
+                            Flag: 'SEARCHFGPARTCODELIST',
+                            SearchString: request.term
+                        },
+                        success: function(result) {
+                            let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            if (obj.StatusCode === 200 && obj.Result && obj.Result.Table) {
+
+                                let data = $.map(obj.Result.Table, function(item) {
+                                    return {
+                                        label: item.PartCode,
+                                        value: item.PartCode,
+                                        itemCode: item.Item_Code,
+                                        itemName: item.ItemName
+                                    };
+                                });
+
+                                response(data);
+                            } else {
+                                response([]);
+                            }
+                        },
+                        error: function() {
+                            response([]);
+                        }
+                    });
+                },
+
+                select: function(event, ui) {
+                    $("#FGPartCode").val(ui.item.value);
+                    $("#FGItemName").val(ui.item.itemName);
+                    $("#ItemCode").val(ui.item.itemCode);
+                    return false;
+                }
+            });
+            $("#FGItemName").autocomplete({
+                minLength: 2,
+                source: function(request, response) {
+
+                    $.ajax({
+                        url: '@Url.Action("FillItems", "Bom")',
+                        type: 'POST',
+                        data: {
+                            Flag: 'SEARCHFGITEMCODELIST',
+                            SearchString: request.term
+                        },
+                        success: function(result) {
+
+                            let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                            if (obj.StatusCode === 200 && obj.Result && obj.Result.Table) {
+
+                                let data = $.map(obj.Result.Table, function(item) {
+                                    return {
+                                        label: item.ItemName,
+                                        value: item.ItemName,
+                                        partCode: item.PartCode,
+                                        itemCode: item.Item_Code
+                                    };
+                                });
+
+                                response(data);
+                            } else {
+                                response([]);
+                            }
+                        }
+                    });
+                },
+
+                select: function(event, ui) {
+                    $("#FGItemName").val(ui.item.value);
+                    $("#FGPartCode").val(ui.item.partCode);
+                    $("#ItemCode").val(ui.item.itemCode);
+                    return false;
+                }
+            });
+
+            $("#RMPartCode").autocomplete({
+                minLength: 2,
+                source: function(request, response) {
+
+                    $.ajax({
+                        url: '@Url.Action("FillItems", "Bom")',
+                        type: 'POST',
+                        data: {
+                            Flag: 'SEARCHRMPARTCODELIST',
+                            SearchString: request.term
+                        },
+                        success: function(result) {
+
+                            let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                            if (obj.StatusCode === 200 && obj.Result && obj.Result.Table) {
+
+                                let data = $.map(obj.Result.Table, function(item) {
+                                    return {
+                                        label: item.PartCode,
+                                        value: item.PartCode,
+                                        itemCode: item.Item_Code,
+                                        itemName: item.ItemName
+                                    };
+                                });
+
+                                response(data);
+                            } else {
+                                response([]);
+                            }
+                        },
+                        error: function() {
+                            response([]);
+                        }
+                    });
+                },
+
+                select: function(event, ui) {
+                    $("#RMPartCode").val(ui.item.value);
+                    $("#RMItemName").val(ui.item.itemName);
+                    $("#RMItemCode").val(ui.item.itemCode);   // hidden field if any
+                    return false;
+                }
+            });
+            $("#ALLRMChangePartCode").autocomplete({
+                minLength: 2,
+                source: function(request, response) {
+
+                    $.ajax({
+                        url: '@Url.Action("FillItems", "Bom")',
+                        type: 'POST',
+                        data: {
+                            Flag: 'SEARCHRMPARTCODELIST',
+                            SearchString: request.term
+                        },
+                        success: function(result) {
+
+                            let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                            if (obj.StatusCode === 200 && obj.Result && obj.Result.Table) {
+
+                                let data = $.map(obj.Result.Table, function(item) {
+                                    return {
+                                        label: item.PartCode,
+                                        value: item.PartCode,
+                                        itemCode: item.Item_Code,
+                                        itemName: item.ItemName
+                                    };
+                                });
+
+                                response(data);
+                            } else {
+                                response([]);
+                            }
+                        },
+                        error: function() {
+                            response([]);
+                        }
+                    });
+                },
+
+                select: function(event, ui) {
+                    $("#ALLRMChangePartCode").val(ui.item.value);
+                    $("#ALLRMChangeItemName").val(ui.item.itemName);
+                    $("#ALLRMChangeItemCode").val(ui.item.itemCode);   // hidden field if any
+                    return false;
+                }
+            });
+            $("#RMItemName").autocomplete({
+                minLength: 2,
+                source: function(request, response) {
+
+                    $.ajax({
+                        url: '@Url.Action("FillItems", "Bom")',
+                        type: 'POST',
+                        data: {
+                            Flag: 'SEARCHRMITEMNAMELIST',
+                            SearchString: request.term
+                        },
+                        success: function(result) {
+
+                            let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                            if (obj.StatusCode === 200 && obj.Result && obj.Result.Table) {
+
+                                let data = $.map(obj.Result.Table, function(item) {
+                                    return {
+                                        label: item.ItemName,
+                                        value: item.ItemName,
+                                        partCode: item.PartCode,
+                                        itemCode: item.Item_Code
+                                    };
+                                });
+
+                                response(data);
+                            } else {
+                                response([]);
+                            }
+                        }
+                    });
+                },
+
+                select: function(event, ui) {
+                    $("#RMItemName").val(ui.item.value);
+                    $("#RMPartCode").val(ui.item.partCode);
+                    $("#RMItemCode").val(ui.item.itemCode);
+                    return false;
+                }
+            });
+
+        }
+        $(document).on('change', '#checkAll', function() {
+
+            $('.rowCheckbox').prop(
+                'checked',
+                $(this).is(':checked')
+            );
+
+        });
+        var formKey = $('#formKey').val();
+        $(document).ready(function() {
+            formKey = $('#formKey').val();
             GetFormRights();
+            FillItems();
+            toggleButtons();
+
         });
         function GetFormRights() {
-             
+
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
-                success: function (data) {
+                data: { formKey: formKey },
+                success: function(data) {
                     if (data != null) {
-                         
+
                         var obj = $.parseJSON(data);
                         if (obj.Result.Table.length == 0) {
                             $("#BtnSubmit").prop("disabled", true);
@@ -293,14 +1193,14 @@
 
                     }
                 },
-                error: function (errMsg) {
+                error: function(errMsg) {
                     $.notify(errMsg, { position: "top center", className: "error" });
                 }
             });
         }
 
         function UploadButton() {
-            showLoader(); // ✅ Show full page loader
+            showLoader();
             var fileInput = $('#ExcelFile');
             var file = fileInput.prop("files")[0];
 
@@ -308,68 +1208,67 @@
             if (file) {
                 //if(!CheckNumberOfCols(file)) return false;
                 var fileName = file.name;
-                 
+
                 var fileExtension = fileName.split('.').pop().toLowerCase();
-                 
+
                 if (fileExtension === 'xls' || fileExtension === 'xlsx') {
                     // The selected file is in Excel format
                     console.log('File is in Excel format.');
                     var reader = new FileReader();
 
-                    reader.onload = function (e) {
-                         
+                    reader.onload = function(e) {
+
                         var data = e.target.result;
                         var workbook = XLSX.read(data, { type: 'binary' });
                         var sheetName = workbook.SheetNames[0];
                         var worksheet = workbook.Sheets[sheetName];
                         var rowCount = XLSX.utils.decode_range(worksheet['!ref']).e.r + 1; // Number of rows
                         var columnCount = XLSX.utils.decode_range(worksheet['!ref']).e.c + 1; // Number of columns
-                        
-                        
+                        var UpdateRevNo = $('#UpdateRevNo').is(':checked') ? 'Y' : 'N';
                         // Define the expected number of columns
                         var expectedColumnCount = 17; // Change this to your desired number of columns
-                        
+
                         // if (columnCount === expectedColumnCount) {
-                            console.log('The Excel file has the expected number of columns.');
-                             
-                            var formData = new FormData();
-                            formData.append("excelFile", file);
-                             
-                            $.ajax({
-                                url: "/Bom/UploadExcel",
-                                type: "POST",
-                                data: formData,
+                        console.log('The Excel file has the expected number of columns.');
+
+                        var formData = new FormData();
+                        formData.append("excelFile", file);
+                        formData.append("UpdateRevNo", UpdateRevNo);
+
+                        $.ajax({
+                            url: "/Bom/UploadExcel",
+                            type: "POST",
+                            data: formData,
                             async: false,
-                                processData: false,
-                                contentType: false,
-                                success: function (result) {
-                                     
-                                    $('#divItemList').html(result);
-                                    var RowCount = $('#divItemList tr').length;
-                                    var errorCount = 0;
-                                    for (let i = 1; i <= RowCount; i++) {
-                                        if ($('#Constraint-' + i).val() == "true") {
-                                            $('.' + i).css("color", "red");
-                                        }
+                            processData: false,
+                            contentType: false,
+                            success: function(result) {
 
-
+                                $('#uploadResult').html(result);
+                                var RowCount = $('#divItemList tr').length;
+                                var errorCount = 0;
+                                for (let i = 1; i <= RowCount; i++) {
+                                    if ($('#Constraint-' + i).val() == "true") {
+                                        $('.' + i).css("color", "red");
                                     }
 
-                                },
-                            complete: function () {
-                                hideLoader(); //  Hide after complete
-                            },
-                            error: function (response) {
-                                alert(response.responseText);
-                            },
-                            failure: function (response) {
-                                alert(response.responseText);
-                            }
 
-                            });
+                                }
+
+                            },
+                            complete: function() {
+                                // btn.text(oldText).prop("disabled", false);
+                                hideLoader();
+                            },
+
+                            error: function(response) {
+                                alert(response.responseText);
+                                hideLoader();
+                            }
+                        });
 
                         // } else {
-                             
+
                         //     $.notify('The file does not have the expected number of columns.', "error");
                         //     return false;
                         // }
@@ -380,23 +1279,25 @@
                 } else {
                     // The selected file is not in Excel format
                     $.notify('File is not in Excel format.', "error");
+                    hideLoader();
                     return false;
                 }
             }
             else {
                 // No file selected
                 $.notify('No file selected.', 'error');
+                hideLoader();
                 return false;
             }
-             
 
+             
 
         }
 
         function DeleteItemRow(seqNo) {
             //var Indx = parseInt(seqNo) - 1;
             //$('.' + seqNo).remove();
-             
+
             var $row = $('.' + seqNo);
             if ($row.length) {
                 // Delete the row
@@ -406,7 +1307,7 @@
                 var $table = $('#divItemList'); // Replace with your table's ID
                 var $rows = $table.find('tr');
 
-                $rows.each(function (index) {
+                $rows.each(function(index) {
                     var $currentRow = $(this);
                     $currentRow.attr('class', (index + 1)); // Reset row class
 
@@ -426,68 +1327,182 @@
                 });
             }
         }
+        function SubmitData() {
 
-        function SubmitData(e) {
-              
-            var RowCount = $('#divItemList tr').length;
-            var errorCount = 0;
-            for (let i = 1; i <= RowCount; i++) {
-                if ($('#Constraint-' + i).val() == "true") {
-                    errorCount++;
-                }
 
-                if (errorCount > 0) {
-                    e.preventDefault();
-                    $.notify("Error in data can't submit", "error");
-                    return false;
-                }
+            showLoader();
+            if ($('#MultiItemBody tr').length >= 1) {
+                SaveMultiBomData();
             }
+            else {
+
+                $.ajax({
+                    url: '@Url.Action("AddBomListData")',
+                    data: { formKey: formKey },
+                    type: 'POST',
+                    success: function(res) {
+
+                        // $.notify("Saved " + res.count + " rows", "success");
+                        if (res.success) {
+                            $.notify(res.message, "success");
+                            // or: $.notify("Saved successfully", "success");
+                        } else {
+                            $.notify(res.message, "error");
+                        }
 
 
-            var ItemData = [];
-            for (let i = 1; i <= RowCount; i++) {
+                    },
+                    complete: function() {
+                        // btn.text(oldText).prop("disabled", false);
+                        hideLoader();
+                    },
 
-                ItemData.push({
-                    "FGPartCode": $('#FGPartCode-' + i).text(),
-                    "FGItemName": $('#FGItemName-' + i).text(),
-                    "RMPartCode": $('#RMPartCode-' + i).text(),
-                    "RMItemName": $('#RMItemName-' + i).text(),
-                    "BomName": $('#BomName-' + i).text(),
-                    "RMQty": $('#RMQty-' + i).text(),
-                    "RMUnit": $('#RMUnit-' + i).text(),
-                    "Location": $('#Location-' + i).text(),
-                    "MPNNumber": $('#MPNNumber-' + i).text(),
-                    "FGItemCode": parseInt($('#FGItemCode-' + i).val()),
-                    "RMItemCode": parseInt($('#RMItemCode-' + i).val()),
-                    "AltItemCode1": parseInt($('#AltItemCode1-' + i).val()),
-                    "AltItemCode2": parseInt($('#AltItemCode2-' + i).val()),
-                    "AltQty1": parseInt($('#AltQty1-' + i).val()),
-                    "AltQty2": parseInt($('#AltQty2-' + i).val()),
-                    "Scrap": parseInt($('#Scrap-' + i).val()),
-                    "GrossWeight": parseInt($('#GrossWeight-' + i).val()),
-                    "NetWeight": parseInt($('#NetWeight-' + i).val()),
-                    "Remark": $('#Remark-' + i).text(),
-                    "BomNo": parseInt($('#BomNo-' + i).val())
-                    // "SeqNo":i
+                    error: function(response) {
+                        alert(response.responseText);
+                    }
                 });
             }
-              
+        }
+
+
+        function SaveMultiBomData() {
+            var applyType = $('#ddlApplyType').val();
+
+            if (!applyType || applyType === "0") {
+                hideLoader();
+                $.notify("Please select Apply Type.", "Error");
+                $('#ddlApplyType').focus();
+                return false;
+            }
+            SaveCurrentPageData();
+
+            // VALIDATION
+            if (!ValidateGridData()) {
+                hideLoader();
+                return;
+            }
+
+            showLoader();
+            //         var request = {
+            //     allData: allData,
+            //     oldItemCode: $("#ALLRMChangeItemCode").val()
+            //     ApplyType: $("#ddlApplyType").val()
+            // };
+
+
             $.ajax({
-                url: "@Url.Action("AddBomListData")",
+
                 type: "POST",
-                data: { model: ItemData },
-                beforeSend: function (xhr) {
+                url: '@Url.Action("SaveMiltiBomData")'
+                    + '?oldItemCode=' + $("#RMItemCode").val()
+                    + '&ApplyType=' + $("#ddlApplyType").val(),
+                data: JSON.stringify(allData),
+                contentType: "application/json; charset=utf-8",
 
-                },
-                success: function (data, status, xhr) {
-                    console.log("success");
+                dataType: "json",
 
+                success: function(response) {
+
+                    hideLoader();
+
+                    if (response.statusCode == 200) {
+
+                        alert(response.message);
+
+                    } else {
+
+                        alert(response.message);
+                    }
                 },
-                error: function (result, status, xhr) {
-                    $.notify(result.responseText, "error");
+
+                error: function(xhr) {
+
+                    hideLoader();
+
+                    console.log(xhr.responseText);
+
+                    alert("Error while saving");
                 }
             });
         }
+
+        // function SubmitData(e) {
+
+        //     var RowCount = $('#divItemList tr').length;
+        //     var errorCount = 0;
+        //     for (let i = 1; i <= RowCount; i++) {
+        //         if ($('#Constraint-' + i).val() == "true") {
+        //             errorCount++;
+        //         }
+
+        //         if (errorCount > 0) {
+        //             e.preventDefault();
+        //             $.notify("Error in data can't submit", "error");
+        //             return false;
+        //         }
+        //     }
+
+
+        //     var ItemData = [];
+        //     for (let i = 1; i <= RowCount; i++) {
+
+        //         ItemData.push({
+        //             FGPartCode: $('#FGPartCode-' + i).text().trim(),
+        //             FGItemName: $('#FGItemName-' + i).text().trim(),
+        //             UsedInStage: $('#UsedInStage-' + i).text().trim() || null,
+        //             CustomerJWRec: $('#CustomerJWRec-' + i).text().trim() || null,
+
+        //             FGItemCode: parseInt($('#FGItemCode-' + i).val()) || null,
+        //             CustJwAdjustmentMandatory: $('#CustJwAdjustmentMandatory-' + i).val() || null,
+
+        //             RMPartCode: $('#RMPartCode-' + i).text().trim(),
+        //             RMItemName: $('#RMItemName-' + i).text().trim(),
+        //             RMItemCode: parseInt($('#RMItemCode-' + i).val()) || null,
+
+        //             BomName: $('#BomName-' + i).text().trim(),
+        //             BomNo: parseInt($('#BomNo-' + i).val()) || null,
+
+        //             RMQty: parseFloat($('#RMQty-' + i).text()) || null,
+        //             RMUnit: $('#RMUnit-' + i).text().trim(),
+        //             Location: $('#Location-' + i).text().trim(),
+        //             MPNNumber: $('#MPNNumber-' + i).text().trim(),
+
+        //             CustJWmandatory: $('#CustJWmandatory-' + i).val() || null,
+
+        //             AltPartCode1: $('#AltPartCode1-' + i).text().trim() || null,
+        //             AltItemCode1: parseInt($('#AltItemCode1-' + i).val()) || null,
+        //             AltPartCode2: $('#AltPartCode2-' + i).text().trim() || null,
+        //             AltItemCode2: parseInt($('#AltItemCode2-' + i).val()) || null,
+
+        //             AltQty1: parseFloat($('#AltQty1-' + i).val()) || null,
+        //             AltQty2: parseFloat($('#AltQty2-' + i).val()) || null,
+
+        //             Scrap: parseFloat($('#Scrap-' + i).val()) || null,
+        //             GrossWeight: parseFloat($('#GrossWeight-' + i).val()) || null,
+        //             NetWeight: parseFloat($('#NetWeight-' + i).val()) || null,
+
+        //             Remark: $('#Remark-' + i).text().trim(),
+        //             ConstraintExists: $('#Constraint-' + i).val() || null
+        //         });
+
+        //     }
+
+        //     $.ajax({
+        //         url: "@Url.Action("AddBomListData")",
+        //         type: "POST",
+        //         data: { model: ItemData },
+        //         beforeSend: function (xhr) {
+
+        //         },
+        //         success: function (data, status, xhr) {
+        //             console.log("success");
+
+        //         },
+        //         error: function (result, status, xhr) {
+        //             $.notify(result.responseText, "error");
+        //         }
+        //     });
+        // }
 
         // function ExportBom() {
         //     $('#divItemList').empty();
@@ -519,7 +1534,32 @@
 
 
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="~/js/xlsx.full.min.js"></script>
     <script src="~/Scripts/table2excel.js"></script>
 
 }
+<style>
+    #fullPageLoader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        display: none;
+        z-index: 99999;
+    }
+
+    .loaderBox {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 25px 40px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+</style>

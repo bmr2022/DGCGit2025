@@ -3,6 +3,57 @@
     var Cntr = 0;
     var ErrorCntr = 0;
 }
+@if (ViewBag.ExcelErrors != null && ViewBag.ExcelErrors.Count > 0)
+{
+    <div id="errorDiv" class="alert alert-danger">
+        <h6>Excel Errors</h6>
+        <ul>
+            @foreach (var err in ViewBag.ExcelErrors)
+            {
+                <li>Row @err.RowNo : @err.Message</li>
+            }
+        </ul>
+    </div>
+}
+<div class="card-body overflow-auto pb-0">
+    <div class="table-responsive" style="max-height:350px;">
+        <table class="table table-hover table-bordered" id="itemtable">
+            <thead class="bg-gradient card-headerBG text-light small" id="ItemHead" style="white-space:nowrap">
+                <tr id="headerRow">
+                    <th>Action</th>
+                    <th>FG Part Code</th>
+                    <th>FG Item Name</th>
+                    <th>RM Part Code</th>
+                    <th>RM Item Name</th>
+                    <th>BOM Name</th>
+                    <th>RM Qty</th>
+                    <th>RM Unit</th>
+                    <th>Location</th>
+                    <th>MPN Number</th>
+                    <th>Alt PartCode 1</th>
+                    <th>Alt PartCode 2</th>
+                    <th>Alt PartCode 3</th>
+                    <th>Alt PartCode 4</th>
+                    <th>Alt PartCode 5</th>
+                    <th>Alt Qty 1</th>
+                    <th>Alt Qty 2</th>
+                    <th>Alt Qty 3</th>
+                    <th>Alt Qty 4</th>
+                    <th>Alt Qty 5</th>
+
+                    <th>UsedInStage</th>
+                    <th>CustomerJWRec Y/N</th>
+
+                    <th>Scrap</th>
+                    <th>Gross Weight</th>
+                    <th>Net Weight</th>
+                    <th>Remark</th>
+                    <th>RunnerPartCode
+                        <th />
+
+                </tr>
+            </thead>
+            <tbody id="divItemList">
 
 @if (Model.ExcelDataList == null)
 {
@@ -38,13 +89,27 @@ else
             <td id="MPNNumber-@Cntr">@item.MPNNumber</td>
             <td id="AltPartCode1-@Cntr">@item.AltPartCode1<input type="hidden" id="AltItemCode1-@Cntr" value="@item.AltItemCode1" /></td>
             <td id="AltPartCode2-@Cntr">@item.AltPartCode2<input type="hidden" id="AltItemCode2-@Cntr" value="@item.AltItemCode2" /></td>
+            <td id="AltPartCode3-@Cntr">@item.AltPartCode3<input type="hidden" id="AltItemCode3-@Cntr" value="@item.AltItemCode3" /></td>
+            <td id="AltPartCode4-@Cntr">@item.AltPartCode4<input type="hidden" id="AltItemCode4-@Cntr" value="@item.AltItemCode4" /></td>
+            <td id="AltPartCode5-@Cntr">@item.AltPartCode5<input type="hidden" id="AltItemCode5-@Cntr" value="@item.AltItemCode5" /></td>
             <td id="AltQty1-@Cntr">@item.AltQty1</td>
             <td id="AltQty2-@Cntr">@item.AltQty2</td>
+            <td id="AltQty3-@Cntr">@item.AltQty3</td>
+            <td id="AltQty4-@Cntr">@item.AltQty4</td>
+            <td id="AltQty5-@Cntr">@item.AltQty5</td>
+            <td id="UsedInStage-@Cntr">@item.UsedInStage</td>
+            <td id="CustomerJWRec-@Cntr">@item.CustomerJWRec</td>
+                     
             <td id="Scrap-@Cntr">@item.Scrap</td>
             <td id="GrossWeight-@Cntr">@item.GrossWeight</td>
             <td id="NetWeight-@Cntr">@item.NetWeight</td>
             <td id="Remark-@Cntr">@item.Remark</td>
+                                <td id="RunnerPartCode-@Cntr">@item.RunnerPartCode<input type="hidden" id="RunnerItemCode-@Cntr" value="@item.RunnerItemCode" /></td>
 
         </tr>
     }
 }
+            </tbody>
+        </table>
+    </div>
+</div>

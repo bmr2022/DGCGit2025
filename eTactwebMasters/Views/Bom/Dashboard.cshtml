@@ -69,7 +69,8 @@
             <h5>
                 Bom - <strong>Dashboard</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="BomForm" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                    <a asp-action="BomForm" asp-route-formKey="@ViewBag.formKey"
+                       class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                         <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                         Add New
                     </a>
@@ -85,6 +86,8 @@
                             <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
                                 <label asp-for="FGPartCode" class="form-label">FG Part Code</label>
                                 <input type="text" class="form-control" asp-for="FGPartCode" />
+                                <input type="hidden" id="formKey" value="@ViewBag.formKey" />
+
                             </div>
                             <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
                                 <label asp-for="FGItemName" class="form-label">FG Item Name</label>
@@ -105,12 +108,24 @@
                             </div>
                             <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12" style="width:150px;">
                                 <label asp-for="DashboardType"  class="form-label">Type</label>
-                                <select asp-for="DashboardType" id="DashboardType"  class="form-select" onchange="GetSearchData();">
+                                <select asp-for="DashboardType" id="DashboardType"  class="form-select" onchange="GetSearchData(page);">
                                     <option value="" disabled>-Select-</option>
-                                    <option value="Detail" selected>Detail</option>
-                                    <option value="Summary" >Summary</option>
+                                    <option value="DetailDashboard" >Detail</option>
+                                    <option value="Search" selected>Summary</option>
                                    
                                 </select>
+                            </div>
+                            <div class="col-md-1 col-sm-6 col-xs-6">
+                                <label for="PageSize" class="control-label">PageSize</label>
+                                <input asp-for="PageSize" list="pageSizes" class="form-control form-control-sm"
+                                       inputmode="numeric" pattern="[0-9]*"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g,'');" value="500" />
+
+                                <datalist id="pageSizes">
+                                    <option value="50"></option>
+                                    <option value="100"></option>
+                                    <option value="150"></option>
+                                </datalist>
                             </div>
                             <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
                                 <label class="form-label">Global search</label>
@@ -119,7 +134,7 @@
 
                             <div class="col-md-8 col-sm-6 col-xs-12 d-flex flex-wrap gap-2 mt-3 ms-3">
                                 <!-- Search -->
-                                <button class="btn btn-sm btn-outline-info" type="button" onclick="GetSearchData();">
+                                <button class="btn btn-sm btn-outline-info" type="button" onclick="GetSearchData(page);">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i> SEARCH
                                 </button>
 
@@ -129,7 +144,8 @@
                                 </button>
 
                                 <!-- Reset -->
-                                <a class="btn btn-sm btn-outline-danger" asp-controller="Bom" asp-action="Dashboard">
+                                <a class="btn btn-sm btn-outline-danger" asp-route-formKey="@ViewBag.formKey"
+                                   asp-controller="Bom" asp-action="Dashboard">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i> RESET
                                 </a>
 
@@ -152,7 +168,8 @@
         <div class="card-body">
             <div class="card overflow-auto">
                 <div class="card-body" id="divDashboardGrid">
-                    <partial name="_BomDashboardGrid" />
+                    <partial name="_BomDashboardDetailGrid" />
+                    @* <partial name="_BomDashboardGrid" /> *@
                 </div>
                
             </div>
@@ -216,9 +233,21 @@
         <span>Processing...</span>
     </div>
 </div>
+<style>
+    .ui-autocomplete {
+        z-index: 99999 !important;
+    }
+</style>
 @section Scripts
 {
     <script>
+        var page ;
+               $(document).on('click', '.page-btn', function (e) {
+                e.preventDefault();
+                page = $(this).data('page');
+
+        GetSearchData(page);
+            });
 
                  $('#RefreshBom').click(function () {
 
@@ -241,11 +270,190 @@
                 }
             });
         });
-        $(document).ready(function () {
+                function FillItems() {
+                   $("#FGPartCode").autocomplete({
+            minLength: 2,
+            source: function (request, response) {
+
+                $.ajax({
+                    url: '@Url.Action("FillItems", "Bom")',
+                    type: 'POST',
+                    data: {
+                        Flag: 'SEARCHFGPARTCODELIST',
+                        SearchString: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+                        if (obj.StatusCode === 200 && obj.Result && obj.Result.Table) {
+
+                            let data = $.map(obj.Result.Table, function (item) {
+                                return {
+                                    label: item.PartCode,
+                                    value: item.PartCode,
+                                    itemCode: item.Item_Code,
+                                    itemName: item.ItemName
+                                };
+                            });
+
+                            response(data);
+                        } else {
+                            response([]);
+                        }
+                    },
+                    error: function () {
+                        response([]);
+                    }
+                });
+            },
+
+            select: function (event, ui) {
+                $("#FGPartCode").val(ui.item.value);
+                $("#FGItemName").val(ui.item.itemName);
+                $("#ItemCode").val(ui.item.itemCode);
+                return false;
+            }
+        });
+                $("#FGItemName").autocomplete({
+            minLength: 2,
+            source: function (request, response) {
+
+                $.ajax({
+                    url: '@Url.Action("FillItems", "Bom")',
+                    type: 'POST',
+                    data: {
+                        Flag: 'SEARCHFGITEMCODELIST',
+                        SearchString: request.term
+                    },
+                    success: function (result) {
+
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.Result && obj.Result.Table) {
+
+                            let data = $.map(obj.Result.Table, function (item) {
+                                return {
+                                    label: item.ItemName,
+                                    value: item.ItemName,
+                                    partCode: item.PartCode,
+                                    itemCode: item.Item_Code
+                                };
+                            });
+
+                            response(data);
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            },
+
+            select: function (event, ui) {
+                $("#FGItemName").val(ui.item.value);
+                $("#FGPartCode").val(ui.item.partCode);
+                $("#ItemCode").val(ui.item.itemCode);
+                return false;
+            }
+        });
+
+                $("#RMPartCode").autocomplete({
+            minLength: 2,
+            source: function (request, response) {
+
+                $.ajax({
+                    url: '@Url.Action("FillItems", "Bom")',
+                    type: 'POST',
+                    data: {
+                        Flag: 'SEARCHRMPARTCODELIST',
+                        SearchString: request.term
+                    },
+                    success: function (result) {
+
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.Result && obj.Result.Table) {
+
+                            let data = $.map(obj.Result.Table, function (item) {
+                                return {
+                                    label: item.PartCode,
+                                    value: item.PartCode,
+                                    itemCode: item.Item_Code,
+                                    itemName: item.ItemName
+                                };
+                            });
+
+                            response(data);
+                        } else {
+                            response([]);
+                        }
+                    },
+                    error: function () {
+                        response([]);
+                    }
+                });
+            },
+
+            select: function (event, ui) {
+                $("#RMPartCode").val(ui.item.value);
+                $("#RMItemName").val(ui.item.itemName);
+                $("#RMItemCode").val(ui.item.itemCode);   // hidden field if any
+                return false;
+            }
+        });
+        $("#RMItemName").autocomplete({
+            minLength: 2,
+            source: function (request, response) {
+
+                $.ajax({
+                    url: '@Url.Action("FillItems", "Bom")',
+                    type: 'POST',
+                    data: {
+                        Flag: 'SEARCHRMITEMNAMELIST',
+                        SearchString: request.term
+                    },
+                    success: function (result) {
+
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.Result && obj.Result.Table) {
+
+                            let data = $.map(obj.Result.Table, function (item) {
+                                return {
+                                    label: item.ItemName,
+                                    value: item.ItemName,
+                                    partCode: item.PartCode,
+                                    itemCode: item.Item_Code
+                                };
+                            });
+
+                            response(data);
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            },
+
+            select: function (event, ui) {
+                $("#RMItemName").val(ui.item.value);
+                $("#RMPartCode").val(ui.item.partCode);
+                $("#RMItemCode").val(ui.item.itemCode);
+                return false;
+            }
+        });
+
+        }
+
+     var formKey=$('#formKey').val();
+             var uniqueKey=$('#uniqueKey').val();
+$(document).ready(function () 
+{
+    formKey=$('#formKey').val();
+            uniqueKey=$('#uniqueKey').val();
             $('#DashboardType').select2();
             // GetSummaryData();
-            GetSearchData();
-            var fgPartCodeBack = localStorage.getItem('FGPartCodeBack');
+            GetSearchData(page);
+             FillItems();
+             var fgPartCodeBack = localStorage.getItem('FGPartCodeBack');
             var fgItemNameBack = localStorage.getItem('FGItemNameBack');
             var rmPartCodeBack = localStorage.getItem('RMPartCodeBack');
             var rmItemNameBack = localStorage.getItem('RMItemNameBack');
@@ -272,25 +480,25 @@
             localStorage.removeItem('SummaryDetailBack');
             localStorage.removeItem('GlobalSearchBack');
         });
-        AutoComplete('VBOM', 'FGPartCode', 'FGPartCode', null);
-        AutoComplete('VBOM', 'FGItemName', 'FGItem', null);
-        AutoComplete('VBOM', 'RMPartCode', 'RMPartCode', null);
-        AutoComplete('VBOM', 'RMItemName', 'RMItemName', null);
+       // AutoComplete('VBOM', 'FGPartCode', 'FGPartCode', null);
+        // AutoComplete('VBOM', 'FGItemName', 'FGItem', null);
+        // AutoComplete('VBOM', 'RMPartCode', 'RMPartCode', null);
+        // AutoComplete('VBOM', 'RMItemName', 'RMItemName', null);
         AutoComplete('VBOM', 'BomRevNo', 'BomNo', null);
+      
+        // $('#FGPartCode').keyup(function () {
+        //     AutoComplete('VBOM', 'FGPartCode', 'FGPartCode', null);
+        // });
+        // $('#FGItemName').keyup(function () {
+        //     AutoComplete('VBOM', 'FGItemName', 'FGItem', null);
 
-        $('#FGPartCode').keyup(function () {
-            AutoComplete('VBOM', 'FGPartCode', 'FGPartCode', null);
-        });
-        $('#FGItemName').keyup(function () {
-            AutoComplete('VBOM', 'FGItemName', 'FGItem', null);
-
-        });
-        $('#RMPartCode').keyup(function () {
-            AutoComplete('VBOM', 'RMPartCode', 'RMPartCode', null);
-        });
-        $('#RMItemName').keyup(function () {
-            AutoComplete('VBOM', 'RMItemName', 'RMItemName', null);
-        });
+        // });
+        // $('#RMPartCode').keyup(function () {
+        //     AutoComplete('VBOM', 'RMPartCode', 'RMPartCode', null);
+        // });
+        // $('#RMItemName').keyup(function () {
+        //     AutoComplete('VBOM', 'RMItemName', 'RMItemName', null);
+        // });
         async function AutoComplete(Schema, CtrlID, ColName, SelectFunc) {
 
             $("#" + CtrlID).autocomplete({
@@ -316,18 +524,19 @@
                 select: function (e, i) {
                     $("#" + SelectFunc).val(i.item.value);
                 },
-                minLength: 1
+                minLength: 2
             });
         }
         $("#search-box").on("input", function () {
               
             var searchString = $(this).val().trim();
             var ReportType = $("#DashboardType").val();
+            var formKey = $("#formKey").val();
 
             $.ajax({
-                url: "/Bom/GlobalSearch?searchString=" + searchString + "&ReportType=" + ReportType,
+                url: "/Bom/GlobalSearch?searchString=" + searchString + "&ReportType=" + ReportType + "&formKey=" + formKey,
                 type: "GET",
-                data: { searchString: searchString },
+                data: { searchString: searchString, formKey: formKey },
                 success: function (data) {
                     console.log(data);
                     $('#divDashboardGrid').empty();
@@ -342,36 +551,37 @@
                 }
             });
         });
-        function loadPage(pageNumber) {
+        // function loadPage(pageNumber) {
 
 
-            var dashboardType = $('#DashboardType').val();
-            var url = '';
+        //     var dashboardType = $('#DashboardType').val();
+        //     var url = '';
 
-            if (dashboardType === "Summary") {
-                url = '@Url.Action("GetSearchData", "Bom")';
-            } else if (dashboardType === "Detail") {
-                url = '@Url.Action("GetDetailSearchData", "Bom")';
-            } 
+        //     if (dashboardType === "Summary") {
+        //         url = '@Url.Action("GetSearchData", "Bom")';
+        //     } else if (dashboardType === "Detail") {
+        //         url = '@Url.Action("GetDetailSearchData", "Bom")';
+        //     } 
 
-            var formData = $('#SParam').serializeArray();
-            formData.push({ name: 'pageNumber', value: pageNumber });
-            $.ajax({
-                type: 'GET',
-                url: url,
-                data: formData,
-                success: function (result) {
-                    $('#divDashboardGrid').empty();
-                    $('#divDashboardGrid').html(result);
-                    $('#totalRows').text($('#gateDashboardtable tr').length);
-                    //countAllTotal();
-                }
-            });
-        }
+        //     var formData = $('#SParam').serializeArray();
+        //     formData.push({ name: 'pageNumber', value: pageNumber });
+        //     $.ajax({
+        //         type: 'GET',
+        //         url: url,
+        //         data: formData,
+        //         success: function (result) {
+        //             $('#divDashboardGrid').empty();
+        //             $('#divDashboardGrid').html(result);
+        //             $('#totalRows').text($('#gateDashboardtable tr').length);
+        //             //countAllTotal();
+        //         }
+        //     });
+        // }
         function GetFormRights() {
             $.ajax({
                 url: "@Url.Action("GetFormRights", "Bom")",
                 type: "POST",
+                data:{formKey:formKey},
                 success: function (data) {
                     if (data != null) {
 
@@ -471,7 +681,7 @@
             $.ajax({
                 url: '@Url.Action("GetBomDetail", "Bom")',
                 type: "POST",
-                data: { FGC: FGC, BMNo: BMNo },
+                data: { FGC: FGC, BMNo: BMNo ,formKey:formKey},
                 success: function (data) {
 
                     $('#divModel').html(data);
@@ -502,6 +712,18 @@
             window.location.href = linkurl;
         }
 
+        function confirmEdit(event) {
+            event.preventDefault();
+
+            if (confirm("Are you sure you want to Edit this entry?")) {
+                var linkUrl = $(event.currentTarget).attr("href");
+
+                // Redirect without appending additional parameters manually
+                window.location.href = linkUrl;
+            }
+        }
+
+
         function confirmdelete(event) {
             event.preventDefault();
             if (confirm("are you sure you want to delete this entry?")) {
@@ -511,21 +733,28 @@
             }
         }
 
-        function GetSearchData() {
-            if ($('#DashboardType').val() == "Summary") {
-                GetSummaryData();
-            } else {
-                GetDetailData();
-            }
-        }
+        // function GetSearchData() {
+        //     if ($('#DashboardType').val() == "Summary") {
+        //         GetSummaryData();
+        //     } else {
+        //         GetDetailData();
+        //     }
+        // }
 
-        function GetSummaryData() {
-            var data = $('#SParam').serialize();
+            function GetSearchData(pageNo = 1) {
+                var formData = $('#SParam').serializeArray();
+    formData.push({ name: "PageNumber", value: pageNo });
+    formData.push({ name: "formKey", value: formKey });
+            //var data = $('#SParam').serialize();
             $.ajax({
                 url: '@Url.Action("GetSearchData", "Bom")',
                 type: "POST",
-                data: $('#SParam').serializeArray(),
+                    data: formData,
+                  beforeSend: function () {
+                        $('#ajaxLoader').show(); // ✅ Show loader
+                    },
                 success: function (data) {
+                      $('#ajaxLoader').hide();
                     $('#divDashboardGrid').empty().append(data);
                     GetFormRights();
                 },
@@ -539,12 +768,17 @@
         }
 
         function GetDetailData() {
-            var data = $('#SParam').serialize();
+                    var data = $('#SParam').serializeArray();
+                               formData.push({ name: "formKey", value: formKey });
             $.ajax({
                 url: '@Url.Action("GetDetailSearchData", "Bom")',
                 type: "POST",
-                data: $('#SParam').serializeArray(),
+                        data: data,
+                beforeSend: function () {
+                        $('#ajaxLoader').show(); // ✅ Show loader
+                    },
                 success: function (data) {
+                      $('#ajaxLoader').hide();
                     $('#divDashboardGrid').empty().append(data);
                     GetFormRights();
                 },
@@ -556,11 +790,15 @@
                 }
             });
         }
-        $('#sendToExcel').click(function () {
-            $("#bomTable").table2excel({
-                filename: "BomDetail.xls"
-            });
-        });
+        // $('#sendToExcel').click(function () {
+        //     $("#bomTable").table2excel({
+        //         filename: "BomDetail.xls"
+        //     });
+        // });
+          $('#sendToExcel').click(function () {
+               window.location.href = '/Bom/ExportBomDashboardToExcel';
+         });
+
 
         $(document).on("click", ".sortCol", function () {
             ;
@@ -642,7 +880,7 @@
         // });
 
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-table2excel@1.1.1/dist/jquery.table2excel.min.js"></script>
+    <script src="~/js/jquery.table2excel.min.js"></script>
 
 }
 

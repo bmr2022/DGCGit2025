@@ -3,9 +3,47 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models
 {
-    public class BomDashboard
+    public class BOMExcelRowError
     {
-        public DataTable? DTDashboard { get; set; }
+        public int RowNo { get; set; }
+        public string Message { get; set; }
+    }
+    public class DuplicateBomModel
+    {
+        public int RowNo { get; set; }
+
+        public string FGPartCode { get; set; }
+        public string RMPartCode { get; set; }
+
+        public int BomNo { get; set; }
+
+        public BomViewModel BomData { get; set; }
+    }
+    public class DuplicateDecision
+    {
+        public int RowNo { get; set; }
+
+        public bool Accept { get; set; }
+    }
+
+    public class BomTreeVM
+    {
+        public int FinishItemCode { get; set; }
+
+        public int ItemCode { get; set; }
+
+        public string ItemName { get; set; }
+
+        public decimal Qty { get; set; }
+
+        public int Level { get; set; }
+
+        public List<BomTreeVM> Children { get; set; }
+            = new List<BomTreeVM>();
+    }
+
+    public class BomFilter
+    {
         public string? FGItemName { get; set; }
         public int? FGItemCode { get; set; }
         //public int? fgitemcode { get; set; }
@@ -18,38 +56,77 @@ namespace eTactWeb.DOM.Models
         public IList<TextValue>? RMPartCodeList { get; set; }
         public string? BomRevNo { get; set; }
         public string? BomNo { get; set; }
+    }
+    public class BomDashboard
+    {
+        public IList<BomTreeVM>? BomTreeList { get; set; }
+        public BomFilter Filters { get; set; }
+        public List<DashboardColumn> Headers { get; set; }
+        public List<Dictionary<string, object>> Rows { get; set; }
+        public DataTable? DTDashboard { get; set; }
+        public string? FGItemName { get; set; }
+        public int FGItemCode { get; set; }
+        //public int? fgitemcode { get; set; }
+        public IList<TextValue>? FGItemNameList { get; set; }
+        public string? FGPartCode { get; set; }
+        public IList<TextValue>? FGPartCodeList { get; set; }
+        public string? RMItemName { get; set; }
+        public IList<TextValue>? RMItemNameList { get; set; }
+        public string? RMPartCode { get; set; }
+        public IList<TextValue>? RMPartCodeList { get; set; }
+        public int? BomRevNo { get; set; }
+        public string? BomNo { get; set; }
         public string? FGItem { get; set; }
         public string? BomName { get; set; }
         //public string? bomname { get; set; }
         public string? EntryDate { get; set; }
-       
+
+        public string? grade { get; set; }
         public decimal BomQty { get; set; }
         public string? DashboardType { get; set; }
         public string? EffectiveDate { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+
         public int TotalRecords { get; set; }
         public IList<BomModel>? BomList { get; set; }
+
     }
 
     public class BomModel : TimeStamp
     {
-      public int ? BMNo { get; set; }
+        public bool PN1 { get; set; }
+        public bool PN2 { get; set; }
+        public int? BMNo { get; set; }
+        public string? VendJwAdjustmentMandatory { get; set; }
+        public string? formKey { get; set; }
         public string? AICName1 { get; set; }
 
         public string? AICName2 { get; set; }
+        public string? AICName3 { get; set; }
+        public string? AICName4 { get; set; }
+        public string? AICName5 { get; set; }
 
         public int AltItemCode1 { get; set; }
 
         public int AltItemCode2 { get; set; }
+        public int AltItemCode3 { get; set; }
+        public int AltItemCode4 { get; set; }
+        public int AltItemCode5 { get; set; }
 
         public string? AltItemName1 { get; set; }
 
         public string? AltItemName2 { get; set; }
+        public string? AltItemName3 { get; set; }
+        public string? AltItemName4 { get; set; }
+        public string? AltItemName5 { get; set; }
 
         public decimal AltQty1 { get; set; }
 
         public decimal AltQty2 { get; set; }
+        public decimal AltQty3 { get; set; }
+        public decimal AltQty4 { get; set; }
+        public decimal AltQty5 { get; set; }
 
         public string? ApprovedBy { get; set; }
 
@@ -64,15 +141,18 @@ namespace eTactWeb.DOM.Models
         public int BomNo { get; set; }
         public string? FGPartCode { get; set; }
         public string? FGItemName { get; set; }
-          public string? RMPartCode { get; set; }
+        public string? RMPartCode { get; set; }
         public string? RMItemName { get; set; }
         public string? AltPartcode1 { get; set; }
         public string? AltPartcode2 { get; set; }
+        public string? AltPartcode3 { get; set; }
+        public string? AltPartcode4 { get; set; }
+        public string? AltPartcode5 { get; set; }
         public string? Byprodpartcode1 { get; set; }
         public string? ByprodItemName1 { get; set; }
         public int? ByprodItemCode1 { get; set; }
         public decimal? ByProdQty1 { get; set; }
-         public string? Byprodpartcode2 { get; set; }
+        public string? Byprodpartcode2 { get; set; }
         public string? ByprodItemName2 { get; set; }
         public decimal? ByProdQty2 { get; set; }
         public int? ByprodItemCode2 { get; set; }
@@ -117,6 +197,8 @@ namespace eTactWeb.DOM.Models
 
         [Required]
         public string? FinishedItemName { get; set; }
+        public string? FinishItemCodeText { get; set; }
+        public string? FinishedItemNameText { get; set; }
 
         [Required]
         public int FinishItemCode { get; set; }
@@ -126,6 +208,8 @@ namespace eTactWeb.DOM.Models
         public string? IssueToJOBwork { get; set; }
         public int ItemCode { get; set; }
         public string? ItemName { get; set; }
+        public string? ItemNameText { get; set; }
+        public string? PartCodeText { get; set; }
         public IList<TextValue>? NameList { get; set; }
         public decimal NetWt { get; set; }
         public string? PkgItem { get; set; }
@@ -135,9 +219,12 @@ namespace eTactWeb.DOM.Models
         public int RunnerItemCode { get; set; }
         public decimal RunnerQty { get; set; }
         public decimal Scrap { get; set; }
+        public string? RunnerPartCode { get; set; }
         public int SeqNo { get; set; }
         public string? UID { get; set; }
         public string? Unit { get; set; }
+        //public string? UsedInStage { get; set; }
+        //public string? CustomerJWRec { get; set; }
         public string? UsedStageId { get; set; }
         public IList<TextValue>? UsedStageList { get; set; }
         public int YearCode { get; set; }
@@ -158,22 +245,44 @@ namespace eTactWeb.DOM.Models
             };
 
         public IList<BomViewModel> ExcelDataList { get; set; }
+        public IList<BomViewModel> ALLDATAForUpdate { get; set; }
         public int TotalRecords { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public string? IPAddress { get; set; }
+        public decimal? TotalRmQtyForTotBomQty { get; set; }
+        public decimal Ldash { get; set; }
+        public decimal Adash { get; set; }
+        public decimal Bdash { get; set; }
+        public decimal AValue { get; set; }
+        public decimal BValue { get; set; }
+        public decimal LValue { get; set; }
+        public decimal DeltaE { get; set; }
+        public decimal? TotalAmount { get; set; }
+        public decimal? MaterialCost { get; set; }
+        public decimal? Rate { get; set; }
+        public decimal? Amount { get; set; }
+
+        public bool ShowColorFields { get; set; }
+        public string? AutoFillRMQtyFlag { get; set; }
+
     }
     public class BomViewModel // Excel Data
     {
-        public int SeqNo { get; set; }
+        public int? SeqNo { get; set; }
         public string? FGPartCode { get; set; }
         public string? FGItemName { get; set; }
-        public int FGItemCode { get; set; }
+        public string? UsedInStage { get; set; }
+        public string? CustomerJWRec { get; set; }
+        public string? RunnerPartCode { get; set; }
+        public int? FGItemCode { get; set; }
+        public int? RunnerItemCode { get; set; }
         public string? CustJwAdjustmentMandatory { get; set; }
         public string? RMPartCode { get; set; }
         public string? RMItemName { get; set; }
-        public int RMItemCode { get; set; }
+        public int? RMItemCode { get; set; }
         public string? BomName { get; set; }
-        public int BomNo { get; set; }
+        public int? BomNo { get; set; }
         public decimal? RMQty { get; set; }
         public string? RMUnit { get; set; }
         public string? Location { get; set; }
@@ -183,13 +292,24 @@ namespace eTactWeb.DOM.Models
         public int? AltItemCode1 { get; set; }
         public string? AltPartCode2 { get; set; }
         public int? AltItemCode2 { get; set; }
+        public string? AltPartCode3 { get; set; }
+        public int? AltItemCode3 { get; set; }
+        public string? AltPartCode4 { get; set; }
+        public int? AltItemCode4 { get; set; }
+        public string? AltPartCode5 { get; set; }
+        public int? AltItemCode5 { get; set; }
         public decimal? AltQty1 { get; set; }
         public decimal? AltQty2 { get; set; }
+        public decimal? AltQty3 { get; set; }
+        public decimal? AltQty4 { get; set; }
+        public decimal? AltQty5 { get; set; }
         public decimal? Scrap { get; set; }
         public decimal? GrossWeight { get; set; }
         public decimal? NetWeight { get; set; }
+        public decimal? BurnQty { get; set; }
         public string? Remark { get; set; }
         public string? ConstraintExists { get; set; }
+
     }
 
     public class ImportBomData
@@ -197,8 +317,8 @@ namespace eTactWeb.DOM.Models
         public int SeqNo { get; set; }
         public string FGPartCode { get; set; }
         public string RMPartCode { get; set; }
-        public float BomQty { get; set; }
-        public string   ScrapPartCode { get; set; }
-        public string   ByProdPartCode { get; set; }
+        public decimal BomQty { get; set; }
+        public string ScrapPartCode { get; set; }
+        public string ByProdPartCode { get; set; }
     }
 }
