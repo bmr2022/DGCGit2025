@@ -19,6 +19,9 @@ using System.Globalization;
 using System.Data;
 using System.Configuration;
 using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
+using System.Text.RegularExpressions;
 
 namespace eTactWeb.Controllers
 {
@@ -29,27 +32,79 @@ namespace eTactWeb.Controllers
         private readonly ILogger<ReqWithoutBomController> _logger;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration _iconfiguration;
+        public EncryptDecrypt EncryptDecrypt { get; }
         private readonly ConnectionStringService _connectionStringService;
-        public ReqWithoutBomController(ILogger<ReqWithoutBomController> logger, IDataLogic iDataLogic, IReqWithoutBOM iReqWithoutBOM, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration,ConnectionStringService connectionStringService)
+        public ReqWithoutBomController(ILogger<ReqWithoutBomController> logger, IDataLogic iDataLogic, IReqWithoutBOM iReqWithoutBOM, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IReqWithoutBOM = iReqWithoutBOM;
             _IWebHostEnvironment = iWebHostEnvironment;
             _iconfiguration = configuration;
+            EncryptDecrypt = encryptDecrypt;
             _connectionStringService = connectionStringService;
         }
+        bool IsValidBase64(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return false;
 
-        public IActionResult PrintReport(int EntryId, int YearCode = 0, string Type = "")
+            return Regex.IsMatch(value,
+                @"^[a-zA-Z0-9\+/]*={0,2}$",
+                RegexOptions.None);
+        }
+
+        public async Task<IActionResult> PrintReport(int EntryId, int YearCode = 0, string Type = "")
         {
             try
             {
+                //       int userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+                //       var rights = await _IReqWithoutBOM.GetFormRights(userID);
+                //       if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+                //       {
+                //           return RedirectToAction("Dashboard", "Home",new {formKey=formKey});
+                //       }
+
+                //       var table = rights.Result.Tables[0];
+                //       string encID = Request.Query["EntryId"].ToString();
+                //       string encYC = Request.Query["YearCode"].ToString();
+                //       if (!string.IsNullOrEmpty(encID) && encID != "0" &&
+                //!string.IsNullOrEmpty(encYC) && encYC != "0" &&
+                //IsValidBase64(encID) && IsValidBase64(encYC))
+                //       {
+                //           int decryptedID = EncryptDecrypt.DecodeID(encID);
+                //           int decryptedYC = EncryptDecrypt.DecodeID(encYC);
+
+                //           EntryId = decryptedID;
+                //           YearCode = decryptedYC;
+
+                //       }
+
+                //       bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+                //       bool optSave = Convert.ToBoolean(table.Rows[0]["OptSave"]);
+                //       bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+
+                //       if (!(optAll || optUpdate || optSave))
+                //       {
+                //           return RedirectToAction("Dashboard", "Home",new {formKey=formKey});
+                //       }
+
                 string contentRootPath = _IWebHostEnvironment.ContentRootPath;
                 string webRootPath = _IWebHostEnvironment.WebRootPath;
                 var webReport = new WebReport();
-               // string reportPath = Path.Combine(webRootPath, "ReqWithoutBom.frx");
-                string reportPath = Path.Combine(webRootPath, "ReqWithoutBOMF.frx");
-                webReport.Report.Load(reportPath);
+                // string reportPath = Path.Combine(webRootPath, "ReqWithoutBom.frx");
+                var ReportName = _IReqWithoutBOM.GetReportName();
+                //string reportPath = Path.Combine(webRootPath, "ReqWithoutBOMF.frx");
+                //webReport.Report.Load(reportPath);
+                if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+                {
+                    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+                }
+                else
+                {
+                    webReport.Report.Load(webRootPath + "\\ReqWithoutBOMF.frx"); // default report
+
+                }
                 //string my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
                 string my_connection_string = _connectionStringService.GetConnectionString();
                 webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
@@ -124,38 +179,98 @@ namespace eTactWeb.Controllers
             }
         }
 
-        [Route("{controller}/Index")]
-        public async Task<IActionResult> ReqWithoutBom()
-        {
-            ViewData["Title"] = "Requisition Without BOM Detail";
-            TempData.Clear();
-            HttpContext.Session.Remove("KeyReqWithoutBOMGrid");
-            var MainModel = new RequisitionWithoutBOMModel();
-           
+        //[Route("{controller}/Index")]
+        //public async Task<IActionResult> ReqWithoutBom(string formKey)
+        //{
+        //    ViewBag.formKey = formKey;
+        //    var uniqueKey = Guid.NewGuid().ToString();
+        //    ViewBag.uniqueKey = uniqueKey;
+        //    ViewData["Title"] = "Requisition Without BOM Detail";
+        //    TempData.Clear();
+        //    HttpContext.Session.Remove($"KeyReqWithoutBOMGrid_{uniqueKey}");
+        //    var MainModel = new RequisitionWithoutBOMModel();
 
-            MainModel = await BindModel(MainModel);
-            MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-            MainModel.Mode = "F";
-            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
-            string serializedGrid = JsonConvert.SerializeObject(MainModel);
-            HttpContext.Session.SetString("KeyReqWithoutBOMGrid", serializedGrid);
-            return View(MainModel);
-        }
+        //    MainModel = await BindModel(MainModel);
+        //    MainModel.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+        //    MainModel.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+        //    MainModel.Mode = "F";
+        //    MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+
+        //    string serializedGrid = JsonConvert.SerializeObject(MainModel);
+        //    HttpContext.Session.SetString($"KeyReqWithoutBOMGrid_{uniqueKey}", serializedGrid);
+        //    return View(MainModel);
+        //}
 
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> ReqWithoutBom(int ID, string Mode, int YC, string REQNo = "",string ItemName = "",string PartCode = "", string WorkCenter = "", string WONo = "", string DeptName = "", string DashboardType = "", string FromDate = "", string ToDate = "", string GlobalSearch = "")//, ILogger logger)
+        //public async Task<ActionResult> ReqWithoutBom(int ID, string Mode, int YC, string REQNo = "",string ItemName = "",string PartCode = "", string WorkCenter = "", string WONo = "", string DeptName = "", string DashboardType = "", string FromDate = "", string ToDate = "", string GlobalSearch = "")//, ILogger logger)
+        public async Task<ActionResult> ReqWithoutBom(int ID, int MenuId, string Mode, int YC, string formKey)//, ILogger logger)
         {
+            ViewBag.formKey = formKey;
+            var uniqueKey = Guid.NewGuid().ToString();
+            ViewBag.uniqueKey = uniqueKey;
+            int userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+            var rights = await _IReqWithoutBOM.GetFormRights(userID);
+            if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+            {
+                return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
+            }
+
+            var table = rights.Result.Tables[0];
+            string encID = Request.Query["ID"].ToString();
+            string encYC = Request.Query["YC"].ToString();
+
+            if (!string.IsNullOrEmpty(encID))
+            {
+                int decryptedID = EncryptDecrypt.DecodeID(encID);
+                int decryptedYC = EncryptDecrypt.DecodeID(encYC);
+                string decryptedMode = EncryptDecrypt.Decrypt(Mode);
+                ID = decryptedID;
+                Mode = decryptedMode;
+                YC = decryptedYC;
+
+            }
+
+            bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+            bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+            bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+            bool optSave = Convert.ToBoolean(table.Rows[0]["OptSave"]);
+
+
+            if (Mode == "U")
+            {
+                if (!(optUpdate))
+                {
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
+                }
+            }
+            else if (Mode == "V")
+            {
+                if (!(optView))
+                {
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
+                }
+            }
+            else if (ID <= 0)
+            {
+                if (!optSave)
+                {
+                    return RedirectToAction("DashBoard", "ReqWithoutBom", new { formKey = formKey });
+                }
+                //if (!(optAll || optSave))
+                //{
+                //    return RedirectToAction("Dashboard", "Home",new {formKey=formKey});
+                //}
+
+            }
             //_logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
-            TempData.Clear();
+            //TempData.Clear();
             var MainModel = new RequisitionWithoutBOMModel();
-            MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-            MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode")); 
-            HttpContext.Session.Remove("KeyReqWithoutBOMGrid");
+
+            MainModel.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+            HttpContext.Session.Remove($"KeyReqWithoutBOMGrid_{uniqueKey}");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IReqWithoutBOM.GetViewByID(ID, YC).ConfigureAwait(false);
@@ -164,7 +279,7 @@ namespace eTactWeb.Controllers
                 MainModel = await BindModel(MainModel).ConfigureAwait(false);
 
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.ReqDetailGrid);
-                HttpContext.Session.SetString("KeyReqWithoutBOMGrid", serializedGrid);
+                HttpContext.Session.SetString($"KeyReqWithoutBOMGrid_{uniqueKey}", serializedGrid);
             }
             else
             {
@@ -172,27 +287,31 @@ namespace eTactWeb.Controllers
             }
             if (Mode != "U")
             {
-                MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.CreatedByName = HttpContext.Session.GetString("EmpName");
+                MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.CreatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                 MainModel.CreatedOn = DateTime.Now;
             }
             else
             {
-                //MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                // MainModel.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                //MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                // MainModel.UpdatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                 // MainModel.UpdatedOn = DateTime.Now;
             }
 
-            MainModel.FromDateBack = FromDate;
-            MainModel.ToDateBack = ToDate;
-            MainModel.REQNoBack = REQNo;
-            MainModel.PartCodeBack = PartCode;
-            MainModel.ItemNameBack = ItemName;
-            MainModel.WorkCenterBack = WorkCenter;
-            MainModel.WorkOrderNoback = WONo;
-            MainModel.DeptNameBack = DeptName;
-            MainModel.DashboardTypeBack = DashboardType;
-            MainModel.GlobalSearchBack = GlobalSearch;
+            MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"FromDate_{formKey}"));
+            MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"ToDate_{formKey}"));
+
+            //MainModel.FromDateBack = FromDate;
+            //MainModel.ToDateBack = ToDate;
+            //MainModel.REQNoBack = REQNo;
+            //MainModel.PartCodeBack = PartCode;
+            //MainModel.ItemNameBack = ItemName;
+            //MainModel.WorkCenterBack = WorkCenter;
+            //MainModel.WorkOrderNoback = WONo;
+            //MainModel.DeptNameBack = DeptName;
+            //MainModel.DashboardTypeBack = DashboardType;
+            //MainModel.GlobalSearchBack = GlobalSearch;
+            MainModel.MenuId = MenuId;
             return View(MainModel);
         }
 
@@ -204,8 +323,11 @@ namespace eTactWeb.Controllers
             try
             {
                 var ReqGrid = new DataTable();
+                var formKey = model.formKey;
+                var uniqueKey = model.uniqueKey;
+                var MenuId = model.MenuId;
                 var mainmodel2 = model;
-                string modelJson = HttpContext.Session.GetString("KeyReqWithoutBOMGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyReqWithoutBOMGrid_{uniqueKey}");
                 List<RequisitionDetail> RequisitionDetail = new List<RequisitionDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -225,58 +347,98 @@ namespace eTactWeb.Controllers
                     //model.CreatedBy = Constants.UserID;
                     if (model.Mode == "U")
                     {
-                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        model.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                        model.UpdatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                     }
-                    string IPAddress = HttpContext.Session.GetString("ClientIP");
-                    ReqGrid = GetDetailTable(RequisitionDetail,model.Mode);
-                    model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
-                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                    string IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
+                    ReqGrid = GetDetailTable(RequisitionDetail, model.Mode);
+                    model.EntryByMachineName = HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+                    model.IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
                     var Result = await _IReqWithoutBOM.SaveRequisition(model, ReqGrid, IPAddress);
 
                     if (Result != null)
                     {
-                        if ((Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)||(Result.StatusText == "Completed is Y" && Result.StatusCode == HttpStatusCode.Accepted))
+                        if ((Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK) || (Result.StatusText == "Completed is Y" && Result.StatusCode == HttpStatusCode.Accepted))
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
+                            HttpContext.Session.Remove($"KeyReqWithoutBOMGrid_{uniqueKey}");
+                            //if (ShouldPrint == "true")
+                            //{
+                            //    return RedirectToAction("PrintReport", new { EntryId = model.EntryId, YearCode = model.YearCode });
+                            //}
+                            //var MainModel = new RequisitionWithoutBOMModel();
+                            //MainModel = await BindModel(MainModel);
+                            //HttpContext.Session.Remove($"KeyReqWithoutBOMGrid_{uniqueKey}");
+                            //return RedirectToAction(nameof(ReqWithoutBom));
                             if (ShouldPrint == "true")
                             {
-                                return RedirectToAction("PrintReport", new { EntryId = model.EntryId, YearCode = model.YearCode });
+                                return Json(new
+                                {
+                                    status = "Success",
+                                    entryId = model.EntryId,
+                                    yearCode = model.YearCode
+                                });
                             }
-                            var MainModel = new RequisitionWithoutBOMModel();
-                            MainModel = await BindModel(MainModel);
-                            HttpContext.Session.Remove("KeyReqWithoutBOMGrid");
-                            return RedirectToAction(nameof(ReqWithoutBom));
                         }
-                        if ((Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted) || (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted))
+                        else if ((Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted) || (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted))
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
+                            HttpContext.Session.Remove($"KeyReqWithoutBOMGrid_{uniqueKey}");
+                            //if (ShouldPrint == "true")
+                            //{
+                            //    return RedirectToAction("PrintReport", new { EntryId = model.EntryId, YearCode = model.YearCode });
+                            //}
+                            //var MainModel = new RequisitionWithoutBOMModel();
+                            //MainModel = await BindModel(MainModel);
+
+                            //return RedirectToAction(nameof(ReqWithoutBom));
                             if (ShouldPrint == "true")
                             {
-                                return RedirectToAction("PrintReport", new { EntryId = model.EntryId, YearCode = model.YearCode });
+                                return Json(new
+                                {
+                                    status = "Success",
+                                    entryId = model.EntryId,
+                                    yearCode = model.YearCode
+                                });
                             }
-                            var MainModel = new RequisitionWithoutBOMModel();
-                            MainModel = await BindModel(MainModel);
-                            HttpContext.Session.Remove("KeyReqWithoutBOMGrid");
-                            return RedirectToAction(nameof(ReqWithoutBom));
                         }
-                        if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                        else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
                             ViewBag.isSuccess = false;
                             TempData["500"] = "500";
                             _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                             //return View("Error", Result);
+                            return Json(new
+                            {
+                                status = "error",
+                                message = "something went wrong"
+                            });
                         }
-                        if (Result.StatusCode== System.Net.HttpStatusCode.BadRequest)
+                        else if (!string.IsNullOrEmpty(Result.StatusText))
+                        {
+                            // If SP returned a message (like adjustment error)
+                            TempData["ErrorMessage"] = Result.StatusText;
+
+                            return Json(new
+                            {
+                                status = "error",
+                                message = Result.StatusText
+                            });
+                            //return RedirectToAction("PendingMaterialToIssueThrBOM", "PendingMaterialToIssueThrBOM");
+                            //return View(model);
+                        }
+                        else if (Result.StatusCode == System.Net.HttpStatusCode.BadRequest)
                         {
                             TempData["ErrorMessage"] = Result.StatusText;
                         }
-                       
+
                     }
-                    mainmodel2 = await BindModel(mainmodel2);
-                    return View(mainmodel2);
+                    //mainmodel2 = await BindModel(mainmodel2);
+                    //return View(mainmodel2);
+                    return Json(new { status = "Success" });
+
                 }
             }
             catch (Exception ex)
@@ -306,9 +468,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetFormRights()
+        public async Task<JsonResult> GetFormRights(string formKey)
         {
-            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var JSON = await _IReqWithoutBOM.GetFormRights(userID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -319,14 +481,33 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> Dashboard(string FromDate, string Todate, string Flag, string REQNo = "", string WCName = "", string WONo="", string DepName="", string PartCode="", string ItemName="")
+        public async Task<IActionResult> Dashboard(int MenuId, string FromDate, string Todate, string Flag, string formKey)
         {
             try
             {
-                HttpContext.Session.Remove("KeyReqWithoutBOMGrid");
+                ViewBag.formKey = formKey;
+                var uniqueKey = Guid.NewGuid().ToString();
+                ViewBag.uniqueKey = uniqueKey;
+                int userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+                var rights = await _IReqWithoutBOM.GetFormRights(userID);
+                if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+                {
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
+                }
+                var table = rights.Result.Tables[0];
+
+                bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+                bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+                bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+                bool optDelete = Convert.ToBoolean(table.Rows[0]["OptDelete"]);
+                if (!(optAll || optView || optUpdate || optDelete))
+                {
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
+                }
+                HttpContext.Session.Remove($"KeyReqWithoutBOMGrid_{uniqueKey}");
                 var model = new ReqMainDashboard();
                 model.Mode = "Summary";
-                model.CC = HttpContext.Session.GetString("Branch");
+                model.CC = HttpContext.Session.GetString($"Branch_{formKey}");
                 var Result = await _IReqWithoutBOM.GetDashboardData(FromDate, Todate, Flag).ConfigureAwait(true);
 
                 if (Result != null)
@@ -343,18 +524,14 @@ namespace eTactWeb.Controllers
                         model.ReqMainDashboard = CommonFunc.DataTableToList<RWBDashboard>(DT, "ReqDashboard");
                     }
                 }
-               if(Flag != "True")
+                if (Flag != "True")
                 {
                     model.FromDate1 = FromDate;
                     model.ToDate1 = Todate;
-                    model.REQNo = REQNo;
-                    model.WorkCenter = WCName;
-                    model.WONo = WONo;
-                    model.PartCode = PartCode;
-                    model.ItemName = ItemName;
+
                 }
-               // if (Flag == "True")
-                    return View(model);
+                // if (Flag == "True")
+                return View(model);
                 //else
                 //{
                 //    return PartialView("_ReqWithoutBomDashboardGrid", model);
@@ -365,13 +542,13 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YC,string FromDate, string ToDate, string REQNo, string WCName, string WONo, string DepName, string PartCode, string ItemName)
+        public async Task<IActionResult> DeleteByID(int MenuId, string formKey, int ID, int YC, string FromDate, string ToDate, string REQNo, string WCName, string WONo, string DepName, string PartCode, string ItemName)
         {
-            int UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-           var EntryByMachineName = Environment.MachineName;
-            var IPAddress = HttpContext.Session.GetString("ClientIP");
+            int UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+            var EntryByMachineName = Environment.MachineName;
+            var IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
             var Result = await _IReqWithoutBOM.DeleteByID(ID, YC, UpdatedBy, EntryByMachineName, IPAddress);
-            var CC = HttpContext.Session.GetString("Branch");
+            var CC = HttpContext.Session.GetString($"Branch_{formKey}");
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {
                 ViewBag.isSuccess = true;
@@ -384,11 +561,11 @@ namespace eTactWeb.Controllers
             }
             else
             {
-            //    ViewBag.isSuccess = false;
-            //    TempData["500"] = "500";
-            //}
-            //if (Result.StatusCode == System.Net.HttpStatusCode.BadRequest)
-            //{
+                //    ViewBag.isSuccess = false;
+                //    TempData["500"] = "500";
+                //}
+                //if (Result.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                //{
                 TempData["ErrorMessage"] = Result.StatusText;
             }
             DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
@@ -396,7 +573,7 @@ namespace eTactWeb.Controllers
             DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
             string formattedToDate = toDt.ToString("dd/MMM/yyyy 00:00:00");
 
-            return RedirectToAction("Dashboard", new { FromDate = formattedFromDate,ToDate = formattedToDate,Flag = "False", REQNo=REQNo, WCName=WCName, WONo=WONo, DepName=DepName, PartCode=PartCode, ItemName=ItemName, BranchName=CC});
+            return RedirectToAction("Dashboard", new { MenuId = MenuId, FromDate = formattedFromDate, ToDate = formattedToDate, Flag = "False", REQNo = REQNo, WCName = WCName, WONo = WONo, DepName = DepName, PartCode = PartCode, ItemName = ItemName, BranchName = CC });
         }
         private static DataTable GetDetailTable(IList<RequisitionDetail> DetailList, string mode)
         {
@@ -424,14 +601,15 @@ namespace eTactWeb.Controllers
             ReqGrid.Columns.Add("CostCenterId", typeof(int));
             ReqGrid.Columns.Add("ItemLocation", typeof(string));
             ReqGrid.Columns.Add("ItemBinRackNo", typeof(string));
+            ReqGrid.Columns.Add("ItemRemark", typeof(string));
 
             foreach (var Item in DetailList)
             {
                 DateTime expDt = new DateTime();
-                if(mode != "U")
+                if (mode != "U")
                 {
-                if (Item.ExpectedDate != null)
-                    expDt = DateTime.ParseExact(Item.ExpectedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    if (Item.ExpectedDate != null)
+                        expDt = DateTime.ParseExact(Item.ExpectedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 }
                 ReqGrid.Rows.Add(
                     new object[]
@@ -457,16 +635,17 @@ namespace eTactWeb.Controllers
                     Item.ProjectYearCode,
                     Item.CostCenterId,
                     Item.ItemLocation,
-                    Item.ItemBinRackNo
+                    Item.ItemBinRackNo,
+                    Item.ItemRemark
                     });
             }
             ReqGrid.Dispose();
             return ReqGrid;
         }
-        public async Task<IActionResult> DeleteItemRow(int SeqNo)
+        public async Task<IActionResult> DeleteItemRow(int SeqNo, string uniqueKey)
         {
             var MainModel = new RequisitionWithoutBOMModel();
-            string modelJson = HttpContext.Session.GetString("KeyReqWithoutBOMGrid");
+            string modelJson = HttpContext.Session.GetString($"KeyReqWithoutBOMGrid_{uniqueKey}");
             List<RequisitionDetail> RequisitionDetail = new List<RequisitionDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
@@ -488,27 +667,20 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.ReqDetailGrid = RequisitionDetail;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
 
                 if (RequisitionDetail.Count == 0)
                 {
-                    HttpContext.Session.Remove("KeyReqWithoutBOMGrid");
+                    HttpContext.Session.Remove($"KeyReqWithoutBOMGrid_{uniqueKey}");
                 }
-                HttpContext.Session.SetString("KeyReqWithoutBOMGrid", JsonConvert.SerializeObject(RequisitionDetail));
+                HttpContext.Session.SetString($"KeyReqWithoutBOMGrid_{uniqueKey}", JsonConvert.SerializeObject(RequisitionDetail));
             }
             return PartialView("_ReqWithoutBomGrid", MainModel);
         }
-        public IActionResult AddReqWithoutBomDetail(RequisitionDetail model)
+        public IActionResult AddReqWithoutBomDetail(RequisitionDetail model, string uniqueKey)
         {
             try
             {
-                string modelJson = HttpContext.Session.GetString("KeyReqWithoutBOMGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyReqWithoutBOMGrid_{uniqueKey}");
                 List<RequisitionDetail> GridDetail = new List<RequisitionDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -528,7 +700,8 @@ namespace eTactWeb.Controllers
                         if (model.CostCenterName == "-Select-")
                         {
                             model.CostCenterName = "NA";
-                        }if (model.StoreName == "-Select-")
+                        }
+                        if (model.StoreName == "-Select-")
                         {
                             model.StoreName = "NA";
                         }
@@ -566,7 +739,7 @@ namespace eTactWeb.Controllers
                         Size = 1024,
                     };
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.ReqDetailGrid);
-                    HttpContext.Session.SetString("KeyReqWithoutBOMGrid", serializedGrid);
+                    HttpContext.Session.SetString($"KeyReqWithoutBOMGrid_{uniqueKey}", serializedGrid);
                 }
                 else
                 {
@@ -658,10 +831,10 @@ namespace eTactWeb.Controllers
                 {
                     if (string.IsNullOrEmpty(model.Mode) || (model.Mode != "U" && model.Mode != "V"))
                         if (row["Store_Type"]?.ToString() == "MAIN STORE")
-                    {
-                       
-                        model.StoreId = Convert.ToInt32(row["EntryID"]);
-                    }
+                        {
+
+                            model.StoreId = Convert.ToInt32(row["EntryID"]);
+                        }
                     _List.Add(new TextValue
                     {
                         Value = row["EntryID"].ToString(),
@@ -708,7 +881,7 @@ namespace eTactWeb.Controllers
             var JSON = await _IReqWithoutBOM.FillWorkCenter();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
-        } 
+        }
         public async Task<JsonResult> FillStore()
         {
             var JSON = await _IReqWithoutBOM.FillStore();
@@ -721,11 +894,16 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetSearchData(string REQNo,string WCName,string WONo,string DepName,string PartCode,string ItemName,string BranchName, string FromDate, string ToDate)
+        public async Task<IActionResult> GetSearchData(string formKey, string uniqueKey, string REQNo, string WCName, string WONo, string DepName, string PartCode, string ItemName, string BranchName, string FromDate, string ToDate)
         {
+            int userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             //model.Mode = "Search";
             var model = new RWBDashboard();
-            model = await _IReqWithoutBOM.GetDashboardData(REQNo,WCName,WONo, DepName, PartCode, ItemName,BranchName, FromDate, ToDate);
+            model.formKey = formKey;
+            model.uniqueKey = uniqueKey;
+            ViewBag.formKey = formKey;
+
+            model = await _IReqWithoutBOM.GetDashboardData(REQNo, WCName, WONo, DepName, PartCode, ItemName, BranchName, FromDate, ToDate, userID);
             model.Mode = "Summary";
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
@@ -733,15 +911,19 @@ namespace eTactWeb.Controllers
                 SlidingExpiration = TimeSpan.FromMinutes(55),
                 Size = 1024,
             };
+
             string serializedGrid = JsonConvert.SerializeObject(model.ReqMainDashboard);
             HttpContext.Session.SetString("KeyRWBList", serializedGrid);
             return PartialView("_ReqWithoutBomDashboardGrid", model);
         }
-        public async Task<IActionResult> GetDetailData(string REQNo,string WCName,string WONo,string DepName,string PartCode,string ItemName,string BranchName, string FromDate, string ToDate)
+        public async Task<IActionResult> GetDetailData(string formKey, string uniqueKey, string REQNo, string WCName, string WONo, string DepName, string PartCode, string ItemName, string BranchName, string FromDate, string ToDate)
         {
             //model.Mode = "Search";
             var model = new RWBDashboard();
-            model = await _IReqWithoutBOM.GetDetailData(REQNo,WCName,WONo, DepName, PartCode, ItemName,BranchName, FromDate, ToDate);
+            model.formKey = formKey;
+            model.uniqueKey = uniqueKey;
+            ViewBag.formKey = formKey;
+            model = await _IReqWithoutBOM.GetDetailData(REQNo, WCName, WONo, DepName, PartCode, ItemName, BranchName, FromDate, ToDate);
             model.Mode = "Detail";
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
@@ -765,16 +947,16 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult EditItemRow(int SeqNo)
+        public IActionResult EditItemRow(int SeqNo, string uniqueKey)
         {
             var model = new RequisitionWithoutBOMModel();
-            string modelJson = HttpContext.Session.GetString("KeyReqWithoutBOMGrid");
+            string modelJson = HttpContext.Session.GetString($"KeyReqWithoutBOMGrid_{uniqueKey}");
             List<RequisitionDetail> RequisitionDetail = new List<RequisitionDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
                 RequisitionDetail = JsonConvert.DeserializeObject<List<RequisitionDetail>>(modelJson);
             }
-            
+
             var SSGrid = RequisitionDetail.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(SSGrid);
             return Json(JsonString);

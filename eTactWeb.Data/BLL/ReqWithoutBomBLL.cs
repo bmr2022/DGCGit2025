@@ -13,14 +13,14 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL
 {
-    public class ReqWithoutBomBLL:IReqWithoutBOM
+    public class ReqWithoutBomBLL : IReqWithoutBOM
     {
         private readonly IDataLogic _DataLogicDAL;
         private readonly ReqWithoutBomDAL _ReqWithoutBomDAL;
         public ReqWithoutBomBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _ReqWithoutBomDAL = new ReqWithoutBomDAL(configuration, iDataLogic,connectionStringService);
+            _ReqWithoutBomDAL = new ReqWithoutBomDAL(configuration, iDataLogic, connectionStringService);
         }
         public async Task<ResponseResult> AutoFillitem(string Flag, string TF, string SearchItemCode, string SearchPartCode)
         {
@@ -76,33 +76,37 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ResponseResult> FillTotalStock(int ItemCode, int Store)
         {
-            return await _ReqWithoutBomDAL.FillTotalStock(ItemCode,Store);
+            return await _ReqWithoutBomDAL.FillTotalStock(ItemCode, Store);
         }
         public async Task<ResponseResult> SaveRequisition(RequisitionWithoutBOMModel model, DataTable ReqGrid, string IPAddress)
         {
-            return await _ReqWithoutBomDAL.SaveRequisition(model,ReqGrid,IPAddress);
+            return await _ReqWithoutBomDAL.SaveRequisition(model, ReqGrid, IPAddress);
         }
 
         public async Task<ResponseResult> GetDashboardData(string FromDate, string Todate, string Flag)
         {
-            return await _ReqWithoutBomDAL.GetDashboardData(FromDate,Todate, Flag);
+            return await _ReqWithoutBomDAL.GetDashboardData(FromDate, Todate, Flag);
         }
-        public async Task<RWBDashboard> GetDashboardData(string REQNo, string WCName,string WONO, string DepName, string PartCode, string ItemName, string BranchName, string FromDate, string ToDate)
+        public async Task<RWBDashboard> GetDashboardData(string REQNo, string WCName, string WONO, string DepName, string PartCode, string ItemName, string BranchName, string FromDate, string ToDate, int userID)
         {
-            return await _ReqWithoutBomDAL.GetDashboardData(REQNo, WCName,WONO, DepName, PartCode, ItemName, BranchName, FromDate, ToDate);
+            return await _ReqWithoutBomDAL.GetDashboardData(REQNo, WCName, WONO, DepName, PartCode, ItemName, BranchName, FromDate, ToDate, userID);
         }
-        public async Task<RWBDashboard> GetDetailData(string REQNo, string WCName,string WONO, string DepName, string PartCode, string ItemName, string BranchName, string FromDate, string ToDate)
+        public async Task<RWBDashboard> GetDetailData(string REQNo, string WCName, string WONO, string DepName, string PartCode, string ItemName, string BranchName, string FromDate, string ToDate)
         {
-            return await _ReqWithoutBomDAL.GetDetailData(REQNo, WCName,WONO, DepName, PartCode, ItemName, BranchName, FromDate, ToDate);
+            return await _ReqWithoutBomDAL.GetDetailData(REQNo, WCName, WONO, DepName, PartCode, ItemName, BranchName, FromDate, ToDate);
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC,int UpdatedBy, string EntryByMachineName,string IPAddress)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, int UpdatedBy, string EntryByMachineName, string IPAddress)
         {
-            return await _ReqWithoutBomDAL.DeleteByID(ID, YC, UpdatedBy, EntryByMachineName,   IPAddress);
+            return await _ReqWithoutBomDAL.DeleteByID(ID, YC, UpdatedBy, EntryByMachineName, IPAddress);
         }
 
         public async Task<RequisitionWithoutBOMModel> GetViewByID(int ID, int YearCode)
         {
             return await _ReqWithoutBomDAL.GetViewByID(ID, YearCode);
+        }
+        public async Task<ResponseResult> GetReportName()
+        {
+            return await _ReqWithoutBomDAL.GetReportName();
         }
     }
 }

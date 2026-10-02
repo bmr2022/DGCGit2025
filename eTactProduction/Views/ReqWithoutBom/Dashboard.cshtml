@@ -10,7 +10,7 @@
             <h5>
                 Requisition Without BOM - <strong>Dashboard</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="ReqWithoutBom" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="ReqWithoutBom" asp-route-formKey="@ViewBag.formKey"  class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                         Add New
                     </a>
@@ -29,6 +29,8 @@
                                 <input asp-for="ToDate1" type="hidden" class="form-control" />
                                 <input asp-for="EntryId" type="hidden" class="form-control" />
                                 <input asp-for="YearCode" type="hidden" class="form-control" />
+                                <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                                <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                             </div>
                             <div class="col-lg">
                                 <label asp-for="ItemName" class="form-label">Item Name</label>
@@ -149,8 +151,11 @@
         var GlobalSearchBack = "";
         var FromDateBack = "";
         var ToDateBack = "";
+          var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
          $(function () {
-
+              formKey=$('#formKey').val();
+              uniqueKey=$('#uniqueKey').val();
             FromDateBack = sessionStorage.getItem('FromDateBack');
             ToDateBack = sessionStorage.getItem('ToDateBack');
             var REQNoBack = sessionStorage.getItem('REQNoBack');
@@ -543,7 +548,7 @@
             $.ajax({
                 url: '@Url.Action("GetSearchData")',
                 type: "POST",
-                data: { REQNo: $('#REQNo').val(), WCName: $('#WorkCenter').val(), WONo: $('#WONo').val(), DepName: $('#DeptName').val(), PartCode: $('#PartCode').val(), ItemName: $('#ItemName').val(), BranchName: $('#CC').val(), FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val() },
+                data: {formKey:formKey,uniqueKey:uniqueKey, REQNo: $('#REQNo').val(), WCName: $('#WorkCenter').val(), WONo: $('#WONo').val(), DepName: $('#DeptName').val(), PartCode: $('#PartCode').val(), ItemName: $('#ItemName').val(), BranchName: $('#CC').val(), FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val() },
                 async:false,
                 success: function (data) {
                      
@@ -589,7 +594,7 @@
             $.ajax({
                 url: '@Url.Action("GetDetailData","ReqWithoutBom")',
                 type: "POST",
-                data: { REQNo: $('#REQNo').val(), WCName: $('#WorkCenter').val(), WONo: $('#WONo').val(), DepName: $('#DeptName').val(), PartCode: $('#PartCode').val(), ItemName: $('#ItemName').val(), BranchName: $('#CC').val(), FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val() },
+                data: {formKey:formKey,uniqueKey:uniqueKey, REQNo: $('#REQNo').val(), WCName: $('#WorkCenter').val(), WONo: $('#WONo').val(), DepName: $('#DeptName').val(), PartCode: $('#PartCode').val(), ItemName: $('#ItemName').val(), BranchName: $('#CC').val(), FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val() },
                 async: false,
                 success: function (data) {
 
@@ -658,6 +663,7 @@
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
                 async: false,
+                data:{formKey:formKey},
                 success: function (data) {
                     if (data != null) {
 
@@ -766,8 +772,8 @@
 
     </script>
     <script src="~/Scripts/table2excel.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="~/js/jspdf.umd.min.js"></script>
+    <script src="~/js/jspdf.plugin.autotable.min.js"></script>
 
 }
 

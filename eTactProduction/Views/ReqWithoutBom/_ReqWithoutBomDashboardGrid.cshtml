@@ -1,9 +1,18 @@
 ﻿@model eTactWeb.DOM.Models.RWBDashboard
 @using Microsoft.AspNetCore.Http
 @using System.Reflection.PortableExecutable
+@using eTactWeb.Data.Common
+@inject EncryptDecrypt encryptDecrypt
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+    var context = HttpContextAccessor.HttpContext;
+    string formKey =
+           context.Request.Query["formKey"].FirstOrDefault()
+        ?? context.Request.Headers["FormKey"].FirstOrDefault()
+        ?? ViewBag.formKey
+        // ?? Model.formKey
+        ?? "";
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"YearCode_{formKey}"));
 }
 <style>
     .sort-icon {
@@ -73,7 +82,7 @@ else
                                         <input type="hidden" id="PendQty-@Cntr" value="@item.TotalPendQty" />
                                         <input type="hidden" id="Cancel-@Cntr" value="@item.Cancel" />
                                         <div id="printData-@Cntr">
-                                            <a class="table-link link-dark" target="_blank"  asp-action="PrintReport" asp-route-Mode="U" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.YearCode" asp-route-Type="Summary" target="_blank">
+                                            <a class="table-link link-dark" target="_blank" asp-action="PrintReport" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.YearCode" asp-route-Type="Summary" target="_blank">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
@@ -81,17 +90,17 @@ else
                                             </a>
                                         </div>
                                         <div id="viewCursorDiv-@Cntr">
-                                            <a class="table-link link-success" asp-action="ReqWithoutBom" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event);">
+                                            <a class="table-link link-success" asp-route-formKey="@formKey" asp-action="ReqWithoutBom" asp-route-Mode="@encryptDecrypt.Encrypt("V")" asp-route-ID="@EncryptDecrypt.EncodeID(@item.EntryId)" asp-route-YC="@EncryptDecrypt.EncodeID(@item.YearCode)">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
                                                 </span>
                                             </a>
                                         </div>
-                                        @if (item.TotalPendQty >= item.TotalReqQty && item.Cancel == "N" && item.Completed == "N" || item.YearCode == yearCode)
+                                        @if (item.TotalPendQty >= item.TotalReqQty && item.Cancel == "N" && item.Completed == "N" && item.YearCode == yearCode)
                                         {
                                             <div id="editCursorDiv-@Cntr">
-                                                <a class="table-link link-primary" asp-action="ReqWithoutBom" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event);">
+                                                <a class="table-link link-primary" asp-route-formKey="@formKey"  asp-action="ReqWithoutBom" asp-route-Mode="@encryptDecrypt.Encrypt("U")" asp-route-ID="@EncryptDecrypt.EncodeID(@item.EntryId)" asp-route-YC="@EncryptDecrypt.EncodeID(@item.YearCode)" onclick=" confirmEdit(event) ;">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -99,7 +108,7 @@ else
                                                 </a>
                                             </div>
                                             <div id="deleteCursorDiv-@Cntr">
-                                                <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                                <a class="table-link link-danger" onclick="confirmDelete(event)" asp-route-formKey="@formKey"  asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -180,6 +189,18 @@ else
     <center><strong>TOTAL ROWS : <span id="totalRows" style="margin-right: 40px;"></span></strong><strong>TOTAL REQ QTY : <span id="totalReqQty"></span></strong></center>
 
 }
+<script>
+    function confirmEdit(event) {
+        event.preventDefault();
+
+        if (confirm("Are you sure you want to Edit this entry?")) {
+            var linkUrl = $(event.currentTarget).attr("href");
+
+            // Redirect without appending additional parameters manually
+            window.location.href = linkUrl;
+        }
+    }
+</script>
 <style>
     #container {
         display: flex;

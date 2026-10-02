@@ -36,7 +36,7 @@
                             PRINT
                         </a>
                     </div>
-                    <a asp-action="Dashboard" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day);" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="Dashboard" asp-route-formKey="@ViewBag.formKey" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day);" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -53,6 +53,8 @@
                             <input asp-for="DeptNameBack" type="hidden" value="@Model.DeptNameBack" />
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+                            <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                            <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
@@ -62,7 +64,7 @@
                         {
                             <div class="col-auto">
                                 @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action + ($('form')[0].action.indexOf('?') >= 0 ? '&' : '?') + 'formKey=' + encodeURIComponent('@ViewBag.formKey')">
                                     @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
                                     <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
                                     REFRESH
@@ -73,7 +75,7 @@
                                 @*Model.Mode = "U";*@
                                 <div class="col-auto">
                                     @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient UpdateButton" id="UpdateButton">
                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                         UPDATE
                                     </button>
@@ -84,7 +86,7 @@
                             {
                                 <div class="col-auto">
                                     @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                    <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
                                         <i class="fa-solid fa-chevron-circle-right"></i>
                                         SUBMIT
                                     </button>
@@ -142,11 +144,11 @@
                                     <label asp-for="REQNo" class="form-label" style="color: red;">Req No*</label>
                                     @if (Model.Mode != "U" && Model.Mode != "V")
                                     {
-                                        <input asp-for="REQNo" class="form-control form-control-sm" style="width:56px;" readonly />
+                                        <input asp-for="REQNo" class="form-control form-control-sm" style="width:125px;" readonly />
                                     }
                                     else
                                     {
-                                        <input asp-for="REQNo" class="form-control form-control-sm" value="@Model.REQNo" style="width:56px;" readonly />
+                                        <input asp-for="REQNo" class="form-control form-control-sm" value="@Model.REQNo" style="width:125px;" readonly />
                                     }
                                 </div>
                                 <div class="col-lg">
@@ -227,9 +229,14 @@
                             <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                                 <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Req Item Grid</strong>
                             </button>
+                         
+                                <button type="button" class="GridButton btn btn-sm btn-outline-danger text-nowrap">
+                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                </button>
+                            
                         </h2>
 
-                        <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div id="B_SAGrid" class="accordion-collapse show collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                             <div class="accordion-body">
                                 <div class="row g-2 gx-3" id="_ItemGrid">
                                 </div>
@@ -258,6 +265,7 @@
                                                     <th style="min-width: 80px;">Alt Unit</th>
                                                     <th style="min-width: 80px;">Alt Qty</th>
                                                     <th style="min-width: 150px;">Location</th>
+                                                    <th style="min-width: 150px;">Remark</th>
                                                     <th style="min-width: 150px;">Bin No</th>
                                                     <th style="min-width: 150px;">Proj. No</th>
                                                     <th style="min-width: 80px;">Year code</th>
@@ -318,6 +326,9 @@
                                                         <input asp-for="ItemLocation" class="form-control" readonly />
                                                     </td>
                                                     <td>
+                                                        <input asp-for="ItemRemark" class="form-control"  />
+                                                    </td>
+                                                    <td>
                                                         <input asp-for="ItemBinRackNo" class="form-control" readonly />
                                                     </td>
                                                     <td>
@@ -350,15 +361,15 @@
 
                             </div>
 
-                            <div class=" col-4 col-auto">
-                                <div class="row justify-content-around">
-                                    <div class="col-auto">
-                                        <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
-                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                            @* <div class=" col-4 col-auto"> *@
+                            @*     <div class="row justify-content-around"> *@
+                            @*         <div class="col-auto"> *@
+                            @*             <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3"> *@
+                            @*                 <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID *@
+                            @*             </button> *@
+                            @*         </div> *@
+                            @*     </div> *@
+                            @* </div> *@
                             <div class="progress my-2 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
@@ -387,6 +398,7 @@
                                                 <th>Item Size</th>
                                                 <th>Pend Alt Qty</th>
                                                 <th>Item Location</th>
+                                                <th>Remark</th>
                                                 <th>Item Bin Rack No</th>
                                             </tr>
                                         </thead>
@@ -433,7 +445,7 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Remarks" class="form-label">Remarks</label>
-                                        <input asp-for="Remarks" class="form-control" readonly />
+                                        <input asp-for="Remarks" class="form-control"  />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Completed" class="form-label">Completed</label>
@@ -511,11 +523,62 @@
                                 PRINT
                             </button>
                         </div>
-                        <a asp-action="Dashboard" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day);" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="Dashboard" asp-route-formKey="@ViewBag.formKey" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day);" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Dashboard
                         </a>
-                        <partial name="_FormsButton" />
+                        @* <partial name="_FormsButton" /> *@
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                                <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                                <input asp-for="REQNoBack" type="hidden" value="@Model.REQNoBack" />
+                                <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                                <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                                <input asp-for="WorkCenterBack" type="hidden" value="@Model.WorkCenterBack" />
+                                <input asp-for="WorkOrderNoback" type="hidden" value="@Model.WorkOrderNoback" />
+                                <input asp-for="DeptNameBack" type="hidden" value="@Model.DeptNameBack" />
+                                <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                                <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V")
+                            {
+                                <div class="col-auto">
+                                    @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action + ($('form')[0].action.indexOf('?') >= 0 ? '&' : '?') + 'formKey=' + encodeURIComponent('@ViewBag.formKey')">
+                                        @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U")
+                                {
+                                    @*Model.Mode = "U";*@
+                                    <div class="col-auto">
+                                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient UpdateButton" id="UpdateButton">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+
+                                else
+                                {
+                                    <div class="col-auto">
+                                        @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                        <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                            <i class="fa-solid fa-chevron-circle-right"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
                     </span>
                 </h5>
             </div>
@@ -561,6 +624,16 @@
         </div>
     </div>
 </div>
+
+<div id="ajaxLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+        <span class="spinner-border text-primary" role="status"></span>
+        <br />
+        <span>Processing...</span>
+    </div>
+</div>
+
+
 @section Scripts {
     <script>
         // $('#submitBTN').click(function (e) {
@@ -594,38 +667,100 @@
 
         //     }
         // });
-                $('#submitBTN').click(function (e) {
+        function validateDeptAndWorkCenter() {
 
-            e.preventDefault();
-            if ($('#divReqWithoutBomAdded tr td').length <= 1) {
-                $.notify('Grid Should Have Atleast 1 Item...!', "error");
-                return;
+            /* ------------------------------
+               1️⃣ Department validation
+            --------------------------------*/
+            let deptType = ($('#FromDepartmentId')
+                .find(":selected")
+                .data('depttype') || "")
+                .toString().trim().toLowerCase();
+
+            if (!deptType) {
+                AddErrorCls('FromDepartmentId');
+                $.notify('Department Type is required', 'error');
+                return false;
+            } else {
+                RemoveErrorCls('FromDepartmentId');
             }
-
-            let deptType = ($('#FromDepartmentId').find(":selected").data('depttype') || "")
-                            .toString().trim().toLowerCase();
 
             let isProduction = deptType.includes("production") || deptType.includes("r&d");
             let isStore = deptType.includes("store");
 
-            let hasError = false;
+            /* ------------------------------
+               2️⃣ WorkCenter / Store validation
+            --------------------------------*/
             if (isProduction) {
                 if (!$('#WorkCenterId').val()) {
                     AddErrorCls('WorkCenterId');
-                    hasError = true;
+                    $.notify('Work Center is required for Production / R&D department', 'error');
+                    return false;
                 } else {
                     RemoveErrorCls('WorkCenterId');
                 }
+            } else {
+                RemoveErrorCls('WorkCenterId');
             }
+            if(IsStoreReqInReqWOBom=="Y")
+            {
             if (isStore) {
-                    if (!$('#ToStoreId').val()) {
-                        AddErrorCls('ToStoreId');
-                    hasError = true;
+                if (!$('#ToStoreId').val()) {
+                    AddErrorCls('ToStoreId');
+                    $.notify('To Store is required for Store department', 'error');
+                    return false;
                 } else {
-                        RemoveErrorCls('ToStoreId');
+                    RemoveErrorCls('ToStoreId');
                 }
+            } else {
+                RemoveErrorCls('ToStoreId');
             }
-            if (hasError) return;
+            }
+            /* ------------------------------
+               3️⃣ Grid validation (LAST)
+            --------------------------------*/
+            if ($('#divReqWithoutBomAdded tr td').length <= 1) {
+                $.notify('Grid should have at least 1 item', 'error');
+                return false;
+            }
+
+            return true;
+        }
+
+
+                
+        $('.submitBTN').click(function (e) {
+
+            e.preventDefault();
+            // if ($('#divReqWithoutBomAdded tr td').length <= 1) {
+            //     $.notify('Grid Should Have Atleast 1 Item...!', "error");
+            //     return;
+            // }
+            if (!validateDeptAndWorkCenter()) return;
+            // let deptType = ($('#FromDepartmentId').find(":selected").data('depttype') || "")
+            //                 .toString().trim().toLowerCase();
+
+            // let isProduction = deptType.includes("production") || deptType.includes("r&d");
+            // let isStore = deptType.includes("store");
+
+            // let hasError = false;
+            // if (isProduction) {
+            //     if (!$('#WorkCenterId').val()) {
+            //         AddErrorCls('WorkCenterId');
+            //         hasError = true;
+            //     } else {
+            //         RemoveErrorCls('WorkCenterId');
+            //     }
+            // }
+            // if (isStore) {
+            //         if (!$('#ToStoreId').val()) {
+            //             AddErrorCls('ToStoreId');
+            //         hasError = true;
+            //     } else {
+            //             RemoveErrorCls('ToStoreId');
+            //     }
+            // }
+            //if (hasError) return;
             $('#PasswordAllowPopup').modal("show");
         });
 
@@ -653,78 +788,167 @@
         //     }
 
         // });
-                $('#UpdateButton').click(function (e) {
+                // $('#UpdateButton').click(function (e) {
+                $('.UpdateButton').click(function (e) {
 
             e.preventDefault();
-            if (!validateUpdate()) return;
+            // if (!validateUpdate()) return;
 
-            let deptType = ($('#FromDepartmentId')
-                .find(":selected")
-                .data('depttype') || "")
-                .toString().trim().toLowerCase();
+            // let deptType = ($('#FromDepartmentId')
+            //     .find(":selected")
+            //     .data('depttype') || "")
+            //     .toString().trim().toLowerCase();
 
-            let isProduction = deptType.includes("production") || deptType.includes("r&d");
-            let isStore = deptType.includes("store");
+            // let isProduction = deptType.includes("production") || deptType.includes("r&d");
+            // let isStore = deptType.includes("store");
 
-            let hasError = false;
-            if (isProduction) {
-                if (!$('#WorkCenterId').val()) {
-                    AddErrorCls('WorkCenterId');
-                    hasError = true;
-                } else {
-                    RemoveErrorCls('WorkCenterId');
-                }
-            }
-            if (isStore) {
-                    if (!$('#ToStoreId').val()) {
-                        AddErrorCls('ToStoreId');
-                    hasError = true;
-                } else {
-                        RemoveErrorCls('ToStoreId');
-                }
-            }
-            if (hasError) return;
+            // let hasError = false;
+            // if (isProduction) {
+            //     if (!$('#WorkCenterId').val()) {
+            //         AddErrorCls('WorkCenterId');
+            //         hasError = true;
+            //     } else {
+            //         RemoveErrorCls('WorkCenterId');
+            //     }
+            // }
+            // if (isStore) {
+            //         if (!$('#ToStoreId').val()) {
+            //             AddErrorCls('ToStoreId');
+            //         hasError = true;
+            //     } else {
+            //             RemoveErrorCls('ToStoreId');
+            //     }
+            // }
+            if (!validateDeptAndWorkCenter()) return;
+
+            // if (hasError) return;
             $('#PasswordAllowPopup').modal("show");
         });
 
-        $('#btnPrint').click(function () {
-            $('#ShouldPrint').val('true'); // set flag for printing
-            $('#PasswordAllowPopup').modal("hide");
+        // $('#btnPrint').click(function () {
+        //     $('#ShouldPrint').val('true'); // set flag for printing
+        //     $('#PasswordAllowPopup').modal("hide");
 
-            setTimeout(() => {
-                $('form').submit();
-            }, 300);
-        });
+        //     setTimeout(() => {
+        //         $('form').submit();
+        //     }, 300);
+        // });
+                
+        // $('#btnPrint').click(function () {
 
-        $('#btnClose').click(function () {
-            $('#ShouldPrint').val('false'); // set flag for no printing
-            $('#PasswordAllowPopup').modal("hide");
+        //     $('#ShouldPrint').val('true');
+        //     $('#PasswordAllowPopup').modal("hide");
 
-            setTimeout(() => {
-                $('form').submit();
-            }, 300);
-        });
-        // function validateUpdate() {
+        //     setTimeout(() => {
+        //         var form = $('form');
+        //         form.attr('target', '_blank');   // open in new tab
+        //         form.submit();
 
-        //     var Err = 0;
-        //     if (parseInt($('#FromDepartmentId').val()) == 4) {
-        //         if ($('#WorkCenterId').prop('selectedIndex') == 0) {
-        //             AddErrorCls('WorkCenterId');
-        //             Err = 1;
-        //         }
-        //         else {
-        //             RemoveErrorCls('WorkCenterId');
-        //         }
-        //     }
-        //     else {
-        //         RemoveErrorCls('WorkCenterId');
-        //     }
-        //     Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
-        //     if (Err == 1) return false;
+        //         setTimeout(() => {
+        //             form.removeAttr('target');  // restore default
+        //                 location.reload();
+        //         }, 1000);
 
-        //     return true;
-        // }
-                function validateUpdate() {
+        //     }, 300);
+        // });
+
+
+        // $('#btnClose').click(function () {
+        //     $('#ShouldPrint').val('false'); // set flag for no printing
+        //     $('#PasswordAllowPopup').modal("hide");
+
+        //     setTimeout(() => {
+        //         $('form').submit();
+        //     }, 300);
+        // });
+        
+            $('#btnPrint').click(function () {
+                         $('#ajaxLoader').show();
+                              $('#ShouldPrint').val('true');
+                $('#PasswordAllowPopup').modal("hide");
+
+                setTimeout(() => {
+                    // open in new tab
+                        const printWindow = window.open('', '_blank');
+                        submitForm(true, printWindow); // Send true and window object
+
+                    // setTimeout(() => {
+                    //     form.removeAttr('target');  // restore default
+                    //         location.reload();
+                    // }, 1000);
+
+                }, 300);
+                        
+            });
+
+            $('#btnClose').click(function () {
+                            $('#ajaxLoader').show();
+                $('#ShouldPrint').val('false'); // set flag for no printing
+                $('#PasswordAllowPopup').modal("hide");
+
+                setTimeout(() => {
+                        submitForm(false, null);
+                }, 300);
+
+            });
+               
+            let isSubmitting = false;
+
+        function submitForm(shouldPrint, printWindow) {
+                $('#ajaxLoader').show();
+            if (isSubmitting) return; // block double click
+            isSubmitting = true;
+
+                const $btn = $(".submitBTN"); // your submit button id
+            $btn.prop("disabled", true).text("Saving...");
+
+            $('#ShouldPrint').val(shouldPrint);
+
+            const formData = $('form').serialize();
+
+            $.ajax({
+                type: "POST",
+                url: $('form').attr('action'),
+                data: formData,
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#ajaxLoader').show(); // ✅ Show loader
+                },
+                success: function (res) {
+
+                    if (res && res.status === "Success") {
+
+                        if (shouldPrint && res.entryId && res.yearCode && printWindow) {
+                            const printUrl = '/ReqWithoutBom/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
+                            printWindow.location.href = printUrl;
+                        }
+                            $('#ajaxLoader').hide();
+                        window.location.href = '/ReqWithoutBom/Index?formKey='+formKey;
+                    }
+                    else {
+                        // $.notify(res.message, { position: "top center", className: "error" });
+                            
+                        $.notify(res.message, "error");
+
+                        unlockButton();
+                            $('#ajaxLoader').hide();
+                    }
+                },
+
+                error: function (xhr) {
+                    console.error(xhr.responseText);
+                    alert("Save failed.");
+                    unlockButton();
+                }
+            });
+
+            function unlockButton() {
+                isSubmitting = false;
+                $btn.prop("disabled", false).text("SUBMIT");
+            }
+        }
+
+        function validateUpdate() {
 
             var Err = 0;
 
@@ -769,6 +993,7 @@
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
+                data:{formKey:formKey},
                 success: function (data) {
                     if (data != null) {
 
@@ -781,7 +1006,7 @@
                         var optView = obj.Result.Table[0].OptView;
                         if (!optAll) {
                             if (!optSave) {
-                                $("#submitBTN").prop("disabled", true);
+                                $(".submitBTN").prop("disabled", true);
                             }
                         }
                     }
@@ -815,8 +1040,13 @@
             document.querySelector('.select2-search__field').focus();
         });
 
-        $(document).ready(function () {
-                          var ErrorMessage = '@TempData["ErrorMessage"]';
+        var formKey=$('#formKey').val();
+                              var uniqueKey=$('#uniqueKey').val();
+                 $(document).ready(function ()
+                 {
+                     formKey=$('#formKey').val();
+                             uniqueKey=$('#uniqueKey').val();
+                             var ErrorMessage = '@TempData["ErrorMessage"]';
 
                     if (ErrorMessage) {
                         $.notify(ErrorMessage, "error");
@@ -864,7 +1094,7 @@
             $('#PartCode').rules("remove", "required");
             $('#ItemCode').rules("remove", "required");
             $('#MachineId').rules("remove", "required");
-            $('#REQNo').css("width", "108px");
+            $('#REQNo').css("width", "125px");
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
 
@@ -918,6 +1148,7 @@
             $('#ItemSize').rules("remove", "required");
             $('#ExpectedDate').rules("remove", "required");
             $('#ItemLocation').rules("remove", "required");
+            $('#ItemRemark').rules("remove", "required");
             $('#ItemBinRackNo').rules("remove", "required");
             $('#Remark').rules("remove", "required");
             $('#Prefix').rules("remove", "required");
@@ -932,6 +1163,7 @@
             $('#ItemSize').rules("remove", "required");
             $('#ExpectedDate').rules("remove", "required");
             $('#ItemLocation').rules("remove", "required");
+                $('#ItemRemark').rules("remove", "required");
             $('#ItemBinRackNo').rules("remove", "required");
             $('#WONo').rules("remove", "required");
             $('#WoYearCode').rules("remove", "required");
@@ -955,79 +1187,90 @@
 
                 // $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
                 $('#ExpectedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
+                        $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ($('#EntryDate').val()));
+                                $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ($('#ReqDate').val()));
+                   
                 // $('#ExpectedDate').datepicker("option", "mindate", 'now');
 
-                var finFromDate = $('#FinFromDate').val();
-                var finToDate = $('#FinToDate').val();
+                var finFromDate =parseDateToFormat($('#FinFromDate').val());
+                var finToDate = parseDateToFormat($('#FinToDate').val());
 
-                var dateParts1 = finFromDate.split("/");
-                var monthNames = {
-                    "Jan": "01",
-                    "Feb": "02",
-                    "Mar": "03",
-                    "Apr": "04",
-                    "May": "05",
-                    "Jun": "06",
-                    "Jul": "07",
-                    "Aug": "08",
-                    "Sep": "09",
-                    "Oct": "10",
-                    "Nov": "11",
-                    "Dec": "12"
-                };
+                // var dateParts1 = finFromDate.split("/");
+                // var monthNames = {
+                //     "Jan": "01",
+                //     "Feb": "02",
+                //     "Mar": "03",
+                //     "Apr": "04",
+                //     "May": "05",
+                //     "Jun": "06",
+                //     "Jul": "07",
+                //     "Aug": "08",
+                //     "Sep": "09",
+                //     "Oct": "10",
+                //     "Nov": "11",
+                //     "Dec": "12"
+                // };
 
-                var formattedFromDate = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
-                var dateParts2 = finToDate.split("/");
+                // var formattedFromDate = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                // var dateParts2 = finToDate.split("/");
 
-                var formattedToDate = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+                // var formattedToDate = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
-                $('#EntryDate').datepicker("option", "minDate", formattedDate2);
-                $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
-                $('#ReqDate').datepicker("option", "minDate", formattedDate2);
-                $('#ReqDate').datepicker("option", "maxDate", formattedDate2);
+                    $('#EntryDate').datepicker("option", "minDate", finFromDate);
+                    $('#EntryDate').datepicker("option", "maxDate", finToDate);
+                    $('#ReqDate').datepicker("option", "minDate", finFromDate);
+                    $('#ReqDate').datepicker("option", "maxDate", finToDate);
 
             }
             else {
+            
                 GetServerDate();
+                   
 
-                var finFromDate = $('#FinFromDate').val();
-                var finToDate = $('#FinToDate').val();
+                var finFromDate =parseDateToFormat($('#FinFromDate').val());
+                        var finToDate =parseDateToFormat( $('#FinToDate').val());
 
-                var dateParts1 = finFromDate.split("/");
-                var monthNames = {
-                    "Jan": "01",
-                    "Feb": "02",
-                    "Mar": "03",
-                    "Apr": "04",
-                    "May": "05",
-                    "Jun": "06",
-                    "Jul": "07",
-                    "Aug": "08",
-                    "Sep": "09",
-                    "Oct": "10",
-                    "Nov": "11",
-                    "Dec": "12"
-                };
+                            $('#EntryDate').datepicker("option", "minDate", (finFromDate));
+                        $('#EntryDate').datepicker("option", "maxDate", (finToDate));
+                        $('#ReqDate').datepicker("option", "minDate", (finFromDate));
+                        $('#ReqDate').datepicker("option", "maxDate", (finToDate));
+                            
 
-                var formattedFromDate = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
-                var dateParts2 = finToDate.split("/");
-                var formattedToDate = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
-                var today = new Date();
+                // var dateParts1 = finFromDate.split("/");
+                // var monthNames = {
+                //     "Jan": "01",
+                //     "Feb": "02",
+                //     "Mar": "03",
+                //     "Apr": "04",
+                //     "May": "05",
+                //     "Jun": "06",
+                //     "Jul": "07",
+                //     "Aug": "08",
+                //     "Sep": "09",
+                //     "Oct": "10",
+                //     "Nov": "11",
+                //     "Dec": "12"
+                // };
 
-                var minDate = new Date();
-                minDate.setDate(minDate.getDate() - 30);
+                // var formattedFromDate = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                // var dateParts2 = finToDate.split("/");
+                // var formattedToDate = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+                // var today = new Date();
 
-                $("#EntryDate").datepicker({
-                    dateFormat: "yy-mm-dd",
-                    minDate: minDate,
-                    maxDate: today
-                });
+                // var minDate = new Date();
+                // minDate.setDate(minDate.getDate() - 30);
 
-                var formattedDate = today.toISOString().split('T')[0];
-                $("#EntryDate").val(formattedDate);
+                // $("#EntryDate").datepicker({
+                //     dateFormat: "yy-mm-dd",
+                //     minDate: minDate,
+                //     maxDate: today
+                // });
 
-                var formattedDate = today.toISOString().split('T')[0];
-                $("#EntryDate").val(formattedDate);
+                // var formattedDate = today.toISOString().split('T')[0];
+                // $("#EntryDate").val(formattedDate);
+
+                // var formattedDate = today.toISOString().split('T')[0];
+                // $("#EntryDate").val(formattedDate);
 
             }
 
@@ -1039,64 +1282,14 @@
             functionFeatureOption();
         });
         $("#EntryDate").on("change", function () {
-            var today = new Date();
-            var day = today.getDate().toString().padStart(2, '0'); // Ensure two digits
-            var month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
-            var year = today.getFullYear();
-            var formattedCurrentDate = `${day}/${month}/${year}`;
-            var formattedCurrentDateObject = new Date(`${month}/${day}/${year}`);
-            var entryDateValue = $("#EntryDate").val();
-            var parts = entryDateValue.split('/');
-            var entryDateValueObject = new Date(parts[2], parts[1] - 1, parts[0]);
-            var today = new Date();
-            var year = today.getFullYear();
-            var month = today.getMonth() + 1; // Months are 0-based in JS, so adding 1
-            var financialYearStart, financialYearEnd;
-            if (month < 4) {
-                financialYearStart = (year - 1);
-                financialYearEnd = year;
-            } else {
-                financialYearStart = year;
-                financialYearEnd = (year + 1);
-            }
-            var finYearFirstDateValueObject = new Date(financialYearStart, 3, 1);
-            if (entryDateValueObject > formattedCurrentDateObject) {
-                alert("Future dates are not allowed!");
-                $(this).val(formattedCurrentDate); // Reset to today's date
-            } else if (entryDateValueObject < finYearFirstDateValueObject) {
-                alert("The selected date cannot be before the start of the financial year (April 1st).");
-                $(this).val(formattedCurrentDate); // Reset to today's date
-            }
+                var entrydate=$(this).val();
+                    $("#ReqDate").val(entrydate);
+            
         });
         $("#ReqDate").on("change", function () {
-            var today = new Date();
-            var day = today.getDate().toString().padStart(2, '0'); // Ensure two digits
-            var month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
-            var year = today.getFullYear();
-            var formattedCurrentDate = `${day}/${month}/${year}`;
-            var formattedCurrentDateObject = new Date(`${month}/${day}/${year}`);
-            var entryDateValue = $("#ReqDate").val();
-            var parts = entryDateValue.split('/');
-            var entryDateValueObject = new Date(parts[2], parts[1] - 1, parts[0]);
-            var today = new Date();
-            var year = today.getFullYear();
-            var month = today.getMonth() + 1; // Months are 0-based in JS, so adding 1
-            var financialYearStart, financialYearEnd;
-            if (month < 4) {
-                financialYearStart = (year - 1);
-                financialYearEnd = year;
-            } else {
-                financialYearStart = year;
-                financialYearEnd = (year + 1);
-            }
-            var finYearFirstDateValueObject = new Date(financialYearStart, 3, 1);
-            if (entryDateValueObject > formattedCurrentDateObject) {
-                alert("Future dates are not allowed!");
-                $(this).val(formattedCurrentDate); // Reset to today's date
-            } else if (entryDateValueObject < finYearFirstDateValueObject) {
-                alert("The selected date cannot be before the start of the financial year (April 1st).");
-                $(this).val(formattedCurrentDate); // Reset to today's date
-            }
+                         var ReqDate= $(this).val();
+                                $("#EntryDate").val(ReqDate);
+           
         });
         $('#Qty').on('input', function () {
             this.value = this.value.replace(/(\.[\d]{5})./g, '$1');
@@ -1105,15 +1298,15 @@
         function GetServerDate() {
             $.ajax({
                 type: "GET",
-                url: "@Url.Action("GetServerDate", "Routing")",
+                    url: "@Url.Action("GetServerDate", "GateInward")",
                 async: false,
                 success: function (result, status, error) {
 
-                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    $('#ExpectedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    $('#ExpectedDate').datepicker("option", "minDate", $('#ReqDate').val());
-                    $('#ReqDate').datepicker("option", "mindate", result);
+                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate",parseDateToFormat(result));
+                    $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate",parseDateToFormat(result));
+                        $('#ExpectedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                    // $('#ExpectedDate').datepicker("option", "minDate", $('#ReqDate').val());
+                        // $('#ReqDate').datepicker("option", "mindate", parseDateToFormat(result));
                 }
             });
         }
@@ -1210,6 +1403,7 @@
             $('#PendQty').val(parseFloat(qty));
         });
 
+        var IsStoreReqInReqWOBom='Y';
         function functionFeatureOption() {
             $.ajax({
                 type: "POST",
@@ -1219,6 +1413,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         var allowOption = obj.Result.Table[0].AllowBackdateReqWOBOM;
+                         IsStoreReqInReqWOBom = obj.Result.Table[0].IsStoreReqInReqWOBom;
                         if (allowOption == 'Y') {
                             $('#EntryDate').css("pointer-events", "auto");
                             $('#ReqDate').css("pointer-events", "auto");
@@ -1255,7 +1450,18 @@
                                 $('#FromDepartmentId').append('<option value="' + val.EntryId +
                                     '" data-depttype="' + val.DeptType + '">' + val.DeptName + '</option>');
                             });
-                            if ($('#Mode').val() == "U") {
+
+                                    $('#FromDepartmentId option').each(function () {
+
+            if ($(this).text().trim().toLowerCase() == "production") {
+
+                $(this).prop('selected', true);
+        $('#FromDepartmentId').trigger('change');
+
+                return false;
+            }
+        });
+                                if ($('#Mode').val() == "U"||$('#Mode').val() == "V") {
                             //    $('#FromDepartmentId').val($('#FromDeptUpd').val());
                                      let selected = obj.Result.find(x => x.EntryId == $('#FromDeptUpd').val());
 
@@ -1762,6 +1968,8 @@
             else {
                 RemoveErrorCls('WorkCenterId');
             }
+            if(IsStoreReqInReqWOBom=="Y")
+            {
                     if (($('#FromDepartmentId').find(":selected").data('depttype') || "").toLowerCase().includes("store")) {
             if ($('#ToStoreId').prop('selectedIndex') == 0) {
                 AddErrorCls('ToStoreId');
@@ -1773,6 +1981,9 @@
         else {
             RemoveErrorCls('ToStoreId');
         }
+        }
+
+
             if (convertedExpDate < convertedReqDate) {
                 $.notify("Expected date cannot be less than Requisition date");
                 AddErrorCls('ExpectedDate');
@@ -1790,7 +2001,10 @@
 
         $('.GridButton').click(function (e) {
             e.preventDefault();
-
+            if ($('#divReqWithoutBomAdded tr').length >= 50 && parseDateToFormat($('#ReqDate').val()) >= '16/12/2025') {
+                          $.notify('You cannot add more than 50 items in one Req...!!!', "info");
+                            return;
+                    }
             if (!ValidateReq_Grid()) return;
 
             var ItemData = {
@@ -1813,14 +2027,14 @@
                 "ItemModel": $('#ItemModel').val(),
                 "ItemSize": $('#ItemSize').val(),
                 "ExpectedDate": $('#ExpectedDate').val(),
-                "Remark": $('#Remark').val(),
+                    "ItemRemark": $('#ItemRemark').val(),
                 "ItemLocation": $('#ItemLocation').val(),
                 "ItemBinRackNo": $('#ItemBinRackNo').val()
             }
             $.ajax({
                 url: "@Url.Action("AddReqWithoutBomDetail")",
                 type: "POST",
-                data: ItemData,
+                    data: {model:ItemData,uniqueKey:uniqueKey},
                 beforeSend: function (xhr) {
                     console.log(1);
                 },
@@ -1878,7 +2092,7 @@
 
         function ClearReqWOBomGrid() {
             $('#PartCode,#ItemCode,#ProjectNo,#CostCenterId').prop('selectedIndex', 0).trigger('change')
-            $('#PendQty,#Qty,#Unit,#TotalStock,#AltUnit,#AltQty,#ItemLocation,#ItemBinRackNo,#ProjectYearCode,#ItemModel,#ItemSize,#PendAltQty,#PartCodeText,#ItemNameText').val("");
+                $('#PendQty,#Qty,#Unit,#TotalStock,#AltUnit,#AltQty,#ItemRemark,#ItemLocation,#ItemBinRackNo,#ProjectYearCode,#ItemModel,#ItemSize,#PendAltQty,#PartCodeText,#ItemNameText').val("");
             // $('#StoreId').prop('selectedIndex', 0)
 
         }
@@ -2002,7 +2216,7 @@
             $.ajax({
                 url: '@Url.Action("DeleteItemRow")',
                 type: "POST",
-                data: { "SeqNo": SeqNo },
+                    data: { "SeqNo": SeqNo ,"uniqueKey":uniqueKey},
                 async: false,
                 success: function (data, status, xhr) {
                     $('#divReqWithoutBomAdded').html(data);
@@ -2027,7 +2241,7 @@
                 $.ajax({
                     url: '@Url.Action("EditItemRow")',
                     type: "POST",
-                    data: { SeqNo: SeqNo },
+                        data: { SeqNo: SeqNo ,uniqueKey:uniqueKey},
                     success: function (data, status, xhr) {
 
                         if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
@@ -2062,6 +2276,7 @@
                                 $('#ProjectYearCode').val(obj[0].ProjectYearCode);
                                 $('#CostCenterId').val(obj[0].CostCenterId);
                                 $('#ItemLocation').val(obj[0].ItemLocation);
+                                    $('#ItemRemark').val(obj[0].ItemRemark);
                                 $('#ItemBinRackNo').val(obj[0].ItemBinRackNo);
                             }
                         }
@@ -2147,7 +2362,7 @@
         });
 
 
-        $(document).on("click", "th[data-columnno]", function () {
+        $(document).on("click", "th[data-columnno]", function   () {
             currentSearchColumn = $(this).data('columnno');
             $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
         });

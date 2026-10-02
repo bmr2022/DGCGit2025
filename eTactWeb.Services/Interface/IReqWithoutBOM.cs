@@ -26,13 +26,14 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetNewEntry(string Flag, int YearCode, string SPName);
         Task<ResponseResult> AltUnitConversion(int ItemCode, decimal AltQty, decimal UnitQty);
         Task<ResponseResult> FillTotalStock(int ItemCode, int Store);
-        Task<RWBDashboard> GetDashboardData(string REQNo, string WCName,string Wono, string DepName, string PartCode, string ItemName,string BranchName, string FromDate, string Todate);
-        Task<RWBDashboard> GetDetailData(string REQNo, string WCName,string Wono, string DepName, string PartCode, string ItemName,string BranchName, string FromDate, string Todate);
-        Task<ResponseResult> SaveRequisition(RequisitionWithoutBOMModel model, DataTable ReqGrid,string IPAddress);
+        Task<RWBDashboard> GetDashboardData(string REQNo, string WCName, string Wono, string DepName, string PartCode, string ItemName, string BranchName, string FromDate, string Todate, int userID);
+        Task<RWBDashboard> GetDetailData(string REQNo, string WCName, string Wono, string DepName, string PartCode, string ItemName, string BranchName, string FromDate, string Todate);
+        Task<ResponseResult> SaveRequisition(RequisitionWithoutBOMModel model, DataTable ReqGrid, string IPAddress);
         Task<ResponseResult> GetDashboardData(string Fromdate, string ToDate, string Flag);
-        Task<ResponseResult> DeleteByID(int ID, int YearCode, int UpdatedBy,string EntryByMachineName,string IPAddress);
+        Task<ResponseResult> DeleteByID(int ID, int YearCode, int UpdatedBy, string EntryByMachineName, string IPAddress);
         Task<RequisitionWithoutBOMModel> GetViewByID(int ID, int YearCode);
         Task<ResponseResult> GetFormRights(int uId);
+        Task<ResponseResult> GetReportName();
 
     }
 }

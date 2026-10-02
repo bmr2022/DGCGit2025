@@ -38,7 +38,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-               
+
 
                 SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
                 SqlParams.Add(new SqlParameter("@EmpId", userId));
@@ -306,7 +306,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<RWBDashboard> GetDashboardData(string REQNo, string WCName, string WONO, string DepName, string PartCode, string ItemName, string BranchName, string Fromdate, string Todate)
+        public async Task<RWBDashboard> GetDashboardData(string REQNo, string WCName, string WONO, string DepName, string PartCode, string ItemName, string BranchName, string Fromdate, string Todate, int userID)
         {
             DataSet? oDataSet = new DataSet();
             var model = new RWBDashboard();
@@ -331,6 +331,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@branchname", BranchName);
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
                     oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@EneterdBy", userID);
 
 
 
@@ -365,8 +366,8 @@ namespace eTactWeb.Data.DAL
                                                   TotalReqQty = Convert.ToDecimal(dr["TotalReqQty"]),
                                                   TotalPendQty = Convert.ToDecimal(dr["TotalPendQty"]),
                                                   Completed = dr["Completed"].ToString(),
-                                                  CreatedBy=dr["CreatedByName"].ToString(),
-                                                  UpdatedBy=dr["UpdatedByName"].ToString()
+                                                  CreatedBy = dr["CreatedByName"].ToString(),
+                                                  UpdatedBy = dr["UpdatedByName"].ToString()
                                               }).ToList();
                 }
                 //var ilst = model.AccountMasterList.Select(m => new TextValue
@@ -454,7 +455,7 @@ namespace eTactWeb.Data.DAL
                                                   Location = dr["ItemLocation"].ToString(),
                                                   BinNo = dr["ItemBinRackNo"].ToString(),
                                                   Qty = string.IsNullOrEmpty(dr["Qty"].ToString()) ? 0 : Convert.ToSingle(dr["Qty"]),
-                                                  AltQty = string.IsNullOrEmpty(dr["AltQty"].ToString()) ? 0 :  Convert.ToSingle(dr["AltQty"]),
+                                                  AltQty = string.IsNullOrEmpty(dr["AltQty"].ToString()) ? 0 : Convert.ToSingle(dr["AltQty"]),
                                                   PendQty = string.IsNullOrEmpty(dr["PendQty"].ToString()) ? 0 : Convert.ToSingle(dr["PendQty"]),
                                               }).ToList();
                 }
@@ -478,7 +479,7 @@ namespace eTactWeb.Data.DAL
             return model;
         }
 
-        internal async Task<ResponseResult> DeleteByID(int ID, int YearCode,int UpdatedBy,string EntryByMachineName,string IPAddress)
+        internal async Task<ResponseResult> DeleteByID(int ID, int YearCode, int UpdatedBy, string EntryByMachineName, string IPAddress)
         {
             var _ResponseResult = new ResponseResult();
 
@@ -490,6 +491,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@EntryID", ID));
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", EntryByMachineName));
                 SqlParams.Add(new SqlParameter("@UpdatedBy", UpdatedBy));
+                SqlParams.Add(new SqlParameter("@EneterdBy", UpdatedBy));
                 SqlParams.Add(new SqlParameter("@IPAddress", IPAddress));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
 
@@ -522,7 +524,7 @@ namespace eTactWeb.Data.DAL
             //    throw new FormatException("Invalid date format. Expected format: dd/MM/yyyy");
 
         }
-        public async Task<ResponseResult> SaveRequisition(RequisitionWithoutBOMModel model, DataTable ReqGrid,string IPAddress)
+        public async Task<ResponseResult> SaveRequisition(RequisitionWithoutBOMModel model, DataTable ReqGrid, string IPAddress)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -538,17 +540,17 @@ namespace eTactWeb.Data.DAL
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                 }
-                var entryDt="";
+                var entryDt = "";
                 var reqDt = "";
                 var expDt = "";
                 var woDt = "";
                 entryDt = CommonFunc.ParseFormattedDate(model.EntryDate);
                 //reqDt = ParseDate(model.ReqDate);
-                reqDt= CommonFunc.ParseFormattedDate(model.ReqDate);
+                reqDt = CommonFunc.ParseFormattedDate(model.ReqDate);
                 expDt = CommonFunc.ParseFormattedDate(model.ExpectedDate);
                 woDt = CommonFunc.ParseFormattedDate(model.WODate);
-               var cancleDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
-               var approveDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+                var cancleDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+                var approveDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
 
 
                 SqlParams.Add(new SqlParameter("@EntryId", model.EntryId));
@@ -633,7 +635,7 @@ namespace eTactWeb.Data.DAL
         private static RequisitionWithoutBOMModel PrepareView(DataSet DS, ref RequisitionWithoutBOMModel? model)
         {
             var ItemGrid = new List<RequisitionDetail>();
-            DS.Tables[0].TableName = "ReqMainDetail";
+            DS.Tables[0].TableName = "RequisitionDetail";
             //DS.Tables[1].TableName = "ReqDetail";
             int cnt = 1;
             model.EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["EntryId"]);
@@ -712,6 +714,7 @@ namespace eTactWeb.Data.DAL
                         CostCenterId = string.IsNullOrEmpty(row["CostCenterId"].ToString()) ? 0 : Convert.ToInt32(row["CostCenterId"]),
                         CostCenterName = row["CostCenterName"].ToString(),
                         ItemLocation = row["ItemLocation"].ToString(),
+                        ItemRemark = row["ItemRemark"].ToString(),
                         ItemBinRackNo = row["ItemBinRackNo"].ToString(),
                         ItemSize = row["ItemSize"].ToString(),
                     });
@@ -721,7 +724,7 @@ namespace eTactWeb.Data.DAL
 
             return model;
         }
-        
+
         public async Task<ResponseResult> GetDashboardData(string Fromdate, string Todate, string Flag)
         {
             var _ResponseResult = new ResponseResult();
@@ -803,6 +806,26 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
 
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> GetReportName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_RequisitionWithoutBOM", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
             return _ResponseResult;
         }
     }
