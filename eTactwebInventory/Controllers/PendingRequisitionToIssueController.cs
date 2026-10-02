@@ -19,7 +19,7 @@ namespace eTactWeb.Controllers
         private readonly IIssueWithoutBom _IssueWithoutBom;
         private readonly ILogger<PendingRequisitionToIssueController> _logger;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public PendingRequisitionToIssueController(ILogger<PendingRequisitionToIssueController> logger, IDataLogic iDataLogic, IPendingReqToIssue IPendReqToIssue,IIssueWithoutBom IIssueWithoutBom,IWebHostEnvironment iWebHostEnvironment)
+        public PendingRequisitionToIssueController(ILogger<PendingRequisitionToIssueController> logger, IDataLogic iDataLogic, IPendingReqToIssue IPendReqToIssue, IIssueWithoutBom IIssueWithoutBom, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -27,20 +27,23 @@ namespace eTactWeb.Controllers
             _IssueWithoutBom = IIssueWithoutBom;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
-       
-        public async Task<IActionResult> PendingRequisitionToIssue(string REQNo, string ItemName, string PartCode, string WorkCenter, string DashboardType, string FromDate, string ToDate, string GlobalSearch, string FromStore)
+
+        public async Task<IActionResult> PendingRequisitionToIssue(string formKey, string REQNo, string ItemName, string PartCode, string WorkCenter, string DashboardType, string FromDate, string ToDate, string GlobalSearch, string FromStore)
         {
-           
+
             ViewData["Title"] = "Pending Requisition to Issue Details";
             //TempData.Clear();
-            HttpContext.Session.Remove("KeyPendingToIssue");
+            ViewBag.formKey = formKey;
+            var uniqueKey = Guid.NewGuid().ToString();
+            ViewBag.uniqueKey = uniqueKey;
+            HttpContext.Session.Remove($"KeyPendingToIssue_{uniqueKey}");
             var MainModel = new PendingRequisitionToIssue();
             var model = new IssueWithoutBomDetail();
-            MainModel = await BindModel(MainModel);
-            MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-           HttpContext.Session.SetString("KeyPendingToIssue", JsonConvert.SerializeObject(model));
+            MainModel = await BindModel(MainModel, formKey);
+            MainModel.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+            MainModel.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            MainModel.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+            HttpContext.Session.SetString($"KeyPendingToIssue_{uniqueKey}", JsonConvert.SerializeObject(model));
 
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
@@ -55,17 +58,17 @@ namespace eTactWeb.Controllers
             return View(MainModel);
         }
 
-        private async Task<PendingRequisitionToIssue> BindModel(PendingRequisitionToIssue model)
+        private async Task<PendingRequisitionToIssue> BindModel(PendingRequisitionToIssue model, string formKey)
         {
             var oDataSet = new DataSet();
             var _List = new List<TextValue>();
-            var YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            oDataSet = await _IPendReqToIssue.BindAllDropDowns("BINDDATA",YearCode).ConfigureAwait(true);
+            var YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+            oDataSet = await _IPendReqToIssue.BindAllDropDowns("BINDDATA", YearCode).ConfigureAwait(true);
             model.ItemList = _List;
             model.ReqList = _List;
-            model.PartCodeList= _List;
-            model.WorkCenterList= _List;
-            model.DeptList= _List;
+            model.PartCodeList = _List;
+            model.WorkCenterList = _List;
+            model.DeptList = _List;
             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
             {
                 foreach (DataRow row in oDataSet.Tables[0].Rows)
@@ -76,8 +79,8 @@ namespace eTactWeb.Controllers
                         Text = row["REQNO"].ToString()
                     });
                 }
-                model.ReqList = _List;    
-                
+                model.ReqList = _List;
+
             }
             var oDataSet1 = new DataSet();
             oDataSet1 = await _IPendReqToIssue.BindAllDropDowns("BINDPARTCODE", YearCode).ConfigureAwait(true);
@@ -92,8 +95,8 @@ namespace eTactWeb.Controllers
                         Text = row["PartCode"].ToString()
                     });
                 }
-                model.PartCodeList = _List;    
-                
+                model.PartCodeList = _List;
+
             }
             var oDataSet2 = new DataSet();
 
@@ -109,8 +112,8 @@ namespace eTactWeb.Controllers
                         Text = row["ItemName"].ToString()
                     });
                 }
-                model.ItemList = _List;    
-                
+                model.ItemList = _List;
+
             }
             var oDataSet3 = new DataSet();
 
@@ -126,8 +129,8 @@ namespace eTactWeb.Controllers
                         Text = row["DeptName"].ToString()
                     });
                 }
-                model.DeptList = _List;    
-                
+                model.DeptList = _List;
+
             }
             var oDataSet4 = new DataSet();
 
@@ -145,23 +148,23 @@ namespace eTactWeb.Controllers
                         Text = row["WorkCenterDescription"].ToString()
                     });
                 }
-                model.WorkCenterList = _List;    
-                
+                model.WorkCenterList = _List;
+
             }
             return model;
         }
 
-        public IActionResult AddissueWithoutBom(List<IssueWithoutBomDetail> model)
+        public IActionResult AddissueWithoutBom(List<IssueWithoutBomDetail> model, string uniqueKey)
         {
             //if (model != null)
             //{
             //    foreach(var listItem in model)
             //    {
-            //        int YC = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            //        var FinStartDate = ParseFormattedDate(HttpContext.Session.GetString("FromDate").Split(" ")[0]);
+            //        int YC = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+            //        var FinStartDate = ParseFormattedDate(HttpContext.Session.GetString($"FromDate_{formKey}").Split(" ")[0]);
             //        //first get batchno's
             //        //listItem. = ParseFormattedDate(listItem.IssuedDate);
-     
+
             //        listItem.IssuedDate = ParseFormattedDate(listItem.IssuedDate);
             //        //var Batchno = _IssueWithoutBom.FillBatchUnique(listItem.ItemCode, YC, "MAIN STORE", "", listItem.IssuedDate ?? DateTime.Today.ToString(), FinStartDate);
             //        var Batchno = _IssueWithoutBom.FillBatchUnique(listItem.ItemCode, YC, listItem.StoreName , "", listItem.IssuedDate ?? DateTime.Today.ToString(), FinStartDate);
@@ -183,10 +186,10 @@ namespace eTactWeb.Controllers
             //}
             try
             {
-                HttpContext.Session.Remove("KeyPendingToIssue");
-                string modelJson = HttpContext.Session.GetString("KeyPendingToIssue");
+                HttpContext.Session.Remove($"KeyPendingToIssue_{uniqueKey}");
+                string modelJson = HttpContext.Session.GetString($"KeyPendingToIssue_{uniqueKey}");
                 List<IssueWithoutBomDetail> IssueWithoutBomDetailGrid = new List<IssueWithoutBomDetail>();
-                 //IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<IList<IssueWithoutBomDetail>>(modelJson);
+                //IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<IList<IssueWithoutBomDetail>>(modelJson);
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(modelJson);
@@ -196,7 +199,7 @@ namespace eTactWeb.Controllers
                 var IssueWithoutBomGrid = new List<IssueWithoutBomDetail>();
                 var IssueGrid = new List<IssueWithoutBomDetail>();
                 var SSGrid = new List<IssueWithoutBomDetail>();
-               
+
                 var seqNo = 0;
                 if (model != null)
                 {
@@ -204,14 +207,14 @@ namespace eTactWeb.Controllers
                     {
                         if (item != null)
                         {
-                                if (IssueWithoutBomDetailGrid == null)
-                                {
-                                    item.seqno += seqNo + 1;
-                                    IssueGrid.Add(item);
-                                    seqNo++;
-                                }
-                                else
-                                {
+                            if (IssueWithoutBomDetailGrid == null)
+                            {
+                                item.seqno += seqNo + 1;
+                                IssueGrid.Add(item);
+                                seqNo++;
+                            }
+                            else
+                            {
                                 if (IssueWithoutBomDetailGrid.Where(x => x.ItemCode == item.ItemCode).Any())
                                 {
                                     return StatusCode(207, "Duplicate");
@@ -219,29 +222,29 @@ namespace eTactWeb.Controllers
                                 else
                                 {
                                     item.seqno = IssueWithoutBomDetailGrid.Count + 1;
-                                            //IssueGrid = IssueWithoutBomDetailGrid.Where(x => x != null).ToList();
-                                            SSGrid.AddRange(IssueGrid);
-                                            IssueGrid.Add(item);
-                                    }
+                                    //IssueGrid = IssueWithoutBomDetailGrid.Where(x => x != null).ToList();
+                                    SSGrid.AddRange(IssueGrid);
+                                    IssueGrid.Add(item);
                                 }
-                            
-                            
+                            }
+
+
                         }
                     }
                     MainModel.ItemDetailGrid = IssueGrid;
 
-                    HttpContext.Session.SetString("KeyPendingToIssue", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                    HttpContext.Session.SetString($"KeyPendingToIssue_{uniqueKey}", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                 }
-                string pendingToIssue = HttpContext.Session.GetString("KeyPendingToIssue");
+                string pendingToIssue = HttpContext.Session.GetString($"KeyPendingToIssue_{uniqueKey}");
                 IList<IssueWithoutBomDetail> grid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(pendingToIssue);
-                if(!string.IsNullOrEmpty(pendingToIssue))
+                if (!string.IsNullOrEmpty(pendingToIssue))
                 {
                     grid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(pendingToIssue);
                 }
-                HttpContext.Session.SetString("KeyIssWOBom", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                HttpContext.Session.SetString($"KeyIssWOBom_{uniqueKey}", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
 
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                HttpContext.Session.SetString("KeyIssWOBom", serializedGrid);
+                HttpContext.Session.SetString($"KeyIssWOBom_{uniqueKey}", serializedGrid);
 
 
                 return Json("done");
@@ -252,9 +255,9 @@ namespace eTactWeb.Controllers
             }
         }
 
-        public async Task<JsonResult> FillItemCode(string ReqNo,int WorkCenter, int DeptName, int YearCode, string ToDate)
+        public async Task<JsonResult> FillItemCode(string ReqNo, int WorkCenter, int DeptName, int YearCode, string ToDate)
         {
-            var JSON = await _IPendReqToIssue.FillItemCode(ReqNo,WorkCenter,DeptName, YearCode, ToDate);
+            var JSON = await _IPendReqToIssue.FillItemCode(ReqNo, WorkCenter, DeptName, YearCode, ToDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -277,9 +280,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate,string GlobalSearch, string FromStore, int StoreId)
+        public async Task<JsonResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId)
         {
-            var JSON = await _IPendReqToIssue.ShowDetail(FromDate,ToDate,ReqNo,YearCode,ItemCode,WoNo,WorkCenter,DeptName, ReqYear, IssueDate, GlobalSearch, FromStore,StoreId);
+            var JSON = await _IPendReqToIssue.ShowDetail(FromDate, ToDate, ReqNo, YearCode, ItemCode, WoNo, WorkCenter, DeptName, ReqYear, IssueDate, GlobalSearch, FromStore, StoreId);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -300,19 +303,19 @@ namespace eTactWeb.Controllers
 
         //}
         public async Task<JsonResult> BindReqYear(int YearCode, string ToDate)
-        {        
-            var JSON = await _IPendReqToIssue.BindReqYear(YearCode,ToDate);
+        {
+            var JSON = await _IPendReqToIssue.BindReqYear(YearCode, ToDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> EnableOrDisableIssueDate()
-        {        
+        {
             var JSON = await _IPendReqToIssue.EnableOrDisableIssueDate();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> GetAlternateItemCode(int MainIC)
-        {        
+        {
             var JSON = await _IPendReqToIssue.GetAlternateItemCode(MainIC);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);

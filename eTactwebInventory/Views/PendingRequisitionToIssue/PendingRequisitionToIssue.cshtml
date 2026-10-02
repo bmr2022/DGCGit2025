@@ -31,7 +31,7 @@
                     <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                     Add New
                     </a>*@
-                    <a asp-action="Dashboard" asp-controller="IssueWithoutBom"  class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="Dashboard" asp-route-formKey="@ViewBag.formKey" asp-controller="IssueWithoutBom"  class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -49,6 +49,8 @@
                                     <div class="col">
                                         <label class="form-label">From Date</label>
                                         <input asp-for="FromDate" maxlength="10" class="form-control" />
+                                         <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                            <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                                     </div>
                                     <div class="col">
                                         <label class="form-label">To Date</label>
@@ -124,7 +126,7 @@
                                 @* <a class="btn btn-sm btn-outline-info" id="TransertoIssBtn" style="padding:3px;height:30px;width:200px;margin-left:20px;pointer-events:none;" onclick="TransferToIssue()">
                                 <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>TRANSFER TO ISSUE
                                 </a>*@
-                                <a class="btn btn-sm btn-outline-danger" asp-controller="PendingRequisitionToIssue" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-action="PendingRequisitionToIssue">
+                                <a class="btn btn-sm btn-outline-danger" asp-controller="PendingRequisitionToIssue" asp-route-formKey="@ViewBag.formKey" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-action="PendingRequisitionToIssue">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
                                 <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
@@ -238,10 +240,12 @@
         });
         $("body").on("click", "#ShowDetailBtn", showDetail);
 
-
+        var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
         $(function () 
         {
-
+             formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
             /*   */
             var FromDateBack = sessionStorage.getItem('FromDateBack');
             var ToDateBack = sessionStorage.getItem('ToDateBack');
@@ -299,11 +303,14 @@
 
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
-            //$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
-            //$('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            $('#IssueDate').datepicker("option", "maxDate", 'now');
-            var inputFromDateStr = $("#FromDate").val();
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            /* $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now'); */
+
+            GetServerDate();
+
+            /* $('#IssueDate').datepicker("option", "maxDate", 'now'); */
+           /*  var inputFromDateStr = $("#FromDate").val();
             var parsedFromDate = new Date(inputFromDateStr);
 
             if (!isNaN(parsedFromDate.getTime())) {
@@ -323,7 +330,7 @@
                     parsedToDate.getFullYear();
                 //$("#dateDiv").text(formattedDate);
                 $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate);
-            }
+            } */
 
             $('#FromDate').change(function () {
 
@@ -384,6 +391,37 @@
         $('#FromStore').change(function () {
             showDetail();
         });
+
+
+                    function GetServerDate() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetServerDate","GateInward")",
+                    async: false,
+                    success: function (result, status, error) {
+
+                        console.log(result);
+                        if (result != null) {
+
+                            var today = new Date();
+                            var threeMonthsAgo = new Date(today.getTime() - (3 * 30 * 24 * 60 * 60 * 1000));
+
+                            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                                /*    alert('isside mode v');
+                                    alert("before  EntryDate1 " + $("#EntryDate").val()); */
+                                /* $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result)); */
+                                            $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                            
+                            }
+                            /* $("#InvoiceDate").datepicker("option", "minDate", formatDate(threeMonthsAgo)); */
+
+                            /* monika */
+                            /* $("#InvoiceDate").datepicker("option", "maxDate", formatDate(today)); */
+                        }
+                    }
+                });
+            }
 
 
 
@@ -1248,7 +1286,7 @@
                 url: "@Url.Action("AddissueWithoutBom")",
                 type: "POST",
                 async: false,
-                data: { model: ItemData },
+                data: { model: ItemData,uniqueKey:uniqueKey },
                 success: function (data, status, xhr) {
 
                     if (data != "done") {
@@ -1261,7 +1299,7 @@
                         //window.location.href = url;
                         var FromStoreId = $('#FromStore').val();
                         var url = '/IssueWithoutBOM/Index/?';
-                        url = url + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&REQNo=" + $('#ReqNo').val() + "&ReqYearCode=" + $('#ReqYearCode').val() + "&WCName=" + $('#WorkCenter').val() + "&DeptName=" + $('#DeptName').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&GlobalSearch=" + $('#search-box').val() + "&FromStoreBack=" + FromStoreId
+                        url = url + "&FromDate=" + $('#FromDate').val()  + "&uniqueKey=" +uniqueKey + "&formKey=" +formKey + "&ToDate=" + $('#ToDate').val() + "&REQNo=" + $('#ReqNo').val() + "&ReqYearCode=" + $('#ReqYearCode').val() + "&WCName=" + $('#WorkCenter').val() + "&DeptName=" + $('#DeptName').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&GlobalSearch=" + $('#search-box').val() + "&FromStoreBack=" + FromStoreId
                         window.location.href = url;
                     }
                 },
@@ -1314,14 +1352,16 @@
                 url: "@Url.Action("AddissueWithoutBom")",
                 type: "POST",
                 async: false,
-                data: { model: ItemData },
+                data: { model: ItemData ,uniqueKey:uniqueKey},
                 success: function (data, status, xhr) {
                     if (data != "done") {
                         $.notify(data, "error");
                     }
                     else {
 
-                        var url = '@Url.Action("IssueWithoutBom", "IssueWithoutBom")';
+                      var url = '@Url.Action("IssueWithoutBom", "IssueWithoutBom")'
+          + '?uniqueKey=' + encodeURIComponent(uniqueKey)
+          + '&formKey=' + encodeURIComponent(formKey);
                         window.location.href = url;
                     }
                 },

@@ -10,6 +10,8 @@ namespace eTactWeb.DOM.Models
     public class IssueWithoutBom : IssueWithoutBomDetail
     {
         public string RecDept { get; set; }
+        public string formKey { get; set; }
+        public string uniqueKey { get; set; }
         public int EntryId { get; set; }
         public int YearCode { get; set; }
         public string? FromDate { get; set; }
@@ -25,14 +27,14 @@ namespace eTactWeb.DOM.Models
         public string? IssuedByEmpName { get; set; }
         public int RecDepCode { get; set; }
         public int? RecByEmpCode { get; set; }
-        public string? MachineCode { get;set; }
+        public string? MachineCode { get; set; }
         public string Remark { get; set; }
         public int Uid { get; set; }
         public string CC { get; set; }
         public DateTime ActualEntrydate { get; set; }
         public int ActualEnteredBy { get; set; }
         public string? ActualEnteredByName { get; set; }
-        public DateTime LastUpdationDate { get;set; }
+        public DateTime LastUpdationDate { get; set; }
         public int LastupdatedBy { get; set; }
         public string? LastupdatedByName { get; set; }
         public string? ReqNo { get; set; }
@@ -52,8 +54,10 @@ namespace eTactWeb.DOM.Models
         public string BackFlag { get; set; }
         public string? ReqComplated { get; set; }
         public string? ReqCanceled { get; set; }
+        public string? IsBatchPrint { get; set; }
         public IList<TextValue>? EmployeeList { get; set; }
         public IList<IssueWithoutBomDetail>? ItemDetailGrid { get; set; }
+
 
     }
     public class IssueWithoutBomDetail : TimeStamp
@@ -63,11 +67,11 @@ namespace eTactWeb.DOM.Models
         public int seqno { get; set; }
         public string? ReqNo1 { get; set; }
         public string? ReqDate1 { get; set; }
-        public string?  ReqyearCode1 { get; set; }
-        public int ReqEntryId {  get; set; }
+        public string? ReqyearCode1 { get; set; }
+        public int ReqEntryId { get; set; }
         public int ItemCode { get; set; }
         public string? IssuedDate { get; set; }
-        public string?  ItemName { get; set; }
+        public string? ItemName { get; set; }
         public string? DeptName { get; set; }
         public string? PartCode { get; set; }
         public string? TransactionDate { get; set; }
@@ -95,12 +99,12 @@ namespace eTactWeb.DOM.Models
         public string? ProjectNo { get; set; }
         public int ProjectYearCode { get; set; }
         public string? MachineCodee { get; set; }
-        public float? StdPacking { get; set; }
+        public decimal? StdPacking { get; set; }
         public string? IssuedAlternateItem { get; set; }
         public int? OriginalItemCode { get; set; }
         public int ReqDepartmentID { get; set; }
-        public string? ReqDept { get; set;}
-        public string? ReqItemCancel { get; set;}
+        public string? ReqDept { get; set; }
+        public string? ReqItemCancel { get; set; }
 
         public int IssWOBOMEntryId { get; set; }
         public int IssWOBOMYearCode { get; set; }
@@ -113,6 +117,8 @@ namespace eTactWeb.DOM.Models
     public class IssueWithoutBomDashboard : IssueWOBomMainDashboard
     {
         public string? ReqNo { get; set; }
+        public string? formKey { get; set; }
+        public string? uniqueKey { get; set; }
         public string? Item_Name { get; set; }
         public string? PartCode { get; set; }
         public string? WorkCenterDescription { get; set; }
@@ -126,6 +132,8 @@ namespace eTactWeb.DOM.Models
         public int EntryId { get; set; }
         public int YearCode { get; set; }
         public string Mode { get; set; }
+        public string formKey { get; set; }
+        public string uniqueKey { get; set; }
         public string ReqNo { get; set; }
         public string ReqDate { get; set; }
         public string Item_Name { get; set; }

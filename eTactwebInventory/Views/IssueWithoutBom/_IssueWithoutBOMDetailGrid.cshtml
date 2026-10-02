@@ -3,9 +3,15 @@
 @using System.Reflection.PortableExecutable
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+    var context = HttpContextAccessor.HttpContext;
+    string formKey =
+           context.Request.Query["formKey"].FirstOrDefault()
+        ?? context.Request.Headers["FormKey"].FirstOrDefault()
+        ??Model.formKey
+        ?? "";
+        string uniqueKey=Model.uniqueKey;
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"YearCode_{formKey}"));
 }
-
 
 <div class="table-responsive" style="max-height:150px;">
     <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="IssueWOBomTable">
@@ -61,7 +67,7 @@
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-action="IssueWithoutBom" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event)">
+                                        <a class="table-link link-success" asp-route-formKey="@formKey" asp-route-uniqueKey="@uniqueKey" asp-action="IssueWithoutBom" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event)">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -79,21 +85,14 @@
                                     @if (item.YearCode == yearCode)
                                     {
                                         <div id="editCursorDiv-@Cntr">
-                                            <a class="table-link link-primary" asp-action="IssueWithoutBom" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event)">
+                                            <a class="table-link link-primary" asp-route-formKey="@formKey" asp-route-uniqueKey="@uniqueKey" asp-action="IssueWithoutBom" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event)">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                 </span>
                                             </a>
                                         </div>
-                                        <div id="deleteCursorDiv-@Cntr">
-                                            <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-ActualEntryBy="@item.ActualEnteredBy" asp-route-EntryByMachine="@item.MachineCode">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                        </div>
+                                        
                                     }
                                     else
                                     {
@@ -105,14 +104,7 @@
                                                 </span>
                                             </a>
                                         </div>
-                                        <div>
-                                            <a class="table-link link-danger noCursor">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                        </div>
+                                       
                                     }
                                 </div>
                             </td>

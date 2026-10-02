@@ -14,20 +14,24 @@
     <form asp-action="IssueWithoutBom" autocomplete="off" class="form-horizontal">
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
-                <strong>Issue Without BOM</strong>
+                <strong>Issue Without BOM - Financial Year: @Model.YearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     <div class="col-auto">
-                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
-                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                            PRINT
-                        </button>
+                        @if (Model.Mode == "U" || Model.Mode == "V")
+                            {
+                            @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                            <button class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                                <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                PRINT
+                            </button>
+                            }
+                           
                     </div>
-                    <a href="@Url.Action("PendingRequisitionToIssue", "PendingRequisitionToIssue")" class="btn btn-sm btn-outline-light">
+                    <a href="@Url.Action("PendingRequisitionToIssue", "PendingRequisitionToIssue",new {formKey=@ViewBag.formKey})" class="btn btn-sm btn-outline-light">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat"></i>
                         Pend Req
                     </a>
-                    <a asp-action="Dashboard" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="Dashboard" asp-route-formKey="@ViewBag.formKey" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -44,9 +48,13 @@
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
                             <input asp-for="FromStoreBack" type="hidden" value="@Model.FromStoreBack" />
+                            <input type="hidden" id="BatchWiseFlag" value="@Model.IsBatchPrint" />
                             <input type="hidden" id="ShouldPrint" name="ShouldPrint"  />
                             <input type="hidden" id="AddPassWord" />
                             <input type="hidden" id="AddPassWordForCloseItem" />
+                            <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                            <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
+
 
                             @*<input asp-for="BackFlag" type="hidden" value="false"/>*@
                             @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
@@ -59,7 +67,8 @@
                         {
                             <div class="col-auto">
                                 @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action + ($('form')[0].action.indexOf('?') >= 0 ? '&' : '?') + 'formKey=' + encodeURIComponent('@ViewBag.formKey')"
+>
                                     @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
                                     <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
                                     REFRESH
@@ -70,7 +79,7 @@
                                 @*Model.Mode = "U";*@
                                 <div class="col-auto">
                                     @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient submitBTN" id="UpdateButton">
+                                    <button type="button" class="btn btn-sm btn-outline-light bg-gradient submitBTN" id="UpdateButton">
                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                         UPDATE
                                     </button>
@@ -81,7 +90,7 @@
                             {
                                 <div class="col-auto">
                                     @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                    <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN" >
+                                    <button type="button" class="btn btn-primary btn-sm submitBTN" id="submitBTN" >
                                         <i class="fa-solid fa-chevron-circle-right"></i>
                                         SUBMIT
                                     </button>
@@ -131,7 +140,7 @@
                                     <label asp-for="CC" class="form-label">Branch</label>
                                     <input asp-for="CC" class="form-control" readonly />
                                 </div>
-                                <div class="col-lg">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
                                     <label asp-for="IssueSlipNo" class="form-label" style="color:red">Issue Slip No*</label>
                                     <input asp-for="IssueSlipNo" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
@@ -189,7 +198,7 @@
                         
                     </h2>
 
-                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                    <div id="B_SAGrid" class="accordion-collapse show collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
                             </div>
@@ -346,10 +355,11 @@
                                         <option value="">-Select-</option> 
                                     </select>
                                 </div>
+                               
                                 <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
-                                    <label asp-for="RecDept" class="form-label" style="color:red">Rec Dep Code*</label>
-                                    <input asp-for="RecDepCode" type="hidden" />
-                                    <input asp-for="RecDept" />
+                                    <label asp-for="RecDept" class="form-label" style="color:red" >Rec Dep Code*</label>
+                                    <input asp-for="RecDepCode" type="hidden"  />
+                                    <input asp-for="RecDept" class="form-control" readonly />
                                 </div>
                                 <div class="col-auto">
                                     <label asp-for="RecByEmpCode" class="form-label" style="color:red">Rec By Emp*</label>
@@ -417,13 +427,16 @@
                             <strong>Issue Without BOM</strong>
                             <span class="d-flex float-end" style="margin-top:-2px;">
                                 <div class="col-auto">
-                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
-                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                                        PRINT
-                                    </button>
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                        <button class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            PRINT
+                                        </button>
+                                    }
                                 </div>
-                                <a asp-action="Dashboard"  class="btn btn-sm btn-outline-light bg-gradient">
+                                <a asp-action="Dashboard" asp-route-formKey="@ViewBag.formKey" class="btn btn-sm btn-outline-light bg-gradient">
                                     <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                     Dashboard
                                 </a>
@@ -440,7 +453,8 @@
                                     {
                                         <div class="col-auto">
                                             @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                                            <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                            <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action + ($('form')[0].action.indexOf('?') >= 0 ? '&' : '?') + 'formKey=' + encodeURIComponent('@ViewBag.formKey')"
+>
                                                 @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
                                                 <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
                                                 REFRESH
@@ -451,7 +465,7 @@
                                             @*Model.Mode = "U";*@
                                             <div class="col-auto">
                                                 @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient submitBTN" id="UpdateButton">
+                                                        <button type="button" class="btn btn-sm btn-outline-light bg-gradient submitBTN" id="UpdateButton">
                                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                                     UPDATE
                                                 </button>
@@ -462,7 +476,7 @@
                                         {
                                             <div class="col-auto">
                                                 @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                                <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN" >
+                                                <button type="button" class="btn btn-primary btn-sm submitBTN" id="submitBTN" >
                                                     <i class="fa-solid fa-chevron-circle-right"></i>
                                                     SUBMIT
                                                 </button>
@@ -494,7 +508,10 @@
                                 <div class="card-body overflow-auto pb-0">
                                     <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
                                         <div class="d-flex align-items-center">
-                                            <h6 class="mb-0 me-2">Do You Want Save & Print?</h6>
+                                            @* <h6 class="mb-0 me-2">Do You Want Save & Print?</h6> *@
+                                             <h6 class="mb-0 me-2">Do You Want to Save and Print With Issue Slip No:
+                                                <span style="color: #0d6efd; font-weight: bold;" id="IssueSlipNoPopup"></span>
+                                            </h6>
                                         </div>
                                     </div>
                                 </div>
@@ -593,6 +610,12 @@
 
 
 
+<div id="fullPageLoader">
+    <div class="loaderBox">
+        <span>Processing...</span>
+    </div>
+</div>
+
 
 
 
@@ -610,7 +633,7 @@
                             $.ajax({
                                         url: '@Url.Action("DeleteFromZeroStockMemoryGrid")',
                                 type: "POST",
-                                data: { deleteZeroStockOnly: deleteZeroStockOnly,seqNo: SeqNo },
+                                data: { deleteZeroStockOnly: deleteZeroStockOnly,seqNo: SeqNo,uniqueKey:uniqueKey },
                                 async: false,
                                 success: function (data, status, xhr) {
                                                      $('#divIssueWOBOMGrid').html(data);
@@ -697,12 +720,16 @@
                
                   
                 
-            }
+            }  
+            $('#IssueSlipNoPopup').text($('#IssueSlipNo').val());
               $('#PasswordAllowPopup').modal("show");
         });
 
         // When user clicks "Print"
 $('#btnPrint').click(function () {
+                $(this).prop('disabled', true);
+                showLoader();
+
             if ($('#divIssueWOBOMGridAdd tr td').length <= 1) {
                 $.notify('Grid Should Have Atleast 1 Item...!', "error");
                 return false;
@@ -757,6 +784,8 @@ $('#btnPrint').click(function () {
 
 // When user clicks "Close" or no print
 $('#btnClose').click(function () {
+                $(this).prop('disabled', true);
+    showLoader();
             if ($('#divIssueWOBOMGridAdd tr td').length <= 1) {
                 $.notify('Grid Should Have Atleast 1 Item...!', "error");
                 return false;
@@ -809,6 +838,7 @@ $('#btnClose').click(function () {
 });
 
 function submitForm(shouldPrint, printWindow) {
+    showLoader();
     $('#ShouldPrint').val(shouldPrint); // Set hidden input
     const formData = $('form').serialize(); // Properly serialize full form
 
@@ -818,25 +848,44 @@ function submitForm(shouldPrint, printWindow) {
         data: formData,
         dataType: 'json', // Expect JSON response
         success: function (res) {
+                    hideLoader();
             console.log("Server response:", res);
 
             if (res && res.status === "Success") {
                 if (shouldPrint && res.entryId && res.yearCode && printWindow) {
-                    const printUrl = '/IssueWithoutBom/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
+                                let printUrl = '';
+
+                                if (res.isBatch === 'Y') {
+                                    printUrl = '/IssueWithoutBom/PrintReportWithBatchNo?EntryId='
+                                        + res.entryId + '&YearCode=' + res.yearCode;
+                                } else {
+                                    printUrl = '/IssueWithoutBom/PrintReport?EntryId='
+                                        + res.entryId + '&YearCode=' + res.yearCode;
+                                }
+                    // const printUrl = '/IssueWithoutBom/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
                     printWindow.location.href = printUrl;
                 }
 
-                window.location.href = '/PendingRequisitionToIssue/PendingRequisitionToIssue';
+                window.location.href = '/PendingRequisitionToIssue/PendingRequisitionToIssue?formKey='+formKey;
             } else {
                 alert(res.message || "Something went wrong.");
             }
         },
         error: function (xhr) {
+            hideLoader();
             console.error("Error occurred:", xhr.responseText);
             alert("Save failed.");
         }
     });
 }
+                function showLoader() {
+                    $('#fullPageLoader').fadeIn(100);
+                }
+
+                function hideLoader() {
+                    $('#fullPageLoader').fadeOut(100);
+                }
+
         function CheckStockBeforeSaving(i) {
 
             ICName = [];
@@ -946,6 +995,16 @@ function submitForm(shouldPrint, printWindow) {
             });
         }
 
+        $('#EntryDate').change(function () {
+            $('#IssueDate').val(this.value);
+        });
+
+        $('#IssueDate').change(function () {
+            $('#EntryDate').val(this.value);
+        });
+
+
+
         function EnableOrDisableIssueDate() {
             $.ajax({
                 url: "@Url.Action("EnableOrDisableIssueDate", "PendingRequisitionToIssue")",
@@ -957,12 +1016,13 @@ function submitForm(shouldPrint, printWindow) {
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             console.log(obj.Result.Table[0].AllowbackdateIssueWOBOM)
                             if (obj.Result.Table[0].AllowbackdateIssueWOBOM == "Y") {
-                                $('#IssueDate').datepicker("option", "disabled", false);
-                                $('#EntryDate').datepicker("option", "disabled", false);
+                                $('#IssueDate').css("pointer-events", "auto");
+                                $('#EntryDate').css("pointer-events", "auto");
+
                             }
                             else {
-                                $('#IssueDate').datepicker("option", "disabled", true);
-                                $('#EntryDate').datepicker("option", "disabled", true);
+                                $('#IssueDate').css("pointer-events", "none");
+                                $('#EntryDate').css("pointer-events", "none");
                             }
                         }
                     }
@@ -1106,7 +1166,7 @@ function submitForm(shouldPrint, printWindow) {
             $.ajax({
                 url: "@Url.Action("GetItemDetailFromUniqBatch")",
                 type: "POST",
-                data: { "UniqBatchNo": $('#ScanUniqueBatchNo').val(), "YearCode": $('#YearCode').val(), "TransDate": $('#IssueDate').val(), "ReqNo": $('#ReqNo').val(), "ReqYearCode": $('#ReqyearCode').val(), "ReqDate": $('#ReqDate').val() },
+                data: {uniqueKey:uniqueKey, "UniqBatchNo": $('#ScanUniqueBatchNo').val(), "YearCode": $('#YearCode').val(), "TransDate": $('#IssueDate').val(), "ReqNo": $('#ReqNo').val(), "ReqYearCode": $('#ReqyearCode').val(), "ReqDate": $('#ReqDate').val() },
                 success: function (data, status, xhr) {
 
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
@@ -1227,7 +1287,7 @@ function submitForm(shouldPrint, printWindow) {
             $.ajax({
                 url: "@Url.Action("AddtoIssueWOBomGrid")",
                 type: "POST",
-                data: { model: ItemData },
+                data: { model: ItemData ,uniqueKey:uniqueKey},
                 success: function (data, status, xhr) {
 
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
@@ -1282,8 +1342,11 @@ function submitForm(shouldPrint, printWindow) {
         }
 
 
-
+        var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
         $(document).ready(function () {
+            formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
                       var ErrorMessage = '@TempData["ErrorMessage"]';
 
                             if (ErrorMessage) {
@@ -1353,14 +1416,15 @@ function submitForm(shouldPrint, printWindow) {
                                     }
                                 }
                 GetIssueScanFeature();
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy', minDate: 0 }).datepicker("setDate", 'now');
+//                 $('#
+// ').datepicker({ dateFormat: 'dd/mm/yy', minDate: 0 }).datepicker("setDate", 'now');
 
                 // $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                $('#IssueDate').datepicker("option", "maxDate", 'now');
-                $('#EntryDate').datepicker("option", "maxDate", 'now');
+                // $('#IssueDate').datepicker("option", "maxDate", 'now');
+                // $('#EntryDate').datepicker("option", "maxDate", 'now');
 
-                $('#IssueDate').datepicker("option", "minDate", 'now');
-                $('#EntryDate').datepicker("option", "minDate", 'now');
+                // $('#IssueDate').datepicker("option", "minDate", 'now');
+                // $('#EntryDate').datepicker("option", "minDate", 'now');
 
             }
             fillCC();
@@ -1369,24 +1433,18 @@ function submitForm(shouldPrint, printWindow) {
             $('.batchNo').select2();
             $('.uniqueBatchNo').select2();
 
-            var inputFromDateStr = $('#FromDate').val();
-            var parsedFromDate = new Date(inputFromDateStr);
+            var FromDate = parseDateToFormat($('#FromDate').val());
 
-            var inputToDateStr = $('#ToDate').val();
-            var parsedToDate = new Date(inputToDateStr);
 
-            if (!isNaN(parsedFromDate.getTime())) {
-                var formattedDate = (parsedFromDate.getDate() < 10 ? '0' : '') + parsedFromDate.getDate() + '/' +
-                    ((parsedFromDate.getMonth() + 1) < 10 ? '0' : '') + (parsedFromDate.getMonth() + 1) + '/' +
-                    parsedFromDate.getFullYear();
-                var formattedDate1 = (parsedToDate.getDate() < 10 ? '0' : '') + parsedToDate.getDate() + '/' +
-                    ((parsedToDate.getMonth() + 1) < 10 ? '0' : '') + (parsedToDate.getMonth() + 1) + '/' +
-                    parsedToDate.getFullYear();
-                //$("#dateDiv").text(formattedDate);
-                $('#IssueDate').datepicker("option", "minDate", formattedDate);
-                $('#EntryDate').datepicker("option", "minDate", formattedDate);
-                //$('#EntryDate').datepicker("option", "maxDate", formattedDate1);
-            }
+            var ToDate = parseDateToFormat($('#ToDate').val());
+           
+
+            
+                $('#IssueDate').datepicker("option", "minDate", FromDate);
+            $('#EntryDate').datepicker("option", "minDate", FromDate);
+            $('#EntryDate').datepicker("option", "maxDate", ToDate);
+            $('#IssueDate').datepicker("option", "maxDate", ToDate);
+            
             $('#IssueSlipNo', '#IssueDate', '#MachineCode', '#Remark').rules("remove", "required");
             EnableOrDisableIssueDate();
 
@@ -1463,6 +1521,36 @@ function submitForm(shouldPrint, printWindow) {
             $('#ReqDate').val(FormattedDate);
         });
 
+
+        function GetServerDate() {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate","GateInward")",
+                async: false,
+                success: function (result, status, error) {
+
+                    console.log(result);
+                    if (result != null) {
+
+                        var today = new Date();
+                        var threeMonthsAgo = new Date(today.getTime() - (3 * 30 * 24 * 60 * 60 * 1000));
+
+                        if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                            /*    alert('isside mode v');
+                                alert("before  EntryDate1 " + $("#EntryDate").val()); */
+                            $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                                        $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                            
+                        }
+                        /* $("#InvoiceDate").datepicker("option", "minDate", formatDate(threeMonthsAgo)); */
+
+                        /* monika */
+                        /* $("#InvoiceDate").datepicker("option", "maxDate", formatDate(today)); */
+                    }
+                }
+            });
+        }
 
 
         function parseDDMMYYYY(dateStr) {
@@ -1597,7 +1685,8 @@ function submitForm(shouldPrint, printWindow) {
                     "YearCode": YearCode,
                     "StoreName": $('#MainGridStorename-' + i).val(),
                     "BatchNo": '',
-                    "IssuedDate": $('#IssueDate').val()
+                    "IssuedDate": $('#IssueDate').val(),
+                    "formKey":formKey
                 }
                 var batchNoArray = [];
                 var filteredBatch = [];
@@ -1640,7 +1729,8 @@ function submitForm(shouldPrint, printWindow) {
                     "YearCode": @yearCode,
                     "StoreName": $('#MainGridStorename-' + i).val(),
                     "BatchNo": $('#MainGridBatchNo-' + i).val() == 0 ? '' : $('#MainGridBatchNo-' + i).val(),
-                    "IssuedDate": $('#IssueDate').val()
+                    "IssuedDate": $('#IssueDate').val(),
+                    "formKey":formKey
                 }
                 $.ajax({
                     url: "@Url.Action("FillBatchUnique")",
@@ -1697,6 +1787,7 @@ function submitForm(shouldPrint, printWindow) {
             $.ajax({
                 url: "@Url.Action("GetNewEntry")",
                 type: "POST",
+                data:{formKey:formKey},
                 success: function (data) {
 
                     if (data != null) {
@@ -1768,7 +1859,8 @@ function submitForm(shouldPrint, printWindow) {
                     "YearCode": @yearCode,
                     "StoreName": $('#MainGridStorename-' + i).val() == "-Select-" ? "" : $('#MainGridStorename-' + i).val(),
                     "BatchNo": '',
-                    "IssuedDate": $('#IssueDate').val()
+                    "IssuedDate": $('#IssueDate').val(),
+                    "formKey":formKey
                 }
                 var batchNoArray = [];
                 var filteredBatch = [];
@@ -1813,7 +1905,8 @@ function submitForm(shouldPrint, printWindow) {
                     "YearCode": @yearCode,
                     "StoreName": $('#MainGridStorename-' + i).val(),
                     "BatchNo": $('#MainGridBatchNo-' + i).val() == 0 ? '' : $('#MainGridBatchNo-' + i).val(),
-                    "IssuedDate": $('#IssueDate').val()
+                    "IssuedDate": $('#IssueDate').val(),
+                    "formKey":formKey
                 }
                 $.ajax({
                     url: "@Url.Action("FillBatchUnique")",
@@ -1915,10 +2008,10 @@ function submitForm(shouldPrint, printWindow) {
         $('.GridButton').click(function () {
             var rowCount = $('#divIssueWOBOMGrid tr').length;
 
-            if (!validateIssueDateBeforeAddToGrid()) {
-                Alert("❌ Not allowed: Issue Date is earlier than Transaction Date");
-                return false; // stop everything if invalid
-            }
+            // if (!validateIssueDateBeforeAddToGrid()) {
+            //     Alert("❌ Not allowed: Issue Date is earlier than Transaction Date");
+            //     return false; // stop everything if invalid
+            // }
 
 
             for (let i = 1; i <= rowCount; i++) {
@@ -1984,7 +2077,7 @@ function submitForm(shouldPrint, printWindow) {
             $.ajax({
                 url: "@Url.Action("AddtoIssueWOBomGrid")",
                 type: "POST",
-                data: { model: ItemData },
+                data: { model: ItemData,uniqueKey:uniqueKey },
                 success: function (data, status, xhr) {
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify('Duplicate Item Not Allowed.', "info");
@@ -2128,6 +2221,7 @@ function submitForm(shouldPrint, printWindow) {
                 url: "@Url.Action("FillGridFromMemoryCache")",
                 type: "POST",
                 async: false,
+                data:{uniqueKey:uniqueKey,formKey:formKey},
                 success: function (data) {
 
                     if (data != null) {
@@ -2143,8 +2237,10 @@ function submitForm(shouldPrint, printWindow) {
                         //$('#IssueDate').val($('#IssuedDateMemory').val());
                         //$('#MachineCode').val($('#MachineCodeMemory').val());
                         // $('#IssueDate').datepicker("option", "maxDate", 'now');
-                        $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy', minDate: 0 }).datepicker("setDate", 'now');
-                        $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy', minDate: 0 }).datepicker("setDate", 'now');
+                        // $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy', minDate: 0 }).datepicker("setDate", 'now');
+                        // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy', minDate: 0 }).datepicker("setDate", 'now');
+
+                        GetServerDate();
 
                         fillBatchNO();
 
@@ -2200,6 +2296,7 @@ function submitForm(shouldPrint, printWindow) {
                     $('#AllowBatchChangeBox').modal("show");
                 } else {
                     $.notify("Batch Change is not allowed");
+                    return false;
                 }
 
             }
@@ -2257,7 +2354,7 @@ function submitForm(shouldPrint, printWindow) {
             $.ajax({
                 url: "@Url.Action("FillLotandTotalStock")",
                 type: "POST",
-                data: { ItemCode: $('#MainGridItemCode-' + i).val(), StoreId: $('#MainGridStoreId-' + i).val(), TillDate: $('#IssueDate').val(), BatchNo: $('#MainGridBatchNo-' + i).val(), UniqBatchNo: $('#MainGridUniqueBatchNo-' + i + ' option:selected').text().trim() },
+                            data: { ItemCode: $('#MainGridItemCode-' + i).val(), StoreId: $('#MainGridStoreId-' + i).val(), TillDate: $('#IssueDate').val(), BatchNo: $('#MainGridBatchNo-' + i + ' option:selected').text().trim(), UniqBatchNo: $('#MainGridUniqueBatchNo-' + i + ' option:selected').text().trim() },
                 async: false,
                 success: function (data) {
 
@@ -2366,7 +2463,7 @@ function submitForm(shouldPrint, printWindow) {
             $.ajax({
                 url: '@Url.Action("DeleteScannedItemRow")',
                 type: "POST",
-                data: { "SeqNo": SeqNo },
+                data: { "SeqNo": SeqNo,uniqueKey:uniqueKey },
                 async: false,
                 success: function (data, status, xhr) {
                     $('#divIssueByScanning').html(data);
@@ -2386,7 +2483,7 @@ function submitForm(shouldPrint, printWindow) {
             $.ajax({
                 url: '@Url.Action("DeleteFromMemoryGrid")',
                 type: "POST",
-                data: { "SeqNo": SeqNo },
+                data: { "SeqNo": SeqNo ,uniqueKey:uniqueKey},
                 async: false,
                 success: function (data, status, xhr) {
 
@@ -2429,7 +2526,7 @@ function submitForm(shouldPrint, printWindow) {
             $.ajax({
                 url: '@Url.Action("DeleteItemRow")',
                 type: "POST",
-                data: { "SeqNo": SeqNo },
+                data: { "SeqNo": SeqNo,uniqueKey:uniqueKey },
                 async: false,
                 success: function (data, status, xhr) {
                     $('#divIssueWOBOMGridAdd').html(data);
@@ -2450,7 +2547,7 @@ function submitForm(shouldPrint, printWindow) {
             $.ajax({
                 url: '@Url.Action("EditItemRow")',
                 type: "POST",
-                data: { "SeqNo": SeqNo },
+                data: { "SeqNo": SeqNo ,uniqueKey:uniqueKey},
                 success: function (data, status, xhr) {
                     var obj = $.parseJSON(data);
                     DeleteItemRow(SeqNo);
@@ -2555,6 +2652,19 @@ function submitForm(shouldPrint, printWindow) {
 
                     return val ? val.toString().toLowerCase() : "";
                 }
+                    $("#PrintButton").click(function () {
+
+                    var batchFlag = $("#BatchWiseFlag").val();
+
+                    if (batchFlag === "Y") {
+                        // With Batch No Report
+                                    window.open('/IssueWithoutBom/PrintReportWithBatchNo?EntryId=@Model.EntryId&YearCode=@Model.YearCode', '_blank');
+                    } else {
+                        // Normal Report
+                                    window.open('/IssueWithoutBom/PrintReport?EntryId=@Model.EntryId&YearCode=@Model.YearCode', '_blank');
+                    }
+
+                });
     </script>
 }
 
@@ -2563,5 +2673,29 @@ function submitForm(shouldPrint, printWindow) {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
     }
+
+    #fullPageLoader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        display: none;
+        z-index: 99999;
+    }
+
+    .loaderBox {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 25px 40px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
 
 </style>                   

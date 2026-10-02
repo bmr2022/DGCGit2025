@@ -29,7 +29,7 @@ namespace eTactWeb.Data.DAL
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
 
-        public async Task<DataSet> BindAllDropDowns(string Flag,int YearCode)
+        public async Task<DataSet> BindAllDropDowns(string Flag, int YearCode)
         {
             var oDataSet = new DataSet();
 
@@ -157,7 +157,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int itemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate,string GlobalSearch, string FromStore, int StoreId)
+        public async Task<ResponseResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int itemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -195,7 +195,7 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-               // DateTime todt = DateTime.ParseExact(todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                // DateTime todt = DateTime.ParseExact(todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "BinDReqYear"));
                 SqlParams.Add(new SqlParameter("@yearCode", yCode));
@@ -211,7 +211,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<ResponseResult> CheckTransDate(int ItemCode, string IssueDate,string BatchNo, string UniqBatchNo, int YearCode, int StoreId)
+        public async Task<ResponseResult> CheckTransDate(int ItemCode, string IssueDate, string BatchNo, string UniqBatchNo, int YearCode, int StoreId)
         {
             var _ResponseResult = new ResponseResult();
             try

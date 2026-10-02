@@ -53,6 +53,44 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetReportName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueWithoutBomM", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetReportNameWithbatchNo()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportNameWithbatchNo"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueWithoutBomM", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetDashboardData(string Fromdate, string Todate, string Flag)
         {
             var _ResponseResult = new ResponseResult();
@@ -304,7 +342,7 @@ namespace eTactWeb.Data.DAL
                 model.MachineCode = DS.Tables[0].Rows[0]["Machinecode"].ToString();
                 model.Remark = DS.Tables[0].Rows[0]["Remark"].ToString();
                 model.Uid = Convert.ToInt32(DS.Tables[0].Rows[0]["Uid"]);
-               
+
                 model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
                 model.ReqNo = DS.Tables[0].Rows[0]["ReqNo"].ToString();
                 model.ReqyearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["ReqYearCode"]);
@@ -356,7 +394,7 @@ namespace eTactWeb.Data.DAL
                             ProjectYearCode = Convert.ToInt32(row["ProjectYearcode"]),
                             StoreName = row["Store_Name"].ToString(),
                             OriginalItemCode = Convert.ToInt32(row["OriginalitemCode"]),
-                            StdPacking = Convert.ToSingle(row["StdPacking"]),
+                            StdPacking = Convert.ToDecimal(row["StdPacking"]),
                             ReqNo1 = row["ReqNo"].ToString(),
                             ReqDate1 = row["ReqDate"].ToString(),
                             ReqyearCode1 = row["ReqYearCode"].ToString(),
@@ -404,7 +442,7 @@ namespace eTactWeb.Data.DAL
                 //DateTime ReqDate = new DateTime();
                 //DateTime issDate = new DateTime();
 
-                var entDt =ParseFormattedDate(model.EntryDate);
+                var entDt = ParseFormattedDate(model.EntryDate);
                 var ReqDate = ParseFormattedDate(model.ReqDate);
                 var issDate = ParseFormattedDate(model.IssueDate);
                 if (model.Mode == "U")
@@ -984,6 +1022,26 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ItemCode", ItemCode));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueWithoutBomM", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> GetIssBatchWise()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "IsBatchPrintEnabled"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueWithoutBomM", SqlParams);
+
             }
             catch (Exception ex)
             {

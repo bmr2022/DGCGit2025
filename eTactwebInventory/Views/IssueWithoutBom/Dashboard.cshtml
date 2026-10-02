@@ -11,7 +11,7 @@
             <h5>
                 Issue Without BOM - <strong>Dashboard</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="PendingRequisitionToIssue" asp-controller="PendingRequisitionToIssue" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                    <a asp-action="PendingRequisitionToIssue" asp-route-formKey="@ViewBag.formKey"  asp-controller="PendingRequisitionToIssue" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                         <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                         Add New
                     </a>
@@ -23,6 +23,30 @@
                 <div class="card-body">
                     <form id="SParam">
                         <div class="row">
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-2">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input id="FromDate" maxlength="10" class="form-control" />
+                                         <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                            <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
+                                        <input asp-for="FromDate1" type="hidden" maxlength="10" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input id="ToDate" maxlength="10" class="form-control" />
+                                        <input asp-for="ToDate1" type="hidden" maxlength="10" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
+                                <label asp-for="DashboardType" class="form-label">Dashboard Type</label>
+                                <select asp-for="DashboardType" class="form-select" onchange="GetSearchData();">
+                                    <option value="" disabled>-Select-</option>
+                                    <option value="Summary" selected>Summary</option>
+                                    <option value="Detail">Detail</option>
+                                </select>
+                            </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="ReqNo" class="form-label">Req Number</label>
                                 <input asp-for="ReqNo" class="form-control" />
@@ -39,32 +63,12 @@
                                 <label asp-for="WorkCenterDescription" class="form-label">Work Center</label>
                                 <input asp-for="WorkCenterDescription" class="form-control" />
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4">
-                                <div class="row">
-                                    <div class="col">
-                                        <label class="form-label">From Date</label>
-                                        <input id="FromDate" maxlength="10" class="form-control" />
-                                        <input asp-for="FromDate1" type="hidden" maxlength="10" class="form-control" />
-                                    </div>
-                                    <div class="col">
-                                        <label class="form-label">To Date</label>
-                                        <input id="ToDate" maxlength="10" class="form-control" />
-                                        <input asp-for="ToDate1" type="hidden" maxlength="10" class="form-control" />
-                                    </div>
-                                </div>
-                            </div>
+                          
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label class="form-label">Global search</label>
                                 <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
-                                <label asp-for="DashboardType" class="form-label">Dashboard Type</label>
-                                <select asp-for="DashboardType" class="form-select" onchange="GetSearchData();">
-                                    <option value="" disabled>-Select-</option>
-                                    <option value="Summary" selected>Summary</option>
-                                    <option value="Detail">Detail</option>
-                                </select>
-                            </div>
+                          
                             <div class=" d-flex justify-content-center mt-3" width="inherit">
                                 <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" onclick="GetSearchData();">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
@@ -72,7 +76,8 @@
                                 <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
-                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="IssueWithoutBom" asp-action="Dashboard" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True">
+                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="IssueWithoutBom" asp-action="Dashboard" asp-route-formKey="@ViewBag.formKey"
+                                   asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
                             </div>
@@ -99,7 +104,11 @@
 @section Scripts
     {
     <script>
+          var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
         $(function () {
+            formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
             GetFormRights();
             FromDateBack = sessionStorage.getItem('FromDateBack');
             ToDateBack = sessionStorage.getItem('ToDateBack');
@@ -124,10 +133,18 @@
             $('#FromDate').change(function () {
                 fromDate = $(this).datepicker('getDate');
                 $('#ToDate').datepicker("option", "minDate", fromDate);
+                AutoComplete('VIssueWithoutBomdetail', 'ReqNo', 'ReqNo', null,$('#FromDate').val(),$('#ToDate').val(),"EntryDate");
+            AutoComplete('VIssueWithoutBomdetail', 'Item_Name', 'Item_Name', null,$('#FromDate').val(),$('#ToDate').val(),"EntryDate");
+            AutoComplete('VIssueWithoutBomdetail', 'PartCode', 'PartCode', null,$('#FromDate').val(),$('#ToDate').val(),"EntryDate");
+            AutoComplete('VIssueWithoutBomdetail', 'WorkCenterDescription', 'WorkCenterDescription', null,$('#FromDate').val(),$('#ToDate').val(),"EntryDate");
             });
             $('#ToDate').change(function () {
                 toDate = $(this).datepicker('getDate');
                 $('#FromDate').datepicker("option", "maxDate", toDate);
+                 AutoComplete('VIssueWithoutBomdetail', 'ReqNo', 'ReqNo', null,$('#FromDate').val(),$('#ToDate').val(),"EntryDate");
+            AutoComplete('VIssueWithoutBomdetail', 'Item_Name', 'Item_Name', null,$('#FromDate').val(),$('#ToDate').val(),"EntryDate");
+            AutoComplete('VIssueWithoutBomdetail', 'PartCode', 'PartCode', null,$('#FromDate').val(),$('#ToDate').val(),"EntryDate");
+            AutoComplete('VIssueWithoutBomdetail', 'WorkCenterDescription', 'WorkCenterDescription', null,$('#FromDate').val(),$('#ToDate').val(),"EntryDate");
             });
 
             // $('#ToDate').change(function () {
@@ -197,10 +214,10 @@
             }
 
             GetSearchData();
-            AutoComplete('VIssueWithoutBomdetail', 'ReqNo', 'ReqNo', null);
-            AutoComplete('VIssueWithoutBomdetail', 'Item_Name', 'Item_Name', null);
-            AutoComplete('VIssueWithoutBomdetail', 'PartCode', 'PartCode', null);
-            AutoComplete('VIssueWithoutBomdetail', 'WorkCenterDescription', 'WorkCenterDescription', null);
+              AutoComplete('VIssueWithoutBomdetail', 'ReqNo', 'ReqNo', null,$('#FromDate').val(),$('#ToDate').val(),"EntryDate");
+            AutoComplete('VIssueWithoutBomdetail', 'Item_Name', 'Item_Name', null,$('#FromDate').val(),$('#ToDate').val(),"EntryDate");
+            AutoComplete('VIssueWithoutBomdetail', 'PartCode', 'PartCode', null,$('#FromDate').val(),$('#ToDate').val(),"EntryDate");
+            AutoComplete('VIssueWithoutBomdetail', 'WorkCenterDescription', 'WorkCenterDescription', null,$('#FromDate').val(),$('#ToDate').val(),"EntryDate");
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
             sessionStorage.removeItem('REQNoBack');
@@ -253,6 +270,7 @@
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
                 async: false,
+                data:{formKey:formKey},
                 success: function (data) {
 
                     if (data != null) {
@@ -398,7 +416,7 @@
             $.ajax({
                 url: '@Url.Action("GetSearchData")',
                 type: "POST",
-                data: { ReqNo : $('#ReqNo').val(), ItemName: $('#Item_Name').val(), PartCode: $('#PartCode').val(), WorkCenter : $('#WorkCenterDescription').val(), FromDate : $('#FromDate').val(),ToDate : $('#ToDate').val() },
+                data: { formKey:formKey,uniqueKey:uniqueKey, ReqNo : $('#ReqNo').val(), ItemName: $('#Item_Name').val(), PartCode: $('#PartCode').val(), WorkCenter : $('#WorkCenterDescription').val(), FromDate : $('#FromDate').val(),ToDate : $('#ToDate').val() },
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
                     var dashGrid = $('#divDashboardGrid tr').length - 1;
@@ -437,7 +455,7 @@
             $.ajax({
                 url: '@Url.Action("GetDetailData")',
                 type: "POST",
-                data: { ReqNo: $('#ReqNo').val(), ItemName: $('#Item_Name').val(), PartCode: $('#PartCode').val(), WorkCenter: $('#WorkCenterDescription').val(), FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val() },
+                data: {formKey:formKey,uniqueKey:uniqueKey, ReqNo: $('#ReqNo').val(), ItemName: $('#Item_Name').val(), PartCode: $('#PartCode').val(), WorkCenter: $('#WorkCenterDescription').val(), FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val() },
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
                     var dashGrid = $('#divDashboardGrid tr').length - 1;
@@ -470,7 +488,9 @@
                     ReqNo: $('#ReqNo').val(),
                     WorkCenter: $('#WorkCenterDescription').val(),
                     FromDate: $('#FromDate').val(),
-                    ToDate: $('#ToDate').val()
+                    ToDate: $('#ToDate').val(),
+                    formKey:formKey,
+                    uniqueKey:uniqueKey
                 };
             } else if (dashboardType === "Detail") {
                 formData = {
@@ -479,7 +499,9 @@
                     PartCode: $('#PartCode').val(),
                     WorkCenter: $('#WorkCenterDescription').val(),
                     FromDate: $('#FromDate').val(),
-                    ToDate: $('#ToDate').val()
+                    ToDate: $('#ToDate').val(),
+                    formKey:formKey,
+                    uniqueKey:uniqueKey
                 };
             } 
             
@@ -508,7 +530,7 @@
             $.ajax({
                 url: "/IssueWithoutBom/GlobalSearch?searchString=" + searchString,
                 type: "GET",
-                data: { searchString: searchString, dashboardType: dashboardType },
+                data: { searchString: searchString, dashboardType: dashboardType,formKey:formKey,uniqueKey:uniqueKey },
                 success: function (data) {
 
                     $('#divDashboardGrid').empty();
@@ -619,6 +641,7 @@
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
+                data:{formKey:formKey},
                 success: function (data) {
                     if (data != null) {
                          
