@@ -17,7 +17,7 @@
             border-bottom: none !important;
         }
 
-    .select2-container--default .select2-results > .select2-results__options {
+    .select2-container--default .select2-results > .select2-result-s__options {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
 </style>
@@ -28,7 +28,7 @@
             <h5>
                 Pending Requisition Through BOM
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="Dashboard" asp-controller="IssueThrBOM"  class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="Dashboard"  asp-route-formKey="@ViewBag.formKey" asp-controller="IssueThrBOM"  class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -46,6 +46,8 @@
                                     <div class="col">
                                         <label class="form-label">From Date</label>
                                         <input asp-for="FromDate" maxlength="10" class="form-control" />
+                                        <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                                        <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                                     </div>
                                     <div class="col">
                                         <label class="form-label">To Date</label>
@@ -116,17 +118,23 @@
                             </div>
 
                             <div class=" d-flex justify-content-center mt-3" width="inherit">
-                                <label class="form-label" style="color:red"><strong>Click on Req No on grid to Issue Material</strong></label>
+                                <label class="form-label" style="color:red"><strong>Click on Req No on grid to Issue Material</strong><br />
+                                    <strong class="IssueAgstPlanConsiderWIPStock">Issue qty will be duducted from avalable  WIP Stock ( change the setting via FO)</strong>
+                                </label>
                                 <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="ShowDetailBtn" onclick="showDetail();">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SHOW
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary" type="button" onclick="showPendingStockDetail();" style="padding:3px;height:30px;width:150px;margin-left:20px;">
+                                    SHOW Pending Stock
                                 </button>
                                 @*<a class="btn btn-sm btn-outline-info" id="TransertoIssBtn" style="padding:3px;height:30px;width:200px;margin-left:20px;pointer-events:none;" onclick="TransferToIssue()">
                                 <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>TRANSFER TO ISSUE
                                 </a>*@
-                                <a class="btn btn-sm btn-outline-danger" asp-controller="PendingMaterialToIssueThrBOM" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-action="PendingMaterialToIssueThrBOM">
+                                <a class="btn btn-sm btn-outline-danger" asp-controller="PendingMaterialToIssueThrBOM" asp-route-formKey="@ViewBag.formKey"
+                                   style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-action="PendingMaterialToIssueThrBOM">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
-                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" onclick="ExportExcel()" type="button" id="sendToExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
                                 <div id="AltItemCheck" class="form-check form-switch d-flex justify-content-center mt-2" style="padding:3px;margin-left:50px;">
@@ -197,7 +205,71 @@
         </div>
     </div>
 </div>
+    <div class="modal fade" id="PopupModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-body overflow-auto pb-0">
+                            <div class="table-responsive myclass" style="max-height:350px;">
+                                <table class="table" id="pendingIssueMRN">
+                                    <thead class="bg-gradient card-headerBG text-light small" style="position:static;white-space:nowrap" id="IssueWOBomThead">
+                                        <tr>
+                                            <th data-columnno="0" data-sortorder="asc" class="sortCol">
+                                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req No
+                                            </th>
+                                            <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                                            <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                                            <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req Qty</th>
+                                            <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend Qty</th>
+                                            <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>After Issue Qty</th>
+                                            <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UNIT</th>
+                                            <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Std packing</th>
+                                            <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Stock</th>
+                                            <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch Stock</th>
+                                            <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
+                                            <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issue Qty</th>
+                                            <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No</th>
+                                            <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
+                                            <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req Year Code</th>
+                                            <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req Date</th>
+                                            <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
+                                            <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+                                            <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                            <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                                            <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Item Name</th>
+                                            <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Part Code</th>
+                                            <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cost Center Id</th>
+                                            <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Size</th>
+                                            <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Color</th>
+                                            <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Work Center</th>
+                                            <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransactionDate</th>
 
+                                        </tr>
+                                    </thead>
+                                    <tbody id="divPendIssueGridPopup" style="white-space:nowrap;">
+                                        <tr class="text-center">
+                                            <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+                            <div id="paginationControls"></div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <style>
     .sort-icon {
         padding: 5px;
@@ -206,11 +278,29 @@
     }
 </style>
 
+    <div id="fullPageLoader">
+        <div class="loaderBox">
+            <span>Processing...</span>
+        </div>
+    </div>
+</div>
+
 @section Scripts
 {
     <script>
-        $(function () {
 
+        function showLoader() {
+            $('#fullPageLoader').fadeIn(100);
+        }
+
+        function hideLoader() {
+            $('#fullPageLoader').fadeOut(100);
+        }
+        var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
+        $(function () {
+            formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
             GetServerDate();
 
             var FromDateBack = sessionStorage.getItem('FromDateBack');
@@ -228,21 +318,45 @@
             $('#PartCode').select2();
             $('#ReqNo').select2();
 
-            var fromDate;
-            var toDate;
-            var currentDate = new Date();
+            // var fromDate;
+            // var toDate;
+            // var currentDate = new Date();
 
-            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            var inputFromDateStr = $("#FromDate").val();
-            var parsedFromDate = new Date(inputFromDateStr);
+            // var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            // var inputFromDateStr = $("#FromDate").val();
+            // var parsedFromDate = new Date(inputFromDateStr);
 
-            if (!isNaN(parsedFromDate.getTime())) {
-                var formattedDate = (parsedFromDate.getDate() < 10 ? '0' : '') + parsedFromDate.getDate() + '/' +
-                    ((parsedFromDate.getMonth() + 1) < 10 ? '0' : '') + (parsedFromDate.getMonth() + 1) + '/' +
-                    parsedFromDate.getFullYear();
-                    $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate);
-                $('#IssueDate').datepicker("option", "minDate", formattedDate);
-            }
+            // if (!isNaN(parsedFromDate.getTime())) {
+            //     var formattedDate = (parsedFromDate.getDate() < 10 ? '0' : '') + parsedFromDate.getDate() + '/' +
+            //         ((parsedFromDate.getMonth() + 1) < 10 ? '0' : '') + (parsedFromDate.getMonth() + 1) + '/' +
+            //         parsedFromDate.getFullYear();
+            //         $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate);
+            //     $('#IssueDate').datepicker("option", "minDate", formattedDate);
+            // }
+
+                var currentDate = new Date();
+
+                // first day of current month
+                var firstDayOfMonth = new Date(
+                    currentDate.getFullYear(),
+                    currentDate.getMonth(),
+                    1
+                );
+
+                // format dd/mm/yyyy
+                var formattedDate =
+                    (firstDayOfMonth.getDate() < 10 ? '0' : '') + firstDayOfMonth.getDate() + '/' +
+                    ((firstDayOfMonth.getMonth() + 1) < 10 ? '0' : '') + (firstDayOfMonth.getMonth() + 1) + '/' +
+                    firstDayOfMonth.getFullYear();
+
+                // set FromDate as month start
+                $('#FromDate')
+                    .datepicker({ dateFormat: 'dd/mm/yy' })
+                    .datepicker("setDate", formattedDate);
+
+                // set IssueDate min date
+                $('#IssueDate').datepicker("option", "minDate", firstDayOfMonth);
+
             var inputToDateStr = $("#ToDate").val();
             var parsedToDate = new Date(inputToDateStr);
 
@@ -269,8 +383,57 @@
             fillRequisition();
             $('#TransertoIssBtn').css("pointer-events", "none");
 
+                EnableOrDisableIssueDate();
+
+                        if(IssueAgstPlanConsiderWIPStock=="Y")
+                {
+                    $('.IssueAgstPlanConsiderWIPStock').show();
+                }
+                else
+                {
+                                    $('.IssueAgstPlanConsiderWIPStock').hide();
+                }
+
+                //comment by monika as data get time to load data
+                        // showDetail();
             // showDetail();
         });
+
+        var IssueAgstPlanConsiderWIPStock='N';
+
+            function EnableOrDisableIssueDate() {
+                $.ajax({
+                    url: "@Url.Action("EnableOrDisableIssueDate", "PendingRequisitionToIssue")",
+                    type: "POST",
+                    async:false,
+                    success: function (data) {
+                        if (data != null) {
+                            var obj = $.parseJSON(data);
+
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                if (obj.Result.Table[0].AllowBackDateISSUEWITHBOM == "Y") {
+                                    // $('#IssueDate').datepicker("enable");
+                                    $('#IssueDate').css("pointer-events", "auto");
+
+                                }
+                                else {
+                                    //$('#IssueDate').datepicker("disable");
+                                    $('#IssueDate').css("pointer-events", "none");
+
+                                }
+                                                        IssueAgstPlanConsiderWIPStock=obj.Result.Table[0].IssueAgstPlanConsiderWIPStock;
+
+                                                        console.log('IssueAgstPlanConsiderWIPStock'+IssueAgstPlanConsiderWIPStock);
+
+                            }
+                        }
+                    },
+                    error: function (errMsg) {
+                        $.notify(errMsg, { position: "top center", className: "error" });
+                    }
+                });
+            }
+
        
         $(document).on("click", ".sortCol", function () {
 
@@ -377,11 +540,48 @@
 
 
 
-        $('#sendToExcel').click(function () {
-            $("#pendingIssueMRN").table2excel({
-                filename: "PendingThrIssue.xls"
-            });
-        });
+        // $('#sendToExcel').click(function () {
+        //     $("#pendingIssueMRN").table2excel({
+        //         filename: "PendingThrIssue.xls"
+        //     });
+        // });
+
+                        function ExportExcel() {
+
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+            var ReqNo = $('#ReqNo').find(':selected').text() == '-Select-' ? '' : $('#ReqNo').find(':selected').text();
+            var WorkCenter = $('#WorkCenter').val() == '' ? 0 : $('#WorkCenter').val();
+            var DeptName = $('#DeptName').val() == '' ? 0 : $('#DeptName').val();
+            var ItemCode = $('#ItemName').val();
+            var reqYearCode = $('#ReqYearCode').val();
+            var GlobalSearch = $('#search-box').val();
+            var FromStore = $('#FromStore').find(':selected').text() == '-Select-' ? '' : $('#FromStore').find(':selected').text();
+            var StoreId = $('#FromStore').val();
+            var IssueDate = $('#IssueDate').val();
+
+            var today = new Date();
+            var YearCode = (today.getMonth() + 1 < 4) ? today.getFullYear() - 1 : today.getFullYear();
+
+            var url = '@Url.Action("ExportToExcel")'
+                + '?formKey=' + encodeURIComponent(formKey)
+                + '&Flag=ShowDetail'
+                + '&FromDate=' + encodeURIComponent(fromDate)
+                + '&ToDate=' + encodeURIComponent(toDate)
+                + '&ReqNo=' + encodeURIComponent(ReqNo)
+                + '&YearCode=' + YearCode
+                + '&ItemCode=' + ItemCode
+                + '&WoNo='
+                + '&WorkCenter=' + WorkCenter
+                + '&DeptName=' + DeptName
+                + '&ReqYear=' + reqYearCode
+                + '&IssueDate=' + encodeURIComponent(IssueDate)
+                + '&GlobalSearch=' + encodeURIComponent(GlobalSearch)
+                + '&FromStore=' + encodeURIComponent(FromStore)
+                + '&StoreId=' + StoreId;
+
+            window.location = url;
+        }
 
         $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
             var cntId = e.target.id;
@@ -482,7 +682,7 @@
             $.ajax({
                 url: "@Url.Action("FillRequisition")",
                 type: "POST",
-                data: { ToDept: ToDept, ItemCode: ItemCode, WorkCenter: WorkCenter, YearCode: YearCode, ToDate: ToDate },
+                data: { ToDept: ToDept, ItemCode: ItemCode, WorkCenter: WorkCenter, YearCode: YearCode, ToDate: ToDate ,formKey:formKey},
                 success: function (data) {
                     if (data != null) {
                         var obj = $.parseJSON(data);
@@ -710,8 +910,9 @@
             });
         }
         */
+               var isPopup = false;
         function showDetail() {
-
+                   isPopup = false;
     $('#checkLabel,#TryAltItem').hide();
     $('#TryAltItem').prop("checked", false);
 
@@ -720,6 +921,7 @@
     } else {
         RemoveErrorCls('FromStore');
     }
+            showLoader();
 
     var fromDate = $('#FromDate').val();
     var toDate = $('#ToDate').val();
@@ -736,7 +938,7 @@
     var storeId = $('#FromStore').val();
     var issuedDate = $('#IssueDate').val();
     var ItemName = $('#ItemName :selected').text().split("-")[0];
-
+                       var Flag = "ShowDetail";
     var today = new Date();
     var year = today.getFullYear();
     var month = today.getMonth() + 1; // Months are 0-based in JS
@@ -757,6 +959,7 @@
         type: "POST",
         async: false,
         data: {
+            Flag: Flag,
             FromDate: fromDate,
             ToDate: toDate,
             ReqNo: ReqNo,
@@ -769,7 +972,8 @@
             IssueDate: issuedDate,
             GlobalSearch: GlobalSearch,
             FromStore: FromStore,
-            StoreId: storeId
+            StoreId: storeId,
+            formKey:formKey
         },
         success: function (data) {
             if (data != null) {
@@ -782,16 +986,111 @@
                 }
             }
         },
+                complete: function () {
+                    // btn.text(oldText).prop("disabled", false);
+                    hideLoader();
+                },
+
         error: function (errMsg) {
             $.notify(errMsg, { position: "top center", className: "error" });
+                    hideLoader();
         }
     });
 }
-            
+       function showPendingStockDetail() {
+           isPopup = true;
+                    $('#PopupModel').modal("show");
+            $('#checkLabel,#TryAltItem').hide();
+            $('#TryAltItem').prop("checked", false);
 
+            if ($('#FromStore').val() == null) {
+                AddErrorCls('FromStore');
+            } else {
+                RemoveErrorCls('FromStore');
+            }
+                    showLoader();
+
+            var fromDate = $('#FromDate').val();
+                            var Flag = "ShowPendinStockDetailPopupdata";
+            var toDate = $('#ToDate').val();
+            var parts = toDate.split('/');
+            var ReqNo = $('#ReqNo').find(':selected').text() == '-Select-' ? null : $('#ReqNo').find(':selected').text();
+            var WorkCenter = $('#WorkCenter').val() == '' ? 0 : parseInt($('#WorkCenter').val());
+            var DeptName = $('#DeptName').val() == '' ? 0 : parseInt($('#DeptName').val());
+            var ToDate = $('#ToDate').val();
+            var ItemCode = $('#ItemName').val();
+            var wono = '';
+            var reqYearCode = $('#ReqYearCode').val();
+            var GlobalSearch = $('#search-box').val();
+            var FromStore = $('#FromStore').find(':selected').text() == '-Select-' ? null : $('#FromStore').find(':selected').text();
+            var storeId = $('#FromStore').val();
+            var issuedDate = $('#IssueDate').val();
+            var ItemName = $('#ItemName :selected').text().split("-")[0];
+
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = today.getMonth() + 1; // Months are 0-based in JS
+            var financialYearStart, financialYearEnd;
+
+            if (month < 4) {
+                financialYearStart = (year - 1);
+                financialYearEnd = year;
+            } else {
+                financialYearStart = year;
+                financialYearEnd = (year + 1);
+            }
+
+            var YearCode = financialYearStart;
+
+            $.ajax({
+                url: "@Url.Action("ShowDetail")",
+                type: "POST",
+                async: false,
+                data: {
+                            Flag: Flag,
+                    FromDate: fromDate,
+                    ToDate: toDate,
+                    ReqNo: ReqNo,
+                    YearCode: YearCode,
+                    ItemCode: ItemCode,
+                    WoNo: wono,
+                    WorkCenter: WorkCenter,
+                    DeptName: DeptName,
+                    ReqYear: reqYearCode,
+                    IssueDate: issuedDate,
+                    GlobalSearch: GlobalSearch,
+                    FromStore: FromStore,
+                    StoreId: storeId,
+                    formKey:formKey
+                },
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            detailData = obj.Result.Table;
+                            currentPage = 1;
+                            renderPage(currentPage);
+                            renderPaginationControls();
+                        }
+                    }
+                },
+                        complete: function () {
+                            // btn.text(oldText).prop("disabled", false);
+                            hideLoader();
+                        },
+
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                            hideLoader();
+                }
+            });
+        }
 function renderPage(page) {
      ;
-    $('#divPendIssueGrid').empty();
+               var gridId = isPopup ? '#divPendIssueGridPopup' : '#divPendIssueGrid';
+
+            $(gridId).empty();
+    //$('#divPendIssueGrid').empty();
 
     
     var searchValue = $('#search-box').val().toLowerCase();
@@ -800,7 +1099,8 @@ function renderPage(page) {
     var filteredData = detailData.filter(function (item) {
         return (
             (item.PartCode && item.PartCode.toLowerCase().includes(searchValue)) ||
-            (item.ItemName && item.ItemName.toLowerCase().includes(searchValue))
+            (item.ItemName && item.ItemName.toLowerCase().includes(searchValue)) ||
+            (item.REQNo && item.REQNo.toLowerCase().includes(searchValue)) 
         );
     });
                
@@ -855,10 +1155,10 @@ function renderPage(page) {
                             + '<input readonly class="styled-input styled-qty" id="IssueQty' + (start + i) + '" value=' + item.IssueQty + ' >'
                             + '</td>'
                             + '<td class="styled-cell">'
-                            + '<input readonly class="styled-input"id="BatchNo' + (start + i) + '" value="' + escapeHtml(item.BatchNo) + '">'
+                    + '<input readonly style="white-space: pre-wrap;" class="styled-input"id="BatchNo' + (start + i) + '" value="' + escapeHtml(item.BatchNo) + '">'
                             + '</td>'
                             + '<td class="styled-cell">'
-                            + '<input size="40%" readonly class="styled-input"id="UniqueBatchNo' + (start + i) + '" value=' + escapeHtml(item.UniqueBatchNo) + '>'
+                    + '<input size="40%" style="white-space: pre-wrap;" readonly class="styled-input"id="UniqueBatchNo' + (start + i) + '" value="' + escapeHtml(item.UniqueBatchNo) + '">'
                             + '</td>'
                             + '<input type="hidden" class="styled-input"id="Batchdate' + (start + i) + '" value=' + item.Batchdate + ' >'
                             + '<td class="styled-cell">'
@@ -906,8 +1206,9 @@ function renderPage(page) {
                         + '</td>'
                             + '</tr>';
                     }
+                    $(gridId).append(html1);
 
-                    $('#divPendIssueGrid').append(html1);
+                  //  $('#divPendIssueGrid').append(html1);
 
                     // Other UI stuff that you want to do on each page render
                     if ($('#ReqNo').prop("selectedIndex") == 0 || $('#ReqYearCode').prop("selectedIndex") == 0) {
@@ -1154,8 +1455,8 @@ function renderPage(page) {
                                         <input readonly class="styled-input" style="width:100px !important" id="StoreName${i}" value="${row.StoreName}">
                                     </td>
                                     <td class="styled-cell"><input readonly class="styled-input styled-qty" id="IssueQty${i}" value="${row.IssueQty}"></td>
-                                    <td class="styled-cell"><input readonly class="styled-input" id="BatchNo${i}" value="${escapeHtml(row.BatchNo)}"></td>
-                                    <td class="styled-cell"><input size="40%" readonly class="styled-input" id="UniqueBatchNo${i}" value="${escapeHtml(row.UniqueBatchNo)}"></td>
+                                            <td class="styled-cell"><input style="white-space: pre-wrap;" readonly class="styled-input" id="BatchNo${i}" value="${row.BatchNo}"></td>
+                                            <td class="styled-cell"><input style="white-space: pre-wrap;" size="40%" readonly class="styled-input" id="UniqueBatchNo${i}" value="${row.UniqueBatchNo}"></td>
                                     <input type="hidden" id="Batchdate${i}" value="${row.Batchdate}">
                                     <td class="styled-cell"><input readonly class="styled-input styled-qty" id="ReqYearCode${i}" value="${row.ReqYearCode}"></td>
                                     <td class="styled-cell"><input readonly class="styled-input" id="ReqDate${i}" value="${row.ReqDate.split("T")[0]}"></td>
@@ -1204,9 +1505,9 @@ function renderPage(page) {
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#39;')
                 .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
+                .replace(/>/g, '&gt;')
+                // .replace(/ /g, '&nbsp;');   // handle space
         }
-
         function noEvent(event, i) {
 
             event.preventDefault();
@@ -1308,7 +1609,7 @@ function renderPage(page) {
                 url: "@Url.Action("ShowDetail")",
                 type: "POST",
                 async: false,
-                data: { FromDate: fromDate, ToDate: toDate, ReqNo: ReqNo, YearCode: YearCode, ItemCode: ItemCode, WoNo: wono, WorkCenter: WorkCenter, DeptName: DeptName, ReqYear: reqYearCode, IssueDate: issuedDate, GlobalSearch: GlobalSearch, FromStore: FromStore, StoreId: storeId },
+                data: { FromDate: fromDate,formKey:formKey, ToDate: toDate, ReqNo: ReqNo, YearCode: YearCode, ItemCode: ItemCode, WoNo: wono, WorkCenter: WorkCenter, DeptName: DeptName, ReqYear: reqYearCode, IssueDate: issuedDate, GlobalSearch: GlobalSearch, FromStore: FromStore, StoreId: storeId },
                 success: function (data) {
 
                     if (data != null) {
@@ -1333,8 +1634,8 @@ function renderPage(page) {
                                     + '<td class="styled-cell"><input class="styled-input styled-qty" readonly id="BatchStock' + i + '" value=' + obj.Result.Table[i].BatchStock + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input" type="hidden" id="StoreId' + i + '" value=' + obj.Result.Table[i].storeid + ' /><input readonly class="styled-input" style="width:100px !important" id="StoreName' + i + '" value=' + JSON.stringify(obj.Result.Table[i].StoreName) + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="IssueQty' + i + '" value=' + obj.Result.Table[i].IssueQty + ' ></td>'
-                                    + '<td class="styled-cell"><input readonly class="styled-input"id="BatchNo' + i + '" value="' + escapeHtml(obj.Result.Table[i].BatchNo) + '"></td>'
-                                    + '<td class="styled-cell"><input size="40%" readonly class="styled-input"id="UniqueBatchNo' + i + '" value=' + escapeHtml(obj.Result.Table[i].UniqueBatchNo) + '></td><input type="hidden" class="styled-input"id="Batchdate' + i + '" value=' + obj.Result.Table[i].Batchdate + ' >'
+                                    + '<td class="styled-cell"><input readonly style="white-space: pre-wrap;" class="styled-input"id="BatchNo' + i + '" value="' + escapeHtml(obj.Result.Table[i].BatchNo) + '"></td>'
+                                    + '<td class="styled-cell"><input size="40%" style="white-space: pre-wrap;" readonly class="styled-input"id="UniqueBatchNo' + i + '" value="' + escapeHtml(obj.Result.Table[i].UniqueBatchNo) + '"></td><input type="hidden" class="styled-input"id="Batchdate' + i + '" value=' + obj.Result.Table[i].Batchdate + ' >'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="ReqYearCode' + i + '"  value=' + obj.Result.Table[i].ReqYearCode + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input"id="ReqDate' + i + '" value=' + obj.Result.Table[i].ReqDate.split("T")[0] + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="AltQty' + i + '" value=' + obj.Result.Table[i].AltQty + ' ></td>'
@@ -1388,7 +1689,7 @@ function renderPage(page) {
         }
 
         function TransferToIssueWithDblClick(k) {
-             
+            showLoader();
             var rowCount = $('#divPendIssueGrid tr').length;
 
             var ItemData = [];
@@ -1401,13 +1702,15 @@ function renderPage(page) {
                     "ItemCode": parseInt($('#ItemCode' + i).val()),
                     "ItemName": $('#ItemName' + i).val(),
                     // "PartCode": escapeHtml($('#PartCode' + i).val()),
-                    "PartCode": escapeHtml(getVal('PartCode', i)),
+                    "PartCode": (getVal('PartCode', i)),
                     "ReqQty": $('#ReqQty' + i).val(),
                     "StoreId": $('#StoreId' + i).val(),
                     "StoreName": $('#StoreName' + i).val(),
-                    "BatchNo": $('#BatchNo' + i).val(),
-                    "uniqueBatchNo": $('#UniqueBatchNo' + i).val(),
+                    "BatchNo": ($('#BatchNo' + i).val()),
+                    "uniqueBatchNo": ($('#UniqueBatchNo' + i).val()),
                     "IssueQty": $('#IssueQty' + i).val(),
+                    "LotStock": $('#BatchStock' + i).val(),
+                    "TotalStock": $('#Stock' + i).val(),
                     "Unit": $('#Unit' + i).val(),
                     "AltQty": $('#AltQty' + i).val(),
                     "AltUnit": $('#AltUnit' + i).val(),
@@ -1434,7 +1737,7 @@ function renderPage(page) {
             $.ajax({
                 url: "@Url.Action("AddissueThrBom")",
                 type: "POST",
-                data: { model: ItemData },
+                data: { model: ItemData,uniqueKey:uniqueKey,formKey:formKey },
                 async: false,
                 success: function (data, status, xhr) {
 
@@ -1448,7 +1751,7 @@ function renderPage(page) {
                         //window.location.href = url;
                         var FromStoreId = $('#FromStore').val();
                         var url = '/IssueThrBOM/Index/?';
-                        url = url + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&REQNo=" + $('#ReqNo').val() + "&ReqYearCode=" + $('#ReqYearCode').val() + "&WCName=" + $('#WorkCenter').val() + "&DeptName=" + $('#DeptName').val() + "&PartCode=" + escapeHtml($('#PartCode').val()) + "&ItemName=" + $('#ItemName').val() + "&GlobalSearch=" + $('#search-box').val() + "&FromStoreBack=" + FromStoreId
+                        url = url + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&REQNo=" + $('#ReqNo').val() + "&ReqYearCode=" + $('#ReqYearCode').val() + "&WCName=" + $('#WorkCenter').val() + "&DeptName=" + $('#DeptName').val() + "&PartCode=" + escapeHtml($('#PartCode').val()) + "&ItemName=" + $('#ItemName').val() + "&GlobalSearch=" + $('#search-box').val() + "&FromStoreBack=" + FromStoreId + "&uniqueKey=" + uniqueKey + "&formKey=" + formKey
                         // alert("Redirecting to: " + url);
                         window.location.href = url;
                     }
@@ -1462,8 +1765,9 @@ function renderPage(page) {
 
 
         function ColorCodingStockandIssue() {
-            var rowCount = $('#divPendIssueGrid tr').length;
-
+           
+                     var gridId = isPopup ? '#divPendIssueGridPopup' : '#divPendIssueGrid';
+                              var rowCount = $(gridId).length;
             for (var i = 0; i < rowCount; i++) {
                 if (parseFloat($('#IssueQty' + i).val()) <= 0) {
                     $('#PendingGrid' + i + ' input').css("color", "red");
@@ -1545,74 +1849,74 @@ function renderPage(page) {
             return true;
         }
 
-        function TransferToIssue() {
+        // function TransferToIssue() {
+        //     showLoader();
+        //     if (!validateTransfer()) { console.log("do nothing"); }
+        //     else {
 
-            if (!validateTransfer()) { console.log("do nothing"); }
-            else {
+        //         var rowCount = $('#divPendIssueGrid tr').length;
 
-                var rowCount = $('#divPendIssueGrid tr').length;
+        //         var ItemData = [];
+        //         for (let i = 0; i < rowCount; i++) {
 
-                var ItemData = [];
-                for (let i = 0; i < rowCount; i++) {
+        //             ItemData.push({
+        //                 "ReqNo1": $('#ReqNo').find(":selected").text(),
+        //                 "ReqDate1": $('#ReqDate' + i).val(),
+        //                 "ReqYearCode1": $('#ReqYearCode').val(),
+        //                 "ItemCode": parseInt($('#ItemCode' + i).val()),
+        //                 "ItemName": $('#ItemName' + i).val(),
+        //                 // "PartCode": escapeHtml($('#PartCode' + i).val()),
+        //                 "PartCode": escapeHtml(getVal('PartCode', i)),
+        //                 "ReqQty": $('#ReqQty' + i).val(),
+        //                 "StoreId": $('#StoreId' + i).val(),
+        //                 "StoreName": $('#StoreName' + i).val(),
+        //                 "BatchNo": $('#BatchNo' + i).val(),
+        //                 "uniqueBatchNo": $('#UniqueBatchNo' + i).val(),
+        //                 "IssueQty": $('#IssueQty' + i).val(),
+        //                 "Unit": $('#Unit' + i).val(),
+        //                 "AltQty": $('#AltQty' + i).val(),
+        //                 "AltUnit": $('#AltUnit' + i).val(),
+        //                 "Rate": $('#Rate' + i).val(),
+        //                 "Remark": $('#Remark' + i).val(),
+        //                 "WorkCenter": $('#WorkCenter').find(':selected').text(),
+        //                 "WCId": $('#WorkCenter').val(),
+        //                     "WipStock": $('#WIPStock' + i).val(),
+        //                     "TransactionDate": $('#TransactionDate' + i).val(),
+        //                 "AltItemCode": $('#AltItemCode' + i).val(),
+        //                 "CostCenterId": $('#CostCenterId' + i).val(),
+        //                 "ItemSize": $('#ItemSize' + i).val(),
+        //                 "ItemColor": $('#ItemColor' + i).val(),
+        //                 "IssuedDate": $('#IssueDate').val(),
+        //                 "MachineCodee": $('#MachineCode').val(),
+        //                 "StdPacking": $('#StdPacking' + i).val(),
+        //                 "WONO": $('#WONo').val(),
+        //                 "WOYearCode": $('#WoYearCode').val(),
+        //                 "WoDate": $('#WoDate').val().split("T")[0]
+        //             });
+        //         }
+        //         console.log('second'+ItemData);
+        //         $.ajax({
+        //             url: "@Url.Action("AddissueThrBom")",
+        //             type: "POST",
+        //             data: { model: ItemData },
+        //             success: function (data, status, xhr) {
 
-                    ItemData.push({
-                        "ReqNo1": $('#ReqNo').find(":selected").text(),
-                        "ReqDate1": $('#ReqDate' + i).val(),
-                        "ReqYearCode1": $('#ReqYearCode').val(),
-                        "ItemCode": parseInt($('#ItemCode' + i).val()),
-                        "ItemName": $('#ItemName' + i).val(),
-                        // "PartCode": escapeHtml($('#PartCode' + i).val()),
-                        "PartCode": escapeHtml(getVal('PartCode', i)),
-                        "ReqQty": $('#ReqQty' + i).val(),
-                        "StoreId": $('#StoreId' + i).val(),
-                        "StoreName": $('#StoreName' + i).val(),
-                        "BatchNo": $('#BatchNo' + i).val(),
-                        "uniqueBatchNo": $('#UniqueBatchNo' + i).val(),
-                        "IssueQty": $('#IssueQty' + i).val(),
-                        "Unit": $('#Unit' + i).val(),
-                        "AltQty": $('#AltQty' + i).val(),
-                        "AltUnit": $('#AltUnit' + i).val(),
-                        "Rate": $('#Rate' + i).val(),
-                        "Remark": $('#Remark' + i).val(),
-                        "WorkCenter": $('#WorkCenter').find(':selected').text(),
-                        "WCId": $('#WorkCenter').val(),
-                            "WipStock": $('#WIPStock' + i).val(),
-                            "TransactionDate": $('#TransactionDate' + i).val(),
-                        "AltItemCode": $('#AltItemCode' + i).val(),
-                        "CostCenterId": $('#CostCenterId' + i).val(),
-                        "ItemSize": $('#ItemSize' + i).val(),
-                        "ItemColor": $('#ItemColor' + i).val(),
-                        "IssuedDate": $('#IssueDate').val(),
-                        "MachineCodee": $('#MachineCode').val(),
-                        "StdPacking": $('#StdPacking' + i).val(),
-                        "WONO": $('#WONo').val(),
-                        "WOYearCode": $('#WoYearCode').val(),
-                        "WoDate": $('#WoDate').val().split("T")[0]
-                    });
-                }
-                console.log('second'+ItemData);
-                $.ajax({
-                    url: "@Url.Action("AddissueThrBom")",
-                    type: "POST",
-                    data: { model: ItemData },
-                    success: function (data, status, xhr) {
+        //                 if (data != "done") {
+        //                     $.notify(data, "error");
+        //                 }
+        //                 else {
 
-                        if (data != "done") {
-                            $.notify(data, "error");
-                        }
-                        else {
-
-                            var url = '@Url.Action("IssueThrBOM", "IssueThrBOM")';
-                            window.location.href = url;
-                        }
-                    },
-                    error: function (result, status, xhr) {
-                        $.notify(result.responseText, "error");
-                        console.log(result.responseText);
-                    }
-                });
-            }
-        }
+        //                     var url = '@Url.Action("IssueThrBOM", "IssueThrBOM")';
+        //                     window.location.href = url;
+        //                 }
+        //             },
+        //             error: function (result, status, xhr) {
+        //                 $.notify(result.responseText, "error");
+        //                 console.log(result.responseText);
+        //             }
+        //         });
+        //     }
+        // }
     </script>
     <script src="~/Scripts/table2excel.js"></script>
 }
@@ -1651,6 +1955,30 @@ function renderPage(page) {
         top: 0;
         z-index: 1;
     }
+
+    #fullPageLoader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        display: none;
+        z-index: 99999;
+    }
+
+    .loaderBox {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 25px 40px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
     /* */
 
 

@@ -14,7 +14,7 @@ namespace eTactWeb.Services.Interface
     {
         Task<ResponseResult> GetFormRights(int userID);
         Task<ResponseResult> PassForCloseReq();
-
+        Task<ResponseResult> Getfeatureoption();
         Task<ResponseResult> GetNewEntry(int YearCode);
         Task<ResponseResult> FillProjectNo();
         Task<ResponseResult> GetIsStockable(int ItemCode);
@@ -22,7 +22,20 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetIssueScanFeature();
         Task<ResponseResult> FillFGDataList(string Reqno, int ReqYC);
         Task<DataSet> FillEmployee(string Flag);
-        Task<ResponseResult> GetReqByName(string reqno,int yearcode);
+        Task<List<IssueThrBomDetail>> ShowReqDetail(string FromDate,
+          string ToDate,
+          string ReqNo,
+          int YearCode,
+          int ItemCode,
+          string WoNo,
+          int WorkCenter,
+          int DeptName,
+          int ReqYear,
+          string IssueDate,
+          string GlobalSearch,
+          string FromStore,
+          int StoreId);
+        Task<ResponseResult> GetReqByName(string reqno, int yearcode);
         Task<ResponseResult> GetReqQtyForScan(string ReqNo, int ReqYearCode, string ReqDate, int ItemCode);
         Task<ResponseResult> GetStoreIdReqForScan(string ReqNo, int ReqYearCode, string ReqDate, int ItemCode);
         Task<ResponseResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId);
@@ -35,19 +48,19 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> CheckStockBeforeSaving(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo);
 
         Task<ResponseResult> CheckRequisitionBeforeSaving(string ReqNo, int ReqyearCode, int ItemCode);
-        Task<ResponseResult> SaveIssueThrBom(IssueThrBom model, DataTable RMGrid,DataTable FGGrid);
+        Task<ResponseResult> SaveIssueThrBom(IssueThrBom model, DataTable RMGrid, DataTable FGGrid);
         Task<ResponseResult> GetDashboardData(string Fromdate, string ToDate, string Flag);
         Task<IList<TextValue>> GetEmployeeList();
         Task<ResponseResult> GetDashboardData(string FromDate, string ToDate, string DashboardType, string IssueSlipNo, string ReqNo);
         Task<IssueThrBom> GetViewByID(int ID, int YearCode);
-        Task<ResponseResult> DeleteByID(int ID, int YearCode);
+        Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEnteredBy, string IPAddress, string MachineCode);
         Task<IssueThrBomMainDashboard> FGDetailData(string FromDate, string Todate, string Flag = "", string DashboardType = "FGSUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "", string WCName = "");
-        Task<IssueThrBomMainDashboard> RMDetailData(string FromDate, string Todate, string WCName,string PartCode,string ItemName, string Flag = "", string DashboardType = "RMDETAIL", string IssueSlipNo = "", string ReqNo = "", string GlobalSearch = "", string FGPartCode = "", string FGItemName = "");
-        Task<IssueThrBomMainDashboard> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", string PartCode="", string ItemName="", string WCName= "");
+        Task<IssueThrBomMainDashboard> RMDetailData(string FromDate, string Todate, string WCName, string PartCode, string ItemName, string Flag = "", string DashboardType = "RMDETAIL", string IssueSlipNo = "", string ReqNo = "", string GlobalSearch = "", string FGPartCode = "", string FGItemName = "");
+        Task<IssueThrBomMainDashboard> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", string PartCode = "", string ItemName = "", string WCName = "");
 
-        Task<ResponseResult> ChkStockBeforeSaving(string ReqNo, int ReqYearCode, int EntryId,int YearCode, DataTable DTItemGrid);
+        Task<ResponseResult> ChkStockBeforeSaving(string ReqNo, int ReqYearCode, int EntryId, int YearCode, DataTable DTItemGrid, string Mode);
 
-
+        Task<ResponseResult> GetReportName();
 
     }
 }

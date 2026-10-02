@@ -41,65 +41,98 @@ namespace eTactWeb.Controllers
             _connectionStringService = connectionStringService;
         }
 
-        [Route("{controller}/Index")]
-        public async Task<IActionResult> IssueThrBOM()
-        {
-            ViewData["Title"] = "Issue Through BOM Details";
-            TempData.Clear();
-            HttpContext.Session.Remove("KeyIssThrBomGrid");
-            HttpContext.Session.Remove("KeyIssThrBomScannedGrid");
-            HttpContext.Session.Remove("KeyIssThrBomFGGrid");
-            HttpContext.Session.Remove("AllowBatchChange");
-            var MainModel = new IssueThrBom();
-            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-            MainModel.ActualEntrydate = DateTime.Now;
+        //[Route("{controller}/Index")]
+        //public async Task<IActionResult> IssueThrBOM(string formKey,string uniqueKey)
+        //{
+        //    ViewData["Title"] = "Issue Through BOM Details";
+        //    TempData.Clear();
+        //    HttpContext.Session.Remove($"KeyIssThrBomGrid_{uniqueKey}");
+        //    HttpContext.Session.Remove($"KeyIssThrBomScannedGrid_{uniqueKey}");
+        //    HttpContext.Session.Remove($"KeyIssThrBomFGGrid_{uniqueKey}");
+        //    HttpContext.Session.Remove($"AllowBatchChange_{uniqueKey}");
+        //    var MainModel = new IssueThrBom();
+        //    MainModel.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+        //    MainModel.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+        //    MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+        //    MainModel.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+        //    MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+        //    MainModel.ActualEnteredByName = HttpContext.Session.GetString($"EmpName_{formKey}");
+        //    MainModel.ActualEntrydate = DateTime.Now;
 
-            string serializedGrid = JsonConvert.SerializeObject(MainModel);
-            HttpContext.Session.SetString("KeyIssThrBomGrid", serializedGrid);
-            return View(MainModel);
-        }
+        //    string serializedGrid = JsonConvert.SerializeObject(MainModel);
+        //    HttpContext.Session.SetString($"KeyIssThrBomGrid_{uniqueKey}", serializedGrid);
+        //    return View(MainModel);
+        //}
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
             var webReport = new WebReport();
-    
-            webReport.Report.Load(webRootPath + "\\IssueThrBom.frx"); // default report
+
+            //  webReport.Report.Load(webRootPath + "\\IssueThrBom.frx"); // default report
+            var ReportName = _IIssueThrBOM.GetReportName();
+
+            if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+            }
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\IssueThrBom.frx"); // default report
+
+            }
             my_connection_string = _connectionStringService.GetConnectionString();
             //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
-           
+
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             webReport.Report.Refresh();
             return View(webReport);
 
-           
-            }
-            [Route("{controller}/Index")]
+
+        }
+        [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> IssueThrBOM(int ID, string Mode, int YC, string REQNo = "", string ItemName = "", string PartCode = "", string WorkCenter = "", string DashboardType = "", string FromDate = "", string ToDate = "", string SearchBox = "")//, ILogger logger)
+        public async Task<ActionResult> IssueThrBOM(int ID, string formKey, string uniqueKey, string Mode, int YC, string REQNo = "", string ItemName = "", string PartCode = "", string WorkCenter = "", string DashboardType = "", string FromDate = "", string ToDate = "", string SearchBox = "")//, ILogger logger)
         {
             //_logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
+            ViewBag.formKey = formKey;
+            if (uniqueKey == null)
+            {
+                Guid.NewGuid().ToString();
+
+            }
+            ViewBag.uniqueKey = uniqueKey;
             var MainModel = new IssueThrBom();
             MainModel = await BindModel(MainModel);
-            MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            HttpContext.Session.Remove("KeyIssThrBomGrid");
-            HttpContext.Session.Remove("KeyIssThrBomScannedGrid");
-            HttpContext.Session.Remove("KeyIssThrBomFGGrid");
-            HttpContext.Session.Remove("AllowBatchChange");
+            MainModel.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+            MainModel.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            MainModel.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+            HttpContext.Session.Remove($"KeyIssThrBomGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyIssThrBomScannedGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyIssThrBomFGGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"AllowBatchChange_{uniqueKey}");
+
+            var AllowedBatchChange = _IIssueThrBOM.GetAllowBatch();
+
+            if (AllowedBatchChange != null &&
+                AllowedBatchChange.Result != null &&
+                AllowedBatchChange.Result.Result != null &&
+                AllowedBatchChange.Result.Result.Rows.Count > 0)
+            {
+                DataRow row = AllowedBatchChange.Result.Result.Rows[0];
+
+
+                ViewBag.AllowedBatchChange = row["AllowBatchChange"]?.ToString() ?? "";
+
+
+            }
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IIssueThrBOM.GetViewByID(ID, YC).ConfigureAwait(false);
@@ -108,9 +141,9 @@ namespace eTactWeb.Controllers
                 MainModel = await BindModel(MainModel);
 
                 string serializedItemGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                HttpContext.Session.SetString("KeyIssThrBomGrid", serializedItemGrid);
+                HttpContext.Session.SetString($"KeyIssThrBomGrid_{uniqueKey}", serializedItemGrid);
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.FGItemDetailGrid);
-                HttpContext.Session.SetString("KeyIssThrBomFGGrid", serializedGrid);
+                HttpContext.Session.SetString($"KeyIssThrBomFGGrid_{uniqueKey}", serializedGrid);
             }
             else
             {
@@ -119,17 +152,17 @@ namespace eTactWeb.Controllers
 
             if (Mode != "U")
             {
-                MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.ActualEnteredByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                 MainModel.ActualEntrydate = DateTime.Now;
-                MainModel.IssuedByEmpCode = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                MainModel.IssuedByEmpName = HttpContext.Session.GetString("EmpName");
-                MainModel.RecByEmpCode = Convert.ToInt32(HttpContext.Session.GetString("EmployeeList"));
+                MainModel.IssuedByEmpCode = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+                MainModel.IssuedByEmpName = HttpContext.Session.GetString($"EmpName_{formKey}");
+                MainModel.RecByEmpCode = Convert.ToInt32(HttpContext.Session.GetString($"EmployeeList_{formKey}"));
             }
             else
             {
-                MainModel.LastupdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.LastupdatedByName = HttpContext.Session.GetString("EmpName");
+                MainModel.LastupdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.LastupdatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                 MainModel.LastUpdationDate = DateTime.Now;
             }
 
@@ -149,6 +182,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> Getfeatureoption()
+        {
+            var JSON = await _IIssueThrBOM.Getfeatureoption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -159,13 +198,15 @@ namespace eTactWeb.Controllers
             {
                 var RMGrid = new DataTable(); // memoryGrid(down)
                 var FGGrid = new DataTable(); // FGGrid(top)
-                string modelJson = HttpContext.Session.GetString("KeyIssThrBomGrid");
+                var formKey = model.formKey;
+                var uniqueKey = model.uniqueKey;
+                string modelJson = HttpContext.Session.GetString($"KeyIssThrBomGrid_{uniqueKey}");
                 List<IssueThrBomDetail> IssueGrid = new List<IssueThrBomDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     IssueGrid = JsonConvert.DeserializeObject<List<IssueThrBomDetail>>(modelJson);
                 }
-                string modelFGJson = HttpContext.Session.GetString("KeyIssThrBomFGGrid");
+                string modelFGJson = HttpContext.Session.GetString($"KeyIssThrBomFGGrid_{uniqueKey}");
                 List<IssueThrBomFGData> IssueFGGrid = new List<IssueThrBomFGData>();
                 if (!string.IsNullOrEmpty(modelFGJson))
                 {
@@ -180,18 +221,18 @@ namespace eTactWeb.Controllers
                 }
                 else
                 {
-                    var userID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    var userID = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
 
                     model.CreatedBy = userID;
                     if (model.Mode == "U")
                         model.LastupdatedBy = userID;
-                    model.Uid=userID;
+                    model.Uid = userID;
                     RMGrid = GetRMDetailTable(IssueGrid);
                     FGGrid = GetFGDetailTable(IssueFGGrid);
 
-                    model.MachineCode = HttpContext.Session.GetString("ClientMachineName");
-                    model.MachineCodee = HttpContext.Session.GetString("ClientMachineName");
-                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                    model.MachineCode = HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+                    model.MachineCodee = HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+                    model.IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
                     var Result = await _IIssueThrBOM.SaveIssueThrBom(model, RMGrid, FGGrid);
 
                     if (Result != null)
@@ -214,13 +255,13 @@ namespace eTactWeb.Controllers
                                 });
                             }
 
-                            HttpContext.Session.Remove("KeyIssThrBomGrid");
+                            HttpContext.Session.Remove($"KeyIssThrBomGrid_{uniqueKey}");
                         }
                         else if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
-                            HttpContext.Session.Remove("KeyIssThrBomGrid"); 
+                            HttpContext.Session.Remove($"KeyIssThrBomGrid_{uniqueKey}");
                         }
                         else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
@@ -232,7 +273,14 @@ namespace eTactWeb.Controllers
                         else if (!string.IsNullOrEmpty(Result.StatusText))
                         {
                             // If SP returned a message (like adjustment error)
-                            TempData["ErrorMessage"] = Result.StatusText;
+                            //TempData["ErrorMessage"] = Result.StatusText;
+
+                            return Json(new
+                            {
+                                status = "error",
+                                message = Result.StatusText
+                            });
+                            //return RedirectToAction("PendingMaterialToIssueThrBOM", "PendingMaterialToIssueThrBOM");
                             //return View(model);
                         }
 
@@ -257,9 +305,9 @@ namespace eTactWeb.Controllers
             }
         }
 
-        public async Task<JsonResult> GetFormRights()
+        public async Task<JsonResult> GetFormRights(string formKey)
         {
-            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var JSON = await _IIssueThrBOM.GetFormRights(userID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -288,28 +336,23 @@ namespace eTactWeb.Controllers
             return model;
         }
 
-        public IActionResult FillThrGridFromMemoryCache()
+        public IActionResult FillThrGridFromMemoryCache(string formKey, string uniqueKey)
         {
             try
             {
-                string modelJson = HttpContext.Session.GetString("KeyIssThrBom");
+                string modelJson = HttpContext.Session.GetString($"KeyIssThrBom_{uniqueKey}");
                 List<IssueThrBomDetail> IssueThrBomDetailGrid = new List<IssueThrBomDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     IssueThrBomDetailGrid = JsonConvert.DeserializeObject<List<IssueThrBomDetail>>(modelJson);
                 }
-                
+
                 var MainModel = new IssueThrBom();
                 var IssueGrid = new List<IssueThrBomDetail>();
                 var SSGrid = new List<IssueThrBomDetail>();
-                MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-                MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
+                MainModel.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                MainModel.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+
                 var seqNo = 1;
                 if (IssueThrBomDetailGrid != null)
                 {
@@ -326,7 +369,7 @@ namespace eTactWeb.Controllers
                             MainModel.ItemDetailGrid = IssueGrid;
 
                             string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                            HttpContext.Session.SetString("KeyIssThrBom", serializedGrid);
+                            HttpContext.Session.SetString($"KeyIssThrBom_{uniqueKey}", serializedGrid);
                         }
                     }
                 }
@@ -338,9 +381,9 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<JsonResult> GetNewEntry()
+        public async Task<JsonResult> GetNewEntry(string formKey)
         {
-            int YC = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            int YC = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
             var JSON = await _IIssueThrBOM.GetNewEntry(YC);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -399,9 +442,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> FillBatchUnique(int ItemCode, int YearCode, string StoreName, string BatchNo, string IssuedDate)
+        public async Task<IActionResult> FillBatchUnique(int ItemCode, string formKey, int YearCode, string StoreName, string BatchNo, string IssuedDate)
         {
-            var FinStartDate = HttpContext.Session.GetString("FromDate");
+            var FinStartDate = HttpContext.Session.GetString($"FromDate_{formKey}");
             var JSON = await _IIssueThrBOM.FillBatchUnique(ItemCode, YearCode, StoreName, BatchNo, IssuedDate, FinStartDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -412,7 +455,7 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult AddtoIssueThrBomGrid(List<IssueThrBomDetail> model)
+        public IActionResult AddtoIssueThrBomGrid(List<IssueThrBomDetail> model, string uniqueKey)
         {
             try
             {
@@ -429,13 +472,13 @@ namespace eTactWeb.Controllers
 
                         var isStockable = _IIssueThrBOM.GetIsStockable(item.ItemCode);
                         var stockable = isStockable.Result.Result.Rows[0].ItemArray[0];
-                        string modelJson = HttpContext.Session.GetString("KeyIssThrBomGrid");
+                        string modelJson = HttpContext.Session.GetString($"KeyIssThrBomGrid_{uniqueKey}");
                         List<IssueThrBomDetail> IssueThrBomDetailGrid = new List<IssueThrBomDetail>();
                         if (!string.IsNullOrEmpty(modelJson))
                         {
                             IssueThrBomDetailGrid = JsonConvert.DeserializeObject<List<IssueThrBomDetail>>(modelJson);
                         }
-                        
+
                         if (item != null)
                         {
                             if (IssueThrBomDetailGrid == null)
@@ -461,8 +504,9 @@ namespace eTactWeb.Controllers
                                     }
                                 }
 
-                                var duplicateItem = IssueThrBomDetailGrid.FirstOrDefault(x => x.ItemName == item.ItemName && x.BatchNo == item.BatchNo && x.uniqueBatchNo == item.uniqueBatchNo);
-
+                                var duplicateItem = IssueThrBomDetailGrid.FirstOrDefault(x => x.ItemCode == item.ItemCode
+                       && x.BatchNo == item.BatchNo
+                       && x.uniqueBatchNo == item.uniqueBatchNo);
                                 if (duplicateItem != null)
                                 {
                                     var message = $"Duplicate found: ItemName = {duplicateItem.ItemName}, " +
@@ -493,11 +537,11 @@ namespace eTactWeb.Controllers
                             MainModel.ItemDetailGrid = IssueGrid;
 
                             string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                            HttpContext.Session.SetString("KeyIssThrBomGrid", serializedGrid);
+                            HttpContext.Session.SetString($"KeyIssThrBomGrid_{uniqueKey}", serializedGrid);
                         }
                     }
                 }
-                HttpContext.Session.Remove("KeyIssThrBom");
+                HttpContext.Session.Remove($"KeyIssThrBom_{uniqueKey}");
                 return PartialView("_IssueThrBomGrid", MainModel);
             }
             catch (Exception ex)
@@ -505,7 +549,7 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public IActionResult AddtoIssueFGThrBomGrid(List<IssueThrBomFGData> model)
+        public IActionResult AddtoIssueFGThrBomGrid(List<IssueThrBomFGData> model, string uniqueKey)
         {
             try
             {
@@ -524,7 +568,7 @@ namespace eTactWeb.Controllers
                 {
                     foreach (var item in model)
                     {
-                        string modelJson = HttpContext.Session.GetString("KeyIssThrBomFGGrid");
+                        string modelJson = HttpContext.Session.GetString($"KeyIssThrBomFGGrid_{uniqueKey}");
                         List<IssueThrBomFGData> IssueThrBomFGDetailGrid = new List<IssueThrBomFGData>();
                         if (!string.IsNullOrEmpty(modelJson))
                         {
@@ -549,7 +593,7 @@ namespace eTactWeb.Controllers
                             MainModel.FGItemDetailGrid = IssueGrid;
 
                             string serializedGrid = JsonConvert.SerializeObject(MainModel.FGItemDetailGrid);
-                            HttpContext.Session.SetString("KeyIssThrBomFGGrid", serializedGrid);
+                            HttpContext.Session.SetString($"KeyIssThrBomFGGrid_{uniqueKey}", serializedGrid);
                         }
                     }
                 }
@@ -567,13 +611,13 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
         [HttpPost]
-        public IActionResult SetAllowBatchChangeFlag(bool allow)
+        public IActionResult SetAllowBatchChangeFlag(bool allow, string uniqueKey)
         {
-            HttpContext.Session.SetString("AllowBatchChange", allow ? "Y" : "N");
+            HttpContext.Session.SetString($"AllowBatchChange_{uniqueKey}", allow ? "Y" : "N");
             return Ok();
         }
 
-        public async Task<IActionResult> GetItemDetailFromUniqBatch(string UniqBatchNo, int YearCode, string TransDate, string ReqNo, int ReqYearCode, string ReqDate)
+        public async Task<IActionResult> GetItemDetailFromUniqBatch(string UniqBatchNo, string uniqueKey, int YearCode, string TransDate, string ReqNo, int ReqYearCode, string ReqDate)
         {
             var MainModel = new IssueThrBom();
             try
@@ -585,10 +629,10 @@ namespace eTactWeb.Controllers
                 ResponseResult ReqStoreId = await _IIssueThrBOM.GetStoreIdReqForScan(ReqNo, ReqYearCode, ReqDate, Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]));
 
                 decimal ReqQuantity = 0;
-                string modelJson1 = HttpContext.Session.GetString("KeyIssThrBom");
+                string modelJson1 = HttpContext.Session.GetString($"KeyIssThrBom_{uniqueKey}");
                 List<IssueThrBom> sessionModels = JsonConvert.DeserializeObject<List<IssueThrBom>>(modelJson1);
 
-                
+
                 int dbItemCode = Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]);
 
                 var matchedItem = sessionModels.FirstOrDefault(m => m.ItemCode == dbItemCode);
@@ -598,7 +642,7 @@ namespace eTactWeb.Controllers
                     return StatusCode(203, "Invalid barcode this item " + ItemDetailData.Result.Rows[0].ItemArray[0] + " do not exist in this requisition");
                 }
 
-                //string modelJson1 = HttpContext.Session.GetString("KeyIssThrBom");
+                //string modelJson1 = HttpContext.Session.GetString($"KeyIssThrBom_{uniqueKey}");
                 //IssueThrBom sessionModel = JsonConvert.DeserializeObject<IssueThrBom>(modelJson1);
 
                 //if (ReqQty.Result.Rows.Count != 0)
@@ -628,14 +672,14 @@ namespace eTactWeb.Controllers
                     return StatusCode(203, "Invalid barcode, item do not exist in this requisition");
 
                 }
-               
+
                 var lotStock = Convert.ToDecimal(StockData.Result.Rows[0].ItemArray[0]);
                 var totStock = Convert.ToDecimal(StockData.Result.Rows[0].ItemArray[1]);
 
                 var stock = lotStock <= totStock ? lotStock : totStock;
 
                 var issueQty = stock <= ReqQuantity ? stock : ReqQuantity;
-                
+
                 var JSON = await _IIssueThrBOM.ShowDetail(ReqDate, ReqDate, ReqNo, YearCode, Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]), "", 0, 0, ReqYearCode, ReqDate, "", "", Convert.ToInt32(matchedItem.StoreId));
 
                 var ItemList = new List<IssueThrBomDetail>();
@@ -648,30 +692,30 @@ namespace eTactWeb.Controllers
                         var item = new IssueThrBomDetail
                         {
                             ItemName = ItemDetailData.Result.Rows[0].ItemArray[0],
-                    PartCode = ItemDetailData.Result.Rows[0].ItemArray[1],
-                    ItemCode = Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]),
-                    BatchNo = ItemDetailData.Result.Rows[0].ItemArray[2],
-                    uniqueBatchNo = UniqBatchNo,
-                    Unit = ItemDetailData.Result.Rows[0].ItemArray[3],
-                    LotStock = lotStock,
-                    TotalStock = totStock,
-                    IssueQty = row["IssueQty"] != DBNull.Value ? Convert.ToDecimal(row["IssueQty"]) : 0,
-                    ReqQty = row["ReqQty"] != DBNull.Value ? Convert.ToDecimal(row["ReqQty"]) : 0,
-                            StdPacking = row["StdPacking"] != DBNull.Value ? Convert.ToSingle(row["StdPacking"]) : 0,
-                    StoreName = row["StoreName"]?.ToString(),
-                    AltQty = row["AltQty"] != DBNull.Value ? Convert.ToDecimal(row["AltQty"]) : 0,
-                    AltUnit = row["AltUnit"]?.ToString(),
-                    Rate = row["Rate"] != DBNull.Value ? Convert.ToDecimal(row["Rate"]) : 0,
-                    Remark = row["Remark"]?.ToString(),
-                    AltItemCode = row["AltItemCode"] != DBNull.Value ? Convert.ToInt32(row["AltItemCode"]) : 0,
-                    CostCenterId = row["CostCenterId"] != DBNull.Value ? Convert.ToInt32(row["CostCenterId"]) : 0,
-                    ItemSize = row["ItemSize"]?.ToString(),
-                    ItemColor = row["ItemColor"]?.ToString(),
-                    StoreId = row["storeid"] != DBNull.Value ? Convert.ToInt32(row["storeid"]) : 0,
-                    WCId = row["WCId"] != DBNull.Value ? Convert.ToInt32(row["WCId"]) : 0,
-                    WorkCenter = row["WorkCenter"]?.ToString(),
-                    TransactionDate = row["TransactionDate"]?.ToString(),
-                            WipStock = row["WIPStock"] != DBNull.Value? Convert.ToSingle(Convert.ToDecimal(row["WIPStock"])): 0
+                            PartCode = ItemDetailData.Result.Rows[0].ItemArray[1],
+                            ItemCode = Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]),
+                            BatchNo = ItemDetailData.Result.Rows[0].ItemArray[2],
+                            uniqueBatchNo = UniqBatchNo,
+                            Unit = ItemDetailData.Result.Rows[0].ItemArray[3],
+                            LotStock = lotStock,
+                            TotalStock = totStock,
+                            IssueQty = row["IssueQty"] != DBNull.Value ? Convert.ToDecimal(row["IssueQty"]) : 0,
+                            ReqQty = row["ReqQty"] != DBNull.Value ? Convert.ToDecimal(row["ReqQty"]) : 0,
+                            StdPacking = row["StdPacking"] != DBNull.Value ? Convert.ToDecimal(row["StdPacking"]) : 0,
+                            StoreName = row["StoreName"]?.ToString(),
+                            AltQty = row["AltQty"] != DBNull.Value ? Convert.ToDecimal(row["AltQty"]) : 0,
+                            AltUnit = row["AltUnit"]?.ToString(),
+                            Rate = row["Rate"] != DBNull.Value ? Convert.ToDecimal(row["Rate"]) : 0,
+                            Remark = row["Remark"]?.ToString(),
+                            AltItemCode = row["AltItemCode"] != DBNull.Value ? Convert.ToInt32(row["AltItemCode"]) : 0,
+                            CostCenterId = row["CostCenterId"] != DBNull.Value ? Convert.ToInt32(row["CostCenterId"]) : 0,
+                            ItemSize = row["ItemSize"]?.ToString(),
+                            ItemColor = row["ItemColor"]?.ToString(),
+                            StoreId = row["storeid"] != DBNull.Value ? Convert.ToInt32(row["storeid"]) : 0,
+                            WCId = row["WCId"] != DBNull.Value ? Convert.ToInt32(row["WCId"]) : 0,
+                            WorkCenter = row["WorkCenter"]?.ToString(),
+                            TransactionDate = row["TransactionDate"]?.ToString(),
+                            WipStock = row["WIPStock"] != DBNull.Value ? Convert.ToDecimal(Convert.ToDecimal(row["WIPStock"])) : 0
 
 
                         };
@@ -695,7 +739,7 @@ namespace eTactWeb.Controllers
                 {
                     foreach (var item in model)
                     {
-                        string modelJson = HttpContext.Session.GetString("KeyIssThrBomScannedGrid");
+                        string modelJson = HttpContext.Session.GetString($"KeyIssThrBomScannedGrid_{uniqueKey}");
                         List<IssueThrBomDetail> IssueThrBomDetailGrid = new List<IssueThrBomDetail>();
                         if (!string.IsNullOrEmpty(modelJson))
                         {
@@ -722,8 +766,8 @@ namespace eTactWeb.Controllers
                                 decimal requiredQty = item.ReqQty; // ReqQty from requisition
                                 decimal newQty = item.IssueQty;    // Qty for this batch
 
-                                
-                                var allowBatchChange = HttpContext.Session.GetString("AllowBatchChange");
+
+                                var allowBatchChange = HttpContext.Session.GetString($"AllowBatchChange_{uniqueKey}");
                                 if (allowBatchChange != "Y")
                                 {
                                     if (JSON?.Result != null && JSON.Result.Tables.Count > 0)
@@ -751,7 +795,7 @@ namespace eTactWeb.Controllers
                                 {
                                     return StatusCode(203, "Stock can't be zero");
                                 }
-                                
+
                                 else
                                 {
                                     item.seqno = IssueThrBomDetailGrid.Count + 1;
@@ -763,7 +807,7 @@ namespace eTactWeb.Controllers
                             MainModel.ItemDetailGrid = IssueGrid;
 
                             string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                            HttpContext.Session.SetString("KeyIssThrBomScannedGrid", serializedGrid);
+                            HttpContext.Session.SetString($"KeyIssThrBomScannedGrid_{uniqueKey}", serializedGrid);
                         }
                     }
                 }
@@ -775,10 +819,10 @@ namespace eTactWeb.Controllers
             return PartialView("_IssueThrByScanningGrid", MainModel);
         }
         [HttpPost]
-        public IActionResult DeleteFromZeroStockMemoryGrid(bool deleteZeroStockOnly, int? seqNo = null)
+        public IActionResult DeleteFromZeroStockMemoryGrid(bool deleteZeroStockOnly, string uniqueKey, int? seqNo = null)
         {
             var MainModel = new IssueThrBom();
-            string modelJson = HttpContext.Session.GetString("KeyIssThrBom");
+            string modelJson = HttpContext.Session.GetString($"KeyIssThrBom_{uniqueKey}");
             List<IssueThrBomDetail> IssueThrBomGrid = new List<IssueThrBomDetail>();
 
             if (!string.IsNullOrEmpty(modelJson))
@@ -791,7 +835,7 @@ namespace eTactWeb.Controllers
                 var deletedPartCodes = new List<string>();
                 IssueThrBomGrid.RemoveAll(x =>
                 {
-                    bool toDelete = (x.BatchNo =="" || x.BatchNo==null);
+                    bool toDelete = (x.BatchNo == "" || x.BatchNo == null);
 
                     if (toDelete)
                         deletedPartCodes.Add(x.PartCode);
@@ -815,33 +859,33 @@ namespace eTactWeb.Controllers
                 item.seqno = newSeq++;
             }
 
-            
+
             MainModel.ItemDetailGrid = IssueThrBomGrid;
 
 
             if (IssueThrBomGrid.Count == 0)
             {
-                HttpContext.Session.Remove("KeyIssThrBom");
+                HttpContext.Session.Remove($"KeyIssThrBom_{uniqueKey}");
             }
             else
             {
                 string updatedJson = JsonConvert.SerializeObject(IssueThrBomGrid);
-                HttpContext.Session.SetString("KeyIssThrBom", updatedJson);
+                HttpContext.Session.SetString($"KeyIssThrBom_{uniqueKey}", updatedJson);
             }
 
             return PartialView("_IssueThrBOMMemoryGrid", MainModel);
         }
 
-        public IActionResult DeleteFromMemoryGrid(int SeqNo)
+        public IActionResult DeleteFromMemoryGrid(int SeqNo, string uniqueKey)
         {
             var MainModel = new IssueThrBom();
-            string modelJson = HttpContext.Session.GetString("KeyIssThrBom");
+            string modelJson = HttpContext.Session.GetString($"KeyIssThrBom_{uniqueKey}");
             List<IssueThrBomDetail> IssueThrBomGrid = new List<IssueThrBomDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
                 IssueThrBomGrid = JsonConvert.DeserializeObject<List<IssueThrBomDetail>>(modelJson);
             }
-            
+
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (IssueThrBomGrid != null && IssueThrBomGrid.Count > 0)
@@ -867,18 +911,18 @@ namespace eTactWeb.Controllers
 
                 if (IssueThrBomGrid.Count == 0)
                 {
-                    HttpContext.Session.Remove("KeyIssThrBom");
+                    HttpContext.Session.Remove($"KeyIssThrBom_{uniqueKey}");
                 }
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                HttpContext.Session.SetString("KeyIssThrBom", serializedGrid);
+                HttpContext.Session.SetString($"KeyIssThrBom_{uniqueKey}", serializedGrid);
             }
             return PartialView("_IssueThrBOMMemoryGrid", MainModel);
         }
 
-        public IActionResult DeleteScannedItemRow(int SeqNo)
+        public IActionResult DeleteScannedItemRow(int SeqNo, string uniqueKey)
         {
             var MainModel = new IssueThrBom();
-            string modelJson = HttpContext.Session.GetString("KeyIssThrBomScannedGrid");
+            string modelJson = HttpContext.Session.GetString($"KeyIssThrBomScannedGrid_{uniqueKey}");
             var IssueThrBomGrid = new List<IssueThrBomDetail>();
 
             if (!string.IsNullOrEmpty(modelJson))
@@ -904,12 +948,12 @@ namespace eTactWeb.Controllers
 
                 if (IssueThrBomGrid.Count == 0)
                 {
-                    HttpContext.Session.Remove("KeyIssThrBomScannedGrid");
+                    HttpContext.Session.Remove($"KeyIssThrBomScannedGrid_{uniqueKey}");
                 }
                 else
                 {
                     string serializedGrid = JsonConvert.SerializeObject(IssueThrBomGrid);
-                    HttpContext.Session.SetString("KeyIssThrBomScannedGrid", serializedGrid);
+                    HttpContext.Session.SetString($"KeyIssThrBomScannedGrid_{uniqueKey}", serializedGrid);
                 }
             }
 
@@ -917,17 +961,17 @@ namespace eTactWeb.Controllers
         }
 
 
-        public IActionResult DeleteRowsWithNullBatchNo()
+        public IActionResult DeleteRowsWithNullBatchNo(string uniqueKey)
         {
             var MainModel = new IssueThrBom();
-            string modelJson = HttpContext.Session.GetString("KeyIssThrBom");
+            string modelJson = HttpContext.Session.GetString($"KeyIssThrBom_{uniqueKey}");
             List<IssueThrBomDetail> IssueThrBomGrid = new List<IssueThrBomDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
                 IssueThrBomGrid = JsonConvert.DeserializeObject<List<IssueThrBomDetail>>(modelJson);
             }
 
-            if ( IssueThrBomGrid != null && IssueThrBomGrid.Count > 0)
+            if (IssueThrBomGrid != null && IssueThrBomGrid.Count > 0)
             {
                 // Remove all rows where batchno is null (or string.IsNullOrWhiteSpace if needed)
                 IssueThrBomGrid = IssueThrBomGrid
@@ -945,12 +989,12 @@ namespace eTactWeb.Controllers
 
                 if (IssueThrBomGrid.Count == 0)
                 {
-                    HttpContext.Session.Remove("KeyIssThrBom");
+                    HttpContext.Session.Remove($"KeyIssThrBom_{uniqueKey}");
                 }
                 else
                 {
                     string serializedGrid = JsonConvert.SerializeObject(IssueThrBomGrid);
-                    HttpContext.Session.SetString("KeyIssThrBom", serializedGrid);
+                    HttpContext.Session.SetString($"KeyIssThrBom_{uniqueKey}", serializedGrid);
                 }
             }
 
@@ -958,16 +1002,16 @@ namespace eTactWeb.Controllers
         }
 
 
-        public IActionResult DeleteItemRow(int SeqNo)
+        public IActionResult DeleteItemRow(int SeqNo, string uniqueKey)
         {
             var MainModel = new IssueThrBom();
-            string modelJson = HttpContext.Session.GetString("KeyIssThrBomGrid");
+            string modelJson = HttpContext.Session.GetString($"KeyIssThrBomGrid_{uniqueKey}");
             List<IssueThrBomDetail> IssueThrBomGrid = new List<IssueThrBomDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
                 IssueThrBomGrid = JsonConvert.DeserializeObject<List<IssueThrBomDetail>>(modelJson);
             }
-            
+
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (IssueThrBomGrid != null && IssueThrBomGrid.Count > 0)
@@ -991,16 +1035,16 @@ namespace eTactWeb.Controllers
                 };
                 if (IssueThrBomGrid.Count == 0)
                 {
-                    HttpContext.Session.Remove("KeyIssThrBomGrid");
+                    HttpContext.Session.Remove($"KeyIssThrBomGrid_{uniqueKey}");
                 }
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                HttpContext.Session.SetString("KeyIssThrBomGrid", serializedGrid);
+                HttpContext.Session.SetString($"KeyIssThrBomGrid_{uniqueKey}", serializedGrid);
             }
             return PartialView("_IssueThrBomGrid", MainModel);
         }
-        public IActionResult EditItemRow(int SeqNo)
+        public IActionResult EditItemRow(int SeqNo, string uniqueKey)
         {
-            string modelJson = HttpContext.Session.GetString("KeyIssThrBomGrid");
+            string modelJson = HttpContext.Session.GetString($"KeyIssThrBomGrid_{uniqueKey}");
             List<IssueThrBomDetail> IssueGrid = new List<IssueThrBomDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
@@ -1012,32 +1056,38 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> DeleteByID(int ID, int YC, string REQNo, string FGItemName, string FGPartCode, string FromDate, string ToDate, string IssueSlipNo, string DashboardType = "SUMM")
-        {
-            var Result = await _IIssueThrBOM.DeleteByID(ID, YC);
+        //public async Task<IActionResult> DeleteByID(int ID, int YC, string REQNo, string FGItemName, string FGPartCode, string FromDate, string ToDate, string IssueSlipNo, string DashboardType = "SUMM")
+        //{
+        //    var EntryByMachineName = Environment.MachineName;
+        //    var ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+        //    string IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
+        //   var  CC = HttpContext.Session.GetString($"Branch_{formKey}");
+        //    var MachineCode= HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+        //    var Result = await _IIssueThrBOM.DeleteByID(ID, YC,ActualEntryBy,IPAddress, MachineCode);
 
-            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
-            {
-                ViewBag.isSuccess = true;
-                TempData["410"] = "410";
-            }
-            else if (Result.StatusText != "Success" || Result.StatusCode == HttpStatusCode.Accepted)
-            {
-                ViewBag.isSuccess = true;
-                TempData["423"] = "423";
-            }
-            else
-            {
-                ViewBag.isSuccess = false;
-                TempData["500"] = "500";
-            }
-            string fromDt =CommonFunc.ParseFormattedDate (FromDate);
-            
-            string toDt = CommonFunc.ParseFormattedDate(ToDate);
-            
+        //    if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+        //    {
+        //        ViewBag.isSuccess = true;
+        //        TempData["410"] = "410";
+        //    }
+        //    //else if (Result.StatusText != "Success" || Result.StatusCode == HttpStatusCode.Accepted)
+        //    //{
+        //    //    ViewBag.isSuccess = true;
+        //    //    TempData["423"] = "423";
+        //    //}
+        //    else
+        //    {
+        //        ViewBag.isSuccess = false;
+        //        TempData["ErrorMessage"] = Result.StatusText;
+        //        //TempData["500"] = "500";
+        //    }
+        //    string fromDt =CommonFunc.ParseFormattedDate (FromDate);
 
-            return RedirectToAction("Dashboard", new { FromDate = "", ToDate = "", Flag = "", REQNo = REQNo, FGItemName = FGItemName, FGPartCode = FGPartCode, IssueSlipNo = IssueSlipNo, DashboardType = DashboardType });
-        }
+        //    string toDt = CommonFunc.ParseFormattedDate(ToDate);
+
+
+        //    return RedirectToAction("Dashboard", new { FromDate = "", ToDate = "", Flag = "", REQNo = REQNo, FGItemName = FGItemName, FGPartCode = FGPartCode, IssueSlipNo = IssueSlipNo, DashboardType = DashboardType });
+        //}
         private static DataTable GetRMDetailTable(IList<IssueThrBomDetail> DetailList)
         {
             var MRGrid = new DataTable();
@@ -1070,7 +1120,7 @@ namespace eTactWeb.Controllers
             MRGrid.Columns.Add("CostCenterId", typeof(int));
             MRGrid.Columns.Add("ItemSize", typeof(string));
             MRGrid.Columns.Add("ItemColor", typeof(string));
-            MRGrid.Columns.Add("WIPStock", typeof(float));
+            MRGrid.Columns.Add("WIPStock", typeof(decimal));
 
             foreach (var Item in DetailList)
             {
@@ -1090,13 +1140,13 @@ namespace eTactWeb.Controllers
                     Item.seqno,
                     Item.ItemCode,//FGItemCode -> change
                     Item.ItemCode,//RMItemCode
-                    Item.ReqQty.ToString("F6"),
-                    Item.ReqQty.ToString("F6"), // altrecqty
+                    Item.ReqQty,
+                    Item.ReqQty, // altrecqty
                     Item.StoreId,
                     Item.BatchNo ?? "",
                     Item.uniqueBatchNo ?? "",
-                    Item.IssueQty.ToString("F6"),
-                    Item.IssueQty.ToString("F6"), // altissueqty
+                    Item.IssueQty,
+                    Item.IssueQty, // altissueqty
                     Item.PendQty, // pendqty
                     Item.Unit,
                     Item.AltUnit ?? "",
@@ -1136,7 +1186,7 @@ namespace eTactWeb.Controllers
             MRGrid.Columns.Add("FGQty", typeof(decimal));
             MRGrid.Columns.Add("BOMNO", typeof(int));
             MRGrid.Columns.Add("BOMDate", typeof(DateTime));
-            MRGrid.Columns.Add("FGStockInStore", typeof(float));
+            MRGrid.Columns.Add("FGStockInStore", typeof(decimal));
             MRGrid.Columns.Add("IssueFromStoreID", typeof(int));
             MRGrid.Columns.Add("Remark", typeof(string));
             MRGrid.Columns.Add("WCID", typeof(int));
@@ -1175,11 +1225,16 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> Dashboard(string FromDate="", string Todate="", string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "")
+        public async Task<IActionResult> Dashboard(string uniqueKey, string formKey, string FromDate = "", string Todate = "", string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "")
         {
             try
             {
-                HttpContext.Session.Remove("KeyIssThrBomGrid");
+                uniqueKey = Guid.NewGuid().ToString();
+                ViewBag.formKey = formKey;
+                ViewBag.uniqueKey = uniqueKey;
+
+
+                HttpContext.Session.Remove($"KeyIssThrBomGrid_{uniqueKey}");
                 var model = new IssueThrBomDashboard();
                 var Result = await _IIssueThrBOM.GetDashboardData(FromDate, Todate, DashboardType, IssueSlipNo, ReqNo).ConfigureAwait(true);
 
@@ -1213,12 +1268,17 @@ namespace eTactWeb.Controllers
             }
         }
 
-        public async Task<IActionResult> FGDetailData(string FromDate, string Todate, string Flag = "", string DashboardType = "FGSUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "", int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        public async Task<IActionResult> FGDetailData(string formKey, string uniqueKey, string FromDate, string Todate, string Flag = "", string DashboardType = "FGSUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "", int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
+            ViewBag.formKey = formKey;
+
             var model = new IssueThrBomMainDashboard();
             model = await _IIssueThrBOM.FGDetailData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo, FGPartCode, FGItemName);
             model.Mode = "FGSUMM";
+            model.formKey = formKey;
+            model.uniqueKey = uniqueKey;
+            //model.uniqueKey = uniqueKey;
             var modelList = model?.IssueThrBOMDashboard ?? new List<IssueThrBomMainDashboard>();
 
 
@@ -1271,12 +1331,17 @@ namespace eTactWeb.Controllers
             _MemoryCache.Set("KeyIssThrBOMList_FGSUMM", modelList, cacheEntryOptions);
             return PartialView("_IssueWithBomDashboardGrid", model);
         }
-        public async Task<IActionResult> RMDetailData(string FromDate, string Todate, string WCName, string PartCode, string ItemName, string Flag = "", string DashboardType = "RMDetail", string IssueSlipNo = "", string ReqNo = "", string GlobalSearch = "", string FGPartCode = "", string FGItemName = "", int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        public async Task<IActionResult> RMDetailData(string formKey, string uniqueKey, string FromDate, string Todate, string WCName, string PartCode, string ItemName, string Flag = "", string DashboardType = "RMDetail", string IssueSlipNo = "", string ReqNo = "", string GlobalSearch = "", string FGPartCode = "", string FGItemName = "", int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
+            ViewBag.formKey = formKey;
+
             //model.Mode = "Search";
             var model = new IssueThrBomMainDashboard();
             model = await _IIssueThrBOM.RMDetailData(FromDate, Todate, WCName, PartCode, ItemName, Flag, DashboardType, IssueSlipNo, ReqNo, GlobalSearch, FGPartCode, FGItemName);
             model.Mode = "RMDETAIL";
+            model.formKey = formKey;
+            model.formKey = uniqueKey;
+            //model.unqieKey = uniqueKey;
             var modelList = model?.IssueThrBOMDashboard ?? new List<IssueThrBomMainDashboard>();
 
 
@@ -1329,15 +1394,16 @@ namespace eTactWeb.Controllers
             _MemoryCache.Set("KeyIssThrBOMList_RMDETAIL", modelList, cacheEntryOptions);
             return PartialView("_IssueWithBomDashboardGrid", model);
         }
-        public async Task<IActionResult> SummaryData(string FromDate, string Todate, string WCName="", string PartCode="", string ItemName="" ,string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        public async Task<IActionResult> SummaryData(string FromDate, string formKey, string uniqueKey, string Todate, string WCName = "", string PartCode = "", string ItemName = "", string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new IssueThrBomMainDashboard();
-            model = await _IIssueThrBOM.SummaryData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo,PartCode,ItemName, WCName);
+            model = await _IIssueThrBOM.SummaryData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo, PartCode, ItemName, WCName);
             model.Mode = "SUMM";
             var modelList = model?.IssueThrBOMDashboard ?? new List<IssueThrBomMainDashboard>();
 
-
+            model.formKey = formKey;
+            model.uniqueKey = uniqueKey;
             if (string.IsNullOrWhiteSpace(SearchBox))
             {
                 model.TotalRecords = modelList.Count();
@@ -1446,10 +1512,10 @@ namespace eTactWeb.Controllers
             }
         }
 
-        public async Task<JsonResult> ChkStockBeforeSaving(string ReqNo, int ReqYearCode, int EntryId, int YearCode)
+        public async Task<JsonResult> ChkStockBeforeSaving(string ReqNo, string uniqueKey, int ReqYearCode, int EntryId, int YearCode, string Mode)
         {
             var DTItemGrid = new DataTable();
-            string modelJson = HttpContext.Session.GetString("KeyIssThrBomGrid");
+            string modelJson = HttpContext.Session.GetString($"KeyIssThrBomGrid_{uniqueKey}");
             List<IssueThrBomDetail> IssueGrid = new List<IssueThrBomDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
@@ -1457,7 +1523,7 @@ namespace eTactWeb.Controllers
             }
             //_MemoryCache.TryGetValue("KeyTransferFromWorkCenterGrid", out List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
             DTItemGrid = GetRMDetailTable(IssueGrid);
-            var ChechedData = await _IIssueThrBOM.ChkStockBeforeSaving( ReqNo,  ReqYearCode,  EntryId,  YearCode,  DTItemGrid);
+            var ChechedData = await _IIssueThrBOM.ChkStockBeforeSaving(ReqNo, ReqYearCode, EntryId, YearCode, DTItemGrid, Mode);
             if (ChechedData.StatusCode == HttpStatusCode.OK && ChechedData.StatusText == "Success")
             {
                 DataTable dt = ChechedData.Result;

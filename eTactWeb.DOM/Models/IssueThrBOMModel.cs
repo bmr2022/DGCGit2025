@@ -12,6 +12,8 @@ namespace eTactWeb.DOM.Models
         public int EntryId { get; set; }
         public int YearCode { get; set; }
         public string? FromDate { get; set; }
+        public string? formKey { get; set; }
+        public string? uniqueKey { get; set; }
         public string? ToDate { get; set; }
         public string EntryDate { get; set; }
         public string? IPAddress { get; set; }
@@ -27,7 +29,7 @@ namespace eTactWeb.DOM.Models
         public int? IssuedByEmpCode { get; set; }
         public string? IssuedByEmpName { get; set; }
         public int RecByEmpCode { get; set; }
-        public string? RecByEmpCodeName {  get; set; }
+        public string? RecByEmpCodeName { get; set; }
         public string? MachineCode { get; set; }
         public int Uid { get; set; }
         public string? CC { get; set; }
@@ -95,13 +97,13 @@ namespace eTactWeb.DOM.Models
         public int WCId { get; set; }
         public string WorkCenter { get; set; }
         public int AltItemCode { get; set; }
-        public string? AltItemName {  get; set; }
-        public string? AltPartCode {  get; set; }
+        public string? AltItemName { get; set; }
+        public string? AltPartCode { get; set; }
 
         public int CostCenterId { get; set; }
         public string ItemSize { get; set; }
         public string ItemColor { get; set; }
-        public float? StdPacking { get; set; }
+        public decimal? StdPacking { get; set; }
         public string? IssuedAlternateItem { get; set; }
         public int? OriginalItemCode { get; set; }
         public string? ProjectNo { get; set; }
@@ -111,7 +113,7 @@ namespace eTactWeb.DOM.Models
         public string WoDate { get; set; }
         public string jcDate { get; set; }
         public string MachineCodee { get; set; }
-        public float WipStock { get; set; }
+        public decimal WipStock { get; set; }
     }
 
     public class IssueThrBomFGData
@@ -119,7 +121,7 @@ namespace eTactWeb.DOM.Models
         public int Seqno { get; set; }
         public int EntryId { get; set; }
         public int YearCode { get; set; }
-        public string EntryDate { get; set;  }
+        public string EntryDate { get; set; }
         public string? WONO { get; set; }
         public int WOYearCode { get; set; }
         public int FGItemCode { get; set; }
@@ -144,8 +146,10 @@ namespace eTactWeb.DOM.Models
     {
         public string? ReqNo { get; set; }
         public string? FGItemName { get; set; }
+        public string? uniqueKey { get; set; }
+        public string? formKey { get; set; }
         public string? FGPartCode { get; set; }
-       // public string? WorkCenterDescription { get; set; }
+        // public string? WorkCenterDescription { get; set; }
         public string? FromDate1 { get; set; }
         public string? ToDate1 { get; set; }
         public string? SearchBox { get; set; }
@@ -155,8 +159,10 @@ namespace eTactWeb.DOM.Models
     }
 
     public class IssueThrBomMainDashboard
-    {      
+    {
         public string Mode { get; set; }
+        public string formKey { get; set; }
+        public string uniqueKey { get; set; }
         public int EntryId { get; set; }
         public int YearCode { get; set; }
         public string ReqNo { get; set; }
@@ -167,38 +173,38 @@ namespace eTactWeb.DOM.Models
         public string IssueSlipno { get; set; }
         public string IssueDate { get; set; }
         public string EntryTime { get; set; }
-        public string RMItemName { get; set; }       
+        public string RMItemName { get; set; }
         public string RMPartCode { get; set; }
-        public float ReqQty { get; set; }
-        public float IssueQty { get; set; }
+        public decimal ReqQty { get; set; }
+        public decimal IssueQty { get; set; }
         public string rmUnit { get; set; }
-        public float PendQty { get; set; }
-        public float AltReqQty { get; set; }
-        public float AltIssueQty { get; set; }
+        public decimal PendQty { get; set; }
+        public decimal AltReqQty { get; set; }
+        public decimal AltIssueQty { get; set; }
         public string AltUnit { get; set; }
-        public string BatchNo { get; set; }       
+        public string BatchNo { get; set; }
         public string uniquebatchNo { get; set; }
-        public float lotStock { get; set; }
-        public float TotalStock { get; set; }
+        public decimal lotStock { get; set; }
+        public decimal TotalStock { get; set; }
         public string IssuedAlternateItem { get; set; }
         public string WorkCenter { get; set; }
         public string jobCardNo { get; set; }
         public string JobcardDate { get; set; }
         public string OrginalItemName { get; set; }
-        public string OriginalPartCode { get; set; }                
+        public string OriginalPartCode { get; set; }
         public string RMRemark { get; set; }
         public string itemsize { get; set; }
-        public string itemcolor { get; set; }       
-        public string WONO { get; set; }       
-        public string WODate { get; set; }       
-        public string Remark { get; set; }       
-        public string ActENterdByEmpName { get; set; }        
-        public string ActENterdByEmpCode { get; set; }        
-        public string ActualEntryDate { get; set; }        
-        public string UpdatedEmpName { get; set; }        
-        public string UpdatedByEmpcode { get; set; }    
-        public int RecEmpCode {  get; set; }
-        public string? RecEmpByCodeName {  get; set; }
+        public string itemcolor { get; set; }
+        public string WONO { get; set; }
+        public string WODate { get; set; }
+        public string Remark { get; set; }
+        public string ActENterdByEmpName { get; set; }
+        public string ActENterdByEmpCode { get; set; }
+        public string ActualEntryDate { get; set; }
+        public string UpdatedEmpName { get; set; }
+        public string UpdatedByEmpcode { get; set; }
+        public int RecEmpCode { get; set; }
+        public string? RecEmpByCodeName { get; set; }
         public int IssueByEmpCode { get; set; }
         public int TotalRecords { get; set; }
         public int PageNumber { get; set; }

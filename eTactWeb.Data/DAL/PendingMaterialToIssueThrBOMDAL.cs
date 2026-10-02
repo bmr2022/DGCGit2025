@@ -36,7 +36,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
                 SqlParams.Add(new SqlParameter("@toDate", DateTime.Today));
-                SqlParams.Add(new SqlParameter("@yearCode", DateTime.Now.Year));
+                SqlParams.Add(new SqlParameter("@yearCode", YearCode));
                 var _ResponseResult = await _IDataLogic.ExecuteDataSet("GetDataForRequitionThroughBOM", SqlParams);
                 if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
                 {
@@ -80,18 +80,19 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId)
+        public async Task<ResponseResult> ShowDetail(string Flag, string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var todt = CommonFunc.ParseFormattedDate(ToDate);
-                var fromdt =  CommonFunc.ParseFormattedDate(FromDate);
+                var fromdt = CommonFunc.ParseFormattedDate(FromDate);
                 var issDt = CommonFunc.ParseFormattedDate(IssueDate);
-              
-                
+
+
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "ShowDetail"));
+                SqlParams.Add(new SqlParameter("@Flag", string.IsNullOrEmpty(Flag) ? "ShowDetail" : Flag));
+                // SqlParams.Add(new SqlParameter("@Flag", Flag));
                 SqlParams.Add(new SqlParameter("@fromDate", fromdt));
                 SqlParams.Add(new SqlParameter("@toDate", todt));
                 SqlParams.Add(new SqlParameter("@reqno", ReqNo == null ? "" : ReqNo));
@@ -105,8 +106,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@storeid", StoreId));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("GetDataForRequitionThroughBOM", SqlParams);
-            
-            
+
+
             }
             catch (Exception ex)
             {

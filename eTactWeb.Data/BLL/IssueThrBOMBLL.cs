@@ -14,11 +14,11 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.BLL
 {
-    public class IssueThrBOMBLL: IIssueThrBOM
+    public class IssueThrBOMBLL : IIssueThrBOM
     {
         private readonly IDataLogic _DataLogicDAL;
         private readonly IssueThrBOMDAL _IssueThrBOMDAL;
-       
+
         public IssueThrBOMBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
@@ -28,6 +28,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> PassForCloseReq()
         {
             return await _IssueThrBOMDAL.PassForCloseReq();
+        }
+        public async Task<ResponseResult> Getfeatureoption()
+        {
+            return await _IssueThrBOMDAL.Getfeatureoption();
         }
         public async Task<ResponseResult> GetFormRights(int userID)
         {
@@ -49,7 +53,7 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ResponseResult> GetReqByName(string reqno, int yearcode)
         {
-            return await _IssueThrBOMDAL.GetReqByName( reqno,  yearcode);
+            return await _IssueThrBOMDAL.GetReqByName(reqno, yearcode);
         }
         public async Task<ResponseResult> FillLotandTotalStock(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo)
         {
@@ -88,27 +92,27 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ResponseResult> FillFGDataList(string Reqno, int ReqYC)
         {
-            return await _IssueThrBOMDAL.FillFGDataList(Reqno,ReqYC);
+            return await _IssueThrBOMDAL.FillFGDataList(Reqno, ReqYC);
         }
         public async Task<ResponseResult> GetItemDetailFromUniqBatch(string UniqBatchNo, int YearCode, string TransDate)
         {
-            return await _IssueThrBOMDAL.GetItemDetailFromUniqBatch(UniqBatchNo,YearCode,TransDate);
+            return await _IssueThrBOMDAL.GetItemDetailFromUniqBatch(UniqBatchNo, YearCode, TransDate);
         }
         public async Task<ResponseResult> GetReqQtyForScan(string ReqNo, int ReqYearCode, string ReqDate, int ItemCode)
         {
-            return await _IssueThrBOMDAL.GetReqQtyForScan(ReqNo,ReqYearCode,ReqDate,ItemCode);
+            return await _IssueThrBOMDAL.GetReqQtyForScan(ReqNo, ReqYearCode, ReqDate, ItemCode);
         }
         public async Task<ResponseResult> GetStoreIdReqForScan(string ReqNo, int ReqYearCode, string ReqDate, int ItemCode)
         {
-            return await _IssueThrBOMDAL.GetStoreIdReqForScan(ReqNo,ReqYearCode,ReqDate,ItemCode);
+            return await _IssueThrBOMDAL.GetStoreIdReqForScan(ReqNo, ReqYearCode, ReqDate, ItemCode);
         }
         public async Task<ResponseResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId)
         {
             return await _IssueThrBOMDAL.ShowDetail(FromDate, ToDate, ReqNo, YearCode, ItemCode, WoNo, WorkCenter, DeptName, ReqYear, IssueDate, GlobalSearch, FromStore, StoreId);
         }
-        public async Task<ResponseResult> SaveIssueThrBom(IssueThrBom model, DataTable RMGrid,DataTable FGGrid)
+        public async Task<ResponseResult> SaveIssueThrBom(IssueThrBom model, DataTable RMGrid, DataTable FGGrid)
         {
-            return await _IssueThrBOMDAL.SaveIssueThrBom(model, RMGrid,FGGrid);
+            return await _IssueThrBOMDAL.SaveIssueThrBom(model, RMGrid, FGGrid);
         }
 
         public async Task<IList<TextValue>> GetEmployeeList()
@@ -131,30 +135,63 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssueThrBOMDAL.GetSearchData(DashboardType, FromDate, ToDate, IssueSlipNo, ReqNo, WCName, ItemName, PartCode);
         }
+
+        public async Task<List<IssueThrBomDetail>> ShowReqDetail(string FromDate,
+    string ToDate,
+    string ReqNo,
+    int YearCode,
+    int ItemCode,
+    string WoNo,
+    int WorkCenter,
+    int DeptName,
+    int ReqYear,
+    string IssueDate,
+    string GlobalSearch,
+    string FromStore,
+    int StoreId)
+        {
+            return await _IssueThrBOMDAL.ShowReqDetail(FromDate,
+     ToDate,
+     ReqNo,
+     YearCode,
+     ItemCode,
+     WoNo,
+     WorkCenter,
+     DeptName,
+     ReqYear,
+     IssueDate,
+     GlobalSearch,
+     FromStore,
+     StoreId);
+        }
         public async Task<IssueThrBom> GetViewByID(int ID, int YearCode)
         {
             return await _IssueThrBOMDAL.GetViewByID(ID, YearCode);
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, int ActualEnteredBy, string IPAddress, string MachineCode)
         {
-            return await _IssueThrBOMDAL.DeleteByID(ID, YC);
+            return await _IssueThrBOMDAL.DeleteByID(ID, YC, ActualEnteredBy, IPAddress, MachineCode);
         }
         public async Task<IssueThrBomMainDashboard> FGDetailData(string FromDate, string Todate, string Flag = "", string DashboardType = "FGSUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "", string WCName = "")
         {
-            return await _IssueThrBOMDAL.FGDetailData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo, FGPartCode, FGItemName,WCName);
-        } 
-        public async Task<IssueThrBomMainDashboard> RMDetailData(string FromDate, string Todate, string WCName, string PartCode,string ItemName, string Flag = "", string DashboardType = "RMDETAIL", string IssueSlipNo = "", string ReqNo = "", string GlobalSearch = "", string FGPartCode = "", string FGItemName = "")
+            return await _IssueThrBOMDAL.FGDetailData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo, FGPartCode, FGItemName, WCName);
+        }
+        public async Task<IssueThrBomMainDashboard> RMDetailData(string FromDate, string Todate, string WCName, string PartCode, string ItemName, string Flag = "", string DashboardType = "RMDETAIL", string IssueSlipNo = "", string ReqNo = "", string GlobalSearch = "", string FGPartCode = "", string FGItemName = "")
         {
             return await _IssueThrBOMDAL.RMDetailData(FromDate, Todate, WCName, PartCode, ItemName, Flag, DashboardType, IssueSlipNo, ReqNo, GlobalSearch, FGPartCode, FGItemName);
         }
-        public async Task<IssueThrBomMainDashboard> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", string PartCode = "", string ItemName = "", string WCName="")
+        public async Task<IssueThrBomMainDashboard> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", string PartCode = "", string ItemName = "", string WCName = "")
         {
-            return await _IssueThrBOMDAL.SummaryData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo,PartCode,ItemName, WCName);
+            return await _IssueThrBOMDAL.SummaryData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo, PartCode, ItemName, WCName);
         }
 
-        public async Task<ResponseResult> ChkStockBeforeSaving(string ReqNo, int ReqYearCode, int EntryId, int YearCode, DataTable DTItemGrid)
+        public async Task<ResponseResult> ChkStockBeforeSaving(string ReqNo, int ReqYearCode, int EntryId, int YearCode, DataTable DTItemGrid, string Mode)
         {
-            return await _IssueThrBOMDAL.ChkStockBeforeSaving( ReqNo,  ReqYearCode,  EntryId,  YearCode,  DTItemGrid);
+            return await _IssueThrBOMDAL.ChkStockBeforeSaving(ReqNo, ReqYearCode, EntryId, YearCode, DTItemGrid, Mode);
+        }
+        public async Task<ResponseResult> GetReportName()
+        {
+            return await _IssueThrBOMDAL.GetReportName();
         }
     }
 }

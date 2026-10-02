@@ -29,11 +29,11 @@ namespace eTactWeb.Data.BLL
 
         public async Task<ResponseResult> FillRequisition(int toDept, int itemCode, int workCenter, int yearCode, string toDate)
         {
-            return await _PendingMaterialToIssueThrBOMDAL.FillRequisition(toDept,itemCode,workCenter,yearCode, toDate);
-        }  
-        public async Task<ResponseResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId)
+            return await _PendingMaterialToIssueThrBOMDAL.FillRequisition(toDept, itemCode, workCenter, yearCode, toDate);
+        }
+        public async Task<ResponseResult> ShowDetail(string Flag, string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId)
         {
-            return await _PendingMaterialToIssueThrBOMDAL.ShowDetail(FromDate, ToDate, ReqNo, YearCode, ItemCode, WoNo, WorkCenter, DeptName, ReqYear, IssueDate, GlobalSearch, FromStore, StoreId);
+            return await _PendingMaterialToIssueThrBOMDAL.ShowDetail(Flag, FromDate, ToDate, ReqNo, YearCode, ItemCode, WoNo, WorkCenter, DeptName, ReqYear, IssueDate, GlobalSearch, FromStore, StoreId);
         }
         public async Task<ResponseResult> EnableOrDisableIssueDate()
         {
@@ -42,7 +42,7 @@ namespace eTactWeb.Data.BLL
 
         public async Task<ResponseResult> CheckTransDate(int ItemCode, string IssueDate, string BatchNo, string UniqBatchNo, int YearCode)
         {
-            return await _PendingMaterialToIssueThrBOMDAL.CheckTransDate(ItemCode, IssueDate,BatchNo,UniqBatchNo,YearCode);
+            return await _PendingMaterialToIssueThrBOMDAL.CheckTransDate(ItemCode, IssueDate, BatchNo, UniqBatchNo, YearCode);
         }
     }
 }

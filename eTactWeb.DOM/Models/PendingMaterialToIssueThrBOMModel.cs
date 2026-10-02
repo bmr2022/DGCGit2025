@@ -11,6 +11,8 @@ namespace eTactWeb.DOM.Models
     {
         public string? FromDate { get; set; }
         public string? ToDate { get; set; }
+        public string? formKey { get; set; }
+        public string? uniqueKey { get; set; }
         public string? ReqNo { get; set; }
         public int ReqYearCode { get; set; }
         public int YearCode { get; set; }

@@ -37,19 +37,21 @@ else
             <td id="MainPartCodeAdd-@Cntr">@item.PartCode</td>
             <td style="background-color:lightgoldenrodyellow">@item.ReqQty</td>
             <td>@item.StoreName<input type="hidden" id="MainStoreIdAdd-@Cntr" value="@item.StoreId" /></td>
-            <td id="MainBatchNoAdd-@Cntr">@item.BatchNo</td>
-            <td id="MainUniqBatchNoAdd-@Cntr">@item.uniqueBatchNo</td>
+            
             <td id="MainIssueQty-@Cntr" style="background-color:lightpink">@item.IssueQty</td>
             <td>@item.Unit</td>
             <td>@item.LotStock</td>
             <td>@item.TotalStock</td>
+            <td>@item.WorkCenter<input type="hidden" value="@item.WCId" /></td>
+            <td style="background-color:lightpink">@item.WipStock</td>
+            <td id="MainBatchNoAdd-@Cntr">@item.BatchNo</td>
+            <td id="MainUniqBatchNoAdd-@Cntr">@item.uniqueBatchNo</td>
             <td>@item.AltQty</td>
             <td>@item.AltUnit</td>
             <td>@item.StdPacking</td>
             <td>@item.Rate</td>
             <td>@item.Remark</td>
-            <td>@item.WorkCenter<input type="hidden" value="@item.WCId" /></td>
-            <td style="background-color:lightpink">@item.WipStock</td>
+            
             <td>@item.AltPartCode</td>
             <td>@item.AltPartCode</td>
             <td>@item.CostCenterId</td>

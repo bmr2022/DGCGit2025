@@ -16,6 +16,7 @@ using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using PdfSharp.Drawing.BarCodes;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace eTactWeb.Data.DAL
 {
@@ -32,7 +33,105 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
+        public async Task<List<IssueThrBomDetail>> ShowReqDetail(
+    string FromDate,
+    string ToDate,
+    string ReqNo,
+    int YearCode,
+    int ItemCode,
+    string WoNo,
+    int WorkCenter,
+    int DeptName,
+    int ReqYear,
+    string IssueDate,
+    string GlobalSearch,
+    string FromStore,
+    int StoreId)
+        {
+            var list = new List<IssueThrBomDetail>();
 
+            var todt = CommonFunc.ParseFormattedDate(ToDate);
+            var fromdt = CommonFunc.ParseFormattedDate(FromDate);
+            var issDt = CommonFunc.ParseFormattedDate(IssueDate);
+
+            using (SqlConnection con = new SqlConnection(DBConnectionString))
+            using (SqlCommand cmd = new SqlCommand("GetDataForRequitionThroughBOM", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Flag", "ShowDetail");
+                cmd.Parameters.AddWithValue("@fromDate", fromdt);
+                cmd.Parameters.AddWithValue("@toDate", todt);
+                cmd.Parameters.AddWithValue("@reqno", ReqNo ?? "");
+                cmd.Parameters.AddWithValue("@yearCode", YearCode);
+                cmd.Parameters.AddWithValue("@ItemCode", ItemCode);
+                cmd.Parameters.AddWithValue("@WONO", WoNo ?? "");
+                cmd.Parameters.AddWithValue("@ToWC", WorkCenter);
+                cmd.Parameters.AddWithValue("@ToDepartment", DeptName);
+                cmd.Parameters.AddWithValue("@reqYearcode", ReqYear);
+                cmd.Parameters.AddWithValue("@Issuedate", issDt);
+                cmd.Parameters.AddWithValue("@storeid", StoreId);
+
+                await con.OpenAsync();
+
+                using (SqlDataReader dr = await cmd.ExecuteReaderAsync())
+                {
+                    while (await dr.ReadAsync())
+                    {
+                        list.Add(new IssueThrBomDetail
+                        {
+
+                            PartCode = dr["PartCode"]?.ToString(),
+                            ReqNo1 = dr["ReqNo"]?.ToString(),
+                            ItemCode = Convert.ToInt32(dr["itemcode"]?.ToString()),
+                            ItemName = dr["ItemName"]?.ToString(),
+
+                            ReqQty = dr["ReqQty"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["ReqQty"]),
+                            PendQty = dr["PendQty"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["PendQty"]),
+                            //pendqty = dr["PendAfterIssue"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["PendAfterIssue"]),
+
+                            Unit = dr["Unit"]?.ToString(),
+                            StdPacking = dr["StdPacking"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["StdPacking"]),
+
+                            TotalStock = dr["ToatlStock"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["ToatlStock"]),
+                            LotStock = dr["BatchStock"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["BatchStock"]),
+
+                            StoreId = dr["storeid"] == DBNull.Value ? 0 : Convert.ToInt32(dr["storeid"]),
+                            StoreName = dr["StoreName"]?.ToString(),
+
+                            IssueQty = dr["IssueQty"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["IssueQty"]),
+
+                            BatchNo = dr["BatchNo"]?.ToString(),
+                            uniqueBatchNo = dr["UniqueBatchNo"]?.ToString(),
+                            //batc = dr["Batchdate"] == DBNull.Value ? null : Convert.ToDateTime(dr["Batchdate"]),
+
+
+                            //ReqDate = dr["ReqDate"] == DBNull.Value ? null : Convert.ToDateTime(dr["ReqDate"]),
+
+                            AltQty = dr["AltQty"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["AltQty"]),
+                            AltUnit = dr["AltUnit"]?.ToString(),
+
+                            Rate = dr["Rate"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Rate"]),
+                            Remark = dr["Remark"]?.ToString(),
+
+                            AltItemCode = Convert.ToInt32(dr["AltItemCode"]?.ToString()),
+
+                            CostCenterId = dr["CostCenterId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["CostCenterId"]),
+                            ItemSize = dr["ItemSize"]?.ToString(),
+                            ItemColor = dr["ItemColor"]?.ToString(),
+
+                            WorkCenter = dr["WorkCenter"]?.ToString(),
+                            WCId = dr["WCId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["WCId"]),
+
+                            WipStock = dr["WIPStock"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["WIPStock"]),
+                            TransactionDate = dr["TransactionDate"] == DBNull.Value ? null : Convert.ToDateTime(dr["TransactionDate"]).ToString()
+                        });
+                    }
+                }
+            }
+
+            return list;
+        }
         public async Task<ResponseResult> GetFormRights(int userID)
         {
             var _ResponseResult = new ResponseResult();
@@ -62,6 +161,25 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "PassForCloseReq"));
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_IssueWithBOM", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> Getfeatureoption()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "Getfeatureoption"));
 
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_IssueWithBOM", SqlParams);
@@ -426,7 +544,7 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
             return _ResponseResult;
-        }   
+        }
         public async Task<ResponseResult> GetStoreIdReqForScan(string ReqNo, int ReqYearCode, string ReqDate, int ItemCode)
         {
             var _ResponseResult = new ResponseResult();
@@ -514,16 +632,16 @@ namespace eTactWeb.Data.DAL
                 //DateTime issDate = new DateTime();
                 //DateTime woDate = new DateTime();
 
-               var woDate = "";
-               var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
-               var ReqDate = CommonFunc.ParseFormattedDate(model.ReqDate);
-               var issDate = CommonFunc.ParseFormattedDate(model.IssueDate);
-               var upDt = CommonFunc.ParseFormattedDate(model.LastUpdationDate.ToString("dd/MM/yyyy"));
+                var woDate = "";
+                var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+                var ReqDate = CommonFunc.ParseFormattedDate(model.ReqDate);
+                var issDate = CommonFunc.ParseFormattedDate(model.IssueDate);
+                var upDt = CommonFunc.ParseFormattedDate(model.LastUpdationDate.ToString("dd/MM/yyyy"));
                 var jobCardDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
 
-                if (model.WoDate != null) 
+                if (model.WoDate != null)
                 {
-                   woDate = CommonFunc.ParseFormattedDate(model.WoDate);
+                    woDate = CommonFunc.ParseFormattedDate(model.WoDate);
                 }
                 if (model.Mode == "U")
                 {
@@ -543,7 +661,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@IssueDate", issDate == default ? string.Empty : issDate));
                 SqlParams.Add(new SqlParameter("@WONO", model.WONO));
                 SqlParams.Add(new SqlParameter("@WOYearCode", model.WOYearCode));
-                if( model.WoDate != null)
+                if (model.WoDate != null)
                 {
                     SqlParams.Add(new SqlParameter("@WOdate", woDate == default ? string.Empty : woDate));
                 }
@@ -677,7 +795,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YearCode)
+        public async Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEnteredBy, string IPAddress, string MachineCode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -686,7 +804,10 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@EntryID", ID));
+                SqlParams.Add(new SqlParameter("@ActualEnteredBy", ActualEnteredBy));
+                SqlParams.Add(new SqlParameter("@IPAddress", IPAddress));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@Machinecode", MachineCode));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueWithBOM", SqlParams);
             }
@@ -697,9 +818,9 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
             return _ResponseResult;
-        } 
-        
-        public async Task<IssueThrBomMainDashboard> FGDetailData(string FromDate, string Todate, string Flag = "", string DashboardType = "FGSUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "",string WCName="")
+        }
+
+        public async Task<IssueThrBomMainDashboard> FGDetailData(string FromDate, string Todate, string Flag = "", string DashboardType = "FGSUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "", string WCName = "")
         {
             DataSet? oDataSet = new DataSet();
             var model = new IssueThrBomMainDashboard();
@@ -734,29 +855,29 @@ namespace eTactWeb.Data.DAL
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
                     model.IssueThrBOMDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
-                                              select new IssueThrBomMainDashboard
-                                              {
-                                                  IssueSlipno = dr["IssueSlipNo"].ToString(),
-                                                  IssueDate = dr["IssueDate"].ToString(),                                                                                                     
-                                                  ReqNo = dr["ReqNo"].ToString(),                                                
-                                                  ReqDate = dr["ReqDate"].ToString(),                                                
-                                                  ReqYearCode = Convert.ToInt32(dr["ReqYearCode"].ToString()),
-                                                  WONO = dr["WONO"].ToString(),                                                
-                                                  WODate = dr["WODate"].ToString(),
-                                                  FGPartCode = dr["FGPARTCODE"].ToString(),  
-                                                  FGItemName = dr["FGITEMNAME"].ToString(),                                                                                                    
-                                                  IssueQty = Convert.ToSingle(dr["FGQty"].ToString()),
-                                                  EntryId = Convert.ToInt32(dr["EntryId"].ToString()),                                                
-                                                  YearCode = Convert.ToInt32(dr["YearCode"].ToString()),
-                                                  jobCardNo = dr["jobCardNo"].ToString(),
-                                                  JobcardDate = dr["JobcardDate"].ToString(),
-                                                  RMRemark = dr["Remark"].ToString(),                                                
-                                                  ActENterdByEmpName = dr["ActENterdByEmpName"].ToString(),
-                                                  ActENterdByEmpCode = dr["ActENterdByEmpCode"].ToString(),                                                
-                                                  ActualEntryDate = dr["ActualEntryDate"].ToString(),                                                
-                                                  UpdatedEmpName = dr["UpdatedEmpName"].ToString(),                                                
-                                                  UpdatedByEmpcode = dr["UpdatedByEmpcode"].ToString(),                                                                                                                                            
-                                              }).ToList();
+                                                  select new IssueThrBomMainDashboard
+                                                  {
+                                                      IssueSlipno = dr["IssueSlipNo"].ToString(),
+                                                      IssueDate = dr["IssueDate"].ToString(),
+                                                      ReqNo = dr["ReqNo"].ToString(),
+                                                      ReqDate = dr["ReqDate"].ToString(),
+                                                      ReqYearCode = Convert.ToInt32(dr["ReqYearCode"].ToString()),
+                                                      WONO = dr["WONO"].ToString(),
+                                                      WODate = dr["WODate"].ToString(),
+                                                      FGPartCode = dr["FGPARTCODE"].ToString(),
+                                                      FGItemName = dr["FGITEMNAME"].ToString(),
+                                                      IssueQty = Convert.ToDecimal(dr["FGQty"].ToString()),
+                                                      EntryId = Convert.ToInt32(dr["EntryId"].ToString()),
+                                                      YearCode = Convert.ToInt32(dr["YearCode"].ToString()),
+                                                      jobCardNo = dr["jobCardNo"].ToString(),
+                                                      JobcardDate = dr["JobcardDate"].ToString(),
+                                                      RMRemark = dr["Remark"].ToString(),
+                                                      ActENterdByEmpName = dr["ActENterdByEmpName"].ToString(),
+                                                      ActENterdByEmpCode = dr["ActENterdByEmpCode"].ToString(),
+                                                      ActualEntryDate = dr["ActualEntryDate"].ToString(),
+                                                      UpdatedEmpName = dr["UpdatedEmpName"].ToString(),
+                                                      UpdatedByEmpcode = dr["UpdatedByEmpcode"].ToString(),
+                                                  }).ToList();
                 }
                 //var ilst = model.AccountMasterList.Select(m => new TextValue
                 //{
@@ -777,7 +898,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        
+
         public async Task<IssueThrBomMainDashboard> RMDetailData(string FromDate, string Todate, string WCName, string PartCode, string ItemName, string Flag = "", string DashboardType = "RMDETAIL", string IssueSlipNo = "", string ReqNo = "", string GlobalSearch = "", string FGPartCode = "", string FGItemName = "")
         {
             DataSet? oDataSet = new DataSet();
@@ -800,10 +921,10 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
                     oCmd.Parameters.AddWithValue("@IssueSlipNo", IssueSlipNo);
-                    oCmd.Parameters.AddWithValue("@REQNo", ReqNo);                                                  
-                    oCmd.Parameters.AddWithValue("@wcname", WCName);                                                  
-                    oCmd.Parameters.AddWithValue("@partcode", PartCode);                                                                                                                   
-                    oCmd.Parameters.AddWithValue("@Item_name", ItemName);                                                                                                                   
+                    oCmd.Parameters.AddWithValue("@REQNo", ReqNo);
+                    oCmd.Parameters.AddWithValue("@wcname", WCName);
+                    oCmd.Parameters.AddWithValue("@partcode", PartCode);
+                    oCmd.Parameters.AddWithValue("@Item_name", ItemName);
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                     {
@@ -813,41 +934,41 @@ namespace eTactWeb.Data.DAL
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
                     model.IssueThrBOMDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
-                                              select new IssueThrBomMainDashboard
-                                              {
-                                                  IssueSlipno = dr["IssueSlipNo"].ToString(),
-                                                  IssueDate = dr["IssueDate"].ToString(),                                                                                                     
-                                                  ReqNo = dr["ReqNo"].ToString(),                                                
-                                                  ReqDate = dr["ReqDate"].ToString(),     
-                                                  RMItemName = dr["RMItem"].ToString(),     
-                                                  RMPartCode = dr["RMPartCode"].ToString(),     
-                                                  ReqQty = Convert.ToSingle(dr["ReqQty"].ToString()),     
-                                                  IssueQty = Convert.ToSingle(dr["IssueQty"].ToString()),     
-                                                  rmUnit   = dr["rmUnit"].ToString(),
-                                                  PendQty = Convert.ToSingle(dr["PendQty"].ToString()),
-                                                  AltReqQty = Convert.ToSingle(dr["AltReqQty"].ToString()),
-                                                  AltIssueQty = Convert.ToSingle(dr["AltIssueQty"].ToString()),
-                                                  AltUnit = dr["AltUnit"].ToString(),
-                                                  BatchNo = dr["BatchNo"].ToString(),
-                                                  uniquebatchNo = dr["uniquebatchNo"].ToString(),
-                                                  lotStock = Convert.ToSingle(dr["lotStock"].ToString()),
-                                                  TotalStock = Convert.ToSingle(dr["TotalStock"].ToString()),
-                                                  IssuedAlternateItem = dr["IssuedAlternateItem"].ToString(),
-                                                  WorkCenter = dr["WorkCenter"].ToString(),
-                                                  jobCardNo = dr["jobCardNo"].ToString(),
-                                                  JobcardDate = dr["JobcardDate"].ToString(),
-                                                  OrginalItemName = dr["OrginalItemName"].ToString(),
-                                                  OriginalPartCode = dr["OriginalPartCode"].ToString(),
-                                                  FGPartCode = dr["FGPARTCODE"].ToString(),
-                                                  FGItemName = dr["FGITEMNAME"].ToString(),
-                                                  RMRemark = dr["RMRemark"].ToString(),
-                                                  itemsize = dr["itemsize"].ToString(),
-                                                  itemcolor = dr["itemcolor"].ToString(),  
-                                                  ReqYearCode = Convert.ToInt32(dr["ReqYearCode"].ToString()),
-                                                  EntryId = Convert.ToInt32(dr["EntryId"].ToString()),
-                                                  YearCode = Convert.ToInt32(dr["YearCode"].ToString()),                                                                                                                                        
-                                              }).ToList();
-                }             
+                                                  select new IssueThrBomMainDashboard
+                                                  {
+                                                      IssueSlipno = dr["IssueSlipNo"].ToString(),
+                                                      IssueDate = dr["IssueDate"].ToString(),
+                                                      ReqNo = dr["ReqNo"].ToString(),
+                                                      ReqDate = dr["ReqDate"].ToString(),
+                                                      RMItemName = dr["RMItem"].ToString(),
+                                                      RMPartCode = dr["RMPartCode"].ToString(),
+                                                      ReqQty = Convert.ToDecimal(dr["ReqQty"].ToString()),
+                                                      IssueQty = Convert.ToDecimal(dr["IssueQty"].ToString()),
+                                                      rmUnit = dr["rmUnit"].ToString(),
+                                                      PendQty = Convert.ToDecimal(dr["PendQty"].ToString()),
+                                                      AltReqQty = Convert.ToDecimal(dr["AltReqQty"].ToString()),
+                                                      AltIssueQty = Convert.ToDecimal(dr["AltIssueQty"].ToString()),
+                                                      AltUnit = dr["AltUnit"].ToString(),
+                                                      BatchNo = dr["BatchNo"].ToString(),
+                                                      uniquebatchNo = dr["uniquebatchNo"].ToString(),
+                                                      lotStock = Convert.ToDecimal(dr["lotStock"].ToString()),
+                                                      TotalStock = Convert.ToDecimal(dr["TotalStock"].ToString()),
+                                                      IssuedAlternateItem = dr["IssuedAlternateItem"].ToString(),
+                                                      WorkCenter = dr["WorkCenter"].ToString(),
+                                                      jobCardNo = dr["jobCardNo"].ToString(),
+                                                      JobcardDate = dr["JobcardDate"].ToString(),
+                                                      OrginalItemName = dr["OrginalItemName"].ToString(),
+                                                      OriginalPartCode = dr["OriginalPartCode"].ToString(),
+                                                      FGPartCode = dr["FGPARTCODE"].ToString(),
+                                                      FGItemName = dr["FGITEMNAME"].ToString(),
+                                                      RMRemark = dr["RMRemark"].ToString(),
+                                                      itemsize = dr["itemsize"].ToString(),
+                                                      itemcolor = dr["itemcolor"].ToString(),
+                                                      ReqYearCode = Convert.ToInt32(dr["ReqYearCode"].ToString()),
+                                                      EntryId = Convert.ToInt32(dr["EntryId"].ToString()),
+                                                      YearCode = Convert.ToInt32(dr["YearCode"].ToString()),
+                                                  }).ToList();
+                }
             }
             catch (Exception ex)
             {
@@ -861,7 +982,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<IssueThrBomMainDashboard> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", string PartCode = "", string ItemName = "",string WCName="")
+        public async Task<IssueThrBomMainDashboard> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", string PartCode = "", string ItemName = "", string WCName = "")
 
         {
             DataSet? oDataSet = new DataSet();
@@ -897,29 +1018,29 @@ namespace eTactWeb.Data.DAL
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
                     model.IssueThrBOMDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
-                                              select new IssueThrBomMainDashboard
-                                              {
-                                                  IssueSlipno = dr["IssueSlipNo"].ToString(),
-                                                  IssueDate = dr["IssueDate"].ToString(),
-                                                  EntryTime = dr["EntryTime"].ToString().Split(' ')[1].Split('.')[0],
+                                                  select new IssueThrBomMainDashboard
+                                                  {
+                                                      IssueSlipno = dr["IssueSlipNo"].ToString(),
+                                                      IssueDate = dr["IssueDate"].ToString(),
+                                                      EntryTime = dr["EntryTime"].ToString().Split(' ')[1].Split('.')[0],
 
-                                                  ReqNo = dr["ReqNo"].ToString(),                                                
-                                                  ReqDate = dr["ReqDate"].ToString(),                                                
-                                                  ReqYearCode = Convert.ToInt32(dr["ReqYearCode"].ToString()),
-                                                  WONO = dr["WONO"].ToString(),                                                
-                                                  WODate = dr["WODate"].ToString(),
-                                                  EntryId = Convert.ToInt32(dr["EntryId"].ToString()),                                                                                            
-                                                  YearCode = Convert.ToInt32(dr["YearCode"].ToString()),                                                  
-                                                  jobCardNo = dr["jobCardNo"].ToString(),
-                                                  JobcardDate = dr["JobcardDate"].ToString(),
-                                                  RMRemark = dr["Remark"].ToString(),                                                
-                                                  ActENterdByEmpName = dr["ActENterdByEmpName"].ToString(),
-                                                  ActENterdByEmpCode = dr["ActENterdByEmpCode"].ToString(),                                                
-                                                  ActualEntryDate = dr["ActualEntryDate"].ToString(),                                                
-                                                  UpdatedEmpName = dr["UpdatedEmpName"].ToString(),                                                
-                                                  UpdatedByEmpcode = dr["UpdatedByEmpcode"].ToString(),                                                                                                                                            
-                                              }).ToList();
-                }             
+                                                      ReqNo = dr["ReqNo"].ToString(),
+                                                      ReqDate = dr["ReqDate"].ToString(),
+                                                      ReqYearCode = Convert.ToInt32(dr["ReqYearCode"].ToString()),
+                                                      WONO = dr["WONO"].ToString(),
+                                                      WODate = dr["WODate"].ToString(),
+                                                      EntryId = Convert.ToInt32(dr["EntryId"].ToString()),
+                                                      YearCode = Convert.ToInt32(dr["YearCode"].ToString()),
+                                                      jobCardNo = dr["jobCardNo"].ToString(),
+                                                      JobcardDate = dr["JobcardDate"].ToString(),
+                                                      RMRemark = dr["Remark"].ToString(),
+                                                      ActENterdByEmpName = dr["ActENterdByEmpName"].ToString(),
+                                                      ActENterdByEmpCode = dr["ActENterdByEmpCode"].ToString(),
+                                                      ActualEntryDate = dr["ActualEntryDate"].ToString(),
+                                                      UpdatedEmpName = dr["UpdatedEmpName"].ToString(),
+                                                      UpdatedByEmpcode = dr["UpdatedByEmpcode"].ToString(),
+                                                  }).ToList();
+                }
             }
             catch (Exception ex)
             {
@@ -945,8 +1066,8 @@ namespace eTactWeb.Data.DAL
             int cnt = 1;
             model.EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["IssWithBOMEntryId"]);
             model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["IssWithBOMYearCode"]);
-            model.EntryDate = DS.Tables[0].Rows[0]["IssWithBOMEntryDate"].ToString();  
-                        model.EntryTime = DS.Tables[0].Rows[0]["EntryTime"].ToString().Split(' ')[1].Split('.')[0];
+            model.EntryDate = DS.Tables[0].Rows[0]["IssWithBOMEntryDate"].ToString();
+            model.EntryTime = DS.Tables[0].Rows[0]["EntryTime"].ToString().Split(' ')[1].Split('.')[0];
 
             model.IssueSlipNo = DS.Tables[0].Rows[0]["IssWithBOMIssueSlipNo"].ToString();
             model.IssueDate = DS.Tables[0].Rows[0]["IssWithBOMIssueDate"].ToString();
@@ -969,11 +1090,11 @@ namespace eTactWeb.Data.DAL
             model.LastupdatedByName = DS.Tables[0].Rows[0]["LastUpdatedByEmpName"].ToString();
             model.LastUpdationDate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdationDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["LastUpdationDate"]);
             model.MachineCode = DS.Tables[0].Rows[0]["Machinecode"].ToString();
-            model.IssuedByEmpCode =Convert.ToInt32(DS.Tables[0].Rows[0]["IssuedByEmpCode"]);
+            model.IssuedByEmpCode = Convert.ToInt32(DS.Tables[0].Rows[0]["IssuedByEmpCode"]);
             model.IssuedByEmpName = DS.Tables[0].Rows[0]["IssuedByEmpName"].ToString();
             model.RecByEmpCode = Convert.ToInt32(DS.Tables[0].Rows[0]["RecByEmpCode"]);
             model.RecByEmpCodeName = DS.Tables[0].Rows[0]["RecByEmpCodeName"].ToString();
-            model.Uid = Convert.ToInt32(DS.Tables[0].Rows[0]["UID"].ToString());        
+            model.Uid = Convert.ToInt32(DS.Tables[0].Rows[0]["UID"].ToString());
             if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString()))
             {
                 model.LastupdatedByName = DS.Tables[0].Rows[0]["LastUpdatedByEmpName"].ToString();
@@ -996,7 +1117,7 @@ namespace eTactWeb.Data.DAL
                         FGItemCode = Convert.ToInt32(row["FGItemCode"].ToString()),
                         ItemCode = Convert.ToInt32(row["ItemCode"]),
                         IssuedDate = row["IssueDate"].ToString(),
-                        ItemName = row["RMITEMNAME"].ToString(),                        
+                        ItemName = row["RMITEMNAME"].ToString(),
                         PartCode = row["RMPARTCODE"].ToString(),
                         ReqQty = Convert.ToDecimal(row["ReqQty"]),
                         AltReqQty = Convert.ToDecimal(row["AltReqQty"]),
@@ -1020,9 +1141,9 @@ namespace eTactWeb.Data.DAL
                         CostCenterId = Convert.ToInt32(row["CostCenterId"]),
                         ItemSize = row["ItemSize"].ToString(),
                         ItemColor = row["ItemColor"].ToString(),
-                        StdPacking = Convert.ToSingle(row["STDPkg"].ToString()),
+                        StdPacking = Convert.ToDecimal(row["STDPkg"].ToString()),
                         IssuedAlternateItem = row["IssuedAlternateItem"].ToString(),
-                        OriginalItemCode = Convert.ToInt32(row["OriginalItemCode"].ToString()),                        
+                        OriginalItemCode = Convert.ToInt32(row["OriginalItemCode"].ToString()),
                         //ProjectNo = row["ProjectNo"].ToString(),
                         //ProjectYearCode = Convert.ToInt32(row["ProjectYearcode"]),
                         WONO = row["WONO"].ToString(),
@@ -1054,10 +1175,10 @@ namespace eTactWeb.Data.DAL
                         FGQty = Convert.ToDecimal(row["FGQty"]),
                         BOMNO = Convert.ToInt32(row["BOMNO"].ToString()),
                         BOMDate = row["BOMDate"].ToString(),
-                        FGStockINStore =  Convert.ToInt32(row["FGStockInStore"].ToString()),
+                        FGStockINStore = Convert.ToInt32(row["FGStockInStore"].ToString()),
                         //IssueFromStoreID =  Convert.ToInt32(row["Unit"].ToString()),
                         //Remark = row["Remark"].ToString(),
-                        WCID =  Convert.ToInt32(row["WCID"].ToString()),
+                        WCID = Convert.ToInt32(row["WCID"].ToString()),
                         ReqNo = row["ReqNo"].ToString(),
                         ReqYearCode = Convert.ToInt32(row["ReqYearCode"].ToString()),
                         ReqDate = row["ReqDate"].ToString(),
@@ -1127,17 +1248,17 @@ namespace eTactWeb.Data.DAL
 
                                                       RMItemName = dr["RMItem"].ToString(),
                                                       RMPartCode = dr["RMPartCode"].ToString(),
-                                                      ReqQty = Convert.ToSingle(dr["ReqQty"]),
-                                                      IssueQty = Convert.ToSingle(dr["IssueQty"]),
+                                                      ReqQty = Convert.ToDecimal(dr["ReqQty"]),
+                                                      IssueQty = Convert.ToDecimal(dr["IssueQty"]),
                                                       rmUnit = dr["rmUnit"].ToString(),
-                                                      PendQty = Convert.ToSingle(dr["PendQty"]),
-                                                      AltReqQty = Convert.ToSingle(dr["AltReqQty"]),
-                                                      AltIssueQty = Convert.ToSingle(dr["AltIssueQty"]),
+                                                      PendQty = Convert.ToDecimal(dr["PendQty"]),
+                                                      AltReqQty = Convert.ToDecimal(dr["AltReqQty"]),
+                                                      AltIssueQty = Convert.ToDecimal(dr["AltIssueQty"]),
                                                       AltUnit = dr["AltUnit"].ToString(),
                                                       BatchNo = dr["BatchNo"].ToString(),
                                                       uniquebatchNo = dr["uniquebatchNo"].ToString(),
-                                                      lotStock = Convert.ToSingle(dr["lotStock"]),
-                                                      TotalStock = Convert.ToSingle(dr["TotalStock"]),
+                                                      lotStock = Convert.ToDecimal(dr["lotStock"]),
+                                                      TotalStock = Convert.ToDecimal(dr["TotalStock"]),
                                                       IssuedAlternateItem = dr["IssuedAlternateItem"].ToString(),
                                                       WorkCenter = dr["WorkCenter"].ToString(),
                                                       jobCardNo = dr["jobCardNo"].ToString(),
@@ -1223,8 +1344,8 @@ namespace eTactWeb.Data.DAL
                 //DateTime frmDt = new DateTime();
                 //DateTime toDt = new DateTime();
 
-               var frmDt = CommonFunc.ParseFormattedDate(FromDate);
-               var toDt = CommonFunc.ParseFormattedDate(ToDate);
+                var frmDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
 
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDGRID"));
                 SqlParams.Add(new SqlParameter("@FromDate", frmDt == default ? string.Empty : frmDt));
@@ -1244,18 +1365,24 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> ChkStockBeforeSaving(string ReqNo, int ReqYearCode, int EntryId, int YearCode, DataTable DTItemGrid)
+        public async Task<ResponseResult> ChkStockBeforeSaving(string ReqNo, int ReqYearCode, int EntryId, int YearCode, DataTable DTItemGrid, string Mode)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "ChkBeforeINSERT"));
+                var flag = "ChkBeforeINSERT";
+
+                if (Mode == "U")
+                {
+                    flag = "ChkBeforeUpdate";
+                }
+                SqlParams.Add(new SqlParameter("@Flag", flag));
                 SqlParams.Add(new SqlParameter("@ReqNo", ReqNo));
                 SqlParams.Add(new SqlParameter("@EntryId", (EntryId)));
                 SqlParams.Add(new SqlParameter("@ReqYearCode", ReqYearCode));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
-               
+
                 SqlParams.Add(new SqlParameter("@DTItemGrid", DTItemGrid));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueWithBOM", SqlParams);
             }
@@ -1268,6 +1395,24 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetReportName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
 
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueWithBOM", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
     }
 }

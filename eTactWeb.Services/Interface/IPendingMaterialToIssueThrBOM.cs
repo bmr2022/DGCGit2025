@@ -13,7 +13,7 @@ namespace eTactWeb.Services.Interface
         Task<DataSet> BindAllDropDowns(string Flag, int YearCode);
         Task<ResponseResult> FillRequisition(int toDept, int itemCode, int workCenter, int yearCode, string toDate);
 
-        Task<ResponseResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId);        
+        Task<ResponseResult> ShowDetail(string Flag, string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId);
         Task<ResponseResult> CheckTransDate(int ItemCode, string IssueDate, string BatchNo, string UniqBatchNo, int YearCode);
     }
 }

@@ -31,6 +31,30 @@
         top: -17px;
         z-index: 1;
     }
+
+    #fullPageLoader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        display: none;
+        z-index: 99999;
+    }
+
+    .loaderBox {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 25px 40px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
 </style>
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <partial name="_AllowBatchChangeBox" />
@@ -39,19 +63,19 @@
     <form asp-action="IssueThrBOM" autocomplete="off" class="form-horizontal">
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
-                <strong>Issue Through BOM</strong>
+                <strong>Issue Through BOM - Financial Year: @Model.YearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     <div class="col-auto">
-                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                        <button type="button" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                             PRINT
                         </button>
                     </div>
-                    <a href="@Url.Action("PendingMaterialToIssueThrBOM", "PendingMaterialToIssueThrBOM")" class="btn btn-sm btn-outline-light">
+                    <a href="@Url.Action("PendingMaterialToIssueThrBOM", "PendingMaterialToIssueThrBOM", new { formKey = ViewBag.FormKey })" class="btn btn-sm btn-outline-light">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat"></i>
                         Pend Req
                     </a>
-                    <a asp-action="Dashboard" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="Dashboard" asp-route-formKey="@ViewBag.formKey" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -68,6 +92,8 @@
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
                             <input asp-for="FromStoreBack" type="hidden" value="@Model.FromStoreBack" />
+                            <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                            <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
@@ -76,7 +102,7 @@
                         @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
                         {
                             <div class="col-auto">
-                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action + ($('form')[0].action.indexOf('?') >= 0 ? '&' : '?') + 'formKey=' + encodeURIComponent('@ViewBag.formKey')">
                                     <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
                                     REFRESH
                                 </a>
@@ -84,7 +110,7 @@
                             @if (Model.Mode == "U")
                             {
                                 <div class="col-auto">
-                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                    <button type="button" class="btn btn-sm btn-outline-light bg-gradient submitBTN" id="UpdateButton">
                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                         UPDATE
                                     </button>
@@ -94,7 +120,7 @@
                             else
                             {
                                 <div class="col-auto">
-                                    <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                    <button type="button" class="btn btn-primary btn-sm submitBTN">
                                         <i class="fa-solid fa-chevron-circle-right"></i>
                                         SUBMIT
                                     </button>
@@ -126,9 +152,8 @@
                                     <input asp-for="ToDate" value="@Model.ToDate" class="form-control" type="hidden" />
                                     <input type="hidden" id="ShouldPrint" name="ShouldPrint" />
                                     <input type="hidden" id="AddPassWord" />
-
-
-
+                                    <input type="hidden" id="IssueThrBomAllowtoIssueMorethenPendQty" />
+                                    <input type="hidden" id="IssueThrBomFixIssueStorefromRequisition" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="YearCode" class="form-label" style="color:blue">Year Code</label>
@@ -187,7 +212,7 @@
                                 <div class="col-lg">
                                     <label asp-for="RecByEmpCodeName" class="form-label" style="color:red">Rec By Emp*</label>
                                     <input asp-for="RecByEmpCode" type="hidden" />
-                                    <select class="form-select" style="width:150px;" asp-for="RecByEmpCodeName" asp-items="@(new SelectList(Model.EmployeeList,"Value","Text"))">
+                                    <select class="form-select" style="width:150px;" asp-for="RecByEmpCodeName" asp-items="@(new SelectList(Model.EmployeeList, "Value", "Text"))">
                                         <option value="0">-Select-</option>
                                     </select>
                                 </div>
@@ -289,14 +314,15 @@
                                                 <th style="color:yellow">RM Part Code*</th>
                                                 <th style="color:yellow">Req Qty*</th>
                                                 <th style="color:yellow">Store Name*</th>
-                                                <th style="color:yellow">Batch No*</th>
-                                                <th style="color:yellow">Unique Batch No*</th>
+
                                                 <th>Issue Qty</th>
                                                 <th>Unit</th>
                                                 <th>Lot Stock</th>
                                                 <th>Total Stock</th>
                                                 <th>Work Center</th>
                                                 <th>WIP Stock</th>
+                                                <th style="color:yellow">Batch No*</th>
+                                                <th style="color:yellow">Unique Batch No*</th>
                                                 <th>Alt Qty</th>
 
                                                 <th>Alt Unit</th>
@@ -343,19 +369,21 @@
                                             <th>RM Part Code</th>
                                             <th>Req Qty</th>
                                             <th>Store Name</th>
-                                            <th>Batch No</th>
-                                            <th>Unique Batch No</th>
+
                                             <th>Issue Qty</th>
                                             <th>Unit</th>
                                             <th>Lot Stock</th>
                                             <th>Total Stock</th>
+                                            <th>Work Center</th>
+                                            <th>WIP STock</th>
+                                            <th>Batch No</th>
+                                            <th>Unique Batch No</th>
                                             <th>Alt Qty</th>
                                             <th>Alt Unit</th>
                                             <th>Std Packing</th>
                                             <th>Rate</th>
                                             <th>Remark</th>
-                                            <th>Work Center</th>
-                                            <th>WIP STock</th>
+
                                             <th>Alt Part Code</th>
                                             <th>Alt Item Name</th>
                                             <th>Cost Center</th>
@@ -436,71 +464,78 @@
                                         @* <i class="fa fa-lock" style="color: #127387;"></i> *@
                                         Click for CloseReq
                                     </button>
-                                    </<div>
-                                    </div>
+                                </<div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer p-3">
+                <div class="row justify-content-between g-2">
+                    <div class="card-header card-headerBG text-light bg-gradient">
+                        <h5>
+                            <strong>Issue Through BOM</strong>
+                            <span class="d-flex float-end" style="margin-top:-2px;">
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        PRINT
+                                    </button>
                                 </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer p-3">
-                        <div class="row justify-content-between g-2">
-                            <div class="card-header card-headerBG text-light bg-gradient">
-                                <h5>
-                                    <strong>Issue Through BOM</strong>
-                                    <span class="d-flex float-end" style="margin-top:-2px;">
-                                        <div class="col-auto">
-                                            <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
-                                                <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                                                PRINT
-                                            </button>
-                                        </div>
-                                        <a asp-action="Dashboard" class="btn btn-sm btn-outline-light bg-gradient">
-                                            <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
-                                            Dashboard
+                                <a asp-action="Dashboard" asp-route-formKey="@ViewBag.formKey" class="btn btn-sm btn-outline-light bg-gradient">
+                                    <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                    Dashboard
+                                </a>
+                                <div class="row justify-content-between g-2">
+                                    <div class="col-auto">
+                                        <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                            <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                            BACK
                                         </a>
-                                        <div class="row justify-content-between g-2">
-                                            <div class="col-auto">
-                                                <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
-                                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
-                                                    BACK
-                                                </a>
-                                            </div>
-                                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
-                                            {
-                                                <div class="col-auto">
-                                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
-                                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-                                                        REFRESH
-                                                    </a>
-                                                </div>
-                                                @if (Model.Mode == "U")
-                                                {
-                                                    <div class="col-auto">
-                                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
-                                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                                                            UPDATE
-                                                        </button>
-                                                    </div>
-                                                }
-
-                                                else
-                                                {
-                                                    <div class="col-auto">
-                                                        <button type="submit" class="btn btn-primary btn-sm submitBTN">
-                                                            <i class="fa-solid fa-chevron-circle-right"></i>
-                                                            SUBMIT
-                                                        </button>
-                                                    </div>
-                                                }
-                                            }
+                                    </div>
+                                    @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                    {
+                                        <div class="col-auto">
+                                            <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action + ($('form')[0].action.indexOf('?') >= 0 ? '&' : '?') + 'formKey=' + encodeURIComponent('@ViewBag.formKey')">
+                                                <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                REFRESH
+                                            </a>
                                         </div>
-                                    </span>
-                                </h5>
-                            </div>
-                        </div>
+                                        @if (Model.Mode == "U")
+                                        {
+                                            <div class="col-auto">
+                                                <button type="button" class="btn btn-sm btn-outline-light bg-gradient submitBTN" id="UpdateButton">
+                                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                    UPDATE
+                                                </button>
+                                            </div>
+                                        }
+
+                                        else
+                                        {
+                                            <div class="col-auto">
+                                                <button type="button" class="btn btn-primary btn-sm submitBTN">
+                                                    <i class="fa-solid fa-chevron-circle-right"></i>
+                                                    SUBMIT
+                                                </button>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </span>
+                        </h5>
                     </div>
-    </form>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="fullPageLoader">
+        <div class="loaderBox">
+            <span>Processing...</span>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="PasswordAllowPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -508,7 +543,8 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="staticBackdropLabel">Enter Password</h3>
+                @* <h3 class="modal-title" id="staticBackdropLabel">Enter Password</h3> *@
+                <h3 class="modal-title" id="staticBackdropLabel">Confirm</h3>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -519,7 +555,10 @@
                                 <div class="card-body overflow-auto pb-0">
                                     <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
                                         <div class="d-flex align-items-center">
-                                            <h6 class="mb-0 me-2">Do You Want to Save & Print?</h6>
+                                            @* <h6 class="mb-0 me-2">Do You Want to Save & Print?</h6> *@
+                                            <h6 class="mb-0 me-2">Do You Want to Save and Print With Issue Slip No:
+                                                <span style="color: #0d6efd; font-weight: bold;" id="IssueSlipNoPopup"></span>
+                                            </h6>
                                         </div>
                                     </div>
                                 </div>
@@ -594,7 +633,7 @@
                             $.ajax({
                                         url: '@Url.Action("DeleteFromZeroStockMemoryGrid")',
                                 type: "POST",
-                                data: { deleteZeroStockOnly: deleteZeroStockOnly,seqNo: SeqNo },
+                                data: { deleteZeroStockOnly: deleteZeroStockOnly,seqNo: SeqNo,uniqueKey:uniqueKey },
                                 async: false,
                                 success: function (data, status, xhr) {
                                              $('#divIssueThrBOMGrid').html(data);
@@ -606,9 +645,9 @@
 
 
                                     var rowCounter = $('#divIssueThrBOMGrid tr').length;
-                                    for (var i = 1; i <= rowCounter; i++) {
-                                        fillBatchUnique(i, "unique&batch");
-                                    }
+                                    // for (var i = 1; i <= rowCounter; i++) {
+                                    //     // fillBatchUnique(i, "unique&batch");
+                                    // }
                                     for (var i = 1; i <= rowCounter; i++) {
 
                                         $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
@@ -626,9 +665,9 @@
                                     }
                                     for (var i = 1; i <= rowCounter; i++) {
 
-                                        FillLotandTotalStock(i);
+                                        // FillLotandTotalStock(i);
 
-                                        fillProjectNo(i);
+                                        // fillProjectNo(i);
                                         $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
                                         $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
                                         let itemName = $('#MainGridItemname-' + i).val();
@@ -672,6 +711,7 @@
                     if ($('#divIssueThrBOMGridAdd tr td').length <= 1 || $('#divIssueThrBOMFGGrid tr td').length <= 1) {
                         $.notify('Grid Should Have Atleast 1 Item...!', "error");
                         Err = 1;
+
                     }
                     var rowCount = $('#divIssueThrBOMGridAdd tr').length;
                     for (var i = 1; i <= rowCount; i++) {
@@ -694,7 +734,8 @@
                         var ICName2Array = ICName2;
                         var delimiter = ",";
                         var displayICName = ICName2Array.join(delimiter);
-                        $.notify("Requisition upto maximum limit already issued for " + displayICName, "error");
+                        $.notify("Issue Qty is greater than Pending Qty for" + displayICName, "error");
+                        //$.notify("Requisition upto maximum limit already issued for " + displayICName, "error");
                         Err = 1;
                     }
                     Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
@@ -730,16 +771,26 @@
                 //         $('form').submit();
                 //     }, 300);
                 // });
+        function showLoader() {
+            $('#fullPageLoader').fadeIn(100);
+        }
 
+        function hideLoader() {
+            $('#fullPageLoader').fadeOut(100);
+        }
 
                $('.submitBTN').click(function (e) {
+                   showLoader();
             e.preventDefault();
-            if (!Validate_IssueInsert()) return;
+            if (!Validate_IssueInsert()) { hideLoader(); return};
 
                     ChkStockBeforeSaving(function (isValid) {
                         if (isValid) {
+                            $('#IssueSlipNoPopup').text($('#IssueSlipNo').val());
                             $('#PasswordAllowPopup').modal("show");
+                            hideLoader();
                         }
+                        hideLoader();
                     });
 
 
@@ -747,7 +798,12 @@
 
         // When user clicks "Print"
         $('#btnPrint').click(function () {
-                    if (!Validate_IssueInsert()) return;
+            showLoader();
+            $(this).prop('disabled', true);
+            if (!Validate_IssueInsert()) {
+
+                hideLoader();
+                return };
                     ChkStockBeforeSaving(function (isValid) {
                         if (isValid) {
                             const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
@@ -765,7 +821,11 @@
 
         // When user clicks "Close" or no print
         $('#btnClose').click(function () {
-                    if (!Validate_IssueInsert()) return;
+            $(this).prop('disabled', true);
+            showLoader();
+            if (!Validate_IssueInsert()) {
+                hideLoader();
+                return };
                     ChkStockBeforeSaving(function (isValid) {
                         if (isValid) {
                             $('#PasswordAllowPopup').modal("hide");
@@ -797,14 +857,18 @@
                             printWindow.location.href = printUrl;
                         }
 
-                        window.location.href = '/PendingMaterialToIssueThrBOM/PendingMaterialToIssueThrBOM';
+                        window.location.href = '/PendingMaterialToIssueThrBOM/PendingMaterialToIssueThrBOM?formKey='+formKey;
                     } else {
+                        $.notify(res.message, { position: "top center", className: "error" });
+                          // window.location.href = '/PendingMaterialToIssueThrBOM/PendingMaterialToIssueThrBOM';
                         alert(res.message || "Something went wrong.");
+                        hideLoader();
                     }
                 },
                 error: function (xhr) {
                     console.error("Error occurred:", xhr.responseText);
                     alert("Save failed.");
+                    hideLoader();
                 }
             });
         }
@@ -867,10 +931,14 @@
                 $('#RecByEmpCodeName').change(function () {
                     $('#RecByEmpCode').val($('#RecByEmpCodeName').val());
                 })
-
+                 var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
                 $(document).ready(function () {
+                     formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
                              var mode = '@Model.Mode';
         var id = parseInt('@Model.EntryId');
+                    GetAllowBatch();
 
         // If New Entry
         if (mode == "" || id == 0) {
@@ -900,12 +968,14 @@
             $('#EntryTime').val('@Model.EntryTime');
         }
                     PassForCloseReq();
+                     Getfeatureoption();
                     if ('@Model.Mode' != "U" && '@Model.Mode' != "V") {
                         GetNewEntry();
                         fillIssueThrGridFromMemoryCache();
                         GetReqByName();
                          GetIssueScanFeature();
-                        $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                        // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                        GetServerDate();
 
                         var totalrows = $('#divIssueThrBOMGrid tr').length;
 
@@ -925,7 +995,7 @@
                     }
                     fillFGDataList();
                     //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                    $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                    // $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                     //$('#IssueDate').datepicker("option", "maxDate", 'now');
                     //$("#IssueDate").datepicker("disable");
                     $('#IssueDate').css("pointer-events", "none");
@@ -972,11 +1042,49 @@
                         $('#RecByEmpCodeName').val(RecEmpCode).trigger("change");
                         $('#divIssueThrBOMGrid').empty();
                         //$('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate);
-                        //EnableOrDisableIssueDate();
+
                     }
+            EnableOrDisableIssueDate();
 
 
                 });
+
+
+                $('#EntryDate').change(function () {
+                    $('#IssueDate').val(this.value);
+                });
+
+
+                        function GetServerDate() {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate", "GateInward")",
+                async: false,
+                success: function (result, status, error) {
+
+                    console.log(result);
+                    if (result != null) {
+
+                        var today = new Date();
+                        var threeMonthsAgo = new Date(today.getTime() - (3 * 30 * 24 * 60 * 60 * 1000));
+
+                        if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                            /*    alert('isside mode v');
+                                alert("before  EntryDate1 " + $("#EntryDate").val()); */
+                            $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                                        $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+
+                        }
+                        /* $("#InvoiceDate").datepicker("option", "minDate", formatDate(threeMonthsAgo)); */
+
+                        /* monika */
+                        /* $("#InvoiceDate").datepicker("option", "maxDate", formatDate(today)); */
+                    }
+                }
+            });
+        }
+
 
 
 
@@ -1056,7 +1164,29 @@
                         }
                     });
                 }
+                function Getfeatureoption() {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("Getfeatureoption")",
+                        async: false,
+                        dataType: "json",
+                        success: function (result) {
+                            // If the result is a JSON string, parse it first
+                            let obj = typeof result === "string" ? JSON.parse(result) : result;
 
+                            if (obj.StatusCode === 200 && obj.StatusText === "Success") {
+                                if (obj.Result && obj.Result.Table && obj.Result.Table.length > 0) {
+                                    $('#IssueThrBomAllowtoIssueMorethenPendQty').val(obj.Result.Table[0].IssueThrBomAllowtoIssueMorethenPendQty);
+                                    $('#IssueThrBomFixIssueStorefromRequisition').val(obj.Result.Table[0].IssueThrBomFixIssueStorefromRequisition);
+                                    console.log($('#AddPassWord').val());
+                                }
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("AJAX Error:", status, error);
+                        }
+                    });
+                }
 
                 function fillFGDataList() {
 
@@ -1149,6 +1279,7 @@
                     $.ajax({
                         url: "@Url.Action("GetNewEntry")",
                         type: "POST",
+                        data:{formKey:formKey},
                         success: function (data) {
 
                             if (data != null) {
@@ -1198,6 +1329,7 @@
                         url: "@Url.Action("FillThrGridFromMemoryCache")",
                         type: "POST",
                         async: false,
+                        data:{formKey:formKey,uniqueKey:uniqueKey},
                         success: function (data) {
 
                             if (data != null) {
@@ -1212,31 +1344,56 @@
                                 $('#WODate').val($('#MainGridWoDate').val());
                                 $('#WOYearCode').val($('#MainGridWOYearCode').val());
                                 $('#WONO').val($('#MainGridWONO').val());
+                        if ($('#AllowBatchChange').val() == 'Y') {
                                 fillBatchNO();
+                        }
 
 
                                 var rowCounter = $('#divIssueThrBOMGrid tr').length;
-                                for (var i = 1; i <= rowCounter; i++) {
-                                    fillBatchUnique(i, "unique&batch");
-                                    GetIsStockable(i);
-                                }
-                                for (var i = 1; i <= rowCounter; i++) {
-                                    $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
-                                    $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
-                                    $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                                    $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
-                                    $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
-                                }
-                                for (var i = 1; i <= rowCounter; i++) {
-                                     FillLotandTotalStock(i);
+                                if ($('#AllowBatchChange').val() == 'Y') {
+                                    for (var i = 1; i <= rowCounter; i++) {
+                                        fillBatchUnique(i, "unique&batch");
+                                        GetIsStockable(i);
+                                    }
+                                    for (var i = 1; i <= rowCounter; i++) {
+                                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                        $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                        $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                        $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                        $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+                                    }
+                                    for (var i = 1; i <= rowCounter; i++) {
+                                         FillLotandTotalStock(i);
 
-                                    fillProjectNo(i);
-                                    $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
-                                    $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
-                                    $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                                    $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
-                                    $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+                                        fillProjectNo(i);
+                                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                        $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                        $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                        $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                        $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+                                    }
                                 }
+                                else {
+                                    for (var i = 1; i <= rowCounter; i++) {
+                                        fillProjectNo(i);
+                                        // $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                        // $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                        $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                        $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                        $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+
+                                        var batchVal = $('#MainGridBatchNo-' + i).val();
+                                        var issueqty = $('#MainGridIssueQty-' + i).val();
+                                        var totalQty = $('#MainGridTotalStock-' + i).val();
+
+                                        if (batchVal === '' || batchVal === '0' || batchVal === null || issueqty <= 0 || totalQty <= 0) {
+                                            // Change background color of the whole row
+                                            $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
+                                        }
+                                    }
+                                }
+
+                                
                             }
                         },
                         error: function (errMsg) {
@@ -1341,7 +1498,8 @@
                             "YearCode": @yearCode,
                             "StoreName": "MAIN STORE",//$('#MainGridStorename-' + i).val(), --- CHANGE THIS
                             "BatchNo": '',
-                            "IssuedDate": $('#IssueDate').val()
+                            "IssuedDate": $('#IssueDate').val(),
+                            "formKey":formKey
                         }
                         var batchNoArray = [];
                         var filteredBatch = [];
@@ -1382,7 +1540,8 @@
                             "YearCode": @yearCode,
                             "StoreName": "MAIN STORE",//$('#MainGridStorename-' + i).val(), --- CHANGE THIS
                             "BatchNo": $('#MainGridBatchNo-' + i).val() == 0 ? '' : $('#MainGridBatchNo-' + i).val(),
-                            "IssuedDate": $('#IssueDate').val()
+                            "IssuedDate": $('#IssueDate').val(),
+                            "formKey":formKey
                         }
                         $.ajax({
                             url: "@Url.Action("FillBatchUnique")",
@@ -1457,7 +1616,7 @@
                     $.ajax({
                         url: "@Url.Action("GetItemDetailFromUniqBatch")",
                         type: "POST",
-                        data: { "UniqBatchNo": $('#ScanUniqueBatchNo').val(), "YearCode": $('#YearCode').val(), "TransDate": $('#IssueDate').val(), "ReqNo": $('#ReqNo').val(), "ReqYearCode": $('#ReqyearCode').val(), "ReqDate": $('#ReqDate').val() },
+                        data: { "UniqBatchNo": $('#ScanUniqueBatchNo').val(),"uniqueKey":uniqueKey, "YearCode": $('#YearCode').val(), "TransDate": $('#IssueDate').val(), "ReqNo": $('#ReqNo').val(), "ReqYearCode": $('#ReqyearCode').val(), "ReqDate": $('#ReqDate').val() },
                         success: function (data, status, xhr) {
 
                             if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
@@ -1473,7 +1632,7 @@
                             else if (data === "can not add new stock" && (xhr.statusCode === 209 || xhr.responseText === "can not add new stock")) {
                                  $('#IssuethrbomWithScannerBox').modal("hide");
                                AllowBatchChange(1)
-                                
+
                                 if (Allowed == true) {
                                      $('#divIssueByScanning').html(data);
                                 }else{
@@ -1508,7 +1667,8 @@
                             "YearCode": @yearCode,
                             "StoreName": $('#MainGridStorename-' + i).val() == "-Select-" ? "" : $('#MainGridStorename-' + i).val(),//$('#MainGridStorename-' + i).val(), --- CHANGE THIS
                             "BatchNo": '',
-                            "IssuedDate": $('#IssueDate').val()
+                            "IssuedDate": $('#IssueDate').val(),
+                            "formKey":formKey
                         }
                         var batchNoArray = [];
                         var filteredBatch = [];
@@ -1552,7 +1712,8 @@
                             "YearCode": @yearCode,
                             "StoreName": $('#MainGridStorename-' + i).val(),//$('#MainGridStorename-' + i).val(), --- CHANGE THIS
                             "BatchNo": $('#MainGridBatchNo-' + i).val() == 0 ? '' : $('#MainGridBatchNo-' + i).val(),
-                            "IssuedDate": $('#IssueDate').val()
+                            "IssuedDate": $('#IssueDate').val(),
+                            "formKey":formKey
                         }
                         $.ajax({
 
@@ -1686,9 +1847,10 @@
                             "ReqQty": $('#MainGridReqQty-' + i).val(),
                             "StoreId": $('#MainGridStoreId-' + i).val(),
                             "StoreName": $('#MainGridStorename-' + i).val(),
-                            "BatchNo": $('#MainGridBatchNo-' + i + ' option:selected').text().trim(),
 
-                            "uniqueBatchNo" : $('#MainGridUniqueBatchNo-' + i + ' option:selected').text().trim(),
+                                "BatchNo": $('#MainGridBatchNo-' + i).val(),
+                                "uniqueBatchNo" : $('#MainGridUniqueBatchNo-' + i).val(),
+
                             "IssueQty": $('#MainGridIssueQty-' + i).val(),
                             "Unit": $('#MainGridUnit-' + i).val(),
                             "LotStock": $('#MainGridLotStock-' + i).val(),
@@ -1716,8 +1878,8 @@
 
                         BatchNoArray.push({
 
-                            "BatchNo": $('#MainGridBatchNo-' + i + ' option:selected').text().trim(),
-                             "uniqueBatchNo" : $('#MainGridUniqueBatchNo-' + i + ' option:selected').text().trim(),
+                    "BatchNo": $('#MainGridBatchNo-' + i).val(),
+                    "uniqueBatchNo": $('#MainGridUniqueBatchNo-' + i).val(),
                         });
 
 
@@ -1726,7 +1888,7 @@
                     $.ajax({
                         url: "@Url.Action("AddtoIssueThrBomGrid")",
                         type: "POST",
-                        data: { model: ItemData },
+                        data: { model: ItemData,uniqueKey:uniqueKey },
                         success: function (data, status, xhr) {
                             if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                                 $.notify('Duplicate Item Not Allowed.', "info");
@@ -1761,7 +1923,7 @@
                 });
                   $('#AddScannedToMainGrid').click(function () {
                     var rowCount = $('#divIssueByScanning tr').length;
-                   
+
                     var ItemData = [];
 
                     var BatchNoArray = [];
@@ -1804,7 +1966,7 @@
                         BatchNoArray.push({
                             "BatchNo": $('#ScannedBatchNo-' + i).text(),
             "uniqueBatchNo": $('#ScannedUniqueBatchNo-' + i).text(),
-                          
+
                         });
 
 
@@ -1813,11 +1975,11 @@
                     $.ajax({
                         url: "@Url.Action("AddtoIssueThrBomGrid")",
                         type: "POST",
-                        data: { model: ItemData },
+                        data: { model: ItemData,uniqueKey:uniqueKey },
                         success: function (data, status, xhr) {
                             // if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                             //     $.notify('Duplicate Item Not Allowed.', "info");
-                               
+
                             // }
                                     if (xhr.status === 207) {
                                     $.notify(xhr.responseText, "info");
@@ -1831,7 +1993,7 @@
                                 $('#divIssueThrBOMGridAdd').html(data);
                                 $('#divIssueThrBOMGrid').empty();
                                 $.notify("Item Added to Grid", "success");
-                              
+
                                 if ($('#Mode').val() != "U") {
                                     FillFGTOMemoryCache();
 
@@ -1876,7 +2038,7 @@
                     $.ajax({
                         url: "@Url.Action("AddtoIssueFGThrBomGrid")",
                         type: "POST",
-                        data: { model: FGData },
+                        data: { model: FGData,uniqueKey:uniqueKey },
                         success: function (data, status, xhr) {
                             console.log(done);
                             //    alert(success);
@@ -1901,6 +2063,8 @@
 
                             "ReqYearCode": parseInt($('#ReqyearCode').val()),
                             "YearCode": parseInt($('#YearCode').val()),
+                            "Mode":$('#Mode').val(),
+                            "uniqueKey":uniqueKey
 
                         },
                         success: function (response) {
@@ -1969,10 +2133,12 @@
                         //else{
                         //$('MainGridIssueQty-' + i).css("border", "1px solid black");
                         //}
+                                var AllowMoreThanPendQty = $('#IssueThrBomAllowtoIssueMorethenPendQty').val();
+        if (AllowMoreThanPendQty != "Y") {
                 if (parseFloat($('#MainGridStdPacking-' + i).val()) > 0) {
                     if (parseFloat($('#MainGridIssueQty-' + i).val()) > (parseFloat($('#MainGridStdPacking-' + i).val()) + parseFloat($('#MainGridReqQty-' + i).val()))) {
                         $('#MainGridIssueQty-' + i).css("border", "1px solid red");
-                        $.notify("Issue Qty cannot be greater than Req Qty", "error");
+                        $.notify("Issue Qty cannot be greater than Req Qty at"+ $('#MainGridPartCode-' + i).val() + "", "error");
                         Err = 1;
                     }
 
@@ -1986,17 +2152,18 @@
 
                     if (parseFloat($('#MainGridIssueQty-' + i).val()) > parseFloat($('#MainGridReqQty-' + i).val())) {
                         $('#MainGridIssueQty-' + i).css("border", "1px solid red");
-                        $.notify("Issue Qty cannot be greater than Req Qty", "error");
+                        $.notify("Issue Qty cannot be greater than Req Qty at "+ $('#MainGridPartCode-' + i).val() + "", "error");
                         Err = 1;
                     }
                     else {
                         $('#MainGridIssueQty-' + i).css("border", "1px solid black");
                     }
                 }
+                }
 
                 if (parseFloat($('#MainGridIssueQty-' + i).val()) > parseFloat($('#MainGridLotStock-' + i).val()) || parseFloat($('#MainGridIssueQty-' + i).val()) > parseFloat($('#MainGridTotalStock-' + i).val())) {
                     $('#MainGridIssueQty-' + i).css("border", "1px solid red");
-                    $.notify("Issue Qty cannot be greater than Stock", "error");
+                    $.notify("Issue Qty cannot be greater than Stock at "+ $('#MainGridPartCode-' + i).val() + "", "error");
                     Err = 1;
                 }
                 else {
@@ -2020,14 +2187,16 @@
                                 var obj = $.parseJSON(data);
 
                                 if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                                    if (obj.Result.Table[0].AllowbackdateIssueWOBOM == "Y") {
+                            if (obj.Result.Table[0].AllowBackDateISSUEWITHBOM == "Y") {
                                         // $('#IssueDate').datepicker("enable");
                                         $('#IssueDate').css("pointer-events", "auto");
+                                $('#EntryDate').css("pointer-events", "auto");
 
                                     }
                                     else {
                                         //$('#IssueDate').datepicker("disable");
                                         $('#IssueDate').css("pointer-events", "none");
+                                $('#EntryDate').css("pointer-events", "none");
 
                                     }
                                 }
@@ -2044,46 +2213,68 @@
                     $.ajax({
                         url: '@Url.Action("DeleteRowsWithNullBatchNo")',
                         type: "POST",
-
+                        data:{uniqueKey:uniqueKey},
                         async: false,
                         success: function (data, status, xhr) {
 
                             $('#divIssueThrBOMGrid').html(data);
                             $.notify("Item deleted from Grid", "info");
-                            fillBatchNO();
+                            if ($('#AllowBatchChange').val() = 'Y') {
+                                fillBatchNO();
+                            }
 
 
                             var rowCounter = $('#divIssueThrBOMGrid tr').length;
-                            for (var i = 1; i <= rowCounter; i++) {
-                                fillBatchUnique(i, "unique&batch");
-                            }
-                            for (var i = 1; i <= rowCounter; i++) {
-                                $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
-                                $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
-                                $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                                $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
-                                $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
-                            }
-                            for (var i = 1; i <= rowCounter; i++) {
-                                FillLotandTotalStock(i);
-
-                                fillProjectNo(i);
-                                $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
-                                $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
-                                $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                                $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
-                                $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
-
-                                var batchVal = $('#MainGridBatchNo-' + i).val();
-                                var issueqty = $('#MainGridIssueQty-' + i).val();
-                                var totalQty = $('#MainGridTotalStock-' + i).val();
-                                var uniquebatch = $('#MainGridUniqueBatchNo-' + i).val();
-
-
-                                if (batchVal === '' || batchVal === '0' || uniquebatch === '' || uniquebatch === '0' || uniquebatch === null || batchVal === null || issueqty <= 0 || totalQty <= 0) {
-                                    // Change background color of the whole row
-                                    $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
+                            if ($('#AllowBatchChange').val() == 'Y') {
+                                for (var i = 1; i <= rowCounter; i++) {
+                                    fillBatchUnique(i, "unique&batch");
                                 }
+                                for (var i = 1; i <= rowCounter; i++) {
+                                    $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                    $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                    $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                    $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                    $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+                                }
+                                for (var i = 1; i <= rowCounter; i++) {
+                                    // FillLotandTotalStock(i);
+
+                                    fillProjectNo(i);
+                                    $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                    $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                    $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                    $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                    $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+
+                                    var batchVal = $('#MainGridBatchNo-' + i).val();
+                                    var issueqty = $('#MainGridIssueQty-' + i).val();
+                                    var totalQty = $('#MainGridTotalStock-' + i).val();
+                                    var uniquebatch = $('#MainGridUniqueBatchNo-' + i).val();
+
+
+                                    if (batchVal === '' || batchVal === '0' || uniquebatch === '' || uniquebatch === '0' || uniquebatch === null || batchVal === null || issueqty <= 0 || totalQty <= 0) {
+                                        // Change background color of the whole row
+                                        $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
+                                    }
+                                }
+                            } else {
+                                 for (var i = 1; i <= rowCounter; i++) {
+                                     fillProjectNo(i);
+                                     // $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                     // $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                     $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                     $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                     $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+
+                                     var batchVal = $('#MainGridBatchNo-' + i).val();
+                                     var issueqty = $('#MainGridIssueQty-' + i).val();
+                                     var totalQty = $('#MainGridTotalStock-' + i).val();
+
+                                     if (batchVal === '' || batchVal === '0' || batchVal === null || issueqty <= 0 || totalQty <= 0) {
+                                         // Change background color of the whole row
+                                         $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
+                                     }
+                                 }
                             }
                         },
                         error: function (response, status, xhr) {
@@ -2116,59 +2307,91 @@
                     $.ajax({
                         url: '@Url.Action("DeleteFromMemoryGrid")',
                         type: "POST",
-                        data: { "SeqNo": SeqNo },
+                        data: { "SeqNo": SeqNo,"uniqueKey":uniqueKey },
                         async: false,
                         success: function (data, status, xhr) {
 
                             $('#divIssueThrBOMGrid').html(data);
                             $.notify("Item deleted from Grid", "info");
+                    if ($('#AllowBatchChange').val() == 'Y') {
                             fillBatchNO();
+                    }
 
 
                             var rowCounter = $('#divIssueThrBOMGrid tr').length;
-                            for (var i = 1; i <= rowCounter; i++) {
-                                fillBatchUnique(i, "unique&batch");
-                            }
-                            for (var i = 1; i <= rowCounter; i++) {
-
-                                $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
-                                $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
-                                let itemName = $('#MainGridItemname-' + i).val();
-                                let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
-                                let key = itemName + '|' + uniqueBatchNo;
-
-                                let restoredIssueQty = tempIssueQtyMap[key] || $('#MainGridIssueQty1-' + i).val();
-
-                                $('#MainGridIssueQty-' + i).val(restoredIssueQty);
-                                $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                                $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
-                                $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
-                            }
-                            for (var i = 1; i <= rowCounter; i++) {
-
-                                FillLotandTotalStock(i);
-
-                                fillProjectNo(i);
-                                $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
-                                $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
-                                let itemName = $('#MainGridItemname-' + i).val();
-                                let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
-                                let key = itemName + '|' + uniqueBatchNo;
-
-                                let restoredIssueQty = tempIssueQtyMap[key] || $('#MainGridIssueQty1-' + i).val();
-
-                                $('#MainGridIssueQty-' + i).val(restoredIssueQty);
-                                $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                                $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
-                                $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
-
-                                var batchVal = $('#MainGridBatchNo-' + i).val();
-                                var issueqty = $('#MainGridIssueQty-' + i).val();
-
-                                if (batchVal === '' || batchVal === '0' || batchVal === null || issueqty <= 0) {
-                                    // Change background color of the whole row
-                                    $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
+                    if ($('#AllowBatchChange').val() == 'Y') {
+                                for (var i = 1; i <= rowCounter; i++) {
+                                    fillBatchUnique(i, "unique&batch");
                                 }
+
+                                for (var i = 1; i <= rowCounter; i++) {
+
+                                    $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                    $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                    let itemName = $('#MainGridItemname-' + i).val();
+                                    let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
+                                    let key = itemName + '|' + uniqueBatchNo;
+
+                                    let restoredIssueQty = tempIssueQtyMap[key] || $('#MainGridIssueQty1-' + i).val();
+
+                                    $('#MainGridIssueQty-' + i).val(restoredIssueQty);
+                                    $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                    $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                    $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+                                }
+                                for (var i = 1; i <= rowCounter; i++) {
+
+                                    // FillLotandTotalStock(i);
+
+                                    fillProjectNo(i);
+                                    $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                    $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                    let itemName = $('#MainGridItemname-' + i).val();
+                                    let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
+                                    let key = itemName + '|' + uniqueBatchNo;
+
+                                    let restoredIssueQty = tempIssueQtyMap[key] || $('#MainGridIssueQty1-' + i).val();
+
+                                    $('#MainGridIssueQty-' + i).val(restoredIssueQty);
+                                    $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                    $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                    $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+
+                                    var batchVal = $('#MainGridBatchNo-' + i).val();
+                                    var issueqty = $('#MainGridIssueQty-' + i).val();
+
+                                    if (batchVal === '' || batchVal === '0' || batchVal === null || issueqty <= 0) {
+                                        // Change background color of the whole row
+                                        $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                for (var i = 1; i <= rowCounter; i++) {
+                                        fillProjectNo(i);
+                                        // $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                        // $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                        let itemName = $('#MainGridItemname-' + i).val();
+                                        let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
+                                        let key = itemName + '|' + uniqueBatchNo;
+
+                                        let restoredIssueQty = tempIssueQtyMap[key] || $('#MainGridIssueQty1-' + i).val();
+
+                                        $('#MainGridIssueQty-' + i).val(restoredIssueQty);
+                                        $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                        $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                        $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+
+                                        var batchVal = $('#MainGridBatchNo-' + i).val();
+                                        var issueqty = $('#MainGridIssueQty-' + i).val();
+
+                                        if (batchVal === '' || batchVal === '0' || batchVal === null || issueqty <= 0) {
+                                            // Change background color of the whole row
+                                            $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
+                                        }
+                                    }
+
                             }
                         },
                         error: function (response, status, xhr) {
@@ -2186,7 +2409,7 @@
                     $.ajax({
                         url: '@Url.Action("DeleteItemRow")',
                         type: "POST",
-                        data: { "SeqNo": SeqNo },
+                        data: { "SeqNo": SeqNo,"uniqueKey":uniqueKey },
                         async: false,
                         success: function (data, status, xhr) {
                             $('#divIssueThrBOMGridAdd').html(data);
@@ -2204,12 +2427,12 @@
                     });
                 }
                         function DeleteScannedItemRow(seqno) {
-          
 
+          
             $.ajax({
                 type: "POST",
                  url: '@Url.Action("DeleteScannedItemRow")',
-                data: { SeqNo: seqno },
+                data: { SeqNo: seqno,"uniqueKey":uniqueKey },
                 success: function (data) {
                     // Replace the grid with updated partial view
                     $('#divIssueByScanning').html(data);
@@ -2324,8 +2547,8 @@
 
             $("#search-box-2").val("").trigger("keyup");
         });
-        
 
+        
                 var editingNow = false;
                 function EditItemRowFromGrid(SeqNo) {
 
@@ -2333,7 +2556,7 @@
                         $.ajax({
                             url: '@Url.Action("EditItemRow")',
                             type: "POST",
-                            data: { "SeqNo": SeqNo },
+                            data: { "SeqNo": SeqNo,"uniqueKey":uniqueKey },
                             success: function (data, status, xhr) {
 
                                 var obj = $.parseJSON(data);
@@ -2362,18 +2585,21 @@
                                                                             <td><input style="width:100px;" id="MainGridPartCode-${i}" value="${obj[0].PartCode}" readonly></td>
                                                                             <td><input style="width:90px;" id="MainGridReqQty-${i}" value="${obj[0].ReqQty}"></td>
                                                                             <td><input style="width:100px;" id="MainGridStorename-${i}" value=${JSON.stringify(obj[0].StoreName)}></td>
-                                                                            <td><select onchange="BatchNumberChange(${i})" id="MainGridBatchNo-${i}"></select></td>
-                                                                            <td><select onchange="UniqBatchNumberChange(${i})" id="MainGridUniqueBatchNo-${i}"></select></td>
+
                                                                             <td><input style="width:50px;" id="MainGridIssueQty-${i}" value="${obj[0].IssueQty}"></td>
                                                                             <td><input style="width:50px;" id="MainGridUnit-${i}" value="${obj[0].Unit}"></td>
                                                                             <td><input style="width:50px;" id="MainGridLotStock-${i}" value="${obj[0].LotStock}"></td>
                                                                             <td><input style="width:50px;" id="MainGridTotalStock-${i}" value="${obj[0].TotalStock}"></td>
+                                                                                     <td><input style="width:100px;" id="MainGridWorkCenter-${i}" value=${JSON.stringify(obj[0].WorkCenter)} readonly></td>
+                                                                                                             <td><input style="width:50px;" id="MainGridWIPStock-${i}" value="${obj[0].WipStock}"></td>
+                                                                                      <td><select onchange="BatchNumberChange(${i})" id="MainGridBatchNo-${i}"></select></td>
+                                                                                    <td><select onchange="UniqBatchNumberChange(${i})" id="MainGridUniqueBatchNo-${i}"></select></td>
                                                                             <td><input style="width:50px;" id="MainGridAltQty-${i}" value="${obj[0].AltQty}"></td>
                                                                             <td><input style="width:50px;" id="MainGridAltUnit-${i}" value="${obj[0].AltUnit}"></td>
                                                                             <td><input readonly id="MainGridStdPacking-${i}" style="width:50px;" type="text" value="${obj[0].StdPacking}" /></td>
                                                                             <td><input style="width:50px;" id="MainGridRate-${i}" value="${obj[0].Rate}" readonly></td>
                                                                             <td><input style="width:100px;" id="MainGridRemark-${i}" value=${JSON.stringify(obj[0].Remark)} readonly><input id="MainGridWCId-${i}" type="hidden" value="${obj[0].WCId}" /></td>
-                                                                            <td><input style="width:100px;" id="MainGridWorkCenter-${i}" value=${JSON.stringify(obj[0].WorkCenter)} readonly></td>
+
                                                                             <td><input style="width:100px;" id="MainGridAltPartCode-${i}" value="${obj[0].AltPartCode || ''}" readonly></td>
                                                                             <td><input style="width:100px;" id="MainGridAltItemName-${i}" value="${obj[0].AltItemName || ''}" readonly></td>
                                                                             <td><input readonly id="MainGridOGItemname-${i}" type="text" value="${obj[0].OGItemName || ''}"" /><input type="hidden" id="MainGridOGItemCode-${i}" value="${obj[0].OGItemCode || ''}"" /></td>
