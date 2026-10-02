@@ -27,22 +27,27 @@
     .select2-container--default .select2-results > .select2-results__options {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
+    }
 </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <partial name="_ReqThroughBomPopup" />
-    <form asp-action="ReqThroughBom" autocomplete="off" class="form-horizontal">
+    <form asp-action="ReqThroughBom" asp-route-formKey="@ViewBag.formKey"  autocomplete="off" method="post" class="form-horizontal">
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 <strong>Requisition Through BOM</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     <div class="col-auto">
-                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="ReqThroughBom" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode">
+                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="ReqThroughBom" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode" target="_blank">
                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                             PRINT
                         </a>
                     </div>
-                    <a asp-action="Dashboard" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
+                    @* <a asp-action="Dashboard" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a> *@
+                    <a asp-action="Dashboard" asp-route-formKey="@ViewBag.formKey" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -66,7 +71,7 @@
                         @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
                         {
                             <div class="col-auto">
-                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action + ($('form')[0].action.indexOf('?') >= 0 ? '&' : '?') + 'formKey=' + encodeURIComponent('@ViewBag.formKey')">
                                     <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
                                     REFRESH
                                 </a>
@@ -111,6 +116,8 @@
                                     <input type="hidden" asp-for="Mode" value="@Model.Mode" />
                                     <label asp-for="EntryId" class="form-label">Entry Id</label>
                                     <input asp-for="EntryId " class="form-control" readonly />
+                                    <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                                    <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                                 </div>
                                 <div class="col-lg">
                                     <label asp-for="YearCode" class="form-label">Year Code</label>
@@ -211,9 +218,13 @@
                             <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                                 <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Req Through BOM Grid</strong>
                             </button>
+                            <button type="button" class="GridButton btn btn-sm btn-outline-danger text-nowrap">
+                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                            </button>
+                            
                         </h2>
 
-                        <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div id="B_SAGrid" class="accordion-collapse show collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                             <div class="accordion-body">
                                 <div class="row g-2 gx-3" id="_ItemGrid">
                                 </div>
@@ -229,11 +240,11 @@
                                                     <th style="min-width: 150px;color:yellow">Part Code*</th>
                                                     <th style="min-width: 300px; text-align: left;">
                                                         <div style="display: flex; justify-content: space-between; align-items: center;color:yellow">
-                                                            <span>Item Name*</span>Show All</span>
+                                                            <span>Item Name*</span><span>Show All</span>
                                                         </div>
                                                     </th>
                                                     <th style="min-width: 80px;color:yellow">Unit*</th>
-                                                    <th style="min-width: 80px;;color:yellow">Qty*</th>
+                                                    <th style="min-width: 80px;color:yellow">Qty*</th>
                                                     <th style="min-width: 80px;">Pend Qty</th>
                                                     <th style="min-width: 150px;">Store</th>
                                                     <th style="min-width: 80px;">Total Stock</th>
@@ -272,7 +283,7 @@
                                                         <input asp-for="Unit" class="form-control" readonly />
                                                     </td>
                                                     <td>
-                                                        <input id="Qty" style="width:100%" class="form-control" type="number" min="0" />
+                                                        <input id="Qty" style="width:100%" class="form-control" min="0" oninput="this.value=this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/^(\d+\.?\d{0,6}).*$/,'$1')" />
                                                     </td>
                                                     <td>
                                                         <input id="PendQty" class="form-control" readonly />
@@ -289,7 +300,7 @@
                                                         <input id="AltUnit" class="form-control" readonly />
                                                     </td>
                                                     <td>
-                                                        <input id="AltQty" class="form-control" />
+                                                        <input id="AltQty" class="form-control" oninput="this.value=this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/^(\d+\.?\d{0,6}).*$/,'$1')" />
                                                     </td>
                                                     <td>
                                                         <input asp-for="PendAltQty" class="form-control" readonly />
@@ -344,11 +355,7 @@
                             <partial name="_DisplayReqThrBomDetail" />
                             <div class=" col-4 col-auto">
                                 <div class="row justify-content-around">
-                                    <div class="col-auto">
-                                        <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
-                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
-                                        </button>
-                                    </div>
+                                    
                                     <div class="col-6 col-auto">
                                         <button type="button" class="Display btn btn-sm btn-outline-success mt-3">
                                             <i class="fa-solid fa-calendar-clock fa-fw fa-lg"></i> Display Stock
@@ -510,7 +517,8 @@
                                 PRINT
                             </button>
                         </div>
-                        <a asp-action="Dashboard" asp-route-FromDate="@DateTime.Now.AddMonths(-3)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
+                        <a asp-action="Dashboard" asp-route-formKey="@ViewBag.formKey"
+                           asp-route-FromDate="@DateTime.Now.AddMonths(-3)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Dashboard
                         </a>
@@ -522,6 +530,13 @@
     </form>
 </div>
 
+<div id="ajaxLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+        <span class="spinner-border text-primary" role="status"></span>
+        <br />
+        <span>Processing...</span>
+    </div>
+</div>
 <style>
     .formateBtn {
         margin-left: 5px;
@@ -541,8 +556,13 @@
 @section Scripts {
     <script>
 
-        $(document).ready(function () {
-              var mode = '@Model.Mode';
+  var formKey=$('#formKey').val();
+             var uniqueKey=$('#uniqueKey').val();
+$(document).ready(function () 
+{
+    formKey=$('#formKey').val();
+            uniqueKey=$('#uniqueKey').val();
+            var mode = '@Model.Mode';
         var id = parseInt('@Model.EntryId');
 
         // If New Entry
@@ -709,40 +729,109 @@
                 GetNewEntry();
             }
 
-            function Validate_SubmitReq() {
+            // function Validate_SubmitReq() {
                  
-                var Err = 0;
-                if ($('#divReqThroughBomAdded tr td').length <= 1) {
-                    $.notify('Grid Should Have Atleast 1 Item...!', "error");
-                    Err = 1;
-                }
-                if ($('#WorkCenterId').val() == null) {
-                    $.notify("Please fill Work Center");
-                    AddErrorCls('WorkCenterId');
-                    Err = 1;
-                }
-                else {
-                    RemoveErrorCls('WorkCenterId');
-                }
+            //     var Err = 0;
+            //     if ($('#divReqThroughBomAdded tr td').length <= 1) {
+            //         $.notify('Grid Should Have Atleast 1 Item...!', "error");
+            //         Err = 1;
+            //     }
+            //     if ($('#WorkCenterId').val() == null) {
+            //         $.notify("Please fill Work Center");
+            //         AddErrorCls('WorkCenterId');
+            //         Err = 1;
+            //     }
+            //     else {
+            //         RemoveErrorCls('WorkCenterId');
+            //     }
                 
-                Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
-                if (Err == 1) return false;
-                return true;
+            //     Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
+            //     if (Err == 1) return false;
+            //     return true;
+            // }
+
+            // $('#submitBTN').click(function (e) {
+            //     e.preventDefault();
+            //     if (!Validate_SubmitReq()) return;
+            //     $('form').submit();
+            // });
+
+            // $('#UpdateButton').click(function (e) {
+            //     e.preventDefault();
+            //     if (!Validate_SubmitReq()) return;
+            //     $('form').submit();
+            // });
+                    
+            function Validate_SubmitReq() {
+                
+            if ($('#WorkCenterId').val() == null) {
+                $.notify('Please fill Work Center', "error");
+                AddErrorCls('WorkCenterId');
+                return false;
+            } else {
+                RemoveErrorCls('WorkCenterId');
+            }
+            if ($('#divReqThroughBomAdded tr td').length <= 1) {
+                $.notify('Grid should have at least 1 item!', "error");
+                ShowErrorFld('H_SAGrid');
+                return false;
+            } else {
+                HideErrorFld('H_SAGrid');
             }
 
-            $('#submitBTN').click(function (e) {
-                e.preventDefault();
-                if (!Validate_SubmitReq()) return;
-                $('form').submit();
-            });
+            return true;
+        }
 
-            $('#UpdateButton').click(function (e) {
-                e.preventDefault();
-                if (!Validate_SubmitReq()) return;
-                $('form').submit();
-            });
+        // $('#submitBTN, #UpdateButton').on('click', function (e) {
+        //     e.preventDefault();
+        //     if (!Validate_SubmitReq()) return;
+        //     $('form').submit();
+        // });
 
-           
+             $('#submitBTN, #UpdateButton').on('click', function (e) {
+                  $('#ajaxLoader').show(); // ✅ Show loader
+            e.preventDefault();
+            if (!Validate_SubmitReq())
+            {
+                $('#ajaxLoader').hide();
+                return;
+            }
+            /* $('form').submit(); */
+
+            // 🔥 AJAX SUBMIT
+            $.ajax({
+                url: $('form').attr('action'),
+                type: $('form').attr('method'),
+                data: $('form').serialize(),
+                beforeSend: function () {
+                    $('#ajaxLoader').show(); // ✅ Show loader
+                },
+                success: function (response) {
+
+                    // Success from controller
+                    if (response.success) {
+
+                        if (response.redirectUrl) {
+
+                            window.location.href = response.redirectUrl;
+                        }
+                        $('#ajaxLoader').hide();
+                        // optional redirect
+                        // window.location.href = response.redirectUrl;
+                    }
+                    else {
+                        // SP StatusText / validation error
+                        $.notify(response.message, "error");
+                        $('#ajaxLoader').hide();
+                    }
+                },
+                error: function () {
+                    $.notify("Unexpected server error", "error");
+                            $('#ajaxLoader').hide();
+                }
+            });
+        });
+
                 $('#PartCode').rules("remove", "required");
                 $('#ItemCode').rules("remove", "required");
                 $('#Unit').rules("remove", "required");
@@ -902,6 +991,21 @@
 
             window.history.back();
         }
+        function BackButtonData() {
+
+            localStorage.setItem('REQNoBack', $('#REQNoBack').val());
+            localStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+            localStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+            localStorage.setItem('WorkCenterIdBack', $('#WorkCenterIdBack').val());
+            localStorage.setItem('WONoBack', $('#WONoBack').val());
+            localStorage.setItem('DeptNameBack', $('#DeptNameBack').val());
+            localStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            localStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            localStorage.setItem('TypeBack', $('#TypeBack').val());
+            localStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
 
 
         function functionFeatureOption() {
@@ -961,6 +1065,7 @@
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
+                data:{formKey:formKey},
                 success: function (data) {
                     if (data != null) {
                         var obj = $.parseJSON(data);
@@ -1415,7 +1520,10 @@
 
         $('.GridButton').click(function (e) {
             e.preventDefault();
-
+            if ($('#divIssueNRGPGrid tr').length >= 50 && parseDateToFormat($('#ReqDate').val()) >= '16/12/2025') {
+                      $.notify('You cannot add more than 50 items in one Req...!!!', "info");
+                        return;
+                }
             if (!ValidateReq_Grid()) return;
 
             var ItemData = {
@@ -1448,7 +1556,7 @@
             $.ajax({
                 url: "@Url.Action("AddReqThruBomDetail")",
                 type: "POST",
-                data: ItemData,
+                data: {model:ItemData,uniqueKey:uniqueKey},
                 beforeSend: function (xhr) {
                     console.log(1);
                 },
@@ -1515,7 +1623,7 @@
             $.ajax({
                 url: '@Url.Action("DeleteItemRow")',
                 type: "POST",
-                data: { "SeqNo": SeqNo },
+                        data: { "SeqNo": SeqNo ,"uniqueKey":uniqueKey},
                 async: false,
                 success: function (data, status, xhr) {
                     $('#divReqThroughBomAdded').html(data);
@@ -1572,7 +1680,7 @@
             $.ajax({
                 url: '@Url.Action("EditItemRow")',
                 type: "POST",
-                data: { SeqNo: SeqNo },
+                data: { SeqNo: SeqNo,uniqueKey:uniqueKey },
                 success: await function (data, status, xhr) {
                      
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {

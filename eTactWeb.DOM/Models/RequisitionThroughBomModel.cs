@@ -11,12 +11,14 @@ namespace eTactWeb.DOM.Models
     public class RequisitionThroughBomModel : RequisitionThruBomDetail
     {
         public string? EntryByMachineName { get; set; }
+        public string? formKey { get; set; }
+        public string? uniqueKey { get; set; }
         public int EntryId { get; set; }
         public int YearCode { get; set; }
-        public string? IPAddress {  get; set; }
-        public string? FinFromDate {  get; set; }
-        public string? FinToDate {  get; set; }
-        public string? Prefix { get; set; } 
+        public string? IPAddress { get; set; }
+        public string? FinFromDate { get; set; }
+        public string? FinToDate { get; set; }
+        public string? Prefix { get; set; }
         public string? EntryDate { get; set; }
 
         public string? EntryTime { get; set; }
@@ -29,7 +31,7 @@ namespace eTactWeb.DOM.Models
         public string? WODate { get; set; }
         public int MachineId { get; set; }
         public int WorkCenterId { get; set; }
-        public string Remarks { get; set; } 
+        public string Remarks { get; set; }
         public string ReqReason { get; set; }
         public int UID { get; set; }
         public string CC { get; set; }
@@ -84,14 +86,14 @@ namespace eTactWeb.DOM.Models
         public int YearCode { get; set; }
         public int? BomRevNo { get; set; }
         public string? BOMEffDate { get; set; }
-        public string? Unit {  get; set; }
+        public string? Unit { get; set; }
         public decimal Qty { get; set; }
         public string? AltUnit { get; set; }
         public decimal AltQty { get; set; }
         public string? ItemModel { get; set; }
         public string? ItemSize { get; set; }
-        public string? ExpectedDate {  get; set; }
-        public string? Remark {  get; set; }
+        public string? ExpectedDate { get; set; }
+        public string? Remark { get; set; }
         public decimal PendQty { get; set; }
         public decimal PendAltQty { get; set; }
         public int StoreId { get; set; }
@@ -100,7 +102,7 @@ namespace eTactWeb.DOM.Models
         public string? Cancel { get; set; }
         public string? ProjectNo { get; set; }
         public int ProjectYearCode { get; set; }
-        public int CostCenterId { get; set;  }
+        public int CostCenterId { get; set; }
         public string? CostCenterName { get; set; }
         public string? ItemLocation { get; set; }
         public string? ItemBinRackNo { get; set; }
@@ -126,19 +128,19 @@ namespace eTactWeb.DOM.Models
         public int YearCode { get; set; }
         public decimal TotalReqQty { get; set; }
         public decimal TotalPendQty { get; set; }
-        public string Completed {  get; set; }
+        public string Completed { get; set; }
         public string ItemName { get; set; }
         public string PartCode { get; set; }
         public string Unit { get; set; }
         public string AltUnit { get; set; }
         public string Location { get; set; }
         public string BinNo { get; set; }
-        public float Qty { get; set; }
-        public float AltQty { get; set; }
-        public float PendQty { get; set; }
-        public string DeptName{ get; set; }
-        public string DashboardType{ get; set; }
-        public string GlobalSearch{ get; set; }
+        public decimal Qty { get; set; }
+        public decimal AltQty { get; set; }
+        public decimal PendQty { get; set; }
+        public string DeptName { get; set; }
+        public string DashboardType { get; set; }
+        public string GlobalSearch { get; set; }
 
         public IList<RTBDashboard>? ReqMainDashboard { get; set; }
     }

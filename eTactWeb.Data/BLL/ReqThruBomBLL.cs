@@ -37,7 +37,7 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> AutoFillPartCode(string showallitem, string SearchItemCode, string SearchPartCode)
         {
             return await _ReqThruBomDAL.AutoFillPartCode(showallitem, SearchItemCode, SearchPartCode);
-        } 
+        }
         public async Task<ResponseResult> AutoFillItemName(string showallitem, string SearchItemCode, string SearchPartCode)
         {
             return await _ReqThruBomDAL.AutoFillItemName(showallitem, SearchItemCode, SearchPartCode);
@@ -82,13 +82,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _ReqThruBomDAL.DisplayBomDetail(ItemCode, WOQty, BomRevNo);
         }
-        public async Task<RTBDashboard> GetDashboardData(string REQNo, string WCName,string WONO, string DepName, string PartCode, string ItemName,string BranchName, string FromDate, string ToDate)
+        public async Task<RTBDashboard> GetDashboardData(string REQNo, string WCName, string WONO, string DepName, string PartCode, string ItemName, string BranchName, string FromDate, string ToDate, int userID)
         {
-            return await _ReqThruBomDAL.GetDashboardData(REQNo, WCName, WONO, DepName, PartCode, ItemName,BranchName, FromDate, ToDate);
+            return await _ReqThruBomDAL.GetDashboardData(REQNo, WCName, WONO, DepName, PartCode, ItemName, BranchName, FromDate, ToDate, userID);
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, int EneterdBy, string MachineName, string IPAddress)
         {
-            return await _ReqThruBomDAL.DeleteByID(ID, YC);
+            return await _ReqThruBomDAL.DeleteByID(ID, YC, EneterdBy, MachineName, IPAddress);
         }
         public async Task<RequisitionThroughBomModel> GetViewByID(int ID, int YearCode)
         {
@@ -101,6 +101,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> CheckFeatureOption()
         {
             return await _ReqThruBomDAL.CheckFeatureOption();
+        }
+        public async Task<ResponseResult> GetReportName(string Type)
+        {
+            return await _ReqThruBomDAL.GetReportName(Type);
         }
     }
 }

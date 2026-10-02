@@ -12,6 +12,8 @@ using FastReport.Web;
 using eTactWeb.DOM.Models;
 using System.Net;
 using System.Data;
+using PdfSharp.Drawing.BarCodes;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace eTactWeb.Controllers
 {
@@ -21,12 +23,16 @@ namespace eTactWeb.Controllers
         private readonly IReqThruBom _IReqThruBom;
         private readonly ILogger<ReqThroughBomController> _logger;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public ReqThroughBomController(ILogger<ReqThroughBomController> logger, IDataLogic iDataLogic, IReqThruBom iReqThruBom, IWebHostEnvironment iWebHostEnvironment)
+        public EncryptDecrypt EncryptDecrypt { get; }
+
+        public ReqThroughBomController(ILogger<ReqThroughBomController> logger, IDataLogic iDataLogic, IReqThruBom iReqThruBom, IWebHostEnvironment iWebHostEnvironment, EncryptDecrypt encryptDecrypt)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IReqThruBom = iReqThruBom;
             _IWebHostEnvironment = iWebHostEnvironment;
+            EncryptDecrypt = encryptDecrypt;
+
         }
 
 
@@ -36,13 +42,23 @@ namespace eTactWeb.Controllers
             string webRootPath = _IWebHostEnvironment.WebRootPath;
             //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
             var webReport = new WebReport();
-            if (Type == "Detail")
+            //if (Type == "Detail")
+            //{
+            //    webReport.Report.Load(webRootPath + "\\RequisitionThrBomDetail.frx"); // detail report
+            //}
+            //else
+            //{
+            //    webReport.Report.Load(webRootPath + "\\RequisitionThroughBOM.frx"); // summary report
+            //}
+            var ReportName = _IReqThruBom.GetReportName(Type);
+            if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
             {
-                webReport.Report.Load(webRootPath + "\\RequisitionThrBomDetail.frx"); // detail report
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
             }
             else
             {
-                webReport.Report.Load(webRootPath + "\\RequisitionThroughBOM.frx"); // summary report
+                webReport.Report.Load(webRootPath + "\\RequisitionThroughBOM.frx"); // default report
+
             }
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
@@ -106,30 +122,34 @@ namespace eTactWeb.Controllers
             }
         }
 
-        [Route("{controller}/Index")]
-        public async Task<IActionResult> ReqThroughBom()
+        //[Route("{controller}/Index")]
+        public async Task<IActionResult> ReqThroughBom(string formKey)
         {
+            ViewBag.formKey = formKey;
+            var uniqueKey = Guid.NewGuid().ToString();
+            ViewBag.uniqueKey = uniqueKey;
             ViewData["Title"] = "Requisition Through BOM Detail";
             TempData.Clear();
-            HttpContext.Session.Remove("KeyReqThroughBOMGrid");
+            HttpContext.Session.Remove($"KeyReqThroughBOMGrid_{uniqueKey}");
             var MainModel = new RequisitionThroughBomModel();
             MainModel = await BindModel(MainModel);
             MainModel.Mode = "F";
 
             string serializedGrid = JsonConvert.SerializeObject(MainModel);
-            HttpContext.Session.SetString("KeyReqThroughBOMGrid", serializedGrid);
+            HttpContext.Session.SetString($"KeyReqThroughBOMGrid_{uniqueKey}", serializedGrid);
             return View(MainModel);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("{controller}/Index")]
+        //[Route("{controller}/Index")]
         public async Task<IActionResult> ReqThroughBom(RequisitionThroughBomModel model)
         {
             try
             {
                 var ReqGrid = new DataTable();
-
-                string requisitionDetailGrid = HttpContext.Session.GetString("KeyReqThroughBOMGrid");
+                var formKey = model.formKey;
+                var uniqueKey = model.uniqueKey;
+                string requisitionDetailGrid = HttpContext.Session.GetString($"KeyReqThroughBOMGrid_{uniqueKey}");
                 List<RequisitionThruBomDetail> RequisitionDetail = new List<RequisitionThruBomDetail>();
                 if (!string.IsNullOrEmpty(requisitionDetailGrid))
                 {
@@ -141,6 +161,7 @@ namespace eTactWeb.Controllers
                     ModelState.Clear();
                     ModelState.TryAddModelError("ReqThruBom", "ReqThruBom Grid Should Have Atleast 1 Item...!");
                     model = await BindModel(model);
+
                     return View("ReqWithoutBom", model);
                 }
                 else
@@ -148,38 +169,84 @@ namespace eTactWeb.Controllers
                     //model.CreatedBy = Constants.UserID;
                     if (model.Mode == "U")
                     {
-                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        model.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                        model.UpdatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                     }
-                    model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
-                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                    model.EntryByMachineName = HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+                    model.IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
                     ReqGrid = GetDetailTable(RequisitionDetail);
                     var Result = await _IReqThruBom.SaveRequisition(model, ReqGrid);
 
                     if (Result != null)
                     {
-                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                        //if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                        if (Result.StatusText == "Success")
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
+                            HttpContext.Session.Remove($"KeyReqThroughBOMGrid_{uniqueKey}");
+
+                            return Json(new
+                            {
+                                success = true,
+                                message = "Data Save successfully",
+                                redirectUrl = Url.Action("ReqThroughBom", "ReqThroughBom", new { formKey = formKey })
+                            });
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
+                            HttpContext.Session.Remove($"KeyReqThroughBOMGrid_{uniqueKey}");
+
+                            return Json(new
+                            {
+                                success = true,
+                                message = "Data Save successfully",
+                                redirectUrl = Url.Action("ReqThroughBom", "ReqThroughBom", new { formKey = formKey })
+                            });
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
-                            ViewBag.isSuccess = false;
-                            TempData["500"] = "500";
+                            //ViewBag.isSuccess = false;
+                            //TempData["500"] = "500";
                             _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                            return View("Error", Result);
+                            //return View("Error", Result);
+                            return Json(new
+                            {
+                                success = false,
+                                message = "An unexpected error occurred."
+                            });
+
+                        }
+                        else if (!string.IsNullOrEmpty(Result.StatusText))
+                        {
+                            // If SP returned a message (like adjustment error)
+                            //ViewBag.isSuccess = false;
+                            //TempData["ErrorMessage"] = Result.StatusText;
+                            //HttpContext.Session.Remove("KeyBankReceiptGridEdit");
+                            //return View(model);
+                            //return Json(new
+                            //{
+                            //    success = false,
+                            //    message = Result.StatusText
+                            //});
+                            return Json(new
+                            {
+                                success = false,
+                                message = Result.StatusText
+                            });
                         }
                     }
-                    var MainModel = new RequisitionThroughBomModel();
-                    MainModel = await BindModel(MainModel);
-                    HttpContext.Session.Remove("KeyReqThroughBOMGrid");
-                    return RedirectToAction(nameof(ReqThroughBom));
+                    //var MainModel = new RequisitionThroughBomModel();
+                    //MainModel = await BindModel(MainModel);
+                    //HttpContext.Session.Remove($"KeyReqThroughBOMGrid_{uniqueKey}");
+                    //return RedirectToAction(nameof(ReqThroughBom), new { ID = 0,YC = 0 });
+                    return Json(new
+                    {
+                        success = false,
+                        message = "An unexpected error occurred."
+                    });
                 }
             }
             catch (Exception ex)
@@ -202,9 +269,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetFormRights()
+        public async Task<JsonResult> GetFormRights(string formKey)
         {
-            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var JSON = await _IReqThruBom.GetFormRights(userID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -281,11 +348,11 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public IActionResult AddReqThruBomDetail(RequisitionThruBomDetail model)
+        public IActionResult AddReqThruBomDetail(RequisitionThruBomDetail model, string uniqueKey)
         {
             try
             {
-                string gridDetailData = HttpContext.Session.GetString("KeyReqThroughBOMGrid");
+                string gridDetailData = HttpContext.Session.GetString($"KeyReqThroughBOMGrid_{uniqueKey}");
                 List<RequisitionThruBomDetail> GridDetail = new List<RequisitionThruBomDetail>();
                 if (!string.IsNullOrEmpty(gridDetailData))
                 {
@@ -338,7 +405,7 @@ namespace eTactWeb.Controllers
                     MainModel.ReqDetailGrid = ReqGrid;
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.ReqDetailGrid);
-                    HttpContext.Session.SetString("KeyReqThroughBOMGrid", serializedGrid);
+                    HttpContext.Session.SetString($"KeyReqThroughBOMGrid_{uniqueKey}", serializedGrid);
                 }
                 else
                 {
@@ -352,16 +419,38 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> Dashboard(string FromDate, string ToDate, string Flag, string REQNo = "", string ItemName = "", string PartCode = "", string WCName = "", string WONo = "", string DepName = "", string DBType = "", string searchbox = "")
+        public async Task<IActionResult> Dashboard(string formKey, string FromDate, string ToDate, string Flag, string REQNo = "", string ItemName = "", string PartCode = "", string WCName = "", string WONo = "", string DepName = "", string DBType = "", string searchbox = "")
         {
             try
             {
-                HttpContext.Session.Remove("KeyReqThroughBOMGrid");
+                ViewBag.formKey = formKey;
+                var uniqueKey = Guid.NewGuid().ToString();
+                ViewBag.uniqueKey = uniqueKey;
+                int userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+                var rights = await _IReqThruBom.GetFormRights(userID);
+                if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+                {
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
+                }
+                var table = rights.Result.Tables[0];
+
+                bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+                bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+                bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+                bool optDelete = Convert.ToBoolean(table.Rows[0]["OptDelete"]);
+                if (!(optAll || optView || optUpdate || optDelete))
+                {
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
+                }
+                HttpContext.Session.Remove($"KeyReqThroughBOMGrid_{uniqueKey}");
                 var model = new ReqThruMainDashboard();
-                model.CC = HttpContext.Session.GetString("Branch");
-                var FromDt = ParseFormattedDate(FromDate.Split(" ")[0]);
-                var ToDt = ParseFormattedDate(ToDate.Split(" ")[0]);
-                var Result = await _IReqThruBom.GetDashboardData(FromDt, ToDt, Flag).ConfigureAwait(true);
+                model.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+                //var FromDt = ParseFormattedDate(FromDate.Split(" ")[0]);
+                //var ToDt = ParseFormattedDate(ToDate.Split(" ")[0]);
+                //var FromDt = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"FromDate_{formKey}"));
+                //var ToDt = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"ToDate_{formKey}"));
+                //var Result = await _IReqThruBom.GetDashboardData(FromDt, ToDt, Flag).ConfigureAwait(true);
+                var Result = await _IReqThruBom.GetDashboardData(FromDate, ToDate, Flag).ConfigureAwait(true);
 
                 if (Result != null)
                 {
@@ -369,7 +458,7 @@ namespace eTactWeb.Controllers
                     DataSet DS = Result.Result;
                     if (DS != null)
                     {
-                        var DT = DS.Tables[0].DefaultView.ToTable(false, "REQNo", "ReqDate", "EntryDate","EntryTime", "WorkCenter", "WONO",
+                        var DT = DS.Tables[0].DefaultView.ToTable(false, "REQNo", "ReqDate", "EntryDate", "EntryTime", "WorkCenter", "WONO",
                             "BranchName", "DeptName", "Reason", "Cancel", "MachName", "WOYearcode", "EntryId", "YearCode", "TotalReqQty", "TotalPendQty", "Completed");
                         model.ReqMainDashboard = CommonFunc.DataTableToList<RTBDashboard>(DT, "ReqThruDashboard");
                     }
@@ -378,14 +467,14 @@ namespace eTactWeb.Controllers
                 {
                     model.FromDate1 = FromDate;
                     model.ToDate1 = ToDate;
-                    model.REQNo= REQNo;
-                    model.ItemName= ItemName;
-                    model.PartCode= PartCode;
-                    model.WorkCenter= WCName;
-                    model.WONo=WONo;
-                    model.DeptName= DepName;
-                    model.DashboardType=DBType;
-                    model.GlobalSearch=searchbox;
+                    model.REQNo = REQNo;
+                    model.ItemName = ItemName;
+                    model.PartCode = PartCode;
+                    model.WorkCenter = WCName;
+                    model.WONo = WONo;
+                    model.DeptName = DepName;
+                    model.DashboardType = DBType;
+                    model.GlobalSearch = searchbox;
                 }
                 return View(model);
                 //else
@@ -396,16 +485,16 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> DeleteItemRow(int SeqNo)
+        public async Task<IActionResult> DeleteItemRow(int SeqNo, string uniqueKey)
         {
             var MainModel = new RequisitionThroughBomModel();
-            string modelJson = HttpContext.Session.GetString("KeyReqThroughBOMGrid");
+            string modelJson = HttpContext.Session.GetString($"KeyReqThroughBOMGrid_{uniqueKey}");
             List<RequisitionThruBomDetail> RequisitionDetail = new List<RequisitionThruBomDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
                 RequisitionDetail = JsonConvert.DeserializeObject<List<RequisitionThruBomDetail>>(modelJson);
             }
-           
+
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (RequisitionDetail != null && RequisitionDetail.Count > 0)
@@ -423,17 +512,22 @@ namespace eTactWeb.Controllers
 
                 if (RequisitionDetail.Count == 0)
                 {
-                    HttpContext.Session.Remove("KeyReqThroughBOMGrid");
+                    HttpContext.Session.Remove($"KeyReqThroughBOMGrid_{uniqueKey}");
                 }
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.ReqDetailGrid);
-                HttpContext.Session.SetString("KeyReqThroughBOMGrid", serializedGrid);
+                HttpContext.Session.SetString($"KeyReqThroughBOMGrid_{uniqueKey}", serializedGrid);
                 //_MemoryCache.Set("KeyMaterialReceiptGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
             }
             return PartialView("_ReqThruBomGrid", MainModel);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YC, string FromDate = "", string ToDate = "", string REQNo = "", string ItemName = "", string PartCode = "", string WCName = "", string WONo = "", string DepName = "", string DBType = "", string searchbox = "")
+
+        //public async Task<IActionResult> DeleteByID(int ID, int YC, string FromDate = "", string ToDate = "", string REQNo = "", string ItemName = "", string PartCode = "", string WCName = "", string WONo = "", string DepName = "", string DBType = "", string searchbox = "") 
+        public async Task<IActionResult> DeleteByID(int ID, int YC, string formKey)
         {
-            var Result = await _IReqThruBom.DeleteByID(ID, YC);
+            int EneterdBy = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+            string MachineName = HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+            string IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
+            var Result = await _IReqThruBom.DeleteByID(ID, YC, EneterdBy, MachineName, IPAddress);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {
@@ -445,38 +539,99 @@ namespace eTactWeb.Controllers
                 ViewBag.isSuccess = true;
                 TempData["423"] = "423";
             }
+            else if (!string.IsNullOrEmpty(Result.StatusText))
+            {
+                // If SP returned a message (like adjustment error)
+                ViewBag.isSuccess = false;
+                TempData["ErrorMessage"] = Result.StatusText;
+            }
             else
             {
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
             }
-            DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
-            string formattedFromDate = fromDt.ToString("dd/MMM/yyyy 00:00:00");
-            DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
-            string formattedToDate = toDt.ToString("dd/MMM/yyyy 00:00:00");
+            //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
+            //string formattedFromDate = fromDt.ToString("dd/MMM/yyyy 00:00:00");
+            //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
+            //string formattedToDate = toDt.ToString("dd/MMM/yyyy 00:00:00");
 
 
-            return RedirectToAction("Dashboard", new { FromDate = formattedFromDate, ToDate = formattedToDate, REQNo = REQNo, ItemName = ItemName, PartCode = PartCode, WCName = WCName, WONo = WONo, DepName = DepName, DBType = DBType, searchbox = searchbox, Flag = "False" });
+            //return RedirectToAction("Dashboard", new { FromDate = formattedFromDate, ToDate = formattedToDate, REQNo = REQNo, ItemName = ItemName, PartCode = PartCode, WCName = WCName, WONo = WONo, DepName = DepName, DBType = DBType, searchbox = searchbox, Flag = "False" });
+            return RedirectToAction("Dashboard", new { formKey = formKey });
         }
 
-        [Route("{controller}/Index")]
+        //[Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> ReqThroughBom(int ID, string Mode, int YC, string ReqNo = "", string ItemName = "", string Partcode = "", string WorkCenter = "", string WONO = "", string DeptName = "", string FromDate = "", string ToDate = "", string Type = "", string GlobalSearch = "")//, ILogger logger)
+        public async Task<ActionResult> ReqThroughBom(string formKey, int ID, string Mode, int YC, string ReqNo = "", string ItemName = "", string Partcode = "", string WorkCenter = "", string WONO = "", string DeptName = "", string FromDate = "", string ToDate = "", string Type = "", string GlobalSearch = "")//, ILogger logger)
         {
             //_logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
-            TempData.Clear();
+            //TempData.Clear();
+            ViewBag.formKey = formKey;
+            var uniqueKey = Guid.NewGuid().ToString();
+            ViewBag.uniqueKey = uniqueKey;
+            int userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+            var rights = await _IReqThruBom.GetFormRights(userID);
+            if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
+            {
+                return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
+            }
+
+            var table = rights.Result.Tables[0];
+            //string encID = Request.Query["ID"].ToString();
+            string encYC = Request.Query["YC"].ToString();
+            string encID = RouteData.Values["id"]?.ToString();
+            string encYC1 = RouteData.Values["YC"]?.ToString();
+
+            if (!string.IsNullOrEmpty(encID) && !string.IsNullOrEmpty(encYC) && encID != "0" && !string.IsNullOrEmpty(Mode))
+            {
+                int decryptedID = EncryptDecrypt.DecodeID(encID);
+                int decryptedYC = EncryptDecrypt.DecodeID(encYC);
+                string decryptedMode = EncryptDecrypt.Decrypt(Mode);
+                ID = decryptedID;
+                YC = decryptedYC;
+                Mode = decryptedMode;
+            }
+
+            bool optAll = Convert.ToBoolean(table.Rows[0]["OptAll"]);
+            bool optView = Convert.ToBoolean(table.Rows[0]["OptView"]);
+            bool optUpdate = Convert.ToBoolean(table.Rows[0]["OptUpdate"]);
+            bool optSave = Convert.ToBoolean(table.Rows[0]["OptSave"]);
+
+
+            if (Mode == "U")
+            {
+                if (!(optUpdate))
+                {
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
+                }
+            }
+            else if (Mode == "V")
+            {
+                if (!(optView))
+                {
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
+                }
+            }
+            else if (ID <= 0)
+            {
+                if (!optSave)
+                {
+                    return RedirectToAction("Dashboard", "ReqThroughBom", new { formKey = formKey });
+                }
+            }
+
             var MainModel = new RequisitionThroughBomModel();
-            MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-            HttpContext.Session.Remove("KeyReqThroughBOMGrid");
+            MainModel.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+            MainModel.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            MainModel.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+            HttpContext.Session.Remove($"KeyReqThroughBOMGrid_{uniqueKey}");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IReqThruBom.GetViewByID(ID, YC).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
-                MainModel.YearCode=YC;
+                MainModel.YearCode = YC;
                 MainModel = await BindModel(MainModel).ConfigureAwait(false);
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
@@ -485,7 +640,7 @@ namespace eTactWeb.Controllers
                     Size = 1024,
                 };
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.ReqDetailGrid);
-                HttpContext.Session.SetString("KeyReqThroughBOMGrid", serializedGrid);
+                HttpContext.Session.SetString($"KeyReqThroughBOMGrid_{uniqueKey}", serializedGrid);
             }
             else
             {
@@ -493,8 +648,8 @@ namespace eTactWeb.Controllers
             }
             if (Mode != "U")
             {
-                MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.CreatedByName = HttpContext.Session.GetString("EmpName");
+                MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.CreatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                 MainModel.CreatedOn = DateTime.Now;
             }
             else
@@ -604,11 +759,15 @@ namespace eTactWeb.Controllers
             }
             return model;
         }
-        public async Task<IActionResult> GetSearchData(string REQNo, string WCName, string WONo, string DepName, string PartCode, string ItemName, string BranchName, string FromDate, string ToDate)
+        public async Task<IActionResult> GetSearchData(string formKey, string REQNo, string WCName, string WONo, string DepName, string PartCode, string ItemName, string BranchName, string FromDate, string ToDate)
         {
+            ViewBag.formKey = formKey;
+
             //model.Mode = "Search";
+            int userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+
             var model = new RTBDashboard();
-            model = await _IReqThruBom.GetDashboardData(REQNo, WCName, WONo, DepName, PartCode, ItemName, BranchName, FromDate, ToDate);
+            model = await _IReqThruBom.GetDashboardData(REQNo, WCName, WONo, DepName, PartCode, ItemName, BranchName, FromDate, ToDate, userID);
             return PartialView("_ReqThruBomDashboardGrid", model);
         }
         public async Task<JsonResult> FillItems()
@@ -625,7 +784,7 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> AutoFillItemName(string showallitem, string SearchItemCode, string SearchPartCode)
         {
-            var JSON = await _IReqThruBom.AutoFillItemName( showallitem, SearchItemCode, SearchPartCode);
+            var JSON = await _IReqThruBom.AutoFillItemName(showallitem, SearchItemCode, SearchPartCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -672,10 +831,10 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult EditItemRow(int SeqNo)
+        public IActionResult EditItemRow(int SeqNo, string uniqueKey)
         {
             var model = new RequisitionThroughBomModel();
-            string modelJson = HttpContext.Session.GetString("KeyReqThroughBOMGrid");
+            string modelJson = HttpContext.Session.GetString($"KeyReqThroughBOMGrid_{uniqueKey}");
             List<RequisitionThruBomDetail> RequisitionDetail = new List<RequisitionThruBomDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
@@ -691,8 +850,10 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> GetDetailData(string REQNo, string WCName, string WONo, string DepName, string PartCode, string ItemName, string BranchName, string FromDate, string ToDate)
+        public async Task<IActionResult> GetDetailData(string formKey, string REQNo, string WCName, string WONo, string DepName, string PartCode, string ItemName, string BranchName, string FromDate, string ToDate)
         {
+            ViewBag.formKey = formKey;
+
             //model.Mode = "Search";
             var model = new RTBDashboard();
             model = await _IReqThruBom.GetDetailData(REQNo, WCName, WONo, DepName, PartCode, ItemName, BranchName, FromDate, ToDate);

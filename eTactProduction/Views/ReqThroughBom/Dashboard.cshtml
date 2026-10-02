@@ -51,7 +51,8 @@
             <h5>
                 Requisition Through BOM - <strong>Dashboard</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="ReqThroughBom" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="ReqThroughBom" asp-route-formKey="@ViewBag.formKey"
+                       class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                         Add New
                     </a>
@@ -66,6 +67,8 @@
                             <div class="col-xxl-1 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                 @*<div class="d-flex align-items-center">*@
                                 <label class="form-label me-3">Type</label>
+                                <input type="hidden" id="formKey" value="@ViewBag.formKey" />
+                                <input type="hidden" id="uniqueKey" value="@ViewBag.uniqueKey" />
                                 <select asp-for="DashboardType" class="form-select">
                                     <option value="" disabled>-Select-</option>
                                     <option value="Summary" selected>Summary</option>
@@ -131,7 +134,7 @@
                                         <label class="color-box" style="background-color: blue;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Pend Qty = 0</label>
                                     </div>
                                 </div>
-                                <div class="col-xxl-1 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xxl-5 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="d-flex">
                                         <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetSearchData();">
                                             <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
@@ -139,8 +142,14 @@
                                         <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                             <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                         </button>
-                                        <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="ReqThroughBom" asp-action="Dashboard"
-                                           asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True">
+                                        @* <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="ReqThroughBom" asp-action="Dashboard" *@
+                                        @*    asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True"> *@
+                                        @*     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET *@
+                                        @* </a> *@
+                                        <a class="btn btn-sm btn-outline-danger" 
+                                        style="padding:3px;height:30px;width:100px;margin-left:20px;" 
+                                           asp-route-formKey="@ViewBag.formKey"
+                                           asp-controller="ReqThroughBom" asp-action="Dashboard">
                                             <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                         </a>
                                     </div>
@@ -169,8 +178,11 @@
 @section Scripts
     {
     <script>
+          var formKey=$('#formKey').val();
+             var uniqueKey=$('#uniqueKey').val();
         $(function () {
-             
+              formKey=$('#formKey').val();
+            uniqueKey=$('#uniqueKey').val();
             var dashGrid = $('#ReqThrBody tr').length;
             $('#totalRows').text(dashGrid);
 
@@ -197,14 +209,14 @@
                 return dateString;
             }
 
-            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            // $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+            // $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
             $('#ToDate').change(function () {
                 $.ajax({
                     url: '@Url.Action("Dashboard","ReqThroughBom")',
                     type: "POST",
-                    data: { FromDate: $('#FromDate').val(), Todate: $('#ToDate').val(), Flag: "False" },
+                    data: {formKey:formKey, FromDate: $('#FromDate').val(), Todate: $('#ToDate').val(), Flag: "False" },
                     success: function (data) {
                         $('#divDashboardGrid').empty().append(data);
                         GetFormRights();
@@ -226,48 +238,87 @@
             AutoComplete('VRequisitionThrBOMMainDetail', 'DeptName', 'DeptName', null);
             AutoComplete('VRequisitionThrBOMMainDetail', 'CC', 'BranchName', null);
 
-            if ($('#FromDate1').val() != "" && $('#ToDate1').val() != "") {
+            // if ($('#FromDate1').val() != "" && $('#ToDate1').val() != "") {
 
-                var inputFromDateString = $('#FromDate1').val().split(" ")[0];
-                var inputToDateString = $('#ToDate1').val().split(" ")[0];
-                var originalFromDate = new Date(inputFromDateString);
-                var originalToDate = new Date(inputToDateString);
-
-
-                //fromdate
-                var day = originalFromDate.getDate();
-                var month = originalFromDate.getMonth() + 1; // Months are zero-based
-                var year = originalFromDate.getFullYear();
-
-                var convertedFromDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
-
-                //todate
-                var day = originalToDate.getDate();
-                var month = originalToDate.getMonth() + 1; // Months are zero-based
-                var year = originalToDate.getFullYear();
-
-                var convertedToDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
+            //     var inputFromDateString = $('#FromDate1').val().split(" ")[0];
+            //     var inputToDateString = $('#ToDate1').val().split(" ")[0];
+            //     var originalFromDate = new Date(inputFromDateString);
+            //     var originalToDate = new Date(inputToDateString);
 
 
-                $('#FromDate').val(convertedFromDateText);
-                $('#ToDate').val(convertedToDateText);
+            //     //fromdate
+            //     var day = originalFromDate.getDate();
+            //     var month = originalFromDate.getMonth() + 1; // Months are zero-based
+            //     var year = originalFromDate.getFullYear();
 
-            }
+            //     var convertedFromDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
+
+            //     //todate
+            //     var day = originalToDate.getDate();
+            //     var month = originalToDate.getMonth() + 1; // Months are zero-based
+            //     var year = originalToDate.getFullYear();
+
+            //     var convertedToDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
+
+
+            //     $('#FromDate').val(convertedFromDateText);
+            //     $('#ToDate').val(convertedToDateText);
+
+            // }
              
-            if (FromDateBack != null) {
+            // if (FromDateBack != null) {
                  
-                $('#REQNo').val(REQNoBack);
-                $('#ItemName').val(ItemNameBack);
-                $('#PartCode').val(PartCodeBack);
-                $('#WorkCenter').val(WorkCenterIdBack);
-                $('#WONo').val(WONoBack);
-                $('#DeptName').val(DeptNameBack);
-                $('#FromDate').val(FromDateBack);
-                $('#ToDate').val(ToDateBack);
-                $('#DashboardType').val(TypeBack);
-                $('#search-box').val(GlobalSearchBack);
+            //     $('#REQNo').val(REQNoBack);
+            //     $('#ItemName').val(ItemNameBack);
+            //     $('#PartCode').val(PartCodeBack);
+            //     $('#WorkCenter').val(WorkCenterIdBack);
+            //     $('#WONo').val(WONoBack);
+            //     $('#DeptName').val(DeptNameBack);
+            //     $('#FromDate').val(FromDateBack);
+            //     $('#ToDate').val(ToDateBack);
+            //     $('#DashboardType').val(TypeBack);
+            //     $('#search-box').val(GlobalSearchBack);
+            // }
+            // GetSearchData();
+                 $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' });
+        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' });
+
+        var FromDateBack = localStorage.getItem('FromDateBack');
+        var ToDateBack = localStorage.getItem('ToDateBack');
+
+        var fromServer = $('#FromDate1').val();
+        var toServer = $('#ToDate1').val();
+
+        // 1️⃣ BACK button case
+        if (FromDateBack && ToDateBack) {
+            $('#FromDate').datepicker('setDate', FromDateBack);
+            $('#ToDate').datepicker('setDate', ToDateBack);
+        }
+        // 2️⃣ From controller (menu / reset / refresh)
+        else if (fromServer && toServer) {
+
+            function convert(d) {
+                var dt = new Date(d.split(" ")[0]);
+                return ("0" + dt.getDate()).slice(-2) + "/"
+                     + ("0" + (dt.getMonth() + 1)).slice(-2) + "/"
+                     + dt.getFullYear();
             }
-            GetSearchData();
+
+            $('#FromDate').datepicker('setDate', convert(fromServer));
+            $('#ToDate').datepicker('setDate', convert(toServer));
+        }
+        // 3️⃣ Default load (menu / first visit)
+        else {
+            var now = new Date();
+            var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+
+            $('#FromDate').datepicker('setDate', firstDay);
+            $('#ToDate').datepicker('setDate', now);
+        }
+
+ 
+
+        GetSearchData();
             $("#search-box").val($('#search-box').val()).trigger('keyup');
 
             localStorage.removeItem('REQNoBack');
@@ -325,7 +376,17 @@
             event.preventDefault();
             if (confirm("Are you sure you want to delete this entry?")) {
                 var linkUrl = $(event.currentTarget).attr("href");
-                linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&REQNo=" + $('#REQNo').val() + "&ItemName=" + $('#ItemName').val() + "&PartCode=" + $('#PartCode').val() + "&WCName=" + $('#WorkCenter').val() + "&WONo=" + $('#WONo').val() + "&DepName=" + $('#DeptName').val() + "&DBType=" + $('#DashboardType').val() + "&searchbox=" + $('#search-box').val();
+                // linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&REQNo=" + $('#REQNo').val() + "&ItemName=" + $('#ItemName').val() + "&PartCode=" + $('#PartCode').val() + "&WCName=" + $('#WorkCenter').val() + "&WONo=" + $('#WONo').val() + "&DepName=" + $('#DeptName').val() + "&DBType=" + $('#DashboardType').val() + "&searchbox=" + $('#search-box').val();
+                window.location.href = linkUrl;
+            }
+        }
+                
+        function confirmEdit(event) {
+
+            event.preventDefault();
+            if (confirm("Are you sure you want to Edit this entry?")) {
+                var linkUrl = $(event.currentTarget).attr("href");
+                // linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&REQNo=" + $('#REQNo').val() + "&ItemName=" + $('#ItemName').val() + "&PartCode=" + $('#PartCode').val() + "&WCName=" + $('#WorkCenter').val() + "&WONo=" + $('#WONo').val() + "&DepName=" + $('#DeptName').val() + "&DBType=" + $('#DashboardType').val() + "&searchbox=" + $('#search-box').val();
                 window.location.href = linkUrl;
             }
         }
@@ -343,16 +404,16 @@
             $.ajax({
                 url: '@Url.Action("GetSearchData","ReqThroughBom")',
                 type: "POST",
-                data: { REQNo: $('#REQNo').val(), WCName: $('#WorkCenter').val(), WONo: $('#WONo').val(), DepName: $('#DeptName').val(), PartCode: $('#PartCode').val(), ItemName: $('#ItemName').val(), BranchName: $('#CC').val(), FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val() },
+                data: {formKey:formKey, REQNo: $('#REQNo').val(), WCName: $('#WorkCenter').val(), WONo: $('#WONo').val(), DepName: $('#DeptName').val(), PartCode: $('#PartCode').val(), ItemName: $('#ItemName').val(), BranchName: $('#CC').val(), FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val() },
                 success: function (data) {
 
                     $('#divDashboardGrid').empty().append(data);
                     GetFormRights();
                     ColorCodingStockandIssue();
-                    var dashGrid = $('#ReqBomTbody tr').length;
+                    var dashGrid = $('#ReqThrBody tr').length;
                     $('#totalRows').text(dashGrid);
 
-                    var rowwCount = $('#ReqBomTbody tr').length;
+                    var rowwCount = $('#ReqThrBody tr').length;
                     for (var i = 1; i <= rowwCount; i++) {
                         var pendQty = $('#PendQty-' + i).val();
                         var Cancel = $('#Cancel-' + i).val();
@@ -382,7 +443,7 @@
             $.ajax({
                 url: '@Url.Action("GetDetailData","ReqThroughBom")',
                 type: "POST",
-                data: { REQNo: $('#REQNo').val(), WCName: $('#WorkCenter').val(), WONo: $('#WONo').val(), DepName: $('#DeptName').val(), PartCode: $('#PartCode').val(), ItemName: $('#ItemName').val(), BranchName: $('#CC').val(), FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val() },
+                data: {formKey:formKey, REQNo: $('#REQNo').val(), WCName: $('#WorkCenter').val(), WONo: $('#WONo').val(), DepName: $('#DeptName').val(), PartCode: $('#PartCode').val(), ItemName: $('#ItemName').val(), BranchName: $('#CC').val(), FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val() },
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
                     GetFormRights();
@@ -406,7 +467,7 @@
             $.ajax({
                 url: '@Url.Action("GetSearchData","ReqThroughBom")',
                 type: "POST",
-                data: { REQNo: $('#REQNo').val(), WCName: $('#WorkCenter').val(), WONo: $('#WONo').val(), DepName: $('#DeptName').val(), PartCode: $('#PartCode').val(), ItemName: $('#ItemName').val(), BranchName: $('#CC').val(), FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val() },
+                data: {formKey:formKey, REQNo: $('#REQNo').val(), WCName: $('#WorkCenter').val(), WONo: $('#WONo').val(), DepName: $('#DeptName').val(), PartCode: $('#PartCode').val(), ItemName: $('#ItemName').val(), BranchName: $('#CC').val(), FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val() },
                 async: false,
                 success: function (data) {
                      
@@ -430,6 +491,7 @@
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
+                data:{formKey:formKey},
                 success: function (data) {
                     if (data != null) {
 
@@ -492,7 +554,8 @@
             var linkUrl = urlHref;
             linkUrl = linkUrl + "&ReqNo=" + $('#REQNo').val() + "&ItemName=" + $('#ItemName').val() + "&Partcode=" + $('#PartCode').val() + "&WorkCenter=" + $('#WorkCenter').val() + "&WONO=" + $('#WONo').val() + "&DeptName=" + $('#DeptName').val() + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&Type=" + $('#DashboardType').val() + "&GlobalSearch=" + $('#search-box').val();
             window.location.href = linkUrl;
-        }
+        }    
+
 
         //function BackButtonData() {
         //

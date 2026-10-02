@@ -76,7 +76,7 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
             return _ResponseResult;
-        } 
+        }
         public async Task<ResponseResult> AutoFillPartCode(string showallitem, string SearchItemCode, string SearchPartCode)
         {
             var _ResponseResult = new ResponseResult();
@@ -96,7 +96,7 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
             return _ResponseResult;
-        } 
+        }
         public async Task<ResponseResult> AutoFillItemName(string showallitem, string SearchItemCode, string SearchPartCode)
         {
             var _ResponseResult = new ResponseResult();
@@ -124,11 +124,14 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
-                SqlParams.Add(new SqlParameter("@EmployeeId", userId));
+                //SqlParams.Add(new SqlParameter("@EmployeeId", userId));
+                SqlParams.Add(new SqlParameter("@EmpId", userId));
                 SqlParams.Add(new SqlParameter("@MainMenu", "Requisition Through BOM"));
-                SqlParams.Add(new SqlParameter("@SubMenu", "Requisition Thr BOM"));
+                //SqlParams.Add(new SqlParameter("@SubMenu", "Requisition Thr BOM"));
+                //SqlParams.Add(new SqlParameter("@MenuId", 327));
 
-                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_RequisitionThrBOM", SqlParams);
+                //_ResponseResult = await _IDataLogic.ExecuteDataSet("SP_RequisitionThrBOM", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
             }
             catch (Exception ex)
             {
@@ -254,7 +257,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> GetPopUpData(int ItemCode,int BomNo)
+        public async Task<ResponseResult> GetPopUpData(int ItemCode, int BomNo)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -353,6 +356,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@LineRejYearCode", model.LineRejYearCode));
                 SqlParams.Add(new SqlParameter("@CreatedBy", model.CreatedBy));
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@IPAddress", model.IPAddress));
 
                 SqlParams.Add(new SqlParameter("@DTItemGrid", ReqGrid));
 
@@ -427,7 +431,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<RTBDashboard> GetDashboardData(string REQNo, string WCName,string WONO, string DepName, string PartCode, string ItemName,string BranchName, string Fromdate, string Todate)
+        public async Task<RTBDashboard> GetDashboardData(string REQNo, string WCName, string WONO, string DepName, string PartCode, string ItemName, string BranchName, string Fromdate, string Todate, int userID)
         {
             DataSet? oDataSet = new DataSet();
             var model = new RTBDashboard();
@@ -455,6 +459,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@branchname", BranchName);
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
+                    oCmd.Parameters.AddWithValue("@EneterdBy", userID);
 
 
 
@@ -489,7 +494,7 @@ namespace eTactWeb.Data.DAL
                                                   TotalReqQty = Convert.ToDecimal(dr["TotalReqQty"]),
                                                   TotalPendQty = Convert.ToDecimal(dr["TotalPendQty"]),
                                                   Completed = dr["Completed"].ToString(),
-                                                  DeptName=dr["DeptName"].ToString()
+                                                  DeptName = dr["DeptName"].ToString()
                                               }).ToList();
                 }
                 //var ilst = model.AccountMasterList.Select(m => new TextValue
@@ -511,7 +516,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, int EneterdBy, string MachineName, string IPAddress)
         {
             var _ResponseResult = new ResponseResult();
 
@@ -522,6 +527,10 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@EntryID", ID));
                 SqlParams.Add(new SqlParameter("@YearCode", YC));
+                SqlParams.Add(new SqlParameter("@EneterdBy", EneterdBy));
+                SqlParams.Add(new SqlParameter("@EntryByMachineName", MachineName));
+                SqlParams.Add(new SqlParameter("@IPAddress", IPAddress));
+                SqlParams.Add(new SqlParameter("@EntryDate", DateTime.Now));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_RequisitionThrBOM", SqlParams);
             }
@@ -573,9 +582,9 @@ namespace eTactWeb.Data.DAL
             model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString();
             model.EntryTime = DS.Tables[0].Rows[0]["EntryTime"].ToString().Split(' ')[1].Split('.')[0];
 
-            model.WODate= DS.Tables[0].Rows[0]["ProdSchDate"].ToString();
+            model.WODate = DS.Tables[0].Rows[0]["ProdSchDate"].ToString();
             model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
-            model.ReqTime= DS.Tables[0].Rows[0]["ReqTime"].ToString();
+            model.ReqTime = DS.Tables[0].Rows[0]["ReqTime"].ToString();
             model.ReqDate = DS.Tables[0].Rows[0]["ReqDate"].ToString();
             model.FromDepartmentId = Convert.ToInt32(DS.Tables[0].Rows[0]["FromDepartmentId"]);
             model.WONo = DS.Tables[0].Rows[0]["ProdSchNo"].ToString();
@@ -618,7 +627,7 @@ namespace eTactWeb.Data.DAL
                 {
                     ItemGrid.Add(new RequisitionThruBomDetail
                     {
-                        SeqNo = cnt ++,
+                        SeqNo = cnt++,
                         ItemCode = Convert.ToInt32(row["ItemCode"]),
                         ItemName = row["Item_Name"].ToString(),
                         PartCode = row["PartCode"].ToString(),
@@ -627,10 +636,10 @@ namespace eTactWeb.Data.DAL
                         Unit = row["Unit"].ToString(),
                         StoreId = string.IsNullOrEmpty(row["StoreId"].ToString()) ? 0 : Convert.ToInt32(row["StoreId"]),
                         StoreName = row["Store_Name"].ToString(),
-                       Qty = Convert.ToDecimal(row["Qty"]),
-                       AltUnit = row["AltUnit"].ToString(),
-                       AltQty = string.IsNullOrEmpty(row["AltQty"].ToString()) ? 0 : Convert.ToInt32(row["AltQty"]),
-                       ItemModel = row["ItemModel"].ToString(),
+                        Qty = Convert.ToDecimal(row["Qty"]),
+                        AltUnit = row["AltUnit"].ToString(),
+                        AltQty = string.IsNullOrEmpty(row["AltQty"].ToString()) ? 0 : Convert.ToInt32(row["AltQty"]),
+                        ItemModel = row["ItemModel"].ToString(),
                         ExpectedDate = row["ExpectedDate"].ToString(),
                         Remark = row["Remark"].ToString(),
                         PendQty = string.IsNullOrEmpty(row["PendQty"].ToString()) ? 0 : Convert.ToInt32(row["PendQty"]),
@@ -736,9 +745,9 @@ namespace eTactWeb.Data.DAL
                                                   AltUnit = dr["AltUnit"].ToString(),
                                                   Location = dr["ItemLocation"].ToString(),
                                                   BinNo = dr["ItemBinRackNo"].ToString(),
-                                                  Qty = string.IsNullOrEmpty(dr["Qty"].ToString()) ? 0 : Convert.ToSingle(dr["Qty"]),
-                                                  AltQty = string.IsNullOrEmpty(dr["AltQty"].ToString()) ? 0 : Convert.ToSingle(dr["AltQty"]),
-                                                  PendQty = string.IsNullOrEmpty(dr["PendQty"].ToString()) ? 0 : Convert.ToSingle(dr["PendQty"]),
+                                                  Qty = string.IsNullOrEmpty(dr["Qty"].ToString()) ? 0 : Convert.ToDecimal(dr["Qty"]),
+                                                  AltQty = string.IsNullOrEmpty(dr["AltQty"].ToString()) ? 0 : Convert.ToDecimal(dr["AltQty"]),
+                                                  PendQty = string.IsNullOrEmpty(dr["PendQty"].ToString()) ? 0 : Convert.ToDecimal(dr["PendQty"]),
                                               }).ToList();
                 }
                 //var ilst = model.AccountMasterList.Select(m => new TextValue
@@ -759,6 +768,26 @@ namespace eTactWeb.Data.DAL
                 oDataSet.Dispose();
             }
             return model;
+        }
+        public async Task<ResponseResult> GetReportName(string Type)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+                SqlParams.Add(new SqlParameter("@Type", Type));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_RequisitionThrBOM", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
         }
     }
 }

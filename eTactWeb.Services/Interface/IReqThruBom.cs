@@ -13,7 +13,7 @@ namespace eTactWeb.Services.Interface
         Task<DataSet> BindAllDropDowns(string Flag);
         Task<ResponseResult> GetBomRevNo(int Itemcode);
         Task<ResponseResult> GetProjectNo();
-        Task<ResponseResult> GetPopUpData(int Itemcode,int BomNo);
+        Task<ResponseResult> GetPopUpData(int Itemcode, int BomNo);
         Task<ResponseResult> GetNewEntry(string Flag, int YearCode, string SPName);
         Task<ResponseResult> DisplayBomDetail(int ItemCode, float WOQty, int BomRevNo);
         Task<ResponseResult> FillItems();
@@ -22,14 +22,15 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillWorkOrder();
         Task<ResponseResult> FillWorkCenter();
         Task<ResponseResult> FillTotalStock(int ItemCode, int Store);
-        Task<RTBDashboard> GetDashboardData(string REQNo, string WCName, string WONo, string DepName, string PartCode, string ItemName,string BranchName, string FromDate, string Todate);
+        Task<RTBDashboard> GetDashboardData(string REQNo, string WCName, string WONo, string DepName, string PartCode, string ItemName, string BranchName, string FromDate, string Todate, int userID);
         Task<ResponseResult> SaveRequisition(RequisitionThroughBomModel model, DataTable ReqGrid);
         Task<ResponseResult> GetDashboardData(string Fromdate, string ToDate, string Flag);
-        Task<ResponseResult> DeleteByID(int ID, int YearCode);
+        Task<ResponseResult> DeleteByID(int ID, int YearCode, int EneterdBy, string MachineName, string IPAddress);
         Task<RequisitionThroughBomModel> GetViewByID(int ID, int YearCode);
         Task<RTBDashboard> GetDetailData(string REQNo, string WCName, string WONo, string DepName, string PartCode, string ItemName, string BranchName, string FromDate, string ToDate);
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> CheckFeatureOption();
+        Task<ResponseResult> GetReportName(string Type);
 
     }
 }
