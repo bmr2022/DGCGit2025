@@ -37,6 +37,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
                 SqlParams.Add(new SqlParameter("@EmpId", userID));
                 SqlParams.Add(new SqlParameter("@MainMenu", "Deassemble Item"));
+
                 //SqlParams.Add(new SqlParameter("@SubMenu", "Sale Order"));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
@@ -50,7 +51,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> NewEntryId()
+        public async Task<ResponseResult> NewEntryId(int YearCode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -58,7 +59,30 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
 
                 SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
-              
+                SqlParams.Add(new SqlParameter("@DeassYearcode", YearCode));
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_DeassembleItemMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> FeaturesOption()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "FeaturesOption"));
+
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_DeassembleItemMainDetail", SqlParams);
             }
@@ -77,15 +101,15 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-               
+
                 var SqlParams = new List<dynamic>();
-                
-                    SqlParams.Add(new SqlParameter("@Flag", "FILLRMAndBomDetail"));
-                
+
+                SqlParams.Add(new SqlParameter("@Flag", "FILLRMAndBomDetail"));
+
                 SqlParams.Add(new SqlParameter("@FinishItemCode", FinishItemCode));
                 SqlParams.Add(new SqlParameter("@bomNo", bomNo));
                 SqlParams.Add(new SqlParameter("@FGQty", FGQty));
-               
+
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_DeassembleItemMainDetail", SqlParams);
             }
@@ -99,7 +123,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> BomQty(int RMItemCode, int FinishItemCode, int bomNo, float FGQty)
+        public async Task<ResponseResult> BomQty(int RMItemCode, int FinishItemCode, int bomNo, decimal FGQty)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -149,7 +173,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> FillMRNYearCode(int FGItemCode, int yearcode,string MRNNO)
+        public async Task<ResponseResult> FillMRNYearCode(int FGItemCode, int yearcode, string MRNNO)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -173,7 +197,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-         public async Task<ResponseResult> FillMRNDetail(int yearcode, string MRNNO, int mrnyearcode)
+        public async Task<ResponseResult> FillMRNDetail(int yearcode, string MRNNO, int mrnyearcode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -226,7 +250,7 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FILLFGITEMNAME"));
-               
+
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_DeassembleItemMainDetail", SqlParams);
             }
             catch (Exception ex)
@@ -384,13 +408,13 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DeassEntryDate", entDt));
                 SqlParams.Add(new SqlParameter("@DeassYearcode", model.DeassYearcode));
                 SqlParams.Add(new SqlParameter("@DeassSlipNo", model.DeassSlipNo));
-                SqlParams.Add(new SqlParameter("@FGStoreId",model.FGStoreId));
+                SqlParams.Add(new SqlParameter("@FGStoreId", model.FGStoreId));
                 SqlParams.Add(new SqlParameter("@FinishItemCode", model.FinishItemCode));
                 SqlParams.Add(new SqlParameter("@FGBatchNo", model.FGBatchNo));
                 SqlParams.Add(new SqlParameter("@FGUniqueBatchNo", model.FGUniqueBatchNo));
                 SqlParams.Add(new SqlParameter("@TotalStock", model.TotalStock));
                 SqlParams.Add(new SqlParameter("@FGQty", model.FGQty));
-                SqlParams.Add(new SqlParameter("@Unit", model.Unit ));
+                SqlParams.Add(new SqlParameter("@Unit", model.Unit));
                 SqlParams.Add(new SqlParameter("@FGConvQty", model.FGConvQty));
                 SqlParams.Add(new SqlParameter("@CreatedByEmp", model.CreatedByEmp));
                 SqlParams.Add(new SqlParameter("@CreatedOn", ActEntDt));
@@ -472,37 +496,37 @@ namespace eTactWeb.Data.DAL
                     if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                     {
                         model.DeassembleItemDashBoardDetail = (from DataRow dr in oDataSet.Tables[0].Rows
-                                                    select new DeassembleItemDashBoard
-                                                    {
+                                                               select new DeassembleItemDashBoard
+                                                               {
 
-                                                        DeassEntryID = Convert.ToInt32(dr["DeassEntryID"]),
-                                                        
-                                                        DeassEntryDate =CommonFunc.ParseFormattedDate(dr["DeassEntryDate"].ToString()),
-                                                        DeassYearcode = Convert.ToInt32(dr["DeassYearcode"]),
-                                                        DeassSlipNo = dr["DeassSlipNo"].ToString(),
-                                                        FGStoreId = Convert.ToInt32(dr["FGStoreId"]),
-                                                        FGStoreName = dr["FGStoreName"].ToString(),
+                                                                   DeassEntryID = Convert.ToInt32(dr["DeassEntryID"]),
 
-                                                        FinishItemCode = Convert.ToInt32(dr["FinishItemCode"]),
-                                                        FinishItemName = dr["FinishItemName"].ToString(),
-                                                        FinishPartCode = dr["FinishPartCode"].ToString(),
-                                                        FGBatchNo = dr["FGBatchNo"].ToString(),
-                                                        FGUniqueBatchNo = dr["FGUniqueBatchNo"].ToString(),
+                                                                   DeassEntryDate = CommonFunc.ParseFormattedDate(dr["DeassEntryDate"].ToString()),
+                                                                   DeassYearcode = Convert.ToInt32(dr["DeassYearcode"]),
+                                                                   DeassSlipNo = dr["DeassSlipNo"].ToString(),
+                                                                   FGStoreId = Convert.ToInt32(dr["FGStoreId"]),
+                                                                   FGStoreName = dr["FGStoreName"].ToString(),
 
-                                                        TotalStock = Convert.ToDecimal(dr["TotalStock"]),
-                                                        FGQty = Convert.ToDecimal(dr["FGQty"]),
-                                                        FGUnit = dr["FGUnit"].ToString(),
-                                                        FGConvQty = Convert.ToDecimal(dr["FGConvQty"]),
+                                                                   FinishItemCode = Convert.ToInt32(dr["FinishItemCode"]),
+                                                                   FinishItemName = dr["FinishItemName"].ToString(),
+                                                                   FinishPartCode = dr["FinishPartCode"].ToString(),
+                                                                   FGBatchNo = dr["FGBatchNo"].ToString(),
+                                                                   FGUniqueBatchNo = dr["FGUniqueBatchNo"].ToString(),
 
-                                                        CreatedByEmp = Convert.ToInt32(dr["CreatedByEmp"]),
-                                                        CreatedByEmpName = dr["CreatedByEmpName"].ToString(),
-                                                        CreatedOn =CommonFunc.ParseFormattedDate(dr["CreatedOn"].ToString()),
+                                                                   TotalStock = Convert.ToDecimal(dr["TotalStock"]),
+                                                                   FGQty = Convert.ToDecimal(dr["FGQty"]),
+                                                                   FGUnit = dr["FGUnit"].ToString(),
+                                                                   FGConvQty = Convert.ToDecimal(dr["FGConvQty"]),
 
-                                                        UpdatedBy = Convert.ToInt32(dr["UpdatedBy"]),
-                                                        UpdatedByEmpName = dr["UpdatedByEmpName"].ToString(),
-                                                        UpdatedOn =CommonFunc.ParseFormattedDate(dr["UpdatedOn"].ToString()),
-                                                        EntryByMachine = dr["EntryByMachine"].ToString(),
-                                                    }).ToList();
+                                                                   CreatedByEmp = Convert.ToInt32(dr["CreatedByEmp"]),
+                                                                   CreatedByEmpName = dr["CreatedByEmpName"].ToString(),
+                                                                   CreatedOn = CommonFunc.ParseFormattedDate(dr["CreatedOn"].ToString()),
+
+                                                                   UpdatedBy = Convert.ToInt32(dr["UpdatedBy"]),
+                                                                   UpdatedByEmpName = dr["UpdatedByEmpName"].ToString(),
+                                                                   UpdatedOn = CommonFunc.ParseFormattedDate(dr["UpdatedOn"].ToString()),
+                                                                   EntryByMachine = dr["EntryByMachine"].ToString(),
+                                                               }).ToList();
                     }
                 }
             }
@@ -608,7 +632,7 @@ namespace eTactWeb.Data.DAL
             model.ProdYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["ProdYearCode"].ToString());
             model.ProdEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["ProdEntryId"].ToString());
             model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
-            
+
             model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
 
 
@@ -636,14 +660,14 @@ namespace eTactWeb.Data.DAL
 
 
                         RMUnit = row["RMUnit"].ToString(),
-                        
+
                         Remark = row["Remark"].ToString(),
-                        
+
                         IdealDeassQty = Convert.ToDecimal(row["IdealDeassQty"]),
                         RMBatchNo = row["RMBatchNo"].ToString(),
                         RmUniqueBatchNo = row["RmUniqueBatchNo"].ToString(),
                     });
-                   
+
                 }
                 ItemList = ItemList.OrderBy(item => item.SeqNo).ToList();
                 model.DeassembleItemDetail = ItemList;

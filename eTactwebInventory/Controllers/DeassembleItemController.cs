@@ -39,18 +39,21 @@ namespace eTactwebInventory.Controllers
 
         [HttpGet]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> DeassembleItem(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string SlipNo = "", string BatchNo = "", string PartCode = "", string ItemName = "", string Searchbox = "", string SummaryDetail = "")
+        public async Task<IActionResult> DeassembleItem(string formKey, int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string SlipNo = "", string BatchNo = "", string PartCode = "", string ItemName = "", string Searchbox = "", string SummaryDetail = "")
         {
+            ViewBag.formKey = formKey;
+            var uniqueKey = Guid.NewGuid().ToString();
+            ViewBag.uniqueKey = uniqueKey;
             //RoutingModel model = new RoutingModel();  
             ViewData["Title"] = "DeassembleItem";
             TempData.Clear();
-            HttpContext.Session.Remove("KeyDeassembleItemGrid");
+            HttpContext.Session.Remove($"KeyDeassembleItemGrid_{uniqueKey}");
             var MainModel = new DeassembleItemModel();
 
-            MainModel.FinFromDate = ParseDate(HttpContext.Session.GetString("FromDate")).ToString().Replace("-", "/");
-            MainModel.FinToDate = ParseDate(HttpContext.Session.GetString("ToDate")).ToString().Replace("-", "/");
-            MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.DeassYearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            MainModel.FinFromDate = ParseDate(HttpContext.Session.GetString($"FromDate_{formKey}")).ToString().Replace("-", "/");
+            MainModel.FinToDate = ParseDate(HttpContext.Session.GetString($"ToDate_{formKey}")).ToString().Replace("-", "/");
+            MainModel.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+            MainModel.DeassYearcode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
@@ -67,15 +70,15 @@ namespace eTactwebInventory.Controllers
             if (Mode != "U")
             {
 
-                MainModel.CreatedByEmp = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                MainModel.CreatedByEmpName = HttpContext.Session.GetString("EmpName");
+                MainModel.CreatedByEmp = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+                MainModel.CreatedByEmpName = HttpContext.Session.GetString($"EmpName_{formKey}");
 
             }
             else
             {
 
-                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                MainModel.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+                MainModel.UpdatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
 
             }
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
@@ -86,7 +89,7 @@ namespace eTactwebInventory.Controllers
             };
 
             string serializedGrid = JsonConvert.SerializeObject(MainModel.DeassembleItemDetail);
-            HttpContext.Session.SetString("KeyDeassembleItemGrid", serializedGrid);
+            HttpContext.Session.SetString($"KeyDeassembleItemGrid_{uniqueKey}", serializedGrid);
 
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
@@ -98,16 +101,16 @@ namespace eTactwebInventory.Controllers
             MainModel.GlobalSearchBack = Searchbox;
             return View(MainModel);
         }
-        public async Task<JsonResult> GetFormRights()
+        public async Task<JsonResult> GetFormRights(string formKey)
         {
-            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var JSON = await _IDeassembleItem.GetFormRights(userID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> ClearGridAjax()
+        public async Task<JsonResult> ClearGridAjax(string uniqueKey)
         {
-            HttpContext.Session.Remove("KeyDeassembleItemGrid");
+            HttpContext.Session.Remove($"KeyDeassembleItemGrid_{uniqueKey}");
 
             var JSON = await _IDeassembleItem.FillFGItemName();
             string JsonString = JsonConvert.SerializeObject(JSON);
@@ -116,7 +119,7 @@ namespace eTactwebInventory.Controllers
 
         public async Task<JsonResult> FILLRMAndBomDetail(int FinishItemCode, int bomNo, decimal FGQty)
         {
-            var JSON = await _IDeassembleItem.FILLRMAndBomDetail( FinishItemCode,  bomNo,  FGQty);
+            var JSON = await _IDeassembleItem.FILLRMAndBomDetail(FinishItemCode, bomNo, FGQty);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -129,8 +132,10 @@ namespace eTactwebInventory.Controllers
             try
             {
                 var ISTGrid = new DataTable();
+                string uniqueKey = model.uniqueKey;
+                string formKey = model.formKey;
 
-                string modelJson = HttpContext.Session.GetString("KeyDeassembleItemGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyDeassembleItemGrid_{uniqueKey}");
                 List<DeassembleItemDetail> ISTDetail = new List<DeassembleItemDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -146,8 +151,8 @@ namespace eTactwebInventory.Controllers
                 else
                 {
 
-                    model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
-                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                    model.EntryByMachine = HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+                    model.IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
                     ISTGrid = GetDetailTable(ISTDetail);
                     var Result = await _IDeassembleItem.SaveDeassemble(model, ISTGrid);
 
@@ -157,24 +162,24 @@ namespace eTactwebInventory.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            HttpContext.Session.Remove("KeyDeassembleItemGrid");
-                            return RedirectToAction(nameof(DeassembleItem));
+                            HttpContext.Session.Remove($"KeyDeassembleItemGrid_{uniqueKey}");
+                            return RedirectToAction(nameof(DeassembleItem), new { formKey = formKey });
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
-                            HttpContext.Session.Remove("KeyDeassembleItemGrid");
-                            return RedirectToAction(nameof(DeassembleItem));
+                            HttpContext.Session.Remove($"KeyDeassembleItemGrid_{uniqueKey}");
+                            return RedirectToAction(nameof(DeassembleItem), new { formKey = formKey });
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
                             ViewBag.isSuccess = false;
                             TempData["2627"] = "2627";
-                            return RedirectToAction(nameof(DeassembleItem));
+                            return RedirectToAction(nameof(DeassembleItem), new { formKey = formKey });
                         }
                     }
-                    return RedirectToAction(nameof(DeassembleItem));
+                    return RedirectToAction(nameof(DeassembleItem), new { formKey = formKey });
                 }
             }
             catch (Exception ex)
@@ -202,14 +207,14 @@ namespace eTactwebInventory.Controllers
             DTSSGrid.Columns.Add("DeassYearCode", typeof(int));
             DTSSGrid.Columns.Add("SeqNo", typeof(int));
             DTSSGrid.Columns.Add("RMItemCode", typeof(int));
-            DTSSGrid.Columns.Add("BomQty", typeof(float));
-            DTSSGrid.Columns.Add("DeassQty", typeof(float));
+            DTSSGrid.Columns.Add("BomQty", typeof(decimal));
+            DTSSGrid.Columns.Add("DeassQty", typeof(decimal));
             DTSSGrid.Columns.Add("Unit", typeof(string));
             DTSSGrid.Columns.Add("RMStoreId", typeof(int));
             DTSSGrid.Columns.Add("Remark", typeof(string));
             DTSSGrid.Columns.Add("RMBatchNo", typeof(string));
             DTSSGrid.Columns.Add("RmUniqueBatchNo", typeof(string));
-            DTSSGrid.Columns.Add("IdealDeassQty", typeof(float));
+            DTSSGrid.Columns.Add("IdealDeassQty", typeof(decimal));
             //DateTime DeliveryDt = new DateTime();
             int seqNo = 0;
             foreach (var Item in DetailList)
@@ -242,14 +247,23 @@ namespace eTactwebInventory.Controllers
 
 
 
-        public async Task<JsonResult> NewEntryId()
+        public async Task<JsonResult> NewEntryId(string formKey)
+
         {
-            var JSON = await _IDeassembleItem.NewEntryId();
+            int YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+            var JSON = await _IDeassembleItem.NewEntryId(YearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
 
-        public async Task<JsonResult> BomQty(int RMItemCode,int FinishItemCode, int bomNo,float FGQty)
+        public async Task<JsonResult> FeaturesOption()
+        {
+            var JSON = await _IDeassembleItem.FeaturesOption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> BomQty(int RMItemCode, int FinishItemCode, int bomNo, decimal FGQty)
         {
             var JSON = await _IDeassembleItem.BomQty(RMItemCode, FinishItemCode, bomNo, FGQty);
             string JsonString = JsonConvert.SerializeObject(JSON);
@@ -315,14 +329,14 @@ namespace eTactwebInventory.Controllers
             return Json(JsonString);
         }
 
-        public async Task<JsonResult> FillStockBatchNo(int ItemCode, string StoreName, int YearCode, string batchno)
+        public async Task<JsonResult> FillStockBatchNo(string formKey, int ItemCode, string StoreName, int YearCode, string batchno)
         {
-            var FinStartDate = HttpContext.Session.GetString("FromDate");
+            var FinStartDate = HttpContext.Session.GetString($"FromDate_{formKey}");
             var JSON = await _IDeassembleItem.FillStockBatchNo(ItemCode, StoreName, YearCode, batchno, FinStartDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult AddDeassembleDetail1(List<DeassembleItemDetail> model)
+        public IActionResult AddDeassembleDetail1(List<DeassembleItemDetail> model, string uniqueKey)
         {
             try
             {
@@ -333,7 +347,7 @@ namespace eTactwebInventory.Controllers
                 var SeqNo = 0;
                 foreach (var item in model)
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyDeassembleItemGrid");
+                    string modelJson = HttpContext.Session.GetString($"KeyDeassembleItemGrid_{uniqueKey}");
                     IList<DeassembleItemDetail> RCDetail = new List<DeassembleItemDetail>();
                     if (modelJson != null)
                     {
@@ -349,14 +363,14 @@ namespace eTactwebInventory.Controllers
                         }
                         else
                         {
-                            if (RCDetail.Any(x => x.RMItemCode == item.RMItemCode  && x.RMStoreId == item.RMStoreId))
+                            if (RCDetail.Any(x => x.RMItemCode == item.RMItemCode && x.RMStoreId == item.RMStoreId))
                             {
                                 //return StatusCode(207, "Duplicate");
                                 var duplicateInfo = new
                                 {
                                     item.RMItemCode,
                                     item.RMStoreId,
-                                    
+
                                 };
                             }
                             else
@@ -370,7 +384,7 @@ namespace eTactwebInventory.Controllers
                         RCGrid = RCGrid.OrderBy(item => item.SeqNo).ToList();
                         MainModel.DeassembleItemDetail = RCGrid;
 
-                        HttpContext.Session.SetString("KeyDeassembleItemGrid", JsonConvert.SerializeObject(MainModel.DeassembleItemDetail));
+                        HttpContext.Session.SetString($"KeyDeassembleItemGrid_{uniqueKey}", JsonConvert.SerializeObject(MainModel.DeassembleItemDetail));
                     }
                     else
                     {
@@ -388,11 +402,11 @@ namespace eTactwebInventory.Controllers
         }
 
 
-        public IActionResult AddDeassembleDetail(DeassembleItemDetail model)
+        public IActionResult AddDeassembleDetail(DeassembleItemDetail model, string uniqueKey)
         {
             try
             {
-                string modelJson = HttpContext.Session.GetString("KeyDeassembleItemGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyDeassembleItemGrid_{uniqueKey}");
                 List<DeassembleItemDetail> ISTDetail = new List<DeassembleItemDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -429,7 +443,7 @@ namespace eTactwebInventory.Controllers
                     MainModel.DeassembleItemDetail = ISTGrid;
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.DeassembleItemDetail);
-                    HttpContext.Session.SetString("KeyDeassembleItemGrid", serializedGrid);
+                    HttpContext.Session.SetString($"KeyDeassembleItemGrid_{uniqueKey}", serializedGrid);
                 }
                 else
                 {
@@ -443,14 +457,14 @@ namespace eTactwebInventory.Controllers
             }
         }
 
-        public IActionResult DeleteItemRow(int SeqNo, string Mode)
+        public IActionResult DeleteItemRow(int SeqNo, string Mode, string uniqueKey)
         {
             var MainModel = new DeassembleItemModel();
             if (Mode == "U")
             {
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
-                string modelJson = HttpContext.Session.GetString("KeyDeassembleItemGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyDeassembleItemGrid_{uniqueKey}");
                 List<DeassembleItemDetail> ISTDetail = new List<DeassembleItemDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -471,12 +485,12 @@ namespace eTactwebInventory.Controllers
                     MainModel.DeassembleItemDetail = ISTDetail;
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.DeassembleItemDetail);
-                    HttpContext.Session.SetString("KeyDeassembleItemGrid", serializedGrid);
+                    HttpContext.Session.SetString($"KeyDeassembleItemGrid_{uniqueKey}", serializedGrid);
                 }
             }
             else
             {
-                string modelJson = HttpContext.Session.GetString("KeyDeassembleItemGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyDeassembleItemGrid_{uniqueKey}");
                 List<DeassembleItemDetail> ISTDetail = new List<DeassembleItemDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -499,16 +513,16 @@ namespace eTactwebInventory.Controllers
                     MainModel.DeassembleItemDetail = ISTDetail;
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.DeassembleItemDetail);
-                    HttpContext.Session.SetString("KeyDeassembleItemGrid", serializedGrid);
+                    HttpContext.Session.SetString($"KeyDeassembleItemGrid_{uniqueKey}", serializedGrid);
                 }
             }
             return PartialView("_DeassembleItemGrid", MainModel);
         }
 
-        public async Task<JsonResult> EditItemRows(int SeqNo)
+        public async Task<JsonResult> EditItemRows(int SeqNo, string uniqueKey)
         {
             var MainModel = new DeassembleItemModel();
-            string modelJson = HttpContext.Session.GetString("KeyDeassembleItemGrid");
+            string modelJson = HttpContext.Session.GetString($"KeyDeassembleItemGrid_{uniqueKey}");
             List<DeassembleItemDetail> DeassembleItemDetail = new List<DeassembleItemDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
@@ -519,7 +533,7 @@ namespace eTactwebInventory.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy, string MachineName, string SummaryDetail, string FromDate = "", string ToDate = "", string SlipNo = "", string PartCode = "", string ItemName = "", string BatchNo = "")
+        public async Task<IActionResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy, string MachineName, string SummaryDetail, string formKey, string FromDate = "", string ToDate = "", string SlipNo = "", string PartCode = "", string ItemName = "", string BatchNo = "")
         {
             var Result = await _IDeassembleItem.DeleteByID(ID, YC, EntryDate, ActualEntryBy, MachineName).ConfigureAwait(false);
 
@@ -533,16 +547,19 @@ namespace eTactwebInventory.Controllers
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
             }
-            return RedirectToAction("DeassembleDashBoard", new { Flag = "false", FromDate = FromDate, ToDate = ToDate, SlipNo = SlipNo, PartCode = PartCode, ItemName = ItemName, BatchNo = BatchNo, SummaryDetail = SummaryDetail });
+            return RedirectToAction("DeassembleDashBoard", new { Flag = "false", FromDate = FromDate, ToDate = ToDate, SlipNo = SlipNo, PartCode = PartCode, ItemName = ItemName, BatchNo = BatchNo, SummaryDetail = SummaryDetail, formKey = formKey });
         }
 
 
         [HttpGet]
-        [Route("DeassembleDashBoard")]
-        public async Task<IActionResult> DeassembleDashBoard()
+        [Route("{controller}/DeassembleDashBoard")]
+        public async Task<IActionResult> DeassembleDashBoard(string formKey)
         {
             try
             {
+                ViewBag.formKey = formKey;
+                var uniqueKey = Guid.NewGuid().ToString();
+                ViewBag.uniqueKey = uniqueKey;
                 var model = new DeassembleItemDashBoard();
                 var result = await _IDeassembleItem.GetDashboardData().ConfigureAwait(true);
                 DateTime now = DateTime.Now;
@@ -568,11 +585,12 @@ namespace eTactwebInventory.Controllers
 
 
 
-        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<IActionResult> GetDashBoardDetailData(string formKey, string FromDate, string ToDate, string ReportType)
         {
             //model.Mode = "Search";
             var model = new DeassembleItemDashBoard();
             model = await _IDeassembleItem.GetDashBoardDetailData(FromDate, ToDate, ReportType);
+            model.formKey = formKey;
             if (ReportType == "SUMMARY")
             {
                 return PartialView("_DashBoardSummaryGrid", model);

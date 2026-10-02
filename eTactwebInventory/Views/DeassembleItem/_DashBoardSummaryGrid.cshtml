@@ -1,5 +1,16 @@
 ﻿@model eTactWeb.DOM.Models.DeassembleItemDashBoard;
+@inject IHttpContextAccessor HttpContextAccessor
 
+@{
+    var context = HttpContextAccessor.HttpContext;
+    string formKey =
+           context.Request.Query["formKey"].FirstOrDefault()
+        ?? context.Request.Headers["FormKey"].FirstOrDefault()
+        ??Model.formKey
+
+        ?? "";
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"YearCode_{formKey}"));
+}
 <div class="table-responsive" style="max-height:350px;">
     <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
         <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
@@ -46,7 +57,7 @@
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-route-ID="@item.DeassEntryID" asp-action="DeassembleItem" asp-route-YC="@Model.DeassYearcode" asp-route-Mode="V" onclick="BackButtonData(event);">
+                                        <a class="table-link link-success" asp-route-formKey="@formKey" asp-route-ID="@item.DeassEntryID" asp-action="DeassembleItem" asp-route-YC="@Model.DeassYearcode" asp-route-Mode="V" onclick="BackButtonData(event);">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -56,7 +67,7 @@
 
                                     <div id="editCursorDiv-@Cntr">
 
-                                        <a class="table-link link-primary" asp-action="DeassembleItem" asp-route-Mode="U" asp-route-ID="@item.DeassEntryID" asp-route-YC="@item.DeassYearcode">
+                                        <a class="table-link link-primary" asp-route-formKey="@formKey" asp-action="DeassembleItem" asp-route-Mode="U" asp-route-ID="@item.DeassEntryID" asp-route-YC="@item.DeassYearcode">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -65,7 +76,7 @@
                                     </div>
 
                                     <div id="deleteCursorDiv-@Cntr">
-                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.DeassEntryID" asp-route-YC="@item.DeassYearcode" asp-route-EntryDate="@item.DeassEntryDate" asp-route-ActualEntryBy="@item.CreatedByEmp" asp-route-MachineName="@item.EntryByMachine">
+                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" asp-route-formKey="@formKey" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.DeassEntryID" asp-route-YC="@item.DeassYearcode" asp-route-EntryDate="@item.DeassEntryDate" asp-route-ActualEntryBy="@item.CreatedByEmp" asp-route-MachineName="@item.EntryByMachine">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>

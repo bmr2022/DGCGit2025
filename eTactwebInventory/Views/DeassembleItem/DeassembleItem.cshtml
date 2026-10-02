@@ -32,16 +32,17 @@
     .select2-container--default .select2-results > .select2-results__options {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
+    }
 </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <form asp-action="DeassembleItem" autocomplete="off" class="form-horizontal">
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
-                <strong>Deassemble Item</strong>
+                <strong>Deassemble Item - Financial Year: @Model.DeassYearcode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-                    <a asp-action="DeassembleDashBoard" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
+                    <a asp-action="DeassembleDashBoard" asp-route-formKey="@ViewBag.formKey" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
                         <i class="fa-duotone fa-grid-horizontal fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -55,6 +56,8 @@
                             <input asp-for="BatchNoback" type="hidden" value="@Model.BatchNoback" />
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                            <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                             @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
@@ -240,8 +243,8 @@
                                         <select class="form-select" asp-for="MaterialRecFrom">
                                             <option value="">-Select-</option>
                                             <option value="Production">Production</option>
-                                            <option value="MRN">MRN</option>
-                                            <option value="None" selected>None</option>
+                                            <option value="MRN" selected>MRN</option>
+                                            <option value="None" >None</option>
                                         </select>
                                     }
                                 </div>
@@ -429,7 +432,7 @@
                         </button>
                     </h2>
 
-                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                    <div id="B_SAGrid" class="accordion-collapse show collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
                             </div>
@@ -475,7 +478,7 @@
                                                     </select>
                                                 </td>
                                                 <td><input asp-for="BomQty" class="form-control" style="width:80px;" readonly /></td>
-                                                <td><input asp-for="DeassQty" style="width:70px !important" class="form-control number"/></td>
+                                                <td><input asp-for="DeassQty" style="width:70px !important" class="form-control number" oninput="this.value=this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/(\.\d{6})\d+/,'$1');" /></td>
                                                 <td><input asp-for="IdealDeassQty" style="width:70px !important" readonly class="form-control number" /></td>
                                                 <td><input asp-for="RMUnit" style="width:70px !important" readonly /></td>
                                                 <td><input asp-for="Remark" style="width:100px !important"  /></td>
@@ -642,9 +645,33 @@
             this.value = this.value.replace(/[^0-9.]/g, '')         // Remove invalid chars
                 .replace(/(\..*)\./g, '$1');     // Allow only one decimal
         });
-        $(document).ready(function () {
-            /* GetFormRights(); */
+var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
+            $(document).ready(function () 
+            {
+                formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();            /* GetFormRights(); */
             console.log('before'+$('#TotalStock').val());
+            FeaturesOption();
+
+            var MaterialRecFrom = $('#MaterialRecFrom').val();
+
+            if (MaterialRecFrom === 'Production') {
+                $('.Production').css('display', 'block');
+            } else {
+                $('.Production').css('display', 'none');
+            }
+
+            if (MaterialRecFrom === 'MRN') {
+                $('.MRN').css('display', 'block');
+            } else {
+                $('.MRN').css('display', 'none');
+            }
+
+            if (MaterialRecFrom === 'None') {
+                $('.MRN').css('display', 'none');
+                $('.Production').css('display', 'none');
+            }
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
                 $('#FinishItemName').select2();
                 $('#FinishPartCode').select2();
@@ -681,7 +708,7 @@
                    FillBomNo();
                console.log('after3' + $('#TotalStock').val());  
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
-                FillStore();
+                /* FillStore(); */
             FillFGPartCode();
             FillFGItemName();
                     FillFGStockBatchNo();
@@ -810,6 +837,7 @@
             }
             $('#FinishItemCode').val(parseInt($('#FinishItemName').val()));
             FillBomNo();
+            FillMRNYearCode();
         });
 
         function ItemNameChange(ID) {
@@ -824,6 +852,7 @@
             FillFGStockUniqueBatchNo();
             GetItemPartCode(ID);
             FillMRNNO();
+            
             FillRecStoreStock();
             if ($('#Mode').val() != 'U' || $('#Mode').val() != 'V') {
                 ClearGridAjax();
@@ -842,6 +871,7 @@
             FillFGStockBatchNo();
             FillFGStockUniqueBatchNo();
             FillMRNNO();
+            FillMRNYearCode();
             FillRecStoreStock();
             if ($('#Mode').val() != 'U' || $('#Mode').val() != 'V') {
                 ClearGridAjax();
@@ -954,6 +984,7 @@
             $.getJSON({
                 url: '@Url.Action("GetItemPartCode", "SaleOrder")',
                 data: { Code: $('#' + ID).val() },
+                async: false,
                 success: function (result, status, xhr) {
                     if (result) {
                         var obj = JSON.parse(result);
@@ -976,6 +1007,7 @@
             $.getJSON({
                 url: '@Url.Action("GetItemPartCode", "SaleOrder")',
                 data: { Code: $('#' + ID).val() },
+                async: false,
                 success: function (result, status, xhr) {
                     if (result) {
                         var obj = JSON.parse(result);
@@ -1014,7 +1046,7 @@
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("ClearGridAjax")",
-                
+                data:{uniqueKey:uniqueKey},
                 dataType: "json",
                 async: false,
                 success: function (data, status, error) {
@@ -1029,6 +1061,7 @@
         $('#FGBatchNo').change(function () {
             ClearGridAjax();
             FillFGStockUniqueBatchNo();
+            FillRecStoreStock();
             var selectedValue = $(this).val();
             $('#RMBatchNo').val(selectedValue);
 
@@ -1036,6 +1069,7 @@
 
         $('#FGUniqueBatchNo').change(function () {
             ClearGridAjax();
+                    FillRecStoreStock();
             var selectedValue = $(this).val();
             $('#RmUniqueBatchNo').val(selectedValue);
 
@@ -1110,7 +1144,7 @@
 
                                     '<td><input id="ItemName' + i + '" value=' + JSON.stringify(val.ItemName) + ' readonly class="textbox"></td>' +
                                     '<td><input id="BomQty' + i + '" value=' + val.BomQty + ' style="width:60px;" class="textbox number" readonly></td>' +
-                                    '<td><input id="Deassembleqty' + i + '" value=' + val.Deassembleqty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number" onchange="GateAmount();" oninput="handleInput(this)"></td>' +
+                                                    '<td><input id="Deassembleqty' + i + '" value=' + val.Deassembleqty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number" onchange="GateAmount();"   ></td>' +
 
 
 
@@ -1199,7 +1233,7 @@
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddDeassembleDetail1")',
-                data: { "model": ItemData },
+                data: { "model": ItemData ,"uniqueKey":uniqueKey},
                 // statusCode: {
                 //     207: function () {
                 //         $.notify('Duplicate Item...!', "info");
@@ -1432,7 +1466,7 @@
                 $.ajax({
                     url: '@Url.Action("EditItemRows")',
                     type: "POST",
-                    data: { SeqNo: SeqNo },
+                    data: { SeqNo: SeqNo ,uniqueKey:uniqueKey},
                     async: false,
                     success: function (data) {
                         var obj = $.parseJSON(data);
@@ -1504,7 +1538,7 @@
                     url: '@Url.Action("DeleteItemRow")',
                     type: "POST",
                     async: false,
-                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
+                            data: { "SeqNo": SeqNo, "Mode": $('#Mode').val(),"uniqueKey":uniqueKey },
                     success: function (data, status, xhr) {
                         $('#divISTGrid').html(data);
                         //TotalNoOfRows();
@@ -1565,7 +1599,7 @@
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddDeassembleDetail")',
-                data: SchData,
+                data: {model:SchData,uniqueKey:uniqueKey},
                 statusCode: {
                     207: function () {
                         $.notify('Duplicate Item...!', "info");
@@ -1666,11 +1700,14 @@
 
             var ItemCode = $('#ItemCode').val();
             var Storeid = $('#FromStoreId').val();
+                    var BatchNo = $('#FGBatchNo option:selected').text().trim();
+            var UniqueBatchNo = $('#FGUniqueBatchNo').text().trim();
+                    var  TillDate= $('#DeassEntryDate').val();
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("FillTotalStock", "StockAdjustment")",
+                        url: "@Url.Action("GetBatchStockQty", "NRGP")",
                 async: false,
-                data: { "ItemCode": ItemCode, "Storeid": Storeid },
+                                        data: { "ItemCode": ItemCode, "StoreId": Storeid,"TillDate":TillDate,"BatchNo":BatchNo,"UniqueBatchNo":UniqueBatchNo},
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -1686,26 +1723,49 @@
         }
 
 
-        function FillRecStoreStock() {
-            var ItemCode = $('#FinishPartCode').val();
-            var Storeid = $('#FGStoreId').val();
-            var UniqueBatchNo = $('#FGUniqueBatchNo').val();
-            var BatchNo = $('#FGBatchNo').val();
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("FillTotalStock", "StockAdjustment")",
-                data: { "ItemCode": ItemCode, "Storeid": Storeid },
-                async: false,
-                success: function (result, status, error) {
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#TotalStock').val("");
-                            $('#TotalStock').val(obj.Result[0].STOCK);
+                function FillRecStoreStock() {
+            // var ItemCode = $('#FinishPartCode').val();
+            // var Storeid = $('#FGStoreId').val();
+            // var UniqueBatchNo = $('#FGUniqueBatchNo').val();
+            // var BatchNo = $('#FGBatchNo').val();
+            // $.ajax({
+            //     type: "POST",
+            //     url: "@Url.Action("FillTotalStock", "StockAdjustment")",
+            //     data: { "ItemCode": ItemCode, "Storeid": Storeid },
+            //     async: false,
+            //     success: function (result, status, error) {
+            //         if (result != null) {
+            //             var obj = $.parseJSON(result);
+            //             if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+            //                 $('#TotalStock').val("");
+            //                 $('#TotalStock').val(obj.Result[0].STOCK);
+            //             }
+            //         }
+            //     }
+            // });
+
+                            var ItemCode = $('#FinishPartCode').val();
+                            var Storeid = $('#FGStoreId').val();
+                            var BatchNo = $('#FGBatchNo option:selected').text().trim();
+                            var UniqueBatchNo = $('#FGUniqueBatchNo option:selected').text().trim();
+                            var  TillDate= $('#DeassEntryDate').val();
+                    $.ajax({
+                        type: "POST",
+                                url: "@Url.Action("GetBatchStockQty", "NRGP")",
+                        async: false,
+                                                data: { "ItemCode": ItemCode, "StoreId": Storeid,"TillDate":TillDate,"BatchNo":BatchNo,"UniqueBatchNo":UniqueBatchNo},
+                        success: function (result, status, error) {
+
+                            if (result != null) {
+                                var obj = $.parseJSON(result);
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    $('#TotalStock').val(0);
+                                            $('#TotalStock').val(obj.Result[0].STOCK);
+                                }
+                                //  ChangeAltQty();
+                            }
                         }
-                    }
-                }
-            });
+                    });
         }
 
 
@@ -1721,7 +1781,7 @@
                 type: "POST",
                 url: "@Url.Action("FillStockBatchNo")",
                 async: false,
-                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
+                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno,"formKey":formKey },
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -1773,7 +1833,8 @@
                                 });
                             }
 
-
+                            
+                                    // FillRecStoreStock();
 
                         } else {
                             $('#RMBatchNo').empty();
@@ -1793,9 +1854,9 @@
             var batchno = $('#RMBatchNo').val();
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("FillStockBatchNo")",
+                        url: "@Url.Action("FillStockBatchNo")",
                 async: false,
-                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
+                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno,"formKey":formKey },
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -1809,6 +1870,7 @@
                                 $('#RmUniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '" selected>' + val.UniqueBatchNo + '</option>');
                             });
                             //    GetBatchInventory();
+                                     // FillRecStoreStock();
 
                         } else {
                             $('#RmUniqueBatchNo').empty();
@@ -1831,7 +1893,7 @@
                 type: "POST",
                 url: "@Url.Action("FillStockBatchNo")",
                 async: false,
-                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
+                        data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno ,"formKey":formKey},
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -1883,6 +1945,8 @@
                                 });
                             }
 
+                            FillRecStoreStock();
+
 
 
                         } else {
@@ -1905,7 +1969,7 @@
                 type: "POST",
                 url: "@Url.Action("FillStockBatchNo")",
                 async: false,
-                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
+                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno ,"formKey":formKey},
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -1940,7 +2004,7 @@
             }
             $.ajax({
                 type: "GET",
-                data: { "ItemCode": ItemCode, "YearCode": YearCode, "WCid": Wcid, "TransDate": TransDate, "BatchNo": batchno },
+                data: { "ItemCode": ItemCode, "YearCode": YearCode, "WCid": Wcid, "TransDate": TransDate, "BatchNo": batchno ,"formKey":formKey},
                 url: "@Url.Action("FillCurrentBatchINWIP", "StockAdjustment")",
                 dataType: "json",
                 success: function (result, status, error) {
@@ -1977,7 +2041,7 @@
             }
             $.ajax({
                 type: "GET",
-                data: { "ItemCode": ItemCode, "YearCode": YearCode, "WCid": Wcid, "TransDate": TransDate, "BatchNo": batchno },
+                data: { "ItemCode": ItemCode, "YearCode": YearCode, "WCid": Wcid, "TransDate": TransDate, "BatchNo": batchno,"formKey":formKey },
                 url: "@Url.Action("FillCurrentBatchINWIP", "StockAdjustment")",
                 dataType: "json",
                 async: false,
@@ -2067,6 +2131,7 @@
                 url: "@Url.Action("FillFGItemName")",
                
                 dataType: "json",
+                async: false,
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -2096,6 +2161,7 @@
                 url: "@Url.Action("FillFGPartCode")",
 
                 dataType: "json",
+                async: false,
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -2126,6 +2192,7 @@
                 url: "@Url.Action("FillBomNo")",
                 data: { FinishItemCode: FinishItemCode },
                 dataType: "json",
+                async: false,
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -2183,6 +2250,7 @@
                 url: "@Url.Action("FillRMItemName")",
                 data: { FinishItemCode: FinishItemCode, BomNo: BomNo },
                 dataType: "json",
+                async: false,
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -2214,6 +2282,7 @@
                 url: "@Url.Action("FillRMPartCode")",
                 data: { FinishItemCode: FinishItemCode, BomNo: BomNo },
                 dataType: "json",
+                async   : false,
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -2253,6 +2322,11 @@
                             $.each(obj.Result, function (index, val) {
                                 $('#FGStoreId').append('<option value="' + val.storeid + '">' + val.store_name + '</option>');
                             });
+
+                            console.log(DefaultStoreForDeasseble);
+
+                            $('#FGStoreId').val(DefaultStoreForDeasseble).trigger("change");
+
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 var FGStoreId = "@Model.FGStoreId";
                                 $('#FGStoreId').val(FGStoreId).trigger("change");
@@ -2279,7 +2353,7 @@
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#MRNO').empty();
-                            $('#MRNO').append('<option value="" disabled selected>-Select-</option>');
+                            /* $('#MRNO').append('<option value="" disabled selected>-Select-</option>'); */
 
                             $.each(obj.Result, function (index, val) {
                                 $('#MRNO').append('<option value="' + val.MRNno + '">' + val.MRNno + '</option>');
@@ -2288,6 +2362,7 @@
                                 var MRNO = "@Model.MRNO";
                                 $('#MRNO').val(MRNO).trigger("change");
                             }
+                            FillMRNYearCode();
                         }
                     }
                 }
@@ -2311,7 +2386,7 @@
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#MRNYearCode').empty();
-                            $('#MRNYearCode').append('<option value="" disabled selected>-Select-</option>');
+                            /* $('#MRNYearCode').append('<option value="" disabled selected>-Select-</option>'); */
 
                             $.each(obj.Result, function (index, val) {
                                 $('#MRNYearCode').append('<option value="' + val.MRNYearCode + '">' + val.MRNYearCode + '</option>');
@@ -2320,6 +2395,7 @@
                                 var MRNYearCode = "@Model.MRNYearCode";
                                 $('#MRNYearCode').val(MRNYearCode).trigger("change");
                             }
+                            FillMRNDetail();
                         }
                     }
                 }
@@ -2412,8 +2488,8 @@
                 async: false,
                 success: function (result, status, error) {
 
-                    $('#DeassEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (result));
-                    $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (result));
+                    $('#DeassEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                            $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
 
 
 
@@ -2432,6 +2508,7 @@
                 url: "@Url.Action("NewEntryId")",
                 dataType: "json",
                 
+                data:{formKey:formKey},
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
@@ -2470,6 +2547,32 @@
                 }
             });
         }
+        var DefaultStoreForDeasseble = 0;
+        function FeaturesOption() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FeaturesOption")",
+                dataType: "json",
+
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        console.log(obj);
+                        if (obj.Result && obj.Result.length > 0) 
+            { 
+                        DefaultStoreForDeasseble = obj.Result[0].DefaultStoreIDForDeasseble;
+                        console.log('DefaultStoreForDeasseble' + DefaultStoreForDeasseble);
+            }
+
+                        FillStore();
+                        
+                        
+                    }
+                }
+            });
+        }
+
 
         function PressBack() {
 

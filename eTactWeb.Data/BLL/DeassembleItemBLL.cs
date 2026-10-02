@@ -12,7 +12,7 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL
 {
-    public class DeassembleItemBLL:IDeassembleItem
+    public class DeassembleItemBLL : IDeassembleItem
     {
         private DeassembleItemDAL? _IDeassembleItemDAL { get; }
         public DeassembleItemBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
@@ -25,30 +25,34 @@ namespace eTactWeb.Data.BLL
         }
 
 
-        public async Task<ResponseResult> NewEntryId()
+        public async Task<ResponseResult> NewEntryId(int YearCode)
         {
-            return await _IDeassembleItemDAL.NewEntryId();
+            return await _IDeassembleItemDAL.NewEntryId(YearCode);
         }
-        public async Task<ResponseResult> BomQty(int RMItemCode, int FinishItemCode, int bomNo, float FGQty)
+        public async Task<ResponseResult> FeaturesOption()
         {
-            return await _IDeassembleItemDAL.BomQty(RMItemCode,  FinishItemCode,  bomNo,  FGQty);
+            return await _IDeassembleItemDAL.FeaturesOption();
+        }
+        public async Task<ResponseResult> BomQty(int RMItemCode, int FinishItemCode, int bomNo, decimal FGQty)
+        {
+            return await _IDeassembleItemDAL.BomQty(RMItemCode, FinishItemCode, bomNo, FGQty);
         }
         public async Task<ResponseResult> FillMRNNO(int FGItemCode, int yearcode)
         {
-            return await _IDeassembleItemDAL.FillMRNNO( FGItemCode,  yearcode);
+            return await _IDeassembleItemDAL.FillMRNNO(FGItemCode, yearcode);
         }
 
         public async Task<ResponseResult> FILLRMAndBomDetail(int FinishItemCode, int bomNo, decimal FGQty)
         {
-            return await _IDeassembleItemDAL.FILLRMAndBomDetail(FinishItemCode,bomNo,FGQty);
+            return await _IDeassembleItemDAL.FILLRMAndBomDetail(FinishItemCode, bomNo, FGQty);
         }
 
         public async Task<ResponseResult> FillMRNYearCode(int FGItemCode, int yearcode, string MRNNO)
         {
-            return await _IDeassembleItemDAL.FillMRNYearCode(FGItemCode, yearcode,MRNNO);
+            return await _IDeassembleItemDAL.FillMRNYearCode(FGItemCode, yearcode, MRNNO);
         }
 
-        public async Task<ResponseResult> FillMRNDetail( int yearcode, string MRNNO,int mrnyearcode)
+        public async Task<ResponseResult> FillMRNDetail(int yearcode, string MRNNO, int mrnyearcode)
         {
             return await _IDeassembleItemDAL.FillMRNDetail(yearcode, MRNNO, mrnyearcode);
         }
@@ -66,16 +70,16 @@ namespace eTactWeb.Data.BLL
         {
             return await _IDeassembleItemDAL.FillFGPartCode();
         }
-        
+
         public async Task<ResponseResult> FillBomNo(int FinishItemCode)
         {
             return await _IDeassembleItemDAL.FillBomNo(FinishItemCode);
         }
-        public async Task<ResponseResult> FillRMItemName(int FinishItemCode,int BomNo)
+        public async Task<ResponseResult> FillRMItemName(int FinishItemCode, int BomNo)
         {
             return await _IDeassembleItemDAL.FillRMItemName(FinishItemCode, BomNo);
         }
-        public async Task<ResponseResult> FillRMPartCode(int FinishItemCode,int BomNo)
+        public async Task<ResponseResult> FillRMPartCode(int FinishItemCode, int BomNo)
         {
             return await _IDeassembleItemDAL.FillRMPartCode(FinishItemCode, BomNo);
         }
@@ -92,7 +96,7 @@ namespace eTactWeb.Data.BLL
 
         public async Task<DeassembleItemDashBoard> GetDashBoardDetailData(string FromDate, string ToDate, string ReportType)
         {
-            return await _IDeassembleItemDAL.GetDashBoardDetailData(FromDate, ToDate,   ReportType);
+            return await _IDeassembleItemDAL.GetDashBoardDetailData(FromDate, ToDate, ReportType);
         }
 
         public async Task<ResponseResult> GetDashboardData()

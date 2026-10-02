@@ -7,12 +7,14 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models
 {
-    public class DeassembleItemModel: DeassembleItemDetail
+    public class DeassembleItemModel : DeassembleItemDetail
     {
 
         public int DeassEntryID { get; set; }
         public string? IPAddress { get; set; }
         public string? DeassEntryDate { get; set; }
+        public string? formKey { get; set; }
+        public string? uniqueKey { get; set; }
         public int DeassYearcode { get; set; }
         public string DeassSlipNo { get; set; }
         public int BomNo { get; set; }
@@ -56,7 +58,7 @@ namespace eTactWeb.DOM.Models
         public string GlobalSearchBack { get; set; }
 
         public IList<DeassembleItemDetail> DeassembleItemDetail { get; set; }
-        
+
 
 
     }
@@ -80,7 +82,9 @@ namespace eTactWeb.DOM.Models
 
     public class DeassembleItemDashBoard : TimeStamp
     {
-        public string? FromDate {  get; set; }
+        public string? FromDate { get; set; }
+        public string? formKey { get; set; }
+        public string? uniqueKey { get; set; }
         public string? ToDate { get; set; }
         public string? ReportType { get; set; }                   // DM.SlipNo
         public string? Searchbox { get; set; }
@@ -89,7 +93,7 @@ namespace eTactWeb.DOM.Models
         public string? DeassEntryDate { get; set; }           // DM.DeassEntryDate
         public int? DeassYearcode { get; set; }              // DM.DeassYearcode
         public string? DeassSlipNo { get; set; }                // DM.DeassSlipNo
-        public int?     FGStoreId { get; set; }                     // DM.FGStoreId
+        public int? FGStoreId { get; set; }                     // DM.FGStoreId
         public string? FGStoreName { get; set; }                // FGStoreName
 
         public int? FinishItemCode { get; set; }             // DM.FinishItemCode
