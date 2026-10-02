@@ -9,29 +9,31 @@ namespace eTactWeb.DOM.Models
 {
     public class ProductionEntryReportModel
     {
-        public string? FromDate {  get; set; }
-        public string? ToDate { get; set; } 
-        public string? FromTime { get; set; } 
-        public DateTime? ToTime { get; set; } 
-        public DateTime? FromSlipNo { get; set; } 
-        public string? ToSlipNo { get; set; } 
-        public string? FGPartCode {  get; set; }
-        public string? FGItemName {  get; set; }
-        public string? RMPartCode {  get; set; }
-        public string? RMItemName {  get; set; }
-        public string? ProdSlipNo {  get; set; }
-        public string? ProdPlanNo {  get; set; }
-        public string? ProdSchNo {  get; set; }
-        public string? ReqNo {  get; set; }
-        public string? WorkCenter {  get; set; }
-        public string? MachineName {  get; set; }
-        public string? OperatorName {  get; set; }
-        public int? ProcessId {  get; set; }
-        public string? Process {  get; set; }
+        public string? FromDate { get; set; }
+        public string? ToDate { get; set; }
+        public string? FromTime { get; set; }
+        public DateTime? ToTime { get; set; }
+        public DateTime? FromSlipNo { get; set; }
+        public string? ToSlipNo { get; set; }
+        public string? FGPartCode { get; set; }
+        public string? FGItemName { get; set; }
+        public string? RMPartCode { get; set; }
+        public string? RMItemName { get; set; }
+        public string? ProdSlipNo { get; set; }
+        public string? ProdPlanNo { get; set; }
+        public string? ProdSchNo { get; set; }
+        public string? ReqNo { get; set; }
+        public string? WorkCenter { get; set; }
+        public string? MachineName { get; set; }
+        public string? OperatorName { get; set; }
+        public int? ProcessId { get; set; }
+        public string? Process { get; set; }
         public string? ReportType { get; set; }
         public string? ShiftName { get; set; }
         public int? TransStoreID { get; set; }
         public int? TransWCID { get; set; }
+        public List<DashboardColumn> Headers { get; set; }
+        public List<Dictionary<string, object>> Rows { get; set; }
         public IList<ProductionEntryReportDetail>? ProductionEntryReportDetail { get; set; }
     }
     public class ProductionEntryReportDetail
@@ -43,7 +45,7 @@ namespace eTactWeb.DOM.Models
         public string? NewProdRework { get; set; }
         public string? ProdSlipNo { get; set; }
         public string? ProdDate { get; set; }
-        
+
         public string? ShiftName { get; set; }
         public string? ProdPlanNo { get; set; }
         public int ProdPlanYearCode { get; set; }
@@ -56,15 +58,15 @@ namespace eTactWeb.DOM.Models
         public string? ReqDate { get; set; }
         public string? FGPartCode { get; set; }
         public string? FGItemName { get; set; }
-        public decimal WOQTY { get; set; }
-        public decimal ProdSchQty { get; set; }
-        public decimal FGProdQty { get; set; }
-        public decimal FGOKQty { get; set; }
-        public decimal FGRejQty { get; set; }
-        public decimal RejQtyDuetoTrail { get; set; }
-        public decimal PendQtyForProd { get; set; }
-        public decimal PendQtyForQC { get; set; }
-        public decimal PendingQtyToIssue { get; set; }
+        public decimal? WOQTY { get; set; }
+        public decimal? ProdSchQty { get; set; }
+        public decimal? FGProdQty { get; set; }
+        public decimal? FGOKQty { get; set; }
+        public decimal? FGRejQty { get; set; }
+        public decimal? RejQtyDuetoTrail { get; set; }
+        public decimal? PendQtyForProd { get; set; }
+        public decimal? PendQtyForQC { get; set; }
+        public decimal? PendingQtyToIssue { get; set; }
         public int BOMNO { get; set; }
         public string? BOMDate { get; set; }
         public string? TransferToWCSTr { get; set; }
@@ -82,27 +84,27 @@ namespace eTactWeb.DOM.Models
         public string? TransferToQc { get; set; }
         public string? StartTime { get; set; }
         public string? ToTime { get; set; }
-        public decimal setupTime { get; set; }
+        public decimal? setupTime { get; set; }
         public int PrevWC { get; set; }
         public string? ProducedINLineNo { get; set; }
         public string? QCChecked { get; set; }
-        public decimal InitialReading { get; set; }
-        public decimal FinalReading { get; set; }
+        public decimal? InitialReading { get; set; }
+        public decimal? FinalReading { get; set; }
         public int Shots { get; set; }
         public string? Completed { get; set; }
-        public decimal UtilisedHours { get; set; }
+        public decimal? UtilisedHours { get; set; }
         public string? SODate { get; set; }
         public string? ProdLineNo { get; set; }
         public int stdShots { get; set; }
         public int stdCycletime { get; set; }
         public string? Remark { get; set; }
-        public decimal CyclicTime { get; set; }
-        public decimal ProductionHour { get; set; }
+        public decimal? CyclicTime { get; set; }
+        public decimal? ProductionHour { get; set; }
         public string? ItemModel { get; set; }
         public int cavity { get; set; }
-        public decimal startupRejQty { get; set; }
-        public decimal efficiency { get; set; }
-        public decimal ActualTimeRequired { get; set; }
+        public decimal? startupRejQty { get; set; }
+        public decimal? efficiency { get; set; }
+        public decimal? ActualTimeRequired { get; set; }
         public string? BatchNo { get; set; }
         public string? UniqueBatchNo { get; set; }
         public string? parentProdSchNo { get; set; }
@@ -113,10 +115,10 @@ namespace eTactWeb.DOM.Models
         public string? sotype { get; set; }
         public string? QCOffered { get; set; }
         public string? QCOfferDate { get; set; }
-        public decimal QCQTy { get; set; }
-        public decimal OKQty { get; set; }
-        public decimal RejQTy { get; set; }
-        public decimal StockQTy { get; set; }
+        public decimal? QCQTy { get; set; }
+        public decimal? OKQty { get; set; }
+        public decimal? RejQTy { get; set; }
+        public decimal? StockQTy { get; set; }
         public string? matTransferd { get; set; }
         public int RewQcYearCode { get; set; }
         public string? RewQcDate { get; set; }
@@ -132,29 +134,41 @@ namespace eTactWeb.DOM.Models
         public string? operatorName { get; set; }
         public string? supervisior { get; set; }
         public string? Workcenter { get; set; }
-        public decimal PendingQtyToTransfer { get; set; }
+        public decimal? PendingQtyToTransfer { get; set; }
         public string? RMPartCode { get; set; }
         public string? RMItemName { get; set; }
-        public decimal RMConsQty { get; set; }
+        public decimal? RMConsQty { get; set; }
         public string? RMUnit { get; set; }
         public string? Reason { get; set; }
         public string? BreakfromTime { get; set; }
-        public string? BreaktoTime { get; set;}
-        public decimal BreakTimeMin {  get; set; }
-        public string? ResEmpName {  get; set; }
-        public string? ResFactor {  get; set; }
-        public decimal Breakdown {  get; set; }
-        public decimal TotalHrs {  get; set; }
-        public decimal OverTimeHrs { get;set; }
-        public decimal MachineCharges { get; set; }
+        public string? BreaktoTime { get; set; }
+        public decimal? BreakTimeMin { get; set; }
+        public string? ResEmpName { get; set; }
+        public string? ResFactor { get; set; }
+        public decimal? Breakdown { get; set; }
+        public decimal? TotalHrs { get; set; }
+        public decimal? OverTimeHrs { get; set; }
+        public decimal? MachineCharges { get; set; }
         //public string? ShiftName {  get; set; }
-        public decimal TotProdQty { get; set; }
+        public decimal? TotProdQty { get; set; }
 
         [JsonPropertyName("PendQtyForQcwithoutprint")]
-        public decimal PendQtyForQc {  get; set; }
-        public decimal QCOKQty {  get; set; }
+        public decimal? PendQtyForQc { get; set; }
+        public decimal? QCOKQty { get; set; }
         [JsonPropertyName("RejQtywithoutprint")]
-        public decimal RejQty {  get; set; }
-        public decimal RewQty {  get; set; }
+        public decimal? RejQty { get; set; }
+        public decimal? RewQty { get; set; }
+        public decimal? PlannedRunningHour { get; set; }
+        public string? ActualRunningHour { get; set; }
+        public decimal? NoOfCavity { get; set; }
+        public decimal? RunningCavity { get; set; }
+        public decimal? CycletimeOfShots { get; set; }
+        public decimal? CycletimeInSec { get; set; }
+        public decimal? CycleTimeWithrespectToWorkingActivity { get; set; }
+        //public decimal? FGprodQty {  get; set; }
+        public decimal? NoOfshotsHours { get; set; }
+        public string? PartCode { get; set; }
+        public string? Item_Name { get; set; }
+        public string? ProcessName { get; set; }
     }
 }

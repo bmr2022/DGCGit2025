@@ -16,7 +16,8 @@
                 <h5>
                     Production Entry - <strong>Dashboard</strong> : @yearCode
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-action="ProductionEntry" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                        <a asp-action="ProductionEntry" asp-route-formKey="@ViewBag.formKey"
+                           asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                             <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                             Add New
                         </a>
@@ -32,6 +33,8 @@
                                     <div class="col">
                                         <label class="form-label">From Date</label>
                                         <input asp-for="FromDate" class="form-control" />
+                                        <input type="hidden" id="formKey" value="@ViewBag.formKey" />
+                                        <input type="hidden" id="uniqueKey" value="@ViewBag.uniqueKey" />
                                     </div>
                                     <div class="col">
                                         <label class="form-label">To Date</label>
@@ -89,7 +92,8 @@
                                 <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
-                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="ProductionEntry" asp-action="ProductionEntryDashboard">
+                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-route-formKey="@ViewBag.formKey"
+                                   asp-controller="ProductionEntry" asp-action="ProductionEntryDashboard">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
                             </div>
@@ -156,7 +160,11 @@
 @section Scripts
 {
     <script>
+             var formKey=$('#formKey').val();
+             var uniqueKey=$('#uniqueKey').val();
         $(function () {
+              formKey=$('#formKey').val();
+            uniqueKey=$('#uniqueKey').val();
             GetFormRights();
             var FromDateBack = sessionStorage.getItem('FromDateBack');
             var ToDateBack = sessionStorage.getItem('ToDateBack');
@@ -303,9 +311,42 @@
                 OpenPasswordPopup();
             }
         }
+        var lastProdDate = "";
+        function CheckProdDate() {
 
-        function confirmEdit(event, ProdEntryId, ProdYearCode, ProdDate) {
+    $.ajax({
+        type: "POST",
+        url: "@Url.Action("GetLastProddate")",
+        dataType: "json",
+        data: {
+              YearCode: @yearCode,
+            "WorkCenter": $('#WorkCenter').val()
+        },
+        async: false,
+        success: function (result) {
+
+            if (result != null) {
+
+                var obj = $.parseJSON(result);
+
+                if (obj.Result[0].LastProdDate != null) {
+
+                    var dbDate = obj.Result[0].LastProdDate.split("T")[0]; // yyyy-MM-dd
+                    var arr = dbDate.split("-");
+
+                    // Store globally in dd/MM/yyyy format
+                    lastProdDate = arr[2] + "/" + arr[1] + "/" + arr[0];
+                }
+
+              
+            }
+        }
+    });
+}
+
+        function confirmEdit(event,ProdEntryId, ProdSlipNo, ProdYearCode, ProdDate) {
             event.preventDefault();
+            CheckProdDate();
             var urlHref = $(event.currentTarget).attr("href");
 
             var parts = ProdDate.split('/');
@@ -313,8 +354,10 @@
             var today = new Date();
             var todayStr = today.toLocaleDateString('en-GB');
 
-            if (ProdDate === todayStr) {
-                window.location.href = urlHref; // same date → no password
+            if (ProdDate === lastProdDate) {
+                // Same date → directly confirm delete
+                    CheckEditOrDelete(urlHref, ProdEntryId, ProdYearCode);
+               // window.location.href = urlHref; // same date → no password
             } else {
                 pendingAction = {
                     type: 'edit',
@@ -418,6 +461,7 @@
          
             var formData = $('#SParam').serializeArray();
             formData.push({ name: 'pageNumber', value: pageNumber });
+            formData.push({ name: 'formKey', value: formKey });
             $.ajax({
                 type: 'GET',
                 url: url,
@@ -438,7 +482,7 @@
             $.ajax({
                 url: "/ProductionEntry/GlobalSearch?searchString=" + searchString,
                 type: "GET",
-                data: { searchString: searchString, dashboardType: dashboardType },
+                data: { searchString: searchString, dashboardType: dashboardType ,formKey:formKey},
                 success: function (data) {
 
                     $('#divDashboardGrid').empty();
@@ -457,6 +501,7 @@
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
+                data:{formKey:formKey},
                 success: function (data) {
                     if (data != null) {
 
@@ -1261,11 +1306,12 @@
         }
         function GetSummaryData() {
               
-            var data = $('#SParam').serialize();
-            $.ajax({
+var data = $('#SParam').serializeArray();
+data.push({ name: 'formKey', value: formKey });
+ $.ajax({
                 url: '@Url.Action("GetSearchData")',
                 type: "POST",
-                data: $('#SParam').serializeArray(),
+                data: data,
                 async: false,
                 success: function (data) {
                      
@@ -1285,11 +1331,12 @@
         }
 
         function GetBatchwiseDetail() {
-            var data = $('#SParam').serialize();
+var data = $('#SParam').serializeArray();
+data.push({ name: 'formKey', value: formKey });
             $.ajax({
                 url: '@Url.Action("GetBatchwiseDetail")',
                 type: "POST",
-                data: $('#SParam').serializeArray(),
+                data: data,
                 async: false,
                 success: function (data) {
 
@@ -1319,11 +1366,12 @@
 
         function GetBreakdownData() {
 
-            var data = $('#SParam').serialize();
+            var data = $('#SParam').serializeArray();
+             data.push({ name: 'formKey', value: formKey });
             $.ajax({
                 url: '@Url.Action("GetBreakdownData")',
                 type: "POST",
-                data: $('#SParam').serializeArray(),
+                data: data,
                 async: false,
                 success: function (data) {
 
@@ -1344,11 +1392,12 @@
 
         function GetOperationData() {
 
-            var data = $('#SParam').serialize();
+            var data = $('#SParam').serializeArray();
+             data.push({ name: 'formKey', value: formKey });
             $.ajax({
                 url: '@Url.Action("GetOperationData")',
                 type: "POST",
-                data: $('#SParam').serializeArray(),
+                data: data,
                 async: false,
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
@@ -1368,11 +1417,12 @@
 
         function GetScrapData() {
 
-            var data = $('#SParam').serialize();
+            var data = $('#SParam').serializeArray();
+             data.push({ name: 'formKey', value: formKey });
             $.ajax({
                 url: '@Url.Action("GetScrapData")',
                 type: "POST",
-                data: $('#SParam').serializeArray(),
+                data: data,
                 async: false,
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
@@ -1392,11 +1442,12 @@
 
         function GetProductData() {
 
-            var data = $('#SParam').serialize();
+            var data = $('#SParam').serializeArray();
+             data.push({ name: 'formKey', value: formKey });
             $.ajax({
                 url: '@Url.Action("GetProductData")',
                 type: "POST",
-                data: $('#SParam').serializeArray(),
+                data: data,
                 async: false,
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
@@ -1416,11 +1467,12 @@
 
         function GetDetailData() {
 
-            var data = $('#SParam').serialize();
+            var data = $('#SParam').serializeArray();
+                    data.push({ name: 'formKey', value: formKey });
             $.ajax({
                 url: '@Url.Action("GetDetailData")',
                 type: "POST",
-                data: $('#SParam').serializeArray(),
+                data: data,
                 async: false,
                 success: function (data) {
 
@@ -1493,13 +1545,13 @@
             }
         });
 
-        function CheckEditOrDelete(urlHref , ProdSlipNo, ProdYearCode) {
+        function CheckEditOrDelete(urlHref , ProdEntryId, ProdYearCode) {
               
             event.preventDefault();
             $.ajax({
                 url: '@Url.Action("CheckEditOrDelete")',
                 type: "POST",
-                data: { "ProdSlipNo": ProdSlipNo, "ProdYearCode": ProdYearCode },
+                data: { "ProdEntryId": ProdEntryId, "ProdYearCode": ProdYearCode },
                 async: false,
                 success: function (data) {
                      

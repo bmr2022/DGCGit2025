@@ -3,9 +3,12 @@
 @using System.Reflection.PortableExecutable
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
-    string branchName = HttpContextAccessor.HttpContext.Session.GetString("Branch");
-    int ActualEntryBy = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("UID"));
+
+    string formKey = ViewBag.formKey;
+
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"YearCode_{formKey}"));
+    string branchName = HttpContextAccessor.HttpContext.Session.GetString($"Branch_{formKey}");
+    int ActualEntryBy = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"UID_{formKey}"));
 }
 
 <div class="table-responsive" style="max-height:350px;">
@@ -71,8 +74,17 @@
                                             </span>
                                         </a>
                                     </div>
+                                     <div id="barcodeData-@Cntr">
+                                        <a class="table-link link-dark" asp-action="BarcodeGenerationForProductionEntry" asp-route-EntryId="@item.PRODEntryId" asp-route-YearCode="@item.PRODYearcode" asp-route-SlipNo="@item.ProdSlipNo" asp-route-fromFormName="ProductionEntry" target="_blank">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-barcode fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="ProductionEntry" asp-route-Mode="V" asp-route-ID="@item.PRODEntryId" asp-route-YC="@item.PRODYearcode" onclick="BackButtonData(event);">
+                                        <a class="table-link link-success" asp-route-formKey="@formKey"
+                                           id="viewCursor-@Cntr" asp-action="ProductionEntry" asp-route-Mode="V" asp-route-ID="@item.PRODEntryId" asp-route-YC="@item.PRODYearcode" onclick="BackButtonData(event);">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -84,11 +96,12 @@
                                         <div id="editCursorDiv-@Cntr">
                                             <a class="table-link link-primary"
                                                id="editCursor-@Cntr"
+                                               asp-route-formKey="@formKey"
                                                asp-action="ProductionEntry"
                                                asp-route-Mode="U"
                                                asp-route-ID="@item.PRODEntryId"
                                                asp-route-YC="@item.PRODYearcode"
-                                               onclick="confirmEdit(event, '@item.PRODEntryId', '@item.PRODYearcode', '@item.ProdDate')">
+                                               onclick="confirmEdit(event, '@item.PRODEntryId','@item.ProdSlipNo', '@item.PRODYearcode', '@item.ProdDate')">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>

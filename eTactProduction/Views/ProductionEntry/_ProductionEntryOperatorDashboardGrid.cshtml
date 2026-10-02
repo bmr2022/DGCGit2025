@@ -3,7 +3,9 @@
 @using System.Reflection.PortableExecutable
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+    string formKey = ViewBag.formKey;
+
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"YearCode_{formKey}"));
 }
 
 <div class="table-responsive" style="max-height:350px;">
@@ -59,7 +61,8 @@
                                         </a>
                                     </div>
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="ProductionEntry" asp-route-Mode="V" asp-route-ID="@item.PRODEntryId" asp-route-YC="@item.PRODYearcode" onclick="BackButtonData(event);">
+                                        <a class="table-link link-success" id="viewCursor-@Cntr" asp-route-formKey="@formKey"
+                                           asp-action="ProductionEntry" asp-route-Mode="V" asp-route-ID="@item.PRODEntryId" asp-route-YC="@item.PRODYearcode" onclick="BackButtonData(event);">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -73,7 +76,7 @@
                                             <a class="table-link link-primary"
                                                id="editCursor-@Cntr"
                                                asp-action="ProductionEntry"
-                                               asp-route-Mode="U"
+                                               asp-route-Mode="U" asp-route-formKey="@formKey"
                                                asp-route-ID="@item.PRODEntryId"
                                                asp-route-YC="@item.PRODYearcode"
                                                onclick="confirmEdit(event, '@item.PRODEntryId', '@item.PRODYearcode', '@item.ProdDate')">

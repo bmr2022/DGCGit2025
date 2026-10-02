@@ -33,7 +33,7 @@ public class ProductionEntryDAL
         DBConnectionString = _connectionStringService.GetConnectionString();
         _httpContextAccessor = httpContextAccessor;
     }
-    public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int ActualEntryBy,string IPAddress)
+    public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int ActualEntryBy, string IPAddress)
     {
         var _ResponseResult = new ResponseResult();
         var entrydt = ParseDate(EntryDate);
@@ -332,6 +332,25 @@ public class ProductionEntryDAL
 
         return _ResponseResult;
     }
+    public async Task<ResponseResult> GetRoutingdata(int FGItemCode)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "Routingdata"));
+            SqlParams.Add(new SqlParameter("@FGitemcode", FGItemCode));
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
     public async Task<ResponseResult> FillMachineGroup(int machineId)
     {
         var _ResponseResult = new ResponseResult();
@@ -388,7 +407,7 @@ public class ProductionEntryDAL
 
         return _ResponseResult;
     }
-    public async Task<ProductionEntryModel> GetChildData(string Flag, string SPName, int WcId, int YearCode, float ProdQty, int ItemCode, string ProdDate, int BomNo)
+    public async Task<ProductionEntryModel> GetChildData(string Flag, string SPName, int WcId, int YearCode, decimal ProdQty, int ItemCode, string ProdDate, int BomNo, string UseDevlopmentBOm, decimal actualProdQty)
     {
         DataSet? oDataSet = new DataSet();
         var model = new ProductionEntryModel();
@@ -408,6 +427,9 @@ public class ProductionEntryDAL
                 oCmd.Parameters.AddWithValue("@FGItemCode", ItemCode);
                 oCmd.Parameters.AddWithValue("@ProdDate", prodDt);
                 oCmd.Parameters.AddWithValue("@BomNo", BomNo);
+                oCmd.Parameters.AddWithValue("@UseDevlopmentBOm", UseDevlopmentBOm);
+                oCmd.Parameters.AddWithValue("@actualFGProdQty", actualProdQty);
+
                 await myConnection.OpenAsync();
                 using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                 {
@@ -438,7 +460,7 @@ public class ProductionEntryDAL
                                                       AltRMUnit = dr["AltUnit"].ToString() ?? "",
                                                       RMNetWt = string.IsNullOrEmpty(dr["RMNetWt"].ToString()) ? 0 : Convert.ToDecimal(dr["RMNetWt"].ToString()),
                                                       GrossWt = string.IsNullOrEmpty(dr["GrossWt"].ToString()) ? 0 : Convert.ToDecimal(dr["GrossWt"].ToString()),
-                                                      Batchwise = dr["Batchwise"].ToString() ?? "",
+                                                      Batchwise = dr["Batchwise"].ToString().ToUpper() == "YES" ? "Y" : "N",
                                                       BatchNo = dr["BatchNo"].ToString() ?? "",
                                                       UniqueBatchNo = dr["UniqueBatchNo"].ToString() ?? "",
                                                       PendQty = string.IsNullOrEmpty(dr["PendQty"].ToString()) ? 0 : Convert.ToDecimal(dr["PendQty"].ToString()),
@@ -488,6 +510,42 @@ public class ProductionEntryDAL
         {
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "FillTool"));
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
+    public async Task<ResponseResult> FillEmployeeForFinalQc()
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "FillEmployeeForFinalQc"));
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
+    public async Task<ResponseResult> FillEmployeeForCheckedBy()
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "FillEmployeeForCheckedBy"));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
         }
         catch (Exception ex)
@@ -774,7 +832,61 @@ public class ProductionEntryDAL
 
         return _ResponseResult;
     }
-    public async Task<ProductionEntryModel> FillScrapData(int FGItemCode,decimal FgProdQty,string BomNo)
+
+    public async Task<ProductionEntryModel> FillScrapAfterDeleteRow(int FGItemCode, decimal FgProdQty, string BomNo, DataTable GIGrid)
+    {
+        DataSet? oDataSet = new DataSet();
+        var model = new ProductionEntryModel();
+        try
+        {
+            using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+            {
+                SqlCommand oCmd = new SqlCommand("SP_ProductionEntry", myConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                oCmd.Parameters.AddWithValue("@Flag", "FillScrapAfterDeleteRow");
+                oCmd.Parameters.AddWithValue("@FGItemCode", FGItemCode);
+                oCmd.Parameters.AddWithValue("@FGProdQty", FgProdQty);
+                oCmd.Parameters.AddWithValue("@Bomno", BomNo);
+                oCmd.Parameters.AddWithValue("@DTItemGrid", GIGrid);
+                await myConnection.OpenAsync();
+                using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                {
+                    oDataAdapter.Fill(oDataSet);
+                }
+            }
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+                int seq = 1;
+                model.ScrapDetailGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                         select new ProductionEntryItemDetail
+                                         {
+                                             SeqNo = seq++,
+                                             ScrapItemCode = string.IsNullOrEmpty(dr["ScrapItemCode"].ToString()) ? 0 : Convert.ToInt32(dr["ScrapItemCode"].ToString()),
+                                             ScrapPartCode = dr["ScrapPartCode"].ToString() ?? "",
+                                             ScrapItemName = dr["ScrapItemName"].ToString() ?? "",
+                                             ScrapQty = string.IsNullOrEmpty(dr["ProdNetWt"].ToString()) ? 0 : Convert.ToDecimal(dr["ProdNetWt"].ToString()),
+                                             Scrapunit = dr["ScrapUnit"].ToString() ?? "",
+                                             ScrapType = dr["ScrapType"].ToString() ?? "",
+                                             TransferToWCStore = dr["ScrapStore"].ToString() ?? "",
+                                             StoreTransferScrap = dr["StoreTransferScrap"].ToString() ?? "",
+                                             TransferToStoreId = string.IsNullOrEmpty(dr["Storeid"].ToString()) ? 0 : Convert.ToInt32(dr["Storeid"].ToString()),
+                                             //}).OrderBy(x => x.SeqNo).ToList();
+                                         }).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return model;
+    }
+
+    public async Task<ProductionEntryModel> FillScrapData(int FGItemCode, decimal FgProdQty, string BomNo)
     {
         DataSet? oDataSet = new DataSet();
         var model = new ProductionEntryModel();
@@ -798,19 +910,23 @@ public class ProductionEntryDAL
             }
             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
             {
+                int seq = 1;
                 model.ScrapDetailGrid = (from DataRow dr in oDataSet.Tables[0].Rows
-                                                  select new ProductionEntryItemDetail
-                                                  {
-                                                      ScrapItemCode = string.IsNullOrEmpty(dr["ScrapItemCode"].ToString()) ? 0 : Convert.ToInt32(dr["ScrapItemCode"].ToString()),
-                                                      ScrapPartCode = dr["ScrapPartCode"].ToString() ?? "",
-                                                      ScrapItemName = dr["ScrapItemName"].ToString() ?? "",
-                                                      ScrapQty = string.IsNullOrEmpty(dr["ProdNetWt"].ToString()) ? 0 : Convert.ToDecimal(dr["ProdNetWt"].ToString()),
-                                                      Scrapunit = dr["ScrapUnit"].ToString() ?? "",
-                                                      ScrapType = dr["ScrapType"].ToString() ?? "",
-                                                      TransferToWCStore = dr["ScrapStore"].ToString() ?? "",
-                                                      StoreTransferScrap = dr["StoreTransferScrap"].ToString() ?? "",
-                                                      TransferToStoreId = string.IsNullOrEmpty(dr["Storeid"].ToString()) ? 0 : Convert.ToInt32(dr["Storeid"].ToString()),
-                                                  }).OrderBy(x => x.SeqNo).ToList();
+                                         select new ProductionEntryItemDetail
+                                         {
+                                             SeqNo = seq++,
+                                             ScrapItemCode = string.IsNullOrEmpty(dr["ScrapItemCode"].ToString()) ? 0 : Convert.ToInt32(dr["ScrapItemCode"].ToString()),
+                                             ScrapPartCode = dr["ScrapPartCode"].ToString() ?? "",
+                                             ScrapItemName = dr["ScrapItemName"].ToString() ?? "",
+                                             ScrapQty = string.IsNullOrEmpty(dr["ProdNetWt"].ToString()) ? 0 : Convert.ToDecimal(dr["ProdNetWt"].ToString()),
+                                             Scrapunit = dr["ScrapUnit"].ToString() ?? "",
+                                             ScrapType = dr["ScrapType"].ToString() ?? "",
+                                             TransferToWCStoreName = dr["ScrapStore"].ToString() ?? "",
+                                             TransferToWCStore = dr["ScrapStore"].ToString() ?? "",
+                                             StoreTransferScrap = dr["StoreTransferScrap"].ToString() ?? "",
+                                             TransferToStoreId = string.IsNullOrEmpty(dr["Storeid"].ToString()) ? 0 : Convert.ToInt32(dr["Storeid"].ToString()),
+                                             //}).OrderBy(x => x.SeqNo).ToList();
+                                         }).ToList();
             }
         }
         catch (Exception ex)
@@ -848,21 +964,21 @@ public class ProductionEntryDAL
             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
             {
                 model.ProductDetailGrid = (from DataRow dr in oDataSet.Tables[0].Rows
-                                         select new ProductionEntryItemDetail
-                                         {
-                                             SeqNo= string.IsNullOrEmpty(dr["RowNum"].ToString()) ? 0 : Convert.ToInt32(dr["RowNum"].ToString()),
-                                             ProductItemCode = string.IsNullOrEmpty(dr["ProdItemCode"].ToString()) ? 0 : Convert.ToInt32(dr["ProdItemCode"].ToString()),
-                                             ProductPartCode = dr["ProdPartCode"].ToString() ?? "",
-                                             ProductItemName = dr["ProdItemName"].ToString() ?? "",
-                                             ProductQty = string.IsNullOrEmpty(dr["Prodwt"].ToString()) ? 0 : Convert.ToDecimal(dr["Prodwt"].ToString()),
-                                             ProductType = dr["ProdType"].ToString() ?? "",
-                                             Productunit = dr["Produnit"].ToString() ?? "",
-                                             StoreTransferProduct = dr["WCStore"].ToString() ?? "",
-                                             ProductStore = dr["StoreName"].ToString() ?? "",                            
-                                             ProductStoreId = string.IsNullOrEmpty(dr["Storeid"].ToString()) ? 0 : Convert.ToInt32(dr["Storeid"].ToString()),
-                                             ProductWorkCenter = dr["WCName"].ToString() ?? "",
-                                             ProductToWCId = string.IsNullOrEmpty(dr["WCId"].ToString()) ? 0 : Convert.ToInt32(dr["WCId"].ToString()),
-                                         }).OrderBy(x => x.SeqNo).ToList();
+                                           select new ProductionEntryItemDetail
+                                           {
+                                               SeqNo = string.IsNullOrEmpty(dr["RowNum"].ToString()) ? 0 : Convert.ToInt32(dr["RowNum"].ToString()),
+                                               ProductItemCode = string.IsNullOrEmpty(dr["ProdItemCode"].ToString()) ? 0 : Convert.ToInt32(dr["ProdItemCode"].ToString()),
+                                               ProductPartCode = dr["ProdPartCode"].ToString() ?? "",
+                                               ProductItemName = dr["ProdItemName"].ToString() ?? "",
+                                               ProductQty = string.IsNullOrEmpty(dr["Prodwt"].ToString()) ? 0 : Convert.ToDecimal(dr["Prodwt"].ToString()),
+                                               ProductType = dr["ProdType"].ToString() ?? "",
+                                               Productunit = dr["Produnit"].ToString() ?? "",
+                                               StoreTransferProduct = dr["WCStore"].ToString() ?? "",
+                                               ProductStore = dr["StoreName"].ToString() ?? "",
+                                               ProductStoreId = string.IsNullOrEmpty(dr["Storeid"].ToString()) ? 0 : Convert.ToInt32(dr["Storeid"].ToString()),
+                                               ProductWorkCenter = dr["WCName"].ToString() ?? "",
+                                               ProductToWCId = string.IsNullOrEmpty(dr["WCId"].ToString()) ? 0 : Convert.ToInt32(dr["WCId"].ToString()),
+                                           }).OrderBy(x => x.SeqNo).ToList();
             }
         }
         catch (Exception ex)
@@ -877,7 +993,7 @@ public class ProductionEntryDAL
 
 
 
-    public async Task<ResponseResult> GetLastProddate(int YearCode)
+    public async Task<ResponseResult> GetLastProddate(int YearCode, int WorkCenter)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -885,6 +1001,7 @@ public class ProductionEntryDAL
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@FLAG", "GetLastProddate"));
             SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
+            SqlParams.Add(new SqlParameter("@WCID", WorkCenter));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
         }
         catch (Exception ex)
@@ -896,7 +1013,7 @@ public class ProductionEntryDAL
 
         return _ResponseResult;
     }
-    public async Task<ResponseResult> GetBatchNumber(string SPName, int ItemCode, int YearCode, float WcId, string TransDate, string BatchNo)
+    public async Task<ResponseResult> GetBatchNumber(string SPName, int ItemCode, int YearCode, decimal WcId, string TransDate, string BatchNo)
     {
         var Result = new ResponseResult();
 
@@ -921,7 +1038,7 @@ public class ProductionEntryDAL
 
         return Result;
     }
-    public async Task<ResponseResult> DisplayBomDetail(int ItemCode, float WOQty, int BomRevNo)
+    public async Task<ResponseResult> DisplayBomDetail(int ItemCode, decimal WOQty, int BomRevNo)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -961,7 +1078,7 @@ public class ProductionEntryDAL
 
         return _ResponseResult;
     }
-    public async Task<ResponseResult> GetItems(string ProdAgainst, int YearCode,string ItemName, int WCID)
+    public async Task<ResponseResult> GetItems(string ProdAgainst, int YearCode, string ItemName, int WCID)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -983,7 +1100,7 @@ public class ProductionEntryDAL
 
         return _ResponseResult;
     }
-    public async Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode,string PartCode,int WCID)
+    public async Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode, string PartCode, int WCID)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -1266,7 +1383,9 @@ public class ProductionEntryDAL
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
             SqlParams.Add(new SqlParameter("@EmpId", userId));
+            // SqlParams.Add(new SqlParameter("@MainMenu", "Production Entry"));
             SqlParams.Add(new SqlParameter("@MainMenu", "Daily Production Entry"));
+
 
             _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
         }
@@ -1380,13 +1499,17 @@ public class ProductionEntryDAL
             var prodplanDt = CommonFunc.ParseFormattedDate(model.ProdSchDate);
             var reqDt = CommonFunc.ParseFormattedDate(model.ReqDate);
             var actualDt = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
-            var ProdStartTime = CommonFunc.ParseFormattedDate(model.ProdStartTime);
-            var ProdEndTime = CommonFunc.ParseFormattedDate(model.ProdEndTime);
+            var ProdStartTime = ParseFormattedDateTime(model.ProdStartTime);
+            var ProdEndTime = ParseFormattedDateTime(model.ProdEndTime);
+            var UtilizedHour = ParseFormattedDateTime(model.UtilizedHour);
+            var TotalHour = ParseFormattedDateTime(model.TotalHour);
+            //var ProdStartTime = CommonFunc.ParseFormattedDate(model.ProdStartTime);
+            //var ProdEndTime = CommonFunc.ParseFormattedDate(model.ProdEndTime);
             var bomDt = CommonFunc.ParseFormattedDate(model.BomEffecDate);
             var qcofferDt = CommonFunc.ParseFormattedDate(model.QcOfferedDate);
             var rewqcDt = CommonFunc.ParseFormattedDate(model.ReWorkEntrydate);
             var lastupdationDt = CommonFunc.ParseFormattedDate(model.LastUpdatedDate);
-            var parentprodschDt ="";
+            var parentprodschDt = "";
             var SoDt = "";
             var Prodqty = model.ProdQty;
             var rejqty = model.QcRejQty;
@@ -1422,7 +1545,7 @@ public class ProductionEntryDAL
             SqlParams.Add(new SqlParameter("@Yearcode", model.YearCode == 0 ? 0 : model.YearCode));
             SqlParams.Add(new SqlParameter("@ProdAgainstReqPlanDirect", model.ProdAgainstPlanManual ?? ""));
             SqlParams.Add(new SqlParameter("@IPAddress", model.IPAddress ?? ""));
-           
+
             SqlParams.Add(new SqlParameter("@NewProdRework", model.ProdType ?? ""));
             SqlParams.Add(new SqlParameter("@ShiftId", model.ShiftId == 0 ? 0 : model.ShiftId));
             SqlParams.Add(new SqlParameter("@ProdSlipNo", model.ProdSlipNo ?? ""));
@@ -1469,6 +1592,8 @@ public class ProductionEntryDAL
             SqlParams.Add(new SqlParameter("@NextStoreId", model.NextStoreId == 0 ? 0 : model.NextStoreId));
             SqlParams.Add(new SqlParameter("@StartTime", ProdStartTime));
             SqlParams.Add(new SqlParameter("@ToTime", ProdEndTime));
+            SqlParams.Add(new SqlParameter("@TotalHour", TotalHour));
+            SqlParams.Add(new SqlParameter("@UtilizedHour", UtilizedHour));
             SqlParams.Add(new SqlParameter("@setupTime", model.setupTime == 0 ? 0 : model.setupTime));
             SqlParams.Add(new SqlParameter("@PrevWC", model.PrevWC == 0 ? 0 : model.PrevWC));
             SqlParams.Add(new SqlParameter("@PrevProcessId", model.PrevProcessId == 0 ? 0 : model.PrevProcessId));
@@ -1488,6 +1613,7 @@ public class ProductionEntryDAL
             SqlParams.Add(new SqlParameter("@ProductionHour", model.ProductionHour == 0 ? 0 : model.ProductionHour));
             SqlParams.Add(new SqlParameter("@ItemModel", model.ItemModel == null ? "" : model.ItemModel));
             SqlParams.Add(new SqlParameter("@cavity", model.Cavity == 0 ? 0 : model.Cavity));
+            SqlParams.Add(new SqlParameter("@TotalCavity", model.TotalCavity == 0 ? 0 : model.TotalCavity));
             SqlParams.Add(new SqlParameter("@startupRejQty", model.StartupRej == 0 ? 0 : model.StartupRej));
             SqlParams.Add(new SqlParameter("@efficiency", model.efficiency == 0 ? 0 : model.efficiency));
             SqlParams.Add(new SqlParameter("@ActualTimeRequired", model.ActualTimeRequired == 0 ? 0 : model.ActualTimeRequired));
@@ -1514,7 +1640,7 @@ public class ProductionEntryDAL
             SqlParams.Add(new SqlParameter("@RewQcDate", rewqcDt == default ? string.Empty : rewqcDt));
             SqlParams.Add(new SqlParameter("@shiftclose", model.ShiftClosed == null ? "" : model.ShiftClosed));
             SqlParams.Add(new SqlParameter("@ComplProd", model.ComplProd == null ? "" : model.ComplProd));
-            SqlParams.Add(new SqlParameter("@Uid", model.Uid == 0 ? 0 : model.Uid));
+            SqlParams.Add(new SqlParameter("@Uid", model.CreatedBy == 0 ? 0 : model.CreatedBy));
             SqlParams.Add(new SqlParameter("@CC", model.CC == null ? "" : model.CC));
             SqlParams.Add(new SqlParameter("@EntryByMachineNo", model.EntrybyMachineName == null ? "" : model.EntrybyMachineName));
             SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntrybyMachineName == null ? "" : model.EntrybyMachineName));
@@ -1523,6 +1649,9 @@ public class ProductionEntryDAL
             SqlParams.Add(new SqlParameter("@EntryByDesignation", model.EntryByDesignation == null ? "" : model.EntryByDesignation));
             SqlParams.Add(new SqlParameter("@operator", model.Operator == null ? "" : model.Operator));
             SqlParams.Add(new SqlParameter("@supervisior", model.Superwiser == null ? "" : model.Superwiser));
+            SqlParams.Add(new SqlParameter("@CAPANeeded", model.CAPANeeded));
+            SqlParams.Add(new SqlParameter("@FinalQcByEmpId", model.FinalQcByEmpId));
+            SqlParams.Add(new SqlParameter("@checkebyEmpId", model.checkebyEmpId)); //kinjal CAPANeeded,FinalQcByEmpId,checkebyEmpId
 
             SqlParams.Add(new SqlParameter("@DTItemGrid", GIGrid));
             SqlParams.Add(new SqlParameter("@DTBreakGrid", BreakDownGrid));
@@ -2353,7 +2482,7 @@ public class ProductionEntryDAL
         }
         return _ResponseResult;
     }
-    public async Task<ResponseResult> CheckEditOrDelete(string ProdSlipNo, int ProdYearCode)
+    public async Task<ResponseResult> CheckEditOrDelete(int ProdEntryId, int ProdYearCode)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -2361,7 +2490,7 @@ public class ProductionEntryDAL
             var SqlParams = new List<dynamic>();
 
             SqlParams.Add(new SqlParameter("@Flag", "ALLOWTOEDITDELETE"));
-            SqlParams.Add(new SqlParameter("@Entryid", ProdSlipNo));
+            SqlParams.Add(new SqlParameter("@Entryid", ProdEntryId));
             SqlParams.Add(new SqlParameter("@YearCode", ProdYearCode));
 
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
@@ -2474,6 +2603,15 @@ public class ProductionEntryDAL
             model.NextStoreId = Convert.ToInt32(DS.Tables[0].Rows[0]["NextStoreId"].ToString());
             model.StartTime = DS.Tables[0].Rows[0]["StartTime"].ToString();
             model.ToTime = DS.Tables[0].Rows[0]["ToTime"].ToString();
+
+            model.UtilizedHour = Convert.ToDateTime(
+                DS.Tables[0].Rows[0]["UtilizedHour"]
+            ).ToString("HH:mm");
+
+            model.TotalHour = Convert.ToDateTime(
+                DS.Tables[0].Rows[0]["TotalHour"]
+            ).ToString("HH:mm");
+
             model.setupTime = Convert.ToInt32(DS.Tables[0].Rows[0]["setupTime"].ToString());
             model.PrevWC = Convert.ToInt32(DS.Tables[0].Rows[0]["PrevWC"].ToString());
             model.PrevProcessId = Convert.ToInt32(DS.Tables[0].Rows[0]["PrevProcessId"].ToString());
@@ -2492,6 +2630,7 @@ public class ProductionEntryDAL
             model.ProductionHour = Convert.ToDecimal(DS.Tables[0].Rows[0]["ProductionHour"].ToString());
             model.ItemModel = DS.Tables[0].Rows[0]["ItemModel"].ToString();
             model.Cavity = Convert.ToInt32(DS.Tables[0].Rows[0]["cavity"].ToString());
+            model.TotalCavity = Convert.ToInt32(DS.Tables[0].Rows[0]["TotalCavity"].ToString());
             model.StartupRej = Convert.ToDecimal(DS.Tables[0].Rows[0]["startupRejQty"].ToString());
             model.efficiency = Convert.ToDecimal(DS.Tables[0].Rows[0]["efficiency"].ToString());
             model.ActualTimeRequired = Convert.ToDecimal(DS.Tables[0].Rows[0]["ActualTimeRequired"].ToString());
@@ -2527,6 +2666,10 @@ public class ProductionEntryDAL
             model.EntryByDesignation = DS.Tables[0].Rows[0]["EntryByDesignation"].ToString();
             model.OperatorName = DS.Tables[0].Rows[0]["operator"].ToString();
             model.supervisior = DS.Tables[0].Rows[0]["supervisior"].ToString();
+            model.ProdEntryAllowToAddRMItem = DS.Tables[0].Rows[0]["ProdEntryAllowToAddRMItem"].ToString();//kinjal
+            model.FinalQcByEmpId = Convert.ToInt32(DS.Tables[0].Rows[0]["FinalQcByEmpId"].ToString());//kinjal
+            model.checkebyEmpId = Convert.ToInt32(DS.Tables[0].Rows[0]["checkebyEmpId"].ToString());//kinjal
+            model.CAPANeeded = DS.Tables[0].Rows[0]["CAPANeeded"].ToString();//kinjal
 
             if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString()))
             {
@@ -2537,11 +2680,13 @@ public class ProductionEntryDAL
             }
             if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
             {
+                int seqno = 1;
                 foreach (DataRow row in DS.Tables[1].Rows)
                 {
                     ItemList.Add(new ProductionEntryItemDetail
                     {
-                        SeqNo = Convert.ToInt32(row["SeqNo"].ToString()),
+                        //SeqNo = Convert.ToInt32(row["SeqNo"].ToString()),
+                        SeqNo = seqno++,
                         EntryId = Convert.ToInt32(row["PRODEntryid"].ToString()),
                         YearCode = Convert.ToInt32(row["PRODYearcode"].ToString()),
                         FGItemCode = Convert.ToInt32(row["FGItemcode"].ToString()),
@@ -2575,7 +2720,9 @@ public class ProductionEntryDAL
                         ManualAutoEntry = (row["ManualAutoEntry"].ToString()),
                         PendQty = Convert.ToDecimal(row["FGProdQty"].ToString()),
                         RemainingStock = Convert.ToDecimal(row["TotalStock"].ToString()) - Convert.ToDecimal(row["FGProdQty"].ToString()),
+
                     });
+
                 }
                 model.ItemDetailGrid = ItemList;
             }
@@ -2601,6 +2748,7 @@ public class ProductionEntryDAL
                         ResponcibleEmp = Convert.ToInt32(row["ResponcibleEmp"].ToString()),
                         ResEmpName = row["ResEmpName"].ToString(),
                         ResFactor = row["ResFactor"].ToString(),
+                        CAPANeededForBreakDown = row["CAPANeeded"].ToString(),
                     });
                 }
                 model.BreakdownDetailGrid = BreakdownList;
@@ -2653,9 +2801,11 @@ public class ProductionEntryDAL
                         BOMRevDate = row["BOMEFFDate"].ToString(),
                         ScrapType = row["ScrapType"].ToString(),
                         Scrapunit = row["Scrapunit"].ToString(),
-                        TransferToWCStore = row["TransferToWCStore"].ToString(),
+                        TransferToWCStoreName = row["TransferToWCStoreName"].ToString(),
+                        TransferToWCStore = row["TransferToStoreId"].ToString(),
                         TransferToStoreId = Convert.ToInt32(row["TransferToStoreId"].ToString()),
                         TransferToWC = Convert.ToInt32(row["TransferToWCId"].ToString()),
+                        StoreTransferScrap = row["TransferToWCStore"].ToString(),
                     });
                 }
                 model.ScrapDetailGrid = ScrapList;
@@ -2843,7 +2993,7 @@ public class ProductionEntryDAL
         }
         return _ResponseResult;
     }
-    public async Task<PendingProductionEntryModel> GetPendingProductionEntry(int Yearcode)
+    public async Task<PendingProductionEntryModel> GetPendingProductionEntry(string FromDate, string ToDate, int Yearcode)
     {
         var resultList = new PendingProductionEntryModel();
         DataSet oDataSet = new DataSet();
@@ -2856,9 +3006,13 @@ public class ProductionEntryDAL
                 {
                     CommandType = CommandType.StoredProcedure
                 };
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
 
                 command.Parameters.AddWithValue("@ProdAgainstReqPlanDirect", "PendProductionSchDetailPopup");
                 command.Parameters.AddWithValue("@Yearcode", Yearcode);
+                command.Parameters.AddWithValue("@FromDate", fromDt);
+                command.Parameters.AddWithValue("@ToDate", toDt);
 
                 await connection.OpenAsync();
 
@@ -2899,4 +3053,43 @@ public class ProductionEntryDAL
 
         return resultList;
     }
+    public async Task<ResponseResult> GetReportName()
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
+
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
+    public async Task<ResponseResult> GetReportNameForBarcode()
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
+
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
+
 }

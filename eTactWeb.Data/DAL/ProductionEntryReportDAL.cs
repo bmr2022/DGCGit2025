@@ -20,12 +20,14 @@ namespace eTactWeb.Data.DAL
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IDataReader? Reader;
         private readonly ConnectionStringService _connectionStringService;
-        public ProductionEntryReportDAL(IConfiguration configuration, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor, ConnectionStringService connectionStringService)
+        private readonly ICommon _common;
+        public ProductionEntryReportDAL(IConfiguration configuration, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor, ConnectionStringService connectionStringService, ICommon common)
         {
             _IDataLogic = iDataLogic;
             _httpContextAccessor = httpContextAccessor;
             _connectionStringService = connectionStringService;
             DBConnectionString = _connectionStringService.GetConnectionString();
+            _common = common;
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
         public async Task<ResponseResult> GetCompanyName()
@@ -35,7 +37,7 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetCompanyName"));
-               
+
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPreportProductionEntry", SqlParams);
             }
             catch (Exception ex)
@@ -296,7 +298,7 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillShiftName"));
-                
+
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPreportProductionEntry", SqlParams);
             }
             catch (Exception ex)
@@ -348,207 +350,59 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ProductionEntryReportModel> GetProductionEntryReport(string ReportType,string FromDate, string ToDate, string FGPartCode, string FGItemName,string RMPartCode,string RMItemName, string ProdSlipNo, string ProdPlanNo,string ProdSchNo, string ReqNo, string WorkCenter,string MachineName,string OperatorName,string Process,string ShiftName, int StoreID, int WCID, string FromSlipNo, string ToSlipNo, DateTime FromTime, DateTime ToTime)
+        public async Task<ResponseResult> GetProductionEntryReport(string ReportType, string FromDate,
+    string ToDate,
+    string FGPartCode,
+    string FGItemName,
+    string RMPartCode,
+    string RMItemName,
+    string ProdSlipNo,
+    string ProdPlanNo,
+    string ProdSchNo,
+    string ReqNo,
+    string WorkCenter,
+    string MachineName,
+    string OperatorName,
+    string Process,
+    string ShiftName,
+    int StoreID,
+    int WCID,
+    string FromSlipNo,
+    string ToSlipNo,
+    DateTime FromTime,
+    DateTime ToTime)
         {
-            DataSet? oDataSet = new DataSet();
-            var model = new ProductionEntryReportModel();
-            var ProductionReport = new List<ProductionEntryReportDetail>();
-            try
-            {
-                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
-                {
-                    SqlCommand oCmd = new SqlCommand("SPreportProductionEntry", myConnection)
-                    {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
-                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
-                    oCmd.Parameters.AddWithValue("@ReportType", ReportType);
-                    oCmd.Parameters.AddWithValue("@FromDate", fromDt);
-                    oCmd.Parameters.AddWithValue("@ToDate", toDt);
-                    oCmd.Parameters.AddWithValue("@PartCode", FGPartCode);
-                    oCmd.Parameters.AddWithValue("@ItemName", FGItemName);
-                    oCmd.Parameters.AddWithValue("@RMPartCode", RMPartCode);
-                    oCmd.Parameters.AddWithValue("@RMItemName", RMItemName);
-                    oCmd.Parameters.AddWithValue("@ProdSlipNo", ProdSlipNo);
-                    oCmd.Parameters.AddWithValue("@ProdPlanNo", ProdPlanNo);
-                    oCmd.Parameters.AddWithValue("@ProdSchNo", ProdSchNo);
-                    oCmd.Parameters.AddWithValue("@ReqNo", ReqNo);
-                    oCmd.Parameters.AddWithValue("@WorkcenterName", WorkCenter);
-                    oCmd.Parameters.AddWithValue("@processName", Process);
-                    oCmd.Parameters.AddWithValue("@Operator", OperatorName);
-                    oCmd.Parameters.AddWithValue("@ShiftName", ShiftName);
-                    oCmd.Parameters.AddWithValue("@machineName", MachineName);
-                    oCmd.Parameters.AddWithValue("@StoreID", StoreID);
-                    oCmd.Parameters.AddWithValue("@WCID", WCID);
-                    oCmd.Parameters.AddWithValue("@FromSlipNo", FromSlipNo);
-                    oCmd.Parameters.AddWithValue("@ToSlipNo", ToSlipNo);
-                    oCmd.Parameters.AddWithValue("@FromTime", FromTime.ToString("HH:mm:ss"));
-                    oCmd.Parameters.AddWithValue("@ToTime", ToTime.ToString("HH:mm:ss"));
+            var parameters = new Dictionary<string, object?>
+    {
+        { "@ReportType", string.IsNullOrWhiteSpace(ReportType) ? string.Empty : ReportType },
+        { "@FromDate", CommonFunc.ParseFormattedDate(FromDate) },
+        { "@ToDate", CommonFunc.ParseFormattedDate(ToDate) },
+        { "@PartCode", string.IsNullOrWhiteSpace(FGPartCode) ? string.Empty : FGPartCode },
+        { "@ItemName", string.IsNullOrWhiteSpace(FGItemName) ? string.Empty : FGItemName },
+        { "@RMPartCode", string.IsNullOrWhiteSpace(RMPartCode) ? string.Empty : RMPartCode },
+        { "@RMItemName", string.IsNullOrWhiteSpace(RMItemName) ? string.Empty : RMItemName },
+        { "@ProdSlipNo", string.IsNullOrWhiteSpace(ProdSlipNo) ? string.Empty : ProdSlipNo },
+        { "@ProdPlanNo", string.IsNullOrWhiteSpace(ProdPlanNo) ? string.Empty : ProdPlanNo },
+        { "@ProdSchNo", string.IsNullOrWhiteSpace(ProdSchNo) ? string.Empty : ProdSchNo },
+        { "@ReqNo", string.IsNullOrWhiteSpace(ReqNo) ? string.Empty : ReqNo },
+        { "@WorkcenterName", string.IsNullOrWhiteSpace(WorkCenter) ? string.Empty : WorkCenter },
+        { "@processName", string.IsNullOrWhiteSpace(Process) ? string.Empty : Process },
+        { "@Operator", string.IsNullOrWhiteSpace(OperatorName) ? string.Empty : OperatorName },
+        { "@ShiftName", string.IsNullOrWhiteSpace(ShiftName) ? string.Empty : ShiftName },
+        { "@machineName", string.IsNullOrWhiteSpace(MachineName) ? string.Empty : MachineName },
+        { "@StoreID", StoreID },
+        { "@WCID", WCID },
+        { "@FromSlipNo", string.IsNullOrWhiteSpace(FromSlipNo) ? string.Empty : FromSlipNo },
+        { "@ToSlipNo", string.IsNullOrWhiteSpace(ToSlipNo) ? string.Empty : ToSlipNo },
+        { "@FromTime", FromTime.ToString("HH:mm:ss") },
+        { "@ToTime", ToTime.ToString("HH:mm:ss") }
+    };
 
-                    await myConnection.OpenAsync();
-                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
-                    {
-                        oDataAdapter.Fill(oDataSet);
-                    }
-                }
-                if (ReportType == "DETAIL") //done&working
-                {
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        foreach (DataRow row in oDataSet.Tables[0].Rows)
-                        {
-                            var poDetail = CommonFunc.DataRowToClass<ProductionEntryReportDetail>(row);
-                            ProductionReport.Add(poDetail);
-                        }
-                        model.ProductionEntryReportDetail = ProductionReport;
-                    }
-                }
-                else if (ReportType == "Date Wise FG Consolidated")//done(stocksummary,Zeroinventory,balance)
-                {
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        foreach (DataRow row in oDataSet.Tables[0].Rows)
-                        {
-                            var poDetail = CommonFunc.DataRowToClass<ProductionEntryReportDetail>(row);
-                            ProductionReport.Add(poDetail);
-                        }
-                        model.ProductionEntryReportDetail = ProductionReport;
-                    }
-                }
-                else if (ReportType == "Machine Wise FG Production SUmmary")//done & working
-                {
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        foreach (DataRow row in oDataSet.Tables[0].Rows)
-                        {
-                            var poDetail = CommonFunc.DataRowToClass<ProductionEntryReportDetail>(row);
-                            ProductionReport.Add(poDetail);
-                        }
-                        model.ProductionEntryReportDetail = ProductionReport;
-                    }
-                }
-                else if (ReportType == "RM Wise Consumption Summary")//done & working
-                {
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        foreach (DataRow row in oDataSet.Tables[0].Rows)
-                        {
-                            var poDetail = CommonFunc.DataRowToClass<ProductionEntryReportDetail>(row);
-                            ProductionReport.Add(poDetail);
-                        }
-                        model.ProductionEntryReportDetail = ProductionReport;
-                    }
-                }
-                else if (ReportType == "RM Wise Consumption Detail") // done & working
-                {
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        foreach (DataRow row in oDataSet.Tables[0].Rows)
-                        {
-                            var poDetail = CommonFunc.DataRowToClass<ProductionEntryReportDetail>(row);
-                            ProductionReport.Add(poDetail);
-                        }
-                        model.ProductionEntryReportDetail = ProductionReport;
-                    }
-                }
-                else if (ReportType == "RM Total Consumption") // done & working
-                {
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        foreach (DataRow row in oDataSet.Tables[0].Rows)
-                        {
-                            var poDetail = CommonFunc.DataRowToClass<ProductionEntryReportDetail>(row);
-                            ProductionReport.Add(poDetail);
-                        }
-                        model.ProductionEntryReportDetail = ProductionReport;
-                    }
-                }
-                else if (ReportType == "BreakDown Detail") // done & working
-                {
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        foreach (DataRow row in oDataSet.Tables[0].Rows)
-                        {
-                            var poDetail = CommonFunc.DataRowToClass<ProductionEntryReportDetail>(row);
-                            ProductionReport.Add(poDetail);
-                        }
-                        model.ProductionEntryReportDetail = ProductionReport;
-                    }
-                }
-                else if (ReportType == "Machine Wise BreakDown Summary") // done & working
-                {
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        foreach (DataRow row in oDataSet.Tables[0].Rows)
-                        {
-                            var poDetail = CommonFunc.DataRowToClass<ProductionEntryReportDetail>(row);
-                            ProductionReport.Add(poDetail);
-                        }
-                        model.ProductionEntryReportDetail = ProductionReport;
-                    }
-                }
-                else if (ReportType == "Operator Detail Report") // done & working
-                {
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        foreach (DataRow row in oDataSet.Tables[0].Rows)
-                        {
-                            var poDetail = CommonFunc.DataRowToClass<ProductionEntryReportDetail>(row);
-                            ProductionReport.Add(poDetail);
-                        }
-                        model.ProductionEntryReportDetail = ProductionReport;
-                    }
-                }
-                else if (ReportType == "Operator Summary Report") // done & working
-                {
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        foreach (DataRow row in oDataSet.Tables[0].Rows)
-                        {
-                            var poDetail = CommonFunc.DataRowToClass<ProductionEntryReportDetail>(row);
-                            ProductionReport.Add(poDetail);
-                        }
-                        model.ProductionEntryReportDetail = ProductionReport;
-                    }
-                }
-                else if (ReportType == "Production QC Deatil") // done & working
-                {
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        foreach (DataRow row in oDataSet.Tables[0].Rows)
-                        {
-                            var poDetail = CommonFunc.DataRowToClass<ProductionEntryReportDetail>(row);
-                            ProductionReport.Add(poDetail);
-                        }
-                        model.ProductionEntryReportDetail = ProductionReport;
-                    }
-                }
-                 else if (ReportType == "Production Summary") // done & working
-                {
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        foreach (DataRow row in oDataSet.Tables[0].Rows)
-                        {
-                            var poDetail = CommonFunc.DataRowToClass<ProductionEntryReportDetail>(row);
-                            ProductionReport.Add(poDetail);
-                        }
-                        model.ProductionEntryReportDetail = ProductionReport;
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
-            finally
-            {
-                oDataSet.Dispose();
-            }
-            return model;
+            return await _common.GetDashboardData(
+                "SPreportProductionEntry",
+                "DASHBOARD",
+                parameters
+            );
         }
     }
 }

@@ -31,9 +31,10 @@ else
             <td>@item.BreakfromTime</td>
             <td>@item.BreaktoTime</td>
             <td>@item.ReasonDetail</td>
-            <td>@item.BreakTimeMin</td>
+            <td class="BreakTimeMin">@item.BreakTimeMin</td>
             <td>@item.ResEmpName</td>
             <td>@item.ResFactor</td>
+            <td>@(item.CAPANeededForBreakDown == "Y" ? "Yes" : "No")</td>
         </tr>
     }
 }

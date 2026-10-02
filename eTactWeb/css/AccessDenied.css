@@ -1,0 +1,706 @@
+﻿/* ============================================================
+   XON ERP
+   ACCESS DENIED PAGE
+   Completely self-contained / scoped CSS
+   No Font Awesome dependency
+   No Bootstrap dependency
+   ============================================================ */
+
+
+/* ============================================================
+   PAGE
+   ============================================================ */
+
+.access-denied-page {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px 24px 24px;
+    background: linear-gradient( 135deg, #f7fbfc 0%, #f2f8f9 100% );
+}
+
+
+/* ============================================================
+   MAIN CARD
+   ============================================================ */
+
+.access-denied-card {
+    width: 100%;
+    min-height: 525px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e3eeee;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 70, 80, 0.07);
+}
+
+
+/* ============================================================
+   BACKGROUND CIRCLES
+   ============================================================ */
+
+.ad-bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+
+.ad-circle-left {
+    width: 300px;
+    height: 300px;
+    left: -185px;
+    top: -170px;
+    background: #edf8f9;
+}
+
+
+.ad-circle-right {
+    width: 360px;
+    height: 360px;
+    right: -220px;
+    bottom: -240px;
+    background: #fff8f5;
+}
+
+
+/* ============================================================
+   CONTENT
+   ============================================================ */
+
+.ad-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1120px;
+    min-height: 525px;
+    margin: 0 auto;
+    padding: 40px 55px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    column-gap: 55px;
+}
+
+
+/* ============================================================
+   LEFT ILLUSTRATION
+   ============================================================ */
+
+.ad-illustration {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.ad-illustration-area {
+    width: 410px;
+    height: 365px;
+    position: relative;
+}
+
+
+/* ============================================================
+   GLOW
+   ============================================================ */
+
+.ad-glow {
+    position: absolute;
+    width: 285px;
+    height: 285px;
+    left: 62px;
+    top: 38px;
+    border-radius: 50%;
+    background: radial-gradient( circle, rgba(104, 195, 202, 0.20) 0%, rgba(104, 195, 202, 0.08) 50%, rgba(104, 195, 202, 0) 72% );
+}
+
+
+/* ============================================================
+   SHIELD
+   ============================================================ */
+
+.ad-shield {
+    position: absolute;
+    width: 225px;
+    height: 275px;
+    left: 91px;
+    top: 43px;
+    background: #dff3f5;
+    clip-path: polygon( 50% 0%, 92% 17%, 89% 57%, 76% 80%, 50% 100%, 24% 80%, 11% 57%, 8% 17% );
+}
+
+
+.ad-shield-inner {
+    position: absolute;
+    width: 192px;
+    height: 238px;
+    left: 16.5px;
+    top: 16px;
+    background: linear-gradient( 180deg, #ffffff, #f1fafb );
+    clip-path: polygon( 50% 0%, 92% 17%, 89% 57%, 76% 80%, 50% 100%, 24% 80%, 11% 57%, 8% 17% );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ============================================================
+   LOCK
+   ============================================================ */
+
+.ad-lock {
+    position: relative;
+    width: 75px;
+    height: 68px;
+}
+
+
+/* Lock body */
+
+.ad-lock-body {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 75px;
+    height: 60px;
+    background: linear-gradient( 145deg, #f66650, #e64c38 );
+    border-radius: 9px;
+    box-shadow: 0 9px 18px rgba(230, 76, 56, 0.22);
+}
+
+
+/* Shackle */
+
+.ad-lock-ring {
+    position: absolute;
+    z-index: 2;
+    left: 17px;
+    top: 0;
+    width: 41px;
+    height: 40px;
+    border: 8px solid #ed5942;
+    border-bottom: 0;
+    border-radius: 25px 25px 0 0;
+    box-sizing: border-box;
+}
+
+
+/* Keyhole */
+
+.ad-keyhole {
+    position: absolute;
+    z-index: 4;
+    left: 31px;
+    top: 21px;
+    width: 12px;
+    height: 12px;
+    background: #a93529;
+    border-radius: 50%;
+}
+
+
+    .ad-keyhole::after {
+        content: "";
+        position: absolute;
+        left: 3px;
+        top: 9px;
+        width: 6px;
+        height: 18px;
+        background: #a93529;
+        border-radius: 0 0 5px 5px;
+    }
+
+
+/* ============================================================
+   QUESTION
+   ============================================================ */
+
+.ad-question {
+    position: absolute;
+    z-index: 10;
+    left: 18px;
+    top: 43px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #71bdc5;
+    color: #087786;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 700;
+    box-shadow: 0 6px 15px rgba(0, 80, 90, 0.10);
+}
+
+
+/* ============================================================
+   ERROR BADGE
+   ============================================================ */
+
+.ad-error-badge {
+    position: absolute;
+    z-index: 12;
+    right: 38px;
+    bottom: 38px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient( 145deg, #f46650, #e64d3a );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 9px 19px rgba(230, 77, 58, 0.25);
+}
+
+
+    .ad-error-badge svg {
+        width: 30px;
+        height: 30px;
+        display: block;
+    }
+
+
+/* ============================================================
+   DOTS
+   ============================================================ */
+
+.ad-dots {
+    position: absolute;
+    width: 62px;
+    height: 52px;
+    background-image: radial-gradient( #9ed5d9 2px, transparent 2px );
+    background-size: 13px 13px;
+    opacity: 0.65;
+}
+
+
+.ad-dots-1 {
+    right: 3px;
+    top: 50px;
+}
+
+
+.ad-dots-2 {
+    left: 0;
+    bottom: 35px;
+}
+
+
+/* ============================================================
+   PLANT
+   ============================================================ */
+
+.ad-plant {
+    position: absolute;
+    width: 62px;
+    height: 85px;
+    right: 2px;
+    bottom: 20px;
+}
+
+
+/* Stem */
+
+.ad-stem {
+    position: absolute;
+    width: 4px;
+    height: 45px;
+    left: 29px;
+    bottom: 19px;
+    background: #55a878;
+    border-radius: 4px;
+}
+
+
+/* Leaves */
+
+.ad-leaf {
+    position: absolute;
+    width: 27px;
+    height: 17px;
+    background: #61b485;
+    border-radius: 100% 0 100% 0;
+}
+
+
+.ad-leaf-1 {
+    left: 4px;
+    top: 31px;
+    transform: rotate(-38deg);
+}
+
+
+.ad-leaf-2 {
+    right: 3px;
+    top: 18px;
+    transform: rotate(38deg);
+}
+
+
+.ad-leaf-3 {
+    left: 18px;
+    top: 4px;
+    transform: rotate(-5deg);
+}
+
+
+/* Pot */
+
+.ad-pot {
+    position: absolute;
+    left: 9px;
+    bottom: 0;
+    width: 43px;
+    height: 27px;
+    background: #d7a475;
+    border-radius: 3px 3px 11px 11px;
+}
+
+
+/* ============================================================
+   RIGHT SIDE
+   ============================================================ */
+
+.ad-message {
+    width: 100%;
+    max-width: 460px;
+    box-sizing: border-box;
+}
+
+
+/* ============================================================
+   SECURITY ICON
+   ============================================================ */
+
+.ad-security-icon {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 17px;
+    border-radius: 14px;
+    background: #fff0ed;
+    border: 1px solid #ffe0d9;
+    color: #e85a45;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 14px rgba(232, 90, 69, 0.07);
+}
+
+
+    .ad-security-icon svg {
+        width: 30px;
+        height: 30px;
+        display: block;
+    }
+
+
+/* ============================================================
+   TITLE
+   ============================================================ */
+
+.ad-title {
+    padding: 0;
+    margin: 0;
+    color: #075462;
+    font-size: 43px;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+
+    .ad-title span {
+        color: #e85a45;
+    }
+
+
+/* ============================================================
+   TITLE DECORATION
+   ============================================================ */
+
+.ad-title-decoration {
+    height: 7px;
+    margin: 16px 0 21px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+
+    .ad-title-decoration div {
+        width: 50px;
+        height: 4px;
+        border-radius: 5px;
+        background: #e85a45;
+    }
+
+
+        .ad-title-decoration div:last-child {
+            width: 25px;
+        }
+
+
+    .ad-title-decoration span {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #e85a45;
+    }
+
+
+/* ============================================================
+   DESCRIPTION
+   ============================================================ */
+
+.ad-description {
+    margin: 0 0 25px;
+    max-width: 440px;
+    color: #708388;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+
+/* ============================================================
+   PERMISSION BOX
+   ============================================================ */
+
+.ad-permission-box {
+    width: 100%;
+    max-width: 440px;
+    min-height: 78px;
+    box-sizing: border-box;
+    padding: 14px 16px;
+    margin-bottom: 27px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #f3fafb;
+    border: 1px solid #dcecef;
+    border-left: 4px solid #078a98;
+    border-radius: 8px;
+}
+
+
+/* Permission icon */
+
+.ad-permission-icon {
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #078796;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 9px rgba(0, 70, 80, 0.06);
+}
+
+
+    .ad-permission-icon svg {
+        width: 22px;
+        height: 22px;
+        display: block;
+    }
+
+
+/* Text */
+
+.ad-permission-text {
+    min-width: 0;
+}
+
+
+.ad-permission-title {
+    margin-bottom: 4px;
+    color: #075766;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+.ad-permission-description {
+    color: #7b8e92;
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+
+/* ============================================================
+   GO BACK BUTTON
+   ============================================================ */
+
+.ad-back-button {
+    width: 155px;
+    height: 46px;
+    padding: 0 22px;
+    border: none;
+    border-radius: 7px;
+    background: linear-gradient( 135deg, #078d9b, #067581 );
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 7px 18px rgba(7, 141, 155, 0.22);
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+
+    .ad-back-button:hover {
+        transform: translateY(-2px);
+        background: linear-gradient( 135deg, #067e8c, #056a76 );
+        box-shadow: 0 10px 22px rgba(7, 141, 155, 0.28);
+    }
+
+
+    .ad-back-button:active {
+        transform: translateY(0);
+    }
+
+
+    .ad-back-button svg {
+        width: 19px;
+        height: 19px;
+        display: block;
+    }
+
+
+/* ============================================================
+   TABLET
+   ============================================================ */
+
+@media (max-width: 1050px) {
+
+    .ad-content {
+        padding: 35px 35px;
+        column-gap: 25px;
+    }
+
+
+    .ad-illustration-area {
+        transform: scale(.88);
+    }
+
+
+    .ad-title {
+        font-size: 37px;
+    }
+}
+
+
+/* ============================================================
+   MOBILE / SMALL SCREEN
+   ============================================================ */
+
+@media (max-width: 760px) {
+
+    .access-denied-page {
+        padding: 12px;
+    }
+
+
+    .access-denied-card {
+        min-height: auto;
+    }
+
+
+    .ad-content {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding: 25px 20px 35px;
+        row-gap: 0;
+    }
+
+
+    .ad-illustration {
+        min-height: 285px;
+    }
+
+
+    .ad-illustration-area {
+        transform: scale(.72);
+    }
+
+
+    .ad-message {
+        max-width: 100%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+
+    .ad-title {
+        font-size: 32px;
+    }
+
+
+    .ad-title-decoration {
+        justify-content: center;
+    }
+
+
+    .ad-description {
+        font-size: 14px;
+    }
+
+
+    .ad-permission-box {
+        text-align: left;
+    }
+}
+
+
+/* ============================================================
+   VERY SMALL MOBILE
+   ============================================================ */
+
+@media (max-width: 480px) {
+
+    .access-denied-page {
+        padding: 8px;
+    }
+
+
+    .ad-content {
+        padding: 20px 12px 30px;
+    }
+
+
+    .ad-illustration {
+        min-height: 230px;
+    }
+
+
+    .ad-illustration-area {
+        transform: scale(.60);
+    }
+
+
+    .ad-title {
+        font-size: 29px;
+    }
+
+
+    .ad-permission-box {
+        padding: 12px;
+    }
+
+
+    .ad-back-button {
+        width: 150px;
+    }
+}

@@ -23,13 +23,13 @@ namespace eTactWeb.Data.BLL
             _ProductionEntryDAL = new ProductionEntryDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
 
-        public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid,string mode)
+        public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid, string mode)
         {
-            return await _ProductionEntryDAL.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferMatEntryId, TransferGrid,mode);
+            return await _ProductionEntryDAL.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferMatEntryId, TransferGrid, mode);
         }
-        public async Task<PendingProductionEntryModel> GetPendingProductionEntry(int Yearcode)
+        public async Task<PendingProductionEntryModel> GetPendingProductionEntry(string FromDate, string ToDate, int Yearcode)
         {
-            return await _ProductionEntryDAL.GetPendingProductionEntry(Yearcode);
+            return await _ProductionEntryDAL.GetPendingProductionEntry(FromDate, ToDate, Yearcode);
         }
         public async Task<ResponseResult> CheckFeatureOption()
         {
@@ -43,9 +43,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.CheckDuplicateEntry(YearCode, AccountCode, InvNo, DocType);
         }
-        public async Task<ResponseResult> CheckEditOrDelete(string ProdSlipNo, int ProdYearCode)
+        public async Task<ResponseResult> CheckEditOrDelete(int ProdEntryId, int ProdYearCode)
         {
-            return await _ProductionEntryDAL.CheckEditOrDelete(ProdSlipNo, ProdYearCode);
+            return await _ProductionEntryDAL.CheckEditOrDelete(ProdEntryId, ProdYearCode);
         }
         public async Task<ResponseResult> GetPoNumberDropDownList(string Flag, string ServiceType, string SPName, string AccountCode, int Year, int DocTypeId)
         {
@@ -67,9 +67,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.AltUnitConversion(ItemCode, AltQty, UnitQty);
         }
-        public async Task<ProductionEntryModel> GetChildData(string Flag, string SPName, int WcId, int YearCode, float ProdQty, int ItemCode, string ProdDate, int BomNo)
+        public async Task<ProductionEntryModel> GetChildData(string Flag, string SPName, int WcId, int YearCode, decimal ProdQty, int ItemCode, string ProdDate, int BomNo, string UseDevlopmentBOm, decimal actualProdQty)
         {
-            return await _ProductionEntryDAL.GetChildData(Flag, SPName, WcId, YearCode, ProdQty, ItemCode, ProdDate, BomNo);
+            return await _ProductionEntryDAL.GetChildData(Flag, SPName, WcId, YearCode, ProdQty, ItemCode, ProdDate, BomNo, UseDevlopmentBOm, actualProdQty);
         }
         public async Task<ProductionEntryDashboard> GetDashboardData(string FromDate, string ToDate, string SlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ReqNo, string DashboardType)
         {
@@ -115,9 +115,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.SaveProductionEntry(model, GIGrid, OperatorGrid, BreakDownGrid, ScrapGrid, ProductGrid);
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate,int ActualEntryBy,string IPAddress)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int ActualEntryBy, string IPAddress)
         {
-            return await _ProductionEntryDAL.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate,ActualEntryBy, IPAddress);
+            return await _ProductionEntryDAL.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate, ActualEntryBy, IPAddress);
         }
         public async Task<ResponseResult> FillEntryandGate(string Flag, int YearCode, string SPName)
         {
@@ -129,11 +129,11 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ResponseResult> GetTimeDiff(string Flag, string ToTime, string DiffType, string FromTime)
         {
-            return await _ProductionEntryDAL.GetTimeDiff(Flag,ToTime, DiffType, FromTime);
+            return await _ProductionEntryDAL.GetTimeDiff(Flag, ToTime, DiffType, FromTime);
         }
-        public async Task<ResponseResult> GetDateforBreakdown(string Flag, string DiffType, string QtyOfTime,  string FromTime)
+        public async Task<ResponseResult> GetDateforBreakdown(string Flag, string DiffType, string QtyOfTime, string FromTime)
         {
-            return await _ProductionEntryDAL.GetDateforBreakdown(Flag, DiffType, QtyOfTime,FromTime);
+            return await _ProductionEntryDAL.GetDateforBreakdown(Flag, DiffType, QtyOfTime, FromTime);
         }
         public async Task<ResponseResult> FillShiftTime(int ShiftId)
         {
@@ -153,7 +153,11 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ProductionEntryModel> FillScrapData(int FGItemCode, decimal FgProdQty, string BomNo)
         {
-            return await _ProductionEntryDAL.FillScrapData(FGItemCode,FgProdQty,BomNo);
+            return await _ProductionEntryDAL.FillScrapData(FGItemCode, FgProdQty, BomNo);
+        }
+        public async Task<ProductionEntryModel> FillScrapAfterDeleteRow(int FGItemCode, decimal FgProdQty, string BomNo, DataTable GIGrid)
+        {
+            return await _ProductionEntryDAL.FillScrapAfterDeleteRow(FGItemCode, FgProdQty, BomNo, GIGrid);
         }
         public async Task<ProductionEntryModel> FillProductDetail(int FGItemCode, decimal FgProdQty, string BomNo)
         {
@@ -174,6 +178,14 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> FillTool()
         {
             return await _ProductionEntryDAL.FillTool();
+        }
+        public async Task<ResponseResult> FillEmployeeForFinalQc()
+        {
+            return await _ProductionEntryDAL.FillEmployeeForFinalQc();
+        }
+        public async Task<ResponseResult> FillEmployeeForCheckedBy()
+        {
+            return await _ProductionEntryDAL.FillEmployeeForCheckedBy();
         }
         public async Task<ResponseResult> FillMachineGroup(int machineId)
         {
@@ -221,7 +233,7 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ResponseResult> FillProductItems(int FgItemCode, string BomNo)
         {
-            return await _ProductionEntryDAL.FillProductItems(FgItemCode,BomNo);
+            return await _ProductionEntryDAL.FillProductItems(FgItemCode, BomNo);
         }
         public async Task<ResponseResult> FillProductPartCode(int FgItemCode, string BomNo)
         {
@@ -251,11 +263,11 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.FillAltPartCode();
         }
-        public async Task<ResponseResult> GetLastProddate(int YearCode)
+        public async Task<ResponseResult> GetLastProddate(int YearCode, int WorkCenter)
         {
-            return await _ProductionEntryDAL.GetLastProddate(YearCode);
+            return await _ProductionEntryDAL.GetLastProddate(YearCode, WorkCenter);
         }
-        public async Task<ResponseResult> DisplayBomDetail(int ItemCode, float WOQty, int BomRevNo)
+        public async Task<ResponseResult> DisplayBomDetail(int ItemCode, decimal WOQty, int BomRevNo)
         {
             return await _ProductionEntryDAL.DisplayBomDetail(ItemCode, WOQty, BomRevNo);
         }
@@ -263,17 +275,17 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.DisplayRoutingDetail(ItemCode);
         }
-        public async Task<ResponseResult> GetBatchNumber(string SPName, int ItemCode, int YearCode, float WcId, string TransDate, string BatchNo)
+        public async Task<ResponseResult> GetBatchNumber(string SPName, int ItemCode, int YearCode, decimal WcId, string TransDate, string BatchNo)
         {
             return await _ProductionEntryDAL.GetBatchNumber(SPName, ItemCode, YearCode, WcId, TransDate, BatchNo);
         }
         public async Task<ResponseResult> GetItems(string ProdAgainst, int YearCode, string ItemName, int WCID)
         {
-            return await _ProductionEntryDAL.GetItems(ProdAgainst, YearCode,ItemName,WCID);
+            return await _ProductionEntryDAL.GetItems(ProdAgainst, YearCode, ItemName, WCID);
         }
         public async Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode, string PartCode, int WCID)
         {
-            return await _ProductionEntryDAL.GetPartCode(ProdAgainst, YearCode, PartCode   ,WCID);
+            return await _ProductionEntryDAL.GetPartCode(ProdAgainst, YearCode, PartCode, WCID);
         }
         public async Task<ResponseResult> FillWorkcenter()
         {
@@ -283,9 +295,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.FillBomNo(ItemCode);
         }
-        public async Task<ResponseResult> GetProcessDetail(int ItemCode,int ProcessId,int WcId)
+        public async Task<ResponseResult> GetProcessDetail(int ItemCode, int ProcessId, int WcId)
         {
-            return await _ProductionEntryDAL.GetProcessDetail(ItemCode,ProcessId,WcId);
+            return await _ProductionEntryDAL.GetProcessDetail(ItemCode, ProcessId, WcId);
         }
         public async Task<ResponseResult> FillIssWorkcenter(string QcMandatory)
         {
@@ -295,9 +307,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.FillIssWorkcenterForQcMandatory(QcMandatory);
         }
-        public async Task<ResponseResult> CheckForEditandDelete(string ProdSlipNo,int YearCode)
+        public async Task<ResponseResult> CheckForEditandDelete(string ProdSlipNo, int YearCode)
         {
-            return await _ProductionEntryDAL.CheckForEditandDelete(ProdSlipNo,YearCode);
+            return await _ProductionEntryDAL.CheckForEditandDelete(ProdSlipNo, YearCode);
         }
         public async Task<ResponseResult> FillIssStore()
         {
@@ -305,7 +317,11 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ResponseResult> FillOperation(int ItemCode, int WcId)
         {
-            return await _ProductionEntryDAL.FillOperation(ItemCode,WcId);
+            return await _ProductionEntryDAL.FillOperation(ItemCode, WcId);
+        }
+        public async Task<ResponseResult> GetRoutingdata(int FGItemCode)
+        {
+            return await _ProductionEntryDAL.GetRoutingdata(FGItemCode);
         }
         public async Task<ResponseResult> FillReqNo(string Fromdate, string ToDate, string ProdAgainst, int ItemCode)
         {
@@ -317,7 +333,7 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ResponseResult> FillProdPlanDetail(string FromDate, string ToDate, string ProdAgainst, string ProdSchNo, int ProdYearCode)
         {
-            return await _ProductionEntryDAL.FillProdPlanDetail(FromDate, ToDate, ProdAgainst, ProdSchNo,ProdYearCode);
+            return await _ProductionEntryDAL.FillProdPlanDetail(FromDate, ToDate, ProdAgainst, ProdSchNo, ProdYearCode);
         }
         public async Task<ResponseResult> FillReqYear(string Fromdate, string ToDate, string ProdAgainst, string ReqNo)
         {
@@ -325,11 +341,11 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ResponseResult> FillReqDate(string Fromdate, string ToDate, string ProdAgainst, string ReqNo, int ReqYearCode, int ItemCode)
         {
-            return await _ProductionEntryDAL.FillReqDate(Fromdate, ToDate, ProdAgainst, ReqNo,ReqYearCode,ItemCode);
+            return await _ProductionEntryDAL.FillReqDate(Fromdate, ToDate, ProdAgainst, ReqNo, ReqYearCode, ItemCode);
         }
         public async Task<ResponseResult> FillProdDate(string Fromdate, string ToDate, string ProdAgainst, string ProdSchNo, int ProdPlanYearCode)
         {
-            return await _ProductionEntryDAL.FillProdDate(Fromdate, ToDate, ProdAgainst, ProdSchNo,ProdPlanYearCode);
+            return await _ProductionEntryDAL.FillProdDate(Fromdate, ToDate, ProdAgainst, ProdSchNo, ProdPlanYearCode);
         }
         public async Task<ResponseResult> FillProdSchYear(string Fromdate, string ToDate, string ProdAgainst, string ProdSch)
         {
@@ -341,7 +357,7 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ResponseResult> FillPendQty(string CurrentDate, string ProdAgainst, string ProdSchNo, int YearCode, int ItemCode, int ProdSchYear, int Entryid)
         {
-            return await _ProductionEntryDAL.FillPendQty(CurrentDate, ProdAgainst, ProdSchNo, YearCode, ItemCode, ProdSchYear,Entryid);
+            return await _ProductionEntryDAL.FillPendQty(CurrentDate, ProdAgainst, ProdSchNo, YearCode, ItemCode, ProdSchYear, Entryid);
         }
         public async Task<ResponseResult> GetDashboardData()
         {
@@ -357,6 +373,14 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.GetViewByID(ID, YearCode);
 
+        }
+        public async Task<ResponseResult> GetReportName()
+        {
+            return await _ProductionEntryDAL.GetReportName();
+        }
+        public async Task<ResponseResult> GetReportNameForBarcode()
+        {
+            return await _ProductionEntryDAL.GetReportNameForBarcode();
         }
     }
 }

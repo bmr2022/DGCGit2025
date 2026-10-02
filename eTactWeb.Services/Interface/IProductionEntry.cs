@@ -14,12 +14,16 @@ public interface IProductionEntry
     Task<ResponseResult> GetScheDuleByYearCodeandAccountCode(string Flag, string AccountCode, string YearCode, string poNo);
     Task<ResponseResult> GetFeatureOption(string Flag, string SPName);
     Task<ResponseResult> SaveProductionEntry(ProductionEntryModel model, DataTable GIGrid, DataTable OperatorGrid, DataTable BreakDownGrid, DataTable ScrapGrid, DataTable ProductGrid);
+
+    Task<ProductionEntryModel> FillScrapAfterDeleteRow(int FGItemCode, decimal FgProdQty, string BomNo, DataTable GIGrid);
     Task<ProductionEntryDashboard> GetDashboardData(string FromDate, string ToDate, string SlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ReqNo, string DashboardType);
-    Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int ActualEntryBy,string IPAddress);
+    Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int ActualEntryBy, string IPAddress);
     Task<ResponseResult> FillEntryandGate(string Flag, int YearCode, string SPName);
     Task<ResponseResult> FillShift();
     Task<ResponseResult> CheckAllowToAddNegativeStock();
     Task<ResponseResult> FillTool();
+    Task<ResponseResult> FillEmployeeForFinalQc();
+    Task<ResponseResult> FillEmployeeForCheckedBy();
     Task<ResponseResult> FillShiftTime(int ShiftId);
     Task<ResponseResult> FillStore();
     Task<ResponseResult> FillWorkcenter();
@@ -31,13 +35,14 @@ public interface IProductionEntry
     Task<ResponseResult> GetWorkCenterTotalStock(string Flag, int ItemCode, int WcId, string TillDate);
     Task<ResponseResult> GetWorkCenterQty(string Flag, int ItemCode, int WcId, string TillDate, string BatchNo, string UniqueBatchNo);
     Task<ResponseResult> FillIssWorkcenter(string QcMandatory);
-    Task<ResponseResult> CheckForEditandDelete(string ProdSlipNo,int YearCode);
+    Task<ResponseResult> CheckForEditandDelete(string ProdSlipNo, int YearCode);
     Task<ResponseResult> FillIssStore();
     Task<ResponseResult> FillOperation(int ItemCode, int WcId);
+    Task<ResponseResult> GetRoutingdata(int FGItemCode);
     Task<ResponseResult> FillMachineGroup(int groupId);
-    Task<ProductionEntryModel> GetChildData(string Flag, string SPName, int WcId, int YearCode, float ProdQty, int ItemCode, string ProdDate, int BomNo);
+    Task<ProductionEntryModel> GetChildData(string Flag, string SPName, int WcId, int YearCode, decimal ProdQty, int ItemCode, string ProdDate, int BomNo, string UseDevlopmentBOm, decimal actualProdQty);
     Task<ResponseResult> GetItems(string ProdAgainst, int YearCode, string ItemName, int WCID);
-    Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode, string PartCode,int WCID);
+    Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode, string PartCode, int WCID);
     Task<ResponseResult> FillMachineName(int groupId);
     Task<ProductionEntryModel> FillScrapData(int FGItemCode, decimal FgProdQty, string BomNo);
     Task<ProductionEntryModel> FillProductDetail(int FGItemCode, decimal FgProdQty, string BomNo);
@@ -54,9 +59,9 @@ public interface IProductionEntry
     Task<ResponseResult> FillRMPartCode();
     Task<ResponseResult> FillAltItemName();
     Task<ResponseResult> FillAltPartCode();
-    Task<ResponseResult> GetLastProddate(int YearCode);
-    Task<ResponseResult> GetBatchNumber(string SPName, int ItemCode, int YearCode, float WcId, string TransDate, string BatchNo);
-    Task<ResponseResult> DisplayBomDetail(int ItemCode, float WOQty, int BomRevNo);
+    Task<ResponseResult> GetLastProddate(int YearCode, int WorkCenter);
+    Task<ResponseResult> GetBatchNumber(string SPName, int ItemCode, int YearCode, decimal WcId, string TransDate, string BatchNo);
+    Task<ResponseResult> DisplayBomDetail(int ItemCode, decimal WOQty, int BomRevNo);
     Task<ResponseResult> DisplayRoutingDetail(int ItemCode);
     Task<ResponseResult> FillReqNo(string FromDate, string Todate, string ProdAgainst, int ItemCode);
     Task<ResponseResult> FillProdSchNo(string FromDate, string Todate, string ProdAgainst, int ItemCode);
@@ -67,8 +72,8 @@ public interface IProductionEntry
     Task<ResponseResult> FillProdDate(string FromDate, string ToDate, string ProdAgainst, string ProdSchNo, int ProdPlanYearCode);
     Task<ResponseResult> FillProdSchYear(string FromDate, string Todate, string ProdAgainst, string ProdSch);
     Task<ResponseResult> FillReqQty(string CurrentDate, string ProdAgainst, string ReqNo, int YearCode, int ItemCode, int ReqYearCode);
-    Task<ResponseResult> FillPendQty(string CurrentDate, string ProdAgainst, string ProdSchNo, int YearCode, int ItemCode, int ProdSchYear,int Entryid);
-    Task<ResponseResult> CheckEditOrDelete(string ProdSlipNo, int YearCode);
+    Task<ResponseResult> FillPendQty(string CurrentDate, string ProdAgainst, string ProdSchNo, int YearCode, int ItemCode, int ProdSchYear, int Entryid);
+    Task<ResponseResult> CheckEditOrDelete(int ProdEntryId, int YearCode);
     Task<ResponseResult> GetDashboardData();
     Task<ResponseResult> FillIssWorkcenterForQcMandatory(string QcMandatory);
     Task<ProductionEntryDashboard> GetDashboardDetailData(string FromDate, string ToDate, string SlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ReqNo, string DashboardType);
@@ -86,8 +91,10 @@ public interface IProductionEntry
     Task<ResponseResult> GetTimeDiff(string Flag, string ToTime, string DiffType, string FromTime);
     Task<ResponseResult> CheckDuplicateEntry(int YearCode, int AccountCode, string InvNo, int DocType);
     Task<ResponseResult> FillProductType();
-    public Task<PendingProductionEntryModel> GetPendingProductionEntry(int Yearcode);
-    Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid,string mode);
+    public Task<PendingProductionEntryModel> GetPendingProductionEntry(string FromDate, string ToDate, int Yearcode);
+    Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid, string mode);
+    Task<ResponseResult> GetReportName();
+    Task<ResponseResult> GetReportNameForBarcode();
 
 
 }

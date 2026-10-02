@@ -1,0 +1,5588 @@
+﻿/* =========================================================
+   XON ERP - FINAL VISUAL THEME
+   Target: supplied XON ERP reference screenshot
+   Keeps existing routes, permissions and menu logic unchanged.
+   ========================================================= */
+
+:root {
+    --erp-sidebar-width: 282px;
+    --erp-header-height: 92px;
+    --xon-teal: #075b60;
+    --xon-teal-dark: #03484d;
+    --xon-teal-soft: #edf7f7;
+    --xon-page: #f7f9fa;
+    --xon-white: #ffffff;
+    --xon-border: #e5eeee;
+    --xon-text: #17282c;
+    --xon-muted: #6f7d82;
+    --xon-shadow: 0 3px 18px rgba(0, 55, 60, .06);
+}
+
+/* =========================================================
+   BASE / PAGE
+   ========================================================= */
+
+html,
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
+    min-height: 100%;
+    background: var(--xon-page) !important;
+    color: var(--xon-text) !important;
+    overflow-x: hidden;
+}
+
+body {
+    padding-left: var(--erp-sidebar-width) !important;
+    padding-top: var(--erp-header-height) !important;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* =========================================================
+   TOP HEADER
+   ========================================================= */
+
+header > nav.HeaderShadow {
+    position: fixed !important;
+    inset: 0 0 auto 0 !important;
+    width: 100% !important;
+    height: var(--erp-header-height) !important;
+    min-height: var(--erp-header-height) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: var(--xon-white) !important;
+    border: 0 !important;
+    border-bottom: 1px solid #edf1f2 !important;
+    box-shadow: var(--xon-shadow) !important;
+    z-index: 5000;
+}
+
+    header > nav.HeaderShadow > .container-fluid {
+        width: 100%;
+        height: 100%;
+        padding: 0 22px 0 18px !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    /* Logo */
+    header > nav.HeaderShadow .mis-brand {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 230px !important;
+        height: var(--erp-header-height) !important;
+        padding: 0 28px !important;
+        box-sizing: border-box;
+        display: flex !important;
+        align-items: center !important;
+        gap: 7px;
+        background: #fff !important;
+        border: 0 !important;
+        z-index: 5101 !important;
+        text-decoration: none !important;
+    }
+
+        header > nav.HeaderShadow .mis-brand img {
+            width: auto !important;
+            max-width: 185px !important;
+            max-height: 58px !important;
+            object-fit: contain;
+        }
+
+.mis-brand-text {
+    color: var(--xon-teal) !important;
+    font-size: 23px !important;
+    font-weight: 700 !important;
+    letter-spacing: -.45px;
+    white-space: nowrap;
+}
+
+/* Hamburger */
+header > nav.HeaderShadow .mis-menu-toggle {
+    position: fixed !important;
+    top: 0 !important;
+    left: 230px !important;
+    width: 52px !important;
+    height: var(--erp-header-height) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: var(--xon-teal) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 21px !important;
+    z-index: 5200 !important;
+    cursor: pointer;
+}
+
+    header > nav.HeaderShadow .mis-menu-toggle:hover {
+        background: #f4f8f8 !important;
+        color: var(--xon-teal-dark) !important;
+    }
+
+/* Search */
+.mis-top-search {
+    position: fixed !important;
+    top: 29px !important;
+    left: calc(var(--erp-sidebar-width) + 36px) !important;
+    width: min(43vw, 670px) !important;
+    height: 42px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px;
+    padding: 0 16px !important;
+    box-sizing: border-box;
+    background: #f2f4f5 !important;
+    border: 1px solid #e9edef !important;
+    border-radius: 7px !important;
+    color: #3c6267 !important;
+    z-index: 5200 !important;
+}
+
+    .mis-top-search i {
+        flex: 0 0 auto;
+        font-size: 15px !important;
+        color: #3c6267 !important;
+    }
+
+    .mis-top-search input {
+        width: 100% !important;
+        min-width: 0;
+        border: 0 !important;
+        outline: 0 !important;
+        background: transparent !important;
+        color: #33484c !important;
+        font-size: 13px !important;
+    }
+
+        .mis-top-search input::placeholder {
+            color: #7b8589 !important;
+            opacity: 1;
+        }
+
+/* Hide old duplicate company/user block */
+#main_nav > .d-flex.align-items-center.text-white.text-end.ms-3 {
+    display: none !important;
+}
+
+/* =========================================================
+   HEADER RIGHT SIDE
+   ========================================================= */
+
+.mis-header-actions {
+    position: fixed !important;
+    top: 0 !important;
+    right: 22px !important;
+    height: var(--erp-header-height) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    z-index: 5200 !important;
+}
+
+.mis-header-icon {
+    position: relative;
+    width: 34px !important;
+    height: 34px !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    color: var(--xon-teal) !important;
+    font-size: 19px !important;
+    text-decoration: none !important;
+}
+
+    .mis-header-icon:hover {
+        color: var(--xon-teal-dark) !important;
+    }
+
+.mis-header-badge {
+    position: absolute;
+    top: -2px;
+    right: -3px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    border-radius: 20px;
+    background: #ef3f30 !important;
+    color: #fff !important;
+    font-size: 9px !important;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.mis-context {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    min-width: 175px !important;
+    max-width: 205px !important;
+    color: var(--xon-muted) !important;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+    .mis-context div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .mis-context b {
+        color: #111 !important;
+        font-weight: 500 !important;
+    }
+
+    .mis-context span {
+        color: var(--xon-teal) !important;
+        font-weight: 700 !important;
+    }
+
+/* Profile */
+.mis-profile {
+    height: 54px !important;
+    padding: 0 4px 0 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+    .mis-profile:hover {
+        background: #f5f8f8 !important;
+    }
+
+.mis-avatar {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    border-radius: 50%;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: var(--xon-teal) !important;
+    color: #fff !important;
+    font-size: 17px !important;
+    font-weight: 700;
+}
+
+.mis-profile-copy {
+    display: flex !important;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+    .mis-profile-copy strong {
+        color: #111 !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        white-space: nowrap;
+    }
+
+    .mis-profile-copy span {
+        margin-top: 3px;
+        color: #69757a !important;
+        font-size: 10px !important;
+        white-space: nowrap;
+    }
+
+.mis-profile-arrow {
+    margin-left: 3px;
+    color: #4d6569 !important;
+    font-size: 9px !important;
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+#main_nav {
+    position: fixed !important;
+    top: var(--erp-header-height) !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: var(--erp-sidebar-width) !important;
+    height: calc(100vh - var(--erp-header-height)) !important;
+    box-sizing: border-box;
+    margin: 0 !important;
+    /* The reference design has the navigation starting below
+       the company/financial-year strip. */
+    padding: 108px 14px 20px !important;
+    display: block !important;
+    overflow-x: visible !important;
+    overflow-y: auto !important;
+    background: #fff !important;
+    border-right: 1px solid var(--xon-border) !important;
+    box-shadow: 2px 0 15px rgba(0, 45, 50, .035) !important;
+    z-index: 4500 !important;
+}
+
+    #main_nav > .navbar-nav {
+        width: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+    }
+
+        #main_nav > .navbar-nav > .nav-item {
+            width: 100%;
+            margin: 0 !important;
+        }
+
+            #main_nav > .navbar-nav > .nav-item > .nav-link {
+                width: 100%;
+                min-height: 38px !important;
+                padding: 5px 10px !important;
+                box-sizing: border-box;
+                display: flex !important;
+                align-items: center;
+                gap: 9px !important;
+                border-radius: 7px !important;
+                background: transparent !important;
+                color: #172326 !important;
+                font-size: 12px !important;
+                font-weight: 600 !important;
+                text-decoration: none !important;
+                white-space: nowrap;
+                transition: background .16s ease, color .16s ease, box-shadow .16s ease;
+            }
+
+                #main_nav > .navbar-nav > .nav-item > .nav-link:hover {
+                    background: #f1f7f7 !important;
+                    color: var(--xon-teal) !important;
+                }
+
+                #main_nav > .navbar-nav > .nav-item > .nav-link > i {
+                    width: 27px !important;
+                    height: 27px !important;
+                    min-width: 27px !important;
+                    margin: 0 !important;
+                    display: inline-flex !important;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 7px !important;
+                    background: var(--xon-teal-soft) !important;
+                    color: var(--xon-teal) !important;
+                    font-size: 12px !important;
+                }
+
+                #main_nav > .navbar-nav > .nav-item > .nav-link::after {
+                    margin-left: auto !important;
+                    color: #7d8a8e !important;
+                    font-size: 9px !important;
+                }
+
+                #main_nav > .navbar-nav > .nav-item.active > .nav-link,
+                #main_nav > .navbar-nav > .nav-item > .nav-link.mis-active {
+                    background: linear-gradient(135deg, #09656a, #034f54) !important;
+                    color: #fff !important;
+                    box-shadow: 0 4px 12px rgba(4, 79, 84, .18) !important;
+                }
+
+                    #main_nav > .navbar-nav > .nav-item.active > .nav-link > i,
+                    #main_nav > .navbar-nav > .nav-item > .nav-link.mis-active > i {
+                        background: rgba(255,255,255,.16) !important;
+                        color: #fff !important;
+                    }
+
+            #main_nav > .navbar-nav > .nav-item:first-child > .nav-link {
+                margin-bottom: 6px !important;
+                background: linear-gradient(135deg, #09656a, #034f54) !important;
+                color: #fff !important;
+            }
+
+                #main_nav > .navbar-nav > .nav-item:first-child > .nav-link > i {
+                    background: rgba(255,255,255,.16) !important;
+                    color: #fff !important;
+                }
+
+    /* Hide generated Material Management parent exactly as the
+   existing JavaScript expects. */
+    #main_nav .mis-hidden-item {
+        display: none !important;
+    }
+
+    /* =========================================================
+   DROPDOWNS / SUBMENUS
+   ========================================================= */
+
+    #main_nav > .navbar-nav > .nav-item.dropdown > .dropdown-menu {
+        position: static !important;
+        width: 100% !important;
+        margin: 2px 0 4px !important;
+        padding: 4px !important;
+        background: #f8fbfb !important;
+        border: 1px solid #e9eeee !important;
+        border-radius: 8px !important;
+        box-shadow: none !important;
+    }
+
+    #main_nav .dropdown-item {
+        width: 100%;
+        padding: 7px 8px !important;
+        border-radius: 6px !important;
+        background: transparent !important;
+        color: #47565a !important;
+        font-size: 11px !important;
+        font-weight: 500 !important;
+        white-space: nowrap;
+    }
+
+        #main_nav .dropdown-item:hover {
+            background: #eaf4f4 !important;
+            color: var(--xon-teal) !important;
+        }
+
+        #main_nav .dropdown-item i {
+            width: 25px !important;
+            height: 25px !important;
+            min-width: 25px !important;
+            margin-right: 6px !important;
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px !important;
+            background: var(--xon-teal-soft) !important;
+            color: var(--xon-teal) !important;
+            font-size: 11px !important;
+        }
+
+    #main_nav .dropdown-menu > li {
+        position: relative;
+    }
+
+    #main_nav .submenu {
+        position: absolute !important;
+        top: 0 !important;
+        left: calc(100% + 5px) !important;
+        min-width: 235px !important;
+        max-height: 75vh;
+        overflow-y: auto;
+        margin: 0 !important;
+        padding: 6px !important;
+        background: #fff !important;
+        border: 1px solid var(--xon-border) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 10px 30px rgba(30, 50, 80, .14) !important;
+        z-index: 6000 !important;
+    }
+
+    #main_nav .dropdown-menu > li:hover > .submenu {
+        display: block;
+    }
+
+    #main_nav .dropdown-divider {
+        margin: 4px 5px !important;
+        border-color: #e8eeee !important;
+    }
+
+    /* Scrollbar */
+    #main_nav::-webkit-scrollbar,
+    #main_nav .submenu::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    #main_nav::-webkit-scrollbar-thumb,
+    #main_nav .submenu::-webkit-scrollbar-thumb {
+        background: #d4dfe0;
+        border-radius: 10px;
+    }
+
+    #main_nav::-webkit-scrollbar-track,
+    #main_nav .submenu::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+/* =========================================================
+   QUICK ACTIONS
+   ========================================================= */
+
+.mis-quick-actions {
+    margin: 12px 2px 0 !important;
+    padding: 10px 9px !important;
+    border: 1px solid #e2eaea !important;
+    border-radius: 8px !important;
+    background: linear-gradient(180deg, #fbfdfd, #f4f8f8) !important;
+    box-shadow: 0 2px 8px rgba(0, 55, 60, .04) !important;
+}
+
+.mis-quick-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    color: #263e40;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.mis-quick-item {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 2px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #526176;
+    font-size: 10px;
+    text-align: left;
+    cursor: pointer;
+}
+
+    .mis-quick-item:hover {
+        background: #eaf4f4;
+        color: var(--xon-teal);
+    }
+
+.mis-quick-actions.is-collapsed .mis-quick-body {
+    display: none;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer.erp-footer {
+    position: relative !important;
+    inset: auto !important;
+    float: none !important;
+    clear: both !important;
+    width: calc(100% - 36px) !important;
+    min-height: 60px !important;
+    margin: 0 18px 10px !important;
+    padding: 12px 26px !important;
+    box-sizing: border-box;
+    background: #fff !important;
+    border: 1px solid #dfe8e9 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 3px 15px rgba(0, 55, 60, .06) !important;
+    color: #68757a !important;
+    overflow: hidden;
+    z-index: 20;
+}
+
+.erp-footer .container-fluid {
+    width: 100%;
+    padding: 0 !important;
+}
+
+.erp-footer .row {
+    min-height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 18px !important;
+}
+
+.erp-footer .col {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+}
+
+.erp-footer-copy,
+.erp-footer-machine,
+.erp-footer label,
+.erp-footer span {
+    color: #68757a !important;
+    font-size: 12px !important;
+    line-height: 1.45;
+}
+
+    .erp-footer-copy strong,
+    .erp-footer-copy a,
+    .erp-footer-value {
+        color: var(--xon-teal) !important;
+        font-weight: 700 !important;
+    }
+
+    .erp-footer-copy a {
+        text-decoration: none !important;
+    }
+
+        .erp-footer-copy a:hover {
+            color: #033f43 !important;
+            text-decoration: underline !important;
+        }
+
+.erp-footer-location {
+    width: 38px !important;
+    height: 38px !important;
+    margin-right: 10px !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50% !important;
+    background: #edf7f7 !important;
+    color: var(--xon-teal) !important;
+}
+
+.footer-user {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.footer-user-icon {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    background: #edf7f7 !important;
+    color: var(--xon-teal) !important;
+    flex: 0 0 auto;
+}
+
+.footer-user-name {
+    color: #68757a !important;
+    font-size: 12px !important;
+    white-space: nowrap;
+}
+
+    .footer-user-name strong {
+        color: var(--xon-teal) !important;
+        font-weight: 700 !important;
+    }
+
+.footer-pdf {
+    margin-left: auto !important;
+    width: 40px !important;
+    height: 40px !important;
+    border: 1px solid #ff6b5c !important;
+    border-radius: 50% !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    color: #ff5a4d !important;
+    background: #fff !important;
+    font-size: 18px !important;
+}
+
+/* =========================================================
+   COLLAPSED SIDEBAR
+   ========================================================= */
+
+#main_nav.erp-sidebar-collapsed {
+    width: 70px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+}
+
+body.erp-sidebar-collapsed {
+    padding-left: 70px !important;
+}
+
+    body.erp-sidebar-collapsed header > nav.HeaderShadow .mis-brand {
+        width: 70px !important;
+        padding: 0 !important;
+        justify-content: center !important;
+    }
+
+        body.erp-sidebar-collapsed header > nav.HeaderShadow .mis-brand img {
+            max-width: 44px !important;
+        }
+
+    body.erp-sidebar-collapsed .mis-brand-text {
+        display: none !important;
+    }
+
+    body.erp-sidebar-collapsed header > nav.HeaderShadow .mis-menu-toggle {
+        left: 70px !important;
+    }
+
+    body.erp-sidebar-collapsed #main_nav > .navbar-nav > .nav-item > .nav-link {
+        justify-content: center !important;
+        font-size: 0 !important;
+    }
+
+        body.erp-sidebar-collapsed #main_nav > .navbar-nav > .nav-item > .nav-link > i {
+            margin: 0 !important;
+            font-size: 14px !important;
+        }
+
+        body.erp-sidebar-collapsed #main_nav > .navbar-nav > .nav-item > .nav-link::after {
+            display: none !important;
+        }
+
+    body.erp-sidebar-collapsed .mis-header-actions {
+        right: 10px !important;
+    }
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+    :root {
+        --erp-sidebar-width: 250px;
+    }
+
+    .mis-top-search {
+        width: min(38vw, 520px) !important;
+        left: calc(var(--erp-sidebar-width) + 28px) !important;
+    }
+
+    header > nav.HeaderShadow .mis-menu-toggle {
+        left: 226px !important;
+    }
+
+    #main_nav {
+        padding-top: 80px !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .mis-top-search {
+        width: 32vw !important;
+    }
+
+    .mis-context {
+        display: none !important;
+    }
+}
+
+@media (max-width: 700px) {
+    :root {
+        --erp-sidebar-width: 72px;
+        --erp-header-height: 68px;
+    }
+
+    header > nav.HeaderShadow .mis-brand {
+        width: 72px !important;
+        padding: 0 !important;
+        justify-content: center !important;
+    }
+
+        header > nav.HeaderShadow .mis-brand img {
+            max-width: 44px !important;
+        }
+
+    .mis-brand-text {
+        display: none !important;
+    }
+
+    header > nav.HeaderShadow .mis-menu-toggle {
+        display: none !important;
+    }
+
+    .mis-top-search {
+        left: 90px !important;
+        width: 42vw !important;
+        top: 13px !important;
+        height: 42px !important;
+    }
+
+    #main_nav {
+        top: var(--erp-header-height) !important;
+        width: var(--erp-sidebar-width) !important;
+        padding: 14px 8px 18px !important;
+    }
+
+        #main_nav > .navbar-nav > .nav-item > .nav-link {
+            justify-content: center !important;
+            font-size: 0 !important;
+        }
+
+            #main_nav > .navbar-nav > .nav-item > .nav-link > i {
+                margin: 0 !important;
+            }
+
+    .erp-footer {
+        margin: 0 8px 8px !important;
+        width: calc(100% - 16px) !important;
+    }
+
+        .erp-footer .row {
+            flex-direction: row !important;
+        }
+}
+
+@media (max-width: 520px) {
+    .mis-header-actions {
+        right: 6px !important;
+        gap: 5px !important;
+    }
+
+    .mis-header-icon:nth-child(3) {
+        display: none !important;
+    }
+
+    .mis-profile-copy,
+    .mis-profile-arrow {
+        display: none !important;
+    }
+
+    .erp-footer {
+        min-height: 110px !important;
+    }
+
+        .erp-footer .row {
+            flex-wrap: wrap !important;
+            gap: 8px !important;
+        }
+
+        .erp-footer .col {
+            flex: 1 1 100% !important;
+        }
+
+    .footer-pdf {
+        margin-left: 0 !important;
+    }
+}
+
+
+/* =========================================================
+   FINAL HEIGHT / SPACING FIX
+   Prevents the layout from becoming vertically oversized.
+   ========================================================= */
+
+/* Remove browser/default header spacing and force border-box sizing. */
+html,
+body,
+header,
+header > nav.HeaderShadow {
+    box-sizing: border-box !important;
+}
+
+header {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: var(--erp-header-height) !important;
+    min-height: var(--erp-header-height) !important;
+}
+
+    header > nav.HeaderShadow {
+        box-sizing: border-box !important;
+    }
+
+/* Keep the main page directly below the header. */
+body {
+    padding-top: var(--erp-header-height) !important;
+}
+
+/* Do not leave the large artificial blank area above sidebar menu. */
+#main_nav {
+    padding-top: 70px !important;
+}
+
+/* Keep dashboard/content from adding another large top offset.
+   These selectors only remove excessive top spacing; normal
+   dashboard margins/paddings remain intact. */
+body > main,
+body > .main,
+main.main-content,
+.main-content,
+.content-wrapper {
+    margin-top: 0 !important;
+}
+
+/* Dashboard tab strip: compact vertical spacing. */
+.dashboard-tabs,
+.dashboard-tab-container,
+.inventory-dashboard-tabs {
+    margin-top: 8px !important;
+}
+
+/* Compact dashboard cards without changing their data/content. */
+.dashboard-card,
+.stat-card,
+.summary-card {
+    min-height: 0 !important;
+}
+
+/* Prevent footer from adding unnecessary vertical whitespace. */
+.footer.erp-footer {
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+}
+
+/* If the dashboard wrapper itself carries the gap, remove it. */
+body:has(.inventory-dashboard-tabs) .inventory-dashboard-tabs {
+    margin-top: 0 !important;
+}
+
+
+/* =========================================================
+   FINAL HEADER LAYOUT - SINGLE ROW
+   Logo + XON ERP + Menu + Company + Financial Year +
+   Welcome + Time + Profile. Search is intentionally removed.
+   ========================================================= */
+
+header > nav.HeaderShadow {
+    height: var(--erp-header-height) !important;
+    min-height: var(--erp-header-height) !important;
+}
+
+body {
+    padding-top: var(--erp-header-height) !important;
+}
+
+/* Brand and menu remain at the far left */
+header > nav.HeaderShadow .mis-brand {
+    width: 225px !important;
+    height: var(--erp-header-height) !important;
+    left: 0 !important;
+    top: 0 !important;
+    padding: 0 24px !important;
+}
+
+    header > nav.HeaderShadow .mis-brand img {
+        max-width: 150px !important;
+        max-height: 54px !important;
+    }
+
+.mis-brand-text {
+    font-size: 22px !important;
+}
+
+header > nav.HeaderShadow .mis-menu-toggle {
+    left: 225px !important;
+    width: 48px !important;
+    height: var(--erp-header-height) !important;
+}
+
+/* Search is not part of the requested header */
+.mis-top-search {
+    display: none !important;
+}
+
+/* Single horizontal header information row */
+.mis-header-actions {
+    position: fixed !important;
+    left: 285px !important;
+    right: 16px !important;
+    top: 0 !important;
+    height: var(--erp-header-height) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 10px !important;
+    z-index: 5200 !important;
+    background: transparent !important;
+}
+
+/* Company / year / welcome blocks */
+.mis-header-info {
+    height: 62px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    flex: 0 1 auto !important;
+    min-width: 0 !important;
+}
+
+.company-info {
+    width: 205px !important;
+}
+
+.year-info {
+    width: 245px !important;
+}
+
+.welcome-info {
+    width: 285px !important;
+}
+
+.mis-info-icon {
+    width: 46px !important;
+    height: 46px !important;
+    min-width: 46px !important;
+    border-radius: 50% !important;
+    background: #edf7f7 !important;
+    color: var(--xon-teal) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 19px !important;
+}
+
+.mis-info-copy {
+    min-width: 0;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 3px !important;
+    font-size: 11px !important;
+    line-height: 1.25 !important;
+    color: #182b2f !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+}
+
+    .mis-info-copy > div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .mis-info-copy b {
+        color: #111 !important;
+        font-weight: 600 !important;
+    }
+
+    .mis-info-copy span {
+        color: var(--xon-teal) !important;
+        font-weight: 700 !important;
+    }
+
+.mis-header-divider {
+    width: 1px !important;
+    height: 48px !important;
+    flex: 0 0 1px !important;
+    background: #dfe8e9 !important;
+}
+
+/* Time box */
+.mis-time-box {
+    height: 58px !important;
+    min-width: 225px !important;
+    padding: 0 16px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    border-radius: 9px !important;
+    color: #fff !important;
+    flex: 0 0 auto !important;
+}
+
+.mis-time-icon {
+    width: 46px !important;
+    height: 46px !important;
+    min-width: 46px !important;
+    border-radius: 50% !important;
+    background: #edf7f7 !important;
+    color: var(--xon-teal) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 19px !important;
+}
+
+.mis-time-box > div:last-child {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    line-height: 1.15 !important;
+}
+
+.mis-time-box strong {
+    color: #343333 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+}
+
+.mis-time-box span {
+    color: #343333 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+}
+
+/* Header notification icons */
+.mis-header-actions > .mis-header-icon {
+    position: relative !important;
+    width: 32px !important;
+    height: 34px !important;
+    flex: 0 0 32px !important;
+    margin: 0 !important;
+}
+
+/* Profile stays at the extreme right */
+.mis-header-actions > .mis-profile {
+    flex: 0 0 auto !important;
+    min-width: 165px !important;
+    height: 56px !important;
+}
+
+/* Sidebar starts directly under the single header */
+#main_nav {
+    top: var(--erp-header-height) !important;
+    height: calc(100vh - var(--erp-header-height)) !important;
+    padding-top: 14px !important;
+}
+
+/* Main dashboard starts under the header without the old artificial offset */
+/* Dashboard starts directly below header */
+body:has(.inventory-dashboard-tabs) > .container-fluid {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+    body:has(.inventory-dashboard-tabs) > .container-fluid > .row {
+        margin-top: 0 !important;
+    }
+
+body:has(.inventory-dashboard-tabs) main {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* Desktop */
+@media (min-width: 1201px) {
+    :root {
+        --erp-header-height: 60px;
+    }
+
+    header,
+    header > nav.HeaderShadow,
+    header > nav.HeaderShadow .mis-brand,
+    header > nav.HeaderShadow .mis-menu-toggle {
+        height: 60px !important;
+        min-height: 60px !important;
+    }
+
+    .mis-header-actions {
+        height: 60px !important;
+    }
+
+    #main_nav {
+        top: 60px !important;
+        height: calc(100vh - 60px) !important;
+    }
+}
+
+/* Medium desktop: shrink information blocks so everything remains one row */
+@media (max-width: 1450px) and (min-width: 901px) {
+    .mis-header-actions {
+        left: 275px !important;
+        gap: 7px !important;
+    }
+
+    .company-info {
+        width: 170px !important;
+    }
+
+    .year-info {
+        width: 205px !important;
+    }
+
+    .welcome-info {
+        width: 230px !important;
+    }
+
+    .mis-time-box {
+        min-width: 155px !important;
+        padding: 0 10px !important;
+    }
+
+    .mis-header-actions > .mis-profile {
+        min-width: 145px !important;
+    }
+
+    .mis-profile-copy strong {
+        font-size: 11px !important;
+    }
+}
+
+/* Smaller screens: keep header readable and allow horizontal scrolling
+   rather than creating a second header row. */
+@media (max-width: 900px) {
+    header > nav.HeaderShadow > .container-fluid {
+        overflow-x: auto !important;
+    }
+
+    .mis-header-actions {
+        left: 260px !important;
+        right: auto !important;
+        min-width: 1040px !important;
+        justify-content: flex-start !important;
+    }
+}
+
+/* =========================================================
+   FINAL DASHBOARD TOP GAP FIX
+   ========================================================= */
+
+html body > main.flex-shrink-0 {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+    html body > main.flex-shrink-0 > .container-fluid {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+/* =========================================================
+   FINAL FIX - REMOVE DOUBLE HEADER VERTICAL SPACE
+   The <header> element already occupies 98px while the nav is fixed.
+   Do NOT add another 98px body padding on desktop.
+   ========================================================= */
+
+@media (min-width: 1201px) {
+    :root {
+        --erp-header-height: 60px;
+    }
+
+    header {
+        height: 60px !important;
+        min-height: 60px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+        header > nav.HeaderShadow {
+            height: 60px !important;
+            min-height: 60px !important;
+        }
+
+    body {
+        padding-top: 0 !important;
+    }
+
+        /* Content starts immediately after the real header height. */
+        body > .container-fluid {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+        }
+
+            body > .container-fluid > .row {
+                margin-top: 0 !important;
+                padding-top: 0 !important;
+            }
+
+                body > .container-fluid > .row > [class*="col-"] {
+                    margin-top: 0 !important;
+                    padding-top: 0 !important;
+                }
+
+                    body > .container-fluid > .row > [class*="col-"] > main {
+                        margin-top: 0 !important;
+                        padding-top: 0 !important;
+                    }
+
+    .inventory-dashboard-tabs,
+    .dashboard-tabs,
+    .dashboard-tab-container {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+}
+
+/* =========================================================
+   FINAL ACTIVE MENU FIX
+   Dashboard is active ONLY when selected.
+   ========================================================= */
+
+#main_nav > .navbar-nav > .nav-item:first-child > .nav-link {
+    background: transparent !important;
+    color: #172326 !important;
+    box-shadow: none !important;
+}
+
+    #main_nav > .navbar-nav > .nav-item:first-child > .nav-link > i {
+        background: var(--xon-teal-soft) !important;
+        color: var(--xon-teal) !important;
+    }
+
+    /* Selected Dashboard only */
+    #main_nav > .navbar-nav > .nav-item:first-child.active > .nav-link,
+    #main_nav > .navbar-nav > .nav-item:first-child > .nav-link.mis-active {
+        background: linear-gradient(135deg, #09656a, #034f54) !important;
+        color: #fff !important;
+        box-shadow: 0 4px 12px rgba(4, 79, 84, .18) !important;
+    }
+
+        #main_nav > .navbar-nav > .nav-item:first-child.active > .nav-link > i,
+        #main_nav > .navbar-nav > .nav-item:first-child > .nav-link.mis-active > i {
+            background: rgba(255,255,255,.16) !important;
+            color: #fff !important;
+        }
+
+
+/* =========================================================
+   FINAL MENU ACTIVE / EXPAND BEHAVIOUR
+   ========================================================= */
+
+/* Dashboard is normal by default. */
+#main_nav > .navbar-nav > .nav-item:first-child > .nav-link {
+    background: transparent !important;
+    color: #172326 !important;
+    box-shadow: none !important;
+}
+
+    #main_nav > .navbar-nav > .nav-item:first-child > .nav-link > i {
+        background: var(--xon-teal-soft) !important;
+        color: var(--xon-teal) !important;
+    }
+
+    /* Dashboard becomes active only when explicitly selected/expanded. */
+    #main_nav > .navbar-nav > .nav-item:first-child.active > .nav-link,
+    #main_nav > .navbar-nav > .nav-item:first-child.mis-dashboard-expanded > .nav-link,
+    #main_nav > .navbar-nav > .nav-item:first-child > .nav-link.mis-active {
+        background: linear-gradient(135deg, #09656a, #034f54) !important;
+        color: #fff !important;
+        box-shadow: 0 4px 12px rgba(4,79,84,.18) !important;
+    }
+
+        #main_nav > .navbar-nav > .nav-item:first-child.active > .nav-link > i,
+        #main_nav > .navbar-nav > .nav-item:first-child.mis-dashboard-expanded > .nav-link > i,
+        #main_nav > .navbar-nav > .nav-item:first-child > .nav-link.mis-active > i {
+            background: rgba(255,255,255,.16) !important;
+            color: #fff !important;
+        }
+
+/* Every normal dropdown opens only its own submenu. */
+#main_nav > .navbar-nav > .nav-item.dropdown > .dropdown-menu {
+    display: none;
+}
+
+    #main_nav > .navbar-nav > .nav-item.dropdown.show > .dropdown-menu,
+    #main_nav > .navbar-nav > .nav-item.dropdown > .dropdown-menu.show {
+        display: block !important;
+    }
+
+/* Dashboard custom submenu follows the same expand/collapse rule. */
+#main_nav .mis-dashboard-submenu {
+    display: none !important;
+}
+
+#main_nav .nav-item.mis-dashboard-expanded > .mis-dashboard-submenu {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+
+
+/* =========================================================
+   XON ERP - FINAL TREE + SEARCH CSS
+   ========================================================= */
+
+/* Search */
+#xonMenuSearchBox {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 10px 12px 7px !important;
+    background: #fff !important;
+}
+
+    #xonMenuSearchBox .xon-menu-search-inner {
+        position: relative !important;
+        width: 100% !important;
+    }
+
+    #xonMenuSearchBox .xon-menu-search-input {
+        width: 100% !important;
+        height: 38px !important;
+        box-sizing: border-box !important;
+        padding: 0 58px 0 14px !important;
+        border: 1px solid #d9e4e5 !important;
+        border-radius: 7px !important;
+        background: #fff !important;
+        color: #405155 !important;
+        outline: none !important;
+        font: 12px Arial, Helvetica, sans-serif !important;
+    }
+
+        #xonMenuSearchBox .xon-menu-search-input:focus {
+            border-color: #075b60 !important;
+            box-shadow: 0 0 0 2px rgba(7,91,96,.08) !important;
+        }
+
+    #xonMenuSearchBox .xon-menu-search-inner > i {
+        position: absolute !important;
+        right: 12px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        color: #77878a !important;
+        pointer-events: none !important;
+    }
+
+    #xonMenuSearchBox .xon-menu-search-clear {
+        display: none;
+        position: absolute !important;
+        right: 29px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        border: 0 !important;
+        background: transparent !important;
+        color: #7c8b8e !important;
+        cursor: pointer !important;
+        font-size: 15px !important;
+    }
+
+/* Stop Bootstrap from floating menus. */
+#main_nav > .navbar-nav > .nav-item > ul.dropdown-menu,
+#main_nav .navbar-nav ul.submenu.dropdown-menu {
+    position: static !important;
+    float: none !important;
+    inset: auto !important;
+    transform: none !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 0 3px 18px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* All menus closed unless our tree JS opens them. */
+#main_nav .navbar-nav li.xon-tree-parent > ul.dropdown-menu,
+#main_nav .navbar-nav li.xon-tree-parent > ul.submenu.dropdown-menu {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+}
+
+    #main_nav .navbar-nav li.xon-tree-parent > ul.dropdown-menu.xon-tree-open,
+    #main_nav .navbar-nav li.xon-tree-parent > ul.submenu.dropdown-menu.xon-tree-open {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        max-height: 10000px !important;
+        overflow: visible !important;
+    }
+
+/* Hide Bootstrap caret; use our tree arrow. */
+#main_nav .dropdown-toggle::after {
+    display: none !important;
+}
+
+#main_nav .xon-tree-arrow {
+    position: absolute !important;
+    right: 10px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 14px !important;
+    text-align: center !important;
+    color: #7b8b8e !important;
+    font: 700 10px/1 Arial, sans-serif !important;
+}
+
+/* Parent rows */
+#main_nav li.xon-tree-parent > a.dropdown-item {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    min-height: 36px !important;
+    padding: 6px 28px 6px 18px !important;
+    box-sizing: border-box !important;
+    border-radius: 0 !important;
+    color: #526266 !important;
+    background: transparent !important;
+    font: 500 12px/1.25 Arial, Helvetica, sans-serif !important;
+    text-decoration: none !important;
+}
+
+    #main_nav li.xon-tree-parent > a.dropdown-item:hover {
+        background: #eef7f7 !important;
+        color: #075b60 !important;
+    }
+
+#main_nav li.xon-tree-parent.xon-tree-open > a.dropdown-item {
+    color: #075b60 !important;
+    font-weight: 600 !important;
+}
+
+/* Tree vertical line */
+#main_nav li.xon-tree-parent > ul.dropdown-menu,
+#main_nav li.xon-tree-parent > ul.submenu.dropdown-menu {
+    position: relative !important;
+}
+
+    #main_nav li.xon-tree-parent > ul.dropdown-menu::before,
+    #main_nav li.xon-tree-parent > ul.submenu.dropdown-menu::before {
+        content: "" !important;
+        position: absolute !important;
+        left: 18px !important;
+        top: 0 !important;
+        bottom: 10px !important;
+        width: 1px !important;
+        background: #d8e4e5 !important;
+    }
+
+    /* Child rows */
+    #main_nav li.xon-tree-parent > ul.dropdown-menu > li > a.dropdown-item,
+    #main_nav li.xon-tree-parent > ul.submenu.dropdown-menu > li > a.dropdown-item {
+        position: relative !important;
+        display: flex !important;
+        align-items: center !important;
+        min-height: 34px !important;
+        box-sizing: border-box !important;
+        padding: 6px 28px 6px 27px !important;
+        /*color: #596a6e !important;*/
+        background: transparent !important;
+        /*font: 500 12px/1.25 Arial, Helvetica, sans-serif !important;*/
+        color: #29484C !important;
+        font: 600 13px/1.25 Arial, Helvetica, sans-serif !important;
+        letter-spacing: 0.1px;
+        white-space: normal !important;
+        text-decoration: none !important;
+    }
+
+        /* Horizontal connector */
+        #main_nav li.xon-tree-parent > ul.dropdown-menu > li > a.dropdown-item::before,
+        #main_nav li.xon-tree-parent > ul.submenu.dropdown-menu > li > a.dropdown-item::before {
+            content: "" !important;
+            position: absolute !important;
+            left: 0 !important;
+            top: 50% !important;
+            width: 18px !important;
+            height: 1px !important;
+            background: #d8e4e5 !important;
+        }
+
+        #main_nav li.xon-tree-parent > ul.dropdown-menu > li > a.dropdown-item:hover,
+        #main_nav li.xon-tree-parent > ul.submenu.dropdown-menu > li > a.dropdown-item:hover {
+            background: #eef7f7 !important;
+            color: #075b60 !important;
+        }
+
+/* Nested children */
+#main_nav li.xon-tree-parent ul.dropdown-menu li.xon-tree-parent > ul.dropdown-menu,
+#main_nav li.xon-tree-parent ul.submenu.dropdown-menu li.xon-tree-parent > ul.submenu.dropdown-menu {
+    padding-left: 18px !important;
+}
+
+/* Search filtering */
+#main_nav li.xon-search-hidden {
+    display: none !important;
+}
+
+#main_nav li.xon-search-match > a.dropdown-item {
+    background: #eef7f7 !important;
+    color: #075b60 !important;
+    font-weight: 600 !important;
+}
+
+/* Keep permission helper inputs exactly as they are. */
+#main_nav input.userRightsPermission {
+    display: none !important;
+}
+
+
+/* =========================================================
+   XON ERP - SIDE MENU SEARCH - FINAL FIX
+   Search is part of the existing sidebar, above Dashboard.
+   ========================================================= */
+
+#main_nav {
+    position: fixed !important;
+    top: var(--erp-header-height) !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: var(--erp-sidebar-width) !important;
+    height: calc(100vh - var(--erp-header-height)) !important;
+    padding: 10px 14px 20px !important;
+    box-sizing: border-box !important;
+    display: block !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+
+    #main_nav #xonMenuSearchBox {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 7000 !important;
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 0 10px !important;
+        padding: 0 !important;
+        background: #fff !important;
+        box-sizing: border-box !important;
+    }
+
+        #main_nav #xonMenuSearchBox .xon-menu-search-inner {
+            position: relative !important;
+            width: 100% !important;
+            height: 40px !important;
+        }
+
+        #main_nav #xonMenuSearchBox .xon-menu-search-input {
+            display: block !important;
+            width: 100% !important;
+            height: 40px !important;
+            padding: 0 38px 0 36px !important;
+            box-sizing: border-box !important;
+            border: 1px solid #d6e3e4 !important;
+            border-radius: 8px !important;
+            background: #f8fbfb !important;
+            color: #263e40 !important;
+            font: 12px Arial, Helvetica, sans-serif !important;
+            outline: none !important;
+        }
+
+            #main_nav #xonMenuSearchBox .xon-menu-search-input:focus {
+                background: #fff !important;
+                border-color: #075b60 !important;
+                box-shadow: 0 0 0 2px rgba(7,91,96,.10) !important;
+            }
+
+            #main_nav #xonMenuSearchBox .xon-menu-search-input::placeholder {
+                color: #7b8589 !important;
+                opacity: 1 !important;
+            }
+
+        #main_nav #xonMenuSearchBox .xon-menu-search-inner > i.fa-search {
+            position: absolute !important;
+            left: 12px !important;
+            right: auto !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            margin: 0 !important;
+            color: #075b60 !important;
+            font-size: 13px !important;
+            pointer-events: none !important;
+            z-index: 2 !important;
+        }
+
+        #main_nav #xonMenuSearchBox .xon-menu-search-clear {
+            display: none;
+            position: absolute !important;
+            right: 6px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            width: 26px !important;
+            height: 26px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: 0 !important;
+            border-radius: 50% !important;
+            background: transparent !important;
+            color: #718184 !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            z-index: 3 !important;
+        }
+
+            #main_nav #xonMenuSearchBox .xon-menu-search-clear:hover {
+                background: #eaf4f4 !important;
+                color: #075b60 !important;
+            }
+
+    #main_nav #xonMenuSearchNoResult {
+        display: none;
+        margin: 6px 0 0 !important;
+        padding: 9px 8px !important;
+        border: 1px dashed #d8e5e6 !important;
+        border-radius: 7px !important;
+        background: #f8fbfb !important;
+        color: #748184 !important;
+        font: 500 11px/1.25 Arial, Helvetica, sans-serif !important;
+        text-align: center !important;
+    }
+
+    #main_nav > .navbar-nav {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+    }
+
+    #main_nav li.xon-search-hidden {
+        display: none !important;
+    }
+
+    #main_nav li.xon-search-match > a {
+        background: #eaf5f5 !important;
+        color: #075b60 !important;
+        border-left: 3px solid #075b60 !important;
+    }
+
+        #main_nav li.xon-search-match > a > i {
+            color: #075b60 !important;
+        }
+
+    /* Search should be the only reason a submenu opens automatically. */
+    #main_nav .navbar-nav li.xon-tree-parent > ul.dropdown-menu,
+    #main_nav .navbar-nav li.xon-tree-parent > ul.submenu.dropdown-menu {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+        #main_nav .navbar-nav li.xon-tree-parent > ul.dropdown-menu.xon-tree-open,
+        #main_nav .navbar-nav li.xon-tree-parent > ul.submenu.dropdown-menu.xon-tree-open {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            max-height: 10000px !important;
+            overflow: visible !important;
+        }
+
+@media (max-width: 700px) {
+    #main_nav {
+        width: 72px !important;
+        padding: 10px 8px 18px !important;
+    }
+
+        #main_nav #xonMenuSearchBox {
+            display: none !important;
+        }
+}
+
+#main_nav .nav-item.Logout > .nav-link {
+    color: #dc3545 !important;
+}
+
+    #main_nav .nav-item.Logout > .nav-link:hover {
+        color: #dc3545 !important;
+        background: #fff1f1 !important;
+    }
+
+    #main_nav .nav-item.Logout > .nav-link > i {
+        color: #dc3545 !important;
+        background: #fff1f1 !important;
+    }
+
+#main_nav .mis-dashboard-submenu {
+    position: relative !important;
+    display: none !important;
+    width: 100% !important;
+    margin: 2px 0 3px !important;
+    padding: 4px 0 4px 22px !important;
+    box-sizing: border-box !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+}
+
+/* Open Dashboard */
+#main_nav .nav-item.mis-dashboard-expanded > .mis-dashboard-submenu {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1px !important;
+}
+
+/* Vertical tree line */
+#main_nav .mis-dashboard-submenu::before {
+    content: "" !important;
+    position: absolute !important;
+    left: 10px !important;
+    top: 0 !important;
+    bottom: 8px !important;
+    width: 1px !important;
+    background: #d6e3e4 !important;
+}
+
+/* Dashboard child */
+#main_nav .mis-dashboard-child {
+    position: relative !important;
+    width: 100% !important;
+    min-height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 6px 8px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    border: 0 !important;
+    border-radius: 6px !important;
+    background: transparent !important;
+    color: #58686c !important;
+    font: 500 12px/1.25 Arial, Helvetica, sans-serif !important;
+    text-align: left !important;
+    cursor: pointer !important;
+}
+
+    /* Horizontal connector */
+    #main_nav .mis-dashboard-child::before {
+        content: "" !important;
+        position: absolute !important;
+        left: -12px !important;
+        top: 50% !important;
+        width: 12px !important;
+        height: 1px !important;
+        background: #d6e3e4 !important;
+    }
+
+    /* Child icon */
+    #main_nav .mis-dashboard-child > i {
+        width: 25px !important;
+        height: 25px !important;
+        min-width: 25px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
+        border-radius: 6px !important;
+        background: #edf7f7 !important;
+        color: #075b60 !important;
+        font-size: 11px !important;
+    }
+
+    /* Hover */
+    #main_nav .mis-dashboard-child:hover {
+        background: #eef7f7 !important;
+        color: #075b60 !important;
+    }
+
+    /* Active child */
+    #main_nav .mis-dashboard-child.active {
+        background: #e1eeee !important;
+        color: #03484d !important;
+        font-weight: 600 !important;
+    }
+
+        #main_nav .mis-dashboard-child.active > i {
+            background: #075b60 !important;
+            color: #fff !important;
+        }
+
+
+/* =========================================================
+   XON ERP - CHILD MENU ICON + ACTIVE STYLE
+   Reference style: small teal icon box on every child row.
+   ========================================================= */
+
+#main_nav ul.dropdown-menu > li > a.dropdown-item,
+#main_nav ul.submenu > li > a.dropdown-item {
+    position: relative !important;
+    width: 100% !important;
+    min-height: 34px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 4px 8px !important;
+    border-radius: 6px !important;
+    background: transparent !important;
+    color: #526166 !important;
+}
+
+    /* Every child gets an icon box */
+    #main_nav ul.dropdown-menu > li > a.dropdown-item > i.xon-child-icon,
+    #main_nav ul.submenu > li > a.dropdown-item > i.xon-child-icon {
+        width: 25px !important;
+        height: 25px !important;
+        min-width: 25px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        flex: 0 0 25px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 6px !important;
+        background: #edf7f7 !important;
+        color: #075b60 !important;
+        font-size: 11px !important;
+        line-height: 1 !important;
+    }
+
+    /* Keep arrow on the right */
+    #main_nav ul.dropdown-menu > li > a.dropdown-item > .xon-tree-arrow,
+    #main_nav ul.submenu > li > a.dropdown-item > .xon-tree-arrow {
+        margin-left: auto !important;
+        flex: 0 0 auto !important;
+    }
+
+    /* Hover */
+    #main_nav ul.dropdown-menu > li > a.dropdown-item:hover,
+    #main_nav ul.submenu > li > a.dropdown-item:hover {
+        background: #eaf4f4 !important;
+        color: #075b60 !important;
+    }
+
+        #main_nav ul.dropdown-menu > li > a.dropdown-item:hover > i.xon-child-icon,
+        #main_nav ul.submenu > li > a.dropdown-item:hover > i.xon-child-icon {
+            background: #dceeee !important;
+            color: #075b60 !important;
+        }
+
+    /* Clicked child */
+    #main_nav ul.dropdown-menu > li > a.dropdown-item.xon-child-active,
+    #main_nav ul.submenu > li > a.dropdown-item.xon-child-active {
+        background: #e1eeee !important;
+        color: #03484d !important;
+        font-weight: 600 !important;
+    }
+
+        #main_nav ul.dropdown-menu > li > a.dropdown-item.xon-child-active > i.xon-child-icon,
+        #main_nav ul.submenu > li > a.dropdown-item.xon-child-active > i.xon-child-icon {
+            background: #075b60 !important;
+            color: #fff !important;
+        }
+
+/* If the clicked child is itself a parent, keep its icon highlighted. */
+#main_nav li.xon-tree-open > a.dropdown-item > i.xon-child-icon {
+    background: #075b60 !important;
+    color: #fff !important;
+}
+
+/* Preserve the existing tree connector line. */
+#main_nav li.xon-tree-parent > ul.dropdown-menu > li > a.dropdown-item::before,
+#main_nav li.xon-tree-parent > ul.submenu > li > a.dropdown-item::before {
+    z-index: 0 !important;
+}
+
+#main_nav ul.dropdown-menu > li > a.dropdown-item > i,
+#main_nav ul.dropdown-menu > li > a.dropdown-item > span,
+#main_nav ul.submenu > li > a.dropdown-item > i,
+#main_nav ul.submenu > li > a.dropdown-item > span {
+    position: relative !important;
+    z-index: 1 !important;
+}
+/* =========================================
+   ACTIVE CHILD - FULL ROW HIGHLIGHT
+   ========================================= */
+
+#main_nav ul.dropdown-menu > li > a.dropdown-item.xon-child-active,
+#main_nav ul.submenu > li > a.dropdown-item.xon-child-active {
+    width: 100% !important;
+    min-height: 42px !important;
+    height: 42px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 6px 12px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    background: #dceeee !important;
+    color: #075b60 !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+}
+
+
+    /* Active icon */
+    #main_nav ul.dropdown-menu > li > a.dropdown-item.xon-child-active > i.xon-child-icon,
+    #main_nav ul.submenu > li > a.dropdown-item.xon-child-active > i.xon-child-icon {
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-right: 10px !important;
+        background: #075b60 !important;
+        color: #fff !important;
+        border-radius: 6px !important;
+    }
+
+
+/* Active child li */
+#main_nav ul.dropdown-menu > li:has(> a.xon-child-active),
+#main_nav ul.submenu > li:has(> a.xon-child-active) {
+    width: 100% !important;
+    min-height: 42px !important;
+    padding: 2px 6px !important;
+    box-sizing: border-box !important;
+}
+
+#main_nav ul.dropdown-menu > li > a.xon-child-active,
+#main_nav ul.submenu > li > a.xon-child-active {
+    display: flex !important;
+    align-items: center !important;
+    width: calc(100% - 8px) !important;
+    min-height: 42px !important;
+    margin: 2px 4px !important;
+    padding: 6px 10px !important;
+    box-sizing: border-box !important;
+    background: #dceeee !important;
+    color: #075b60 !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+}
+
+    #main_nav ul.dropdown-menu > li > a.xon-child-active > i.xon-child-icon,
+    #main_nav ul.submenu > li > a.xon-child-active > i.xon-child-icon {
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-right: 10px !important;
+        background: #075b60 !important;
+        color: #fff !important;
+        border-radius: 6px !important;
+    }
+
+/* =========================================================
+   XON ERP - FINAL CLICK / EXPAND FIX
+   Parent menu clicks are handled by erpLayout.js, not Bootstrap.
+   ========================================================= */
+
+#main_nav li.xon-tree-parent > a.dropdown-item,
+#main_nav li.xon-tree-parent > a.nav-link {
+    position: relative !important;
+    cursor: pointer !important;
+    user-select: none !important;
+}
+
+#main_nav li.xon-tree-parent.xon-tree-click-active > a.dropdown-item,
+#main_nav li.xon-tree-parent.xon-tree-click-active > a.nav-link,
+#main_nav li.xon-tree-parent.xon-tree-open > a.dropdown-item,
+#main_nav li.xon-tree-parent.xon-tree-open > a.nav-link {
+    background: #e1eeee !important;
+    color: #075b60 !important;
+    font-weight: 600 !important;
+}
+
+    #main_nav li.xon-tree-parent.xon-tree-click-active > a.dropdown-item > i.xon-child-icon,
+    #main_nav li.xon-tree-parent.xon-tree-click-active > a.nav-link > i,
+    #main_nav li.xon-tree-parent.xon-tree-open > a.dropdown-item > i.xon-child-icon,
+    #main_nav li.xon-tree-parent.xon-tree-open > a.nav-link > i {
+        background: #075b60 !important;
+        color: #fff !important;
+    }
+
+#main_nav li.xon-tree-parent.xon-tree-open > ul.dropdown-menu,
+#main_nav li.xon-tree-parent.xon-tree-open > ul.submenu.dropdown-menu {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    max-height: 10000px !important;
+    overflow: visible !important;
+}
+
+    /* Bootstrap must not hide a tree menu after our JS opens it. */
+    #main_nav li.xon-tree-parent.xon-tree-open > ul.dropdown-menu.show,
+    #main_nav li.xon-tree-parent.xon-tree-open > ul.submenu.dropdown-menu.show {
+        display: block !important;
+    }
+
+/* =========================================================
+   XON ERP - FINAL HIERARCHICAL ACTIVE MENU
+   Level 1: Parent
+   Level 2: Child
+   Level 3: Child-Child
+   ========================================================= */
+
+/* Remove visual ambiguity from the old generic child-active rules. */
+#main_nav a.xon-parent-active,
+#main_nav a.xon-child-active,
+#main_nav a.xon-child-child-active {
+    position: relative !important;
+    cursor: pointer !important;
+    transition: background .15s ease, color .15s ease !important;
+}
+
+/* LEVEL 1 - ADMIN / MASTER / etc. */
+#main_nav > .navbar-nav > .nav-item > a.xon-parent-active {
+    background: #e1eeee !important;
+    color: #03484d !important;
+    font-weight: 700 !important;
+    border-radius: 7px !important;
+}
+
+/* LEVEL 2 - User / Rights / Vendor etc. */
+#main_nav ul.dropdown-menu > li > a.xon-child-active,
+#main_nav ul.submenu > li > a.xon-child-active {
+    background: #e1eeee !important;
+    color: #03484d !important;
+    font-weight: 700 !important;
+    border-radius: 7px !important;
+}
+
+/* LEVEL 3 - New User / User Dashboard etc. */
+#main_nav ul.dropdown-menu > li > ul.dropdown-menu > li > a.xon-child-child-active,
+#main_nav ul.dropdown-menu > li > ul.submenu > li > a.xon-child-child-active,
+#main_nav ul.submenu > li > ul.dropdown-menu > li > a.xon-child-child-active,
+#main_nav ul.submenu > li > ul.submenu > li > a.xon-child-child-active,
+#main_nav a.xon-child-child-active {
+    background: #e1eeee !important;
+    color: #03484d !important;
+    font-weight: 700 !important;
+    border-radius: 7px !important;
+}
+
+    /* Active icons */
+    #main_nav a.xon-parent-active > i,
+    #main_nav a.xon-child-active > i,
+    #main_nav a.xon-child-child-active > i {
+        background: #075b60 !important;
+        color: #ffffff !important;
+    }
+
+/* Keep non-active siblings normal. */
+#main_nav a.dropdown-item:not(.xon-child-active):not(.xon-child-child-active) {
+    font-weight: 500 !important;
+}
+
+/* Real route links must remain clickable. */
+#main_nav a.dropdown-item[href]:not([href="#"]) {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* =========================================================
+   XON ERP - BREADCRUMB
+   Final rule. Does not depend on Bootstrap.
+   ========================================================= */
+
+#xonBreadcrumb {
+    display: none !important;
+    width: 100% !important;
+    min-height: 42px !important;
+    margin: 0 0 8px 0 !important;
+    padding: 7px 14px !important;
+    box-sizing: border-box !important;
+    align-items: center !important;
+    gap: 8px !important;
+    background: #ffffff !important;
+    border: 1px solid #e5eeee !important;
+    border-radius: 6px !important;
+    color: #075b60 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    line-height: 1.4 !important;
+    box-shadow: 0 2px 8px rgba(0,55,60,.05) !important;
+    box-sizing: border-box !important;
+}
+
+    #xonBreadcrumb.is-visible {
+        display: flex !important;
+    }
+
+    #xonBreadcrumb .xon-breadcrumb-item {
+        display: inline-flex !important;
+        align-items: center !important;
+        color: #075b60 !important;
+        font-weight: 600 !important;
+        white-space: nowrap !important;
+    }
+
+        #xonBreadcrumb .xon-breadcrumb-item.current {
+            color: #03484d !important;
+            font-weight: 700 !important;
+        }
+
+    #xonBreadcrumb .xon-breadcrumb-separator {
+        display: inline-flex !important;
+        align-items: center !important;
+        color: #9aa9aa !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+    }
+
+/* Put breadcrumb only in the main content column. */
+.col-md-9.col-lg-10 > #xonBreadcrumb {
+    width: calc(100% - 0px) !important;
+}
+
+/* =========================================================
+   XON ERP - HIERARCHICAL ACTIVE VISUAL
+   Open != Active. Only our custom active classes get this look.
+   ========================================================= */
+
+#main_nav a.xon-parent-active,
+#main_nav a.xon-child-active,
+#main_nav a.xon-child-child-active {
+    transition: background .15s ease, color .15s ease, font-weight .15s ease !important;
+}
+
+#main_nav > .navbar-nav > .nav-item > a.xon-parent-active {
+    background: #e1eeee !important;
+    color: #03484d !important;
+    font-weight: 700 !important;
+    border-radius: 7px !important;
+}
+
+#main_nav a.xon-child-active {
+    background: #e1eeee !important;
+    color: #03484d !important;
+    font-weight: 700 !important;
+    border-radius: 7px !important;
+}
+
+#main_nav a.xon-child-child-active {
+    background: #e1eeee !important;
+    color: #03484d !important;
+    font-weight: 700 !important;
+    border-radius: 7px !important;
+}
+
+    #main_nav a.xon-parent-active > i,
+    #main_nav a.xon-child-active > i,
+    #main_nav a.xon-child-child-active > i {
+        background: #075b60 !important;
+        color: #ffffff !important;
+    }
+
+
+/* =========================================================
+   XON ERP - DASHBOARD BREADCRUMB FINAL
+   Dashboard child buttons are real <button> elements.
+   ========================================================= */
+
+#xonBreadcrumb {
+    display: none !important;
+    width: 100% !important;
+    min-height: 42px !important;
+    margin: 0 0 8px 0 !important;
+    padding: 10px 14px !important;
+    align-items: center !important;
+    gap: 8px !important;
+    box-sizing: border-box !important;
+    background: #ffffff !important;
+    border: 1px solid #e5eeee !important;
+    border-radius: 8px !important;
+    color: #075b60 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    box-shadow: 0 2px 8px rgba(0,55,60,.05) !important;
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+    #xonBreadcrumb.is-visible {
+        display: flex !important;
+    }
+
+    #xonBreadcrumb .xon-breadcrumb-item {
+        display: inline-flex !important;
+        align-items: center !important;
+        color: #075b60 !important;
+        font-weight: 600 !important;
+        white-space: nowrap !important;
+    }
+
+        #xonBreadcrumb .xon-breadcrumb-item.current {
+            color: #03484d !important;
+            font-weight: 700 !important;
+        }
+
+    #xonBreadcrumb .xon-breadcrumb-separator {
+        display: inline-flex !important;
+        align-items: center !important;
+        color: #9aa9aa !important;
+        font-size: 18px !important;
+        line-height: 1 !important;
+        font-weight: 600 !important;
+    }
+
+/* Dashboard child active state */
+#main_nav .mis-dashboard-child.active {
+    background: #e1eeee !important;
+    color: #03484d !important;
+    font-weight: 700 !important;
+}
+
+    #main_nav .mis-dashboard-child.active > i {
+        background: #075b60 !important;
+        color: #ffffff !important;
+    }
+
+/* Dashboard parent remains the parent active menu. */
+#main_nav > .navbar-nav > .nav-item:first-child > .nav-link.mis-active {
+    background: linear-gradient( 135deg, #09656a, #034f54 ) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+    #main_nav > .navbar-nav > .nav-item:first-child > .nav-link.mis-active > i {
+        background: rgba(255,255,255,.16) !important;
+        color: #ffffff !important;
+    }
+
+
+/* =========================================================
+   XON ERP - BREADCRUMB FINAL UI
+   ========================================================= */
+
+#xonBreadcrumb {
+    display: flex !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    margin: 0 0 8px 0 !important;
+    padding: 8px 14px !important;
+    box-sizing: border-box !important;
+    align-items: center !important;
+    gap: 6px !important;
+    background: #ffffff !important;
+    border: 1px solid #e4eeee !important;
+    border-radius: 6px !important;
+    box-shadow: 0 2px 6px rgba(0, 60, 70, 0.06) !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+
+    /* Each breadcrumb item */
+    #xonBreadcrumb .xon-breadcrumb-item {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 7px !important;
+        padding: 5px 8px !important;
+        color: #075b60 !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        white-space: nowrap !important;
+    }
+
+
+        /* Current page */
+        #xonBreadcrumb
+        .xon-breadcrumb-item.current {
+            color: #03484d !important;
+            font-weight: 700 !important;
+        }
+
+
+        /* Icons */
+        #xonBreadcrumb
+        .xon-breadcrumb-item i {
+            width: 25px !important;
+            height: 25px !important;
+            min-width: 25px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 !important;
+            background: #e8f3f3 !important;
+            color: #075b60 !important;
+            border-radius: 6px !important;
+            font-size: 12px !important;
+            line-height: 1 !important;
+        }
+
+
+        /* Current page icon */
+        #xonBreadcrumb
+        .xon-breadcrumb-item.current i {
+            background: #075b60 !important;
+            color: #ffffff !important;
+        }
+
+
+    /* > separator */
+    #xonBreadcrumb
+    .xon-breadcrumb-separator {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 18px !important;
+        color: #9aa9aa !important;
+        font-size: 20px !important;
+        font-weight: 500 !important;
+        line-height: 1 !important;
+    }
+
+
+/* =========================================================
+   XON ERP - DASHBOARD -> INVENTORY FINAL UI
+
+   Default state on Dashboard page:
+     Dashboard = active + expanded
+     Inventory = active child
+
+   Breadcrumb:
+     Dashboard > Inventory Dashboard
+
+   Icons are intentionally the same visual style as the sidebar.
+   ========================================================= */
+
+/* -------------------------
+   Dashboard parent icon
+   ------------------------- */
+#main_nav > .navbar-nav > .nav-item:first-child > .nav-link > i {
+    width: 27px !important;
+    height: 27px !important;
+    min-width: 27px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    border-radius: 7px !important;
+    background: var(--xon-teal-soft) !important;
+    color: var(--xon-teal) !important;
+    font-size: 13px !important;
+}
+
+/* Dashboard active */
+#main_nav > .navbar-nav > .nav-item:first-child.active > .nav-link,
+#main_nav > .navbar-nav > .nav-item:first-child > .nav-link.mis-active {
+    background: linear-gradient(135deg, #09656a, #034f54) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 12px rgba(4, 79, 84, .18) !important;
+}
+
+    #main_nav > .navbar-nav > .nav-item:first-child.active > .nav-link > i,
+    #main_nav > .navbar-nav > .nav-item:first-child > .nav-link.mis-active > i {
+        background: rgba(255, 255, 255, .16) !important;
+        color: #ffffff !important;
+    }
+
+/* -------------------------
+   Dashboard child buttons
+   ------------------------- */
+#main_nav .mis-dashboard-child {
+    min-height: 38px !important;
+    padding: 5px 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    border: 0 !important;
+    border-radius: 7px !important;
+    background: transparent !important;
+    color: #34484b !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    text-align: left !important;
+    cursor: pointer !important;
+}
+
+    #main_nav .mis-dashboard-child > i {
+        width: 27px !important;
+        height: 27px !important;
+        min-width: 27px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
+        border-radius: 7px !important;
+        background: var(--xon-teal-soft) !important;
+        color: var(--xon-teal) !important;
+        font-size: 12px !important;
+    }
+
+    #main_nav .mis-dashboard-child:hover {
+        background: #edf7f7 !important;
+        color: #075b60 !important;
+    }
+
+    /* Active Inventory / Purchase / Sales / Production / MIS child */
+    #main_nav .mis-dashboard-child.active {
+        background: #e1eeee !important;
+        color: #03484d !important;
+        font-weight: 700 !important;
+    }
+
+        #main_nav .mis-dashboard-child.active > i {
+            background: #075b60 !important;
+            color: #ffffff !important;
+        }
+
+/* -------------------------
+   Breadcrumb container
+   ------------------------- */
+#xonBreadcrumb {
+    display: none !important;
+    width: 100% !important;
+    min-height: 44px !important;
+    margin: 0 0 8px 0 !important;
+    padding: 7px 12px !important;
+    box-sizing: border-box !important;
+    align-items: center !important;
+    gap: 7px !important;
+    background: #ffffff !important;
+    border: 1px solid #e4eeee !important;
+    border-radius: 7px !important;
+    color: #075b60 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    line-height: 1.4 !important;
+    box-shadow: 0 2px 7px rgba(0, 55, 60, .05) !important;
+}
+
+    #xonBreadcrumb.is-visible {
+        display: flex !important;
+    }
+
+    #xonBreadcrumb .xon-breadcrumb-item {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 7px !important;
+        padding: 3px 5px !important;
+        color: #075b60 !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        white-space: nowrap !important;
+    }
+
+        #xonBreadcrumb .xon-breadcrumb-item.current {
+            color: #03484d !important;
+            font-weight: 700 !important;
+        }
+
+        /* Breadcrumb icon = same icon style as sidebar */
+        #xonBreadcrumb .xon-breadcrumb-item > i {
+            width: 27px !important;
+            height: 27px !important;
+            min-width: 27px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 !important;
+            background: #e8f3f3 !important;
+            color: #075b60 !important;
+            border-radius: 7px !important;
+            font-size: 12px !important;
+            line-height: 1 !important;
+        }
+
+        #xonBreadcrumb .xon-breadcrumb-item.current > i {
+            background: #075b60 !important;
+            color: #ffffff !important;
+        }
+
+    #xonBreadcrumb .xon-breadcrumb-separator {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 18px !important;
+        color: #8fa1a3 !important;
+        font-size: 19px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+    }
+
+/* Main content breadcrumb only */
+.col-md-9.col-lg-10 > #xonBreadcrumb {
+    width: calc(100% - 0px) !important;
+}
+
+
+/* =========================================================
+   XON ERP - FINAL DASHBOARD -> INVENTORY UI
+   ---------------------------------------------------------
+   Final overrides. Keep these at the END of the stylesheet.
+   ========================================================= */
+
+/* Dashboard parent icon */
+#main_nav > .navbar-nav > .nav-item:first-child > .nav-link > i {
+    width: 27px !important;
+    height: 27px !important;
+    min-width: 27px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 7px !important;
+    background: var(--xon-teal-soft) !important;
+    color: var(--xon-teal) !important;
+    font-size: 13px !important;
+}
+
+/* Dashboard active */
+#main_nav > .navbar-nav > .nav-item:first-child.active > .nav-link,
+#main_nav > .navbar-nav > .nav-item:first-child > .nav-link.mis-active {
+    background: linear-gradient( 135deg, #09656a, #034f54 ) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(4, 79, 84, .18) !important;
+}
+
+    /* Dashboard active icon */
+    #main_nav > .navbar-nav > .nav-item:first-child.active > .nav-link > i,
+    #main_nav > .navbar-nav > .nav-item:first-child > .nav-link.mis-active > i {
+        background: rgba(255,255,255,.16) !important;
+        color: #ffffff !important;
+    }
+
+/* Dashboard submenu */
+#main_nav .mis-dashboard-submenu {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Dashboard child buttons */
+#main_nav .mis-dashboard-child {
+    width: 100% !important;
+    min-height: 38px !important;
+    padding: 5px 10px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    border: 0 !important;
+    border-radius: 7px !important;
+    background: transparent !important;
+    color: #34484b !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    text-align: left !important;
+    cursor: pointer !important;
+}
+
+    /* Dashboard child icons */
+    #main_nav .mis-dashboard-child > i {
+        width: 27px !important;
+        height: 27px !important;
+        min-width: 27px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 7px !important;
+        background: var(--xon-teal-soft) !important;
+        color: var(--xon-teal) !important;
+        font-size: 12px !important;
+    }
+
+    /* Inventory active */
+    #main_nav .mis-dashboard-child.active {
+        background: #e1eeee !important;
+        color: #03484d !important;
+        font-weight: 700 !important;
+    }
+
+        /* Inventory active icon */
+        #main_nav .mis-dashboard-child.active > i {
+            background: #075b60 !important;
+            color: #ffffff !important;
+        }
+
+    /* Dashboard child hover */
+    #main_nav .mis-dashboard-child:hover {
+        background: #edf7f7 !important;
+        color: #075b60 !important;
+    }
+
+/* =========================================================
+   BREADCRUMB
+   Result:
+   [Dashboard icon] Dashboard > [Inventory icon] Inventory Dashboard
+   ========================================================= */
+
+#xonBreadcrumb {
+    display: none !important;
+    width: 100% !important;
+    min-height: 44px !important;
+    margin: 0 0 8px 0 !important;
+    padding: 7px 12px !important;
+    box-sizing: border-box !important;
+    align-items: center !important;
+    gap: 6px !important;
+    background: #ffffff !important;
+    border: 1px solid #e4eeee !important;
+    border-radius: 7px !important;
+    box-shadow: 0 2px 7px rgba(0, 55, 60, .05) !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+    /* Show only when JS marks it visible */
+    #xonBreadcrumb.is-visible {
+        display: flex !important;
+    }
+
+    /* Breadcrumb item */
+    #xonBreadcrumb .xon-breadcrumb-item {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 7px !important;
+        padding: 4px 7px !important;
+        color: #075b60 !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        white-space: nowrap !important;
+    }
+
+        /* Current breadcrumb item */
+        #xonBreadcrumb .xon-breadcrumb-item.current {
+            color: #03484d !important;
+            font-weight: 700 !important;
+        }
+
+        /* Breadcrumb icons */
+        #xonBreadcrumb .xon-breadcrumb-item i {
+            width: 27px !important;
+            height: 27px !important;
+            min-width: 27px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 !important;
+            background: #e8f3f3 !important;
+            color: #075b60 !important;
+            border-radius: 7px !important;
+            font-size: 12px !important;
+            line-height: 1 !important;
+        }
+
+        /* Inventory/current breadcrumb icon */
+        #xonBreadcrumb
+        .xon-breadcrumb-item.current
+        i {
+            background: #075b60 !important;
+            color: #ffffff !important;
+        }
+
+    /* Breadcrumb separator */
+    #xonBreadcrumb .xon-breadcrumb-separator {
+        width: 18px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: #9aa9aa !important;
+        font-size: 19px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+    }
+
+/* =========================================================
+   XON ERP - FINAL FAVOURITE STAR POSITION
+   Arrow first, Favourite star immediately beside it.
+   This block intentionally overrides earlier favourite rules.
+   ========================================================= */
+
+#main_nav .nav-item > .nav-link {
+    position: relative !important;
+}
+
+/* Keep the existing menu arrow on the right. */
+#main_nav .xon-tree-arrow {
+    position: absolute !important;
+    right: 10px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 10px !important;
+    min-width: 10px !important;
+    height: 16px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #7b8b8e !important;
+    font-size: 20px !important;
+    line-height: 1 !important;
+    pointer-events: none !important;
+    z-index: 20 !important;
+}
+
+/* Favourite star sits immediately to the RIGHT of the arrow. */
+#main_nav .xon-favourite-star {
+    position: absolute !important;
+    right: 5px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 20px !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    color: #879395 !important;
+    border: 0 !important;
+    border-radius: 5px !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    cursor: pointer !important;
+    font-size: 13px !important;
+    line-height: 1 !important;
+    z-index: 30 !important;
+}
+
+    /* Empty star */
+    #main_nav .xon-favourite-star .fa-star {
+        color: #879395 !important;
+    }
+
+    /* Filled favourite */
+    #main_nav .xon-favourite-star.is-favourite,
+    #main_nav .xon-favourite-star.is-favourite .fa-star {
+        color: #e2a900 !important;
+    }
+
+    /* Hover must not move/change the layout. */
+    #main_nav .xon-favourite-star:hover,
+    #main_nav .xon-favourite-star:focus,
+    #main_nav .xon-favourite-star:active {
+        background: transparent !important;
+        color: #e2a900 !important;
+        border: 0 !important;
+        outline: 0 !important;
+        box-shadow: none !important;
+    }
+
+/* Make enough right-side room for BOTH: arrow + star. */
+#main_nav .nav-item > .nav-link:has(.xon-favourite-star) {
+    padding-right: 52px !important;
+}
+
+/* Do not let the star click trigger the parent menu. */
+#main_nav .xon-favourite-star,
+#main_nav .xon-favourite-star * {
+    pointer-events: auto !important;
+}
+
+/* =========================================================
+   PARENT MENU LOOK
+   Dashboard = dark teal
+   All other top-level parent menus = light green
+   ========================================================= */
+
+#main_nav > .navbar-nav > .nav-item:not(:first-child):not(.Logout) > .nav-link {
+    background: #e1eeee !important;
+    background-image: none !important;
+    color: #172326 !important;
+    border-radius: 7px !important;
+    box-shadow: none !important;
+}
+
+    #main_nav > .navbar-nav > .nav-item:not(:first-child):not(.Logout) > .nav-link > i {
+        background: #edf7f7 !important;
+        color: #075b60 !important;
+    }
+
+/* Dashboard remains dark teal when active/expanded. */
+#main_nav > .navbar-nav > .nav-item:first-child.active > .nav-link,
+#main_nav > .navbar-nav > .nav-item:first-child.mis-dashboard-expanded > .nav-link,
+#main_nav > .navbar-nav > .nav-item:first-child > .nav-link.mis-active {
+    background: linear-gradient(135deg, #09656a, #034f54) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 12px rgba(4,79,84,.18) !important;
+}
+
+    #main_nav > .navbar-nav > .nav-item:first-child.active > .nav-link > i,
+    #main_nav > .navbar-nav > .nav-item:first-child.mis-dashboard-expanded > .nav-link > i,
+    #main_nav > .navbar-nav > .nav-item:first-child > .nav-link.mis-active > i {
+        background: rgba(255,255,255,.16) !important;
+        color: #fff !important;
+    }
+
+/* Logout remains separate from parent-menu styling. */
+#main_nav > .navbar-nav > .nav-item.Logout > .nav-link {
+    background: #fde1e1 !important;
+    color: #dc3545 !important;
+    box-shadow: none !important;
+}
+
+
+/* =========================================================
+   XON ERP - FINAL FAVOURITE STAR RULES
+   ONLY:
+   1) Dashboard children
+   2) Nested leaf/child pages
+   NEVER top-level parent menus
+   ========================================================= */
+
+#main_nav .xon-favourite-star {
+    position: absolute !important;
+    right: 8px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    border: 0 !important;
+    color: #9ca8aa !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    z-index: 50 !important;
+}
+
+    #main_nav .xon-favourite-star:hover {
+        color: #f5b400 !important;
+        transform: translateY(-50%) scale(1.12) !important;
+    }
+
+    #main_nav .xon-favourite-star.is-favourite {
+        color: #f5b400 !important;
+        font-weight: 900 !important;
+    }
+
+    #main_nav .xon-favourite-star i {
+        margin: 0 !important;
+        padding: 0 !important;
+        color: inherit !important;
+        font-size: inherit !important;
+    }
+
+/* Dashboard child: arrow is first, star is second/right */
+#main_nav .mis-dashboard-child {
+    position: relative !important;
+    padding-right: 42px !important;
+}
+
+    #main_nav .mis-dashboard-child .xon-favourite-star {
+        right: 8px !important;
+    }
+
+/* Normal nested menu leaf */
+#main_nav .dropdown-menu li {
+    position: relative;
+}
+
+    #main_nav .dropdown-menu li > .dropdown-item,
+    #main_nav .dropdown-menu li > a.nav-link {
+        position: relative !important;
+        padding-right: 42px !important;
+    }
+
+        #main_nav .dropdown-menu li > .dropdown-item > .xon-favourite-star,
+        #main_nav .dropdown-menu li > a.nav-link > .xon-favourite-star {
+            right: 8px !important;
+        }
+
+    /* Parent items are never star targets. */
+    #main_nav > .navbar-nav > .nav-item > .nav-link > .xon-favourite-star,
+    #main_nav .dropdown-menu li:has(> .submenu) > .dropdown-item > .xon-favourite-star,
+    #main_nav .dropdown-menu li:has(> .dropdown-menu) > .dropdown-item > .xon-favourite-star {
+        display: none !important;
+    }
+
+/* =========================================================
+   MY FAVOURITES
+   ========================================================= */
+
+#main_nav .xon-favourites-item {
+    width: 100% !important;
+    margin: 0 0 6px !important;
+    padding: 0 !important;
+    order: 0 !important;
+}
+
+#main_nav .xon-favourites-header {
+    min-height: 36px !important;
+    padding: 5px 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border-radius: 7px !important;
+    background: #f7fbfb !important;
+    border: 1px solid #e4eeee !important;
+    color: #075b60 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+}
+
+#main_nav .xon-favourites-title {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+}
+
+    #main_nav .xon-favourites-title > i {
+        color: #f5b400 !important;
+        font-size: 13px !important;
+    }
+
+#main_nav .xon-favourites-chevron {
+    color: #6e7c80 !important;
+    font-size: 20px !important;
+}
+
+#main_nav .xon-favourites-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    margin-top: 3px !important;
+}
+
+#main_nav .xon-favourites-item.is-collapsed .xon-favourites-list {
+    display: none !important;
+}
+
+#main_nav .xon-favourites-item.is-empty {
+    display: block !important;
+}
+
+#main_nav .xon-favourite-row {
+    position: relative !important;
+    width: 100% !important;
+    min-height: 34px !important;
+    display: flex !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+    border-radius: 6px !important;
+    background: transparent !important;
+}
+
+#main_nav .xon-favourite-open {
+    width: 100% !important;
+    min-height: 34px !important;
+    padding: 4px 34px 4px 7px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    border: 0 !important;
+    border-radius: 6px !important;
+    background: transparent !important;
+    color: #526166 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    text-align: left !important;
+    cursor: pointer !important;
+}
+
+    #main_nav .xon-favourite-open:hover {
+        background: #eaf4f4 !important;
+        color: #075b60 !important;
+    }
+
+#main_nav .xon-favourite-row-icon {
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 6px !important;
+    background: #fff7d6 !important;
+    color: #f5b400 !important;
+}
+
+#main_nav .xon-favourite-row-text {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+
+#main_nav .xon-favourite-remove {
+    position: absolute !important;
+    right: 6px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 20px !important;
+    height: 20px !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: #9aa6a8 !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    z-index: 10 !important;
+}
+
+    #main_nav .xon-favourite-remove:hover {
+        color: #dc3545 !important;
+    }
+
+
+/* =========================================================
+   XON ERP - FINAL FAVOURITES INTERACTION/UI
+   ========================================================= */
+
+#main_nav .xon-favourites-header .xon-favourites-title > i {
+    color: #e2a900 !important;
+    font-size: 14px !important;
+}
+
+#main_nav .xon-favourites-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    margin-top: 3px !important;
+    padding: 0 !important;
+}
+
+#main_nav .xon-favourite-row {
+    position: relative !important;
+    width: 100% !important;
+    min-height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 !important;
+    border-radius: 7px !important;
+}
+
+#main_nav .xon-favourite-open {
+    width: 100% !important;
+    min-height: 36px !important;
+    padding: 5px 38px 5px 7px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    border: 0 !important;
+    border-radius: 7px !important;
+    background: transparent !important;
+    color: #526166 !important;
+    text-align: left !important;
+    cursor: pointer !important;
+}
+
+    #main_nav .xon-favourite-open:hover {
+        background: #eaf4f4 !important;
+        color: #075b60 !important;
+    }
+
+#main_nav .xon-favourite-row-icon {
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 6px !important;
+    background: #fff7d6 !important;
+    color: #e2a900 !important;
+}
+
+    #main_nav .xon-favourite-row-icon i {
+        color: #e2a900 !important;
+    }
+
+#main_nav .xon-favourite-remove {
+    position: absolute !important;
+    right: 6px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 0 !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    color: #9aa6a8 !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    z-index: 20 !important;
+}
+
+    #main_nav .xon-favourite-remove:hover {
+        background: #fde8e8 !important;
+        color: #dc3545 !important;
+    }
+
+    #main_nav .xon-favourite-remove:focus {
+        outline: none !important;
+        box-shadow: 0 0 0 2px rgba(7,91,96,.12) !important;
+    }
+
+/* Selected menu star = solid gold. */
+#main_nav .xon-favourite-star.is-favourite,
+#main_nav .xon-favourite-star.is-favourite i,
+#main_nav .xon-favourite-star.is-favourite .fa-star {
+    color: #e2a900 !important;
+    font-weight: 900 !important;
+}
+
+/* =========================================================
+   XON ERP - FINAL FAVOURITES FIX
+   Only controls favourite stars + favourites list.
+   Does not change the existing menu/theme styling.
+   ========================================================= */
+
+#main_nav .xon-favourite-star {
+    position: absolute !important;
+    right: 8px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    color: #9ca8aa !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    z-index: 50 !important;
+}
+
+    #main_nav .xon-favourite-star i {
+        margin: 0 !important;
+        padding: 0 !important;
+        color: inherit !important;
+        font-size: inherit !important;
+    }
+
+    #main_nav .xon-favourite-star:hover,
+    #main_nav .xon-favourite-star:focus {
+        color: #e2a900 !important;
+        background: transparent !important;
+        outline: 0 !important;
+        box-shadow: none !important;
+        transform: translateY(-50%) !important;
+    }
+
+    #main_nav .xon-favourite-star.is-favourite,
+    #main_nav .xon-favourite-star.is-favourite i {
+        color: #e2a900 !important;
+        font-weight: 900 !important;
+    }
+
+/* Dashboard leaf rows */
+#main_nav .mis-dashboard-child {
+    position: relative !important;
+    padding-right: 42px !important;
+    box-sizing: border-box !important;
+}
+
+    #main_nav .mis-dashboard-child .xon-favourite-star {
+        right: 8px !important;
+    }
+
+/* Normal nested menu rows */
+#main_nav .dropdown-menu li,
+#main_nav .submenu li {
+    position: relative !important;
+}
+
+    #main_nav .dropdown-menu li > .dropdown-item,
+    #main_nav .dropdown-menu li > a.nav-link,
+    #main_nav .submenu li > .dropdown-item,
+    #main_nav .submenu li > a.nav-link {
+        position: relative !important;
+        box-sizing: border-box !important;
+        padding-right: 42px !important;
+    }
+
+        #main_nav .dropdown-menu li > .dropdown-item > .xon-favourite-star,
+        #main_nav .dropdown-menu li > a.nav-link > .xon-favourite-star,
+        #main_nav .submenu li > .dropdown-item > .xon-favourite-star,
+        #main_nav .submenu li > a.nav-link > .xon-favourite-star {
+            right: 8px !important;
+        }
+
+    /* Never show a star on a parent that owns another submenu. */
+    #main_nav .dropdown-menu li:has(> .submenu) > .dropdown-item > .xon-favourite-star,
+    #main_nav .dropdown-menu li:has(> .dropdown-menu) > .dropdown-item > .xon-favourite-star,
+    #main_nav .submenu li:has(> .submenu) > .dropdown-item > .xon-favourite-star,
+    #main_nav .submenu li:has(> .dropdown-menu) > .dropdown-item > .xon-favourite-star {
+        display: none !important;
+    }
+
+/* My Favourites container */
+#main_nav .xon-favourites-item {
+    width: 100% !important;
+    margin: 0 0 6px !important;
+    padding: 0 !important;
+    order: 0 !important;
+}
+
+#main_nav .xon-favourites-header {
+    min-height: 36px !important;
+    padding: 5px 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    box-sizing: border-box !important;
+    border-radius: 7px !important;
+    background: #f7fbfb !important;
+    border: 1px solid #e4eeee !important;
+    color: #075b60 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+}
+
+#main_nav .xon-favourites-title {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+}
+
+    #main_nav .xon-favourites-title > i {
+        color: #e2a900 !important;
+        font-size: 13px !important;
+    }
+
+#main_nav .xon-favourites-chevron {
+    color: #6e7c80 !important;
+    font-size: 11px !important;
+}
+
+#main_nav .xon-favourites-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    margin-top: 3px !important;
+}
+
+#main_nav .xon-favourites-item.is-collapsed .xon-favourites-list {
+    display: none !important;
+}
+
+#main_nav .xon-favourite-row {
+    position: relative !important;
+    width: 100% !important;
+    min-height: 34px !important;
+    display: flex !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+    border-radius: 6px !important;
+}
+
+#main_nav .xon-favourite-open {
+    width: 100% !important;
+    min-height: 34px !important;
+    padding: 4px 34px 4px 7px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    box-sizing: border-box !important;
+    border: 0 !important;
+    border-radius: 6px !important;
+    background: transparent !important;
+    color: #526166 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    text-align: left !important;
+    cursor: pointer !important;
+}
+
+    #main_nav .xon-favourite-open:hover {
+        background: #eaf4f4 !important;
+        color: #075b60 !important;
+    }
+
+#main_nav .xon-favourite-row-icon {
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 6px !important;
+    background: #fff7d6 !important;
+    color: #e2a900 !important;
+}
+
+    #main_nav .xon-favourite-row-icon i {
+        color: #e2a900 !important;
+    }
+
+#main_nav .xon-favourite-row-text {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+
+/* Close/remove button */
+#main_nav .xon-favourite-remove {
+    position: absolute !important;
+    right: 6px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 22px !important;
+    height: 22px !important;
+    min-width: 22px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 0 !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    color: #8d9a9d !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    z-index: 20 !important;
+}
+
+    #main_nav .xon-favourite-remove:hover {
+        background: #fde8e8 !important;
+        color: #dc3545 !important;
+    }
+
+    #main_nav .xon-favourite-remove:focus {
+        outline: none !important;
+        box-shadow: 0 0 0 2px rgba(7,91,96,.12) !important;
+    }
+
+
+/* =========================================================
+   XON ERP - FINAL FAVOURITE STAR ALIGNMENT FIX
+   ---------------------------------------------------------
+   - Every leaf menu gets its star at the same far-right edge
+   - Works for nested / child-child / deeper leaf menus
+   - Parent menus do not show favourite stars
+   - Does not change the existing menu indentation/design
+   ========================================================= */
+
+/* Every nested menu row occupies the full available width */
+#main_nav .dropdown-menu li {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+    /* Every clickable nested row becomes the positioning container */
+    #main_nav .dropdown-menu li > a,
+    #main_nav .dropdown-menu li > .dropdown-item,
+    #main_nav .dropdown-menu li > .nav-link {
+        position: relative !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        /* Reserve space for the star */
+        padding-right: 46px !important;
+    }
+
+        /* STAR - one fixed position for ALL nested leaf levels */
+        #main_nav .dropdown-menu li > a > .xon-favourite-star,
+        #main_nav .dropdown-menu li > .dropdown-item > .xon-favourite-star,
+        #main_nav .dropdown-menu li > .nav-link > .xon-favourite-star {
+            position: absolute !important;
+            right: 8px !important;
+            left: auto !important;
+            top: 50% !important;
+            width: 24px !important;
+            height: 24px !important;
+            min-width: 24px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transform: translateY(-50%) !important;
+            box-sizing: border-box !important;
+            z-index: 20 !important;
+            cursor: pointer !important;
+        }
+
+/* Star icon itself */
+#main_nav .xon-favourite-star i {
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+}
+
+/* Gold when favourite */
+#main_nav .xon-favourite-star.is-favourite {
+    color: #f5b400 !important;
+}
+
+/* Outline when not favourite */
+#main_nav .xon-favourite-star:not(.is-favourite) {
+    color: #9aa6a8 !important;
+}
+
+/* Dashboard children use exactly the same right alignment */
+#main_nav .mis-dashboard-child {
+    position: relative !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding-right: 46px !important;
+}
+
+    #main_nav .mis-dashboard-child > .xon-favourite-star {
+        position: absolute !important;
+        right: 8px !important;
+        left: auto !important;
+        top: 50% !important;
+        width: 24px !important;
+        height: 24px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transform: translateY(-50%) !important;
+    }
+
+/* Never show stars on parent menu rows */
+#main_nav .dropdown-menu li:has(> .submenu) > a > .xon-favourite-star,
+#main_nav .dropdown-menu li:has(> .submenu) > .dropdown-item > .xon-favourite-star,
+#main_nav .dropdown-menu li:has(> .submenu) > .nav-link > .xon-favourite-star,
+#main_nav .dropdown-menu li:has(> .dropdown-menu) > a > .xon-favourite-star,
+#main_nav .dropdown-menu li:has(> .dropdown-menu) > .dropdown-item > .xon-favourite-star,
+#main_nav .dropdown-menu li:has(> .dropdown-menu) > .nav-link > .xon-favourite-star {
+    display: none !important;
+}
+
+/* =========================================================
+   MY FAVOURITES
+   ========================================================= */
+
+#main_nav .xon-favourites-item {
+    width: 100% !important;
+    margin: 0 0 7px !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+#main_nav .xon-favourites-header {
+    width: 100% !important;
+    min-height: 38px !important;
+    padding: 5px 9px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    box-sizing: border-box !important;
+    background: #f7fbfb !important;
+    border: 1px solid #dfeaea !important;
+    border-radius: 8px !important;
+    color: #075b60 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+}
+
+#main_nav .xon-favourites-title {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+    #main_nav .xon-favourites-title > i {
+        color: #f5b400 !important;
+        font-size: 13px !important;
+    }
+
+#main_nav .xon-favourites-list {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    margin-top: 3px !important;
+}
+
+#main_nav .xon-favourite-row {
+    position: relative !important;
+    width: 100% !important;
+    min-height: 34px !important;
+    display: flex !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+}
+
+#main_nav .xon-favourite-open {
+    width: 100% !important;
+    min-height: 34px !important;
+    padding: 4px 36px 4px 7px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    box-sizing: border-box !important;
+    border: 0 !important;
+    border-radius: 6px !important;
+    background: transparent !important;
+    color: #526166 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    text-align: left !important;
+    cursor: pointer !important;
+}
+
+    #main_nav .xon-favourite-open:hover {
+        background: #eaf4f4 !important;
+        color: #075b60 !important;
+    }
+
+#main_nav .xon-favourite-row-icon {
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 6px !important;
+    background: #fff7d6 !important;
+    color: #f5b400 !important;
+}
+
+#main_nav .xon-favourite-row-text {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+
+/* Close/remove button inside MY FAVOURITES */
+#main_nav .xon-favourite-remove {
+    position: absolute !important;
+    right: 6px !important;
+    top: 50% !important;
+    width: 22px !important;
+    height: 22px !important;
+    transform: translateY(-50%) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 0 !important;
+    border-radius: 5px !important;
+    background: transparent !important;
+    color: #8c999b !important;
+    font-size: 15px !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    z-index: 30 !important;
+}
+
+    #main_nav .xon-favourite-remove:hover {
+        background: #ffe8e8 !important;
+        color: #dc3545 !important;
+    }
+
+/* Collapsed favourites */
+#main_nav .xon-favourites-item.is-collapsed .xon-favourites-list {
+    display: none !important;
+}
+
+/* Empty state */
+#main_nav .xon-favourites-item.is-empty .xon-favourites-list {
+    display: none !important;
+}
+
+/* =========================================================
+   XON ERP - STICKY DASHBOARD BREADCRUMB
+   Dashboard > Inventory Dashboard
+   ========================================================= */
+
+#xonBreadcrumb {
+    position: sticky !important;
+    top: 60px !important;
+    z-index: 4000 !important;
+    background: #ffffff !important;
+    margin-bottom: 8px !important;
+    box-shadow: 0 3px 10px rgba(0, 55, 60, 0.08) !important;
+}
+
+/* Desktop */
+@media (min-width: 1201px) {
+    #xonBreadcrumb {
+        top: 60px !important;
+    }
+}
+
+/* Smaller desktop/tablet */
+@media (max-width: 1200px) {
+    #xonBreadcrumb {
+        top: var(--erp-header-height) !important;
+    }
+}
+
+/* =========================================================
+   HEADER LOGOUT
+   ========================================================= */
+
+.mis-header-logout {
+    height: 42px !important;
+    min-width: 42px !important;
+    padding: 0 12px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    border: 1px solid #f3cccc !important;
+    border-radius: 7px !important;
+    background: #fff1f1 !important;
+    color: #dc3545 !important;
+    text-decoration: none !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+}
+
+    .mis-header-logout i {
+        color: #dc3545 !important;
+        font-size: 14px !important;
+    }
+
+    .mis-header-logout:hover {
+        background: #fde1e1 !important;
+        border-color: #efb5b5 !important;
+        color: #c82333 !important;
+    }
+
+        .mis-header-logout:hover i {
+            color: #c82333 !important;
+        }
+/* =========================================================
+   XON ERP - FINAL FAVOURITE STAR OVERRIDE
+   ---------------------------------------------------------
+   This is intentionally the LAST favourite-star block so it
+   wins over older duplicate favourite CSS blocks above.
+   ========================================================= */
+
+#main_nav .xon-favourite-star {
+    position: absolute !important;
+    right: 8px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    color: #9ca8aa !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    z-index: 50 !important;
+}
+
+    #main_nav .xon-favourite-star i {
+        margin: 0 !important;
+        padding: 0 !important;
+        color: inherit !important;
+        font-size: inherit !important;
+        line-height: 1 !important;
+    }
+
+    /* Empty star */
+    #main_nav .xon-favourite-star:not(.is-favourite),
+    #main_nav .xon-favourite-star:not(.is-favourite) i {
+        color: #9ca8aa !important;
+    }
+
+    /* Saved in DB = GOLD FILLED STAR */
+    #main_nav .xon-favourite-star.is-favourite,
+    #main_nav .xon-favourite-star.is-favourite i,
+    #main_nav .xon-favourite-star.is-favourite .fa-star {
+        color: #e2a900 !important;
+        font-weight: 900 !important;
+    }
+
+    #main_nav .xon-favourite-star:hover {
+        color: #f5b400 !important;
+        transform: translateY(-50%) scale(1.12) !important;
+    }
+
+    #main_nav .xon-favourite-star.is-favourite:hover,
+    #main_nav .xon-favourite-star.is-favourite:hover i {
+        color: #e2a900 !important;
+    }
+
+/* Room for arrow + favourite star */
+#main_nav .nav-item > .nav-link:has(.xon-favourite-star),
+#main_nav .dropdown-menu li > .dropdown-item:has(.xon-favourite-star),
+#main_nav .dropdown-menu li > a.nav-link:has(.xon-favourite-star) {
+    padding-right: 52px !important;
+}
+
+/* Star is clickable but must not open/close the menu */
+#main_nav .xon-favourite-star,
+#main_nav .xon-favourite-star * {
+    pointer-events: auto !important;
+}
+
+/* Parent menus never receive a favourite star */
+#main_nav > .navbar-nav > .nav-item > .nav-link > .xon-favourite-star,
+#main_nav .dropdown-menu li:has(> .submenu) > .dropdown-item > .xon-favourite-star,
+#main_nav .dropdown-menu li:has(> .dropdown-menu) > .dropdown-item > .xon-favourite-star {
+    display: none !important;
+}
+/* =========================================================
+   XON ERP - LIGHT TEAL HEADER THEME
+   Only TOP HEADER colour changed
+   ========================================================= */
+
+header > nav.HeaderShadow {
+    background: #d5e8e8 !important;
+    border-bottom: 1px solid #D6E8E9 !important;
+    box-shadow: 0 3px 18px rgba(0, 55, 60, .06) !important;
+}
+
+    /* Logo area */
+    header > nav.HeaderShadow .mis-brand {
+        background: #d5e8e8 !important;
+    }
+
+    /* Hamburger */
+    header > nav.HeaderShadow .mis-menu-toggle {
+        background: transparent !important;
+        color: #075B60 !important;
+    }
+
+        header > nav.HeaderShadow .mis-menu-toggle:hover {
+            background: #E2F0F0 !important;
+            color: #03484D !important;
+        }
+
+/* Header information text */
+.mis-info-copy {
+    color: #17282C !important;
+}
+
+    .mis-info-copy b {
+        color: #17282C !important;
+    }
+
+    .mis-info-copy span {
+        color: #075B60 !important;
+    }
+
+/* Header separators */
+.mis-header-divider {
+    background: #D6E8E9 !important;
+}
+
+/* Company / FY / Welcome / Time icons */
+.mis-info-icon,
+.mis-time-icon {
+    background: #DFF0F0 !important;
+    color: #075B60 !important;
+}
+
+/* Time box - keep it soft, NOT dark */
+.mis-time-box {
+    background: transparent !important;
+    color: #17282C !important;
+}
+
+    .mis-time-box strong,
+    .mis-time-box span {
+        color: #17282C !important;
+    }
+
+/* Profile */
+.mis-avatar {
+    background: #075B60 !important;
+    color: #FFFFFF !important;
+}
+
+.mis-profile:hover {
+    background: #E2F0F0 !important;
+}
+
+/* Logout / header buttons if present */
+header > nav.HeaderShadow button:hover,
+header > nav.HeaderShadow a:hover {
+    color: #03484D;
+}
+/* =========================================================
+   XON ERP - AUTO EXPAND SIDEBAR ON MOUSE HOVER
+   ---------------------------------------------------------
+   Normal other pages : 70px collapsed
+   Mouse over sidebar  : full sidebar
+   Mouse leave         : 70px collapsed
+   ========================================================= */
+
+/* Smooth width transition */
+#main_nav {
+    transition: width .20s ease, padding-left .20s ease, padding-right .20s ease !important;
+}
+
+/* When mouse is over collapsed sidebar, expand it */
+body.erp-sidebar-collapsed.erp-sidebar-hover-expanded #main_nav.erp-sidebar-hover-expanded {
+    width: var(--erp-sidebar-width) !important;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    overflow-x: visible !important;
+}
+
+/* Move page content with the expanded sidebar */
+body.erp-sidebar-collapsed.erp-sidebar-hover-expanded {
+    padding-left: var(--erp-sidebar-width) !important;
+}
+
+    /* Restore header brand when expanded */
+    body.erp-sidebar-collapsed.erp-sidebar-hover-expanded
+    header > nav.HeaderShadow .mis-brand {
+        width: 225px !important;
+        padding: 0 24px !important;
+        justify-content: flex-start !important;
+    }
+
+    body.erp-sidebar-collapsed.erp-sidebar-hover-expanded
+    header > nav.HeaderShadow .mis-brand-text {
+        display: block !important;
+    }
+
+    body.erp-sidebar-collapsed.erp-sidebar-hover-expanded
+    header > nav.HeaderShadow .mis-brand img {
+        max-width: 150px !important;
+    }
+
+    /* Restore hamburger position */
+    body.erp-sidebar-collapsed.erp-sidebar-hover-expanded
+    header > nav.HeaderShadow .mis-menu-toggle {
+        left: 225px !important;
+    }
+
+    /* Restore menu text */
+    body.erp-sidebar-collapsed.erp-sidebar-hover-expanded
+    #main_nav > .navbar-nav > .nav-item > .nav-link {
+        justify-content: flex-start !important;
+        font-size: 12px !important;
+    }
+
+        body.erp-sidebar-collapsed.erp-sidebar-hover-expanded
+        #main_nav > .navbar-nav > .nav-item > .nav-link > i {
+            margin-right: 8px !important;
+            font-size: 14px !important;
+        }
+
+        /* Restore menu arrows */
+        body.erp-sidebar-collapsed.erp-sidebar-hover-expanded
+        #main_nav > .navbar-nav > .nav-item > .nav-link::after {
+            display: inline-block !important;
+        }
+
+    /* Restore generated labels */
+    body.erp-sidebar-collapsed.erp-sidebar-hover-expanded
+    #main_nav .mis-label {
+        display: inline !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Favourite section */
+    body.erp-sidebar-collapsed.erp-sidebar-hover-expanded
+    #main_nav .xon-favourites-list {
+        display: flex !important;
+    }
+
+/* Do not apply hover-expand on mobile */
+@media (max-width: 700px) {
+    body.erp-sidebar-collapsed.erp-sidebar-hover-expanded {
+        padding-left: 72px !important;
+    }
+
+        body.erp-sidebar-collapsed.erp-sidebar-hover-expanded #main_nav.erp-sidebar-hover-expanded {
+            width: 72px !important;
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+        }
+}
+
+/* =========================================================
+   FINAL - UNIVERSAL PAGE CONTENT / FOOTER FLOW FIX
+   ---------------------------------------------------------
+   Keeps footer AFTER the complete RenderBody content.
+   Prevents accordion/card content from visually passing
+   behind the footer on forms such as Designation Master.
+   ========================================================= */
+
+html,
+body {
+    height: auto !important;
+    min-height: 100% !important;
+}
+
+    body.d-flex.flex-column {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        min-height: 100vh !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+    }
+
+    /* Bootstrap page wrapper must grow with its contents. */
+    body > .container-fluid {
+        position: relative !important;
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding-bottom: 20px !important;
+        overflow: visible !important;
+        box-sizing: border-box !important;
+    }
+
+        /* Keep the Bootstrap row in normal document flow. */
+        body > .container-fluid > .row {
+            position: relative !important;
+            display: flex !important;
+            flex-wrap: wrap !important;
+            width: 100% !important;
+            height: auto !important;
+            min-height: 0 !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            overflow: visible !important;
+        }
+
+            /* Both columns must expand to the actual main-content height. */
+            body > .container-fluid > .row > .col-md-3,
+            body > .container-fluid > .row > .col-lg-2,
+            body > .container-fluid > .row > .col-md-9,
+            body > .container-fluid > .row > .col-lg-10 {
+                position: relative !important;
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+                box-sizing: border-box !important;
+            }
+
+                /* MAIN: flow-root contains floated/legacy form elements. */
+                body > .container-fluid > .row > .col-md-9 > main,
+                body > .container-fluid > .row > .col-lg-10 > main,
+                main.flex-shrink-0,
+                main[role="main"] {
+                    position: relative !important;
+                    display: flow-root !important;
+                    width: 100% !important;
+                    height: auto !important;
+                    min-height: 0 !important;
+                    max-height: none !important;
+                    margin: 0 !important;
+                    padding-top: 0 !important;
+                    padding-bottom: 30px !important;
+                    flex: none !important;
+                    flex-shrink: 0 !important;
+                    overflow: visible !important;
+                    box-sizing: border-box !important;
+                }
+
+                    /* Form itself must contribute its complete height to main. */
+                    main[role="main"] > form,
+                    main[role="main"] > .card,
+                    main[role="main"] form,
+                    main[role="main"] .card {
+                        position: relative !important;
+                        display: block !important;
+                        width: 100% !important;
+                        height: auto !important;
+                        min-height: 0 !important;
+                        max-height: none !important;
+                        overflow: visible !important;
+                        box-sizing: border-box !important;
+                    }
+
+                    /* Bootstrap cards/rows used by old ERP forms. */
+                    main[role="main"] .card-body,
+                    main[role="main"] .card-header,
+                    main[role="main"] .card-footer,
+                    main[role="main"] .row {
+                        position: relative !important;
+                        height: auto !important;
+                        min-height: 0 !important;
+                        max-height: none !important;
+                    }
+
+                    /* IMPORTANT: shown accordion content must occupy real layout height. */
+                    main[role="main"] .accordion,
+                    main[role="main"] .accordion-item,
+                    main[role="main"] .accordion-collapse,
+                    main[role="main"] .accordion-collapse.show,
+                    main[role="main"] .accordion-body {
+                        position: relative !important;
+                        height: auto !important;
+                        min-height: 0 !important;
+                        max-height: none !important;
+                        overflow: visible !important;
+                    }
+
+                        main[role="main"] .accordion-collapse.show {
+                            display: block !important;
+                        }
+
+                        /* Contain any old float-end / float-start content. */
+                        main[role="main"]::after,
+                        main[role="main"] form::after,
+                        main[role="main"] .card::after,
+                        main[role="main"] .card-body::after,
+                        main[role="main"] .accordion-item::after {
+                            content: "" !important;
+                            display: table !important;
+                            clear: both !important;
+                        }
+
+                    /* Form action/header areas must stay inside their parent. */
+                    main[role="main"] .float-end {
+                        position: relative !important;
+                    }
+
+    /* =========================================================
+   FOOTER - NORMAL DOCUMENT FLOW ONLY
+   ========================================================= */
+
+    body > .erp-footer,
+    body > footer.erp-footer,
+    footer.erp-footer {
+        position: relative !important;
+        inset: auto !important;
+        top: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        left: auto !important;
+        float: none !important;
+        clear: both !important;
+        display: block !important;
+        width: calc(100% - 36px) !important;
+        height: auto !important;
+        min-height: 60px !important;
+        max-height: none !important;
+        flex: 0 0 auto !important;
+        flex-shrink: 0 !important;
+        margin: 20px 18px 10px !important;
+        padding: 12px 26px !important;
+        transform: none !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        z-index: 20 !important;
+    }
+
+        /* Footer content must not become positioned over page content. */
+        footer.erp-footer .container-fluid,
+        footer.erp-footer .row,
+        footer.erp-footer .col {
+            position: relative !important;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            box-sizing: border-box !important;
+        }
+
+/* Desktop: preserve the collapsed sidebar/content spacing. */
+@media (min-width: 1201px) {
+    body > .container-fluid {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+        body > .container-fluid > .row > .col-md-9,
+        body > .container-fluid > .row > .col-lg-10 {
+            min-height: 0 !important;
+        }
+
+    footer.erp-footer {
+        width: calc(100% - 36px) !important;
+        margin: 20px 18px 10px !important;
+    }
+}
+
+/* Smaller screens. */
+@media (max-width: 700px) {
+    body > .container-fluid {
+        padding-bottom: 15px !important;
+    }
+
+    footer.erp-footer {
+        width: calc(100% - 16px) !important;
+        margin: 15px 8px 8px !important;
+    }
+}
+/* =========================================================
+   FINAL FOOTER FIX
+   Footer always stays BELOW page content
+   ========================================================= */
+
+html,
+body {
+    min-height: 100% !important;
+}
+
+body {
+    min-height: 100vh !important;
+}
+
+    /* Main page content */
+    body > .container-fluid {
+        min-height: auto !important;
+        height: auto !important;
+    }
+
+        /* Main content area */
+        body > .container-fluid main,
+        body > .container-fluid .main-content,
+        body > .container-fluid .content-wrapper {
+            min-height: auto !important;
+            height: auto !important;
+        }
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer.erp-footer,
+.footer.erp-footer {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    inset: auto !important;
+    float: none !important;
+    clear: both !important;
+    display: block !important;
+    width: calc(100% - 36px) !important;
+    margin-top: 20px !important;
+    margin-right: 18px !important;
+    margin-bottom: 18px !important;
+    margin-left: 18px !important;
+    min-height: 60px !important;
+    transform: none !important;
+}
+
+    /* Footer inner container */
+    footer.erp-footer > .container-fluid,
+    .footer.erp-footer > .container-fluid {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 60px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Footer row */
+    footer.erp-footer .row,
+    .footer.erp-footer .row {
+        min-height: 60px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    /* =========================================================
+   IMPORTANT:
+   Do NOT pull footer upward
+   ========================================================= */
+
+    footer.erp-footer::before,
+    footer.erp-footer::after,
+    .footer.erp-footer::before,
+    .footer.erp-footer::after {
+        content: none !important;
+    }
+
+/* =========================================================
+   FORM CONTENT MUST FINISH BEFORE FOOTER
+   ========================================================= */
+
+main {
+    overflow: visible !important;
+}
+
+    main::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+
+/* Cards / forms should remain in normal flow */
+.card,
+.card-body,
+.form-horizontal,
+.form-container {
+    position: relative !important;
+}
+
+/* =========================================================
+   COLLAPSED SIDEBAR
+   ========================================================= */
+
+body.erp-sidebar-collapsed {
+    padding-left: 70px !important;
+}
+
+    body.erp-sidebar-collapsed .erp-footer {
+        width: calc(100% - 90px) !important;
+        margin-left: 10px !important;
+        margin-right: 10px !important;
+    }
+
+    /* =========================================================
+   HOVER EXPANDED SIDEBAR
+   ========================================================= */
+
+    body.erp-sidebar-collapsed.erp-sidebar-hover-expanded {
+        padding-left: var(--erp-sidebar-width) !important;
+    }
+
+        body.erp-sidebar-collapsed.erp-sidebar-hover-expanded .erp-footer {
+            width: calc(100% - 36px) !important;
+            margin-left: 18px !important;
+            margin-right: 18px !important;
+        }
+
+/* =========================================================
+   DESKTOP
+   ========================================================= */
+
+@media (min-width: 1201px) {
+
+    footer.erp-footer,
+    .footer.erp-footer {
+        margin-top: 20px !important;
+        margin-bottom: 18px !important;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    footer.erp-footer,
+    .footer.erp-footer {
+        width: calc(100% - 16px) !important;
+        margin-left: 8px !important;
+        margin-right: 8px !important;
+        margin-top: 15px !important;
+        margin-bottom: 10px !important;
+        min-height: 100px !important;
+    }
+}
+
+/* =========================================================
+   XON ERP - FINAL BREADCRUMB FIX
+   ---------------------------------------------------------
+   Problem fixed:
+   - Breadcrumb was using sticky inside a complex Bootstrap layout.
+   - Multiple older #xonBreadcrumb rules were overriding each other.
+   - Header height changes between desktop/mobile.
+   - Sidebar can be collapsed/hover-expanded.
+
+   Solution:
+   - Breadcrumb is fixed below the actual header.
+   - It stays visible while the page/form scrolls.
+   - Main content gets reserved space only when breadcrumb is visible.
+   - Left position follows sidebar state.
+   - Existing breadcrumb HTML/JS/routes remain unchanged.
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   1. FINAL BREADCRUMB CONTAINER
+   --------------------------------------------------------- */
+#xonBreadcrumb {
+    position: fixed !important;
+    top: var(--erp-header-height) !important;
+    left: var(--erp-sidebar-width) !important;
+    right: 0 !important;
+    width: auto !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    margin: 0 !important;
+    padding: 8px 14px !important;
+    box-sizing: border-box !important;
+    display: none !important;
+    align-items: center !important;
+    gap: 8px !important;
+    background: #ffffff !important;
+    border: 1px solid #e5eeee !important;
+    border-left: 0 !important;
+    border-radius: 0 0 7px 7px !important;
+    color: #075b60 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    line-height: 1.4 !important;
+    box-shadow: 0 3px 12px rgba(0, 55, 60, .12) !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    z-index: 4900 !important;
+}
+
+    /* JavaScript-controlled visibility must win. */
+    #xonBreadcrumb.is-visible {
+        display: flex !important;
+    }
+
+    /* ---------------------------------------------------------
+   2. BREADCRUMB ITEMS
+   --------------------------------------------------------- */
+    #xonBreadcrumb .xon-breadcrumb-item {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 7px !important;
+        min-width: 0 !important;
+        padding: 3px 6px !important;
+        margin: 0 !important;
+        color: #075b60 !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        line-height: 1.3 !important;
+        white-space: nowrap !important;
+        text-decoration: none !important;
+    }
+
+        #xonBreadcrumb .xon-breadcrumb-item.current {
+            color: #03484d !important;
+            font-weight: 700 !important;
+        }
+
+        /* Breadcrumb icons */
+        #xonBreadcrumb .xon-breadcrumb-item > i {
+            width: 27px !important;
+            height: 27px !important;
+            min-width: 27px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border-radius: 7px !important;
+            background: #edf7f7 !important;
+            color: #075b60 !important;
+            font-size: 12px !important;
+            line-height: 1 !important;
+        }
+
+        #xonBreadcrumb .xon-breadcrumb-item.current > i {
+            background: #075b60 !important;
+            color: #ffffff !important;
+        }
+
+    /* Breadcrumb separator */
+    #xonBreadcrumb .xon-breadcrumb-separator {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 18px !important;
+        min-width: 18px !important;
+        height: 28px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        color: #8fa1a3 !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+    }
+
+/* ---------------------------------------------------------
+   3. RESERVE SPACE IN PAGE CONTENT
+   ---------------------------------------------------------
+   Fixed breadcrumb no longer occupies normal document flow.
+   Add only the required 56px when it is visible.
+   --------------------------------------------------------- */
+body:has(#xonBreadcrumb.is-visible) main[role="main"] {
+    padding-top: 56px !important;
+}
+
+body:has(#xonBreadcrumb.is-visible) main.flex-shrink-0 {
+    padding-top: 56px !important;
+}
+
+/* Prevent duplicate padding from the two selectors above. */
+body:has(#xonBreadcrumb.is-visible) main[role="main"].flex-shrink-0 {
+    padding-top: 56px !important;
+}
+
+/* ---------------------------------------------------------
+   4. NORMAL / EXPANDED SIDEBAR
+   --------------------------------------------------------- */
+body:not(.erp-sidebar-collapsed) #xonBreadcrumb {
+    left: var(--erp-sidebar-width) !important;
+}
+
+/* ---------------------------------------------------------
+   5. COLLAPSED SIDEBAR
+   --------------------------------------------------------- */
+body.erp-sidebar-collapsed #xonBreadcrumb {
+    left: 70px !important;
+}
+
+/* ---------------------------------------------------------
+   6. HOVER-EXPANDED SIDEBAR
+   --------------------------------------------------------- */
+body.erp-sidebar-collapsed.erp-sidebar-hover-expanded #xonBreadcrumb {
+    left: var(--erp-sidebar-width) !important;
+}
+
+/* ---------------------------------------------------------
+   7. DESKTOP
+   --------------------------------------------------------- */
+@media (min-width: 1201px) {
+
+    #xonBreadcrumb {
+        top: 60px !important;
+    }
+
+    body:has(#xonBreadcrumb.is-visible) main[role="main"],
+    body:has(#xonBreadcrumb.is-visible) main.flex-shrink-0,
+    body:has(#xonBreadcrumb.is-visible) main[role="main"].flex-shrink-0 {
+        padding-top: 56px !important;
+    }
+}
+
+/* ---------------------------------------------------------
+   8. TABLET
+   --------------------------------------------------------- */
+@media (min-width: 701px) and (max-width: 1200px) {
+
+    #xonBreadcrumb {
+        top: var(--erp-header-height) !important;
+        left: var(--erp-sidebar-width) !important;
+    }
+
+    body.erp-sidebar-collapsed #xonBreadcrumb {
+        left: 70px !important;
+    }
+
+    body.erp-sidebar-collapsed.erp-sidebar-hover-expanded #xonBreadcrumb {
+        left: var(--erp-sidebar-width) !important;
+    }
+}
+
+/* ---------------------------------------------------------
+   9. MOBILE
+   --------------------------------------------------------- */
+@media (max-width: 700px) {
+
+    #xonBreadcrumb {
+        top: 68px !important;
+        left: 72px !important;
+        right: 0 !important;
+        height: 46px !important;
+        min-height: 46px !important;
+        max-height: 46px !important;
+        padding: 7px 10px !important;
+        border-radius: 0 0 6px 6px !important;
+    }
+
+    body:has(#xonBreadcrumb.is-visible) main[role="main"],
+    body:has(#xonBreadcrumb.is-visible) main.flex-shrink-0,
+    body:has(#xonBreadcrumb.is-visible) main[role="main"].flex-shrink-0 {
+        padding-top: 54px !important;
+    }
+
+    #xonBreadcrumb .xon-breadcrumb-item {
+        gap: 5px !important;
+        padding: 2px 4px !important;
+        font-size: 11px !important;
+    }
+
+        #xonBreadcrumb .xon-breadcrumb-item > i {
+            width: 23px !important;
+            height: 23px !important;
+            min-width: 23px !important;
+            font-size: 10px !important;
+        }
+
+    #xonBreadcrumb .xon-breadcrumb-separator {
+        width: 14px !important;
+        min-width: 14px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* ---------------------------------------------------------
+   10. FINAL SAFETY OVERRIDE
+   ---------------------------------------------------------
+   These containers must not clip a fixed breadcrumb or create
+   a sticky containing-block conflict.
+   --------------------------------------------------------- */
+body > .container-fluid,
+body > .container-fluid > .row,
+body > .container-fluid > .row > .col-md-3,
+body > .container-fluid > .row > .col-lg-2,
+body > .container-fluid > .row > .col-md-9,
+body > .container-fluid > .row > .col-lg-10,
+body > .container-fluid > .row > .col-md-9 > main,
+body > .container-fluid > .row > .col-lg-10 > main {
+    overflow: visible !important;
+}
+
+/* =========================================================
+   END - FINAL BREADCRUMB FIX
+   ========================================================= */
+/* =========================================================
+   FOOTER - COMPACT HEIGHT FIX
+   ========================================================= */
+
+.footer.erp-footer,
+body > footer.erp-footer,
+footer.footer.erp-footer {
+    min-height: 0 !important;
+    height: 48px !important;
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+    padding: 5px 18px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+    /* Footer row */
+    .footer.erp-footer .row,
+    .erp-footer .row {
+        min-height: 0 !important;
+        height: 36px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+/* Footer columns */
+.erp-footer .col {
+    min-height: 0 !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Footer text */
+.erp-footer-copy,
+.erp-footer-machine,
+.erp-footer label,
+.erp-footer span,
+.footer-user-name {
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+}
+
+/* User icon */
+.erp-footer .footer-user-icon,
+.erp-footer .erp-footer-location {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    margin-right: 7px !important;
+}
+
+/* PDF icon */
+.erp-footer .footer-pdf {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 14px !important;
+}
+
+/* Mobile - IMPORTANT: remove old 110px height */
+@media (max-width: 520px) {
+    .erp-footer {
+        min-height: 0 !important;
+        height: 48px !important;
+        padding: 5px 10px !important;
+    }
+
+        .erp-footer .row {
+            min-height: 0 !important;
+            height: 36px !important;
+            flex-wrap: nowrap !important;
+        }
+
+        .erp-footer .col {
+            min-height: 0 !important;
+            height: 36px !important;
+            flex: 1 1 0 !important;
+        }
+}
+/* =========================================================
+   SEARCH + PIN BUTTON
+   Pin is OUTSIDE the search box
+   ========================================================= */
+
+#main_nav #xonMenuSearchBox .xon-search-row {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    gap: 6px !important;
+}
+
+    /* Existing search box */
+    #main_nav #xonMenuSearchBox .xon-search-row .xon-menu-search-inner {
+        position: relative !important;
+        width: auto !important;
+        height: 40px !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+    }
+
+/* Pin button outside search box */
+#main_nav #xonMenuSearchBox .xon-menu-pin {
+    width: 32px !important;
+    height: 40px !important;
+    min-width: 32px !important;
+    flex: 0 0 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 1px solid #d6e3e4 !important;
+    border-radius: 8px !important;
+    background: #f8fbfb !important;
+    color: #075b60 !important;
+    cursor: pointer !important;
+}
+
+    /* Pin hover */
+    #main_nav #xonMenuSearchBox .xon-menu-pin:hover {
+        background: #eaf4f4 !important;
+        border-color: #075b60 !important;
+        color: #075b60 !important;
+    }
+
+    /* Pin icon */
+    #main_nav #xonMenuSearchBox .xon-menu-pin i {
+        font-size: 13px !important;
+    }
+/* =========================================================
+   XON ERP - EXPAND / COLLAPSE ALL MENU BUTTON
+   ========================================================= */
+
+#xonMenuExpandAll {
+    width: 38px !important;
+    min-width: 38px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    margin-left: 4px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    background: #075b60 !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+    #xonMenuExpandAll:hover {
+        background: #064c50 !important;
+        transform: translateY(-1px);
+    }
+
+    #xonMenuExpandAll:active {
+        transform: scale(0.95);
+    }
+
+    #xonMenuExpandAll i {
+        font-size: 14px !important;
+        pointer-events: none !important;
+    }
+/* =========================================================
+   XON ERP - SEARCH SINGLE CLOSE BUTTON FIX
+   ---------------------------------------------------------
+   Hide Chrome / Edge native search X.
+   Keep only XON ERP custom clear (X) button.
+   ========================================================= */
+
+/* Remove browser default search appearance */
+#main_nav #xonMenuSearchBox .xon-menu-search-input {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+    /* Chrome / Edge / Safari native search cancel X */
+    #main_nav #xonMenuSearchBox
+    .xon-menu-search-input::-webkit-search-cancel-button {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        display: none !important;
+    }
+
+    /* Remove browser native search decoration */
+    #main_nav #xonMenuSearchBox
+    .xon-menu-search-input::-webkit-search-decoration {
+        display: none !important;
+    }
+
+    /* Remove native search results decoration */
+    #main_nav #xonMenuSearchBox
+    .xon-menu-search-input::-webkit-search-results-button {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        display: none !important;
+    }
+
+/* =========================================================
+   CUSTOM XON CLEAR BUTTON
+   Keep only our own X button visible
+   ========================================================= */
+
+#main_nav #xonMenuSearchBox .xon-menu-search-clear {
+    position: absolute !important;
+    right: 6px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 26px !important;
+    height: 26px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    color: #718184 !important;
+    display: none;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    z-index: 10 !important;
+}
+
+    /* Show custom X when JS makes it visible */
+    #main_nav #xonMenuSearchBox
+    .xon-menu-search-clear[style*="display: flex"],
+    #main_nav #xonMenuSearchBox
+    .xon-menu-search-clear[style*="display:flex"] {
+        display: flex !important;
+    }
+
+    /* Hover */
+    #main_nav #xonMenuSearchBox
+    .xon-menu-search-clear:hover {
+        background: #eaf4f4 !important;
+        color: #075b60 !important;
+    }
+
+    /* X icon */
+    #main_nav #xonMenuSearchBox
+    .xon-menu-search-clear i {
+        font-size: 13px !important;
+        line-height: 1 !important;
+        pointer-events: none !important;
+    }
+
+
+/* =========================================================
+   XON ERP - FINAL SIDEBAR SCROLLBAR FIX
+   ---------------------------------------------------------
+   Makes the left sidebar scrollbar clearly visible and
+   smooth without changing sidebar width/layout.
+   ========================================================= */
+
+#main_nav {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    scroll-behavior: smooth !important;
+    /* Firefox */
+    scrollbar-width: thin !important;
+    scrollbar-color: #aebfc1 transparent !important;
+}
+
+    /* Chrome / Edge / Safari */
+    #main_nav::-webkit-scrollbar {
+        width: 7px !important;
+    }
+
+    #main_nav::-webkit-scrollbar-track {
+        background: transparent !important;
+        border-radius: 10px !important;
+    }
+
+    #main_nav::-webkit-scrollbar-thumb {
+        background: #aebfc1 !important;
+        border-radius: 10px !important;
+        border: 1px solid transparent !important;
+        background-clip: padding-box !important;
+    }
+
+        #main_nav::-webkit-scrollbar-thumb:hover {
+            background: #7f999c !important;
+            background-clip: padding-box !important;
+        }
+
+    /* Keep nested submenu scrollbar neat */
+    #main_nav .submenu {
+        scrollbar-width: thin !important;
+        scrollbar-color: #aebfc1 transparent !important;
+    }
+
+        #main_nav .submenu::-webkit-scrollbar {
+            width: 6px !important;
+        }
+
+        #main_nav .submenu::-webkit-scrollbar-track {
+            background: transparent !important;
+        }
+
+        #main_nav .submenu::-webkit-scrollbar-thumb {
+            background: #b8c8ca !important;
+            border-radius: 10px !important;
+        }
+
+            #main_nav .submenu::-webkit-scrollbar-thumb:hover {
+                background: #7f999c !important;
+            }
+
+/* Prevent horizontal page scrolling */
+html,
+body {
+    overflow-x: hidden !important;
+}
+
+
+/* =========================================================
+   XON ERP - SAFE SIDEBAR TREE DESIGN
+   Required order: [ +/- ] [ MENU ICON ] [ MENU NAME ]
+   ========================================================= */
+#main_nav .navbar-nav .nav-item > a.nav-link,
+#main_nav .navbar-nav .nav-item > a.dropdown-item {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    position: relative !important;
+}
+
+/* +/- FIRST */
+#main_nav li.xon-tree-parent > a > .xon-tree-arrow {
+    order: 0 !important;
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    flex: 0 0 18px !important;
+    width: 18px !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    margin: 0 7px 0 0 !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid #7fa5a8 !important;
+    border-radius: 3px !important;
+    background: #fff !important;
+    color: #075b60 !important;
+    font: 700 13px/16px Arial, Helvetica, sans-serif !important;
+    pointer-events: none !important;
+    z-index: 5 !important;
+}
+
+#main_nav li.xon-tree-parent.xon-tree-open > a > .xon-tree-arrow {
+    background: #075b60 !important;
+    border-color: #075b60 !important;
+    color: #fff !important;
+}
+
+/* ICON SECOND */
+#main_nav .navbar-nav .nav-item > a > i.xon-child-icon,
+#main_nav li.xon-tree-parent > a > i:not(.xon-tree-arrow) {
+    order: 1 !important;
+    position: static !important;
+    flex: 0 0 18px !important;
+    width: 18px !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    margin: 0 7px 0 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 12px !important;
+    line-height: 18px !important;
+}
+
+/* NAME THIRD */
+#main_nav .navbar-nav .nav-item > a > .xon-label,
+#main_nav .navbar-nav .nav-item > a > .mis-label,
+#main_nav .navbar-nav .nav-item > a > span:not(.xon-tree-arrow):not(.xon-favourite-star) {
+    order: 2 !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+}
+
+/* FAVOURITE LAST */
+#main_nav .navbar-nav .nav-item > a > .xon-favourite-star {
+    order: 3 !important;
+    margin-left: 5px !important;
+    flex: 0 0 18px !important;
+    width: 18px !important;
+    min-width: 18px !important;
+}
+
+/* Keep Bootstrap caret/dropdown arrows from appearing beside the text. */
+#main_nav .dropdown-toggle::after {
+    display: none !important;
+}
+
+
+/* =========================================================
+   XON ERP - DATABASE ICON + TREE CONTROL FINAL
+   Required order:
+       [ +/- ] [ DATABASE ICON ] [ MENU NAME ]
+   ========================================================= */
+
+#main_nav .navbar-nav .nav-item > a.nav-link,
+#main_nav .navbar-nav .nav-item > a.dropdown-item,
+#main_nav .navbar-nav .nav-item > a.xon-tree-parent-link {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    position: relative !important;
+}
+
+/* 1. +/- CONTROL */
+#main_nav li.xon-tree-parent > a > .xon-tree-arrow {
+    order: 0 !important;
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    flex: 0 0 18px !important;
+    width: 18px !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    margin: 0 7px 0 0 !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid #7fa5a8 !important;
+    border-radius: 3px !important;
+    background: #fff !important;
+    color: #075b60 !important;
+    font: 700 13px/16px Arial, Helvetica, sans-serif !important;
+    pointer-events: none !important;
+    z-index: 5 !important;
+}
+
+#main_nav li.xon-tree-parent.xon-tree-open > a > .xon-tree-arrow {
+    background: #075b60 !important;
+    border-color: #075b60 !important;
+    color: #fff !important;
+}
+
+/* 2. DATABASE ICON — do not replace/change its icon class */
+#main_nav .navbar-nav .nav-item > a > i.xon-child-icon,
+#main_nav li.xon-tree-parent > a > i:not(.xon-tree-arrow):not(.xon-favourite-star) {
+    order: 1 !important;
+    position: static !important;
+    flex: 0 0 18px !important;
+    width: 18px !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    margin: 0 7px 0 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 12px !important;
+    line-height: 18px !important;
+}
+
+/* 3. MENU NAME */
+#main_nav .navbar-nav .nav-item > a > .xon-label,
+#main_nav .navbar-nav .nav-item > a > .mis-label,
+#main_nav .navbar-nav .nav-item > a > span:not(.xon-tree-arrow):not(.xon-favourite-star) {
+    order: 2 !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+}
+
+/* 4. FAVOURITE */
+#main_nav .navbar-nav .nav-item > a > .xon-favourite-star {
+    order: 3 !important;
+    margin-left: 5px !important;
+    flex: 0 0 18px !important;
+    width: 18px !important;
+    min-width: 18px !important;
+}
+
+/* Never let Bootstrap add another caret. */
+#main_nav .dropdown-toggle::after {
+    display: none !important;
+}
+
+/*
+ * Do NOT hide database icons.
+ * The Razor view binds MenuModel.IconClass directly:
+ *     <i class="fa @menu.IconClass ...">
+ *
+ * JS only adds the xon-child-icon marker for layout.
+ */
+#main_nav .navbar-nav .nav-item > a > i.xon-child-icon {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Compact tree connector */
+#main_nav ul.dropdown-menu,
+#main_nav ul.submenu {
+    position: relative !important;
+}
+
+    #main_nav ul.dropdown-menu > li,
+    #main_nav ul.submenu > li {
+        position: relative !important;
+    }
+
+        #main_nav ul.dropdown-menu > li > a.dropdown-item::before,
+        #main_nav ul.submenu > li > a.dropdown-item::before {
+            content: "" !important;
+            position: absolute !important;
+            left: 10px !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            width: 1px !important;
+            background: rgba(7,91,96,.10) !important;
+            pointer-events: none !important;
+        }
+
+
+
+/* ==========================================================
+   FULL DB MENU NAME ON HOVER
+   Visible name stays compact/ellipsis; browser title shows full name.
+   ========================================================== */
+#main_nav .navbar-nav .nav-item > a .mis-label {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    display: block !important;
+}
+
+#main_nav .navbar-nav .nav-item > a {
+    min-width: 0 !important;
+}
+
+/* ==========================================================
+   XON ERP - ATTRACTIVE SIDEBAR POLISH
+   Keeps DB IconClass and existing menu functionality unchanged.
+   Order remains: [ +/- ] [ DB ICON ] [ NAME ] [ STAR ]
+   ========================================================== */
+
+#main_nav > .navbar-nav {
+    padding: 8px 7px 18px !important;
+    gap: 3px !important;
+}
+
+    #main_nav > .navbar-nav .nav-item {
+        margin: 0 !important;
+    }
+
+/* Main and child menu rows */
+#main_nav .navbar-nav .nav-item > a.nav-link,
+#main_nav .navbar-nav .nav-item > a.dropdown-item,
+#main_nav .navbar-nav .nav-item > a.xon-tree-parent-link {
+    min-height: 36px !important;
+    height: 36px !important;
+    box-sizing: border-box !important;
+    padding: 0 9px !important;
+    margin: 1px 0 !important;
+    border: 1px solid transparent !important;
+    border-radius: 9px !important;
+    background: rgba(7,91,96,.035) !important;
+    color: #19383c !important;
+    transition: background .16s ease, border-color .16s ease, box-shadow .16s ease, transform .12s ease !important;
+}
+
+/* Slightly stronger parent rows */
+#main_nav li.xon-tree-parent > a.xon-tree-parent-link {
+    font-weight: 650 !important;
+    background: rgba(7,91,96,.055) !important;
+}
+
+/* Hover = clean raised row */
+#main_nav .navbar-nav .nav-item > a.nav-link:hover,
+#main_nav .navbar-nav .nav-item > a.dropdown-item:hover,
+#main_nav .navbar-nav .nav-item > a.xon-tree-parent-link:hover {
+    background: #eef8f8 !important;
+    border-color: #c9e2e3 !important;
+    color: #075b60 !important;
+    box-shadow: 0 3px 10px rgba(7,91,96,.08) !important;
+    transform: translateX(1px) !important;
+}
+
+/* Open parent */
+#main_nav li.xon-tree-parent.xon-tree-open > a.xon-tree-parent-link,
+#main_nav li.xon-tree-parent.xon-tree-active-parent > a.xon-tree-parent-link {
+    background: linear-gradient(90deg, #e0f2f2, #f4fbfb) !important;
+    border-color: #b9dfe0 !important;
+    color: #075b60 !important;
+    box-shadow: 0 3px 12px rgba(7,91,96,.07) !important;
+}
+
+/* +/- control: compact but clearly visible */
+#main_nav li.xon-tree-parent > a > .xon-tree-arrow {
+    flex: 0 0 20px !important;
+    width: 20px !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    margin-right: 8px !important;
+    border: 1px solid #8ab8ba !important;
+    border-radius: 5px !important;
+    background: #fff !important;
+    color: #075b60 !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06) !important;
+}
+
+#main_nav li.xon-tree-parent > a:hover > .xon-tree-arrow {
+    border-color: #075b60 !important;
+    background: #f2fbfb !important;
+}
+
+#main_nav li.xon-tree-parent.xon-tree-open > a > .xon-tree-arrow {
+    background: #075b60 !important;
+    border-color: #075b60 !important;
+    color: #fff !important;
+    box-shadow: 0 2px 6px rgba(7,91,96,.20) !important;
+}
+
+/* Database icon: preserve whatever comes from MenuModel.IconClass */
+#main_nav .navbar-nav .nav-item > a > i.xon-child-icon,
+#main_nav li.xon-tree-parent > a > i:not(.xon-tree-arrow):not(.xon-favourite-star) {
+    flex: 0 0 22px !important;
+    width: 22px !important;
+    min-width: 22px !important;
+    height: 22px !important;
+    margin-right: 8px !important;
+    border-radius: 6px !important;
+    background: #e8f4f4 !important;
+    color: #075b60 !important;
+    font-size: 11px !important;
+    line-height: 22px !important;
+    text-align: center !important;
+    transition: background .16s ease, color .16s ease !important;
+}
+
+#main_nav .navbar-nav .nav-item > a:hover > i.xon-child-icon,
+#main_nav li.xon-tree-parent > a:hover > i:not(.xon-tree-arrow):not(.xon-favourite-star),
+#main_nav li.xon-tree-parent.xon-tree-open > a > i:not(.xon-tree-arrow):not(.xon-favourite-star) {
+    background: #d5eeee !important;
+    color: #03484d !important;
+}
+
+/* Menu text */
+#main_nav .navbar-nav .nav-item > a > .mis-label {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    letter-spacing: .05px !important;
+    line-height: 1 !important;
+}
+
+/* Nested tree indentation */
+#main_nav ul.dropdown-menu,
+#main_nav ul.submenu {
+    margin: 2px 0 3px 12px !important;
+    padding: 3px 0 3px 8px !important;
+    border-left: 1px solid #d8e9ea !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+    #main_nav ul.dropdown-menu > li > a,
+    #main_nav ul.submenu > li > a {
+        min-height: 34px !important;
+        height: 34px !important;
+        border-radius: 8px !important;
+    }
+
+/* Favourite star */
+#main_nav .navbar-nav .nav-item > a > .xon-favourite-star {
+    flex: 0 0 20px !important;
+    width: 20px !important;
+    min-width: 20px !important;
+    margin-left: 6px !important;
+    font-size: 15px !important;
+    color: #91aeb0 !important;
+    opacity: .9 !important;
+    transition: color .16s ease, transform .16s ease !important;
+}
+
+#main_nav .navbar-nav .nav-item > a:hover > .xon-favourite-star {
+    color: #e1a72d !important;
+    transform: scale(1.08) !important;
+}
+
+/* Keep full name available through title tooltip without changing DB text */
+#main_nav .navbar-nav .nav-item > a .mis-label[title] {
+    cursor: default !important;
+}
+
+/* Cleaner scrollbar */
+#main_nav::-webkit-scrollbar,
+#main_nav .submenu::-webkit-scrollbar,
+#main_nav .dropdown-menu::-webkit-scrollbar {
+    width: 6px !important;
+}
+
+#main_nav::-webkit-scrollbar-thumb,
+#main_nav .submenu::-webkit-scrollbar-thumb,
+#main_nav .dropdown-menu::-webkit-scrollbar-thumb {
+    background: #b7d5d6 !important;
+    border-radius: 10px !important;
+}
+
+#main_nav::-webkit-scrollbar-track,
+#main_nav .submenu::-webkit-scrollbar-track,
+#main_nav .dropdown-menu::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+/* Avoid Bootstrap dropdown shadows/white boxes fighting the tree design */
+#main_nav .navbar-nav .dropdown-menu {
+    border: 0 !important;
+}
+
+
+/* =========================================================
+   XON ERP - LABEL ONLY ATTRACTIVE DESIGN
+   IMPORTANT: Does NOT change icon, +/-, favourite or tree layout.
+   ========================================================= */
+
+.xon-tree-parent-link .mis-label,
+.navbar-nav .nav-link .mis-label {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: 0.1px;
+    color: #164e63;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 4px 7px;
+    border-radius: 6px;
+    transition: color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* ONLY the label gets the hover treatment */
+.xon-tree-parent-link:hover .mis-label,
+.navbar-nav .nav-link:hover .mis-label {
+    color: #075e6b;
+    background-color: rgba(20, 170, 180, 0.10);
+    box-shadow: 0 2px 7px rgba(0, 80, 95, 0.08);
+}
+
+/* Open/active parent label */
+.xon-tree-parent.xon-tree-open > .xon-tree-parent-link .mis-label {
+    color: #075e6b;
+    font-weight: 700;
+}
+
+/* Child labels */
+.submenu .mis-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #244b58;
+}
+
+/* Child label hover only */
+.submenu a:hover .mis-label {
+    color: #075e6b;
+    background-color: rgba(20, 170, 180, 0.08);
+}
+
+/* Keep long DB names on one line */
+.mis-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   XON ERP - SIDEBAR ALL TEXT BLACK
+   ========================================================= */
+
+/* Main sidebar menu text */
+#main_nav .navbar-nav .nav-item > a,
+#main_nav .navbar-nav .nav-item > a .mis-label,
+#main_nav .navbar-nav .nav-item > a .xon-label {
+    color: #000000 !important;
+}
+
+/* Parent menu text */
+#main_nav li.xon-tree-parent > a,
+#main_nav li.xon-tree-parent > a .mis-label {
+    color: #000000 !important;
+}
+
+/* Child menu text */
+#main_nav ul.dropdown-menu > li > a,
+#main_nav ul.dropdown-menu > li > a .mis-label,
+#main_nav ul.submenu > li > a,
+#main_nav ul.submenu > li > a .mis-label {
+    color: #000000 !important;
+}
+
+/* Nested / Child-child menu text */
+#main_nav ul.dropdown-menu li a,
+#main_nav ul.submenu li a {
+    color: #000000 !important;
+}
+
+/* Hover - keep text black */
+#main_nav .navbar-nav .nav-item > a:hover,
+#main_nav .navbar-nav .nav-item > a:hover .mis-label,
+#main_nav ul.dropdown-menu li > a:hover,
+#main_nav ul.dropdown-menu li > a:hover .mis-label,
+#main_nav ul.submenu li > a:hover,
+#main_nav ul.submenu li > a:hover .mis-label {
+    color: #000000 !important;
+}
+
+/* Active / selected menu text also black */
+#main_nav a.xon-parent-active,
+#main_nav a.xon-parent-active .mis-label,
+#main_nav a.xon-child-active,
+#main_nav a.xon-child-active .mis-label,
+#main_nav a.xon-child-child-active,
+#main_nav a.xon-child-child-active .mis-label {
+    color: #000000 !important;
+}
+
+/* Open parent text black */
+#main_nav li.xon-tree-parent.xon-tree-open > a,
+#main_nav li.xon-tree-parent.xon-tree-open > a .mis-label,
+#main_nav li.xon-tree-parent.xon-tree-active-parent > a,
+#main_nav li.xon-tree-parent.xon-tree-active-parent > a .mis-label {
+    color: #000000 !important;
+}
+/* =========================================================
+   XON ERP - FINAL COMPACT SIDEBAR SPACING
+   Reduce gap between +/- , icon and menu name
+   ========================================================= */
+
+/* Main / parent / child rows */
+#main_nav .navbar-nav .nav-item > a.nav-link,
+#main_nav .navbar-nav .nav-item > a.dropdown-item,
+#main_nav .navbar-nav .nav-item > a.xon-tree-parent-link {
+    gap: 0 !important;
+}
+
+/* =========================================
+   PLUS / MINUS
+   ========================================= */
+
+#main_nav li.xon-tree-parent > a > .xon-tree-arrow {
+    flex: 0 0 18px !important;
+    width: 18px !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    /* OLD = 7px / 8px
+       NEW = 2px */
+    margin: 0 2px 0 0 !important;
+}
+
+
+/* =========================================
+   DATABASE ICON
+   ========================================= */
+
+#main_nav .navbar-nav .nav-item > a > i.xon-child-icon,
+#main_nav li.xon-tree-parent > a > i:not(.xon-tree-arrow):not(.xon-favourite-star) {
+    flex: 0 0 20px !important;
+    width: 20px !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    /* OLD = 8px
+       NEW = 3px */
+    margin: 0 3px 0 0 !important;
+    font-size: 11px !important;
+}
+
+
+/* =========================================
+   MENU TEXT
+   ========================================= */
+
+#main_nav .navbar-nav .nav-item > a > .mis-label,
+#main_nav .navbar-nav .nav-item > a > .xon-label,
+#main_nav .navbar-nav .nav-item > a > span:not(.xon-tree-arrow):not(.xon-favourite-star) {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+
+/* =========================================
+   PARENT ROW
+   ========================================= */
+
+#main_nav li.xon-tree-parent > a.xon-tree-parent-link,
+#main_nav li.xon-tree-parent > a.nav-link,
+#main_nav li.xon-tree-parent > a.dropdown-item {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+}
+
+
+/* =========================================
+   NORMAL CHILD ROW
+   ========================================= */
+
+#main_nav ul.dropdown-menu > li > a.dropdown-item,
+#main_nav ul.submenu > li > a.dropdown-item {
+    gap: 3px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+}
+
+
+    /* Child icon */
+    #main_nav ul.dropdown-menu > li > a.dropdown-item > i.xon-child-icon,
+    #main_nav ul.submenu > li > a.dropdown-item > i.xon-child-icon {
+        width: 20px !important;
+        min-width: 20px !important;
+        height: 20px !important;
+        margin-right: 3px !important;
+    }
+
+
+/* =========================================
+   FAVOURITE STAR
+   ========================================= */
+
+#main_nav .navbar-nav .nav-item > a > .xon-favourite-star {
+    margin-left: 3px !important;
+}
+
+
+/* =========================================
+   BLACK MENU TEXT
+   ========================================= */
+
+#main_nav .navbar-nav .nav-item > a,
+#main_nav .navbar-nav .nav-item > a .mis-label,
+#main_nav .navbar-nav .nav-item > a .xon-label,
+#main_nav li.xon-tree-parent > a,
+#main_nav ul.dropdown-menu li > a,
+#main_nav ul.dropdown-menu li > a .mis-label,
+#main_nav ul.submenu li > a,
+#main_nav ul.submenu li > a .mis-label {
+    color: #000000 !important;
+}
+
+
+    /* Hover text also black */
+    #main_nav .navbar-nav .nav-item > a:hover,
+    #main_nav .navbar-nav .nav-item > a:hover .mis-label,
+    #main_nav ul.dropdown-menu li > a:hover,
+    #main_nav ul.dropdown-menu li > a:hover .mis-label,
+    #main_nav ul.submenu li > a:hover,
+    #main_nav ul.submenu li > a:hover .mis-label {
+        color: #000000 !important;
+    }

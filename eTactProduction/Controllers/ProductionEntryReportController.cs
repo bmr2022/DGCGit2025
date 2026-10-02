@@ -1,9 +1,10 @@
 ﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
-using eTactWeb.DOM.Models;
+using System.Data;
 using System.Globalization;
 
 namespace eTactWeb.Controllers
@@ -24,8 +25,12 @@ namespace eTactWeb.Controllers
             this.iconfiguration = iconfiguration;
         }
         [Route("{controller}/Index")]
-        public IActionResult ProductionEntryReport()
+        public IActionResult ProductionEntryReport(string formKey)
         {
+            ViewBag.formKey = formKey;
+            var uniqueKey = Guid.NewGuid().ToString();
+            ViewBag.uniqueKey = uniqueKey;
+
             var model = new ProductionEntryReportModel();
             model.ProductionEntryReportDetail = new List<ProductionEntryReportDetail>();
             return View(model);
@@ -149,38 +154,115 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetProductionEntryReport(string ReportType, string FromDate, string ToDate, string FGPartCode, string FGItemName, string RMPartCode, string RMItemName, string ProdSlipNo, string ProdPlanNo, string ProdSchNo, string ReqNo, string WorkCenter, string MachineName, string OperatorName, string Process,string ShiftName, int StoreID, int WCID,string FromSlipNo,string ToSlipNo,DateTime FromTime,DateTime ToTime)
+        public async Task<IActionResult> GetProductionEntryReport(
+    string ReportType,
+    string FromDate,
+    string ToDate,
+    string FGPartCode,
+    string FGItemName,
+    string RMPartCode,
+    string RMItemName,
+    string ProdSlipNo,
+    string ProdPlanNo,
+    string ProdSchNo,
+    string ReqNo,
+    string WorkCenter,
+    string MachineName,
+    string OperatorName,
+    string Process,
+    string ShiftName,
+    int StoreID,
+    int WCID,
+    string FromSlipNo,
+    string ToSlipNo,
+    DateTime FromTime,
+    DateTime ToTime,
+    string SearchBox,
+    string Flag = "True")
         {
-            var model = new ProductionEntryReportModel();
-            string ReplaceZero(string value) => value == "0" ? "" : value;
-            string ExtractBeforeArrow(string value) => value.Contains("--->") ? value.Split("--->")[0] : value;
+            try
+            {
+                HttpContext.Session.Remove("keyproductionentry");
 
-            FGPartCode = ReplaceZero(FGPartCode);
-            FGItemName = ExtractBeforeArrow(ReplaceZero(FGItemName));  // Extract value before `--->`
-            RMPartCode = ReplaceZero(RMPartCode);
-            RMItemName = ReplaceZero(RMItemName);
-            ProdSlipNo = ReplaceZero(ProdSlipNo);
-            ProdPlanNo = ReplaceZero(ProdPlanNo);
-            ProdSchNo = ReplaceZero(ProdSchNo);
-            ReqNo = ReplaceZero(ReqNo);
-            WorkCenter = ReplaceZero(WorkCenter);
-            MachineName = ReplaceZero(MachineName);
-            OperatorName = ReplaceZero(OperatorName);
-            Process = ReplaceZero(Process);
+                var model = new ProductionEntryReportModel();
 
-            model = await _IProductionEntryReport.GetProductionEntryReport(
-                ReportType, FromDate, ToDate, FGPartCode, FGItemName, RMPartCode, RMItemName,
-                ProdSlipNo, ProdPlanNo, ProdSchNo, ReqNo, WorkCenter, MachineName, OperatorName, Process, ShiftName,  StoreID,  WCID, FromSlipNo, ToSlipNo, FromTime, ToTime
-            );
+                string ReplaceZero(string value) =>
+                    value == "0" ? "" : value;
 
-            model.ReportType = ReportType;
+                string ExtractBeforeArrow(string value) =>
+                    !string.IsNullOrWhiteSpace(value) && value.Contains("--->")
+                        ? value.Split("--->")[0]
+                        : value;
 
-            string serializedGrid = JsonConvert.SerializeObject(model.ProductionEntryReportDetail);
-            HttpContext.Session.SetString("keyproductionentry", serializedGrid);
-            return PartialView("_ProductionReportDetailGrid", model);
+                FGPartCode = ReplaceZero(FGPartCode);
+                FGItemName = ExtractBeforeArrow(ReplaceZero(FGItemName));
+                RMPartCode = ReplaceZero(RMPartCode);
+                RMItemName = ReplaceZero(RMItemName);
+                ProdSlipNo = ReplaceZero(ProdSlipNo);
+                ProdPlanNo = ReplaceZero(ProdPlanNo);
+                ProdSchNo = ReplaceZero(ProdSchNo);
+                ReqNo = ReplaceZero(ReqNo);
+                WorkCenter = ReplaceZero(WorkCenter);
+                MachineName = ReplaceZero(MachineName);
+                OperatorName = ReplaceZero(OperatorName);
+                Process = ReplaceZero(Process);
+                model.ReportType = ReportType;
+
+                var result = await _IProductionEntryReport.GetProductionEntryReport(
+                    ReportType,
+                    FromDate,
+                    ToDate,
+                    FGPartCode,
+                    FGItemName,
+                    RMPartCode,
+                    RMItemName,
+                    ProdSlipNo,
+                    ProdPlanNo,
+                    ProdSchNo,
+                    ReqNo,
+                    WorkCenter,
+                    MachineName,
+                    OperatorName,
+                    Process,
+                    ShiftName,
+                    StoreID,
+                    WCID,
+                    FromSlipNo,
+                    ToSlipNo,
+                    FromTime,
+                    ToTime);
+
+                if (result != null && result.Result is DataTable dt)
+                {
+                    model.Headers = dt.Columns
+                        .Cast<DataColumn>()
+                        .Select(c => new DashboardColumn
+                        {
+                            Title = c.ColumnName,
+                            Field = c.ColumnName
+                        })
+                        .ToList();
+
+                    model.Rows = dt.AsEnumerable()
+                        .Select(r => dt.Columns
+                            .Cast<DataColumn>()
+                            .ToDictionary(
+                                c => c.ColumnName,
+                                c => r[c] == DBNull.Value ? null : r[c]
+                            ))
+                        .ToList();
+                }
+
+                string serializedGrid = JsonConvert.SerializeObject(model.Rows);
+                HttpContext.Session.SetString("keyproductionentry", serializedGrid);
+
+                return PartialView("_ProductionReportDetailGrid", model);
+            }
+            catch
+            {
+                throw;
+            }
         }
-
-
         public IActionResult GetDataForPDF()
         {
             string modelJson = HttpContext.Session.GetString("keyproductionentry");

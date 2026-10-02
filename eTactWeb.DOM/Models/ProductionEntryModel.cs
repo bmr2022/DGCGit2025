@@ -11,6 +11,7 @@ using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.DOM.Models.JobWorkReceiveModel;
 
 namespace eTactWeb.DOM.Models;
+
 [Serializable]
 public class ProductionEntryDashboard
 {
@@ -33,7 +34,7 @@ public class ProductionEntryDashboard
     public string? Reqno { get; set; }
     public int ReqThrBOMYearCode { get; set; }
     public string? ReqDate { get; set; }
-    public decimal FGProdQty {  get; set; }
+    public decimal FGProdQty { get; set; }
     public string? FGPartCode { get; set; }
     public string? FGItemName { get; set; }
     public string WorkCenter { get; set; }
@@ -48,15 +49,15 @@ public class ProductionEntryDashboard
     public decimal ProdQty { get; set; }
     public decimal FGOKQty { get; set; }
     public decimal FGRejQty { get; set; }
-    public string? NextToStore {  get; set; }
-    public string? NextToWorkCenter {  get; set; }
+    public string? NextToStore { get; set; }
+    public string? NextToWorkCenter { get; set; }
     public decimal RejQtyDuetoTrail { get; set; }
     public string QCChecked { get; set; }
     public decimal PendQtyForProd { get; set; }
     public decimal PendQtyForQC { get; set; }
     public decimal PendingQtyToIssue { get; set; }
     public int BOMNO { get; set; }
-    public string? ConsumedRMUnit {  get; set; }
+    public string? ConsumedRMUnit { get; set; }
     public string? BOMDate { get; set; }
     public string? MachineName { get; set; }
     public string? ScrapType { get; set; }
@@ -73,7 +74,7 @@ public class ProductionEntryDashboard
     public string? StartTime { get; set; }
     public string? ToTime { get; set; }
     public decimal? setupTime { get; set; }
-    public float PrevWC { get; set; }
+    public decimal? PrevWC { get; set; }
     public string? ProducedINLineNo { get; set; }
     public string? QCCheckedDate { get; set; }
     public decimal? InitialReading { get; set; }
@@ -81,7 +82,7 @@ public class ProductionEntryDashboard
     public int Shots { get; set; }
     public string? Completed { get; set; }
     public decimal UtilisedHours { get; set; }
-    public string SoDate {  get; set; }
+    public string SoDate { get; set; }
     public string? ProdLineNo { get; set; }
     public int stdShots { get; set; }
     public int stdCycletime { get; set; }
@@ -90,6 +91,7 @@ public class ProductionEntryDashboard
     public int ProductionHour { get; set; }
     public string? ItemModel { get; set; }
     public int cavity { get; set; }
+    public int TotalCavity { get; set; }
     public decimal startupRejQty { get; set; }
     public decimal efficiency { get; set; }
     public decimal ActualTimeRequired { get; set; }
@@ -116,10 +118,10 @@ public class ProductionEntryDashboard
     public string? CC { get; set; }
     public string? EntryByMachineNo { get; set; }
     public int ActualEntryByEmp { get; set; }
-    public string? ActualEmpByName {  get; set; }
+    public string? ActualEmpByName { get; set; }
     public string? ActualEntryDate { get; set; }
     public int LastUpdatedBy { get; set; }
-    public string? LastUpdatedByName {  get; set; }
+    public string? LastUpdatedByName { get; set; }
     public string? LastUpdationDate { get; set; }
     public string? EntryByDesignation { get; set; }
     public string? supervisior { get; set; }
@@ -147,8 +149,8 @@ public class ProductionEntryDashboard
     public decimal BreakTimeMin { get; set; }
     public string ResEmpName { get; set; }
     public string ResFactor { get; set; }
-    public string? RMPartCode {  get; set; }
-    public string? RMItemName {  get; set; }
+    public string? RMPartCode { get; set; }
+    public string? RMItemName { get; set; }
     public int TotalRecords { get; set; }
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
@@ -207,7 +209,7 @@ public class ProductionEntryItemDetail : TimeStamp
     public decimal RemainingStock { get; set; }
     public decimal Qty { get; set; }
     public decimal Rate { get; set; }
-    public string? DetailRemark {  get; set; }    
+    public string? DetailRemark { get; set; }
     public decimal AltQty { get; set; }
     public string? AltUnit { get; set; }
     public string? BatchWise { get; set; }
@@ -220,7 +222,7 @@ public class ProductionEntryItemDetail : TimeStamp
     public string? supervisior { get; set; }
     public string? OperatorName { get; set; }
     public decimal GrossWt { get; set; }
-    public string Batchwise {  get; set; }
+    public string Batchwise { get; set; }
     public string? Fromtime { get; set; }
     public int WCId { get; set; }
     public string? Totime { get; set; }
@@ -243,8 +245,8 @@ public class ProductionEntryItemDetail : TimeStamp
     public string? SaleBillNo { get; set; }
     public int? SaleBillYearCode { get; set; }
     public int RmItemCode { get; set; }
-    public string RmPartCode {  get; set; }
-    public string RmItemName {  get; set; }
+    public string RmPartCode { get; set; }
+    public string RmItemName { get; set; }
     public decimal? SaleBillQty { get; set; }
     public string? SupplierBatchNo { get; set; }
     public decimal? ShelfLife { get; set; }
@@ -261,10 +263,10 @@ public class ProductionEntryItemDetail : TimeStamp
     public string FGItemName { get; set; }
     public string MainPartCode { get; set; }
     public string MainItemName { get; set; }
-    public int MainItemCode {  get; set; }
+    public int MainItemCode { get; set; }
     public int ConsumedRMItemCode { get; set; }
     public decimal ConsumedRMQTY { get; set; }
-    public string RmUnit {  get; set; }
+    public string RmUnit { get; set; }
     public string ConsumedRMUnit { get; set; }
     public int MainRMitemCode { get; set; }
     public decimal MainRMQTY { get; set; }
@@ -285,6 +287,7 @@ public class ProductionEntryItemDetail : TimeStamp
     public string StoreTransferScrap { get; set; }
     public string Scrapunit { get; set; }
     public string TransferToWCStore { get; set; }
+    public string TransferToWCStoreName { get; set; }
     public string? ScrapItemName { get; set; }
     public string? ScrapPartCode { get; set; }
     public int ScrapItemCode { get; set; }
@@ -305,17 +308,20 @@ public class ProductionEntryItemDetail : TimeStamp
     public int ProductStoreId { get; set; }
     public int ProductToWCId { get; set; }
     public IList<ProductionEntryItemDetail>? ProductionEntryDetail { get; set; }
+    public string? CAPANeededForBreakDown { get; set; }
 }
 
 [Serializable]
 public class ProductionEntryModel : ProductionEntryItemDetail
 {
     public string? FinFromDate { get; set; }
+    public string? formKey { get; set; }
+    public string? uniqueKey { get; set; }
     public string? FinToDate { get; set; }
     public string? FromDate { get; set; }
     public string? ToDate { get; set; }
     public string? IPAddress { get; set; }
-    public int TransferMatYearCode {  get; set; }
+    public int TransferMatYearCode { get; set; }
     public string? EntrybyMachineName { get; set; }
     public int ID { get; set; }
     //public string? Mode { get; set; }
@@ -405,9 +411,9 @@ public class ProductionEntryModel : ProductionEntryItemDetail
     public string ProdType { get; set; }
     public decimal Qty { get; set; }
     public string ActualProdDate { get; set; }
-    public string ProdEntryAllowBackDate {  get; set; }
+    public string ProdEntryAllowBackDate { get; set; }
     public decimal Rate { get; set; }
-    public string? DetailRemark {  get; set; }
+    public string? DetailRemark { get; set; }
     public string? AltUnit { get; set; }
     public string NewProdRework { get; set; }
     public string ProdSlipNo { get; set; }
@@ -423,7 +429,7 @@ public class ProductionEntryModel : ProductionEntryItemDetail
     public string? ItemColor { get; set; }
     public string? OtherDetail { get; set; }
     public string ReqNo { get; set; }
-    public float Stock { get; set; }
+    public decimal? Stock { get; set; }
     public IList<TextValue>? ShiftList { get; set; }
     public IList<TextValue>? ItemNameList { get; set; }
     public string? SupplierBatchNo { get; set; }
@@ -477,14 +483,17 @@ public class ProductionEntryModel : ProductionEntryItemDetail
     public string StoreTransfer { get; set; }
     public string SenToQc { get; set; }
     public string ProdStartTime { get; set; }
+    public string? TotalHour { get; set; }
+    public string? UtilizedHour { get; set; }
     public string ProdEndTime { get; set; }
     public string ToolName { get; set; }
-    public int ToolItemCode {  get; set; }
+    public int ToolItemCode { get; set; }
     public string NextWorkCenter { get; set; }
     public decimal InitalReading { get; set; }
 
     public decimal EndReading { get; set; }
     public decimal Cavity { get; set; }
+    public decimal TotalCavity { get; set; }
     public int StdCycleTime { get; set; }
     public string? Remark { get; set; }
     public string? Superwiser { get; set; }
@@ -518,18 +527,19 @@ public class ProductionEntryModel : ProductionEntryItemDetail
     public string? QcCompleted { get; set; }
     public string? MaterialTransferd { get; set; }
     public string? ProdEntryAllowToAddRMItem { get; set; }
-    public string? QcMandatory {  get; set; }
+    public string? QcMandatory { get; set; }
     public string? ProductPartCode { get; set; }
     public string? ProductItemName { get; set; }
     public string? ProductItemCode { get; set; }
     public string? ProductType { get; set; }
-    public decimal ProductQty {  get; set; }
+    public decimal ProductQty { get; set; }
     public string? Productunit { get; set; }
     public string? ProductStore { get; set; }
     public string? StoreTransferProduct { get; set; }
     public string? ProductTransferToWCStore { get; set; }
     public int ProductStoreId { get; set; }
     public int ProductToWC { get; set; }
+
     public IList<ProductionEntryItemDetail>? ItemDetailGrid { get; set; }
     public IList<ProductionEntryItemDetail>? BreakdownDetailGrid { get; set; }
     public IList<ProductionEntryItemDetail>? OperatorDetailGrid { get; set; }
@@ -548,6 +558,12 @@ public class ProductionEntryModel : ProductionEntryItemDetail
         get => _Type;
         set => _Type = value;
     }
+    public int? FinalQcByEmpId { get; set; }
+    public int? checkebyEmpId { get; set; }
+    public string? CAPANeeded { get; set; }
+    public string? CAPANeededForBreakDown { get; set; }
+    //public IList<TextValue>? EmployeeList { get; set; }
+
 }
 
 

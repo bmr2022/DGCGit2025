@@ -17,10 +17,11 @@
             border-bottom: none !important;
         }
 
-    .select2-container--default .select2-results > .select2-results__options {
+    .select2-container--default .select2-results > .select2-results__options { 
         background-color: #e0f2f1;  
         color: #000;
     }
+
 </style>
 
 
@@ -51,6 +52,9 @@
                                             <input asp-for="FromDate" class="form-control" />
                                             <input type="hidden" id="Com_Name" />
 
+                                            <input type="hidden" id="formKey" value="@ViewBag.formKey" />
+                                            <input type="hidden" id="uniqueKey" value="@ViewBag.uniqueKey" />
+
                                         </div>
                                         <div class="col">
                                             <label class="form-label">To Date</label>
@@ -59,7 +63,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                @* <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                     <div class="row">
                                         <div class="col">
                                             <label class="form-label">FromTime</label>
@@ -71,6 +75,14 @@
                                             <input asp-for="ToTime" type="time" style="width:80px" class="form-control"  />
                                         </div>
                                     </div>
+                                </div> *@
+                                <div class="col-xxl-1 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                     <label class="form-label">FromTime</label>
+                                    <input asp-for="FromTime" type="time" class="form-control" />
+                                </div>
+                                <div class="col-xxl-1 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label class="form-label">ToTime</label>
+                                    <input asp-for="ToTime" type="time" class="form-control"  />
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px;">
                                     <label asp-for="FGPartCode" class="form-label">FG PartCode</label>
@@ -80,96 +92,101 @@
                                     <label asp-for="FGItemName" class="form-label">FG ItemName</label>
                                     <select asp-for="FGItemName" class="form-select"></select>
                                 </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
-                                    <label asp-for="RMPartCode" class="form-label">RM PartCode</label>
-                                    <select asp-for="RMPartCode" class="form-select"></select>
-                                </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
-                                    <label asp-for="RMItemName" class="form-label">RM ItemName</label>
-                                    <select asp-for="RMItemName" class="form-select"></select>
-                                </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:170px">
-                                    <label asp-for="ProdSlipNo" class="form-label">Prod SlipNo</label>
-                                    <select asp-for="ProdSlipNo" class="form-select" style="width:170px"></select>
-                                </div>
-
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:170px">
-                                    <label asp-for="FromSlipNo" class="form-label">From SlipNo</label>
-                                    <select asp-for="FromSlipNo" class="form-select" style="width:160px"></select>
-                                </div>
-
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:170px">
-                                    <label asp-for="ToSlipNo" class="form-label">To SlipNo</label>
-                                    <select asp-for="ToSlipNo" class="form-select" style="width:160px"></select>
-                                </div>
-
-
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
-                                    <label asp-for="ProdPlanNo" class="form-label">Prod PlanNo</label>
-                                    <select asp-for="ProdPlanNo" class="form-select"></select>
-                                </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
-                                    <label asp-for="ProdSchNo" class="form-label">Prod SchNo</label>
-                                    <select asp-for="ProdSchNo" class="form-select"></select>
-                                </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
-                                    <label asp-for="ReqNo" class="form-label">ReqNo</label>
-                                    <select asp-for="ReqNo" class="form-select"></select>
-                                </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
-                                    <label asp-for="WorkCenter" class="form-label">Work Center</label>
-                                    <select asp-for="WorkCenter" class="form-select"></select>
-                                </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
-                                    <label asp-for="MachineName" class="form-label">Machine Name</label>
-                                    <select asp-for="MachineName" class="form-select"></select>
-                                </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
-                                    <label asp-for="OperatorName" class="form-label">Operator Name</label>
-                                    <select asp-for="OperatorName" class="form-select"></select>
-                                </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
-                                    <label asp-for="Process" class="form-label">Process</label>
-                                    <input type="hidden" asp-for="ProcessId" value="@Model.ProcessId" />
-                                    <select asp-for="Process" class="form-select"></select>
-                                </div>
-                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" >
-                                    <label asp-for="ReportType" class="form-label" style="width:150px">ReportType</label>
-                                    <select asp-for="ReportType" class="form-select" onchange="GetProductionReport()" style="width:200px">
+                             
+                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" >
+                                    <label asp-for="ReportType" class="form-label">Report Type</label>
+                                    <select asp-for="ReportType" id="ReportType" class="form-select" onchange="GetProductionReport();">
                                         <option disabled value="">-Select-</option>
-                                        <option  value="DETAIL">Detail</option>
-                                        <option selected value="Date Wise FG Consolidated">Date Wise FG Consolidated</option>
-                                        <option value="Machine Wise FG Production SUmmary">Machine Wise FG Production Summary</option>
-                                        <option value="RM Wise Consumption Summary">RM Wise Consumption Summary</option>
-                                        <option value="RM Wise Consumption Detail">RM Wise Consumption Detail</option>
-                                        <option value="RM Total Consumption">RM Total Consumption</option>
-                                        <option value="BreakDown Detail">BreakDown Detail</option>
-                                        <option value="Machine Wise BreakDown Summary">Machine Wise BreakDown Summary</option>
-                                        <option value="Operator Detail Report">Operator Detail Report</option>
-                                        <option value="Operator Summary Report">Operator Summary Report</option>
-                                        <option value="Production QC Deatil">Production QC Detail</option>
-                                        <option value="Production Summary">Production Summary</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:130px">
-                                    <label asp-for="ShiftName" class="form-label">Shift</label>
-                                    
-                                    <select asp-for="ShiftName" class="form-select"></select>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 d-flex align-items-end">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            style="height:38px;width:150px;"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#MoreProductionFilters"
+                                            aria-expanded="false"
+                                            aria-controls="MoreProductionFilters">
+                                        <i class="fa-solid fa-filter fa-fw"></i> MORE FILTERS
+                                    </button>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:130px">
-                                    <label asp-for="TransStoreID" class="form-label">TransStoreName</label>
+                                </div>
+                                            
+                                <div class="collapse mt-2" id="MoreProductionFilters">
+                                            
+                                    <div class="row">
 
-                                    <select asp-for="TransStoreID" class="form-select"></select>
-                                </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:130px">
-                                    <label asp-for="TransWCID" class="form-label">TransWorkCenter</label>
+                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:170px">
+                                        <label asp-for="RMPartCode" class="form-label">RM PartCode</label>
+                                        <select asp-for="RMPartCode" class="form-select" style="width:150px"></select>
+                                    </div>
+                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:170px">
+                                        <label asp-for="RMItemName" class="form-label">RM ItemName</label>
+                                        <select asp-for="RMItemName" class="form-select" style="width:150px"></select>
+                                    </div>
+                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:170px">
+                                        <label asp-for="ProdSlipNo" class="form-label">Prod SlipNo</label>
+                                        <select asp-for="ProdSlipNo" class="form-select" style="width:150px"></select>
+                                    </div>
 
-                                    <select asp-for="TransWCID" class="form-select"></select>
+                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:170px">
+                                        <label asp-for="FromSlipNo" class="form-label">From SlipNo</label>
+                                        <select asp-for="FromSlipNo" class="form-select" style="width:160px"></select>
+                                    </div>
+
+                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:170px">
+                                        <label asp-for="ToSlipNo" class="form-label">To SlipNo</label>
+                                        <select asp-for="ToSlipNo" class="form-select" style="width:160px"></select>
+                                    </div>
+
+
+                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:170px">
+                                        <label asp-for="ProdPlanNo" class="form-label">Prod PlanNo</label>
+                                        <select asp-for="ProdPlanNo" class="form-select" style="width:160px"></select>
+                                    </div>
+                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:170px">
+                                        <label asp-for="ProdSchNo" class="form-label">Prod SchNo</label>
+                                        <select asp-for="ProdSchNo" class="form-select" style="width:160px"></select>
+                                    </div>
+                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:170px">
+                                        <label asp-for="ReqNo" class="form-label">ReqNo</label>
+                                        <select asp-for="ReqNo" class="form-select" style="width:160px"></select>
+                                    </div>
+                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:170px">
+                                        <label asp-for="WorkCenter" class="form-label">Work Center</label>
+                                        <select asp-for="WorkCenter" class="form-select" style="width:160px"></select>
+                                    </div>
+                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:170px">
+                                        <label asp-for="MachineName" class="form-label">Machine Name</label>
+                                        <select asp-for="MachineName" class="form-select" style="width:160px"></select>
+                                    </div>
+                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:170px">
+                                        <label asp-for="OperatorName" class="form-label">Operator Name</label>
+                                        <select asp-for="OperatorName" class="form-select" style="width:160px"></select>
+                                    </div>
+                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:170px">
+                                        <label asp-for="Process" class="form-label">Process</label>
+                                        <input type="hidden" asp-for="ProcessId" value="@Model.ProcessId" />
+                                        <select asp-for="Process" class="form-select" style="width:160px"></select>
+                                    </div>
+         
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:170px">
+                                        <label asp-for="ShiftName" class="form-label">Shift</label>
+                
+                                        <select asp-for="ShiftName" class="form-select" style="width:160px"></select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:170px">
+                                        <label asp-for="TransStoreID" class="form-label">TransStoreName</label>
+
+                                        <select asp-for="TransStoreID" class="form-select" style="width:160px"></select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:170px">
+                                        <label asp-for="TransWCID" class="form-label">TransWorkCenter</label>
+
+                                        <select asp-for="TransWCID" class="form-select" style="width:160px"></select>
+                                    </div>
+                           
                                 </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" >
-                                    <label class="form-label">Global search</label>
-                                    <input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
-                                </div>
+                            </div>
                                 <div class="row" style="margin-top:10px;">
                                     <div class="col d-flex align-items-center">
                                       
@@ -182,12 +199,16 @@
                                         <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToPDF">
                                             <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
                                         </button>
-                                        <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;" asp-controller="ProductionEntryReport" asp-action="ProductionEntryReport">
+                                        <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;" asp-controller="ProductionEntryReport" asp-route-formKey="@ViewBag.formKey"
+                                           asp-action="ProductionEntryReport">
                                             <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                         </a>
                                     </div>
+                                     <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" >
+                                        <label class="form-label">Global search</label>
+                                        <input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
+                                    </div>
                                 </div>
-                            </div>
                             <div class="progress my-2 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
@@ -244,7 +265,12 @@
 @section Scripts
 {
     <script>
-        $(document).ready(function () {
+    var formKey=$('#formKey').val();
+             var uniqueKey=$('#uniqueKey').val();
+$(document).ready(function () 
+{
+    formKey=$('#formKey').val();
+            uniqueKey=$('#uniqueKey').val();
             GetServerDate();
             FillFGPartCode();
             FillFGItemName();
@@ -262,7 +288,7 @@
             filltranstore();
             filltranworkcenter();
             GetCompanyName();
-            // GetProductionReport();
+            FillReportType("SPreportProductionEntry", "");
             
             $('#ReportType').on('select2:open', function () {
                 setTimeout(function () {
@@ -537,14 +563,22 @@
         }
 
         $('#sendToExcel').click(function () {
+
             let table = $("#ReportTable");
-            console.log(table);
+
+            // Example: dropdown/mathi ReportType levu
+            let reportType = $('#ReportType').val();
+
+            // Invalid characters remove karva
+            let sheetName = reportType.replace(/[:\\/?*\[\]]/g, '');
+
             TableToExcel.convert(table[0], {
-                name: `ReportTable.xlsx`,
+                name: `${sheetName}.xlsx`,
                 sheet: {
-                    name: 'ReportTable'
+                    name: sheetName
                 }
             });
+
         });
 
         // document.getElementById('sendToPDF').addEventListener('click', async () => {
@@ -838,12 +872,12 @@ $('#sendToPDF').click(async function () {
     let headers = [];
     let body = [];
     let foot = [];
-
+    console.log(rows[0]);
     // Handle report type logic
     switch (reportTypeValue) {
         case 'Date Wise FG Consolidated':
             headers = [
-                "Sr#", "prodEntryId", "ProdDate", "NewProdRework", "FGPartCode", "FGItemName", "Workcenter",
+                "Sr#", "ProdSlipNo", "ProdDate", "NewProdRework", "FGPartCode", "FGItemName", "Workcenter",
                 "FGProdQty", "FGOKQty", "FGRejQty", "TransferToWCSTr"
             ];
                     rows.sort((a, b) => {
@@ -854,7 +888,7 @@ $('#sendToPDF').click(async function () {
             // Build body
             body = rows.map((r, i) => [
                 i + 1,
-                r.prodEntryId ?? '',
+                r.prodSlipNo ?? '',
                 r.prodDate ?? '',
                 r.newProdRework ?? '',
                 r.fgPartCode ?? '',
@@ -886,7 +920,414 @@ $('#sendToPDF').click(async function () {
                 ''
             ]];
             break;
+                    case 'Machine Wise FG Production Summary':
 
+            headers = [
+                "Sr#", "MachineName", "NewProdRework", "FGPartCode",
+                "FGItemName", "Workcenter", "StageDescription",
+                "FGProdQty", "FGOKQty", "FGRejQty", "RejQtyDuetoTrail"
+            ];
+
+            rows.sort((a, b) => (a.machineName || '').localeCompare(b.machineName || ''));
+
+            body = rows.map((r, i) => [
+                i + 1,
+                r.machineName ?? '',
+                r.newProdRework ?? '',
+                r.fgPartCode ?? '',
+                r.fgItemName ?? '',
+                r.workcenter ?? '',
+                r.stageDescription ?? '',
+                r.fgProdQty ?? '',
+                r.fgokQty ?? '',
+                r.fgRejQty ?? '',
+                r.rejQtyDuetoTrail ?? ''
+            ]);
+
+            let macProd = 0;
+            let macOK = 0;
+            let macRej = 0;
+            let macTrail = 0;
+
+            rows.forEach(r => {
+                macProd += Number(r.fgProdQty) || 0;
+                macOK += Number(r.fgokQty) || 0;
+                macRej += Number(r.fgRejQty) || 0;
+                macTrail += Number(r.rejQtyDuetoTrail) || 0;
+            });
+
+            foot = [[
+                '', '', '', '', '', '', 'Total:',
+                macProd.toFixed(2),
+                macOK.toFixed(2),
+                macRej.toFixed(2),
+                macTrail.toFixed(2)
+            ]];
+
+            break;
+                    case 'Production Summary':
+
+            headers = [
+                "Sr#", "FGPartCode", "FGItemName",
+                "FGProdQty", "FGOKQty",
+                "FGRejQty", "RejQtyDuetoTrail"
+            ];
+
+            rows.sort((a, b) => (a.fgPartCode || '').localeCompare(b.fgPartCode || ''));
+
+            body = rows.map((r, i) => [
+                i + 1,
+                r.fgPartCode ?? '',
+                r.fgItemName ?? '',
+                r.fgProdQty ?? '',
+                r.fgokQty ?? '',
+                r.fgRejQty ?? '',
+                r.rejQtyDuetoTrail ?? ''
+            ]);
+
+            let prodQty = 0;
+            let okQty = 0;
+            let rejQty = 0;
+            let trailQty = 0;
+
+            rows.forEach(r => {
+                prodQty += Number(r.fgProdQty) || 0;
+                okQty += Number(r.fgokQty) || 0;
+                rejQty += Number(r.fgRejQty) || 0;
+                trailQty += Number(r.rejQtyDuetoTrail) || 0;
+            });
+
+            foot = [[
+                '', '', 'Total:',
+                prodQty.toFixed(2),
+                okQty.toFixed(2),
+                rejQty.toFixed(2),
+                trailQty.toFixed(2)
+            ]];
+
+            break;
+                    case 'RM Wise Consumption Summary':
+
+            headers = [
+                "Sr#", "ProdDate", "FGPartCode", "FGItemName",
+                "FGProdQty", "FGOKQty", "FGRejQty", "RejQtyDuetoTrail",
+                "RMPartCode", "RMItemName", "RMConsQty", "RMUnit"
+            ];
+
+            rows.sort((a, b) => (a.rmPartCode || '').localeCompare(b.rmPartCode || ''));
+
+            body = rows.map((r, i) => [
+                i + 1,
+                r.prodDate ?? '',
+                r.fgPartCode ?? '',
+                r.fgItemName ?? '',
+                r.fgProdQty ?? '',
+                r.fgokQty ?? '',
+                r.fgRejQty ?? '',
+                r.rejQtyDuetoTrail ?? '',
+                r.rmPartCode ?? '',
+                r.rmItemName ?? '',
+                r.rmConsQty ?? '',
+                r.rmUnit ?? ''
+            ]);
+
+            let rmFGProd = 0, rmFGOK = 0, rmFGRej = 0, rmTrail = 0, rmCons = 0;
+
+            rows.forEach(r => {
+                rmFGProd += Number(r.fgProdQty) || 0;
+                rmFGOK += Number(r.fgokQty) || 0;
+                rmFGRej += Number(r.fgRejQty) || 0;
+                rmTrail += Number(r.rejQtyDuetoTrail) || 0;
+                rmCons += Number(r.rmConsQty) || 0;
+            });
+
+            foot = [[
+                '', '', '', 'Total:',
+                rmFGProd.toFixed(2),
+                rmFGOK.toFixed(2),
+                rmFGRej.toFixed(2),
+                rmTrail.toFixed(2),
+                '', '',
+                rmCons.toFixed(2),
+                ''
+            ]];
+
+            break;
+                    case 'RM Wise Consumption Detail':
+
+            headers = [
+                "Sr#", "ProdSlipNo", "ProdDate", "NewProdRework",
+                "FGPartCode", "FGItemName", "Workcenter",
+                "StageDescription", "FGProdQty", "FGOKQty",
+                "FGRejQty", "RejQtyDuetoTrail",
+                "RMPartCode", "RMItemName", "RMConsQty", "RMUnit"
+            ];
+
+            body = rows.map((r, i) => [
+                i + 1,
+                r.prodSlipNo ?? '',
+                r.prodDate ?? '',
+                r.newProdRework ?? '',
+                r.fgPartCode ?? '',
+                r.fgItemName ?? '',
+                r.workcenter ?? '',
+                r.stageDescription ?? '',
+                r.fgProdQty ?? '',
+                r.fgokQty ?? '',
+                r.fgRejQty ?? '',
+                r.rejQtyDuetoTrail ?? '',
+                r.rmPartCode ?? '',
+                r.rmItemName ?? '',
+                r.rmConsQty ?? '',
+                r.rmUnit ?? ''
+            ]);
+
+            let detProd = 0, detOK = 0, detRej = 0, detTrail = 0, detRM = 0;
+
+            rows.forEach(r => {
+                detProd += Number(r.fgProdQty) || 0;
+                detOK += Number(r.fgokQty) || 0;
+                detRej += Number(r.fgRejQty) || 0;
+                detTrail += Number(r.rejQtyDuetoTrail) || 0;
+                detRM += Number(r.rmConsQty) || 0;
+            });
+
+            foot = [[
+                '', '', '', '', '', '', '', 'Total:',
+                detProd.toFixed(2),
+                detOK.toFixed(2),
+                detRej.toFixed(2),
+                detTrail.toFixed(2),
+                '', '',
+                detRM.toFixed(2),
+                ''
+            ]];
+
+            break;
+                    case 'RM Total Consumption':
+
+            headers = [
+                "Sr#", "Workcenter", "StageDescription",
+                "FGProdQty", "RMPartCode",
+                "RMItemName", "RMConsQty", "RMUnit"
+            ];
+
+            body = rows.map((r, i) => [
+                i + 1,
+                r.workcenter ?? '',
+                r.stageDescription ?? '',
+                r.fgProdQty ?? '',
+                r.rmPartCode ?? '',
+                r.rmItemName ?? '',
+                r.rmConsQty ?? '',
+                r.rmUnit ?? ''
+            ]);
+
+            let totalFG = 0, totalRM = 0;
+
+            rows.forEach(r => {
+                totalFG += Number(r.fgProdQty) || 0;
+                totalRM += Number(r.rmConsQty) || 0;
+            });
+
+            foot = [[
+                '', '', 'Total:',
+                totalFG.toFixed(2),
+                '', '',
+                totalRM.toFixed(2),
+                ''
+            ]];
+
+            break;
+                    case 'BreakDown Detail':
+
+            headers = [
+                "Sr#", "MachineName", "ProdDate",
+                "FGPartCode", "FGItemName", "WorkCenter",
+                "Reason", "BreakfromTime",
+                "BreaktoTime", "BreakTimeMin",
+                "ResEmpName", "ResFactor"
+            ];
+
+            body = rows.map((r, i) => [
+                i + 1,
+                r.machineName ?? '',
+                r.prodDate ?? '',
+                r.fgPartCode ?? '',
+                r.fgItemName ?? '',
+                r.workCenter ?? '',
+                r.reason ?? '',
+                r.breakfromTime ?? '',
+                r.breaktoTime ?? '',
+                r.breakTimeMin ?? '',
+                r.resEmpName ?? '',
+                r.resFactor ?? ''
+            ]);
+
+            let breakMin = 0;
+
+            rows.forEach(r => {
+                breakMin += Number(r.breakTimeMin) || 0;
+            });
+
+            foot = [[
+                '', '', '', '', '', '', '', '', 'Total:',
+                breakMin.toFixed(2),
+                '', ''
+            ]];
+
+            break;
+                    case 'Machine Wise BreakDown Summary':
+
+            headers = [
+                "Sr#", "MachineName",
+                "Workcenter",
+                "Reason",
+                "Breakdown",
+                "ResFactor"
+            ];
+
+            body = rows.map((r, i) => [
+                i + 1,
+                r.machineName ?? '',
+                r.workcenter ?? '',
+                r.reason ?? '',
+                r.breakdown ?? '',
+                r.resFactor ?? ''
+            ]);
+
+            let totalBreak = 0;
+
+            rows.forEach(r => {
+                totalBreak += Number(r.breakdown) || 0;
+            });
+
+            foot = [[
+                '', '', '', 'Total:',
+                totalBreak.toFixed(2),
+                ''
+            ]];
+
+            break;
+                    case 'Operator Summary Report':
+
+            headers = [
+                "Sr#", "FGPartCode", "FGItemName", "Workcenter",
+                "MachineName", "operatorName", "TotalHrs",
+                "OverTimeHrs", "MachineCharges"
+            ];
+
+            body = rows.map((r, i) => [
+                i + 1,
+                r.fgPartCode ?? '',
+                r.fgItemName ?? '',
+                r.workcenter ?? '',
+                r.machineName ?? '',
+                r.operatorName ?? '',
+                r.totalHrs ?? '',
+                r.overTimeHrs ?? '',
+                r.machineCharges ?? ''
+            ]);
+
+            break;
+
+
+        case 'Operator Detail Report':
+
+            headers = [
+                "Sr#", "PRODDATE", "ProdSlipNo", "FGPartCode",
+                "FGItemName", "Workcenter", "MachineName",
+                "operatorName", "TotalHrs", "OverTimeHrs",
+                "MachineCharges", "ShiftName"
+            ];
+
+            body = rows.map((r, i) => [
+                i + 1,
+                r.proddate ?? '',
+                r.prodSlipNo ?? '',
+                r.fgPartCode ?? '',
+                r.fgItemName ?? '',
+                r.workcenter ?? '',
+                r.machineName ?? '',
+                r.operatorName ?? '',
+                r.totalHrs ?? '',
+                r.overTimeHrs ?? '',
+                r.machineCharges ?? '',
+                r.shiftName ?? ''
+            ]);
+
+            break;
+
+
+        case 'Production QC Deatil':
+
+            headers = [
+                "Sr#", "ProdSlipNo", "ProdDate",
+                "NewProdRework", "FGPartCode",
+                "FGItemName", "ShiftName",
+                "TotProdQty", "PendQtyForQc",
+                "QCOKQty", "RejQty", "RewQty"
+            ];
+
+            body = rows.map((r, i) => [
+                i + 1,
+                r.prodSlipNo ?? '',
+                r.prodDate ?? '',
+                r.newProdRework ?? '',
+                r.fgPartCode ?? '',
+                r.fgItemName ?? '',
+                r.shiftName ?? '',
+                r.totProdQty ?? '',
+                r.pendQtyForQc ?? '',
+                r.qcokQty ?? '',
+                r.rejQty ?? '',
+                r.rewQty ?? ''
+            ]);
+
+            break;
+
+
+        case 'OEE Report':
+
+            headers = [
+                "Sr#", "ProdDate", "PartCode",
+                "Item_Name", "ProcessName",
+                "StartTime", "EndTime",
+                "PlannedRunningHour",
+                "ActualRunningHour",
+                "NoOfCavity",
+                "RunningCavity",
+                "CycletimeOfShots",
+                "CycletimeInSec",
+                "CT wrt Activity",
+                "FGprodQty",
+                "FGOKQty",
+                "stdShots",
+                "NoOfshotsHours"
+            ];
+
+            body = rows.map((r, i) => [
+                i + 1,
+                r.prodDate ?? '',
+                r.partCode ?? '',
+                r.item_Name ?? r.itemName ?? '',
+                r.processName ?? '',
+                r.startTime ?? '',
+                r.endTime ?? '',
+                r.plannedRunningHour ?? '',
+                r.actualRunningHour ?? '',
+                r.noOfCavity ?? '',
+                r.runningCavity ?? '',
+                r.cycletimeOfShots ?? '',
+                r.cycletimeInSec ?? '',
+                r.cycleTimeWithrespectToWorkingActivity ?? '',
+                r.fGprodQty ?? r.fgprodQty ?? '',
+                r.fGOKQty ?? r.fgokQty ?? '',
+                r.stdShots ?? '',
+                r.noOfshotsHours ?? ''
+            ]);
+
+            break;
         default:
             headers = ["Sr#", "Item Name", "Total Stock"];
             body = rows.map((r, i) => [i + 1, r.FGItemName, r.FGProdQty]);
@@ -946,7 +1387,7 @@ $('#sendToPDF').click(async function () {
 
     // Remarks section
             doc.setFontSize(9).text('REMARKS', 40, footerY + 35);
-            doc.line(40, footerY + 40, 550, footerY + 40);
+            doc.line(40, footerY + 30, 550, footerY + 30);
 
     // Save the PDF
     doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);
@@ -1140,8 +1581,8 @@ $('#sendToPDF').click(async function () {
                             $('#RMPartCode').empty();
                             $('#RMPartCode').append('<option value="0" selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#RMPartCode').append('<option value="' + val.FGPartCode +
-                                    '">' + val.FGPartCode + '</option>');
+                                $('#RMPartCode').append('<option value="' + val.RMPartCode +
+                                            '">' + val.RMPartCode + '</option>');
                             });
                         }
                     }
@@ -1163,8 +1604,8 @@ $('#sendToPDF').click(async function () {
                             $('#RMItemName').empty();
                             $('#RMItemName').append('<option value="0" selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#RMItemName').append('<option value="' + val.FGItemName +
-                                    '">' + val.FGItemName + '</option>');
+                                $('#RMItemName').append('<option value="' + val.RMItemName +
+                                            '">' + val.RMItemName + '</option>');
                             });
                         }
                     }
@@ -1262,7 +1703,7 @@ $('#sendToPDF').click(async function () {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#ReqNo').empty();
-                            $('#ReqNo').append('<option value="0" selected>-Select-</option>');
+                            // $('#ReqNo').append('<option value="0" selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
                                 $('#ReqNo').append('<option value="' + val.ReqNo +
                                     '">' + val.ReqNo + '</option>');
@@ -1437,9 +1878,9 @@ $('#sendToPDF').click(async function () {
         }
 
     </script>
-    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="~/js/tableToExcel.js"></script>
+    <script src="~/js/jspdf.umd.min.js"></script>
+    <script src="~/js/jspdf.plugin.autotable.min.js"></script>
 }
 
 <style>
