@@ -31,9 +31,13 @@ namespace eTactWeb.Data.BLL
             return await _TranferFromWorkCenterDAL.BindAllDropDown();
         }
 
-        public async Task<ResponseResult> GetReportName()
+        public async Task<ResponseResult> GetFeatureOption()
         {
-            return await _TranferFromWorkCenterDAL.GetReportName();
+            return await _TranferFromWorkCenterDAL.GetFeatureOption();
+        }
+        public async Task<ResponseResult> GetMaxTransferDate()
+        {
+            return await _TranferFromWorkCenterDAL.GetMaxTransferDate();
         }
         public async Task<TransferFromWorkCenterModel> GetViewByID(int ID, int YearCode)
         {
@@ -51,9 +55,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _TranferFromWorkCenterDAL.FillStoreName();
         }
-        public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode,int TransferMatEntryId, DataTable TransferGrid, string Mode)
+        public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid, string Mode)
         {
-            return await _TranferFromWorkCenterDAL.ChkWIPStockBeforeSaving(WcId,TransferMatEntryDate,TransferMatYearCode, TransferMatEntryId,TransferGrid,Mode);
+            return await _TranferFromWorkCenterDAL.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferMatEntryId, TransferGrid, Mode);
         }
         public async Task<ResponseResult> FillProcessName()
         {
@@ -74,6 +78,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> FillItems(string Type, string ShowAllItem, string SearchItemCode, string SearchPartCode)
         {
             return await _TranferFromWorkCenterDAL.FillItems(Type, ShowAllItem, SearchItemCode, SearchPartCode);
+        }
+        public async Task<ResponseResult> GetBomfGitem(string SearchItemCode, string SearchPartCode)
+        {
+            return await _TranferFromWorkCenterDAL.GetBomfGitem(SearchItemCode, SearchPartCode);
         }
         public async Task<ResponseResult> GetBatchNumber(string SPName, int ItemCode, int YearCode, float WcId, string TransDate, string BatchNo)
         {
@@ -101,24 +109,24 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<TransferFromWorkCenterDashboard> GetDashboardData(string FromDate, string ToDate, string TransferMatSlipNo, string ItemName, string PartCode, string TransferFromWC, string TransferToWC, string TransferToStore, string ProdSlipNo, string ProdSchNo, string DashboardType)
         {
-            return await _TranferFromWorkCenterDAL.GetDashboardData(FromDate,ToDate,TransferMatSlipNo,ItemName,PartCode, TransferFromWC, TransferToWC, TransferToStore, ProdSlipNo, ProdSchNo, DashboardType);
+            return await _TranferFromWorkCenterDAL.GetDashboardData(FromDate, ToDate, TransferMatSlipNo, ItemName, PartCode, TransferFromWC, TransferToWC, TransferToStore, ProdSlipNo, ProdSchNo, DashboardType);
         }
         public async Task<TransferFromWorkCenterDashboard> GetDashboardDetailData(string FromDate, string ToDate, string TransferMatSlipNo, string ItemName, string PartCode, string TransferFromWC, string TransferToWC, string TransferToStore, string ProdSlipNo, string ProdSchNo, string DashboardType)
         {
-            return await _TranferFromWorkCenterDAL.GetDashboardDetailData(FromDate, ToDate,TransferMatSlipNo,ItemName,PartCode,TransferFromWC,TransferToWC, TransferToStore, ProdSlipNo,ProdSchNo,DashboardType);
+            return await _TranferFromWorkCenterDAL.GetDashboardDetailData(FromDate, ToDate, TransferMatSlipNo, ItemName, PartCode, TransferFromWC, TransferToWC, TransferToStore, ProdSlipNo, ProdSchNo, DashboardType);
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate,int EmpID)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int EmpID)
         {
-            return await _TranferFromWorkCenterDAL.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate,EmpID);
+            return await _TranferFromWorkCenterDAL.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate, EmpID);
         }
         public async Task<ResponseResult> CheckEditOrDelete(int TransferEntryId, int TransferYearCode)
         {
             return await _TranferFromWorkCenterDAL.CheckEditOrDelete(TransferEntryId, TransferYearCode);
         }
 
-        public async Task<TransferFromWorkCenterModel> selectMultipleItem(int WCID, string FromDate, string ToDate, string PartCode)
+        public async Task<TransferFromWorkCenterModel> selectMultipleItem(int WCID, string FromDate, string ToDate, string PartCode, string ItemName, string ItemType, string Group_Code, int SearchFGItemCode)
         {
-            return await _TranferFromWorkCenterDAL.selectMultipleItem( WCID,  FromDate,  ToDate,  PartCode);
+            return await _TranferFromWorkCenterDAL.selectMultipleItem(WCID, FromDate, ToDate, PartCode, ItemName, ItemType, Group_Code, SearchFGItemCode);
         }
     }
 }

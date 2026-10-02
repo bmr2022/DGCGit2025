@@ -3,9 +3,11 @@
 @using System.Reflection.PortableExecutable
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
-    string branchName = HttpContextAccessor.HttpContext.Session.GetString("Branch");
-   int EmpID = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
+    string formKey = ViewBag.formKey;
+
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"YearCode_{formKey}"));
+    string branchName = HttpContextAccessor.HttpContext.Session.GetString($"Branch_{formKey}");
+    int EmpID = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"EmpID_{formKey}"));
    
 }
 @if (Model.DashboardType == "DETAIL")
@@ -64,8 +66,17 @@
                                             </span>
                                         </a>
                                     </div>
+                                    <div id="barcodeData-@Cntr">
+                                        <a class="table-link link-dark" asp-action="BarcodeGenerationForTransferWcMaterial" asp-route-EntryId="@item.TransferMatEntryId" asp-route-YearCode="@item.TransferMatYearCode" asp-route-SlipNo="@item.TransferMatSlipNo" target="_blank">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-barcode fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="TransferFromWorkCenter" asp-route-Mode="V" asp-route-ID="@item.TransferMatEntryId" asp-route-YC="@item.TransferMatYearCode">
+                                        <a class="table-link link-success" id="viewCursor-@Cntr" asp-route-formKey="@formKey"
+                                           asp-action="TransferFromWorkCenter" asp-route-Mode="V" asp-route-ID="@item.TransferMatEntryId" asp-route-YC="@item.TransferMatYearCode">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -75,7 +86,8 @@
                                     @if (item.TransferMatYearCode == yearCode)
                                     {
                                         <div id="editCursorDiv-@Cntr">
-                                            <a class="table-link link-primary" id="editCursor-@Cntr" onclick="CheckEditOrDelete(event,'@item.TransferMatEntryId','@item.TransferMatYearCode','edit')" asp-action="TransferFromWorkCenter" asp-route-Mode="U" asp-route-ID="@item.TransferMatEntryId" asp-route-YC="@item.TransferMatYearCode">
+                                            <a class="table-link link-primary" asp-route-formKey="@formKey"
+                                               id="editCursor-@Cntr" onclick="CheckEditOrDelete(event,'@item.TransferMatEntryId','@item.TransferMatYearCode','edit')" asp-action="TransferFromWorkCenter" asp-route-Mode="U" asp-route-ID="@item.TransferMatEntryId" asp-route-YC="@item.TransferMatYearCode">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>

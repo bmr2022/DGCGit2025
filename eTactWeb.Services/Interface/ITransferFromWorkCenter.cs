@@ -11,8 +11,10 @@ namespace eTactWeb.Services.Interface
 {
     public interface ITransferFromWorkCenter
     {
-        Task<ResponseResult> GetReportName();
+        Task<ResponseResult> GetFeatureOption();
+        Task<ResponseResult> GetMaxTransferDate();
         Task<ResponseResult> FillItems(string Type, string ShowAllItem, string SearchItemCode, string SearchPartCode);
+        Task<ResponseResult> GetBomfGitem(string SearchItemCode, string SearchPartCode);
         Task<ResponseResult> GetFormRights(int userID);
         Task<TransferFromWorkCenterModel> GetViewByID(int ID, int YearCode);
         Task<ResponseResult> FillEntryandGate(string Flag, int YearCode, string SPName);
@@ -32,9 +34,9 @@ namespace eTactWeb.Services.Interface
         Task<TransferFromWorkCenterDashboard> GetDashboardDetailData(string FromDate, string ToDate, string TransferMatSlipNo, string ItemName, string PartCode, string TransferFromWC, string TransferToWC, string TransferToStore, string ProdSlipNo, string ProdSchNo, string DashboardType);
         Task<TransferFromWorkCenterDashboard> GetDashboardData(string FromDate, string ToDate, string TransferMatSlipNo, string ItemName, string PartCode, string TransferFromWC, string TransferToWC, string TransferToStore, string ProdSlipNo, string ProdSchNo, string DashboardType);
         Task<ResponseResult> SaveTransferFromWorkCenter(TransferFromWorkCenterModel model, DataTable TransferGrid);
-        Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate,int EmpID);
-        Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode,int TransferMatEntryId, DataTable TransferGrid,string Mode);
+        Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int EmpID);
+        Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid, string Mode);
 
-        Task<TransferFromWorkCenterModel> selectMultipleItem(int WCID, string FromDate, string ToDate, string PartCode);
+        Task<TransferFromWorkCenterModel> selectMultipleItem(int WCID, string FromDate, string ToDate, string PartCode, string ItemName, string ItemType, string Group_Code, int SearchFGItemCode);
     }
 }

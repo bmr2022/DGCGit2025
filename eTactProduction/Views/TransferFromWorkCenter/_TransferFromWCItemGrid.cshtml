@@ -15,7 +15,7 @@ else
         <tr id="itemGrid-@Cntr" class="small" style="white-space:nowrap">
             <td style="display:none"><input type="hidden" id="WCID-@Cntr" value="@item.WCID" /></td>
             <td style="display:none"><input type="hidden" id="WorkCenterName-@Cntr" value="@item.WorkCenterName" /></td>
-            <td><input type="checkbox" class="MBCheckbox" id="MBCheckbox-@Cntr" onchange="CalculateAmountForMalti(@Cntr)" /></td>
+            @* <td><input type="checkbox" class="MBCheckbox" id="MBCheckbox-@Cntr" onchange="CalculateAmountForMalti(@Cntr)" /></td> *@
 
             <td><input readonly id="ItemName-@Cntr" type="text" value="@item.ItemName" /></td>
             <td>
@@ -35,6 +35,7 @@ else
             <td><input id="ParentProdSchNo-@Cntr" type="text" value="@item.ParentProdSchNo" /></td>
             <td><input id="ParentProdSchYearCode-@Cntr" type="text" value="@item.ParentProdSchYearCode" /></td>
             <td><input id="ProdEntryId-@Cntr" type="text" value="@item.ProdEntryId" /></td>
+            <td><input id="ProdSlipNo-@Cntr" type="text" value="@item.ProdSlipNo" /></td>
             <td><input id="ProdEntryYearCode-@Cntr" type="text" value="@item.ProdEntryYearCode" /></td>
             <td><input id="ProdDate-@Cntr" type="text" value="@item.ProdDate" /></td>
             <td><input id="QcOkQty-@Cntr" type="text" value="@item.QcOkQty" /></td>

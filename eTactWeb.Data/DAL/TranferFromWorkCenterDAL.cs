@@ -28,13 +28,32 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
-        public async Task<ResponseResult> GetReportName()
+        public async Task<ResponseResult> GetFeatureOption()
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+                SqlParams.Add(new SqlParameter("@Flag", "GetFeatureOption"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_TransferMaterialFromWc", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetMaxTransferDate()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetMaxTransferDate"));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_TransferMaterialFromWc", SqlParams);
 
@@ -59,7 +78,7 @@ namespace eTactWeb.Data.DAL
                 if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
                 {
                     _ResponseResult.Result.Tables[0].TableName = "PartCodeList";
-                   
+
                     oDataSet = _ResponseResult.Result;
                 }
             }
@@ -81,6 +100,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
                 SqlParams.Add(new SqlParameter("@EmpId", userID));
                 SqlParams.Add(new SqlParameter("@MainMenu", "Transfer from WC to WC"));
+
                 //SqlParams.Add(new SqlParameter("@SubMenu", "Sale Order"));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
@@ -93,7 +113,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId,string TransferMatEntryDate,int TransferMatYearCode,int TransferMatEntryId, DataTable TransferGrid,string Mode)
+        public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid, string Mode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -156,21 +176,21 @@ namespace eTactWeb.Data.DAL
             model.TransferMatSlipNo = DS.Tables[0].Rows[0]["TransferMatSlipNo"].ToString();
             model.TransferMatSlipDate = DS.Tables[0].Rows[0]["TransferMatSlipDate"].ToString();
             model.PRODSTATUSProdUnProdRej = DS.Tables[0].Rows[0]["PRODSTATUSProdUnProdRej"].ToString();
-            model.IssueToStoreWC=DS.Tables[0].Rows[0]["IssueToStoreWC"].ToString();
-            model.IssueFromWCid=Convert.ToInt32(DS.Tables[0].Rows[0]["IssueFromWCid"].ToString());
+            model.IssueToStoreWC = DS.Tables[0].Rows[0]["IssueToStoreWC"].ToString();
+            model.IssueFromWCid = Convert.ToInt32(DS.Tables[0].Rows[0]["IssueFromWCid"].ToString());
             model.IssueTOWCid = Convert.ToInt32(DS.Tables[0].Rows[0]["IssueTOWCid"].ToString());
-            model.IssueToStoreId=Convert.ToInt32(DS.Tables[0].Rows[0]["IssueToStoreId"].ToString());
-            model.IssuedByEmp=Convert.ToInt32(DS.Tables[0].Rows[0]["IssuedByEmp"].ToString());
-            model.RecByEmpId=Convert.ToInt32(DS.Tables[0].Rows[0]["RecByEmpId"].ToString());
-            model.Remark=DS.Tables[0].Rows[0]["Remark"].ToString();
-            model.PendingToRecByStore=DS.Tables[0].Rows[0]["PendingToRecByStore"].ToString();
-            model.Uid=Convert.ToInt32(DS.Tables[0].Rows[0]["UID"].ToString());
-            model.CC=DS.Tables[0].Rows[0]["CC"].ToString();
-            model.EntryByMachineNo=DS.Tables[0].Rows[0]["EntryByMachineNo"].ToString();
-            model.ActualEnteredBy=Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryByEmpid"].ToString());
-            model.ActualEntrydate=string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]);
-            model.UpdatedBy=Convert.ToInt32(DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString());
-            model.UpdatedOn= string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdationDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["LastUpdationDate"]);
+            model.IssueToStoreId = Convert.ToInt32(DS.Tables[0].Rows[0]["IssueToStoreId"].ToString());
+            model.IssuedByEmp = Convert.ToInt32(DS.Tables[0].Rows[0]["IssuedByEmp"].ToString());
+            model.RecByEmpId = Convert.ToInt32(DS.Tables[0].Rows[0]["RecByEmpId"].ToString());
+            model.Remark = DS.Tables[0].Rows[0]["Remark"].ToString();
+            model.PendingToRecByStore = DS.Tables[0].Rows[0]["PendingToRecByStore"].ToString();
+            model.Uid = Convert.ToInt32(DS.Tables[0].Rows[0]["UID"].ToString());
+            model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
+            model.EntryByMachineNo = DS.Tables[0].Rows[0]["EntryByMachineNo"].ToString();
+            model.ActualEnteredBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryByEmpid"].ToString());
+            model.ActualEntrydate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]);
+            model.UpdatedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString());
+            model.UpdatedOn = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdationDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["LastUpdationDate"]);
 
             if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString()))
             {
@@ -189,7 +209,7 @@ namespace eTactWeb.Data.DAL
                         TransferMatYearCode = Convert.ToInt32(row["TransferMatYearCode"].ToString()),
                         SeqNo = Convert.ToInt32(row["seqno"].ToString()),
                         ProdEntryId = Convert.ToInt32(row["ProdEntryid"].ToString()),
-                        ProdSlipNo=row["ProdSlipNo"].ToString(),
+                        ProdSlipNo = row["ProdSlipNo"].ToString(),
                         ProdEntryYearCode = Convert.ToInt32(row["ProdYearCode"].ToString()),
                         ProdDate = row["ProdEntryDate"].ToString(),
                         ProdPlanNo = row["ProdPlanNo"].ToString(),
@@ -197,7 +217,7 @@ namespace eTactWeb.Data.DAL
                         ProdSchNo = row["ProdSchNo"].ToString(),
                         ProdSchYearCode = Convert.ToInt32(row["ProdSchYearCode"].ToString()),
                         ParentProdSchNo = row["ParentProdSchNo"].ToString(),
-                        ParentProdSchYearCode =Convert.ToInt32(row["ParentProdSchYearCode"].ToString()),
+                        ParentProdSchYearCode = Convert.ToInt32(row["ParentProdSchYearCode"].ToString()),
                         ItemCode = Convert.ToInt32(row["ItemCode"].ToString()),
                         PartCode = row["PartCode"].ToString(),
                         ItemName = row["ItemName"].ToString(),
@@ -206,30 +226,30 @@ namespace eTactWeb.Data.DAL
                         ProdQty = Convert.ToDecimal(row["ProdQty"].ToString()),
                         Unit = row["Unit"].ToString(),
                         AltTransferQty = Convert.ToDecimal(row["AltTransferQty"].ToString()),
-                        ProcessName=row["ProcessName"].ToString(),
+                        ProcessName = row["ProcessName"].ToString(),
                         AltUnit = row["AltUnit"].ToString(),
                         Remark = row["Remark"].ToString(),
                         PendingToAcknowledge = row["PendingToAcknowledge"].ToString(),
                         PendingQtyToAcknowledge = Convert.ToDecimal(row["PendingQtyToAcknowledge"].ToString()),
                         ItemSize = row["ItemSize"].ToString(),
-                        ItemColor=row["ItemColor"].ToString(),
+                        ItemColor = row["ItemColor"].ToString(),
                         InProcessQcSlipNo = row["InProcQCSlipNo"].ToString(),
                         InProcessQcEntryId = Convert.ToInt32(row["InProcQCEntryId"].ToString()),
-                        QcCleaningDate =row["QCClearingDate"].ToString(),
-                        InProcessQcYearCode=Convert.ToInt32(row["InProcQCYearCode"]),
-                        ProcessId=Convert.ToInt32(row["ProcessId"].ToString()),
-                        TotalStock=Convert.ToDecimal(row["TotalStock"].ToString()),
-                        BatchNo=row["BatchNo"].ToString(),
-                        UniqueBatchNo=row["uniquebatchno"].ToString(),
-                        BatchStock=Convert.ToDecimal(row["BatchStock"].ToString()),
-                        ReceivedByStoreQty=Convert.ToDecimal(row["ReceivedByStoreQty"].ToString()),
-                        ReceivedCompleted=row["ReceivedCompleted"].ToString(),
-                        ReceivedByEmpId=Convert.ToInt32(row["ReceivedByEmpId"].ToString()),
-                        Rate=Convert.ToDecimal(row["Rate"].ToString()),
-                        ItemWeight=Convert.ToDecimal(row["ItemWeight"].ToString()),
+                        QcCleaningDate = row["QCClearingDate"].ToString(),
+                        InProcessQcYearCode = Convert.ToInt32(row["InProcQCYearCode"]),
+                        ProcessId = Convert.ToInt32(row["ProcessId"].ToString()),
+                        TotalStock = Convert.ToDecimal(row["TotalStock"].ToString()),
+                        BatchNo = row["BatchNo"].ToString(),
+                        UniqueBatchNo = row["uniquebatchno"].ToString(),
+                        BatchStock = Convert.ToDecimal(row["BatchStock"].ToString()),
+                        ReceivedByStoreQty = Convert.ToDecimal(row["ReceivedByStoreQty"].ToString()),
+                        ReceivedCompleted = row["ReceivedCompleted"].ToString(),
+                        ReceivedByEmpId = Convert.ToInt32(row["ReceivedByEmpId"].ToString()),
+                        Rate = Convert.ToDecimal(row["Rate"].ToString()),
+                        ItemWeight = Convert.ToDecimal(row["ItemWeight"].ToString()),
                     });
                 }
-                model.ItemDetailGrid = TransferFromWorkCenterDetail.OrderBy(x=>x.SeqNo).ToList();
+                model.ItemDetailGrid = TransferFromWorkCenterDetail.OrderBy(x => x.SeqNo).ToList();
             }
             return model;
         }
@@ -351,8 +371,27 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetItemsOnAssets"));
-                
+
                 SqlParams.Add(new SqlParameter("@showAllItem", ShowAllItem));
+                SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode ?? ""));
+                SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode ?? ""));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_TransferMaterialFromWc", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetBomfGitem(string SearchItemCode, string SearchPartCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetBomfGitem"));
                 SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode ?? ""));
                 SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode ?? ""));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_TransferMaterialFromWc", SqlParams);
@@ -522,9 +561,9 @@ namespace eTactWeb.Data.DAL
                 var lastupdationDt = DateTime.Now.ToString("dd/MM/yyyy");
 
                 transDt = CommonFunc.ParseFormattedDate(model.TransferMatEntrydate);
-                transSlipDt= CommonFunc.ParseFormattedDate(model.TransferMatSlipDate);
-                actualDt= CommonFunc.ParseFormattedDate(actualDt);
-                lastupdationDt= CommonFunc.ParseFormattedDate(lastupdationDt);
+                transSlipDt = CommonFunc.ParseFormattedDate(model.TransferMatSlipDate);
+                actualDt = CommonFunc.ParseFormattedDate(actualDt);
+                lastupdationDt = CommonFunc.ParseFormattedDate(lastupdationDt);
 
                 if (model.Mode == "U" || model.Mode == "V")
                 {
@@ -537,7 +576,7 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                 }
 
-                SqlParams.Add(new SqlParameter("@TransferMatEntryId", model.TransferMatEntryId==0 ? 0 : model.TransferMatEntryId));
+                SqlParams.Add(new SqlParameter("@TransferMatEntryId", model.TransferMatEntryId == 0 ? 0 : model.TransferMatEntryId));
                 SqlParams.Add(new SqlParameter("@TransferMatYearCode", model.TransferMatYearCode == 0 ? 0 : model.TransferMatYearCode));
                 SqlParams.Add(new SqlParameter("@TransferMatEntrydate", transDt));
                 SqlParams.Add(new SqlParameter("@TransferMatSlipNo", model.TransferMatSlipNo ?? ""));
@@ -547,14 +586,16 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@IssueFromWCid", model.IssueFromWCid == 0 ? 0 : model.IssueFromWCid));
                 SqlParams.Add(new SqlParameter("@IssueTOWCid", model.IssueTOWCid == 0 ? 0 : model.IssueTOWCid));
                 SqlParams.Add(new SqlParameter("@IssueToStoreId", model.IssueToStoreId == 0 ? 0.0 : model.IssueToStoreId));
-                SqlParams.Add(new SqlParameter("@IssuedByEmp", model.IssuedByEmp== 0 ? 0.0 : model.IssuedByEmp));
+                SqlParams.Add(new SqlParameter("@IssuedByEmp", model.ActualEnteredBy == 0 ? 0.0 : model.ActualEnteredBy));
                 SqlParams.Add(new SqlParameter("@RecByEmpId", model.RecByEmpId == 0 ? 0.0 : model.RecByEmpId));
                 SqlParams.Add(new SqlParameter("@Remark", model.Remark ?? ""));
-                SqlParams.Add(new SqlParameter("@PendingToRecByStore", model.PendingToRecByStore ?? ""));
+                SqlParams.Add(new SqlParameter("@PendingToRecByStore", "Y"));
                 SqlParams.Add(new SqlParameter("@UID", model.Uid == 0 ? 0.0 : model.Uid));
                 SqlParams.Add(new SqlParameter("@CC", model.CC ?? ""));
                 SqlParams.Add(new SqlParameter("@EntryByMachineNo", model.EntryByMachineNo ?? ""));
                 SqlParams.Add(new SqlParameter("@ActualEntryByEmpid", model.ActualEnteredBy == 0 ? 0.0 : model.ActualEnteredBy));
+                SqlParams.Add(new SqlParameter("@EnteredEMPID", model.ActualEnteredBy == 0 ? 0.0 : model.ActualEnteredBy));
+                SqlParams.Add(new SqlParameter("@IPAddress", model.IPAddress));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", actualDt));
 
                 SqlParams.Add(new SqlParameter("@DTItemGrid", TransferGrid));
@@ -576,7 +617,7 @@ namespace eTactWeb.Data.DAL
                 //var currentDate = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
                 DateTime currentDate = DateTime.Today;
                 DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
-                var firstDateOfMonthh = CommonFunc.ParseFormattedDate(firstDateOfMonth.ToString()); 
+                var firstDateOfMonthh = CommonFunc.ParseFormattedDate(firstDateOfMonth.ToString());
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
                 SqlParams.Add(new SqlParameter("@FromDate", firstDateOfMonthh));
@@ -628,28 +669,28 @@ namespace eTactWeb.Data.DAL
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
                     model.TransferFromWorkCenterDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
-                                                select new TransferFromDashboard
-                                                {
-                                                    TransferMatSlipNo = dr["TransferMatSlipNo"].ToString(),
-                                                    TransferMatEntrydate = dr["TransferMatEntrydate"].ToString().Split(" ")[0],
-                                                    TransferMatSlipDate = dr["TransferMatSlipDate"].ToString().Split(" ")[0],
-                                                    IssueToStoreWC =dr["IssueToStoreWC"].ToString(),
-                                                    TransferFromWC =dr["TransferFromWC"].ToString(),
-                                                    TransferToWC =dr["TransferToWC"].ToString(),
-                                                    TransferToStore =dr["TransferToStore"].ToString(),
-                                                    Remark =dr["Remark"].ToString(),
-                                                    PendingToRecByStore =dr["PendingToRecByStore"].ToString(),
-                                                    IssuedByEmpName =dr["IssuedByEmpName"].ToString(),
-                                                    ActualEntryByEmpName =dr["ActualEntryByEmpName"].ToString(),
-                                                    UID = Convert.ToInt32(dr["UID"]),
-                                                    CC=dr["CC"].ToString(),
-                                                    EntryByMachineNo=dr["EntryByMachineNo"].ToString(),
-                                                    ActualEntryDate=dr["ActualEntryDate"].ToString().Split(" ")[0],
-                                                    UpdatedByEmpName=dr["UpdatedByEmpName"].ToString(),
-                                                    LastUpdationDate=dr["LastUpdationDate"].ToString().Split(" ")[0],
-                                                    TransferMatEntryId = Convert.ToInt32(dr["TransferMatEntryId"]),
-                                                    TransferMatYearCode = Convert.ToInt32(dr["TransferMatYearCode"]),
-                                                }).ToList();
+                                                             select new TransferFromDashboard
+                                                             {
+                                                                 TransferMatSlipNo = dr["TransferMatSlipNo"].ToString(),
+                                                                 TransferMatEntrydate = dr["TransferMatEntrydate"].ToString().Split(" ")[0],
+                                                                 TransferMatSlipDate = dr["TransferMatSlipDate"].ToString().Split(" ")[0],
+                                                                 IssueToStoreWC = dr["IssueToStoreWC"].ToString(),
+                                                                 TransferFromWC = dr["TransferFromWC"].ToString(),
+                                                                 TransferToWC = dr["TransferToWC"].ToString(),
+                                                                 TransferToStore = dr["TransferToStore"].ToString(),
+                                                                 Remark = dr["Remark"].ToString(),
+                                                                 PendingToRecByStore = dr["PendingToRecByStore"].ToString(),
+                                                                 IssuedByEmpName = dr["IssuedByEmpName"].ToString(),
+                                                                 ActualEntryByEmpName = dr["ActualEntryByEmpName"].ToString(),
+                                                                 UID = Convert.ToInt32(dr["UID"]),
+                                                                 CC = dr["CC"].ToString(),
+                                                                 EntryByMachineNo = dr["EntryByMachineNo"].ToString(),
+                                                                 ActualEntryDate = dr["ActualEntryDate"].ToString().Split(" ")[0],
+                                                                 UpdatedByEmpName = dr["UpdatedByEmpName"].ToString(),
+                                                                 LastUpdationDate = dr["LastUpdationDate"].ToString().Split(" ")[0],
+                                                                 TransferMatEntryId = Convert.ToInt32(dr["TransferMatEntryId"]),
+                                                                 TransferMatYearCode = Convert.ToInt32(dr["TransferMatYearCode"]),
+                                                             }).ToList();
                 }
             }
             catch (Exception ex)
@@ -700,53 +741,53 @@ namespace eTactWeb.Data.DAL
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
                     model.TransferFromWorkCenterDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
-                                                select new TransferFromDashboard
-                                                {
-                                                    TransferMatSlipNo = dr["TransferMatSlipNo"].ToString(),
-                                                    TransferMatEntrydate = dr["TransferMatEntrydate"].ToString().Split(" ")[0],
-                                                    TransferMatSlipDate = dr["TransferMatSlipDate"].ToString().Split(" ")[0],
-                                                    IssueToStoreWC =dr["IssueToStoreWC"].ToString(),
-                                                    TransferFromWC =dr["TransferFromWC"].ToString(),
-                                                    TransferToWC =dr["TransferToWC"].ToString(),
-                                                    TransferToStore =dr["TransferToStore"].ToString(),
-                                                    PartCode=dr["PartCode"].ToString(),
-                                                    ItemName=dr["ItemName"].ToString(),
-                                                    TransferQty = Convert.ToDecimal(dr["TransferQty"]),
-                                                    QCOkQty = Convert.ToDecimal(dr["QCOkQty"]),
-                                                    ProdQty = Convert.ToDecimal(dr["ProdQty"]),
-                                                    Unit = dr["Unit"].ToString(),
-                                                    AltTransferQty = Convert.ToDecimal(dr["AltTransferQty"]),
-                                                    AltUnit = dr["AltUnit"].ToString(),
-                                                    TotalStock = Convert.ToDecimal(dr["TotalStock"]),
-                                                    BatchNo = dr["BatchNo"].ToString(),
-                                                    uniquebatchno = dr["uniquebatchno"].ToString(),
-                                                    BatchStock = Convert.ToDecimal(dr["BatchStock"]),
-                                                    Rate = Convert.ToDecimal(dr["Rate"]),
-                                                    ItemWeight = Convert.ToDecimal(dr["ItemWeight"]),
-                                                    ItemSize = dr["ItemSize"].ToString(),
-                                                    ItemColor = dr["ItemColor"].ToString(),
-                                                    ItemRecCompleted = dr["ItemRecCompleted"].ToString(),
-                                                    PendingQtyToAcknowledge = Convert.ToDecimal(dr["PendingQtyToAcknowledge"]),
-                                                    ItemRemark = dr["ItemRemark"].ToString(),
-                                                    ProdEntryId=Convert.ToInt32(dr["ProdEntryId"]),
-                                                    ProdSlipNo = dr["ProdSlipNo"].ToString(),
-                                                    ProdYearCode=Convert.ToInt32(dr["ProdYearCode"]),
-                                                    ProdEntryDate = dr["ProdEntryDate"].ToString(),
-                                                    ProdPlanNo = dr["ProdPlanNo"].ToString(),
-                                                    ProdPlanYearCode=Convert.ToInt32(dr["ProdPlanYearCode"]),
-                                                    ProdSchNo = dr["ProdSchNo"].ToString(),
-                                                    ProdSchYearCode=Convert.ToInt32(dr["ProdSchYearCode"]),
-                                                    IssuedByEmpName =dr["IssuedByEmpName"].ToString(),
-                                                    ActualEntryByEmpName =dr["ActualEntryByEmpName"].ToString(),
-                                                    UID = Convert.ToInt32(dr["UID"]),
-                                                    CC=dr["CC"].ToString(),
-                                                    EntryByMachineNo=dr["EntryByMachineNo"].ToString(),
-                                                    ActualEntryDate=dr["ActualEntryDate"].ToString().Split(" ")[0],
-                                                    UpdatedByEmpName=dr["UpdatedByEmpName"].ToString(),
-                                                    LastUpdationDate=dr["LastUpdationDate"].ToString().Split(" ")[0],
-                                                    TransferMatEntryId = Convert.ToInt32(dr["TransferMatEntryId"]),
-                                                    TransferMatYearCode = Convert.ToInt32(dr["TransferMatYearCode"]),
-                                                }).ToList();
+                                                             select new TransferFromDashboard
+                                                             {
+                                                                 TransferMatSlipNo = dr["TransferMatSlipNo"].ToString(),
+                                                                 TransferMatEntrydate = dr["TransferMatEntrydate"].ToString().Split(" ")[0],
+                                                                 TransferMatSlipDate = dr["TransferMatSlipDate"].ToString().Split(" ")[0],
+                                                                 IssueToStoreWC = dr["IssueToStoreWC"].ToString(),
+                                                                 TransferFromWC = dr["TransferFromWC"].ToString(),
+                                                                 TransferToWC = dr["TransferToWC"].ToString(),
+                                                                 TransferToStore = dr["TransferToStore"].ToString(),
+                                                                 PartCode = dr["PartCode"].ToString(),
+                                                                 ItemName = dr["ItemName"].ToString(),
+                                                                 TransferQty = Convert.ToDecimal(dr["TransferQty"]),
+                                                                 QCOkQty = Convert.ToDecimal(dr["QCOkQty"]),
+                                                                 ProdQty = Convert.ToDecimal(dr["ProdQty"]),
+                                                                 Unit = dr["Unit"].ToString(),
+                                                                 AltTransferQty = Convert.ToDecimal(dr["AltTransferQty"]),
+                                                                 AltUnit = dr["AltUnit"].ToString(),
+                                                                 TotalStock = Convert.ToDecimal(dr["TotalStock"]),
+                                                                 BatchNo = dr["BatchNo"].ToString(),
+                                                                 uniquebatchno = dr["uniquebatchno"].ToString(),
+                                                                 BatchStock = Convert.ToDecimal(dr["BatchStock"]),
+                                                                 Rate = Convert.ToDecimal(dr["Rate"]),
+                                                                 ItemWeight = Convert.ToDecimal(dr["ItemWeight"]),
+                                                                 ItemSize = dr["ItemSize"].ToString(),
+                                                                 ItemColor = dr["ItemColor"].ToString(),
+                                                                 ItemRecCompleted = dr["ItemRecCompleted"].ToString(),
+                                                                 PendingQtyToAcknowledge = Convert.ToDecimal(dr["PendingQtyToAcknowledge"]),
+                                                                 ItemRemark = dr["ItemRemark"].ToString(),
+                                                                 ProdEntryId = Convert.ToInt32(dr["ProdEntryId"]),
+                                                                 ProdSlipNo = dr["ProdSlipNo"].ToString(),
+                                                                 ProdYearCode = Convert.ToInt32(dr["ProdYearCode"]),
+                                                                 ProdEntryDate = dr["ProdEntryDate"].ToString(),
+                                                                 ProdPlanNo = dr["ProdPlanNo"].ToString(),
+                                                                 ProdPlanYearCode = Convert.ToInt32(dr["ProdPlanYearCode"]),
+                                                                 ProdSchNo = dr["ProdSchNo"].ToString(),
+                                                                 ProdSchYearCode = Convert.ToInt32(dr["ProdSchYearCode"]),
+                                                                 IssuedByEmpName = dr["IssuedByEmpName"].ToString(),
+                                                                 ActualEntryByEmpName = dr["ActualEntryByEmpName"].ToString(),
+                                                                 UID = Convert.ToInt32(dr["UID"]),
+                                                                 CC = dr["CC"].ToString(),
+                                                                 EntryByMachineNo = dr["EntryByMachineNo"].ToString(),
+                                                                 ActualEntryDate = dr["ActualEntryDate"].ToString().Split(" ")[0],
+                                                                 UpdatedByEmpName = dr["UpdatedByEmpName"].ToString(),
+                                                                 LastUpdationDate = dr["LastUpdationDate"].ToString().Split(" ")[0],
+                                                                 TransferMatEntryId = Convert.ToInt32(dr["TransferMatEntryId"]),
+                                                                 TransferMatYearCode = Convert.ToInt32(dr["TransferMatYearCode"]),
+                                                             }).ToList();
                 }
             }
             catch (Exception ex)
@@ -761,7 +802,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate,int EmpID)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int EmpID)
         {
             var _ResponseResult = new ResponseResult();
             var entrydt = ParseDate(EntryDate);
@@ -788,7 +829,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<TransferFromWorkCenterModel> selectMultipleItem(int WCID, string FromDate, string ToDate, string PartCode)
+        public async Task<TransferFromWorkCenterModel> selectMultipleItem(int WCID, string FromDate, string ToDate, string PartCode, string ItemName, string ItemType, string Group_Code, int SearchFGItemCode)
         {
             var resultList = new TransferFromWorkCenterModel();
             DataSet oDataSet = new DataSet();
@@ -801,15 +842,19 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    
+
 
                     command.Parameters.AddWithValue("@Flag", "BATCHWISESTOCKSUMMARY");
                     command.Parameters.AddWithValue("@FormName", "TransferFromWC");
-                  
+
                     command.Parameters.AddWithValue("@WCID", WCID);
+                    command.Parameters.AddWithValue("@FinishItemCode", SearchFGItemCode);
                     command.Parameters.AddWithValue("@ToDate", ParseFormattedDate(ToDate));
                     command.Parameters.AddWithValue("@FromDate", ParseFormattedDate(FromDate));
                     command.Parameters.AddWithValue("@PartCode", PartCode);
+                    command.Parameters.AddWithValue("@ItemName", ItemName);
+                    command.Parameters.AddWithValue("@GroupName", Group_Code);
+                    command.Parameters.AddWithValue("@CatName", ItemType);
 
                     await connection.OpenAsync();
 
@@ -822,27 +867,27 @@ namespace eTactWeb.Data.DAL
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
                     resultList.ItemDetailGrid = (from DataRow row in oDataSet.Tables[0].Rows
-                                                      select new TransferFromWorkCenterDetail
-                                                      {
-                                                          ItemCode = row["item_code"] == DBNull.Value ? 0 : Convert.ToInt32(row["item_code"]),
+                                                 select new TransferFromWorkCenterDetail
+                                                 {
+                                                     ItemCode = row["item_code"] == DBNull.Value ? 0 : Convert.ToInt32(row["item_code"]),
 
-                                                          PartCode = row["PartCode"] == DBNull.Value ? string.Empty : row["PartCode"].ToString(),
-                                                          ItemName = row["ItemName"] == DBNull.Value ? string.Empty : row["ItemName"].ToString(),
+                                                     PartCode = row["PartCode"] == DBNull.Value ? string.Empty : row["PartCode"].ToString(),
+                                                     ItemName = row["ItemName"] == DBNull.Value ? string.Empty : row["ItemName"].ToString(),
 
-                                                          BatchNo = row["batchno"] == DBNull.Value ? string.Empty : row["batchno"].ToString(),
-                                                          UniqueBatchNo = row["uniquebatchno"] == DBNull.Value ? string.Empty : row["uniquebatchno"].ToString(),
-
-
-                                                          Unit = row["unit"] == DBNull.Value ? string.Empty : row["unit"].ToString(),
-                                                          AltUnit = row["AltUnit"] == DBNull.Value ? string.Empty : row["AltUnit"].ToString(),
-                                                          
-                                                          
-                                                          BatchStock = row["BatchStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["BatchStock"]),
-                                                          TotalStock = row["TotalStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalStock"]),
-                                                          TransferQty = row["BatchStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["BatchStock"]),
+                                                     BatchNo = row["batchno"] == DBNull.Value ? string.Empty : row["batchno"].ToString(),
+                                                     UniqueBatchNo = row["uniquebatchno"] == DBNull.Value ? string.Empty : row["uniquebatchno"].ToString(),
 
 
-                                                      }).ToList();
+                                                     Unit = row["unit"] == DBNull.Value ? string.Empty : row["unit"].ToString(),
+                                                     AltUnit = row["AltUnit"] == DBNull.Value ? string.Empty : row["AltUnit"].ToString(),
+
+
+                                                     BatchStock = row["BatchStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["BatchStock"]),
+                                                     TotalStock = row["TotalStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalStock"]),
+                                                     TransferQty = row["BatchStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["BatchStock"]),
+
+
+                                                 }).ToList();
                 }
 
             }

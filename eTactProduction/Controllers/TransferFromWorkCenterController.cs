@@ -37,91 +37,111 @@ namespace eTactWeb.Controllers
             _connectionStringService = connectionStringService;
         }
         [Route("{controller}/Index")]
-        public async Task<IActionResult> TransferFromWorkCenter()
+        public async Task<IActionResult> TransferFromWorkCenter(string formKey, string uniqueKey, string pendingData = "")
         {
+            ViewBag.formKey = formKey;
+            if (uniqueKey == null)
+            {
+                uniqueKey = Guid.NewGuid().ToString();
+            }
+            ViewBag.uniqueKey = uniqueKey;
             ViewData["Title"] = "Transfer From WorkCenter Detail";
-            TempData.Clear();
-            HttpContext.Session.Remove("KeyTransferFromWorkCenterGrid");
-            
+            //TempData.Clear();
+            HttpContext.Session.Remove($"KeyTransferFromWorkCenterGrid_{uniqueKey}");
+
+            if (pendingData != "Y")
+            {
+                HttpContext.Session.Remove($"ReceiveItems_{uniqueKey}");
+            }
+
             var MainModel = new TransferFromWorkCenterModel();
-            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            MainModel.TransferMatYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+            MainModel.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            MainModel.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+            MainModel.TransferMatYearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+            MainModel.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+            MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+            MainModel.ActualEnteredByName = HttpContext.Session.GetString($"EmpName_{formKey}");
+
+            MainModel.IssuedByEmp = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+            MainModel.IssueByEmpName = HttpContext.Session.GetString($"EmpName_{formKey}");
             string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-            HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", serializedGrid);
+            HttpContext.Session.SetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}", serializedGrid);
             return View(serializedGrid);
         }
-		[HttpPost]
-		public IActionResult StoreCheckedRowsToSession([FromBody] List<TransferFromWorkCenterModel> selectedRows)
-		{
-			if (selectedRows != null && selectedRows.Any())
-			{
-				HttpContext.Session.SetString("ReceiveItems", JsonConvert.SerializeObject(selectedRows));
-				return Json(new { success = true });
-			}
-			return Json(new { success = false, message = "No rows received" });
-		}
+        [HttpPost]
+        public IActionResult StoreCheckedRowsToSession([FromBody] List<TransferFromWorkCenterModel> selectedRows, string uniqueKey)
+        {
+            if (selectedRows != null && selectedRows.Any())
+            {
+                HttpContext.Session.SetString($"ReceiveItems_{uniqueKey}", JsonConvert.SerializeObject(selectedRows));
+                return Json(new { success = true });
+            }
+            return Json(new { success = false, message = "No rows received" });
+        }
         public async Task<JsonResult> FillItems(string Type, string ShowAllItem, string SearchItemCode, string SearchPartCode)
         {
             var JSON = await _ITransferFromWorkCenter.FillItems(Type, ShowAllItem, SearchItemCode, SearchPartCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult FillTransferGridFromMemoryCache()
-		{
-			try
-			{
-				string modelJson = HttpContext.Session.GetString("ReceiveItems");
-				List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail = new List<TransferFromWorkCenterDetail>();
-				if (!string.IsNullOrEmpty(modelJson))
-				{
-					TransferFromWorkCenterDetail = JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(modelJson);
-				}
+        public async Task<JsonResult> GetBomfGitem(string SearchItemCode, string SearchPartCode)
+        {
+            var JSON = await _ITransferFromWorkCenter.GetBomfGitem(SearchItemCode, SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public IActionResult FillTransferGridFromMemoryCache(string uniqueKey, string formKey)
+        {
+            try
+            {
+                string modelJson = HttpContext.Session.GetString($"ReceiveItems_{uniqueKey}");
+                List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail = new List<TransferFromWorkCenterDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    TransferFromWorkCenterDetail = JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(modelJson);
+                }
 
-				var MainModel = new TransferFromWorkCenterModel();
-				var IssueGrid = new List<TransferFromWorkCenterDetail>();
-				var SSGrid = new List<TransferFromWorkCenterDetail>();
-				MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-				MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-				MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-				{
-					AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-					SlidingExpiration = TimeSpan.FromMinutes(55),
-					Size = 1024,
-				};
-				var seqNo = 1;
-				if (TransferFromWorkCenterDetail != null)
-				{
-					for (int i = 0; i < TransferFromWorkCenterDetail.Count; i++)
-					{
+                var MainModel = new TransferFromWorkCenterModel();
+                var IssueGrid = new List<TransferFromWorkCenterDetail>();
+                var SSGrid = new List<TransferFromWorkCenterDetail>();
+                MainModel.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                MainModel.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+                var seqNo = 1;
+                if (TransferFromWorkCenterDetail != null)
+                {
+                    for (int i = 0; i < TransferFromWorkCenterDetail.Count; i++)
+                    {
 
 
-						if (TransferFromWorkCenterDetail[i] != null)
-						{
-							TransferFromWorkCenterDetail[i].SeqNo = seqNo++;
-							SSGrid.AddRange(IssueGrid);
-							IssueGrid.Add(TransferFromWorkCenterDetail[i]);
+                        if (TransferFromWorkCenterDetail[i] != null)
+                        {
+                            TransferFromWorkCenterDetail[i].SeqNo = seqNo++;
+                            SSGrid.AddRange(IssueGrid);
+                            IssueGrid.Add(TransferFromWorkCenterDetail[i]);
 
-							MainModel.ItemDetailGrid = IssueGrid;
+                            MainModel.ItemDetailGrid = IssueGrid;
 
-							string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-							HttpContext.Session.SetString("ReceiveItems", serializedGrid);
-						}
-					}
-				}
+                            string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                            HttpContext.Session.SetString($"ReceiveItems_{uniqueKey}", serializedGrid);
+                        }
+                    }
+                }
 
-				return PartialView("_TransferFromWcGrid", MainModel);
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
+                return PartialView("_TransferFromWCItemGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         [HttpPost]
-        public IActionResult AddTransferItemDetail([FromBody]  List<TransferFromWorkCenterDetail> model)
+        public IActionResult AddTransferItemDetail([FromBody] List<TransferFromWorkCenterDetail> model, string uniqueKey)
         {
             try
             {
@@ -132,7 +152,7 @@ namespace eTactWeb.Controllers
                 var SeqNo = 1;
                 foreach (var item in model)
                 {
-                    //string modelJson = HttpContext.Session.GetString("ReceiveItems");
+                    //string modelJson = HttpContext.Session.GetString($"ReceiveItems_{uniqueKey}");
                     //IList<TransferFromWorkCenterDetail> RCDetail = new List<TransferFromWorkCenterDetail>();
                     //if (modelJson != null)
                     //{
@@ -143,10 +163,10 @@ namespace eTactWeb.Controllers
                     {
 
                         {
-                                item.SeqNo = SeqNo;
-                                //RCGrid = RCDetail.Where(x => x != null).ToList();
-                                ReceiveChallanGrid.AddRange(RCGrid);
-                                RCGrid.Add(item);
+                            item.SeqNo = SeqNo;
+                            //RCGrid = RCDetail.Where(x => x != null).ToList();
+                            ReceiveChallanGrid.AddRange(RCGrid);
+                            RCGrid.Add(item);
                             SeqNo++;
 
 
@@ -154,7 +174,7 @@ namespace eTactWeb.Controllers
                         RCGrid = RCGrid.OrderBy(item => item.SeqNo).ToList();
                         MainModel.ItemDetailGrid = RCGrid;
 
-                        HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                        HttpContext.Session.SetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                     }
                     else
                     {
@@ -171,7 +191,18 @@ namespace eTactWeb.Controllers
             }
         }
 
-
+        public async Task<JsonResult> GetFeatureOption()
+        {
+            var JSON = await _ITransferFromWorkCenter.GetFeatureOption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetMaxTransferDate()
+        {
+            var JSON = await _ITransferFromWorkCenter.GetMaxTransferDate();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "")
         {
 
@@ -179,7 +210,7 @@ namespace eTactWeb.Controllers
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
             webReport = new WebReport();
-            var ReportName = _ITransferFromWorkCenter.GetReportName();
+            var ReportName = _ITransferFromWorkCenter.GetFeatureOption();
             ViewBag.EntryId = EntryId;
             ViewBag.YearCode = YearCode;
             ViewBag.PONO = PONO;
@@ -203,25 +234,56 @@ namespace eTactWeb.Controllers
             webReport.Report.Refresh();
             return View(webReport);
         }
+        public IActionResult BarcodeGenerationForTransferWcMaterial(int EntryId = 0, int YearCode = 0, string slipNo = "")
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
+            var webReport = new WebReport();
+
+            webReport.Report.Load(webRootPath + "\\BarcodeGenForProdAndTranMaterial.frx"); // default report
+                                                                                           // webReport.Report.Load(webRootPath + "\\ProductionEntryPrint.frx"); // default report
+
+            webReport.Report.SetParameterValue("SlipNoparam", slipNo);
+            webReport.Report.SetParameterValue("Yearcodeparam", YearCode);
+            webReport.Report.SetParameterValue("EntryIdparam", EntryId);
+            webReport.Report.SetParameterValue("fromFormName", "Transfermaterial");
+
+            my_connection_string = _connectionStringService.GetConnectionString();
+
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            return View(webReport);
+        }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> TransferFromWorkCenter(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string TransferSlipNo = "", string ItemName = "", string PartCode = "", string FromWorkCenter = "", string ToWorkCenter = "", string StoreName = "", string ProdSlipNo = "", string ProdSchNo = "", string Searchbox = "", string DashboardType = "")//, ILogger logger)
+        public async Task<ActionResult> TransferFromWorkCenter(string formKey, string uniqueKey, int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string TransferSlipNo = "", string ItemName = "", string PartCode = "", string FromWorkCenter = "", string ToWorkCenter = "", string StoreName = "", string ProdSlipNo = "", string ProdSchNo = "", string Searchbox = "", string DashboardType = "", string pendingData = "")//, ILogger logger)
         {
+            ViewBag.formKey = formKey;
+            if (uniqueKey == null)
+            {
+                uniqueKey = Guid.NewGuid().ToString();
+            }
+            ViewBag.uniqueKey = uniqueKey;
             //_logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
-            TempData.Clear();
+            //TempData.Clear();
             var MainModel = new TransferFromWorkCenterModel();
-            MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.TransferMatYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            HttpContext.Session.Remove("KeyTransferFromWorkCenterGrid");
+            MainModel.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+            if (pendingData != "Y")
+            {
+                HttpContext.Session.Remove($"ReceiveItems_{uniqueKey}");
+            }
+            MainModel.TransferMatYearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+            MainModel.FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"FromDate_{formKey}"));
+            MainModel.ToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"ToDate_{formKey}"));
+            HttpContext.Session.Remove($"KeyTransferFromWorkCenterGrid_{uniqueKey}");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _ITransferFromWorkCenter.GetViewByID(ID, YC).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", serializedGrid);
+                HttpContext.Session.SetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}", serializedGrid);
             }
             else
             {
@@ -230,15 +292,15 @@ namespace eTactWeb.Controllers
 
             if (Mode != "U")
             {
-                MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                MainModel.ActualEntrydate =DateTime.Now;
+                MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.ActualEnteredByName = HttpContext.Session.GetString($"EmpName_{formKey}");
+                MainModel.ActualEntrydate = DateTime.Now;
             }
             else
             {
-                MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                MainModel.ActualEnteredByName = HttpContext.Session.GetString($"EmpName_{formKey}");
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.UpdatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                 MainModel.UpdatedOn = DateTime.Now;
             }
             MainModel.FromDateBack = FromDate;
@@ -249,8 +311,8 @@ namespace eTactWeb.Controllers
             MainModel.FromWorkCenterBack = FromWorkCenter;
             MainModel.ToWorkCenterBack = ToWorkCenter;
             MainModel.StoreNameBack = StoreName;
-            MainModel.ProdSlipNoBack=ProdSlipNo;
-            MainModel.ProdSchNoBack=ProdSchNo;
+            MainModel.ProdSlipNoBack = ProdSlipNo;
+            MainModel.ProdSchNoBack = ProdSchNo;
             MainModel.GlobalSearchBack = Searchbox;
             MainModel.DashboardTypeBack = DashboardType;
             //MainModel = await BindModel(MainModel).ConfigureAwait(false);
@@ -275,26 +337,28 @@ namespace eTactWeb.Controllers
         //        }
         //        model.PartcodeList = _List;
         //        _List = new List<TextValue>();
-               
+
 
         //    }
         //    return model;
         //}
-            [HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
         public async Task<IActionResult> TransferFromWorkCenter(TransferFromWorkCenterModel model)
         {
             try
             {
+                var formKey = model.formKey;
+                var uniqueKey = model.uniqueKey;
                 var TransferGrid = new DataTable();
-                string serializedGrid = HttpContext.Session.GetString("KeyTransferFromWorkCenterGrid");
+                string serializedGrid = HttpContext.Session.GetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}");
                 List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail = new();
                 if (!string.IsNullOrEmpty(serializedGrid))
                 {
                     TransferFromWorkCenterDetail = JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(serializedGrid);
                 }
-                //_MemoryCache.TryGetValue("KeyTransferFromWorkCenterGrid", out List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
+                //_MemoryCache.TryGetValue($"KeyTransferFromWorkCenterGrid_{uniqueKey}", out List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
 
                 if (TransferFromWorkCenterDetail == null)
                 {
@@ -305,22 +369,22 @@ namespace eTactWeb.Controllers
 
                 else
                 {
-                    model.CC = HttpContext.Session.GetString("Branch");
-                    model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                    model.Uid   = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                    // model.ac = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    model.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+                    model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+                    model.Uid = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+                    // model.ac = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
                     if (model.Mode == "U")
                     {
-                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        model.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                        model.UpdatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                         TransferGrid = GetDetailTable(TransferFromWorkCenterDetail);
                     }
                     else
                     {
                         TransferGrid = GetDetailTable(TransferFromWorkCenterDetail);
                     }
-                    model.EntryByMachineNo = HttpContext.Session.GetString("ClientMachineName");
-                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                    model.EntryByMachineNo = HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+                    model.IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
                     var Result = await _ITransferFromWorkCenter.SaveTransferFromWorkCenter(model, TransferGrid);
 
                     if (Result != null)
@@ -329,36 +393,79 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            HttpContext.Session.Remove("KeyTransferFromWorkCenterGrid");
-                            HttpContext.Session.Remove("ReceiveItems");
+                            HttpContext.Session.Remove($"KeyTransferFromWorkCenterGrid_{uniqueKey}");
+                            HttpContext.Session.Remove($"ReceiveItems_{uniqueKey}");
+                            return Json(new
+                            {
+                                success = true,
+                                message = " Data Save successfully",
+                                redirectUrl = Url.Action(
+     "TransferFromWorkCenter",
+     "TransferFromWorkCenter",
+     new { formKey = formKey }
+
+ )
+                            });
+
                         }
-                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+                        else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
+                            return Json(new
+                            {
+                                success = true,
+                                message = "Data Updated successfully",
+                                redirectUrl = Url.Action(
+        "TransferFromWorkCenter",
+     "TransferFromWorkCenter",
+          new { formKey = formKey }
+
+
+   )
+                            });
                         }
-                        if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                        else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
 
                             ViewBag.isSuccess = false;
                             TempData["500"] = "500";
                             _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                            return View("Error", Result);
+                            //return View("Error", Result);
+                            return Json(new
+                            {
+                                success = false,
+                                message = "An unexpected error occurred."
+                            });
                         }
                         else if (!string.IsNullOrEmpty(Result.StatusText))
                         {
                             // If SP returned a message (like adjustment error)
-                            TempData["ErrorMessage"] = Result.StatusText;
+                            //  TempData["ErrorMessage"] = Result.StatusText;
                             //return View(model);
+                            return Json(new
+                            {
+                                success = false,
+                                message = Result.StatusText
+                            });
                         }
                         else
                         {
-                            TempData["ErrorMessage"] = "Error while  transaction.";
+                            return Json(new
+                            {
+                                success = false,
+                                message = "An unexpected error occurred."
+                            });
                         }
 
                     }
-                    
-                    return RedirectToAction(nameof(TransferFromWorkCenter));
+
+                    //return RedirectToAction(nameof(TransferFromWorkCenter));
+                    return Json(new
+                    {
+                        success = false,
+                        message = "An unexpected error occurred."
+                    });
                 }
             }
             catch (Exception ex)
@@ -376,18 +483,18 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
-        public async Task<JsonResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode,int TransferMatEntryId,string Mode)
+        public async Task<JsonResult> ChkWIPStockBeforeSaving(int WcId, string uniqueKey, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, string Mode)
         {
             var TransferGrid = new DataTable();
-            string serializedGrid = HttpContext.Session.GetString("KeyTransferFromWorkCenterGrid");
+            string serializedGrid = HttpContext.Session.GetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}");
             List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail = new();
             if (!string.IsNullOrEmpty(serializedGrid))
             {
                 TransferFromWorkCenterDetail = JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(serializedGrid);
             }
-            //_MemoryCache.TryGetValue("KeyTransferFromWorkCenterGrid", out List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
+            //_MemoryCache.TryGetValue($"KeyTransferFromWorkCenterGrid_{uniqueKey}", out List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
             TransferGrid = GetDetailTable(TransferFromWorkCenterDetail);
-            var ChechedData = await _ITransferFromWorkCenter.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferMatEntryId, TransferGrid,Mode);
+            var ChechedData = await _ITransferFromWorkCenter.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferMatEntryId, TransferGrid, Mode);
             if (ChechedData.StatusCode == HttpStatusCode.OK && ChechedData.StatusText == "Success")
             {
                 DataTable dt = ChechedData.Result;
@@ -416,9 +523,9 @@ namespace eTactWeb.Controllers
                 message = "No errors found."
             });
         }
-        public async Task<JsonResult> GetFormRights()
+        public async Task<JsonResult> GetFormRights(string formKey)
         {
-            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var JSON = await _ITransferFromWorkCenter.GetFormRights(userID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -465,17 +572,17 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult AddTransferFromWorkCenter(TransferFromWorkCenterDetail model)
+        public IActionResult AddTransferFromWorkCenter(TransferFromWorkCenterDetail model, string uniqueKey)
         {
             try
             {
                 if (model.Mode == "U")
                 {
-                    string serializedGrid = HttpContext.Session.GetString("KeyTransferFromWorkCenterGrid");
+                    string serializedGrid = HttpContext.Session.GetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}");
                     List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail = !string.IsNullOrEmpty(serializedGrid)
             ? JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(serializedGrid)
             : new();
-                    //_MemoryCache.TryGetValue("KeyTransferFromWorkCenterGrid", out IList<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
+                    //_MemoryCache.TryGetValue($"KeyTransferFromWorkCenterGrid_{uniqueKey}", out IList<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
 
                     var MainModel = new TransferFromWorkCenterModel();
                     var TransferWcDetail = new List<TransferFromWorkCenterDetail>();
@@ -506,7 +613,7 @@ namespace eTactWeb.Controllers
 
                         MainModel.ItemDetailGrid = TransferGrid;
                         string updatedSerializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                        HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", updatedSerializedGrid);
+                        HttpContext.Session.SetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}", updatedSerializedGrid);
                         //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                         //{
                         //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
@@ -514,7 +621,7 @@ namespace eTactWeb.Controllers
                         //    Size = 1024,
                         //};
 
-                        //_MemoryCache.Set("KeyTransferFromWorkCenterGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                        //_MemoryCache.Set($"KeyTransferFromWorkCenterGrid_{uniqueKey}", MainModel.ItemDetailGrid, cacheEntryOptions);
                     }
                     else
                     {
@@ -525,11 +632,11 @@ namespace eTactWeb.Controllers
                 }
                 else
                 {
-                    string serializedGrid = HttpContext.Session.GetString("KeyTransferFromWorkCenterGrid");
+                    string serializedGrid = HttpContext.Session.GetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}");
                     List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail = !string.IsNullOrEmpty(serializedGrid)
                         ? JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(serializedGrid)
                         : new();
-                    //_MemoryCache.TryGetValue("KeyTransferFromWorkCenterGrid", out IList<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
+                    //_MemoryCache.TryGetValue($"KeyTransferFromWorkCenterGrid_{uniqueKey}", out IList<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
 
                     var MainModel = new TransferFromWorkCenterModel();
                     var TransferWcDetail = new List<TransferFromWorkCenterDetail>();
@@ -560,8 +667,8 @@ namespace eTactWeb.Controllers
                         }
                         MainModel.ItemDetailGrid = TransferGrid;
                         string updatedSerializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                        HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", updatedSerializedGrid);
-                        
+                        HttpContext.Session.SetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}", updatedSerializedGrid);
+
                         //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                         //{
                         //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
@@ -569,7 +676,7 @@ namespace eTactWeb.Controllers
                         //    Size = 1024,
                         //};
 
-                        //_MemoryCache.Set("KeyTransferFromWorkCenterGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                        //_MemoryCache.Set($"KeyTransferFromWorkCenterGrid_{uniqueKey}", MainModel.ItemDetailGrid, cacheEntryOptions);
                     }
                     else
                     {
@@ -639,16 +746,16 @@ namespace eTactWeb.Controllers
                 return Json(new { error = "An unexpected error occurred: " + ex.Message });
             }
         }
-        public IActionResult DeleteItemRow(int SeqNo, string Mode)
+        public IActionResult DeleteItemRow(int SeqNo, string Mode, string uniqueKey)
         {
             var MainModel = new TransferFromWorkCenterModel();
             if (Mode == "U")
             {
-                string serializedGrid = HttpContext.Session.GetString("KeyTransferFromWorkCenterGrid");
+                string serializedGrid = HttpContext.Session.GetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}");
                 List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail = !string.IsNullOrEmpty(serializedGrid)
                     ? JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(serializedGrid)
                     : new List<TransferFromWorkCenterDetail>();
-                //_MemoryCache.TryGetValue("KeyTransferFromWorkCenterGrid", out List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
+                //_MemoryCache.TryGetValue($"KeyTransferFromWorkCenterGrid_{uniqueKey}", out List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (TransferFromWorkCenterDetail != null && TransferFromWorkCenterDetail.Count > 0)
@@ -664,7 +771,7 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.ItemDetailGrid = TransferFromWorkCenterDetail;
                     string updatedSerializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                    HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", updatedSerializedGrid);
+                    HttpContext.Session.SetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}", updatedSerializedGrid);
                     //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                     //{
                     //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
@@ -672,16 +779,16 @@ namespace eTactWeb.Controllers
                     //    Size = 1024,
                     //};
 
-                    //_MemoryCache.Set("KeyTransferFromWorkCenterGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                    //_MemoryCache.Set($"KeyTransferFromWorkCenterGrid_{uniqueKey}", MainModel.ItemDetailGrid, cacheEntryOptions);
                 }
             }
             else
             {
-                string serializedGrid = HttpContext.Session.GetString("KeyTransferFromWorkCenterGrid");
+                string serializedGrid = HttpContext.Session.GetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}");
                 List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail = !string.IsNullOrEmpty(serializedGrid)
                     ? JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(serializedGrid)
                     : new List<TransferFromWorkCenterDetail>();
-                //_MemoryCache.TryGetValue("KeyTransferFromWorkCenterGrid", out List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
+                //_MemoryCache.TryGetValue($"KeyTransferFromWorkCenterGrid_{uniqueKey}", out List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (TransferFromWorkCenterDetail != null && TransferFromWorkCenterDetail.Count > 0)
@@ -704,27 +811,27 @@ namespace eTactWeb.Controllers
                         Size = 1024,
                     };
                     string updatedSerializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                    HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", updatedSerializedGrid);
-                    //_MemoryCache.Set("KeyTransferFromWorkCenterGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}", updatedSerializedGrid);
+                    //_MemoryCache.Set($"KeyTransferFromWorkCenterGrid_{uniqueKey}", MainModel.ItemDetailGrid, cacheEntryOptions);
                 }
             }
 
             return PartialView("_TransferFromWcGrid", MainModel);
         }
-        public IActionResult EditItemRow(int SeqNo, string Mode)
+        public IActionResult EditItemRow(int SeqNo, string Mode, string uniqueKey)
         {
             IList<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail = new List<TransferFromWorkCenterDetail>();
             if (Mode == "U")
             {
-                string serializedGrid = HttpContext.Session.GetString("KeyTransferFromWorkCenterGrid");
+                string serializedGrid = HttpContext.Session.GetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}");
                 TransferFromWorkCenterDetail = JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(serializedGrid);
-                //_MemoryCache.TryGetValue("KeyTransferFromWorkCenterGrid", out TransferFromWorkCenterDetail);
+                //_MemoryCache.TryGetValue($"KeyTransferFromWorkCenterGrid_{uniqueKey}", out TransferFromWorkCenterDetail);
             }
             else
             {
-                string serializedGrid = HttpContext.Session.GetString("KeyTransferFromWorkCenterGrid");
+                string serializedGrid = HttpContext.Session.GetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}");
                 TransferFromWorkCenterDetail = JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(serializedGrid);
-                //_MemoryCache.TryGetValue("KeyTransferFromWorkCenterGrid", out TransferFromWorkCenterDetail);
+                //_MemoryCache.TryGetValue($"KeyTransferFromWorkCenterGrid_{uniqueKey}", out TransferFromWorkCenterDetail);
             }
             IEnumerable<TransferFromWorkCenterDetail> SSGrid = TransferFromWorkCenterDetail;
             if (TransferFromWorkCenterDetail != null)
@@ -754,15 +861,15 @@ namespace eTactWeb.Controllers
                 TransferGrid.Columns.Add("ParentProdSchNo", typeof(string));
                 TransferGrid.Columns.Add("ParentProdSchYearCode", typeof(int));
                 TransferGrid.Columns.Add("ItemCode", typeof(int));
-                TransferGrid.Columns.Add("TransferQty", typeof(float));
-                TransferGrid.Columns.Add("QCOkQty", typeof(float));
-                TransferGrid.Columns.Add("ProdQty", typeof(float));
+                TransferGrid.Columns.Add("TransferQty", typeof(decimal));
+                TransferGrid.Columns.Add("QCOkQty", typeof(decimal));
+                TransferGrid.Columns.Add("ProdQty", typeof(decimal));
                 TransferGrid.Columns.Add("Unit", typeof(string));
-                TransferGrid.Columns.Add("AltTransferQty", typeof(float));
+                TransferGrid.Columns.Add("AltTransferQty", typeof(decimal));
                 TransferGrid.Columns.Add("AltUnit", typeof(string));
                 TransferGrid.Columns.Add("Remark", typeof(string));
                 TransferGrid.Columns.Add("PendingToAcknowledge", typeof(string));
-                TransferGrid.Columns.Add("PendingQtyToAcknowledge", typeof(float));
+                TransferGrid.Columns.Add("PendingQtyToAcknowledge", typeof(decimal));
                 TransferGrid.Columns.Add("ItemSize", typeof(string));
                 TransferGrid.Columns.Add("ItemColor", typeof(string));
                 TransferGrid.Columns.Add("InProcQCSlipNo", typeof(string));
@@ -770,15 +877,15 @@ namespace eTactWeb.Controllers
                 TransferGrid.Columns.Add("QCClearingDate", typeof(string));
                 TransferGrid.Columns.Add("InProcQCYearCode", typeof(int));
                 TransferGrid.Columns.Add("ProcessId", typeof(int));
-                TransferGrid.Columns.Add("TotalStock", typeof(float));
+                TransferGrid.Columns.Add("TotalStock", typeof(decimal));
                 TransferGrid.Columns.Add("BatchNo", typeof(string));
                 TransferGrid.Columns.Add("uniquebatchno", typeof(string));
-                TransferGrid.Columns.Add("BatchStock", typeof(float));
-                TransferGrid.Columns.Add("ReceivedByStoreQty", typeof(float));
+                TransferGrid.Columns.Add("BatchStock", typeof(decimal));
+                TransferGrid.Columns.Add("ReceivedByStoreQty", typeof(decimal));
                 TransferGrid.Columns.Add("ReceivedCompleted", typeof(string));
                 TransferGrid.Columns.Add("ReceivedByEmpId", typeof(int));
-                TransferGrid.Columns.Add("Rate", typeof(float));
-                TransferGrid.Columns.Add("ItemWeight", typeof(float));
+                TransferGrid.Columns.Add("Rate", typeof(decimal));
+                TransferGrid.Columns.Add("ItemWeight", typeof(decimal));
                 foreach (var Item in DetailList)
                 {
                     TransferGrid.Rows.Add(
@@ -834,12 +941,15 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
-        public async Task<IActionResult> TransferFromWorkCenterDashboard(string FromDate = "", string ToDate = "", string Flag = "True", string TransferSlipNo = "", string ItemName = "", string PartCode = "", string FromWorkCenter = "", string ToWorkCenter = "", string StoreName = "", string ProdSlipNo = "", string ProdSchNo = "", string Searchbox = "", string DashboardType = "")
+        public async Task<IActionResult> TransferFromWorkCenterDashboard(string formKey, string FromDate = "", string ToDate = "", string Flag = "True", string TransferSlipNo = "", string ItemName = "", string PartCode = "", string FromWorkCenter = "", string ToWorkCenter = "", string StoreName = "", string ProdSlipNo = "", string ProdSchNo = "", string Searchbox = "", string DashboardType = "")
         {
             try
             {
-                HttpContext.Session.Remove("KeyTransferFromWorkCenterGrid");
-                //_MemoryCache.Remove("KeyTransferFromWorkCenterGrid");
+                ViewBag.formKey = formKey;
+                var uniqueKey = Guid.NewGuid().ToString();
+                ViewBag.uniqueKey = uniqueKey;
+                HttpContext.Session.Remove($"KeyTransferFromWorkCenterGrid_{uniqueKey}");
+                //_MemoryCache.Remove($"KeyTransferFromWorkCenterGrid_{uniqueKey}");
 
                 var model = new TransferFromWorkCenterDashboard();
                 var Result = await _ITransferFromWorkCenter.GetDashboardData().ConfigureAwait(true);
@@ -866,16 +976,16 @@ namespace eTactWeb.Controllers
                     {
                         model.FromDate1 = FromDate;
                         model.ToDate1 = ToDate;
-                        model.TransferMatSlipNo=TransferSlipNo;
-                        model.ItemName=ItemName;
-                        model.PartCode=PartCode;
-                        model.TransferFromWC=FromWorkCenter;
-                        model.TransferToWC=ToWorkCenter;
-                        model.TransferToStore=StoreName;
-                        model.ProdSlipNo=ProdSlipNo;
-                        model.ProdSchNo=ProdSchNo;
-                        model.Searchbox=Searchbox;
-                        model.DashboardType=DashboardType;
+                        model.TransferMatSlipNo = TransferSlipNo;
+                        model.ItemName = ItemName;
+                        model.PartCode = PartCode;
+                        model.TransferFromWC = FromWorkCenter;
+                        model.TransferToWC = ToWorkCenter;
+                        model.TransferToStore = StoreName;
+                        model.ProdSlipNo = ProdSlipNo;
+                        model.ProdSchNo = ProdSchNo;
+                        model.Searchbox = Searchbox;
+                        model.DashboardType = DashboardType;
                         return View(model);
                     }
                 }
@@ -886,7 +996,7 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public IActionResult AddMultipleItemDetail(List<TransferFromWorkCenterDetail> model)
+        public IActionResult AddMultipleItemDetail(List<TransferFromWorkCenterDetail> model, string uniqueKey)
         {
             try
             {
@@ -897,7 +1007,7 @@ namespace eTactWeb.Controllers
                 var SeqNo = 1;
                 foreach (var item in model)
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyTransferFromWorkCenterGrid");
+                    string modelJson = HttpContext.Session.GetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}");
                     IList<TransferFromWorkCenterDetail> ItemDetail = new List<TransferFromWorkCenterDetail>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -912,7 +1022,7 @@ namespace eTactWeb.Controllers
                         if (ItemDetail == null)
                         {
                             item.SeqNo = SeqNo++;
-                            
+
                             StockGrid.Add(item);
                         }
                         else
@@ -926,7 +1036,7 @@ namespace eTactWeb.Controllers
 
 
                             item.SeqNo = ItemDetail.Count + 1;
-                           
+
                             StockGrid = ItemDetail.Where(x => x != null).ToList();
                             StockAdjustGrid.AddRange(StockGrid);
                             StockGrid.Add(item);
@@ -934,8 +1044,8 @@ namespace eTactWeb.Controllers
                         MainModel.ItemDetailGrid = StockGrid;
 
 
-                        HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
-                       
+                        HttpContext.Session.SetString($"KeyTransferFromWorkCenterGrid_{uniqueKey}", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+
                     }
                     else
                     {
@@ -952,26 +1062,30 @@ namespace eTactWeb.Controllers
             }
         }
 
-        public async Task<IActionResult> GetSearchData(string FromDate, string ToDate, string TransferMatSlipNo, string ItemName, string PartCode, string TransferFromWC, string TransferToWC, string TransferToStore, string ProdSlipNo, string ProdSchNo, string DashboardType)
+        public async Task<IActionResult> GetSearchData(string formKey, string FromDate, string ToDate, string TransferMatSlipNo, string ItemName, string PartCode, string TransferFromWC, string TransferToWC, string TransferToStore, string ProdSlipNo, string ProdSchNo, string DashboardType)
         {
+            ViewBag.formKey = formKey;
+
             //model.Mode = "Search";
             var model = new TransferFromWorkCenterDashboard();
             model = await _ITransferFromWorkCenter.GetDashboardData(FromDate, ToDate, TransferMatSlipNo, ItemName, PartCode, TransferFromWC, TransferToWC, TransferToStore, ProdSlipNo, ProdSchNo, DashboardType);
             model.DashboardType = "SUMMARY";
             return PartialView("_TransferFromWorkCenterDashboard", model);
         }
-        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string TransferMatSlipNo, string ItemName, string PartCode, string TransferFromWC, string TransferToWC, string TransferToStore, string ProdSlipNo, string ProdSchNo, string DashboardType)
+        public async Task<IActionResult> GetDetailData(string formKey, string FromDate, string ToDate, string TransferMatSlipNo, string ItemName, string PartCode, string TransferFromWC, string TransferToWC, string TransferToStore, string ProdSlipNo, string ProdSchNo, string DashboardType)
         {
+            ViewBag.formKey = formKey;
+
             //model.Mode = "Search";
             var model = new TransferFromWorkCenterDashboard();
             model = await _ITransferFromWorkCenter.GetDashboardDetailData(FromDate, ToDate, TransferMatSlipNo, ItemName, PartCode, TransferFromWC, TransferToWC, TransferToStore, ProdSlipNo, ProdSchNo, DashboardType);
             model.DashboardType = "DETAIL";
             return PartialView("_TransferFromWorkCenterDashboardDetail", model);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, string FromDate = "", string ToDate = "", string TransferSlipNo = "", string ItemName = "", string PartCode = "", string FromWorkCenter = "", string ToWorkCenter = "", string StoreName = "", string ProdSlipNo = "", string ProdSchNo = "", string Searchbox = "", string DashboardType = "")
+        public async Task<IActionResult> DeleteByID(string formKey, int ID, int YC, string CC, string EntryByMachineName, string EntryDate, string FromDate = "", string ToDate = "", string TransferSlipNo = "", string ItemName = "", string PartCode = "", string FromWorkCenter = "", string ToWorkCenter = "", string StoreName = "", string ProdSlipNo = "", string ProdSchNo = "", string Searchbox = "", string DashboardType = "")
         {
-            // int EmpID = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
-            int EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            // int EmpID = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"EmpID_{formKey}"));
+            int EmpID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var Result = await _ITransferFromWorkCenter.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate, EmpID);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
@@ -990,7 +1104,7 @@ namespace eTactWeb.Controllers
                 TempData["500"] = "500";
             }
 
-            return RedirectToAction("TransferFromWorkCenterDashboard", new { EntryDate = EntryDate, Flag = "False", CC = CC, EntryByMachineName = EntryByMachineName, FromDate = FromDate, ToDate = ToDate, TransferSlipNo = TransferSlipNo, ItemName = ItemName, PartCode = PartCode, FromWorkCenter = FromWorkCenter, ToWorkCenter = ToWorkCenter, StoreName = StoreName, ProdSlipNo = ProdSlipNo, ProdSchNo = ProdSchNo, DashboardType = DashboardType });
+            return RedirectToAction("TransferFromWorkCenterDashboard", new { formKey = formKey, EntryDate = EntryDate, Flag = "False", CC = CC, EntryByMachineName = EntryByMachineName, FromDate = FromDate, ToDate = ToDate, TransferSlipNo = TransferSlipNo, ItemName = ItemName, PartCode = PartCode, FromWorkCenter = FromWorkCenter, ToWorkCenter = ToWorkCenter, StoreName = StoreName, ProdSlipNo = ProdSlipNo, ProdSchNo = ProdSchNo, DashboardType = DashboardType });
         }
         public async Task<JsonResult> CheckEditOrDelete(int TransferEntryId, int TransferYearCode)
         {
@@ -998,27 +1112,30 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> PendingWIPDetailData( string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int WCID, string ReportType, string BatchNo, string UniqueBatchNo, string WorkCenter)
-        {
-            var model = new WIPStockRegisterModel();
-           var FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
-            var fullList = (await _IWIPStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, WCID, "BATCHWISESTOCKSUMMARY", BatchNo, UniqueBatchNo, WorkCenter))?.WIPStockRegisterDetail ?? new List<WIPStockRegisterDetail>();
-            model.WIPStockRegisterDetail = fullList;
-            return PartialView("_PendingToTransferMaterial", model);
-        }
+        //public async Task<IActionResult> PendingWIPDetailData(string formKey, string ToDate, string PartCode, string ItemName, int ItemCode, string ItemGroup, string ItemType, int WCID, string ReportType, string BatchNo, string UniqueBatchNo, string WorkCenter)
+        //{
+        //    var model = new WIPStockRegisterModel();
+        //    var FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"FromDate_{formKey}"));
+        //    var fullList = (await _IWIPStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemCode, ItemGroup, ItemType, WCID, "BATCHWISESTOCKSUMMARY", BatchNo, UniqueBatchNo, WorkCenter, "PendingProductionToTrans"))?.WIPStockRegisterDetail ?? new List<WIPStockRegisterDetail>();
+        //    model.WIPStockRegisterDetail = fullList;
+        //    return PartialView("_PendingToTransferMaterial", model);
+        //}
         [Route("{controller}/PendingToTransferMaterial")]
-        public IActionResult PendingToTransferMaterial()
+        public IActionResult PendingToTransferMaterial(string formKey)
         {
+            ViewBag.formKey = formKey;
+            var uniqueKey = Guid.NewGuid().ToString();
+            ViewBag.uniqueKey = uniqueKey;
             var model = new WIPStockRegisterModel();
             model.WIPStockRegisterDetail = new List<WIPStockRegisterDetail>();
             return View(model);
         }
 
-        public async Task<IActionResult> selectMultipleItem(int WCID, string ToDate, string PartCode,string FromDate)
+        public async Task<IActionResult> selectMultipleItem(int WCID, string ToDate, string PartCode, string FromDate, string ItemName, string ItemType, string Group_Code, int SearchFGItemCode)
         {
             var model = new TransferFromWorkCenterModel();
-           
-            model = await _ITransferFromWorkCenter.selectMultipleItem(WCID, FromDate, ToDate, PartCode);
+
+            model = await _ITransferFromWorkCenter.selectMultipleItem(WCID, FromDate, ToDate, PartCode, ItemName, ItemType, Group_Code, SearchFGItemCode);
 
 
             return PartialView("_TransferFromWCALLItem", model);
