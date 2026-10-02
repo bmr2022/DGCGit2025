@@ -33,9 +33,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ReceiveItemDAL.SaveInprocessQc(model, ReceiveItemDetail);
         }
-        public async Task<ResponseResult> BindDepartmentList(string FromDate,string ToDate)
+        public async Task<ResponseResult> BindDepartmentList(string FromDate, string ToDate)
         {
-            return await _ReceiveItemDAL.BindDepartmentList(FromDate,ToDate);
+            return await _ReceiveItemDAL.BindDepartmentList(FromDate, ToDate);
         }
         public async Task<ResponseResult> GetDashboardData()
         {

@@ -20,6 +20,7 @@
     .select2-container--default .select2-results > .select2-results__options {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
+    }
 </style>
 <div class="shadow-lg">
     <div class="card rounded border-light bg-gradient">
@@ -31,7 +32,7 @@
                     <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                     Add New
                     </a>*@
-                    <a asp-action="ReceiveItemInStoreDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm" asp-controller="ReceiveItem">
+                    <a asp-action="ReceiveItemInStoreDashboard" asp-route-formKey="@ViewBag.formKey"  asp-route-ID="0" class="btn btn-secondary btn-sm" asp-controller="ReceiveItem">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -51,6 +52,8 @@
                                         <input type="hidden" value="@Model.FromDate" id="finFromDate" />
                                         <input type="hidden" value="@Model.ToDate" id="finToDate" />
                                         <input asp-for="FromDate" maxlength="10" class="form-control" value="@Model.FromDate" />
+                                        <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                                        <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                                     </div>
                                     <div class="col">
                                         <label class="form-label">To Date</label>
@@ -105,7 +108,7 @@
                                 <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
-                                <a class="btn btn-sm btn-outline-danger" asp-controller="PendingMRNtoQc" asp-action="PendingMRNtoQc" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                <a class="btn btn-sm btn-outline-danger" asp-controller="PendingMRNtoQc" asp-route-formKey="@ViewBag.formKey" asp-action="PendingMRNtoQc" style="padding:3px;height:30px;width:100px;margin-left:20px;">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
                             </div>
@@ -125,13 +128,15 @@
             <div class="card-body overflow-auto pb-0">
                 <div class="table-responsive" style="max-height:350px;">
                     <table class="table table-hover table-bordered table-striped" id="GateDataTable">
-                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap;position:sticky;top:0;z-index:1;">
                             <tr>
                                 <th>Check/UnCheck <input id="checkuncheck" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                                 <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransferMat SlipNo</th>
                                 <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransferMat SlipDate</th>
                                 <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod/Unprod</th>
                                 <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>From WorkCenter</th>
+                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
+
                                 <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod EntryId</th>
                                 <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod SlipNo</th>
                                 <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
@@ -140,7 +145,6 @@
                                 <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
                                 <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Transfer Qty</th>
                                 <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
-                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
                                 <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransferMat EntryId</th>
                                 <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransferMat YearCode</th>
                                 <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchNo</th>
@@ -163,7 +167,11 @@
 @section Scripts
 {
     <script>
+           var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
         $(function () {
+            formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
             var fromDate;
             var toDate;
 
@@ -233,6 +241,7 @@
                                     '<td>' + datePart + '</td>' +
                                     '<td>' + val.PRODSTATUSProdUnProdRej + '</td>' +
                                     '<td id="WorkCenter' + i + '"><input id="WCID' + i + '" type="hidden" value="' + val.FromWCID + '"/>' + val.FromWorkcenter + '</td>' +
+                                    '<td> <input id="RecStoreId' + i + '" type="hidden" value="' + val.TostoreId + '"/>' + val.StoreName + '</td>' +
                                     '<td>' + val.prodentryid + '</td>' +
                                     '<td>' + val.prodslipno + '</td>' +
                                     '<td>' + val.partcode + '</td>' +
@@ -241,7 +250,7 @@
                                     '<td>' + val.Unit + '</td>' +
                                     '<td>' + val.TransferQty + '</td>' +
                                     '<td>' + val.AltUnit + '</td>' +
-                                    '<td> <input id="RecStoreId' + i + '" type="hidden" value="' + val.TostoreId + '"/>' + val.StoreName + '</td>' +
+                                    
                                     '<td id="TransferEntry' + i + '">' + val.TransferMatEntryId + '</td>' +
                                     '<td id="TransferMatYearCode' + i + '">' + val.TransferMatYearCode + '</td>' +
                                     '<td id="BatchNo' + i + '">' + val.BatchNo + '</td>' +
@@ -331,10 +340,11 @@
             $.ajax({
                 url: "@Url.Action("GetDataReceiveItem")",
                 type: "POST",
-                data: { DisplayPendReceiveItem: JSON.stringify(GridList) },
+                data: { DisplayPendReceiveItem: JSON.stringify(GridList),uniqueKey:uniqueKey },
                 success: function (data, status, xhr) {
                      
-                    var url = '/ReceiveItem/Index/?';
+                    var url = '/ReceiveItem/Index?formKey=' + encodeURIComponent(formKey) +
+          '&uniqueKey=' + encodeURIComponent(uniqueKey);
                     window.location.href = url;
                 },
                 error: function (result, status, xhr) {

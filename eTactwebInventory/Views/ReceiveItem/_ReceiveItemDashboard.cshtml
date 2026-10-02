@@ -1,5 +1,18 @@
 ﻿@model eTactWeb.DOM.Models.ReceiveItemDashboard
+@inject IHttpContextAccessor HttpContextAccessor
 
+@{
+    var context = HttpContextAccessor.HttpContext;
+    string formKey =
+           context.Request.Query["formKey"].FirstOrDefault()
+        ?? context.Request.Headers["FormKey"].FirstOrDefault()
+        ??Model.formKey
+            ??ViewBag.formKey
+
+        ?? "";
+    string uniqueKey = Model.uniqueKey;
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"YearCode_{formKey}"));
+}
 @if (Model.DashboardType == "Detail")
 {
     <partial name="_ReceiveItemDashboardDetail" />
@@ -50,7 +63,7 @@ else
                                             </a>
                                         </div>
                                         <div id="viewCursorDiv-@Cntr">
-                                            <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="InProcessQc" asp-route-Mode="V" asp-route-ID="@item.RecMatEntryId" asp-route-YC="@item.RecMatYearCode" onclick="BackButtonData(event);">
+                                            <a class="table-link link-success" asp-route-formKey="@formKey" asp-route-formKey="@uniqueKey" id="viewCursor-@Cntr" asp-action="ReceiveItem" asp-route-Mode="V" asp-route-ID="@item.RecMatEntryId" asp-route-YC="@item.RecMatYearCode" onclick="BackButtonData(event);">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -58,21 +71,14 @@ else
                                             </a>
                                         </div>
                                         <div id="editCursorDiv-@Cntr">
-                                            <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="ReceiveItem" asp-route-Mode="U" asp-route-ID="@item.RecMatEntryId" asp-route-YC="@item.RecMatYearCode" onclick="confirmEdit(event)">
+                                            <a class="table-link link-primary" asp-route-formKey="@formKey" asp-route-formKey="@uniqueKey" id="editCursor-@Cntr" asp-action="ReceiveItem" asp-route-Mode="U" asp-route-ID="@item.RecMatEntryId" asp-route-YC="@item.RecMatYearCode" onclick="confirmEdit(event)">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                 </span>
                                             </a>
                                         </div>
-                                        <div id="deleteCursorDiv-@Cntr">
-                                            <a class="table-link link-danger" id="deleteCursor-@Cntr" asp-action="DeleteByID" asp-route-ID="@item.RecMatEntryId" asp-route-YC="@item.RecMatYearCode" asp-route-RecMatSlipNo="@item.RecMatSlipNo" asp-route-EntryByMachineName="@item.EntryByMachine" asp-route-ActualEntryBy="@item.ActualEntryByEmpid" onclick="confirmDelete(event)">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                        </div>
+                                        
                                     </div>
                                 </td>
                                 <td>@item.RecMatEntryId</td>

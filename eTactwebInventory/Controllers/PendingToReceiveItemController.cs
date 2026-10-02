@@ -5,6 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 //using NuGet.Packaging;
 using System.Data;
+using System.Globalization;
 using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Controllers
@@ -22,32 +23,35 @@ namespace eTactWeb.Controllers
             _IPendingToReceiveItem = IPendingToReceiveItem;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
-        public async Task<IActionResult> PendingToReceiveItem()
+        public async Task<IActionResult> PendingToReceiveItem(string formKey)
         {
+            ViewBag.formKey = formKey;
+            var uniqueKey = Guid.NewGuid().ToString();
+            ViewBag.uniqueKey = uniqueKey;
             ViewData["Title"] = "Pending Receive Item to QC Details";
             TempData.Clear();
             HttpContext.Session.Remove("KeyPendingReceiveItem");
             var MainModel = new PendingToReceiveItemModel();
             var model = new PendingToReceiveItemModel();
-            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            MainModel = await BindItem(MainModel);
-            MainModel= await BindPartCode(MainModel);
-            MainModel= await BindWorkCenter(MainModel);
-            MainModel= await BindProdSlipNo(MainModel);
-            MainModel= await BindStoreName(MainModel);
-            MainModel= await BindProdType(MainModel);
+            MainModel.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            MainModel.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+            MainModel = await BindItem(MainModel, formKey);
+            MainModel = await BindPartCode(MainModel, formKey);
+            MainModel = await BindWorkCenter(MainModel, formKey);
+            MainModel = await BindProdSlipNo(MainModel, formKey);
+            MainModel = await BindStoreName(MainModel, formKey);
+            MainModel = await BindProdType(MainModel, formKey);
 
             HttpContext.Session.SetString("KeyPendingReceiveItem", JsonConvert.SerializeObject(model));
             return View(MainModel);
         }
-        private async Task<PendingToReceiveItemModel> BindItem(PendingToReceiveItemModel model)
+        private async Task<PendingToReceiveItemModel> BindItem(PendingToReceiveItemModel model, string formKey)
         {
             var oDataSet = new DataSet();
             var _List = new List<TextValue>();
-            model.FromDate = HttpContext.Session.GetString("FromDate");
-            model.ToDate = HttpContext.Session.GetString("ToDate");
-            oDataSet = await _IPendingToReceiveItem.BindItem("PENDINGITEMNAME",model.FromDate,model.ToDate);
+            model.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            model.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+            oDataSet = await _IPendingToReceiveItem.BindItem("PENDINGITEMNAME", model.FromDate, model.ToDate);
             model.ItemNameList = new List<TextValue>();
             model.PartCodeList = new List<TextValue>();
             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
@@ -60,18 +64,18 @@ namespace eTactWeb.Controllers
                         Text = row["ItemName"].ToString()
                     });
                 }
-                model.ItemNameList = _List.Where(x=>x.Value != null).ToList();
+                model.ItemNameList = _List.Where(x => x.Value != null).ToList();
                 _List = new List<TextValue>();
 
             }
             return model;
         }
-        private async Task<PendingToReceiveItemModel> BindPartCode(PendingToReceiveItemModel model)
+        private async Task<PendingToReceiveItemModel> BindPartCode(PendingToReceiveItemModel model, string formKey)
         {
             var oDataSet = new DataSet();
             var _List = new List<TextValue>();
-            model.FromDate = HttpContext.Session.GetString("FromDate");
-            model.ToDate = HttpContext.Session.GetString("ToDate");
+            model.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            model.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
             oDataSet = await _IPendingToReceiveItem.BindPartCode("PENDINGPartCode", model.FromDate, model.ToDate);
             model.FromWorkCenterList = new List<TextValue>();
             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
@@ -89,12 +93,12 @@ namespace eTactWeb.Controllers
             }
             return model;
         }
-        private async Task<PendingToReceiveItemModel> BindWorkCenter(PendingToReceiveItemModel model)
+        private async Task<PendingToReceiveItemModel> BindWorkCenter(PendingToReceiveItemModel model, string formKey)
         {
             var oDataSet = new DataSet();
             var _List = new List<TextValue>();
-            model.FromDate = HttpContext.Session.GetString("FromDate");
-            model.ToDate = HttpContext.Session.GetString("ToDate");
+            model.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            model.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
             oDataSet = await _IPendingToReceiveItem.BindItem("FROMWORKCENTER", model.FromDate, model.ToDate);
             model.FromWorkCenterList = new List<TextValue>();
             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[1].Rows.Count > 0)
@@ -112,12 +116,12 @@ namespace eTactWeb.Controllers
             }
             return model;
         }
-        private async Task<PendingToReceiveItemModel> BindProdSlipNo(PendingToReceiveItemModel model)
+        private async Task<PendingToReceiveItemModel> BindProdSlipNo(PendingToReceiveItemModel model, string formKey)
         {
             var oDataSet = new DataSet();
             var _List = new List<TextValue>();
-            model.FromDate = HttpContext.Session.GetString("FromDate");
-            model.ToDate = HttpContext.Session.GetString("ToDate");
+            model.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            model.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
             oDataSet = await _IPendingToReceiveItem.BindProdSlipNo("PRODSLIPNO", model.FromDate, model.ToDate);
             model.ProdSlipNoList = new List<TextValue>();
             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[1].Rows.Count > 0)
@@ -135,14 +139,14 @@ namespace eTactWeb.Controllers
             }
             return model;
         }
-        private async Task<PendingToReceiveItemModel> BindStoreName(PendingToReceiveItemModel model)
+        private async Task<PendingToReceiveItemModel> BindStoreName(PendingToReceiveItemModel model, string formKey)
         {
             try
             {
                 var oDataSet = new DataSet();
                 var _List = new List<TextValue>();
-                model.FromDate = HttpContext.Session.GetString("FromDate");
-                model.ToDate = HttpContext.Session.GetString("ToDate");
+                model.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                model.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
                 oDataSet = await _IPendingToReceiveItem.BindStoreName("TOSTORE", model.FromDate, model.ToDate);
                 model.ToStoreNameList = new List<TextValue>();
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[1].Rows.Count > 0)
@@ -155,24 +159,24 @@ namespace eTactWeb.Controllers
                             Text = row["ToStore"].ToString()
                         });
                     }
-                    model.ToStoreNameList = _List.Where(x=>x.Value != null).ToList();
+                    model.ToStoreNameList = _List.Where(x => x.Value != null).ToList();
                     _List = new List<TextValue>();
                 }
                 return model;
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 throw;
             }
         }
-        private async Task<PendingToReceiveItemModel> BindProdType(PendingToReceiveItemModel model)
+        private async Task<PendingToReceiveItemModel> BindProdType(PendingToReceiveItemModel model, string formKey)
         {
             try
             {
                 var oDataSet = new DataSet();
                 var _List = new List<TextValue>();
-                model.FromDate = HttpContext.Session.GetString("FromDate");
-                model.ToDate = HttpContext.Session.GetString("ToDate");
+                model.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                model.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
                 oDataSet = await _IPendingToReceiveItem.BindProdType("PRODTYPE", model.FromDate, model.ToDate);
                 model.ProdTypeList = new List<TextValue>();
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
@@ -186,7 +190,7 @@ namespace eTactWeb.Controllers
                         });
                     }
                     model.ProdTypeList = _List
-                .DistinctBy(x => x.Value).Where(x=>x.Value != null)// Use DistinctBy to get distinct values directly
+                .DistinctBy(x => x.Value).Where(x => x.Value != null)// Use DistinctBy to get distinct values directly
                 .ToList();
                     _List = new List<TextValue>();
                 }
@@ -198,13 +202,13 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
-        public async Task<JsonResult> GetDataForPendingReceiveItem(string Flag, string FromDate, string ToDate,string partcode,string itemname, string slipno)
+        public async Task<JsonResult> GetDataForPendingReceiveItem(string Flag, string FromDate, string ToDate, string partcode, string itemname, string slipno)
         {
-            var JSON = await _IPendingToReceiveItem.GetDataForPendingReceiveItem(Flag, FromDate, ToDate,partcode,itemname, slipno);
+            var JSON = await _IPendingToReceiveItem.GetDataForPendingReceiveItem(Flag, FromDate, ToDate, partcode, itemname, slipno);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetDataReceiveItem(string DisplayPendReceiveItem)
+        public async Task<JsonResult> GetDataReceiveItem(string DisplayPendReceiveItem, string uniqueKey)
         {
             try
             {
@@ -226,36 +230,36 @@ namespace eTactWeb.Controllers
                         WCID = Convert.ToInt32(row["WCID"]),
                         PartCode = row["PartCode"].ToString(),
                         ItemName = row["ItemName"].ToString(),
-                        ItemCode=Convert.ToInt32(row["ItemCode"]),
+                        ItemCode = Convert.ToInt32(row["ItemCode"]),
                         Qty = Convert.ToDecimal(row["Qty"]),
                         Unit = row["Unit"].ToString(),
                         AltTransferQty = Convert.ToDecimal(row["AltTransferQty"]),
                         AltUnit = row["AltUnit"].ToString(),
-                        Itemremark=row["Itemremark"].ToString(),
+                        Itemremark = row["Itemremark"].ToString(),
                         RecStoreId = Convert.ToInt16(row["RecStoreId"]),
                         RecInStore = row["RecInStore"].ToString(),
                         ProdEntryId = Convert.ToInt32(row["ProdEntryId"]),
                         ProdYearCode = Convert.ToInt32(row["ProdYearCode"]),
                         ProdEntryDate = row["ProdEntryDate"].ToString(),
-                        ProdPlanNo=row["ProdPlanNo"].ToString(),
+                        ProdPlanNo = row["ProdPlanNo"].ToString(),
                         ProdPlanYearCode = Convert.ToInt32(row["ProdPlanYearCode"]),
-                        ProdSchNo=row["ProdSchNo"].ToString(),
+                        ProdSchNo = row["ProdSchNo"].ToString(),
                         ProdSchYearCode = Convert.ToInt32(row["ProdSchYearCode"]),
-                        InProcQCSlipNo=row["InProcQCSlipNo"].ToString(),
+                        InProcQCSlipNo = row["InProcQCSlipNo"].ToString(),
                         InProcQCYearCode = Convert.ToInt32(row["InProcQCYearCode"]),
                         ProdQty = Convert.ToDecimal(row["ProdQty"]),
-                        QCOkQty=Convert.ToDecimal(row["QCOkQty"]),
+                        QCOkQty = Convert.ToDecimal(row["QCOkQty"]),
                         RejQty = Convert.ToDecimal(row["RejQty"]),
-                        BatchNo=row["BatchNo"].ToString(),
-                        uniquebatchno=row["uniquebatchno"].ToString(),
+                        BatchNo = row["BatchNo"].ToString(),
+                        uniquebatchno = row["uniquebatchno"].ToString(),
                         TransferMatEntryId = Convert.ToInt32(row["TransferMatEntryId"]),
                         TransferMatYearCode = Convert.ToInt32(row["TransferMatYearCode"]),
-                        TransferMatSlipNo=row["TransferMatSlipNo"].ToString(),
+                        TransferMatSlipNo = row["TransferMatSlipNo"].ToString(),
                     };
 
                     ReceiveItemDetail.Add(process);
                 }
-                var dataresult = AddPendingInProcessToQc(ReceiveItemDetail);
+                var dataresult = AddPendingInProcessToQc(ReceiveItemDetail, uniqueKey);
                 return Json(JsonString);
             }
             catch (Exception ex)
@@ -263,12 +267,12 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
-        public IActionResult AddPendingInProcessToQc(List<ReceiveItemDetail> ReceiveItemDetail)
+        public IActionResult AddPendingInProcessToQc(List<ReceiveItemDetail> ReceiveItemDetail, string uniqueKey)
         {
             try
             {
-                HttpContext.Session.Remove("KeyReceiveItemGrid");
-                string modelJson = HttpContext.Session.GetString("KeyReceiveItemGrid");
+                HttpContext.Session.Remove($"KeyReceiveItemGrid_{uniqueKey}");
+                string modelJson = HttpContext.Session.GetString($"KeyReceiveItemGrid_{uniqueKey}");
                 List<ReceiveItemDetail> ReceiveItemDetailGrid = new List<ReceiveItemDetail>();
                 if (modelJson != null)
                 {
@@ -279,20 +283,20 @@ namespace eTactWeb.Controllers
 
                 var MainModel = new ReceiveItemModel();
                 var ReceiveItemDetails = new List<ReceiveItemDetail>();
-               
+
                 var seqNo = 0;
                 if (ReceiveItemDetail != null)
                 {
                     ReceiveItemDetails.AddRange(ReceiveItemDetail);
                 }
                 MainModel.ItemDetailGrid = ReceiveItemDetails;
-                string ReceiveData = HttpContext.Session.GetString("KeyReceiveItemGrid");
+                string ReceiveData = HttpContext.Session.GetString($"KeyReceiveItemGrid_{uniqueKey}");
                 IList<ReceiveItemDetail> grid = new List<ReceiveItemDetail>();
-                if(!string.IsNullOrEmpty(ReceiveData))
+                if (!string.IsNullOrEmpty(ReceiveData))
                 {
                     grid = JsonConvert.DeserializeObject<List<ReceiveItemDetail>>(ReceiveData);
                 }
-                HttpContext.Session.SetString("KeyReceiveItem", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                HttpContext.Session.SetString($"KeyReceiveItem_{uniqueKey}", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                 return Json("done");
             }
             catch (Exception ex)
@@ -320,7 +324,7 @@ namespace eTactWeb.Controllers
                     Item.ItemCode,
                     Item.IssueToStoreWC,
 
-                    Item.BatchNo,   
+                    Item.BatchNo,
                     Item.Uniquebatchno
                     });
             }

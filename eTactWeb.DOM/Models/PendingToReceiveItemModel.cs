@@ -11,13 +11,15 @@ namespace eTactWeb.DOM.Models
     {
         public string? FromDate { get; set; }
         public string? ToDate { get; set; }
-        public string? PartCode {  get; set; }
-        public string? ItemName {  get; set; }
-        public string? FromWorkCenter {  get; set; }
-        public string? ToStoreName {  get; set; }
-        public string? ProdSlipNo {  get; set; }
-        public string? ProdUnProd {  get; set; }
-        public int SeqNo {  get; set; }
+        public string? PartCode { get; set; }
+        public string? formKey { get; set; }
+        public string? uniqueKey { get; set; }
+        public string? ItemName { get; set; }
+        public string? FromWorkCenter { get; set; }
+        public string? ToStoreName { get; set; }
+        public string? ProdSlipNo { get; set; }
+        public string? ProdUnProd { get; set; }
+        public int SeqNo { get; set; }
         public IList<TextValue>? ItemNameList { get; set; }
         public IList<TextValue>? PartCodeList { get; set; }
         public IList<TextValue>? FromWorkCenterList { get; set; }
@@ -27,11 +29,11 @@ namespace eTactWeb.DOM.Models
     }
     public class DisplayPendToReceive
     {
-        public int TransferMatEntryId {  get; set; }
-        public int TransferMatYearCode {  get; set; }
-        public int ItemCode {  get; set; }
-        public string? IssueToStoreWC {  get; set; }
-        public string? BatchNo {  get; set; }
-        public string? Uniquebatchno {  get; set; }
+        public int TransferMatEntryId { get; set; }
+        public int TransferMatYearCode { get; set; }
+        public int ItemCode { get; set; }
+        public string? IssueToStoreWC { get; set; }
+        public string? BatchNo { get; set; }
+        public string? Uniquebatchno { get; set; }
     }
 }

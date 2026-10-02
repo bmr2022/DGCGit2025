@@ -20,9 +20,9 @@ namespace eTactWeb.Data.BLL
             _PendingToReceiveItemDAL = new PendingToReceiveItemDAL(configuration, iDataLogic, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
-        public async Task<DataSet> BindItem(string Flag,string FromDate, string ToDate)
+        public async Task<DataSet> BindItem(string Flag, string FromDate, string ToDate)
         {
-            return await _PendingToReceiveItemDAL.BindItem(Flag,FromDate,ToDate);
+            return await _PendingToReceiveItemDAL.BindItem(Flag, FromDate, ToDate);
         }
         public async Task<DataSet> BindPartCode(string Flag, string FromDate, string ToDate)
         {
@@ -44,9 +44,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _PendingToReceiveItemDAL.BindProdType(Flag, FromDate, ToDate);
         }
-        public async Task<ResponseResult> GetDataForPendingReceiveItem(string Flag, string FromDate, string ToDate,string partcode,string itemname, string slipno)
+        public async Task<ResponseResult> GetDataForPendingReceiveItem(string Flag, string FromDate, string ToDate, string partcode, string itemname, string slipno)
         {
-            return await _PendingToReceiveItemDAL.GetDataForPendingReceiveItem(Flag, FromDate, ToDate,partcode,itemname,slipno);
+            return await _PendingToReceiveItemDAL.GetDataForPendingReceiveItem(Flag, FromDate, ToDate, partcode, itemname, slipno);
         }
         public async Task<ResponseResult> GetDataReceiveItem(DataTable DisplayPendReceiveItem)
         {

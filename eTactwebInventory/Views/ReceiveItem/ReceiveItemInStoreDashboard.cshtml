@@ -11,7 +11,7 @@
             <h5>
                 Receive Item - <strong>Dashboard</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="PendingToReceiveItem" asp-route-ID="0" asp-controller="PendingToReceiveItem" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                    <a asp-action="PendingToReceiveItem" asp-route-ID="0" asp-route-formKey="@ViewBag.formKey" asp-controller="PendingToReceiveItem" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                         <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                         Add New
                     </a>
@@ -28,6 +28,8 @@
                                     <div class="col">
                                         <label class="form-label">From Date</label>
                                         <input asp-for="FromDate" class="form-control" />
+                                        <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                                        <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                                     </div>
                                     <div class="col">
                                         <label class="form-label">To Date</label>
@@ -64,7 +66,7 @@
                                 <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
-                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="GateInward" asp-action="Dashboard">
+                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="ReceiveItem" asp-route-formKey="@ViewBag.formKey" asp-action="ReceiveItemInStoreDashboard">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
                             </div>
@@ -91,8 +93,11 @@
 @section Scripts
 {
     <script>
-
+        var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
         $(function () {
+            formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
             GetFormRights();
             var FromDateBack = sessionStorage.getItem('FromDateBack');
             var ToDateBack = sessionStorage.getItem('ToDateBack');
@@ -130,7 +135,8 @@
             sessionStorage.removeItem('ItemNameBack');
             sessionStorage.removeItem('GlobalSearchBack');
             sessionStorage.removeItem('DashboardTypeBack');
-
+              AutoComplete('Item_Master', 'PartCode', 'PartCode', null);
+            AutoComplete('Item_Master', 'Item_Name', 'Item_Name', null);
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             var rowcount = $('#gateDashboardtable tr').length;
@@ -143,6 +149,7 @@
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
                 async: false,
+                data:{formkey:formKey},
                 success: function (data) {
 
                     if (data != null) {

@@ -27,7 +27,7 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
-        public async Task<ResponseResult> GetDataForPendingReceiveItem(string Flag, string FromDate, string ToDate,string partcode,string itemname, string slipno)
+        public async Task<ResponseResult> GetDataForPendingReceiveItem(string Flag, string FromDate, string ToDate, string partcode, string itemname, string slipno)
         {
             var _ResponseResult = new ResponseResult();
             try

@@ -11,7 +11,7 @@
                 <strong>Receive Item - Financial Year: @Model.RecMatYearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-action="PendingToReceiveItem" asp-route-ID="0" asp-controller="PendingToReceiveItem" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                        <a asp-action="PendingToReceiveItem" asp-route-formKey="@ViewBag.formKey" asp-route-ID="0" asp-controller="PendingToReceiveItem" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                             <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                             Add New
                         </a>
@@ -22,7 +22,7 @@
                             PRINT
                         </button>
                     </div>
-                    <a asp-action="ReceiveItemInStoreDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                    <a asp-action="ReceiveItemInStoreDashboard" asp-route-formKey="@ViewBag.formKey" asp-route-ID="0" class="btn btn-secondary btn-sm">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -91,6 +91,8 @@
                                     <input asp-for="Mode" value="@Model.Mode" class="form-control" type="hidden" />
                                     <input asp-for="FromDate" value="@Model.FromDate" class="form-control" type="hidden" />
                                     <input asp-for="ToDate" value="@Model.ToDate" class="form-control" type="hidden" />
+                                    <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                                    <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
 
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px">
@@ -399,8 +401,12 @@
             $('form').submit();
         });
 
-        $(document).ready(function () {
-            BindDepartmentList();
+            var formKey=$('#formKey').val();
+                                    var uniqueKey=$('#uniqueKey').val();
+                       $(document).ready(function ()
+                       {
+                           formKey=$('#formKey').val();
+                                   uniqueKey=$('#uniqueKey').val();            BindDepartmentList();
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
                 $('#RecMatEntryDate,#RecMatSlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#ActualEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -450,7 +456,7 @@
                 type: "POST",
                 url: "@Url.Action("BindDepartmentList")",
                 dataType: "json",
-                data: { },
+                    data: { formKey:formKey},
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
@@ -479,6 +485,7 @@
                 url: "@Url.Action("FillGridFromMemoryCache")",
                 type: "POST",
                 async: false,
+                        data:{uniqueKey:uniqueKey,formKey:formKey},
                 success: function (data) {
                      
                     if (data != null) {
@@ -540,7 +547,7 @@
             $.ajax({
                 url: "@Url.Action("AddReceiveItemGridEntry")",
                 type: "POST",
-                data: { model: ItemData, Mode: $('#Mode').val() },
+                    data: { model: ItemData, Mode: $('#Mode').val() ,uniqueKey:uniqueKey},
                 success: function (data, status, xhr) {
 
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
@@ -582,7 +589,7 @@
                 $.ajax({
                     url: '@Url.Action("DeleteItemRow")',
                     type: "POST",
-                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
+                        data: { "SeqNo": SeqNo, "Mode": $('#Mode').val(),uniqueKey:uniqueKey },
                     success: function (data) {
                         $('#divReceiveItemDetailGrid').html(data);
                         $.notify("Item Deleted from Grid", "info");
@@ -605,7 +612,7 @@
                     $.ajax({
                         url: '@Url.Action("EditItemRow")',
                         type: "POST",
-                        data: { SeqNo: SeqNo, Mode: $('#Mode').val() },
+                            data: { SeqNo: SeqNo, Mode: $('#Mode').val(),uniqueKey:uniqueKey },
                     })
                         .done(function (data, status, xhr) {
                             editingNow = true;

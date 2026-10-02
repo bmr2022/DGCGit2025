@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System.Data;
+using System.Globalization;
 using System.Net;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
@@ -25,46 +26,52 @@ namespace eTactWeb.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
         }
         [Route("{controller}/Index")]
-        public IActionResult ReceiveItem()
+        public IActionResult ReceiveItem(string formKey, string uniqueKey)
         {
+            ViewBag.formKey = formKey;
+
+            ViewBag.uniqueKey = uniqueKey;
             ViewData["Title"] = "Receive Item Detail";
             TempData.Clear();
-            HttpContext.Session.Remove("KeyReceiveItemGrid");
-            HttpContext.Session.Remove("KeyReceiveItemGridDetail");
+            HttpContext.Session.Remove($"KeyReceiveItemGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyReceiveItemGridDetail_{uniqueKey}");
             var MainModel = new ReceiveItemModel();
-            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            HttpContext.Session.SetString("KeyReceiveItemGrid", JsonConvert.SerializeObject(MainModel));
+            MainModel.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            MainModel.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+            HttpContext.Session.SetString($"KeyReceiveItemGrid_{uniqueKey}", JsonConvert.SerializeObject(MainModel));
             return View(MainModel);
         }
-        public async Task<JsonResult> GetFormRights()
+        public async Task<JsonResult> GetFormRights(string formKey)
         {
-            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var JSON = await _IReceiveItem.GetFormRights(userID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> ReceiveItem(int ID, string Mode, int YC, string FromDate = "", string ToDate = "",string ItemName = "", string PartCode = "",  string DashboardType = "", string SearchBox = "")//, ILogger logger)
+        public async Task<ActionResult> ReceiveItem(string formKey, string uniqueKey, int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string ItemName = "", string PartCode = "", string DashboardType = "", string SearchBox = "")//, ILogger logger)
         {
             //_logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
+            ViewBag.formKey = formKey;
+
+            ViewBag.uniqueKey = uniqueKey;
             var MainModel = new ReceiveItemModel();
-            HttpContext.Session.Remove("KeyReceiveItemGridDetail");
-            MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.RecMatYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            MainModel.UID=Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            HttpContext.Session.Remove($"KeyReceiveItemGridDetail_{uniqueKey}");
+            MainModel.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+            MainModel.RecMatYearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+            MainModel.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            MainModel.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+            MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
             //MainModel = await BindEmpList(MainModel);
-            HttpContext.Session.Remove("KeyReceiveItemGrid");
+            HttpContext.Session.Remove($"KeyReceiveItemGrid_{uniqueKey}");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IReceiveItem.GetViewByID(ID, YC).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
-                HttpContext.Session.SetString("KeyReceiveItemGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                HttpContext.Session.SetString($"KeyReceiveItemGrid_{uniqueKey}", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
             }
             else
             {
@@ -73,20 +80,20 @@ namespace eTactWeb.Controllers
 
             if (Mode != "U")
             {
-                MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                MainModel.ActualEntrydate = HttpContext.Session.GetString("EntryDate");
+                MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.ActualEnteredByName = HttpContext.Session.GetString($"EmpName_{formKey}");
+                MainModel.ActualEntrydate = HttpContext.Session.GetString($"EntryDate_{formKey}");
             }
             else
             {
-                MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.UpdatedByName = HttpContext.Session.GetString("EmpName");
-                MainModel.UpdatedOn = HttpContext.Session.GetString("LastUpdatedDate");
+                MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.ActualEnteredByName = HttpContext.Session.GetString($"EmpName_{formKey}");
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.UpdatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
+                MainModel.UpdatedOn = HttpContext.Session.GetString($"LastUpdatedDate_{formKey}");
             }
-            //MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            //MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+            //MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+            //MainModel.ActualEnteredByName = HttpContext.Session.GetString($"EmpName_{formKey}");
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
             MainModel.PartCodeBack = PartCode;
@@ -102,14 +109,16 @@ namespace eTactWeb.Controllers
         {
             try
             {
+                var formKey = model.formKey;
+                var uniqueKey = model.uniqueKey;
                 var ReceiveItemGrid = new DataTable();
-                string modelJson = HttpContext.Session.GetString("KeyReceiveItemGridDetail");
+                string modelJson = HttpContext.Session.GetString($"KeyReceiveItemGridDetail_{uniqueKey}");
                 List<ReceiveItemDetail> ReceiveItemDetail = new List<ReceiveItemDetail>();
-                if(!string.IsNullOrEmpty(modelJson))
+                if (!string.IsNullOrEmpty(modelJson))
                 {
                     ReceiveItemDetail = JsonConvert.DeserializeObject<List<ReceiveItemDetail>>(modelJson);
                 }
-                string receiveItemJson = HttpContext.Session.GetString("KeyReceiveItemGrid");
+                string receiveItemJson = HttpContext.Session.GetString($"KeyReceiveItemGrid_{uniqueKey}");
                 List<ReceiveItemDetail> ReceiveItemDetailEdit = new List<ReceiveItemDetail>();
                 if (!string.IsNullOrEmpty(receiveItemJson))
                 {
@@ -125,21 +134,21 @@ namespace eTactWeb.Controllers
 
                 else
                 {
-                    model.UID=Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    model.CC = HttpContext.Session.GetString("Branch");
-                    model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    model.UID = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                    model.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+                    model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
                     if (model.Mode == "U")
                     {
-                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        model.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                        model.UpdatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                         ReceiveItemGrid = GetDetailTable(ReceiveItemDetailEdit);
                     }
                     else
                     {
                         ReceiveItemGrid = GetDetailTable(ReceiveItemDetail);
                     }
-                    model.EnteredbyMachineName = HttpContext.Session.GetString("ClientMachineName");
-                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                    model.EnteredbyMachineName = HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+                    model.IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
                     var Result = await _IReceiveItem.SaveInprocessQc(model, ReceiveItemGrid);
 
                     if (Result != null)
@@ -163,7 +172,7 @@ namespace eTactWeb.Controllers
                             return View("Error", Result);
                         }
                     }
-                    return RedirectToAction("PendingToReceiveItem", "PendingToReceiveItem");
+                    return RedirectToAction("PendingToReceiveItem", "PendingToReceiveItem", new { formKey = formKey });
                 }
             }
             catch (Exception ex)
@@ -188,11 +197,11 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult FillGridFromMemoryCache()
+        public IActionResult FillGridFromMemoryCache(string uniqueKey, string formKey)
         {
             try
             {
-                string modelJson = HttpContext.Session.GetString("KeyReceiveItem");
+                string modelJson = HttpContext.Session.GetString($"KeyReceiveItem_{uniqueKey}");
                 IList<ReceiveItemDetail> ReceiveItemDetailGrid = new List<ReceiveItemDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -201,8 +210,8 @@ namespace eTactWeb.Controllers
                 var MainModel = new ReceiveItemModel();
                 var ReceiveItem = new List<ReceiveItemDetail>();
                 var SSGrid = new List<ReceiveItemDetail>();
-                MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-                MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+                MainModel.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                MainModel.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
 
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
@@ -223,7 +232,7 @@ namespace eTactWeb.Controllers
 
                             MainModel.ItemDetailGrid = ReceiveItem;
 
-                            HttpContext.Session.SetString("KeyReceiveItemGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                            HttpContext.Session.SetString($"KeyReceiveItemGrid_{uniqueKey}", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                         }
                     }
                 }
@@ -234,12 +243,12 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public IActionResult DeleteItemRow(int SeqNo, string Mode)
+        public IActionResult DeleteItemRow(int SeqNo, string Mode, string uniqueKey)
         {
             var MainModel = new ReceiveItemModel();
             if (Mode == "U")
             {
-                string modelJson = HttpContext.Session.GetString("KeyReceiveItemGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyReceiveItemGrid_{uniqueKey}");
                 List<ReceiveItemDetail> ReceiveItemDetail = new List<ReceiveItemDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -260,12 +269,12 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.ItemDetailGrid = ReceiveItemDetail;
 
-                   HttpContext.Session.SetString("KeyReceiveItemGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                    HttpContext.Session.SetString($"KeyReceiveItemGrid_{uniqueKey}", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                 }
             }
             else
             {
-                string modelJson = HttpContext.Session.GetString("KeyReceiveItemGridDetail");
+                string modelJson = HttpContext.Session.GetString($"KeyReceiveItemGridDetail_{uniqueKey}");
                 List<ReceiveItemDetail> ReceiveItemDetail = new List<ReceiveItemDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -286,18 +295,18 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.ItemDetailGrid = ReceiveItemDetail;
 
-                   HttpContext.Session.SetString("KeyReceiveItemGridDetail", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                    HttpContext.Session.SetString($"KeyReceiveItemGridDetail_{uniqueKey}", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                 }
             }
 
             return PartialView("_ReceiveItemDetailGrid", MainModel);
         }
-        public IActionResult EditItemRow(int SeqNo, string Mode)
+        public IActionResult EditItemRow(int SeqNo, string Mode, string uniqueKey)
         {
             IList<ReceiveItemDetail> ReceiveItemDetail = new List<ReceiveItemDetail>();
             if (Mode == "U")
             {
-                string modelJson = HttpContext.Session.GetString("KeyReceiveItemGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyReceiveItemGrid_{uniqueKey}");
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     ReceiveItemDetail = JsonConvert.DeserializeObject<List<ReceiveItemDetail>>(modelJson);
@@ -305,7 +314,7 @@ namespace eTactWeb.Controllers
             }
             else
             {
-                string modelJson = HttpContext.Session.GetString("KeyReceiveItemGridDetail");
+                string modelJson = HttpContext.Session.GetString($"KeyReceiveItemGridDetail_{uniqueKey}");
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     ReceiveItemDetail = JsonConvert.DeserializeObject<List<ReceiveItemDetail>>(modelJson);
@@ -319,11 +328,14 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(SSGrid);
             return Json(JsonString);
         }
-        public async Task<IActionResult> ReceiveItemInStoreDashboard(string FromDate = "", string ToDate = "", string Flag = "True")
+        public async Task<IActionResult> ReceiveItemInStoreDashboard(string formKey, string FromDate = "", string ToDate = "", string Flag = "True")
         {
             try
             {
-                HttpContext.Session.Remove("KeyReceiveItemGridDetail");
+                ViewBag.formKey = formKey;
+                var uniqueKey = Guid.NewGuid().ToString();
+                ViewBag.uniqueKey = uniqueKey;
+                HttpContext.Session.Remove($"KeyReceiveItemGridDetail_{uniqueKey}");
                 var model = new ReceiveItemDashboard();
                 var Result = await _IReceiveItem.GetDashboardData().ConfigureAwait(true);
                 DateTime now = DateTime.Now;
@@ -359,31 +371,38 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetSearchData(string FromDate, string ToDate,string ItemName, string PartCode, string DashboardType)
+        public async Task<IActionResult> GetSearchData(string formKey, string uniqueKey, string FromDate, string ToDate, string ItemName, string PartCode, string DashboardType)
         {
+            ViewBag.formKey = formKey;
+
             //model.Mode = "Search";
             var model = new ReceiveItemDashboard();
             model = await _IReceiveItem.GetDashboardData(FromDate, ToDate, ItemName, PartCode, DashboardType);
             model.DashboardType = "Summary";
+            model.formKey = formKey;
+            model.uniqueKey = uniqueKey;
             return PartialView("_ReceiveItemDashboard", model);
         }
-        public async Task<IActionResult> GetDashboardDetailData(string FromDate, string ToDate, string ItemName, string PartCode, string DashboardType)
+        public async Task<IActionResult> GetDashboardDetailData(string formKey, string uniqueKey, string FromDate, string ToDate, string ItemName, string PartCode, string DashboardType)
         {
             //model.Mode = "Search";
             var model = new ReceiveItemDashboard();
             model = await _IReceiveItem.GetDashboardDetailData(FromDate, ToDate, ItemName, PartCode, DashboardType);
             model.DashboardType = "Detail";
+
+            model.formKey = formKey;
+            model.uniqueKey = uniqueKey;
             return PartialView("_ReceiveItemDashboardDetail", model);
         }
-        public async Task<JsonResult> BindDepartmentList(ReceiveItemModel model)
+        public async Task<JsonResult> BindDepartmentList(ReceiveItemModel model, string formKey)
         {
-            model.FromDate = HttpContext.Session.GetString("FromDate");
-            model.ToDate = HttpContext.Session.GetString("ToDate");
-            var JSON = await _IReceiveItem.BindDepartmentList(model.FromDate,model.ToDate);
+            model.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            model.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+            var JSON = await _IReceiveItem.BindDepartmentList(model.FromDate, model.ToDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult AddReceiveItemGridEntry(List<ReceiveItemDetail> model, string Mode)
+        public IActionResult AddReceiveItemGridEntry(List<ReceiveItemDetail> model, string Mode, string uniqueKey)
         {
             try
             {
@@ -392,7 +411,7 @@ namespace eTactWeb.Controllers
                 var SSGrid = new List<ReceiveItemDetail>();
                 if (Mode == "U")
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyReceiveItemGrid");
+                    string modelJson = HttpContext.Session.GetString($"KeyReceiveItemGrid_{uniqueKey}");
                     IList<ReceiveItemDetail> ReceiveItemDetail = new List<ReceiveItemDetail>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -405,7 +424,7 @@ namespace eTactWeb.Controllers
                         {
                             if (ReceiveItemDetail == null)
                             {
-                                item.SeqNo=seqNo + 1;
+                                item.SeqNo = seqNo + 1;
                                 ReceiveItemDetailGrid.Add(item);
                                 seqNo++;
                             }
@@ -417,13 +436,13 @@ namespace eTactWeb.Controllers
                                 ReceiveItemDetailGrid.Add(item);
                             }
                             MainModel.ItemDetailGrid = ReceiveItemDetailGrid;
-                            HttpContext.Session.SetString("KeyReceiveItemGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                            HttpContext.Session.SetString($"KeyReceiveItemGrid_{uniqueKey}", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                         }
                     }
                 }
                 else
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyReceiveItemGridDetail");
+                    string modelJson = HttpContext.Session.GetString($"KeyReceiveItemGridDetail_{uniqueKey}");
                     IList<ReceiveItemDetail> ReceiveItemDetail = new List<ReceiveItemDetail>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -436,7 +455,7 @@ namespace eTactWeb.Controllers
                         {
                             if (ReceiveItemDetail == null)
                             {
-                                item.SeqNo=seqNo + 1;
+                                item.SeqNo = seqNo + 1;
                                 ReceiveItemDetailGrid.Add(item);
                                 seqNo++;
                             }
@@ -448,7 +467,7 @@ namespace eTactWeb.Controllers
                                 ReceiveItemDetailGrid.Add(item);
                             }
                             MainModel.ItemDetailGrid = ReceiveItemDetailGrid;
-                            HttpContext.Session.SetString("KeyReceiveItemGridDetail", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                            HttpContext.Session.SetString($"KeyReceiveItemGridDetail_{uniqueKey}", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                         }
                     }
                 }
@@ -476,10 +495,10 @@ namespace eTactWeb.Controllers
                 ReceiveItem.Columns.Add("FromDepWorkCenter", typeof(string));
                 ReceiveItem.Columns.Add("FromWCID", typeof(int));
                 ReceiveItem.Columns.Add("ItemCode", typeof(int));
-                ReceiveItem.Columns.Add("ActualRecQtyInStr", typeof(float));
-                ReceiveItem.Columns.Add("ActualTransferQtyFrmWC", typeof(float));
+                ReceiveItem.Columns.Add("ActualRecQtyInStr", typeof(decimal));
+                ReceiveItem.Columns.Add("ActualTransferQtyFrmWC", typeof(decimal));
                 ReceiveItem.Columns.Add("Unit", typeof(string));
-                ReceiveItem.Columns.Add("AltQty", typeof(float));
+                ReceiveItem.Columns.Add("AltQty", typeof(decimal));
                 ReceiveItem.Columns.Add("AltUnit", typeof(string));
                 ReceiveItem.Columns.Add("Remark", typeof(string));
                 ReceiveItem.Columns.Add("RecInStore", typeof(int));
@@ -495,9 +514,9 @@ namespace eTactWeb.Controllers
                 ReceiveItem.Columns.Add("InProcQCSlipNo", typeof(string));
                 ReceiveItem.Columns.Add("InProcQCEntryId", typeof(int));
                 ReceiveItem.Columns.Add("InProcQCYearCode", typeof(int));
-                ReceiveItem.Columns.Add("ProdQty", typeof(float));
-                ReceiveItem.Columns.Add("RejQty", typeof(float));
-                ReceiveItem.Columns.Add("QCOkQty", typeof(float));
+                ReceiveItem.Columns.Add("ProdQty", typeof(decimal));
+                ReceiveItem.Columns.Add("RejQty", typeof(decimal));
+                ReceiveItem.Columns.Add("QCOkQty", typeof(decimal));
                 ReceiveItem.Columns.Add("Batchno", typeof(string));
                 ReceiveItem.Columns.Add("UniqueBatchno", typeof(string));
                 ReceiveItem.Columns.Add("TransferMatEntryId", typeof(int));

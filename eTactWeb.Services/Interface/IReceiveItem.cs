@@ -13,7 +13,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormRights(int uId);
 
         Task<ResponseResult> FillEntryId(string Flag, int YearCode, string SPName);
-        Task<ResponseResult> BindDepartmentList(string FromDate,string ToDate);
+        Task<ResponseResult> BindDepartmentList(string FromDate, string ToDate);
         Task<ResponseResult> GetDashboardData();
         Task<ReceiveItemModel> GetViewByID(int ID, int YearCode);
         Task<ReceiveItemDashboard> GetDashboardData(string FromDate, string ToDate, string ItemName, string PartCode, string DashboardType);
