@@ -1038,6 +1038,8 @@
         <span>Processing...</span>
     </div>
 </div>
+
+
 <style>
     .modal-fullscreen .modal-content {
         height: 80%;
@@ -1046,11 +1048,11 @@
     }
 
     .no-cursor {
-        pointer-events: none; /* Prevent clicking/typing */
-        caret-color: transparent; /* Hide blinking cursor */
-        background-color: white; /* Keep normal background */
-        color: black; /* Keep normal text color */
-        border: none; /* Remove border for clean look */
+        pointer-events: none;
+        caret-color: transparent;
+        background-color: white;
+        color: black;
+        border: none;
     }
 
     .tooltip-container {
@@ -1058,34 +1060,34 @@
         display: inline-block;
     }
 
-        .tooltip-container .tooltip-text {
-            visibility: hidden;
-            background-color: black;
-            color: #fff;
-            text-align: center;
-            padding: 3px 8px;
-            border-radius: 5px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%; /* above the input */
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
+    .tooltip-container .tooltip-text {
+        visibility: hidden;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        padding: 3px 8px;
+        border-radius: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
 
-        .tooltip-container:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
+    .tooltip-container:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
 
     .card.PendingItem {
-        background-color: #fff7e6; /* soft yellow */
+        background-color: #fff7e6;
         border: 1px solid #ffcc80;
     }
 
     #IssueThrBom {
-        background-color: #343a40; /* dark grey */
+        background-color: #343a40;
         color: white;
     }
 
@@ -1094,10 +1096,11 @@
         line-height: 28px;
         width: 200px;
     }
+
     .no-change {
-    pointer-events: none;
-    background-color: #e9ecef;
-}
+        pointer-events: none;
+        background-color: #e9ecef;
+    }
 
     #divTaxGrid tr td {
         font-weight: 300;
@@ -1123,9 +1126,13 @@
         background: #f2f6f9;
     }
 
-    /* Top Bar */
+
+    /* =========================================================
+       TOP BAR
+       ========================================================= */
+
     .erp-grid-wrapper .header {
-        background: #1f4e79;
+        background: #087990;
         color: white;
         padding: 6px 12px;
         font-size: 14px;
@@ -1145,105 +1152,59 @@
         margin-left: 4px;
     }
 
-        .small-btn.green {
-            background: #2e8b57;
-        }
-
-        .small-btn.red {
-            background: #c00000;
-        }
-
-    /* Grid Section */
-    .erp-grid-wrapper grid-header {
-        background: #4f81bd;
-        color: white;
-        padding: 4px 8px;
-        font-size: 12px;
-        font-weight: bold;
+    .small-btn.green {
+        background: #2e8b57;
     }
 
-    .erp-grid-wrapper table {
-        width: 100%;
-        border-collapse: collapse;
-        table-layout: fixed; /* Important - no scroll */
-        font-size: 11px;
-    }
-
-    .erp-grid-wrapper th {
-        background: #dbe5f1;
-        border: 1px solid #b8cce4;
-        padding: 3px;
-    }
-
-    .erp-grid-wrapper td {
-        border: 1px solid #d0d7e5;
-        padding: 2px;
-        text-align: center;
-    }
-
-    .erp-grid-wrapper input {
-        width: 100%;
-        box-sizing: border-box;
-        font-size: 11px;
-        padding: 2px;
-        border: 1px solid #c5c5c5;
-        background: #ffffe0;
-        height: 20px;
-    }
-
-    .erp-grid-wrapper td input {
-        height: 22px;
-        font-size: 12px;
-    }
-
-    .readonly {
-        background: #f5f5f5;
-    }
-
-    .delete-btn {
+    .small-btn.red {
         background: #c00000;
-        color: white;
-        border: none;
-        font-size: 10px;
-        padding: 2px 5px;
-        cursor: pointer;
     }
 
-    /* Footer */
-    .footer {
-        background: #e7eff9;
-        padding: 6px;
-        font-size: 12px;
-        font-weight: bold;
-        display: flex;
-        justify-content: space-between;
-    }
-    /* Accordion Grid Wrapper */
+
+    /* =========================================================
+       SALE BILL ITEM GRID
+       UPDATED SECTION
+       ========================================================= */
+
     .erp-grid-wrapper {
-        border: 1px solid #cfd8e3;
+        width: 100%;
+        border: 1px solid #c5d3e3;
         background: #ffffff;
         margin-top: 8px;
+        border-radius: 6px;
+        box-shadow: 0 1px 4px rgba(31, 78, 121, 0.10);
+        overflow: hidden;
     }
 
-    /* Header */
+
+    /* Grid Header */
+
+    .erp-grid-wrapper .header,
     .erp-grid-header {
-        background: linear-gradient(to right,#2f5597,#1f4e79);
-        color: white;
+        background: #1f4e79;
+        color: #ffffff;
         padding: 6px 10px;
+        min-height: 30px;
         font-size: 13px;
         font-weight: 600;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        border-bottom: 1px solid #173a5c;
+        box-sizing: border-box;
     }
 
+
     /* Summary Right Side */
+
     .erp-summary {
         font-size: 12px;
         font-weight: 500;
     }
 
+
     /* Add Button */
+
     .erp-btn {
         padding: 4px 10px;
         font-size: 12px;
@@ -1257,68 +1218,389 @@
         color: white;
     }
 
-        .erp-btn-add:hover {
-            background: #256f46;
-        }
-
-    /* Table container */
-    .erp-table-container {
-        width: 100%;
-        overflow: hidden; /* NO SCROLL */
+    .erp-btn-add:hover {
+        background: #256f46;
     }
 
-        /* Compact Table */
-        .erp-table-container table {
-            width: 100%;
-            table-layout: fixed;
-            border-collapse: collapse;
-            font-size: 11px;
-        }
 
-        /* Header */
-        .erp-table-container th {
-            background: #dde6f5;
-            border: 1px solid #c5d0e6;
-            padding: 4px 3px;
-            text-align: center;
-            font-weight: 600;
-        }
+    /* =========================================================
+       TABLE CONTAINER
+       ========================================================= */
 
-        /* Body */
-        .erp-table-container td {
-            border: 1px solid #e0e6f2;
-            padding: 2px;
-            text-align: center;
-        }
+    .erp-table-container {
+        width: 100%;
+        max-height: 400px;
+        overflow-x: auto;
+        overflow-y: auto;
+        position: relative;
+        background: #ffffff;
+        box-sizing: border-box;
+    }
 
-        /* Compact Inputs */
-        .erp-table-container input,
-        .erp-table-container select {
-            width: 100%;
-            height: 20px;
-            font-size: 11px;
-            padding: 2px;
-            border: 1px solid #c8ccd4;
-            background: #fffde6;
-            box-sizing: border-box;
-        }
 
-            /* Readonly fields */
-            .erp-table-container input[readonly] {
-                background: #f4f4f4;
-            }
+    /* =========================================================
+       MAIN ITEM DETAIL TABLE
+       ========================================================= */
 
-    /* Delete Button */
-    .erp-delete {
-        background: #c00000;
+    #ItemDetailTable {
+        width: 100%;
+        min-width: 1250px;
+        table-layout: fixed;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 11px;
+        background: #ffffff;
+    }
+
+
+    /* =========================================================
+       TABLE HEADER
+       ========================================================= */
+
+    #ItemDetailTable thead th {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+
+        height: 34px;
+        min-height: 34px;
+
+        padding: 5px 4px;
+
+        background: #087990;
         color: white;
-        border: none;
-        font-size: 10px;
-        padding: 2px 6px;
+
+        border-right: 1px solid #c3d0df;
+        border-bottom: 2px solid #9fb6cc;
+
+        font-size: 10.5px;
+        font-weight: 700;
+
+        text-align: center;
+        vertical-align: middle;
+
+        white-space: normal;
+        line-height: 13px;
+
+        box-sizing: border-box;
+    }
+
+    #ItemDetailTable thead th:first-child {
+        border-left: 0;
+    }
+
+    #ItemDetailTable thead th:last-child {
+        border-right: 0;
+    }
+
+
+    /* =========================================================
+       TABLE BODY
+       ========================================================= */
+
+    #ItemDetailTable tbody tr {
+        height: 30px;
+        background: #ffffff;
+    }
+
+    #ItemDetailTable tbody tr:nth-child(even) {
+        background: #f8fbfe;
+    }
+
+    #ItemDetailTable tbody tr:hover {
+        background: #eef5fb;
+    }
+
+
+    /* =========================================================
+       TABLE CELLS
+       ========================================================= */
+
+    #ItemDetailTable tbody td {
+        height: 30px;
+        padding: 2px 3px;
+
+        border-right: 1px solid #e0e6ee;
+        border-bottom: 1px solid #e2e8f0;
+
+        color: #243447;
+
+        font-size: 11px;
+
+        vertical-align: middle;
+        text-align: center;
+
+        box-sizing: border-box;
+
+        overflow: hidden;
+    }
+
+    #ItemDetailTable tbody td:last-child {
+        border-right: 0;
+    }
+
+
+    /* =========================================================
+       ALL INPUTS / SELECTS
+       ========================================================= */
+
+    #ItemDetailTable input,
+    #ItemDetailTable select {
+        width: 100%;
+        height: 25px;
+        min-height: 25px;
+        max-height: 25px;
+
+        padding: 2px 4px;
+        margin: 0;
+
+        border: 1px solid #c5d0dc;
+        border-radius: 3px;
+
+        background: #FFFACD;
+        color: black;
+
+        font-size: 11px;
+        line-height: 19px;
+
+        box-sizing: border-box;
+        outline: none;
+    }
+
+
+    /* =========================================================
+       INPUT FOCUS
+       ========================================================= */
+
+    #ItemDetailTable input:focus,
+    #ItemDetailTable select:focus {
+        border-color: #4f81bd;
+        background: #ffffff;
+
+        box-shadow: 0 0 0 1px rgba(79, 129, 189, 0.20);
+
+        outline: none;
+    }
+
+
+    /* =========================================================
+       READONLY INPUTS
+       ========================================================= */
+
+    #ItemDetailTable input[readonly],
+    #ItemDetailTable input:disabled,
+    #ItemDetailTable select:disabled {
+        background: #f1f5f9;
+        color: black;
+        border-color: #d3dce6;
+    }
+
+    .readonly {
+        background: #f5f5f5;
+    }
+
+
+    /* =========================================================
+       ITEM CODE
+       ========================================================= */
+
+    #ItemDetailTable .partcode-input {
+        text-align: left;
+        font-weight: 600;
+        color: #1f4e79;
+        background: #FFFACD;
+    }
+
+
+    /* =========================================================
+       ITEM NAME
+       ========================================================= */
+
+    #ItemDetailTable .itemname-input {
+        text-align: left;
+        color: #34495e;
+        font-weight: 500;
+    }
+
+
+    /* =========================================================
+       OTHER DETAIL
+       ========================================================= */
+
+    #ItemDetailTable .other-detail-input {
+        text-align: left;
+    }
+
+
+    /* =========================================================
+       QUANTITY / STOCK
+       ========================================================= */
+
+    #ItemDetailTable .qty,
+    #ItemDetailTable .total-stock {
+        text-align: right;
+        padding-right: 5px;
+    }
+
+
+    /* =========================================================
+       UNIT / HSN
+       ========================================================= */
+
+    #ItemDetailTable .Unit,
+    #ItemDetailTable .HSNNo {
+        text-align: center;
+    }
+
+
+    /* =========================================================
+       RATE
+       ========================================================= */
+
+    #ItemDetailTable .rate {
+        text-align: right;
+        padding-right: 5px;
+    }
+
+
+    /* =========================================================
+       DISCOUNT
+       ========================================================= */
+
+    #ItemDetailTable .discPer,
+    #ItemDetailTable .discamt {
+        text-align: right;
+        padding-right: 5px;
+    }
+
+
+    /* =========================================================
+       AMOUNT
+       ========================================================= */
+
+    #ItemDetailTable .amount {
+        text-align: right;
+        padding-right: 5px;
+
+        font-weight: 600;
+        color: #1f4e79;
+    }
+
+
+    /* =========================================================
+       GROUP / LOCATION
+       ========================================================= */
+
+    #ItemDetailTable .GroupName,
+    #ItemDetailTable .ItemLocation {
+        text-align: left;
+    }
+
+
+    /* =========================================================
+       TAX COLUMNS
+       ========================================================= */
+
+    #ItemDetailTable .igstp,
+    #ItemDetailTable .igsta,
+    #ItemDetailTable .cgstp,
+    #ItemDetailTable .cgsta,
+    #ItemDetailTable .sgstp,
+    #ItemDetailTable .sgsta {
+        text-align: right;
+        padding-right: 4px;
+    }
+
+    #ItemDetailTable .igsta,
+    #ItemDetailTable .cgsta,
+    #ItemDetailTable .sgsta {
+        color: #34495e;
+    }
+
+    #ItemDetailTable .igstp,
+    #ItemDetailTable .cgstp,
+    #ItemDetailTable .sgstp {
+        color: #1f4e79;
+    }
+
+
+    /* =========================================================
+       S.NO COLUMN
+       ========================================================= */
+
+    #ItemDetailTable tbody td:first-child {
+        color: #526273;
+        font-weight: 600;
+        text-align: center;
+    }
+
+
+    /* =========================================================
+       OTHER DETAIL BUTTON
+       ========================================================= */
+
+    #ItemDetailTable .other-detail-btn {
+        width: 25px;
+        height: 25px;
+
+        padding: 0;
+
+        background: #4f81bd;
+        color: #ffffff;
+
+        border: 1px solid #3f6fa3;
+        border-radius: 3px;
+
+        font-size: 11px;
+        font-weight: 600;
+
         cursor: pointer;
     }
 
-    /* Small numeric fields */
+    #ItemDetailTable .other-detail-btn:hover {
+        background: #1f4e79;
+    }
+
+
+    /* =========================================================
+       DELETE BUTTON
+       ========================================================= */
+
+    .delete-btn,
+    .erp-delete,
+    #ItemDetailTable .delete-row,
+    #ItemDetailTable .btn-danger {
+        width: 24px;
+        height: 24px;
+
+        padding: 0;
+
+        background: #ffffff;
+        color: #c62828;
+
+        border: 1px solid #d7a4a4;
+        border-radius: 3px;
+
+        font-size: 11px;
+        font-weight: 700;
+
+        cursor: pointer;
+    }
+
+    .delete-btn:hover,
+    .erp-delete:hover,
+    #ItemDetailTable .delete-row:hover,
+    #ItemDetailTable .btn-danger:hover {
+        background: #c62828;
+        color: #ffffff;
+        border-color: #b71c1c;
+    }
+
+
+    /* =========================================================
+       SMALL NUMERIC FIELDS
+       ========================================================= */
+
     input.qty,
     input.disc,
     input.igstp,
@@ -1327,40 +1609,138 @@
         text-align: right;
     }
 
-    /* Very small columns */
+
+    /* =========================================================
+       VERY SMALL / S.NO COLUMN
+       ========================================================= */
+
     .erp-table-container th:nth-child(1),
     .erp-table-container td:nth-child(1) {
         text-align: center;
     }
 
-    /* Unit column */
+
+    /* =========================================================
+       UNIT COLUMN
+       ========================================================= */
+
     .erp-table-container td:nth-child(5) input {
         text-transform: uppercase;
         text-align: center;
     }
 
-    /* Tax % small */
+
+    /* =========================================================
+       TAX PERCENTAGE FIELDS
+       ========================================================= */
+
     .erp-table-container td:nth-child(11) input,
     .erp-table-container td:nth-child(13) input,
     .erp-table-container td:nth-child(15) input {
         text-align: right;
     }
 
-    /* Delete column */
+
+    /* =========================================================
+       DELETE COLUMN
+       ========================================================= */
+
     .erp-table-container td:nth-child(17) {
         padding: 0;
     }
-    /* Increase tbody row height */
-    .erp-table-container tbody td {
-        height: 28px; /* adjust here */
-        vertical-align: middle;
+
+
+    /* =========================================================
+       COLUMN WIDTHS
+       ========================================================= */
+
+    #ItemDetailTable th:nth-child(1),
+    #ItemDetailTable td:nth-child(1) {
+        width: 3%;
     }
 
-    /* Increase input height slightly */
-    .erp-table-container tbody input,
-    .erp-table-container tbody select {
-        height: 24px;
+    #ItemDetailTable th:nth-child(2),
+    #ItemDetailTable td:nth-child(2) {
+        width: 14%;
     }
+
+    #ItemDetailTable th:nth-child(3),
+    #ItemDetailTable td:nth-child(3) {
+        width: 8%;
+    }
+
+    #ItemDetailTable th:nth-child(4),
+    #ItemDetailTable td:nth-child(4) {
+        width: 5%;
+    }
+
+    #ItemDetailTable th:nth-child(5),
+    #ItemDetailTable td:nth-child(5) {
+        width: 5%;
+    }
+
+    #ItemDetailTable th:nth-child(6),
+    #ItemDetailTable td:nth-child(6) {
+        width: 8%;
+    }
+
+    #ItemDetailTable th:nth-child(7),
+    #ItemDetailTable td:nth-child(7) {
+        width: 6%;
+    }
+
+    #ItemDetailTable th:nth-child(8),
+    #ItemDetailTable td:nth-child(8) {
+        width: 8%;
+    }
+
+    #ItemDetailTable th:nth-child(9),
+    #ItemDetailTable td:nth-child(9) {
+        width: 6%;
+    }
+
+    #ItemDetailTable th:nth-child(10),
+    #ItemDetailTable td:nth-child(10) {
+        width: 6%;
+    }
+
+    #ItemDetailTable th:nth-child(11),
+    #ItemDetailTable td:nth-child(11) {
+        width: 6%;
+    }
+
+    #ItemDetailTable th:nth-child(12),
+    #ItemDetailTable td:nth-child(12) {
+        width: 2%;
+    }
+
+
+    /* =========================================================
+       SCROLLBAR
+       ========================================================= */
+
+    .erp-table-container::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    .erp-table-container::-webkit-scrollbar-track {
+        background: #edf2f7;
+    }
+
+    .erp-table-container::-webkit-scrollbar-thumb {
+        background: #9fb6cc;
+        border-radius: 5px;
+    }
+
+    .erp-table-container::-webkit-scrollbar-thumb:hover {
+        background: #6f8fab;
+    }
+
+
+    /* =========================================================
+       VERTICAL PAIR
+       ========================================================= */
 
     .vertical-pair {
         display: flex;
@@ -1368,9 +1748,15 @@
         gap: 3px;
     }
 
-        .vertical-pair input {
-            width: 100%;
-        }
+    .vertical-pair input {
+        width: 100%;
+    }
+
+
+    /* =========================================================
+       GOOGLE TABS
+       UNCHANGED
+       ========================================================= */
 
     .google-tabs .nav-link {
         border: none;
@@ -1378,32 +1764,62 @@
         font-weight: 500;
     }
 
-        .google-tabs .nav-link.active {
-            border-bottom: 3px solid #4285F4;
-            color: #4285F4;
-            font-weight: 600;
-        }
-
-        .google-tabs .nav-link:hover {
-            background: #f5f5f5;
-        }
-
-    .erp-table-container {
-        max-height: 400px; /* height where scroll starts */
-        overflow-y: auto;
-        overflow-x: auto;
+    .google-tabs .nav-link.active {
+        border-bottom: 3px solid #4285F4;
+        color: #4285F4;
+        font-weight: 600;
     }
 
-    #ItemDetailTable {
-        border-collapse: collapse;
-        width: 100%;
+    .google-tabs .nav-link:hover {
+        background: #f5f5f5;
     }
+
+
+    /* =========================================================
+       FOOTER
+       UNCHANGED
+       ========================================================= */
+
+    .footer {
+        background: #e7eff9;
+        padding: 6px;
+        font-size: 12px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @@media (max-width: 1200px) {
+
+        #ItemDetailTable {
+            min-width: 1250px;
+        }
 
         #ItemDetailTable thead th {
-            position: sticky;
-            top: 0;
-            /* background: #fff; /* important so rows don't show through */ */ z-index: 10;
+            font-size: 10px;
+            padding: 4px 3px;
         }
+
+        #ItemDetailTable tbody td {
+            font-size: 10.5px;
+        }
+
+        #ItemDetailTable input,
+        #ItemDetailTable select {
+            font-size: 10.5px;
+        }
+    }
+
+
+    /* =========================================================
+       SALE BILL TOTAL SECTION
+       UNCHANGED
+       ========================================================= */
 
     .dpb-compact-total {
         display: flex;
@@ -1452,8 +1868,14 @@
         border-left: 1px solid #999;
     }
 
-    /* Responsive */
+
+    /* =========================================================
+       RESPONSIVE TOTAL SECTION
+       UNCHANGED
+       ========================================================= */
+
     @@media (max-width: 768px) {
+
         .dpb-compact-total {
             justify-content: flex-start;
             flex-wrap: wrap;
@@ -1467,6 +1889,9 @@
     }
 
 </style>
+
+
+
 
 @section Scripts
 {
