@@ -17,9 +17,15 @@
 		<div class="card-header card-headerBG text-light bg-gradient">
 			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
 				<h5>
-					<strong>Material Conversion </strong>
+					<strong>Material Conversion - Financial Year: @Model.OpeningYearCode</strong>
 					<span class="d-flex float-end" style="margin-top:-2px;">
-						<a asp-controller="MaterialConversion" asp-action="MaterialConversionDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
+						<div class="col-auto">
+							<button type="button" class="btn btn-sm btn-outline-light bg-gradient" onclick="OpenBatchPopUp()">
+								<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+								Batch Password
+							</button>
+						</div>
+						<a asp-controller="MaterialConversion"  asp-route-formKey="@ViewBag.formKey" asp-action="MaterialConversionDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
 							<i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
 							Dashboard
 						</a>
@@ -33,7 +39,8 @@
 							@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
 							{
 								<div class="col-auto">
-									<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+									<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action + ($('form')[0].action.indexOf('?') >= 0 ? '&' : '?') + 'formKey=' + encodeURIComponent('@ViewBag.formKey')"
+>
 										<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
 										REFRESH
 									</a>
@@ -80,6 +87,10 @@
 									<input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
 									<input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
 									<input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachine" />
+									 <input type="hidden" id="AllowBatchChange" />
+									 <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                            <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
+                <input type="hidden" id="AllowBatchChangePassWord" />
 
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="EntryId" class="form-label">Entry Id</label>
@@ -113,7 +124,7 @@
 											</button>
 										</h2>
 
-										<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+										<div id="B_SAGrid" class="accordion-collapse show collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
 											<div class="accordion-body">
 												<div class="row g-2 gx-3" id="_ItemGrid">
 												</div>
@@ -204,7 +215,9 @@
 																	</td>
 																	<td><input asp-for="BatchStock" style="width:80px;" readonly /></td>
 																	<td><input asp-for="TotalStock" style="width:80px;" readonly /></td>
-																	<td><input asp-for="OriginalQty" style="width:70px !important" /></td>
+																	<td><input asp-for="OriginalQty" style="width:70px !important"
+																			   oninput="this.value=this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/(\.\d{6})\d+/,'$1');" />
+																	</td>
 																	<td><input asp-for="Unit" style="width:70px !important" readonly /></td>
 																</tr>
 																<tr>
@@ -263,7 +276,7 @@
 																				<option value="@Model.AltItemCode" selected>@Model.AltItemName</option>
 																			}
 																		</select> *@
-																		<input type="text" id="AltItemNameText" class="form-control" placeholder="Type Item Name..." />
+																		<input type="text" id="AltItemNameText" class="form-control" placeholder="Type Item Name..." style="width:200px;"/>
 																		<input type="hidden" asp-for="AltItemCode" id="AltItemCode" />
 																	</td>
 																	<td><input asp-for="AltStock" style="width:80px;" /></td>
@@ -290,7 +303,7 @@
 																		</select>
 																	</td>
 
-																	<td><input asp-for="AltOriginalQty" /></td>
+																	<td><input asp-for="AltOriginalQty" oninput="this.value=this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/(\.\d{6})\d+/,'$1');" /></td>
 																	<td><input asp-for="AltUnit" /></td>
 																	<td><input asp-for="PlanNo" /></td>
 																	<td><input asp-for="PlanYearCode" /></td>
@@ -562,7 +575,7 @@
 								<span class="d-flex float-end" style="margin-top:-2px;">
 
 									@*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-									<a asp-controller="MaterialConversion" asp-action="MaterialConversionDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
+									<a asp-controller="MaterialConversion"  asp-route-formKey="@ViewBag.formKey"  asp-action="MaterialConversionDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
 										<i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
 										Dashboard
 									</a>
@@ -578,7 +591,8 @@
 										{
 											<div class="col-auto">
 												@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-												<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+												<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action + ($('form')[0].action.indexOf('?') >= 0 ? '&' : '?') + 'formKey=' + encodeURIComponent('@ViewBag.formKey')"
+>
 													@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
 													<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
 													REFRESH
@@ -616,11 +630,57 @@
 </div>
 
 
-
+<div class="modal fade" id="AllowBatchChangeBox" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+	 aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="staticBackdropLabel"></h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="card">
+					<div class="card-body">
+						<div class="row g-2 gx-3">
+							<div class="card">
+								<div class="card-body overflow-auto pb-0">
+									<center>
+										<h6>Please enter Batch change passcode: <input type="password" id="batchPassCode" /></h6>
+										<button type="button" class="btn btn-sm btn-primary" id="confirmCheck">Check</button>
+										<p><span id="errormessage" style="color:red;">Wrong Password, Try again!!!</span></p>
+									</center>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="progress my-2" style="height: 4px;">
+						<div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal" onclick="RefreshSchedule('');">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="ajaxLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+        <span class="spinner-border text-primary" role="status"></span>
+        <br />
+        <span>Processing...</span>
+    </div>
+</div>
 @section Scripts {
 	<script>
-		$(document).ready(function () {
+		 var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
+            $(document).ready(function () 
+            {
+                formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
 			GetFormRights();
+			GetAllowBatch();
 			if ($('#Mode').val() != "U") {
 
 				FillEntryID();
@@ -794,13 +854,13 @@
 				$('input[name="AltOriginalQty"]').val(originalQty);
 			 });
 
-			$('.submitBTN').click(function (e) {
+			// $('.submitBTN').click(function (e) {
 
-				console.log("SubmitButton Click");
-				e.preventDefault();
-				//$(this).off('click');
-				$('form').submit();
-			});
+			// 	console.log("SubmitButton Click");
+			// 	e.preventDefault();
+			// 	//$(this).off('click');
+			// 	$('form').submit();
+			// });
 			if ($('#IssueToStoreWC').val() == 'W') {
 				FillCurrentWIPBatchINStore();
 			}
@@ -838,6 +898,24 @@
 
 				$('#WorkCenterName').prop("disabled", false);
 				$('#AltWorkCenterName').prop("disabled", false);
+			}
+		});
+
+		function OpenBatchPopUp()
+		{
+			$('#AllowBatchChangeBox').modal("show");
+			$('#errormessage').hide();
+		}
+		var AllowedChange = false;
+		$('#confirmCheck').click(function () {
+			
+			if ($('#batchPassCode').val() == $('#AllowBatchChangePassWord').val()) {
+
+				AllowedChange = true;
+				
+				$('#AllowBatchChangeBox').modal("hide");
+			} else {
+				$('#errormessage').show();
 			}
 		});
 
@@ -901,7 +979,8 @@
 		$('#OriginalItemName').change(function () {
 
 
-				$('#OriginalItemCode').val($('#OriginalItemName').val());
+				// $('#OriginalItemCode').val($('#OriginalItemName').val());
+				$('#OriginalItemName').val($('#OriginalItemName').val());
 				FillTotalStock();
 				FillAltStock();
 				GetUnitAltUnit($('#OriginalItemCode').val());
@@ -920,7 +999,8 @@
 		});
 		$('#OriginalPartCode').change(function () {
 
-				$('#OriginalItemCode').val($('#OriginalPartCode').val());
+				// $('#OriginalItemCode').val($('#OriginalPartCode').val());
+				$('#OriginalPartCode').val($('#OriginalPartCode').val());
 				FillTotalStock();
 				 FillAltStock();
 				GetUnitAltUnit($('#OriginalItemCode').val());
@@ -936,11 +1016,11 @@
 
 		 $('#AltItemName').change(function () {
 
-				$('#AltItemCode').val($('#AltItemName').val());
+				$('#AltItemName').val($('#AltItemName').val());
 		});
 		$('#AltPartCode').change(function () {
 
-				$('#AltItemCode').val($('#AltPartCode').val());
+				$('#AltPartCode').val($('#AltPartCode').val());
 		});
 
 		 $('#StoreName').change(function () {
@@ -1012,6 +1092,7 @@
 			$.ajax({
 				url: "@Url.Action("GetFormRights")",
 				type: "POST",
+				data:{formKey:formKey},
 				success: function (data) {
 					if (data != null) {
 						var obj = $.parseJSON(data);
@@ -1181,6 +1262,7 @@
 					else {
 						FillStockBatchNo();
 					}
+					AutoFillAltItems();
 					// GetItemPartCode("ItemCode");
 					// GetItemRate();
 					// FillCurrentBatchINStore();
@@ -1192,6 +1274,62 @@
 				},
 				minLength: 2
 			});
+
+			// Auto Select On TAB - OriginalPartCodeText
+autoSelectSingleItem("#OriginalPartCodeText", partCodeSource, function (item) {
+
+    $("#OriginalPartCodeText")
+        .val(item.value)
+        .data("itemcode", item.itemCode);
+
+    $("#OriginalItemNameText").val(item.itemName);
+
+    $('#OriginalItemCode').val(item.itemCode);
+    $('#OriginalPartCode').val(item.itemCode);
+
+    FillTotalStock();
+    FillAltStock();
+    GetUnitAltUnit($('#OriginalItemCode').val());
+
+    setFormattedDate();
+
+    if ($('#IssueToStoreWC').val() == 'W') {
+        FillCurrentWIPBatchINStore();
+    }
+    else {
+        FillStockBatchNo();
+    }
+
+    AutoFillAltItems();
+});
+
+// Auto Select On TAB - OriginalItemNameText
+autoSelectSingleItem("#OriginalItemNameText", itemNameSource, function (item) {
+
+    $("#OriginalItemNameText")
+        .val(item.itemName)
+        .data("itemcode", item.itemCode);
+
+    $("#OriginalPartCodeText").val(item.partCode);
+
+    $('#OriginalItemCode').val(item.itemCode);
+    $('#OriginalPartCode').val(item.itemCode);
+
+    FillTotalStock();
+    FillAltStock();
+    GetUnitAltUnit($('#OriginalItemCode').val());
+
+    setFormattedDate();
+
+    if ($('#IssueToStoreWC').val() == 'W') {
+        FillCurrentWIPBatchINStore();
+    }
+    else {
+        FillStockBatchNo();
+    }
+
+    AutoFillAltItems();
+});
 
 		}
 
@@ -1333,6 +1471,32 @@
 				},
 				minLength: 2
 			});
+
+			// Auto Select On TAB - AltPartCodeText
+autoSelectSingleItem("#AltPartCodeText", partCodeSource, function (item) {
+
+    $("#AltPartCodeText")
+        .val(item.value)
+        .data("itemcode", item.itemCode);
+
+    $("#AltItemNameText").val(item.itemName);
+
+    $('#AltItemCode').val(item.itemCode);
+    $('#AltPartCode').val(item.itemCode);
+});
+
+// Auto Select On TAB - AltItemNameText
+autoSelectSingleItem("#AltItemNameText", itemNameSource, function (item) {
+
+    $("#AltItemNameText")
+        .val(item.itemName)
+        .data("itemcode", item.itemCode);
+
+    $("#AltPartCodeText").val(item.partCode);
+
+    $('#AltItemCode').val(item.itemCode);
+    $('#AltPartCode').val(item.itemCode);
+});
 
 		}
 
@@ -1794,7 +1958,7 @@
 				type: "POST",
 				url: "@Url.Action("FillStockBatchNo")",
 				async: false,
-				data: { "ItemCode": ItemCode, "StoreName": StoreName, "WorkCenterName": WorkCenterName, "YearCode": YearCode, "batchno": batchno },
+				data: {"formKey":formKey ,"ItemCode": ItemCode, "StoreName": StoreName, "WorkCenterName": WorkCenterName, "YearCode": YearCode, "batchno": batchno },
 				success: function (result, status, error) {
 					if (result != null) {
 						var obj = $.parseJSON(result);
@@ -1804,6 +1968,7 @@
 
 							// Append batch numbers
 							$.each(obj.Result, function (index, val) {
+								if (AllowedChange == false) { 
 								if (index === 0) {
 									// First value is selectable
 									$('#BatchNo').append('<option value="' + val.batchno + '" >' + val.batchno + '</option>');
@@ -1811,6 +1976,11 @@
 									// Other values are disabled (not selectable)
 									$('#BatchNo').append('<option value="' + val.batchno + '" disabled>' + val.batchno + '</option>');
 								}
+								}
+								else {
+                                    // If changes are allowed, all options are selectable
+                                    $('#BatchNo').append('<option value="' + val.batchno + '" >' + val.batchno + '</option>');
+                                }
 							});
 
 						} else {
@@ -1822,6 +1992,27 @@
 			});
 		}
 
+		function GetAllowBatch() {
+
+			$.ajax({
+				url: "@Url.Action("GetAllowBatch", "IssueThrBOM")",
+				type: "POST",
+				async: false,
+				success: function (data) {
+					if (data != null) {
+						var obj = $.parseJSON(data);
+						if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+							$('#AllowBatchChange').val(obj.Result[0].AllowBatchChange);
+							$('#AllowBatchChangePassWord').val(obj.Result[0].AllowBatchPassword);
+						}
+					}
+					console.log("success");
+				},
+				error: function (errMsg) {
+					console.log(errMsg);
+				}
+			});
+		}
 
 		function FillStockUniqueBatchNo() {
 
@@ -1829,12 +2020,12 @@
 			var YearCode = $('#OpeningYearCode').val();
 			var StoreName = $('#StoreName').find(':selected').text();
 			//var ItemName = $('#ItemName').find(':selected').text();
-			var batchno = $('#BatchNo').val();
+			var batchno = $('#BatchNo option:selected').text().trim();
 			$.ajax({
 				type: "POST",
 				url: "@Url.Action("FillStockBatchNo")",
 				async: false,
-				data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
+				data: {"formKey":formKey, "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
 				success: function (result, status, error) {
 
 					if (result != null) {
@@ -1866,11 +2057,11 @@
 			var batchno = "";
 			var TransDate = $('#SlipDate').val();
 			if ($('#BatchNo').prop('selectedIndex') != 0) {
-				batchno = $('#BatchNo').val();
+				batchno = $('#BatchNo option:selected').text().trim();
 			}
 			$.ajax({
 				type: "GET",
-				data: { "ItemCode": ItemCode, "YearCode": YearCode, "WCid": Wcid, "TransDate": TransDate, "BatchNo": batchno },
+				data: {"formKey":formKey, "ItemCode": ItemCode, "YearCode": YearCode, "WCid": Wcid, "TransDate": TransDate, "BatchNo": batchno },
 				url: "@Url.Action("FillCurrentBatchINWIP", "StockAdjustment")",
 				dataType: "json",
 				success: function (result, status, error) {
@@ -1885,7 +2076,7 @@
 								$('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
 								//$('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '">' + val.UniqueBatchNo + '</option>');
 							});
-							GetBatchInventory();
+							//GetBatchInventory();
 						} else {
 							$('#BatchNo').empty();
 							$('#BatchNo').append('<option value="" disabled selected>-Select-</option>');
@@ -1904,11 +2095,11 @@
 			var batchno = "";
 			var TransDate = $('#SlipDate').val();
 			if ($('#BatchNo').prop('selectedIndex') != 0) {
-				batchno = $('#BatchNo').val();
+				batchno = $('#BatchNo option:selected').text().trim();
 			}
 			$.ajax({
 				type: "GET",
-				data: { "ItemCode": ItemCode, "YearCode": YearCode, "WCid": Wcid, "TransDate": TransDate, "BatchNo": batchno },
+				data: {"formKey":formKey, "ItemCode": ItemCode, "YearCode": YearCode, "WCid": Wcid, "TransDate": TransDate, "BatchNo": batchno },
 				url: "@Url.Action("FillCurrentBatchINWIP", "StockAdjustment")",
 				dataType: "json",
 				async: false,
@@ -1923,7 +2114,7 @@
 								//  $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
 								$('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '" selected>' + val.UniqueBatchNo + '</option>');
 							});
-							GetBatchInventory();
+							//GetBatchInventory();
 						} else {
 							$('#UniqueBatchNo').empty();
 							$('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
@@ -1984,8 +2175,8 @@
 
 			var ItemCode = $('#OriginalItemCode').val();
 			var Storeid = $('#StoreId').val();
-			var UniqueBatchNo = $('#UniqueBatchNo').val();
-			var BatchNo = $('#BatchNo').val();
+			var UniqueBatchNo = $('#UniqueBatchNo option:selected').text().trim();
+			var BatchNo = $('#BatchNo option:selected').text().trim();
 			$.ajax({
 				type: "POST",
 				url: "@Url.Action("FillLotStock", "StockAdjustment")",
@@ -2055,8 +2246,8 @@
 
 			var ItemCode = parseInt($('#OriginalItemCode').val());
 			var WCID = parseInt($('#WcId').val());
-			var uniqbatchno = $('#UniqueBatchNo').val();
-			var BatchNo = $('#BatchNo ').val();
+			var uniqbatchno = $('#UniqueBatchNo option:selected').text().trim();
+			var BatchNo = $('#BatchNo option:selected').text().trim();
 			$.ajax({
 				type: "POST",
 				data: { "ItemCode": ItemCode, "WCID": WCID, "uniquebatchno": uniqbatchno, "batchno": BatchNo },
@@ -2100,7 +2291,7 @@
 		}
 		function ClearItems() {
 
-			$('#Unit, #OriginalQty, #AltUnit, #AltOriginalQty, #OriginalStoreId,  #OrginalWCID,  #BatchNo, #UniqueBatchNo, #PlanNo, #PlanYearCode, #PlanDate, #ProdSchNo, #ProdSchYearCode, #ProdSchDatetime,#Remark,#OriginalPartCodeText,#OriginalItemNameText,,#AltPartCodeText,#AltItemNameText').val('');
+			$('#Unit, #OriginalQty, #AltUnit, #AltOriginalQty, #OriginalStoreId,  #OrginalWCID,  #BatchNo, #UniqueBatchNo, #PlanNo, #PlanYearCode, #PlanDate, #ProdSchNo, #ProdSchYearCode, #ProdSchDatetime,#Remark,#OriginalPartCodeText,#OriginalItemNameText,#AltPartCodeText,#AltItemNameText').val('');
 			$('#OriginalPartCode,#AltStoreName,#OriginalItemName,#OriginalItemCode,#StoreName,#WorkCenterName,#AltItemName, #AltPartCode, #AltItemCode').val("").trigger("change");
 
 			$('#BatchStock, #TotalStock, #AltStock, #OrigItemRate, #OriginalItemCode, #OriginalQty, #AltOriginalQty,#AltStoreName,#AltWorkCenterName').val(0);
@@ -2124,6 +2315,9 @@
 			var AltItemCode = $('#AltItemCode').val();
 			var StoreName = $('#StoreName').val();
 			var AltStoreName = $('#AltStoreName').val();
+
+			var WorkcenterName= $('#WorkCenterName').val();
+			var AltWorkcenterName= $('#AltWorkCenterName').val();
 			//var altUnit = $('#AltUnit').val().trim();
 			var unit = $('#Unit').val();
 			var originalQty = $('#OriginalQty').val();
@@ -2144,12 +2338,28 @@
 				$.notify("Please select Store/WC before adding to the grid!", "error");
 				return;
 			}
+			else if (issueToStoreWC=='W' && (WorkcenterName=='' || AltWorkcenterName==''))
+			{
+                $.notify("Please select WorkCenter Name before adding to the grid!", "error");
+                return;
+            }
+            else if (issueToStoreWC=='S' && (StoreName=='' || AltStoreName=='')) {
+                $.notify("Please select Store Name before adding to the grid!", "error");
+                return;
+            }
+			else if (parseFloat(originalQty)==0)
+			{
+                $.notify("Original Quantity should be greater than zero!", "error");
+                return;
+            }
+
 			// if (!originalPartCode || !originalItemName || !originalItemCode ||
 			//     !altItemName || !altPartCode || !altUnit || !unit || !originalQty || !AltItemCode) {
 			//     $.notify("All fields are required to add data to the grid!", "error");
 			//     return;
 			// }
 			if (missingFields.length > 0) {
+				console.log("missingField",missingFields);
 				var message = "The following fields are required:\n" + missingFields.join(", ");
 				$.notify(message, "error");
 				return;
@@ -2198,8 +2408,8 @@
 				// OriginalItemName: $('#OriginalItemName').find(":selected").text(),
 				// AltItemName: $('#AltItemName').find(":selected").text(),
 				// AltPartCode: $('#AltPartCode').find(":selected").text(),
-				WorkCenterName: $('#WorkCenterName').find(":selected").text(),
-				StoreName: $('#StoreName').find(":selected").text(),
+				WorkCenterName: $('#WorkCenterName').val() ? $('#WorkCenterName option:selected').text() : '',
+				StoreName: $('#StoreName').val() ? $('#StoreName option:selected').text() : '',
 				AltStoreName: $('#AltStoreName').find(":selected").text(),
 				AltWorkCenterName: $('#AltWorkCenterName').find(":selected").text(),
 				//OriginalItemCode: $('#OriginalItemCode').find(":selected").text(),
@@ -2208,7 +2418,7 @@
 			$.ajax({
 				type: "POST",
 				url: '@Url.Action("AddToGridData", "MaterialConversion")',
-				data: { model: SchData },
+				data: { model: SchData,uniqueKey:uniqueKey },
 				success: function (result, status, xhr) {
 					if (xhr.status == 200 && xhr.responseText == result) {
 
@@ -2256,7 +2466,7 @@
 					if (obj.Result?.Table[0]?.Column1 > 0) {
 						$.notify("You cannot update this Category as Item with this category already exists", "error");
 					} else {
-						$('form').submit();
+						// $('form').submit();
 					}
 				},
 				error: function (response) {
@@ -2282,7 +2492,7 @@
 			$.ajax({
 				url: '@Url.Action("EditItemRow")',
 				type: "POST",
-				data: { SrNO: SrNO, Mode: "U" },
+				data: { SrNO: SrNO, Mode: "U",uniqueKey:uniqueKey },
 				success: function (data) {
 
 					var obj = $.parseJSON(data);
@@ -2337,6 +2547,7 @@
 						}
 
 						DeleteItemRow(SrNO);
+					
 					}
 				},
 				error: function (response) {
@@ -2350,7 +2561,7 @@
 			$.ajax({
 				url: '@Url.Action("DeleteItemRow")',
 				type: "POST",
-				data: { SrNO: SrNO, Mode: "U" },
+				data: { SrNO: SrNO, Mode: "U",uniqueKey: uniqueKey},
 				success: function (data, status, xhr) {
 					$('#divStockGrid').html(data);
 					$.notify("Process deleted from Grid", "info");
@@ -2381,16 +2592,53 @@
 
 			window.history.back();
 		}
+		   $('.submitBTN').click(function (e) {
+			   $('#ajaxLoader').show(); 
+            e.preventDefault();
+           
+            $.ajax({
+                url: $('form').attr('action'),
+                type: $('form').attr('method'),
+                data: $('form').serialize(),
+                beforeSend: function () {
+                    $('#ajaxLoader').show(); // ✅ Show loader
+                },
+                success: function (response) {
+
+                    // Success from controller
+                    if (response.success) {
+
+                        if (response.redirectUrl) {
+
+                            window.location.href = response.redirectUrl;
+
+                        }
+                        $('#ajaxLoader').hide();
+                        
+                    }
+                    else {
+                        // SP StatusText / validation error
+                        $.notify(response.message, "error");
+                        $('#ajaxLoader').hide();
+                    }
+                },
+                error: function () {
+                    $.notify("Unexpected server error", "error");
+					$('#ajaxLoader').hide();
+
+                }
+            });
+        });
 	</script>
 }
 
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<script src="~/js/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="~/css/toastr.min.css" />
+<script src="~/js/notify.min.js"></script>
+<link rel="stylesheet" href="~/css/toastr.min.css" />
+<script src="~/js/notify.min.js"></script>
 
 
 

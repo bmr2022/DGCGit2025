@@ -10,7 +10,7 @@
             <h5>
                 MaterialConversion - <strong>Dashboard</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="MaterialConversion" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                    <a asp-action="MaterialConversion" asp-route-formKey="@ViewBag.formKey" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                         <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                         Add New
                     </a>
@@ -26,6 +26,8 @@
                             <div class="col-sm-3 col-md-6 col-lg-2 col-xl-2">
                                 <input type="hidden" asp-for="@Model.ActualEntryByEmpid" value="@Model.ActualEntryByEmpid" />
                                 <input type="hidden" asp-for="@Model.seqno" value="@Model.seqno" />
+                                 <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                            <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">From Date</label>
@@ -54,14 +56,14 @@
                                 <label class="form-label">Global search</label>
                                 <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                             </div>
-                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-end mt-3">
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-4 d-flex justify-content-end mt-3">
                                 <button class="btn btn-sm btn-outline-info" type="button" onclick="GetDetailData();">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
                                 </button>
                                 <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="btnGridExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
-                                <a class="btn btn-sm btn-outline-danger" asp-controller="MaterialConversion" asp-action="MaterialConversionDashBoard">
+                                <a class="btn btn-sm btn-outline-danger" asp-route-formKey="@ViewBag.formKey"  asp-controller="MaterialConversion" asp-action="MaterialConversionDashBoard">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
                                 @*<div class="ms-auto d-flex align-items-center">
@@ -85,7 +87,7 @@
         </div>
         <div class="card-body">
             <div class="card overflow-auto">
-                <div class="card-body" id="divDashboardGrid">
+                <div class="card-body" id="divDashboardGrid" >
                     <partial name="_MaterialConversionDashBoardSummaryGrid" />
                 </div>
             </div>
@@ -96,7 +98,12 @@
 @section Scripts
 {
     <script>
-        $(document).ready(function () {
+      var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
+            $(document).ready(function () 
+            {
+                formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
             GetFormRights();
          
             $('#ReportType').select2();
@@ -167,6 +174,7 @@
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
+                data:{formKey:formKey},
                 async: false,
                 success: function (data) {
 
@@ -279,7 +287,7 @@
             $.ajax({
                 url: '@Url.Action("GetDetailData")',
                 type: "POST",
-                data: { FromDate: fromDate, ToDate: toDate, ReportType: reportType },
+                data: {formKey:formKey, FromDate: fromDate, ToDate: toDate, ReportType: reportType },
                 async: false,
                 data: $('#SParam').serializeArray(),
                 success: function (data) {
@@ -489,6 +497,6 @@
         }
 
     </script>
-    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+    <script src="~/js/tableToExcel.js"></script>
+    <script src="~/js/xlsx.full.min.js"></script>
 }

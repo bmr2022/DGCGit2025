@@ -7,12 +7,14 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models
 {
-    public class MaterialConversionModel:TimeStamp
+    public class MaterialConversionModel : TimeStamp
     {
 
         public int EntryId { get; set; }
         public int seqno { get; set; }
         public string? IPAddress { get; set; }
+        public string? formKey { get; set; }
+        public string? uniqueKey { get; set; }
         public string EntryDate { get; set; }
         public int OpeningYearCode { get; set; }
         public string SlipNo { get; set; }
@@ -26,7 +28,7 @@ namespace eTactWeb.DOM.Models
         public string WONO { get; set; }
         public int WOYear { get; set; }
         public string RsNo { get; set; }
-        public string RsDescription{ get; set; }
+        public string RsDescription { get; set; }
         public int RsYear { get; set; }
         public string ParentRsNo { get; set; }
         public string ParentDescription { get; set; }
@@ -35,15 +37,15 @@ namespace eTactWeb.DOM.Models
         public bool ShowAllItem { get; set; }
         public string Unit { get; set; }
         public string FromStore { get; set; }
-        public float StockQty { get; set; }
-        public float Qty { get; set; }
-        public float Rate { get; set; }
+        public decimal StockQty { get; set; }
+        public decimal Qty { get; set; }
+        public decimal Rate { get; set; }
         public string AltPartCode { get; set; }
         public string AltItemName { get; set; }
         public bool ShowAllAltItem { get; set; }
         public string ToStore { get; set; }
-        public float Stock { get; set; }
-        public float AltQty { get; set; }
+        public decimal Stock { get; set; }
+        public decimal AltQty { get; set; }
         public string Remark { get; set; }
 
         //Main
@@ -64,9 +66,9 @@ namespace eTactWeb.DOM.Models
         public string EntryByMachine { get; set; }
 
         //Detail
-       
+
         public string OriginalItemCode { get; set; }
-        
+
         public decimal OriginalQty { get; set; }
         public int AltItemCode { get; set; }
         public string AltUnit { get; set; }
@@ -90,15 +92,15 @@ namespace eTactWeb.DOM.Models
         public decimal OrigItemRate { get; set; }
         public IList<MaterialConversionModel> MaterialConversionGrid { get; set; }
 
-		//DashBoard
+        //DashBoard
 
-		public string FromDate { get; set; }
-		public string ToDate { get; set; }
-		public string? FinFromDate { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public string? FinFromDate { get; set; }
         public string? FinToDate { get; set; }
         public string Searchbox { get; set; }
         public string ReportType { get; set; }
 
-       
+
     }
 }

@@ -11,7 +11,7 @@ namespace eTactWeb.Services.Interface
     public interface IMaterialConversion
     {
         public Task<ResponseResult> AutoFillitem(string Flag, string SearchItemCode, string SearchPartCode);
-        public Task<ResponseResult> AutoFillAltitem(string Flag,int origItemcode, string SearchItemCode, string SearchPartCode);
+        public Task<ResponseResult> AutoFillAltitem(string Flag, int origItemcode, string SearchItemCode, string SearchPartCode);
 
         Task<ResponseResult> GetFormRights(int userID);
         Task<ResponseResult> FillEntryID(int YearCode);
@@ -23,15 +23,15 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetUnitAltUnit(int ItemCode);
         Task<ResponseResult> GetAltPartCode(int MainItemcode);
         Task<ResponseResult> GetAltItemName(int MainItemcode);
-        Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName,string WorkCenterName, int YearCode, string batchno, string FinStartDate);
+        Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName, string WorkCenterName, int YearCode, string batchno, string FinStartDate);
 
         Task<ResponseResult> SaveMaterialConversion(MaterialConversionModel model, DataTable GIGrid);
 
         Task<ResponseResult> GetDashboardData(MaterialConversionModel model);
         Task<MaterialConversionModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType);
         Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId);
-        Task<MaterialConversionModel> GetViewByID(int ID, int YC,string FromDate,string TODate);
-
+        Task<MaterialConversionModel> GetViewByID(int ID, int YC, string FromDate, string TODate);
+        Task<ResponseResult> GetReportName();
 
     }
 }

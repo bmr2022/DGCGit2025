@@ -36,6 +36,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
                 SqlParams.Add(new SqlParameter("@EmpId", userID));
                 SqlParams.Add(new SqlParameter("@MainMenu", "Material Conversion"));
+
                 //SqlParams.Add(new SqlParameter("@SubMenu", "Sale Order"));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
@@ -63,16 +64,16 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@MatConvEntryId", model.EntryId));
                     sqlParams.Add(new SqlParameter("@YearCode", model.OpeningYearCode));
                     sqlParams.Add(new SqlParameter("@MatConvSlipNo", model.SlipNo));
-                    sqlParams.Add(new SqlParameter("@MatConvSlipDate",CommonFunc.ParseFormattedDate( model.SlipDate)));
+                    sqlParams.Add(new SqlParameter("@MatConvSlipDate", CommonFunc.ParseFormattedDate(model.SlipDate)));
                     sqlParams.Add(new SqlParameter("@StoreWorkcenter", model.IssueToStoreWC));
                     sqlParams.Add(new SqlParameter("@Remarks", model.Remarks));
                     sqlParams.Add(new SqlParameter("@ApprovedBy", model.ApprovedBy));
                     sqlParams.Add(new SqlParameter("@Uid", model.Uid));
                     sqlParams.Add(new SqlParameter("@cc", model.cc));
                     sqlParams.Add(new SqlParameter("@ActualEntryByEmpid", model.ActualEntryByEmpid));
-                    sqlParams.Add(new SqlParameter("@ActualEntryDate",CommonFunc.ParseFormattedDate( model.ActualEntryDate)));
+                    sqlParams.Add(new SqlParameter("@ActualEntryDate", CommonFunc.ParseFormattedDate(model.ActualEntryDate)));
                     sqlParams.Add(new SqlParameter("@UpdatedByEmpId", model.UpdatedByEmpId));
-                    sqlParams.Add(new SqlParameter("@UpdationDate",CommonFunc.ParseFormattedDate( model.UpdationDate)));
+                    sqlParams.Add(new SqlParameter("@UpdationDate", CommonFunc.ParseFormattedDate(model.UpdationDate)));
                     sqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
 
                     sqlParams.Add(new SqlParameter("@dt", GIGrid));
@@ -83,7 +84,7 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@MatConvEntryId", model.EntryId));
                     sqlParams.Add(new SqlParameter("@YearCode", model.OpeningYearCode));
                     sqlParams.Add(new SqlParameter("@MatConvSlipNo", model.SlipNo));
-                    sqlParams.Add(new SqlParameter("@MatConvSlipDate",CommonFunc.ParseFormattedDate( model.SlipDate)));
+                    sqlParams.Add(new SqlParameter("@MatConvSlipDate", CommonFunc.ParseFormattedDate(model.SlipDate)));
                     sqlParams.Add(new SqlParameter("@StoreWorkcenter", model.IssueToStoreWC));
                     sqlParams.Add(new SqlParameter("@Remarks", model.Remarks));
                     sqlParams.Add(new SqlParameter("@ApprovedBy", model.ApprovedBy));
@@ -212,7 +213,7 @@ namespace eTactWeb.Data.DAL
                 }
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
-                    if(ReportType== "SUMMARY")
+                    if (ReportType == "SUMMARY")
                     {
                         model.MaterialConversionGrid = (from DataRow dr in oDataSet.Tables[0].Rows
                                                         select new MaterialConversionModel
@@ -225,22 +226,22 @@ namespace eTactWeb.Data.DAL
                                                             //Remark = dr["Remark"] != DBNull.Value ? Convert.ToString(dr["Remark"]) : string.Empty,
                                                             ApprovedByEmpName = dr["ActualEmployee"] != DBNull.Value ? Convert.ToString(dr["ActualEmployee"]) : string.Empty,
 
-                                                            ActualEntryDate = dr["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(dr["ActualEntryDate"]).ToString("dd/MM/yyyy"): string.Empty,
+                                                            ActualEntryDate = dr["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(dr["ActualEntryDate"]).ToString("dd/MM/yyyy") : string.Empty,
 
-                                                           // UpdationDate = dr["UpdationDate"] != DBNull.Value ? Convert.ToDateTime(dr["UpdationDate"]).ToString("dd/MM/yyyy") : string.Empty,
-                                                            
+                                                            // UpdationDate = dr["UpdationDate"] != DBNull.Value ? Convert.ToDateTime(dr["UpdationDate"]).ToString("dd/MM/yyyy") : string.Empty,
+
                                                             UpdatedByEmpId = dr["UpdatedByEmployee"] != DBNull.Value ? Convert.ToInt32(dr["UpdatedByEmployee"]) : 0,
-                                                            
+
                                                             EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? Convert.ToString(dr["EntryByMachine"]) : string.Empty,
                                                             OpeningYearCode = dr["MatConvYearCode"] != DBNull.Value ? Convert.ToInt32(dr["MatConvYearCode"]) : 0
 
                                                         }).ToList();
                     }
-                   
+
                 }
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
-                    if(ReportType== "DETAIL")
+                    if (ReportType == "DETAIL")
                     {
                         model.MaterialConversionGrid = (from DataRow dr in oDataSet.Tables[0].Rows
                                                         select new MaterialConversionModel
@@ -263,7 +264,7 @@ namespace eTactWeb.Data.DAL
                                                             AltOriginalQty = dr["AltOriginalQty"] != DBNull.Value ? Convert.ToDecimal(dr["AltOriginalQty"]) : 0,
                                                             AltUnit = dr["AltUnit"] != DBNull.Value ? Convert.ToString(dr["AltUnit"]) : string.Empty,
                                                             AltStoreName = dr["AltStoreName"] != DBNull.Value ? Convert.ToString(dr["AltStoreName"]) : string.Empty,
-                                                           // AltWorkCenterName = dr["AltWorkcenetr"] != DBNull.Value ? Convert.ToString(dr["AltWorkcenetr"]) : string.Empty,
+                                                            // AltWorkCenterName = dr["AltWorkcenetr"] != DBNull.Value ? Convert.ToString(dr["AltWorkcenetr"]) : string.Empty,
 
                                                             BatchNo = dr["BatchNo"] != DBNull.Value ? Convert.ToString(dr["BatchNo"]) : string.Empty,
                                                             UniqueBatchNo = dr["Uniquebatchno"] != DBNull.Value ? Convert.ToString(dr["Uniquebatchno"]) : string.Empty,
@@ -275,17 +276,17 @@ namespace eTactWeb.Data.DAL
                                                             Remark = dr["Remark"] != DBNull.Value ? Convert.ToString(dr["Remark"]) : string.Empty,
                                                             ApprovedByEmpName = dr["ActualEmployee"] != DBNull.Value ? Convert.ToString(dr["ActualEmployee"]) : string.Empty,
 
-                                                            
+
                                                             ActualEntryDate = dr["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(dr["ActualEntryDate"]).ToString("dd/MM/yyyy") : string.Empty,
                                                             UpdatedByEmpId = dr["UpdatedByEmployee"] != DBNull.Value ? Convert.ToInt32(dr["UpdatedByEmployee"]) : 0,
-                                                           // UpdationDate = dr["UpdationDate"] != DBNull.Value ? Convert.ToDateTime(dr["UpdationDate"]).ToString("dd/MM/yyyy") : string.Empty,
+                                                            // UpdationDate = dr["UpdationDate"] != DBNull.Value ? Convert.ToDateTime(dr["UpdationDate"]).ToString("dd/MM/yyyy") : string.Empty,
 
                                                             EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? Convert.ToString(dr["EntryByMachine"]) : string.Empty,
                                                             OpeningYearCode = dr["MatConvYearCode"] != DBNull.Value ? Convert.ToInt32(dr["MatConvYearCode"]) : 0
 
                                                         }).ToList();
                     }
-                   
+
                 }
             }
             catch (Exception ex)
@@ -305,7 +306,7 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-                var entrydate=CommonFunc.ParseFormattedDate(EntryDate);
+                var entrydate = CommonFunc.ParseFormattedDate(EntryDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@MatConvEntryId", EntryId));
@@ -327,7 +328,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<MaterialConversionModel> GetViewByID(int ID, int YC,string FromDate,string ToDate)
+        public async Task<MaterialConversionModel> GetViewByID(int ID, int YC, string FromDate, string ToDate)
         {
             var model = new MaterialConversionModel();
             try
@@ -368,16 +369,16 @@ namespace eTactWeb.Data.DAL
                 model.EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["MatConvEntryId"].ToString());
                 model.OpeningYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["MatConvYearCode"].ToString());
                 model.SlipNo = DS.Tables[0].Rows[0]["MatConvSlipNo"].ToString();
-              
+
                 model.IssueToStoreWC = DS.Tables[0].Rows[0]["StoreWorkcenter"].ToString();
                 model.Remark = DS.Tables[0].Rows[0]["Remark"].ToString();
                 model.ApprovedByEmpName = DS.Tables[0].Rows[0]["ActualEmployee"].ToString();
-                
+
                 model.UpdatedByEmpName = DS.Tables[0].Rows[0]["UpdatedByEmployee"].ToString();
-                
+
                 model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
-                model.SlipDate = DS.Tables[0].Rows[0]["MatConvSlipDate"] != DBNull.Value? Convert.ToDateTime(DS.Tables[0].Rows[0]["MatConvSlipDate"]).ToString("dd/MM/yyyy"): string.Empty;
-                model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]).ToString("dd/MM/yyyy"): string.Empty;
+                model.SlipDate = DS.Tables[0].Rows[0]["MatConvSlipDate"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["MatConvSlipDate"]).ToString("dd/MM/yyyy") : string.Empty;
+                model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]).ToString("dd/MM/yyyy") : string.Empty;
                 //model.UpdationDate = DS.Tables[0].Rows[0]["UpdationDate"] != DBNull.Value? Convert.ToDateTime(DS.Tables[0].Rows[0]["UpdationDate"]).ToString("dd/MM/yyyy"): string.Empty;
 
                 if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
@@ -427,7 +428,7 @@ namespace eTactWeb.Data.DAL
                             //ProdSchNo = DS.Tables[1].Rows[1]["ProdSchNo"].ToString(),
                             //ProdSchYearCode = Convert.ToInt32(DS.Tables[1].Rows[1]["ProdSchYearCode"].ToString()),
                             //ProdSchDatetime = DS.Tables[1].Rows[1]["ProdSchDatetime"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["ProdSchDatetime"]).ToString("dd/MM/yyyy") : string.Empty,
-                           
+
                             EntryId = Convert.ToInt32(row["MatConvEntryId"].ToString()),
                             OpeningYearCode = Convert.ToInt32(row["MatConvYearCode"].ToString()),
                             StoreId = Convert.ToInt32(row["OriginalStoreId"].ToString()),
@@ -486,7 +487,7 @@ namespace eTactWeb.Data.DAL
             }
         }
         public async Task<ResponseResult> FillWorkCenterName()
-         {
+        {
             var _ResponseResult = new ResponseResult();
             try
             {
@@ -502,7 +503,7 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
-         }
+        }
         public async Task<ResponseResult> AutoFillitem(string Flag, string SearchItemCode, string SearchPartCode)
         {
             var Result = new ResponseResult();
@@ -528,33 +529,33 @@ namespace eTactWeb.Data.DAL
             return Result;
         }
 
-		public async Task<ResponseResult> AutoFillAltitem(string Flag,int origItemcode, string SearchItemCode, string SearchPartCode)
-		{
-			var Result = new ResponseResult();
+        public async Task<ResponseResult> AutoFillAltitem(string Flag, int origItemcode, string SearchItemCode, string SearchPartCode)
+        {
+            var Result = new ResponseResult();
 
-			try
-			{
-				var SqlParams = new List<dynamic>();
+            try
+            {
+                var SqlParams = new List<dynamic>();
 
-				SqlParams.Add(new SqlParameter("@Flag", Flag));
-				SqlParams.Add(new SqlParameter("@origItemcode", origItemcode));
-				SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode ?? ""));
-				SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode ?? ""));
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+                SqlParams.Add(new SqlParameter("@origItemcode", origItemcode));
+                SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode ?? ""));
+                SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode ?? ""));
 
 
-				Result = await _IDataLogic.ExecuteDataTable("SpMaterialConversionMainDetail", SqlParams);
-			}
-			catch (Exception ex)
-			{
-				dynamic Error = new ExpandoObject();
-				Error.Message = ex.Message;
-				Error.Source = ex.Source;
-			}
+                Result = await _IDataLogic.ExecuteDataTable("SpMaterialConversionMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
 
-			return Result;
-		}
-		public async Task<ResponseResult> GetOriginalItemName()
-         {
+            return Result;
+        }
+        public async Task<ResponseResult> GetOriginalItemName()
+        {
             var _ResponseResult = new ResponseResult();
             try
             {
@@ -570,9 +571,9 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
-         }
-         public async Task<ResponseResult> GetOriginalPartCode()
-         {
+        }
+        public async Task<ResponseResult> GetOriginalPartCode()
+        {
             var _ResponseResult = new ResponseResult();
             try
             {
@@ -588,8 +589,8 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
-         }
-        public async Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName,string WorkCenterName, int YearCode, string batchno, string FinStartDate)
+        }
+        public async Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName, string WorkCenterName, int YearCode, string batchno, string FinStartDate)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -673,6 +674,25 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
 
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetReportName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SpMaterialConversionMainDetail", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
             return _ResponseResult;
         }
     }

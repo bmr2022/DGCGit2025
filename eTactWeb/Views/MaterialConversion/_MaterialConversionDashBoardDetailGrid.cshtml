@@ -3,8 +3,14 @@
 @using System.Reflection.PortableExecutable
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    var ActualEntryByEmpid = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
-    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+    var context = HttpContextAccessor.HttpContext;
+    string formKey =
+           context.Request.Query["formKey"].FirstOrDefault()
+        ?? context.Request.Headers["FormKey"].FirstOrDefault()
+        ??Model.formKey
+        ?? "";
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"YearCode_{formKey}")); 
+    var ActualEntryByEmpid = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"EmpID_{formKey}"));
 }
 
 <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="ISTDashboard">
@@ -145,7 +151,7 @@
                             <div id="container">
                                
                                 <div id="viewCursorDiv-@Cntr">
-                                    <a class="table-link link-success" asp-action="MaterialConversion" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.OpeningYearCode" onclick="BackButtonData(event,'@item.EntryId','@item.OpeningYearCode');">
+                                    <a class="table-link link-success" asp-route-formKey="@formKey"  asp-action="MaterialConversion" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.OpeningYearCode" onclick="BackButtonData(event,'@item.EntryId','@item.OpeningYearCode');">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -156,21 +162,22 @@
                                 {
                                     <div id="editCursorDiv-@Cntr">
 
-                                        <a class="table-link link-primary" asp-action="MaterialConversion" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.OpeningYearCode">
+                                        <a class="table-link link-primary" asp-route-formKey="@formKey"  asp-action="MaterialConversion" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.OpeningYearCode">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
                                     </div>
-                                    <div id="deleteCursorDiv-@Cntr">
-                                        <a class="table-link link-danger" asp-action="DeleteByID" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.OpeningYearCode" asp-route-EntryDate="@item.ActualEntryDate" asp-route-EntryByempId="@ActualEntryByEmpid">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>
+                                    // <div id="deleteCursorDiv-@Cntr">
+                                    //     <a class="table-link link-danger" asp-action="DeleteByID" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.OpeningYearCode" asp-route-EntryDate="@item.ActualEntryDate" asp-route-EntryByempId="@ActualEntryByEmpid"
+                                    //        onclick="return confirm('Are you sure you want to delete this record?');">
+                                    //         <span class="fa-stack">
+                                    //             <i class="fa fa-square fa-stack-2x"></i>
+                                    //             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                    //         </span>
+                                    //     </a>
+                                    // </div>
                                 }
                                 else
                                 {
