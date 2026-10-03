@@ -43,17 +43,21 @@ namespace eTactWeb.Controllers
 
         [HttpGet]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> InterStoreTransfer(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string SlipNo = "", string BatchNo = "", string PartCode = "", string ItemName = "", string Searchbox = "", string SummaryDetail = "")
+        public async Task<IActionResult> InterStoreTransfer(string formKey, int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string SlipNo = "", string BatchNo = "", string PartCode = "", string ItemName = "", string Searchbox = "", string SummaryDetail = "")
         {
+
+            ViewBag.formKey = formKey;
+            var uniqueKey = Guid.NewGuid().ToString();
+            ViewBag.uniqueKey = uniqueKey;
             //RoutingModel model = new RoutingModel();  
             ViewData["Title"] = "InterStoreTransfer Details";
-            TempData.Clear();
-            HttpContext.Session.Remove("KeyInterStoreTransferGrid");
+            //TempData.Clear();
+            HttpContext.Session.Remove($"KeyInterStoreTransferGrid_{uniqueKey}");
             var MainModel = new InterStoreTransferModel();
-            MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
-            MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
-            MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"FromDate_{formKey}"));
+            MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"ToDate_{formKey}"));
+            MainModel.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
@@ -70,19 +74,19 @@ namespace eTactWeb.Controllers
             }
             if (Mode != "U")
             {
-                MainModel.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
+                MainModel.Uid = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+                MainModel.ActualEntryByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                 MainModel.ActualEntryDate = DateTime.Now.ToString();
             }
             else
             {
-                MainModel.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                MainModel.LastUpdatedByName = HttpContext.Session.GetString("EmpName");
+                MainModel.Uid = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+                MainModel.LastUpdatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                 MainModel.LastUpdationDate = DateTime.Now.ToString();
-                MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
-                MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
+                MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"FromDate_{formKey}"));
+                MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"ToDate_{formKey}"));
             }
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
@@ -92,7 +96,7 @@ namespace eTactWeb.Controllers
             };
 
             string serializedGrid = JsonConvert.SerializeObject(MainModel.InterStoreDetails);
-            HttpContext.Session.SetString("KeyInterStoreTransferGrid", serializedGrid);
+            HttpContext.Session.SetString($"KeyInterStoreTransferGrid_{uniqueKey}", serializedGrid);
 
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
@@ -104,13 +108,13 @@ namespace eTactWeb.Controllers
             MainModel.GlobalSearchBack = Searchbox;
             return View(MainModel);
         }
-        public IActionResult PrintReport(int EntryId , int YearCode , string PONO = "")
+        public IActionResult PrintReport(int EntryId, int YearCode, string PONO = "")
         {
             string my_connection_string;
             string contentRootPath = IWebHostEnvironment.ContentRootPath;
             string webRootPath = IWebHostEnvironment.WebRootPath;
             webReport = new WebReport();
-            
+
             ViewBag.EntryId = EntryId;
             ViewBag.YearCode = YearCode;
             ViewBag.PONO = PONO;
@@ -137,21 +141,21 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetFormRights()
+        public async Task<JsonResult> GetFormRights(string formKey)
         {
-            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var JSON = await IInterStore.GetFormRights(userID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult DeleteItemRow(int SeqNo, string Mode)
+        public IActionResult DeleteItemRow(int SeqNo, string Mode, string uniqueKey)
         {
             var MainModel = new InterStoreTransferModel();
             if (Mode == "U")
             {
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
-                string modelJson = HttpContext.Session.GetString("KeyInterStoreTransferGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyInterStoreTransferGrid_{uniqueKey}");
                 List<InterStoreTransferDetail> ISTDetail = new List<InterStoreTransferDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -172,12 +176,12 @@ namespace eTactWeb.Controllers
                     MainModel.InterStoreDetails = ISTDetail;
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.InterStoreDetails);
-                    HttpContext.Session.SetString("KeyInterStoreTransferGrid", serializedGrid);
+                    HttpContext.Session.SetString($"KeyInterStoreTransferGrid_{uniqueKey}", serializedGrid);
                 }
             }
             else
             {
-                string modelJson = HttpContext.Session.GetString("KeyInterStoreTransferGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyInterStoreTransferGrid_{uniqueKey}");
                 List<InterStoreTransferDetail> ISTDetail = new List<InterStoreTransferDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -200,16 +204,16 @@ namespace eTactWeb.Controllers
                     MainModel.InterStoreDetails = ISTDetail;
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.InterStoreDetails);
-                    HttpContext.Session.SetString("KeyInterStoreTransferGrid", serializedGrid);
+                    HttpContext.Session.SetString($"KeyInterStoreTransferGrid_{uniqueKey}", serializedGrid);
                 }
             }
             return PartialView("_InterStoreTransferDetail", MainModel);
         }
-        public IActionResult AddInterStoreTransferDetail(InterStoreTransferDetail model)
+        public IActionResult AddInterStoreTransferDetail(InterStoreTransferDetail model, string uniqueKey)
         {
             try
             {
-                string modelJson = HttpContext.Session.GetString("KeyInterStoreTransferGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyInterStoreTransferGrid_{uniqueKey}");
                 List<InterStoreTransferDetail> ISTDetail = new List<InterStoreTransferDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -224,7 +228,7 @@ namespace eTactWeb.Controllers
                 {
                     if (ISTDetail == null)
                     {
-                       // model.SeqNo = 1;
+                        // model.SeqNo = 1;
                         ISTGrid.Add(model);
                     }
                     else
@@ -246,7 +250,7 @@ namespace eTactWeb.Controllers
                     MainModel.InterStoreDetails = ISTGrid;
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.InterStoreDetails);
-                    HttpContext.Session.SetString("KeyInterStoreTransferGrid", serializedGrid);
+                    HttpContext.Session.SetString($"KeyInterStoreTransferGrid_{uniqueKey}", serializedGrid);
                 }
                 else
                 {
@@ -260,6 +264,76 @@ namespace eTactWeb.Controllers
             }
         }
 
+
+
+        public IActionResult AddMultipleItemDetail(List<InterStoreTransferDetail> model, string uniqueKey)
+        {
+            try
+            {
+                var MainModel = new InterStoreTransferModel();
+                List<InterStoreTransferDetail> StockGrid;
+
+                // ---------- Read session ONCE ----------
+                string modelJson = HttpContext.Session.GetString($"KeyInterStoreTransferGrid_{uniqueKey}");
+
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    StockGrid = JsonConvert.DeserializeObject<List<InterStoreTransferDetail>>(modelJson);
+                }
+                else
+                {
+                    StockGrid = new List<InterStoreTransferDetail>();
+                }
+
+                if (model == null || model.Count == 0)
+                {
+                    ModelState.TryAddModelError("Error", " List Cannot Be Empty...!");
+                    return PartialView("_InterStoreTransferDetail", MainModel);
+                }
+
+                int seqNo = StockGrid.Count + 1;
+
+                foreach (var item in model)
+                {
+                    // ---------- Duplicate check (UNCHANGED LOGIC) ----------
+                    if (StockGrid.Any(x =>
+                        x.ItemCode == item.ItemCode &&
+                        x.BatchNo == item.BatchNo &&
+                        x.UniqueBatchNo == item.UniqueBatchNo))
+                    {
+                        return StatusCode(207, "Duplicate");
+                    }
+
+                    // ---------- Assign sequence ----------
+                    item.SeqNo = seqNo;
+
+                    seqNo++;
+
+                    StockGrid.Add(item);
+                }
+
+                MainModel.InterStoreDetails = StockGrid;
+
+                // ---------- Write session ONCE ----------
+                HttpContext.Session.SetString(
+                    $"KeyInterStoreTransferGrid_{uniqueKey}",
+                    JsonConvert.SerializeObject(MainModel.InterStoreDetails)
+                );
+
+                //HttpContext.Session.SetString(
+                //    "IssueNRGP",
+                //    JsonConvert.SerializeObject(MainModel)
+                //);
+
+                return PartialView("_InterStoreTransferDetail", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
@@ -268,8 +342,9 @@ namespace eTactWeb.Controllers
             try
             {
                 var ISTGrid = new DataTable();
-
-                string modelJson = HttpContext.Session.GetString("KeyInterStoreTransferGrid");
+                var uniqueKey = model.uniqueKey;
+                var formKey = model.formKey;
+                string modelJson = HttpContext.Session.GetString($"KeyInterStoreTransferGrid_{uniqueKey}");
                 List<InterStoreTransferDetail> ISTDetail = new List<InterStoreTransferDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -280,23 +355,27 @@ namespace eTactWeb.Controllers
                 {
                     ModelState.Clear();
                     ModelState.TryAddModelError("InterStoreTransferDetail", "InterStoreTransfer Grid Should Have Atleast 1 Item...!");
-                    return View("InterStoreTransfer", model);
+                    return Json(new
+                    {
+                        success = false,
+                        message = "An unexpected error occurred."
+                    });
                 }
                 else
                 {
-                    model.CC = HttpContext.Session.GetString("Branch");
-                    model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    model.ActualEntryByName = HttpContext.Session.GetString("EmpName");
+                    model.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+                    model.Uid = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                    model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                    model.ActualEntryByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                     if (model.Mode == "U")
                     {
-                        model.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        model.LastUpdatedByName = HttpContext.Session.GetString("EmpName");
+                        model.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                        model.LastUpdatedByName = HttpContext.Session.GetString($"EmpName_{formKey}");
                     }
 
                     ISTGrid = GetDetailTable(ISTDetail);
-                    model.MachineName = HttpContext.Session.GetString("ClientMachineName");
-                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                    model.MachineName = HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+                    model.IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
 
                     var Result = await IInterStore.SaveInterStore(model, ISTGrid);
 
@@ -307,26 +386,48 @@ namespace eTactWeb.Controllers
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
                             var model1 = new InterStoreTransferModel();
-                            model1.FinFromDate = HttpContext.Session.GetString("FromDate");
-                            model1.FinToDate = HttpContext.Session.GetString("ToDate");
-                            model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                            model1.CC = HttpContext.Session.GetString("Branch");
-                            model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            HttpContext.Session.Remove("KeyInterStoreTransferGrid");
-                            return RedirectToAction(nameof(ISTDashboard));
+                            model1.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                            model1.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+                            model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+                            model1.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+                            model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                            HttpContext.Session.Remove($"KeyInterStoreTransferGrid_{uniqueKey}");
+                            return Json(new
+                            {
+                                success = true,
+                                message = "Data Saved successfully",
+                                redirectUrl = Url.Action(
+               "Index",
+               "InterStoreTransfer",
+                       new { formKey = formKey }
+
+
+           )
+                            });
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
                             var model1 = new InterStoreTransferModel();
-                            model1.FinFromDate = HttpContext.Session.GetString("FromDate");
-                            model1.FinToDate = HttpContext.Session.GetString("ToDate");
-                            model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                            model1.CC = HttpContext.Session.GetString("Branch");
-                            model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            HttpContext.Session.Remove("KeyInterStoreTransferGrid");
-                            return RedirectToAction(nameof(ISTDashboard));
+                            model1.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                            model1.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+                            model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+                            model1.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+                            model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                            HttpContext.Session.Remove($"KeyInterStoreTransferGrid_{uniqueKey}");
+                            return Json(new
+                            {
+                                success = true,
+                                message = "Data Saved successfully",
+                                redirectUrl = Url.Action(
+               "Index",
+               "InterStoreTransfer",
+                       new { formKey = formKey }
+
+
+           )
+                            });
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
@@ -337,18 +438,28 @@ namespace eTactWeb.Controllers
                                 TempData["2627"] = "2627";
                                 Logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                                 var model2 = new InterStoreTransferModel();
-                                model2.FinFromDate = HttpContext.Session.GetString("FromDate");
-                                model2.FinToDate = HttpContext.Session.GetString("ToDate");
-                                model2.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                                model2.CC = HttpContext.Session.GetString("Branch");
-                                model2.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                                return View(model2);
+                                model2.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                                model2.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+                                model2.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+                                model2.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+                                model2.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                                //return RedirectToAction(nameof(InterStoreTransfer), new { formKey = formKey });
+                                return Json(new
+                                {
+                                    success = false,
+                                    message = "An unexpected error occurred."
+                                });
                             }
 
                             ViewBag.isSuccess = false;
                             TempData["500"] = "500";
                             Logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                            return RedirectToAction(nameof(ISTDashboard));
+                            //return RedirectToAction(nameof(ISTDashboard), new { formKey = formKey });
+                            return Json(new
+                            {
+                                success = false,
+                                message = "An unexpected error occurred."
+                            });
                         }
                         if (Result.StatusText == "TransDate" || Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
@@ -362,7 +473,15 @@ namespace eTactWeb.Controllers
                                 }
                                 else
                                 {
-                                    input = JsonConvert.SerializeObject(Result.Result);
+                                    //input = JsonConvert.SerializeObject(Result.Result);
+                                    var json = JsonConvert.SerializeObject(Result.Result);
+
+                                    var list = JsonConvert.DeserializeObject<List<dynamic>>(json);
+
+                                    if (list != null && list.Count > 0)
+                                    {
+                                        input = list[0].Result;
+                                    }
                                 }
 
                                 TempData["ErrorMessage"] = input;
@@ -378,7 +497,19 @@ namespace eTactWeb.Controllers
                             //return View("Error", Result);
                         }
                     }
-                    return RedirectToAction(nameof(ISTDashboard));
+                    //return RedirectToAction(nameof(ISTDashboard), new { formKey = formKey });
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Data Saved successfully",
+                        redirectUrl = Url.Action(
+       "Index",
+       "InterStoreTransfer",
+               new { formKey = formKey }
+
+
+   )
+                    });
                 }
             }
             catch (Exception ex)
@@ -399,11 +530,14 @@ namespace eTactWeb.Controllers
         }
 
         [Route("{controller}/Dashboard")]
-        public async Task<IActionResult> ISTDashboard(string SlipNo,string PartCode,string ItemName,string BatchNo,string SummaryDetail, string Flag = "True", string FromDate = "", string ToDate = "")
+        public async Task<IActionResult> ISTDashboard(string formKey, string SlipNo, string PartCode, string ItemName, string BatchNo, string SummaryDetail, string Flag = "True", string FromDate = "", string ToDate = "")
         {
-            HttpContext.Session.Remove("KeyInterStoreTransferGrid");
+            ViewBag.formKey = formKey;
+            var uniqueKey = Guid.NewGuid().ToString();
+            ViewBag.uniqueKey = uniqueKey;
+            HttpContext.Session.Remove($"KeyInterStoreTransferGrid_{uniqueKey}");
             var model = new ISTDashboard();
-            var yearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            var yearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
             DateTime now = DateTime.Now;
             DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
             model.FromDate = new DateTime(yearCode, now.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
@@ -416,7 +550,7 @@ namespace eTactWeb.Controllers
                 var _List = new List<TextValue>();
                 DataSet DS = Result.Result;
 
-                var DT = DS.Tables[0].DefaultView.ToTable(true, "EntryId", "Yearcode","EntryDate",
+                var DT = DS.Tables[0].DefaultView.ToTable(true, "EntryId", "Yearcode", "EntryDate",
                     "SlipNo", "SlipDate", "IssueToStoreWC", "Remark", "ActualEntryDate", "ItemCode", "Partcode", "ItemName", "LastUpdatetionDate", "FromStoreName",
                     "ToStorename", "TOWCName", "ActualEntryByName", "LastUpdatedByName", "TransferReason", "CC", "MAchineName", "TotalStockQty", "LotStockQty",
                     "Qty", "Unit", "AltQty", "Rate", "Batchno", "Uniquebatchno", "ReasonOfTransfer", "RecStoreStock", "AltUnit", "ToStoreId", "ToWCID", "ActualEntryBy", "LastUpdatedBy");
@@ -442,9 +576,9 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> DeleteByID(int ID,int YC, string EntryDate,int ActualEntryBy, string MachineName, string SummaryDetail,string FromDate = "",string ToDate = "",string SlipNo = "",string PartCode = "",string ItemName = "",string BatchNo = "")
+        public async Task<IActionResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy, string MachineName, string SummaryDetail, string FromDate = "", string ToDate = "", string SlipNo = "", string PartCode = "", string ItemName = "", string BatchNo = "")
         {
-            var Result = await IInterStore.DeleteByID(ID, YC,EntryDate,ActualEntryBy,MachineName).ConfigureAwait(false);
+            var Result = await IInterStore.DeleteByID(ID, YC, EntryDate, ActualEntryBy, MachineName).ConfigureAwait(false);
 
             if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone)
             {
@@ -456,11 +590,12 @@ namespace eTactWeb.Controllers
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
             }
-            return RedirectToAction("Dashboard", new {Flag = "false",FromDate = FromDate,ToDate = ToDate,SlipNo = SlipNo,PartCode= PartCode,ItemName = ItemName,BatchNo = BatchNo,SummaryDetail = SummaryDetail});
+            return RedirectToAction("Dashboard", new { Flag = "false", FromDate = FromDate, ToDate = ToDate, SlipNo = SlipNo, PartCode = PartCode, ItemName = ItemName, BatchNo = BatchNo, SummaryDetail = SummaryDetail });
         }
 
         public async Task<IActionResult> GetSearchData(ISTDashboard model)
         {
+            ViewBag.formKey = model.formKey;
             model.FromDate = ParseFormattedDate(model.FromDate);
             model.ToDate = ParseFormattedDate(model.ToDate);
             var Result = await IInterStore.GetDashboardData(model);
@@ -485,7 +620,7 @@ namespace eTactWeb.Controllers
             _memoryCache.Set("InterstoreList", model.ISTDashboardGrid);
             return PartialView("_ISTDashboardGrid", model);
         }
-       
+
         [HttpGet]
         public IActionResult GetInterStoreDashboardListForPDF()
         {
@@ -503,17 +638,17 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("Yearcode", typeof(int));
             DTSSGrid.Columns.Add("ItemCode", typeof(int));
             DTSSGrid.Columns.Add("SeqNo", typeof(int));
-            DTSSGrid.Columns.Add("TotalStockQty", typeof(float));
-            DTSSGrid.Columns.Add("LotStockQty", typeof(float));
-            DTSSGrid.Columns.Add("Qty", typeof(float));
+            DTSSGrid.Columns.Add("TotalStockQty", typeof(decimal));
+            DTSSGrid.Columns.Add("LotStockQty", typeof(decimal));
+            DTSSGrid.Columns.Add("Qty", typeof(decimal));
             DTSSGrid.Columns.Add("Unit", typeof(string));
-            DTSSGrid.Columns.Add("AltQty", typeof(float));
+            DTSSGrid.Columns.Add("AltQty", typeof(decimal));
             DTSSGrid.Columns.Add("AltUnit", typeof(string));
-            DTSSGrid.Columns.Add("Rate", typeof(float));
+            DTSSGrid.Columns.Add("Rate", typeof(decimal));
             DTSSGrid.Columns.Add("Batchno", typeof(string));
             DTSSGrid.Columns.Add("Uniquebatchno", typeof(string));
             DTSSGrid.Columns.Add("ReasonOfransfer", typeof(string));
-            DTSSGrid.Columns.Add("RecStoreStock", typeof(float));
+            DTSSGrid.Columns.Add("RecStoreStock", typeof(decimal));
             //DateTime DeliveryDt = new DateTime();
             foreach (var Item in DetailList)
             {
@@ -541,10 +676,10 @@ namespace eTactWeb.Controllers
             DTSSGrid.Dispose();
             return DTSSGrid;
         }
-        public async Task<JsonResult> EditItemRows(int SeqNo)
+        public async Task<JsonResult> EditItemRows(int SeqNo, string uniqueKey)
         {
             var MainModel = new InterStoreTransferModel();
-            string modelJson = HttpContext.Session.GetString("KeyInterStoreTransferGrid");
+            string modelJson = HttpContext.Session.GetString($"KeyInterStoreTransferGrid_{uniqueKey}");
             List<InterStoreTransferDetail> InterStoreGrid = new List<InterStoreTransferDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
@@ -554,9 +689,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(ISTGrid);
             return Json(JsonString);
         }
-        public IActionResult ClearGrid()
+        public IActionResult ClearGrid(string uniqueKey)
         {
-            HttpContext.Session.Remove("KeyInterStoreTransferGrid");
+            HttpContext.Session.Remove($"KeyInterStoreTransferGrid_{uniqueKey}");
             var MainModel = new InterStoreTransferModel();
             return PartialView("_InterStoreTransferDetail", MainModel);
         }
@@ -582,15 +717,15 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> CheckIssuedTransStock(int ItemCode,int YearCode,int EntryId,string TransDate,string TransNo,int Storeid,string batchno,string uniquebatchno,string Flag)
+        public async Task<JsonResult> CheckIssuedTransStock(int ItemCode, int YearCode, int EntryId, string TransDate, string TransNo, int Storeid, string batchno, string uniquebatchno, string Flag)
         {
-            var JSON = await IInterStore.CheckIssuedTransStock(ItemCode,YearCode,EntryId,TransDate,TransNo,Storeid,batchno,uniquebatchno,Flag);
+            var JSON = await IInterStore.CheckIssuedTransStock(ItemCode, YearCode, EntryId, TransDate, TransNo, Storeid, batchno, uniquebatchno, Flag);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetPrevQty(int EntryId,int YearCode,int ItemCode,string uniqueBatchno)
+        public async Task<JsonResult> GetPrevQty(int EntryId, int YearCode, int ItemCode, string uniqueBatchno)
         {
-            var JSON = await IInterStore.GetPrevQty(EntryId,YearCode,ItemCode,uniqueBatchno);
+            var JSON = await IInterStore.GetPrevQty(EntryId, YearCode, ItemCode, uniqueBatchno);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -630,10 +765,10 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillStockBatchNo(int ItemCode, string StoreName, int YearCode, string batchno)
+        public async Task<JsonResult> FillStockBatchNo(int ItemCode, string formKey, string StoreName, int YearCode, string batchno)
         {
-            var FinStartDate = HttpContext.Session.GetString("FromDate");
-            var JSON = await IInterStore.FillStockBatchNo(ItemCode, StoreName, YearCode, batchno,FinStartDate);
+            var FinStartDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            var JSON = await IInterStore.FillStockBatchNo(ItemCode, StoreName, YearCode, batchno, FinStartDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -642,6 +777,17 @@ namespace eTactWeb.Controllers
             var JSON = await IInterStore.GetUnitAltUnit(ItemCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }
+
+        public async Task<IActionResult> selectMultipleItem(string formKey, string GroupName, string CatName, int StoreID, string ToDate, string PartCode, string ItemName)
+        {
+            var model = new InterStoreTransferModel();
+            var FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"FromDate_{formKey}"));
+            model = await IInterStore.selectMultipleItem(GroupName, CatName, StoreID, FromDate, ToDate, PartCode, ItemName);
+
+
+            return PartialView("_InterStoreTransferShowAllItemGrid", model);
+
         }
     }
 }

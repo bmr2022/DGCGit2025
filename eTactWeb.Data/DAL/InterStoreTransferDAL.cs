@@ -16,7 +16,7 @@ namespace eTactWeb.Data.DAL
 {
     internal class InterStoreTransferDAL
     {
-     private readonly ConnectionStringService _connectionStringService;
+        private readonly ConnectionStringService _connectionStringService;
         public InterStoreTransferDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
@@ -120,7 +120,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        internal async Task<ResponseResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy,string MachineName)
+        internal async Task<ResponseResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy, string MachineName)
         {
             var _ResponseResult = new ResponseResult();
             var etrDt = CommonFunc.ParseFormattedDate(EntryDate);
@@ -219,17 +219,17 @@ namespace eTactWeb.Data.DAL
                         ItemCode = Convert.ToInt32(row["ItemCode"]),
                         PartCode = row["PartCode"].ToString(),
                         ItemName = row["ItemName"].ToString(),
-                        TotalStockQty = Convert.ToSingle(row["TotalStockQty"]),
-                        LotStockQty = Convert.ToSingle(row["LotStockQty"]),
-                        Qty = Convert.ToSingle(row["Qty"]),
+                        TotalStockQty = Convert.ToDecimal(row["TotalStockQty"]),
+                        LotStockQty = Convert.ToDecimal(row["LotStockQty"]),
+                        Qty = Convert.ToDecimal(row["Qty"]),
                         Unit = row["Unit"].ToString(),
-                        AltQty = Convert.ToSingle(row["AltQty"]),
+                        AltQty = Convert.ToDecimal(row["AltQty"]),
                         AltUnit = row["AltUnit"].ToString(),
-                        Rate = Convert.ToSingle(row["Rate"]),
+                        Rate = Convert.ToDecimal(row["Rate"]),
                         BatchNo = row["Batchno"].ToString(),
                         UniqueBatchNo = row["Uniquebatchno"].ToString(),
                         ReasonOfTransfer = row["ReasonOfTransfer"].ToString(),
-                        RecStoreStock = Convert.ToSingle(row["RecStoreStock"].ToString())
+                        RecStoreStock = Convert.ToDecimal(row["RecStoreStock"].ToString())
                     });
                 }
                 ItemList = ItemList.OrderBy(item => item.SeqNo).ToList();
@@ -536,5 +536,77 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+
+        public async Task<InterStoreTransferModel> selectMultipleItem(string GroupName, string CatName, int StoreID, string FromDate, string ToDate, string PartCode, string ItemName)
+        {
+            var resultList = new InterStoreTransferModel();
+            DataSet oDataSet = new DataSet();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand command = new SqlCommand("SPReportSTockRegister", connection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    ;
+
+                    command.Parameters.AddWithValue("@Flag", "BATCHWISESTOCKSUMMARY");
+                    command.Parameters.AddWithValue("@reportcallingfrom", "BatchWiseStockOnChallan");
+                    command.Parameters.AddWithValue("@GroupName", GroupName);
+                    command.Parameters.AddWithValue("@CatName", CatName);
+
+                    command.Parameters.AddWithValue("@Storeid", StoreID);
+                    command.Parameters.AddWithValue("@ToDate", CommonFunc.ParseFormattedDate(ToDate));
+                    command.Parameters.AddWithValue("@FromDate", CommonFunc.ParseFormattedDate(FromDate));
+                    command.Parameters.AddWithValue("@PartCode", PartCode);
+                    command.Parameters.AddWithValue("@ItemName", ItemName);
+
+
+                    await connection.OpenAsync();
+
+                    using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
+                    {
+                        dataAdapter.Fill(oDataSet);
+                    }
+                }
+
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    resultList.InterStoreDetails = (from DataRow row in oDataSet.Tables[0].Rows
+                                                    select new InterStoreTransferDetail
+                                                    {
+                                                        ItemCode = row["item_code"] == DBNull.Value ? 0 : Convert.ToInt32(row["item_code"]),
+
+                                                        PartCode = row["PartCode"] == DBNull.Value ? string.Empty : row["PartCode"].ToString(),
+                                                        ItemName = row["ItemName"] == DBNull.Value ? string.Empty : row["ItemName"].ToString(),
+
+                                                        BatchNo = row["batchno"] == DBNull.Value ? string.Empty : row["batchno"].ToString(),
+                                                        UniqueBatchNo = row["uniquebatchno"] == DBNull.Value ? string.Empty : row["uniquebatchno"].ToString(),
+
+
+                                                        Unit = row["unit"] == DBNull.Value ? string.Empty : row["unit"].ToString(),
+                                                        AltUnit = row["AltUnit"] == DBNull.Value ? string.Empty : row["AltUnit"].ToString(),
+
+                                                        LotStockQty = row["BatchStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["BatchStock"]),
+                                                        TotalStockQty = row["TotalStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalStock"]),
+                                                        Qty = row["BatchStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["BatchStock"]),
+                                                        Rate = row["rate"] == DBNull.Value ? 0 : Convert.ToDecimal(row["rate"]),
+
+
+                                                    }).ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching data.", ex);
+            }
+
+            return resultList;
+        }
+
     }
 }

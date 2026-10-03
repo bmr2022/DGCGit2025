@@ -13,6 +13,8 @@ namespace eTactWeb.DOM.Models
         public int EntryId { get; set; }
         public int YearCode { get; set; }
         public string? IPAddress { get; set; }
+        public string? formKey { get; set; }
+        public string? uniqueKey { get; set; }
         public string EntryDate { get; set; }
         public string SlipNo { get; set; }
         public string SlipDate { get; set; }
@@ -52,17 +54,17 @@ namespace eTactWeb.DOM.Models
         public int ItemCode { get; set; }
         public string PartCode { get; set; }
         public string ItemName { get; set; }
-        public float TotalStockQty { get; set; }
-        public float LotStockQty { get; set; }
-        public float Qty { get; set; }
+        public decimal TotalStockQty { get; set; }
+        public decimal LotStockQty { get; set; }
+        public decimal Qty { get; set; }
         public string Unit { get; set; }
-        public float AltQty { get; set; }
+        public decimal AltQty { get; set; }
         public string AltUnit { get; set; }
-        public float Rate { get; set; }
+        public decimal Rate { get; set; }
         public string BatchNo { get; set; }
         public string UniqueBatchNo { get; set; }
         public string ReasonOfTransfer { get; set; }
-        public float RecStoreStock { get; set; }
+        public decimal RecStoreStock { get; set; }
         public int SeqNo { get; set; }
     }
     public class InterStoreDashboard
@@ -82,16 +84,16 @@ namespace eTactWeb.DOM.Models
         public string TransferReason { get; set; }
         public string CC { get; set; }
         public string MachineName { get; set; }
-        public float TotalStockQty { get; set; }
-        public float LotStockQty { get; set; }
-        public float Qty { get; set; }
+        public decimal TotalStockQty { get; set; }
+        public decimal LotStockQty { get; set; }
+        public decimal Qty { get; set; }
         public string Unit { get; set; }
-        public float AltQty { get; set; }
+        public decimal AltQty { get; set; }
         public string AltUnit { get; set; }
-        public float Rate { get; set; }
+        public decimal Rate { get; set; }
         public string UniqueBatchNo { get; set; }
         public string ReasonOfTransfer { get; set; }
-        public float RecStoreStock { get; set; }
+        public decimal RecStoreStock { get; set; }
         public string PartCode { get; set; }
         public string ItemName { get; set; }
         public int ItemCode { get; set; }
@@ -106,7 +108,9 @@ namespace eTactWeb.DOM.Models
     {
         public string FromDate { get; set; }
         public string ToDate { get; set; }
-        public string  SummaryDetail{ get; set; }
+        public string formKey { get; set; }
+        public string uniqueKey { get; set; }
+        public string SummaryDetail { get; set; }
         public string Searchbox { get; set; }
         public IList<InterStoreDashboard> ISTDashboardGrid { get; set; }
     }

@@ -3,7 +3,15 @@
 @using System.Reflection.PortableExecutable
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+  var context = HttpContextAccessor.HttpContext;
+    string formKey =
+           context.Request.Query["formKey"].FirstOrDefault()
+        ?? context.Request.Headers["FormKey"].FirstOrDefault()
+            ??ViewBag.formKey
+
+        ??Model.formKey
+        ?? "";
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"YearCode_{formKey}"));
 }
 @if (Model.SummaryDetail == "Detail")
 {
@@ -68,7 +76,7 @@
                                         </a>
                                     </div>
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-action="InterStoreTransfer" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event,'@item.EntryId','@item.YearCode');">
+                                        <a class="table-link link-success"  asp-route-formKey="@formKey" asp-action="InterStoreTransfer" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event,'@item.EntryId','@item.YearCode');">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -79,25 +87,25 @@
                                     {
                                         <div id="editCursorDiv-@Cntr">
 
-                                            <a class="table-link link-primary" asp-action="InterStoreTransfer" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                            <a class="table-link link-primary"  asp-route-formKey="@formKey" asp-action="InterStoreTransfer" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                 </span>
                                             </a>
                                         </div>
-                                        <div id="deleteCursorDiv-@Cntr">
-                                            <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-EntryDate="@item.EntryDate"
-                           data-itemcode="@item.ItemCode" data-yearcode="@item.YearCode" data-entryid="@item.EntryId"
-                           data-slipdate="@item.SlipDate" data-slipno="@item.SlipNo" data-tostoreid="@item.ToStoreId"
-                           data-towcid="@item.ToWCID" data-batchno="@item.Batchno" data-uniquebatchno="@item.UniqueBatchNo"
-                           onclick="CheckIssuedTransStock(this,event)">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                        </div>
+                           //              <div id="deleteCursorDiv-@Cntr">
+                           //                  <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-EntryDate="@item.EntryDate"
+                           // data-itemcode="@item.ItemCode" data-yearcode="@item.YearCode" data-entryid="@item.EntryId"
+                           // data-slipdate="@item.SlipDate" data-slipno="@item.SlipNo" data-tostoreid="@item.ToStoreId"
+                           // data-towcid="@item.ToWCID" data-batchno="@item.Batchno" data-uniquebatchno="@item.UniqueBatchNo"
+                           // onclick="CheckIssuedTransStock(this,event)">
+                           //                      <span class="fa-stack">
+                           //                          <i class="fa fa-square fa-stack-2x"></i>
+                           //                          <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                           //                      </span>
+                           //                  </a>
+                           //              </div>
                                     }
                                     else
                                     {
@@ -110,14 +118,14 @@
                                                 </span>
                                             </a>
                                         </div>
-                                        <div>
-                                            <a class="table-link link-danger noCursor">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                        </div>
+                                        // <div>
+                                        //     <a class="table-link link-danger noCursor">
+                                        //         <span class="fa-stack">
+                                        //             <i class="fa fa-square fa-stack-2x"></i>
+                                        //             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        //         </span>
+                                        //     </a>
+                                        // </div>
                                     }
                                 </div>
                             </td>
@@ -201,7 +209,7 @@ else
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-action="InterStoreTransfer" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event,'@item.EntryId','@item.YearCode');">
+                                        <a class="table-link link-success"  asp-route-formKey="@formKey" asp-action="InterStoreTransfer" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event,'@item.EntryId','@item.YearCode');">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -212,31 +220,31 @@ else
                                     {
                                         <div id="editCursorDiv-@Cntr">
 
-                                            <a class="table-link link-primary" asp-action="InterStoreTransfer" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                            <a class="table-link link-primary"  asp-route-formKey="@formKey" asp-action="InterStoreTransfer" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                 </span>
                                             </a>
                                         </div>
-                                        <div id="deleteCursorDiv-@Cntr">
-                                            @*<a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="confirmdelete(event)">
-                        <span class="fa-stack">
-                        <i class="fa fa-square fa-stack-2x"></i>
-                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                        </span>
-                        </a>*@
-                                            <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-EntryDate="@item.EntryDate" asp-route-ActualEntryBy="@item.ActualEntryBy" asp-route-MachineName ="@item.MachineName"
-                           data-itemcode="@item.ItemCode" data-yearcode="@item.YearCode" data-entryid="@item.EntryId"
-                           data-slipdate="@item.SlipDate" data-slipno="@item.SlipNo" data-tostoreid="@item.ToStoreId"
-                           data-towcid="@item.ToWCID" data-batchno="@item.Batchno" data-uniquebatchno="@item.UniqueBatchNo"
-                           onclick="confirmdelete(event,this)">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                        </div>
+                        //                 <div id="deleteCursorDiv-@Cntr">
+                        //                     @*<a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="confirmdelete(event)">
+                        // <span class="fa-stack">
+                        // <i class="fa fa-square fa-stack-2x"></i>
+                        // <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        // </span>
+                        // </a>*@
+                        //                     <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-EntryDate="@item.EntryDate" asp-route-ActualEntryBy="@item.ActualEntryBy" asp-route-MachineName ="@item.MachineName"
+                        //    data-itemcode="@item.ItemCode" data-yearcode="@item.YearCode" data-entryid="@item.EntryId"
+                        //    data-slipdate="@item.SlipDate" data-slipno="@item.SlipNo" data-tostoreid="@item.ToStoreId"
+                        //    data-towcid="@item.ToWCID" data-batchno="@item.Batchno" data-uniquebatchno="@item.UniqueBatchNo"
+                        //    onclick="confirmdelete(event,this)">
+                        //                         <span class="fa-stack">
+                        //                             <i class="fa fa-square fa-stack-2x"></i>
+                        //                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        //                         </span>
+                        //                     </a>
+                        //                 </div>
                                     }
                                     else
                                     {
@@ -248,14 +256,14 @@ else
                                                 </span>
                                             </a>
                                         </div>
-                                        <div>
-                                            <a class="table-link link-danger noCursor">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                        </div>
+                                        // <div>
+                                        //     <a class="table-link link-danger noCursor">
+                                        //         <span class="fa-stack">
+                                        //             <i class="fa fa-square fa-stack-2x"></i>
+                                        //             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        //         </span>
+                                        //     </a>
+                                        // </div>
                                     }
                                 </div>
                             </td>

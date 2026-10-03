@@ -31,7 +31,24 @@
     .select2-container--default .select2-results > .select2-results__options {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
- 
+    }
+        .modal-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.form-label {
+    margin-bottom: 4px;
+}
+
+.form-control-sm,
+.form-select-sm {
+    border-radius: 8px;
+}
+
+.card {
+    border-radius: 12px;
+}
 
 </style>
 
@@ -39,10 +56,10 @@
     <form asp-action="InterStoreTransfer" autocomplete="off" class="form-horizontal">
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
-                <strong>Inter Store Transfer</strong>
+                <strong>Inter Store Transfer - Financial Year: @Model.YearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-                    <a asp-action="ISTDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
+                    <a asp-action="ISTDashboard" asp-route-formKey="@ViewBag.formKey" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
                         <i class="fa-duotone fa-grid-horizontal fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -56,6 +73,8 @@
                             <input asp-for="BatchNoback" type="hidden" value="@Model.BatchNoback" />
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                             <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                            <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                             @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
@@ -66,7 +85,8 @@
                         {
                             <div class="col-auto">
                                 @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action + ($('form')[0].action.indexOf('?') >= 0 ? '&' : '?') + 'formKey=' + encodeURIComponent('@ViewBag.formKey')"
+>
                                     @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
                                     <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
                                     REFRESH
@@ -207,9 +227,16 @@
                         <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
                         </button>
+
+
+                        <button type="button" tabindex="-1" id="ShowAllItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-danger" style="width:160px;">
+                                <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> Issue Bulk Item
+                            </button>
+
+                            
                     </h2>
 
-                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                    <div id="B_SAGrid" class="accordion-collapse show collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
                                 @*<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">*@
@@ -256,7 +283,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="Qty" class="control-label" style="color: red;">Qty*</label>
-                                    <input asp-for="Qty" class="form-control" onchange="GetAltQty();" />
+                                    <input asp-for="Qty" class="form-control" onchange="GetAltQty();" oninput="this.value=this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/(\.\d{6})\d+/,'$1');" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="Unit" class="control-label" style="color: red;">Unit*</label>
@@ -292,6 +319,9 @@
                                             <button type="button" class="btn btn-sm btn-outline-danger" onclick="ClearGrid()" style="margin-top:10px;">
                                                 CLEAR GRID
                                             </button>
+                                            
+                               
+                               
                                         </div>
                                     </div>
                                 </div>
@@ -389,18 +419,268 @@
 
 </div>
 
+<div class="modal fade" style="display:none;padding-left:0px;padding-right:100px;padding-top:40px" id="AddMultiplrItemModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" ">
+        <div class="modal-content" style="width:1280px">
+            <div class="modal-header flex-column align-items-stretch">
+
+                <!-- Top Header -->
+                <div class="d-flex justify-content-between align-items-center w-100 mb-3">
+                    <h5 class="modal-title fw-bold text-primary">
+                        <i class="fa fa-boxes me-2"></i> Multiple Item Selection
+                    </h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Search Panel -->
+                <div class="card border-0 shadow-sm w-100">
+                    <div class="card-body py-3">
+
+                        <div class="row g-3 align-items-end">
+
+                          
+                            <!-- Group -->
+                            <div class="col-xl-2 col-lg-3 col-md-4">
+                                <label class="form-label fw-semibold text-secondary small">
+                                    <i class="fa fa-layer-group me-1"></i> Group
+                                </label>
+                                <select class="form-select form-select-sm" id="Group_Code">
+                                    <option value="0">-Select Group-</option>
+                                </select>
+                            </div>
+
+                            <!-- Category -->
+                            <div class="col-xl-2 col-lg-3 col-md-4">
+                                <label class="form-label fw-semibold text-secondary small">
+                                    <i class="fa fa-tags me-1"></i> Category
+                                </label>
+                                <select class="form-select form-select-sm" id="ItemType">
+                                    <option value="0">-Select Category-</option>
+                                </select>
+                            </div>
+
+                           
+
+                            <!-- Part Code -->
+                            <div class="col-xl-2 col-lg-3 col-md-4">
+                                <label class="form-label fw-semibold text-secondary small">
+                                    <i class="fa fa-barcode me-1"></i> Part Code
+                                </label>
+                                <input type="text"
+                                       id="SearchPartCode"
+                                       class="form-control form-control-sm"
+                                       placeholder="Search Part Code">
+                            </div>
+
+                            <!-- Item Name -->
+                            <div class="col-xl-2 col-lg-3 col-md-4">
+                                <label class="form-label fw-semibold text-secondary small">
+                                    <i class="fa fa-cube me-1"></i> Item Name
+                                </label>
+                                <input type="text"
+                                       id="SearchItemName"
+                                       class="form-control form-control-sm"
+                                       placeholder="Search Item Name">
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="col-12 d-flex justify-content-end gap-2 pt-2">
+
+                               
+                                <button class="btn btn-sm btn-success px-4"
+                                        type="button"
+                                        onclick="ShowItemsData()">
+
+                                    <i class="fa fa-search me-1"></i> Show Items
+                                </button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>       
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+
+                            <div class="card-body text-center overflow-auto pb-0   ">
+                                @* <div class="d-flex align-items-center mb-2">
+                                
+                                    <div class="col-md-2 me-3" style="margin-left:50px">
+                                        <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
+                                    </div>
+                                    
+                                </div> *@
+                                <div class="table-responsive" style="max-height:350px;">
+                                    <table class="table table-hover table-bordered table-striped mb-0">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th>Sr#</th>
+                                                <th>Action<input type="checkbox" id="CheckAll"></th>
+                                                <th>Part Code</th>
+                                               <th>Item Name</th>
+                                                <th>Qty</th>
+                                                <th>Rate</th>
+                                               
+                                               
+                                                <th>TotalStock</th>
+                                                <th>Lot Stock</th>
+                                                <th>Batch No</th>
+                                                <th>Unique Batch No</th>
+
+                                                <th>Unit</th>
+                                               
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="MultiItemBody">
+                                            <partial name="_InterStoreTransferShowAllItemGrid" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="row g-2 gx-3">
+                        <div class="col-12 text-center">
+                            <strong>Total No Of Items : <span id="lblTotalNoOfItems1"></span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="GridMultiItemBtn btn btn-sm btn-outline-success me-2">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                    </button>
+
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade"
+     id="LotAllocationModal">
+
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5>Lot Allocation</h5>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden"
+                       id="FocusedItemCode" />
+
+                <!-- ITEM DETAILS -->
+
+                <div class="row mb-2">
+
+                    <div class="col-md-4">
+                        <label>Part Code</label>
+
+                        <input type="text"
+                               id="ModalPartCode"
+                               class="form-control"
+                               readonly />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Item Name</label>
+
+                        <input type="text"
+                               id="ModalItemName"
+                               class="form-control"
+                               readonly />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Total Stock</label>
+
+                        <input type="text"
+                               id="ModalTotalStock"
+                               class="form-control"
+                               readonly />
+                    </div>
+
+                </div>
+
+                <!-- REQUIRED QTY -->
+
+                <div class="row">
+
+                    <div class="col-md-12">
+
+                        <label>
+                            Required Qty
+                        </label>
+
+                        <input type="number"
+                               id="RequiredQty"
+                               class="form-control" />
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="AllocateLots()">
+
+                    Allocate
+
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div id="ajaxLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+        <span class="spinner-border text-primary" role="status"></span>
+        <br />
+        <span>Processing...</span>
+    </div>
+</div>
+
 @section Scripts
 {
     <script>
+         var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
         $(document).ready(function () {
+             formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
             GetFormRights();
            /*  $('#PartCode').select2();
             $('#ItemCode').select2(); */
-            //$('#Storeid').select2();
-            //$('#Wcid').select2();
+            // $('#Group_Code').select2();
+            // $('#ItemType').select2();
 
             $('#Remark').rules("remove", "required");
-            $('#ToWCID').prop("disabled", true);
+           // $('#ToWCID').prop("disabled", true);
+           if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+               $('#ToWCID').prop("disabled", true);
+              }
             FillStore();
             FillLoadToStoreName();
             AutoFillItems();
@@ -416,13 +696,9 @@
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
               
-
-              
-
-
-                var EntryDate = parseDateToFormat($('#EntryDate').val());
-                var SlipDate = parseDateToFormat($('#SlipDate').val());
-                var ActualEntryDate = parseDateToFormat($('#ActualEntryDate').val().split(" ")[0]);
+                var EntryDate = ($('#EntryDate').val());
+                var SlipDate = ($('#SlipDate').val());
+                var ActualEntryDate = ($('#ActualEntryDate').val());
 
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
                 $('#SlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SlipDate);
@@ -433,29 +709,37 @@
                 var finFromDate = $('#FinFromDate').val();
                 var finToDate = $('#FinToDate').val();
 
-                var dateParts1 = finFromDate.split("/");
-                var monthNames = {
-                    "Jan": "01",
-                    "Feb": "02",
-                    "Mar": "03",
-                    "Apr": "04",
-                    "May": "05",
-                    "Jun": "06",
-                    "Jul": "07",
-                    "Aug": "08",
-                    "Sep": "09",
-                    "Oct": "10",
-                    "Nov": "11",
-                    "Dec": "12"
-                };
+                // var dateParts1 = finFromDate.split("/");
+                // var monthNames = {
+                //     "Jan": "01",
+                //     "Feb": "02",
+                //     "Mar": "03",
+                //     "Apr": "04",
+                //     "May": "05",
+                //     "Jun": "06",
+                //     "Jul": "07",
+                //     "Aug": "08",
+                //     "Sep": "09",
+                //     "Oct": "10",
+                //     "Nov": "11",
+                //     "Dec": "12"
+                // };
 
-                var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
-                var dateParts2 = finToDate.split("/");
+                // var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                // var dateParts2 = finToDate.split("/");
 
-                var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+                // var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
-                $('#EntryDate,#SlipDate').datepicker("option", "minDate", formattedDate1);
-                $('#EntryDate,#SlipDate').datepicker("option", "maxDate", formattedDate2);
+                $('#EntryDate,#SlipDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
+                $('#EntryDate,#SlipDate').datepicker("option", "maxDate", parseDateToFormat(finToDate));
+                //for wc and store ddl
+                 $('#IssueToStoreWC').trigger('change');
+
+                    if ($('#IssueToStoreWC').val() == 'S') {
+                        $('#ToStoreId').val($('#hiddenToStoreId').val());
+                    } else {
+                        FillLoadTOWorkcenter(); 
+                    }
             }
             else {
                 GetServerDate();
@@ -463,36 +747,36 @@
                 var finFromDate = $('#FinFromDate').val();
                 var finToDate = $('#FinToDate').val();
 
-                var dateParts1 = finFromDate.split("/");
-                var monthNames = {
-                    "Jan": "01",
-                    "Feb": "02",
-                    "Mar": "03",
-                    "Apr": "04",
-                    "May": "05",
-                    "Jun": "06",
-                    "Jul": "07",
-                    "Aug": "08",
-                    "Sep": "09",
-                    "Oct": "10",
-                    "Nov": "11",
-                    "Dec": "12"
-                };
+                // var dateParts1 = finFromDate.split("/");
+                // var monthNames = {
+                //     "Jan": "01",
+                //     "Feb": "02",
+                //     "Mar": "03",
+                //     "Apr": "04",
+                //     "May": "05",
+                //     "Jun": "06",
+                //     "Jul": "07",
+                //     "Aug": "08",
+                //     "Sep": "09",
+                //     "Oct": "10",
+                //     "Nov": "11",
+                //     "Dec": "12"
+                // };
 
-                var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
-                var dateParts2 = finToDate.split("/");
+                // var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                // var dateParts2 = finToDate.split("/");
 
-                var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+                // var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
-                $('#EntryDate,#SlipDate').datepicker("option", "minDate", formattedDate1);
-                $('#EntryDate,#SlipDate').datepicker("option", "maxDate", formattedDate2);
+                $('#EntryDate,#SlipDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
+                $('#EntryDate,#SlipDate').datepicker("option", "maxDate", parseDateToFormat(finToDate));
                 FillLoadTOWorkcenter();
                 
                 if ($('#IssueToStoreWC').val() == 'S') {
                     $('#FromStoreId').val($('#hiddenFromStoreId').val());
                     $('#ToStoreId').val($('#hiddenToStoreId').val());
                 } else {
-                    $('#TossWCID').val($('#hiddenToWCID').val());
+                    $('#ToWCID').val($('#hiddenToWCID').val());
                 }
 
                 var rowCount = $('#divISTGrid tr').length;
@@ -547,18 +831,55 @@
         });
 
         $('#submitBTN').click(function (event) {
+            $(this).prop('disabled', true);
             event.preventDefault();
             if ($('#FromStoreId').val() == null) {
                 $.notify('Please select From StoreName.', 'error');
+                $(this).prop('disabled', false);
                 return false;
             }
             else if ($('#SlipDate').val() != ($('#EntryDate').val())) {
                 $.notify('SlipDate And EntryDate Must Be Same ...!', "error");
+                $(this).prop('disabled', false);
                 return false;
             }
 
             else {
-                $("form").submit();
+                // $("form").submit();
+                            // 🔥 AJAX SUBMIT
+            $.ajax({
+                url: $('form').attr('action'),
+                type: $('form').attr('method'),
+                data: $('form').serialize(),
+                beforeSend: function () {
+                    $('#ajaxLoader').show(); // ✅ Show loader
+                },
+                success: function (response) {
+
+                    // Success from controller
+                    if (response.success) {
+
+                        if (response.redirectUrl) {
+
+                            window.location.href = response.redirectUrl;
+
+                        }
+
+
+                        $('#ajaxLoader').hide();
+                        // optional redirect
+                        // window.location.href = response.redirectUrl;
+                    }
+                    else {
+                        // SP StatusText / validation error
+                        $.notify(response.message, "error");
+                        $('#ajaxLoader').hide();
+                    }
+                },
+                error: function () {
+                    $.notify("Unexpected server error", "error");
+                }
+            });
             }
         });
 
@@ -643,6 +964,7 @@
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
+                data:{formKey:formKey},
                 success: function (data) {
                     if (data != null) {
                         var obj = $.parseJSON(data);
@@ -861,7 +1183,7 @@
                 $.ajax({
                     url: '/InterStoreTransfer/EditItemRows',
                     type: "POST",
-                    data: { SeqNo: SeqNo },
+                    data: { SeqNo: SeqNo ,uniqueKey:uniqueKey},
                     async: false,
                     success: function (data) {
                         var obj = $.parseJSON(data);
@@ -938,7 +1260,7 @@
                     url: '@Url.Action("DeleteItemRow")',
                     type: "POST",
                     async: false,
-                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
+                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val(),uniqueKey:uniqueKey },
                     success: function (data, status, xhr) {
                         $('#divISTGrid').html(data);
                         //TotalNoOfRows();
@@ -1009,7 +1331,7 @@
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddInterStoreTransferDetail")',
-                data: SchData,
+                data: {model:SchData,uniqueKey:uniqueKey},
                 statusCode: {
                     207: function () {
                         $.notify('Duplicate Item...!', "info");
@@ -1055,6 +1377,153 @@
                 }
             });
         });
+
+
+
+
+
+                $('.GridMultiItemBtn').click(function (e) {
+            e.preventDefault();
+
+            var RowCount = $('#MultiItemBody tr').length;
+            var ArrMultiBatch = [];
+            var anyChecked = false;
+
+            for (var i = 1; i <= RowCount; i++) {
+
+                var $chk = $('#MBCheckbox-' + i);
+                if (!$chk.prop("checked")) continue;
+
+                anyChecked = true;
+
+                // -------- Cache values (NO LOGIC CHANGE) --------
+                var qty = parseFloat($('#Qty-' + i).val()) || 0;
+                var batchStock = parseFloat($('#BatchStock-' + i).val()) || 0;
+                var totalStock = parseFloat($('#TotalStock-' + i).val()) || 0;
+                var rate = parseFloat($('#Rate-' + i).val()) || 0;
+                var partCode = $('#PartCode-' + i).val();
+
+                // -------- Validations (UNCHANGED) --------
+                if (qty == 0) {
+                    $.notify('Please enter quantity for ' + partCode, 'error');
+                    return;
+                }
+
+                if (qty > batchStock) {
+                    $.notify('Please enter Valid quantity for ' + partCode, 'error');
+                    return;
+                }
+
+                if (qty > totalStock) {
+                    $.notify('Please enter Valid quantity for ' + partCode, 'error');
+                    return;
+                }
+
+                // if (rate == 0) {
+                //     $.notify('Please enter rate for ' + partCode, 'error');
+                //     return;
+                // }
+
+                if ($('#Unit-' + i).val() == '') {
+                    $.notify('Please select unit for ' + partCode, 'error');
+                    return;
+                }
+
+                // if ($('#HSNNo-' + i).val() == '') {
+                //     $.notify('Please enter HSN for ' + partCode, 'error');
+                //     return;
+                // }
+
+                // if ($('#Amount-' + i).val() == '') {
+                //     $.notify('amount can not be 0 ' + partCode, 'error');
+                //     return;
+                // }
+
+                // -------- Push object (UNCHANGED) --------
+                ArrMultiBatch.push({
+                    "ItemCode": parseInt($('#ItemCode-' + i).val()),
+                    "PartCode": partCode,
+                    "ItemName": $('#ItemName-' + i).val(),
+                    
+                    "Qty": $('#Qty-' + i).val(),
+                    "Unit": $('#unit-' + i).val(),
+                    "AltUnit": $('#unit-' + i).val(),
+                    "Rate": $('#Rate-' + i).val(),
+                    
+                    "BatchNo": $('#BatchNo-' + i).val(),
+                    "UniqueBatchNo": $('#uniquebatchno-' + i).val(),
+                    "TotalStockQty": $('#TotalStock-' + i).val(),
+                    "LotStockQty": $('#BatchStock-' + i).val(),
+                    "ReasonOfTransfer": $('#ReasonOfTransfer').val()
+
+                     
+                });
+            }
+
+            // -------- No selection check (UNCHANGED) --------
+            if (!anyChecked) {
+                $.notify('Please select any item.', 'error');
+                return;
+            }
+
+            // -------- AJAX (UNCHANGED) --------
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddMultipleItemDetail")',
+                data: { "model": ArrMultiBatch,"uniqueKey":uniqueKey },
+                beforeSend: function () {
+                    $('#ajaxLoader').show(); // ✅ Show loader
+                },
+                statusCode: {
+                    207: function () {
+                        $.notify('Duplicate Item...!', "info");
+                        $('#ajaxLoader').hide(); 
+                    }
+                },
+                success: function (data, status, xhr) {
+
+                    if (xhr.status == 200 && xhr.responseText == data) {
+                        $('#ajaxLoader').hide();
+                        $('#RoundOff').prop('selectedIndex', 0);
+
+                        if (data === "Duplicate") {
+                            $.notify('Duplicate Item Not Allowed.', "info");
+                        }
+                        else {
+                            $('#divISTGrid').html(data);
+                            // hideshow();
+                            $('#AddMultiplrItemModel').modal('hide');
+                            $.notify('Item Added To Grid', "success");
+                             // $('#divISTGrid').html(result);
+                        $('#PartCode,#ItemCode,#Storeid,#Wcid').val("").trigger("change");
+                        $('#batchno,#uniqbatchno,#AdjType,#reasonOfAdjustment,#PartCodeText,#ItemNameText').val("");
+                        $('#Unit,#altUnit').val("");
+                        $('#TotalStockQty,#LotStockQty,#AltQty,#ActualStockQty,#AdjQty,#Rate,#Amount,#Qty').val(0);
+                        $('#BatchNo,#UniqueBatchNo,#ReasonOfTransfer').val('');
+                        //$('#Storeid,#Wcid').prop("disabled", false);
+
+                        if ($('#StoreWorkCenter').val() == 'S') {
+                            $("#Storeid").prop("disabled", false);
+                            $("#Wcid").prop("disabled", true);
+                            // FillStore();
+                        } else {
+                            //  FillWorkCenter();
+                            $("#Wcid").prop("disabled", false);
+                            $("#Storeid").prop("disabled", true);
+                        }
+
+                        $('#PartCode').focus();
+                        }
+                    }
+                },
+                error: function () {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                }
+            });
+        });
+
+
+
 
         $('#ToWCID').change(function () {
             //FillWIPStock();
@@ -1271,7 +1740,7 @@
                 type: "POST",
                 url: "@Url.Action("FillStockBatchNo")",
                 async: false,
-                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
+                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno,"formKey":formKey },
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -1349,7 +1818,7 @@
                 type: "POST",
                 url: "@Url.Action("FillStockBatchNo")",
                 async: false,
-                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
+                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno,"formKey":formKey },
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -1570,6 +2039,7 @@
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("ClearGrid")",
+                data:{"uniqueKey":uniqueKey},
                 success: function (result, status, xhr) {
                     $('#divISTGrid').html(result.trim());
                     if (result == "") {
@@ -1653,7 +2123,8 @@
                                     value: item.Item_Code,
                                     itemName: item.ItemName,
                                     itemCode: item.Item_Code,
-                                    partCode: item.PartCode
+                                    partCode: item.PartCode,
+                                    onlyItemName:item.OnlyItemName
                                 };
                             }));
                         } else {
@@ -1688,6 +2159,22 @@
                 minLength: 2
             });
 
+            $("#SearchPartCode").autocomplete({
+                source: partCodeSource,
+                 appendTo: "#AddMultiplrItemModel" ,
+                select: function (event, ui) {
+                    $("#SearchPartCode").val(ui.item.value).data("itemcode", ui.item.itemCode);
+                   
+                    
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#SearchPartCode").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+
             // Autocomplete for ItemNameText
             $("#ItemNameText").autocomplete({
                 source: itemNameSource,
@@ -1711,6 +2198,73 @@
                 },
                 minLength: 2
             });
+
+
+             $("#SearchItemName").autocomplete({
+                source: itemNameSource,
+                 appendTo: "#AddMultiplrItemModel" ,
+                select: function (event, ui) {
+                    $("#SearchItemName").val(ui.item.onlyItemName).data("itemcode", ui.item.itemCode);
+                   
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#SearchItemName").val(ui.item.onlyItemName);
+                    return false;
+                },
+                minLength: 2
+            });
+                    // SearchPartCode
+        autoSelectSingleItem("#SearchPartCode", partCodeSource, function (item) {
+
+            $("#SearchPartCode")
+                .val(item.value)
+                .data("itemcode", item.itemCode);
+        });
+
+        // PartCodeText
+        autoSelectSingleItem("#PartCodeText", partCodeSource, function (item) {
+
+            $("#PartCodeText")
+                .val(item.value)
+                .data("itemcode", item.itemCode);
+
+            $("#ItemNameText").val(item.itemName);
+
+            $('#ItemCode').val(item.itemCode);
+            $('#PartCode').val(item.itemCode);
+
+            GetUnitAltUnit($('#ItemCode').val());
+            FillRate();
+            FillTotalStock();
+            FillStockBatchNo();
+        });
+
+        // SearchItemName
+        autoSelectSingleItem("#SearchItemName", itemNameSource, function (item) {
+
+            $("#SearchItemName")
+                .val(item.onlyItemName)
+                .data("itemcode", item.itemCode);
+        });
+
+        // ItemNameText
+        autoSelectSingleItem("#ItemNameText", itemNameSource, function (item) {
+
+            $("#ItemNameText")
+                .val(item.itemName)
+                .data("itemcode", item.itemCode);
+
+            $("#PartCodeText").val(item.partCode);
+
+            $('#ItemCode').val(item.itemCode);
+            $('#PartCode').val(item.itemCode);
+
+            GetUnitAltUnit($('#ItemCode').val());
+            FillRate();
+            FillTotalStock();
+            FillStockBatchNo();
+        });
 
         }
 
@@ -1851,6 +2405,10 @@
                             $.each(obj.Result, function (index, val) {
                                 $('#ToWCID').append('<option value="' + val.EntryID + '">' + val.WorkCenterDescription + '</option>');
                             });
+                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                  $('#ToWCID').prop("disabled", false);
+                                  $('#ToWCID').val($('#hiddenToWCID').val()).trigger("change");
+                               }
                         }
 
                     }
@@ -1916,6 +2474,324 @@
 
             window.history.back();
         }
+
+
+           function AddMultipleItems() {
+            $('#AddMultiplrItemModel').modal('show');
+            $('#MultiItemBody').empty();
+            GetMultiItemGroup();
+            FillMultiItemType();
+          
+            // FillStore();
+            // FillProcess();
+        }
+        $('#Group_Code').change(function () {
+            $('#MultiItemBody').empty();
+        });
+
+                        function FillMultiItemType() {
+             
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetAllItemTypes","StockRegister")",
+                dataType: "JSON",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ItemType').empty();
+                            $('#ItemType').append('<option value="" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ItemType').append('<option value="' + val.Type_Item +
+                                    '">' + val.Type_Item + '</option>');
+                            });
+
+                           // Initialize select2 AFTER data binding
+                    $('#ItemType').select2({
+                        width: '100%',
+                        dropdownParent: $('#AddMultiplrItemModel')
+                    });
+                        }
+
+                    }
+                }
+            });
+        }
+
+
+        function GetMultiItemGroup() {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetItemGroup","NRGP")',
+                dataType: "json",
+                async: false,
+
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#Group_Code').empty();
+                            $('#Group_Code').append('<option value=""  selected>-Select-</option>');
+
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#Group_Code').append('<option value="' + val.Group_name + '">' + val.Group_name + '</option>');
+                            });
+
+                            // Initialize select2 AFTER data binding
+                    $('#Group_Code').select2({
+                        width: '100%',
+                        dropdownParent: $('#AddMultiplrItemModel')
+                    });
+                        }
+                    }
+                }
+            });
+        }
+
+
+        function ShowItemsData() {
+
+
+            
+            var GroupName = $('#Group_Code').val();
+            var CatName = $('#ItemType').val();
+
+            var StoreID = $('#FromStoreId').val();
+          
+            var ToDate = $('#SlipDate').val();
+            var PartCode = $('#SearchPartCode').val();
+            var ItemName = $('#SearchItemName').val();
+
+          
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("selectMultipleItem")",
+                data: {
+                    GroupName: GroupName,
+                    CatName: CatName,
+
+                    StoreID: StoreID,
+                    
+                    ToDate: ToDate,
+                    PartCode:PartCode,
+                    ItemName:ItemName,
+                    formKey:formKey
+
+
+                },
+                beforeSend: function () {
+                    $('#ajaxLoader').show(); // ✅ Show loader
+                },
+                success: function (response) {
+                    // Clear the existing items in the table body
+                    $('#ajaxLoader').hide();
+                    $('#MultiItemBody').empty(); // Clear existing items
+                    $('#MultiItemBody').html(response);
+
+                    var totalRows = $('#MultiItemBody tr').length;
+                    $('#lblTotalNoOfItems1').text(totalRows);
+
+                },
+                error: function (xhr, status, error) {
+                    $('#ajaxLoader').hide();
+                    console.error("Error fetching BOM tree data:", error);
+                }
+            });
+           
+        }
+
+        function DeleteModelRow(el) {
+            // Find the row containing the clicked delete link
+            var row = $(el).closest("tr");
+            row.remove();
+
+            // Reset counter (first column)
+            $("#MultiItemBody tr").each(function (index) {
+                $(this).find("td:first").text(index + 1);
+            });
+        }
+
+        function OpenLotAllocationModal(ctrl) {
+
+    let rowNo =
+        $(ctrl).data('rowno');
+
+    let itemCode =
+        $('#ItemCode-' + rowNo).val();
+
+    let partCode =
+        $('#PartCode-' + rowNo).val();
+
+    let itemName =
+        $('#ItemName-' + rowNo).val();
+
+    let totalStock = 0;
+
+    // calculate total stock
+    $('#tblbody tr').each(function () {
+
+        let rowItemCode =
+            $(this)
+            .find('[id^="ItemCode-"]')
+            .val();
+
+        if (rowItemCode == itemCode) {
+
+            totalStock += parseFloat(
+                $(this)
+                .find('[id^="BatchStock-"]')
+                .val()
+            ) || 0;
+        }
+    });
+
+    // set values in modal
+    $('#FocusedItemCode').val(itemCode);
+
+    $('#ModalPartCode').val(partCode);
+
+    $('#ModalItemName').val(itemName);
+
+    $('#ModalTotalStock')
+        .val(totalStock.toFixed(2));
+
+    $('#RequiredQty').val('');
+
+    $('#LotAllocationModal')
+        .modal('show');
+
+    setTimeout(function () {
+
+        $('#RequiredQty').focus();
+
+    }, 300);
+}
+function AllocateLots() {
+
+    let itemCode =
+        $('#FocusedItemCode').val();
+
+    let requiredQty =
+        parseFloat($('#RequiredQty').val()) || 0;
+
+    let totalStock = 0;
+
+    // calculate total stock of item
+    $('#MultiItemBody tr').each(function () {
+
+        let row = $(this);
+
+        let rowItemCode =
+            row.find('[id^="ItemCode-"]').val();
+
+        if (rowItemCode == itemCode) {
+
+            totalStock += parseFloat(
+                row.find('[id^="BatchStock-"]').val()
+            ) || 0;
+        }
+    });
+
+    // validation
+    if (requiredQty > totalStock) {
+
+        alert(
+            'Required Qty exceeds Total Stock.\n' +
+            'Total Stock : ' +
+            totalStock.toFixed(6)
+        );
+
+        return;
+    }
+
+    let remainingQty = requiredQty;
+
+    // reset previous allocation
+    $('#MultiItemBody tr').each(function () {
+
+        let row = $(this);
+
+        let rowItemCode =
+            row.find('[id^="ItemCode-"]').val();
+
+        if (rowItemCode == itemCode) {
+
+            row.find('[id^="Qty-"]').val(0);
+
+            row.find('.MBCheckbox')
+                .prop('checked', false);
+        }
+    });
+
+    // lot allocation
+    $('#MultiItemBody tr').each(function () {
+
+        let row = $(this);
+
+        let rowItemCode =
+            row.find('[id^="ItemCode-"]').val();
+
+        if (rowItemCode == itemCode) {
+
+            if (remainingQty <= 0)
+                return false;
+
+            let batchStock =
+                parseFloat(
+                    row.find('[id^="BatchStock-"]').val()
+                ) || 0;
+
+            let allocateQty =
+                Math.min(remainingQty, batchStock);
+
+            row.find('[id^="Qty-"]')
+                .val(allocateQty.toFixed(6));
+
+            row.find('.MBCheckbox')
+                .prop('checked', allocateQty > 0);
+
+            let rowNo =
+                row.find('[id^="Qty-"]')
+                   .attr('id')
+                   .split('-')[1];
+
+            // CalculateOnlyAmountForMalti(rowNo);
+
+            remainingQty -= allocateQty;
+        }
+    });
+
+    $('#LotAllocationModal').modal('hide');
+}
+
+         $('#CheckAll').on('click', function () {
+
+            const isChecked = this.checked;   // single state
+            const rows = $('#MultiItemBody tr');
+
+            rows.each(function () {
+
+                const $row = $(this);
+                const $checkbox = $row.find('.mb-checkbox');
+
+                // Set checkbox once
+                $checkbox.prop('checked', isChecked);
+
+                if (!isChecked) return;
+
+                // Cache inputs
+                const rate = parseFloat($row.find('.rate').val()) || 0;
+                const qty = parseFloat($row.find('.qty').val()) || 0;
+
+                const amount = rate * qty;
+
+                $row.find('.amount').val(amount.toFixed(6));
+            });
+        });
 
     </script>
 }

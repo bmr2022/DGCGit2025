@@ -19,7 +19,7 @@ namespace eTactWeb.Data.BLL
 
         public InterStoreTransferBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _InterStoreTransferDAL = new InterStoreTransferDAL(configuration, iDataLogic,connectionStringService);
+            _InterStoreTransferDAL = new InterStoreTransferDAL(configuration, iDataLogic, connectionStringService);
         }
         public async Task<ResponseResult> AutoFillitem(string Flag, string showallitem, string SearchItemCode, string SearchPartCode)
         {
@@ -40,13 +40,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _InterStoreTransferDAL.FillStore();
         }
-        public async Task<ResponseResult> GetPrevQty(int EntryId,int  YearCode,int ItemCode,string uniqueBatchno)
+        public async Task<ResponseResult> GetPrevQty(int EntryId, int YearCode, int ItemCode, string uniqueBatchno)
         {
-            return await _InterStoreTransferDAL.GetPrevQty(EntryId,YearCode,ItemCode,uniqueBatchno);
+            return await _InterStoreTransferDAL.GetPrevQty(EntryId, YearCode, ItemCode, uniqueBatchno);
         }
-        public async Task<ResponseResult> DeleteByID(int ID,int YC, string EntryDate, int ActualEntryBy, string MachineName)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy, string MachineName)
         {
-            return await _InterStoreTransferDAL.DeleteByID(ID,YC,EntryDate, ActualEntryBy, MachineName);
+            return await _InterStoreTransferDAL.DeleteByID(ID, YC, EntryDate, ActualEntryBy, MachineName);
         }
         public async Task<ResponseResult> GetDashboardData(ISTDashboard model)
         {
@@ -54,15 +54,15 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<InterStoreTransferModel> GetViewByID(int ID, string Mode, int YC)
         {
-            return await _InterStoreTransferDAL.GetViewByID(ID,Mode,YC);
+            return await _InterStoreTransferDAL.GetViewByID(ID, Mode, YC);
         }
         public async Task<ResponseResult> GetUnitAltUnit(int ItemCode)
         {
             return await _InterStoreTransferDAL.GetUnitAltUnit(ItemCode);
         }
-        public async Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName, int YearCode, string batchno,string FinStartDate)
+        public async Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName, int YearCode, string batchno, string FinStartDate)
         {
-            return await _InterStoreTransferDAL.FillStockBatchNo(ItemCode, StoreName, YearCode, batchno,FinStartDate);
+            return await _InterStoreTransferDAL.FillStockBatchNo(ItemCode, StoreName, YearCode, batchno, FinStartDate);
         }
         public async Task<ResponseResult> FillLoadToStoreName()
         {
@@ -76,10 +76,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _InterStoreTransferDAL.GetAllowBackDate();
         }
-        
-        public async Task<ResponseResult> CheckIssuedTransStock(int ItemCode, int YearCode, int EntryId, string TransDate, string TransNo, int Storeid, string batchno, string uniquebatchno,string Flag)
+
+        public async Task<ResponseResult> CheckIssuedTransStock(int ItemCode, int YearCode, int EntryId, string TransDate, string TransNo, int Storeid, string batchno, string uniquebatchno, string Flag)
         {
-            return await _InterStoreTransferDAL.CheckIssuedTransStock(ItemCode,YearCode,EntryId,TransDate,TransNo,Storeid,batchno,uniquebatchno,Flag);
+            return await _InterStoreTransferDAL.CheckIssuedTransStock(ItemCode, YearCode, EntryId, TransDate, TransNo, Storeid, batchno, uniquebatchno, Flag);
         }
         public async Task<ResponseResult> FillPartCode(string ShowAllItems)
         {
@@ -89,9 +89,14 @@ namespace eTactWeb.Data.BLL
         {
             return await _InterStoreTransferDAL.FillItems(ShowAllItems);
         }
-        public async Task<ResponseResult> SaveInterStore(InterStoreTransferModel model,DataTable ISTGrid)
+        public async Task<ResponseResult> SaveInterStore(InterStoreTransferModel model, DataTable ISTGrid)
         {
-            return await _InterStoreTransferDAL.SaveInterStore(model,ISTGrid);
+            return await _InterStoreTransferDAL.SaveInterStore(model, ISTGrid);
+        }
+
+        public async Task<InterStoreTransferModel> selectMultipleItem(string GroupName, string CatName, int StoreID, string FromDate, string ToDate, string PartCode, string ItemName)
+        {
+            return await _InterStoreTransferDAL.selectMultipleItem(GroupName, CatName, StoreID, FromDate, ToDate, PartCode, ItemName);
         }
     }
 }
