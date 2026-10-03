@@ -12,13 +12,15 @@ public class PBDashBoard : TimeStamp
     public string? SummaryDetail { get; set; }
     public string? FromDate { get; set; }
     public string? ToDate { get; set; }
+    public string? formKey { get; set; }
+    public string? uniqueKey { get; set; }
     public string? FromDate1 { get; set; }
     public string? ToDate1 { get; set; }
     public string? Searchbox { get; set; }
     public IList<TextValue>? VendorNameList { get; set; }
     public IList<TextValue>? VoucherNoList { get; set; }
-    public IList<TextValue>? InvoiceNoList { get; set; } 
-    public IList<TextValue>? MRNNoList { get; set; }   
+    public IList<TextValue>? InvoiceNoList { get; set; }
+    public IList<TextValue>? MRNNoList { get; set; }
     public IList<TextValue>? GateNoList { get; set; }
     public IList<TextValue>? PartCodeList { get; set; }
     public IList<TextValue>? ItemNameList { get; set; }
@@ -40,7 +42,7 @@ public class PBDashBoard : TimeStamp
     public int? SeqNo { get; set; }
     public string? EnteredBy { get; set; }
     public string? UpdatedByName { get; set; }
-    
+
     public DateTime? EntryDate { get; set; }
     public string? InvoiceNo { get; set; }
     public DateTime? InvoiceDate { get; set; }
@@ -55,22 +57,22 @@ public class PBDashBoard : TimeStamp
     public string? GateNo { get; set; }
     public string? GateDate { get; set; }
     public string? DomesticImport { get; set; }
-    public float? BillAmount { get; set; }
-    public float? TaxableAmount { get; set; }
-    public float?  GSTAmount { get; set; }
-    public float? NetAmt { get; set; }
-    public float? PendAmt { get; set; }
-    public float? PaidAmt { get; set; }
+    public decimal? BillAmount { get; set; }
+    public decimal? TaxableAmount { get; set; }
+    public decimal? GSTAmount { get; set; }
+    public decimal? NetAmt { get; set; }
+    public decimal? PendAmt { get; set; }
+    public decimal? PaidAmt { get; set; }
     public string? PaymentTerm { get; set; }
     public string? Transporter { get; set; }
     public string? VehicleNo { get; set; }
     public string? Currency { get; set; }
     public string? ExchangeRate { get; set; }
-    public float? RoundOffAmt { get; set; }
+    public decimal? RoundOffAmt { get; set; }
     public string? RoundoffType { get; set; }
-    public float? TotalDiscountPercent { get; set; }
-    public float? PONetAmt { get; set; }
-    public float? TDSAmount { get; set; }
+    public decimal? TotalDiscountPercent { get; set; }
+    public decimal? PONetAmt { get; set; }
+    public decimal? TDSAmount { get; set; }
     public string? Remark { get; set; }
     public string? Branch { get; set; }
     public string? Approved { get; set; }
@@ -107,8 +109,8 @@ public class PBDashBoard : TimeStamp
     public string? PORate { get; set; }
     public string? DiscountPer { get; set; }
     public string? DiscountAmt { get; set; }
-    //[Column(TypeName = "decimal(10, 4)")]
-    
+    //    
+
     public decimal? Amount { get; set; }
     public string? PONo { get; set; }
     public string? PODate { get; set; }
@@ -137,8 +139,8 @@ public class PBDashBoard : TimeStamp
     public string? AgainstImportYearCode { get; set; }
     public string? AgainstVoucherNo { get; set; }
     public string? AgainstImportInvDate { get; set; }
-    public string? PurchBillEntryId { get; set; }
-    public int? PurchBillYearCode { get; set; }
+    public int PurchBillEntryId { get; set; }
+    public int PurchBillYearCode { get; set; }
     public string? ItemOrService { get; set; }
     public string? PurchaseBillDirectPB { get; set; }
     public string? ExpenseHead { get; set; }
@@ -288,17 +290,14 @@ public class PBItemDetail : TaxModel, ITDSModel
         new() { Value = "AltUnit", Text = "AltUnit" }
     };
 
-    [Column(TypeName = "decimal(10, 4)")]
     public decimal AdditionalRate { get; set; }
 
-    [Column(TypeName = "decimal(10, 4)")]
     public decimal AltPendQty { get; set; }
 
-    [Column(TypeName = "decimal(10, 4)")]
     public decimal AltQty { get; set; }
 
-    //[Column(TypeName = "decimal(10, 4)")]
-    
+    //    
+
     public decimal? Amount { get; set; }
 
     public string? Color { get; set; }
@@ -315,36 +314,33 @@ public class PBItemDetail : TaxModel, ITDSModel
     public bool IN1 { get; set; }
     public IList<TextValue>? ItemNameList { get; set; }
 
-    [Column(TypeName = "decimal(10, 4)")]
     public decimal? ItemNetAmount { get; set; }
-    
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal? GSTAmount { get; set; }
-    
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal? Taxableamt { get; set; }
 
     public string? ItemText { get; set; }
 
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal OtherRateCurr { get; set; }
     public IList<TextValue>? PartCodeList { get; set; }
     public string? PartText { get; set; }
     public string? TaxVariationPOvsBill { get; set; }
 
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal PBQty { get; set; }
 
     public int Process { get; set; }
     public IList<TextValue>? ProcessList { get; set; }
 
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal Rate { get; set; }
 
     public int SeqNo { get; set; }
     public bool SH { get; set; }
 
-    [Column(TypeName = "decimal(10, 4)")]
+
 
     public string? Unit { get; set; }
     public string? UnitRate { get; set; }
@@ -361,41 +357,38 @@ public class PBItemDetail : TaxModel, ITDSModel
     public int? DocTypeID { get; set; }
     public int? ItemCode { get; set; }
     public string? Item_Name { get; set; }
+    public string? TaxMandatory { get; set; }
     public string? PartCode { get; set; }
     public int? HSNNO { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal? BillQty { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal? RecQty { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal? AcceptedQty { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal? rejectedQty { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal? ReworkQty { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal? HoldQty { get; set; }
     public string? ItemLocation { get; set; }
 
     public int? NoOfCase { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
     public decimal? AltRecQty { get; set; }
     public string? AltUnit { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
     public decimal? BillRate { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal? MRP { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
     public decimal? RateIncludingTax { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
     public decimal? AmtInOtherCurrency { get; set; }
     public int? RateOfConvFactor { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal? AssessRate { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
+
     [Range(0, 100, ErrorMessage = "Should ve in between 0-100")]
     public decimal? DisPer { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal? DisAmt { get; set; }
     public string? ItemSize { get; set; }
     public string? ItemColor { get; set; }
@@ -404,7 +397,7 @@ public class PBItemDetail : TaxModel, ITDSModel
     public string? ForDepartment { get; set; }
     public int? ProcessId { get; set; }
     public string? ProcessName { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal? NewPoRate { get; set; }
     public string? pono { get; set; }
     public int? poyearcode { get; set; }
@@ -413,7 +406,7 @@ public class PBItemDetail : TaxModel, ITDSModel
     public int? schyearcode { get; set; }
     public string? SchDate { get; set; }
     public int? PoAmendNo { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal? PORate { get; set; }
     public string? MIRNO { get; set; }
     public int? MIRYEARCODE { get; set; }
@@ -477,7 +470,7 @@ public class PurchaseBillModel : PBItemDetail
     public int? DocTypeID { get; set; }
     public IList<TextValue>? DocumentList { get; set; }
 
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal Discount { get; set; }
 
     //[DataType(DataType.DateTime)]
@@ -492,8 +485,8 @@ public class PurchaseBillModel : PBItemDetail
     public int? UpdatedBy { get; set; }
     public DateTime? UpdatedOn { get; set; }
     public string? UpdatedByName { get; set; }
-    
-    [Column(TypeName = "decimal(10, 4)")]
+
+
     public decimal NetTotal { get; set; }
 
     public int OrderNo { get; set; }
@@ -513,7 +506,7 @@ public class PurchaseBillModel : PBItemDetail
     public string? VendorStateName { get; set; }
     public string? Transport { get; set; }
     public string? VehicleNo { get; set; }
-    public float? ExchangeRate { get; set; }
+    public decimal? ExchangeRate { get; set; }
     public string? EntryByMachineName { get; set; }
     public string? PBTypeServItem { get; set; }
     public int? ResposibleEmplforQC { get; set; }
@@ -536,19 +529,21 @@ public class PurchaseBillModel : PBItemDetail
     public IList<TextValue>? PreparedByList { get; set; }
     public string? Remark { get; set; }
 
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal TotalAmtAftrDiscount { get; set; }
 
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal TotalDiscountPercentage { get; set; }
     public int RoundOffAccountCode { get; set; }
     public bool RDT { get; set; }
     public string? TotalRoundOff { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
+
     public decimal TotalRoundOffAmt { get; set; }
     public int YearCode { get; set; }
     #endregion 
     public string? Approved { get; set; }
+    public string? formKey { get; set; }
+    public string? uniqueKey { get; set; }
     public string? ApprovedDate { get; set; }
     public int? Approvedby { get; set; }
 
@@ -570,9 +565,8 @@ public class PurchaseBillModel : PBItemDetail
     public string? StrGateDate { get; set; }
     public string? InvNo { get; set; }
     public string? InvDate { get; set; }
-
     public DateTime? InvoiceDate { get; set; }
-    public int? AccountCode { get; set; }
+    public int AccountCode { get; set; }
     public string? VendorName { get; set; }
     public int? StateId { get; set; }
     public string? StateName { get; set; }
@@ -587,7 +581,6 @@ public class PurchaseBillModel : PBItemDetail
     public int? PaymentDays { get; set; }
     public string? ModeOfTransport { get; set; }
     public string? FOC { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
     public int? CurrencyId { get; set; }
     public string? Currency { get; set; }
     public string? CC { get; set; }
@@ -596,7 +589,6 @@ public class PurchaseBillModel : PBItemDetail
     public int? ActualEntryBy { get; set; }
     public string? MRNRemark { get; set; }
     #endregion
-
     public string FromDateBack { get; set; }
     public string ToDateBack { get; set; }
     public string DashboardTypeBack { get; set; }
@@ -611,15 +603,19 @@ public class PurchaseBillModel : PBItemDetail
     public string ItemNameBack { get; set; }
     public string HSNNoBack { get; set; }
     public string GlobalSearchBack { get; set; }
-
     public IList<PBItemDetail>? ItemDetailGrid { get; set; }
     public IList<PBItemDetail>? ItemDetailGridd { get; set; }
+    public string? InvoiceType { get; set; }
+    public string? TallyCompanyName { get; set; }
+    public string TallyGUID { get; set; }
 }
 
 public class PBListDataModel
 {
     public int? PBListDataSeqNo { get; set; }
     public string? MRNType { get; set; }
+    public string? formKey { get; set; }
+    public string? uniqueKey { get; set; }
     public string? PartyName { get; set; }
     public IList<TextValue>? PartyNameList { get; set; }
     public string? MRNNo { get; set; }

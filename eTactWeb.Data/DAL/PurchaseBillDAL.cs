@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices.JavaScript;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.DAL;
@@ -61,7 +62,8 @@ public class PurchaseBillDAL
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
             SqlParams.Add(new SqlParameter("@EmpId", userId));
-            SqlParams.Add(new SqlParameter("@MainMenu", "PO"));
+            SqlParams.Add(new SqlParameter("@MainMenu", "Purchase Bill"));
+
 
             _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
         }
@@ -250,6 +252,24 @@ public class PurchaseBillDAL
         }
         return _ResponseResult;
     }
+    public async Task<ResponseResult> FillAccountName(string SearchAccount)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "FillAccountName"));
+            SqlParams.Add(new SqlParameter("@VendorName", SearchAccount));
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("GetPendingMRNListForPurchaseBill", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
     public async Task<ResponseResult> FillPONumber(int YearCode, string Ordertype, string POdate)
     {
         var _ResponseResult = new ResponseResult();
@@ -407,6 +427,25 @@ public class PurchaseBillDAL
 
         return _ResponseResult;
     }
+    public async Task<ResponseResult> FillItem(string SearchItemCode, string SearchPartCode)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "FillItem"));
+            SqlParams.Add(new SqlParameter("@Itemname", SearchItemCode ?? ""));
+            SqlParams.Add(new SqlParameter("@PartCode", SearchPartCode ?? ""));
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("GetPendingMRNListForPurchaseBill", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
     public async Task<ResponseResult> GetExchangeRate(string Currency)
     {
         var _ResponseResult = new ResponseResult();
@@ -539,7 +578,7 @@ public class PurchaseBillDAL
                                              select new PBDashBoard
                                              {
                                                  EntryID = !string.IsNullOrEmpty(dr["PurchBillEntryId"].ToString()) ? Convert.ToInt32(dr["PurchBillEntryId"]) : 0,
-                                                 PurchBillEntryId = !string.IsNullOrEmpty(dr["PurchBillEntryId"].ToString()) ? dr["PurchBillEntryId"].ToString() : "",
+                                                 PurchBillEntryId = !string.IsNullOrEmpty(dr["PurchBillEntryId"].ToString()) ? Convert.ToInt32(dr["PurchBillEntryId"]) : 0,
                                                  EntryDate = string.IsNullOrEmpty(dr["EntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["EntryDate"]),
                                                  InvoiceNo = dr["InvoiceNo"].ToString(),
                                                  InvoiceDate = string.IsNullOrEmpty(dr["InvoiceDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["InvoiceDate"]),
@@ -563,9 +602,9 @@ public class PurchaseBillDAL
                                                  VehicleNo = dr["Vehicleno"].ToString(),
                                                  ExchangeRate = dr["ExchangeRate"].ToString(),
                                                  RoundoffType = dr["RoundoffType"].ToString(),
-                                                 PONetAmt = !string.IsNullOrEmpty(dr["PONetAmt"].ToString()) ? Convert.ToSingle(dr["PONetAmt"]) : 0,
-                                                 TotalDiscountPercent = !string.IsNullOrEmpty(dr["ToatlDiscountPercent"].ToString()) ? Convert.ToSingle(dr["ToatlDiscountPercent"]) : 0,
-                                                 TDSAmount = !string.IsNullOrEmpty(dr["TDSAmount"].ToString()) ? Convert.ToSingle(dr["TDSAmount"]) : 0,
+                                                 PONetAmt = !string.IsNullOrEmpty(dr["PONetAmt"].ToString()) ? Convert.ToDecimal(dr["PONetAmt"]) : 0,
+                                                 TotalDiscountPercent = !string.IsNullOrEmpty(dr["ToatlDiscountPercent"].ToString()) ? Convert.ToDecimal(dr["ToatlDiscountPercent"]) : 0,
+                                                 TDSAmount = !string.IsNullOrEmpty(dr["TDSAmount"].ToString()) ? Convert.ToDecimal(dr["TDSAmount"]) : 0,
                                                  Remark = dr["Remark"].ToString(),
                                                  ModeOfTrans = dr["ModeOfTrans"].ToString(),
                                                  Approved = dr["Approved"].ToString(),
@@ -589,13 +628,13 @@ public class PurchaseBillDAL
                                                  UpdatedOn = string.IsNullOrEmpty(dr["LastUpdatedDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["LastUpdatedDate"]),
                                                  CreatedBy = string.IsNullOrEmpty(dr["Uid"].ToString()) ? 0 : Convert.ToInt32(dr["Uid"].ToString()),
                                                  CreatedOn = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
-                                                 BillAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToSingle(dr["BillAmt"]) : 0,
-                                                 TaxableAmount = !string.IsNullOrEmpty(dr["Taxableamt"].ToString()) ? Convert.ToSingle(dr["Taxableamt"]) : 0,
-                                                 GSTAmount = !string.IsNullOrEmpty(dr["GSTAmount"].ToString()) ? Convert.ToSingle(dr["GSTAmount"]) : 0,
-                                                 RoundOffAmt = !string.IsNullOrEmpty(dr["RoundOffAmt"].ToString()) ? Convert.ToSingle(dr["RoundOffAmt"]) : 0,
-                                                 NetAmt = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToSingle(dr["NetAmt"]) : 0,
-                                                 PendAmt = !string.IsNullOrEmpty(dr["PendAmt"].ToString()) ? Convert.ToSingle(dr["PendAmt"]) : 0,
-                                                 PaidAmt = !string.IsNullOrEmpty(dr["PaidAmt"].ToString()) ? Convert.ToSingle(dr["PaidAmt"]) : 0,
+                                                 BillAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToDecimal(dr["BillAmt"]) : 0,
+                                                 TaxableAmount = !string.IsNullOrEmpty(dr["Taxableamt"].ToString()) ? Convert.ToDecimal(dr["Taxableamt"]) : 0,
+                                                 GSTAmount = !string.IsNullOrEmpty(dr["GSTAmount"].ToString()) ? Convert.ToDecimal(dr["GSTAmount"]) : 0,
+                                                 RoundOffAmt = !string.IsNullOrEmpty(dr["RoundOffAmt"].ToString()) ? Convert.ToDecimal(dr["RoundOffAmt"]) : 0,
+                                                 NetAmt = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToDecimal(dr["NetAmt"]) : 0,
+                                                 PendAmt = !string.IsNullOrEmpty(dr["PendAmt"].ToString()) ? Convert.ToDecimal(dr["PendAmt"]) : 0,
+                                                 PaidAmt = !string.IsNullOrEmpty(dr["PaidAmt"].ToString()) ? Convert.ToDecimal(dr["PaidAmt"]) : 0,
                                                  MRNType = dr["PurchaseBillTypeMRNJWChallan"].ToString(),
                                                  DocumentName = dr["DocumentType"].ToString(),
                                                  PartCode = dr["PartCode"].ToString(),
@@ -661,7 +700,7 @@ public class PurchaseBillDAL
                                              select new PBDashBoard
                                              {
                                                  EntryID = !string.IsNullOrEmpty(dr["PurchBillEntryId"].ToString()) ? Convert.ToInt32(dr["PurchBillEntryId"]) : 0,
-                                                 PurchBillEntryId = !string.IsNullOrEmpty(dr["PurchBillEntryId"].ToString()) ? dr["PurchBillEntryId"].ToString() : "",
+                                                 PurchBillEntryId = !string.IsNullOrEmpty(dr["PurchBillEntryId"].ToString()) ? Convert.ToInt32(dr["PurchBillEntryId"]) : 0,
                                                  EntryDate = string.IsNullOrEmpty(dr["EntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["EntryDate"]),
                                                  InvoiceNo = dr["InvoiceNo"].ToString(),
                                                  InvoiceDate = string.IsNullOrEmpty(dr["InvoiceDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["InvoiceDate"]),
@@ -685,9 +724,9 @@ public class PurchaseBillDAL
                                                  VehicleNo = dr["Vehicleno"].ToString(),
                                                  ExchangeRate = dr["ExchangeRate"].ToString(),
                                                  RoundoffType = dr["RoundoffType"].ToString(),
-                                                 PONetAmt = !string.IsNullOrEmpty(dr["PONetAmt"].ToString()) ? Convert.ToSingle(dr["PONetAmt"]) : 0,
-                                                 TotalDiscountPercent = !string.IsNullOrEmpty(dr["ToatlDiscountPercent"].ToString()) ? Convert.ToSingle(dr["ToatlDiscountPercent"]) : 0,
-                                                 TDSAmount = !string.IsNullOrEmpty(dr["TDSAmount"].ToString()) ? Convert.ToSingle(dr["TDSAmount"]) : 0,
+                                                 PONetAmt = !string.IsNullOrEmpty(dr["PONetAmt"].ToString()) ? Convert.ToDecimal(dr["PONetAmt"]) : 0,
+                                                 TotalDiscountPercent = !string.IsNullOrEmpty(dr["ToatlDiscountPercent"].ToString()) ? Convert.ToDecimal(dr["ToatlDiscountPercent"]) : 0,
+                                                 TDSAmount = !string.IsNullOrEmpty(dr["TDSAmount"].ToString()) ? Convert.ToDecimal(dr["TDSAmount"]) : 0,
                                                  Remark = dr["Remark"].ToString(),
                                                  ModeOfTrans = dr["ModeOfTrans"].ToString(),
                                                  Approved = dr["Approved"].ToString(),
@@ -709,13 +748,13 @@ public class PurchaseBillDAL
                                                  UpdatedOn = string.IsNullOrEmpty(dr["LastUpdatedDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["LastUpdatedDate"]),
                                                  CreatedBy = string.IsNullOrEmpty(dr["Uid"].ToString()) ? 0 : Convert.ToInt32(dr["Uid"].ToString()),
                                                  CreatedOn = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
-                                                 BillAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToSingle(dr["BillAmt"]) : 0,
-                                                 TaxableAmount = !string.IsNullOrEmpty(dr["Taxableamt"].ToString()) ? Convert.ToSingle(dr["Taxableamt"]) : 0,
-                                                 GSTAmount = !string.IsNullOrEmpty(dr["GSTAmount"].ToString()) ? Convert.ToSingle(dr["GSTAmount"]) : 0,
-                                                 RoundOffAmt = !string.IsNullOrEmpty(dr["RoundOffAmt"].ToString()) ? Convert.ToSingle(dr["RoundOffAmt"]) : 0,
-                                                 NetAmt = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToSingle(dr["NetAmt"]) : 0,
-                                                 PendAmt = !string.IsNullOrEmpty(dr["PendAmt"].ToString()) ? Convert.ToSingle(dr["PendAmt"]) : 0,
-                                                 PaidAmt = !string.IsNullOrEmpty(dr["PaidAmt"].ToString()) ? Convert.ToSingle(dr["PaidAmt"]) : 0,
+                                                 BillAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToDecimal(dr["BillAmt"]) : 0,
+                                                 TaxableAmount = !string.IsNullOrEmpty(dr["Taxableamt"].ToString()) ? Convert.ToDecimal(dr["Taxableamt"]) : 0,
+                                                 GSTAmount = !string.IsNullOrEmpty(dr["GSTAmount"].ToString()) ? Convert.ToDecimal(dr["GSTAmount"]) : 0,
+                                                 RoundOffAmt = !string.IsNullOrEmpty(dr["RoundOffAmt"].ToString()) ? Convert.ToDecimal(dr["RoundOffAmt"]) : 0,
+                                                 NetAmt = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToDecimal(dr["NetAmt"]) : 0,
+                                                 PendAmt = !string.IsNullOrEmpty(dr["PendAmt"].ToString()) ? Convert.ToDecimal(dr["PendAmt"]) : 0,
+                                                 PaidAmt = !string.IsNullOrEmpty(dr["PaidAmt"].ToString()) ? Convert.ToDecimal(dr["PaidAmt"]) : 0,
                                                  MRNType = dr["PurchaseBillTypeMRNJWChallan"].ToString(),
                                                  DocumentName = dr["DocumentType"].ToString(),
                                                  PartCode = dr["PartCode"].ToString(),
@@ -793,9 +832,9 @@ public class PurchaseBillDAL
                                                      VendorName = dr["VendorName"].ToString(),
                                                      PartCode = dr["PartCode"].ToString(),
                                                      ItemName = dr["ItemName"].ToString(),
-                                                     BillAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToSingle(dr["BillAmt"]) : 0,
-                                                     NetAmt = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToSingle(dr["NetAmt"]) : 0,
-                                                     TaxableAmount = !string.IsNullOrEmpty(dr["TaxableAmt"].ToString()) ? Convert.ToSingle(dr["TaxableAmt"]) : 0,
+                                                     BillAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToDecimal(dr["BillAmt"]) : 0,
+                                                     NetAmt = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToDecimal(dr["NetAmt"]) : 0,
+                                                     TaxableAmount = !string.IsNullOrEmpty(dr["TaxableAmt"].ToString()) ? Convert.ToDecimal(dr["TaxableAmt"]) : 0,
                                                      ExpenseHead = !string.IsNullOrEmpty(dr["ExpenseHead"].ToString()) ? dr["ExpenseHead"].ToString() : string.Empty,
                                                      ExpenseAmt = !string.IsNullOrEmpty(dr["ExpenseAmt"].ToString()) ? Convert.ToDecimal(dr["ExpenseAmt"]) : 0,
                                                      CGSTHead = !string.IsNullOrEmpty(dr["CGSTHead"].ToString()) ? dr["CGSTHead"].ToString() : string.Empty,
@@ -807,7 +846,7 @@ public class PurchaseBillDAL
                                                      IGSTHead = !string.IsNullOrEmpty(dr["IGSTHead"].ToString()) ? dr["IGSTHead"].ToString() : string.Empty,
                                                      IGSTper = !string.IsNullOrEmpty(dr["IGSTper"].ToString()) ? Convert.ToDecimal(dr["IGSTper"]) : 0,
                                                      IGSTAmt = !string.IsNullOrEmpty(dr["IGSTAmt"].ToString()) ? Convert.ToDecimal(dr["IGSTAmt"]) : 0,
-                                                     GSTAmount = !string.IsNullOrEmpty(dr["GSTAmount"].ToString()) ? Convert.ToSingle(dr["GSTAmount"]) : 0,
+                                                     GSTAmount = !string.IsNullOrEmpty(dr["GSTAmount"].ToString()) ? Convert.ToDecimal(dr["GSTAmount"]) : 0,
                                                      AgainstVoucherNo = dr["AgainstVoucherNo"].ToString(),
                                                  }).OrderBy(a => a.EntryID).ToList();
                 }
@@ -820,7 +859,7 @@ public class PurchaseBillDAL
                                                  select new PBDashBoard
                                                  {
                                                      EntryID = !string.IsNullOrEmpty(dr["PurchBillEntryId"].ToString()) ? Convert.ToInt32(dr["PurchBillEntryId"]) : 0,
-                                                     PurchBillEntryId = !string.IsNullOrEmpty(dr["PurchBillEntryId"].ToString()) ? dr["PurchBillEntryId"].ToString() : "",
+                                                     PurchBillEntryId = !string.IsNullOrEmpty(dr["PurchBillEntryId"].ToString()) ? Convert.ToInt32(dr["PurchBillEntryId"]) : 0,
                                                      EntryDate = string.IsNullOrEmpty(dr["EntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["EntryDate"]),
                                                      InvoiceNo = dr["InvoiceNo"].ToString(),
                                                      InvoiceDate = string.IsNullOrEmpty(dr["InvoiceDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["InvoiceDate"]),
@@ -844,9 +883,9 @@ public class PurchaseBillDAL
                                                      VehicleNo = dr["Vehicleno"].ToString(),
                                                      ExchangeRate = dr["ExchangeRate"].ToString(),
                                                      RoundoffType = dr["RoundoffType"].ToString(),
-                                                     PONetAmt = !string.IsNullOrEmpty(dr["PONetAmt"].ToString()) ? Convert.ToSingle(dr["PONetAmt"]) : 0,
-                                                     TotalDiscountPercent = !string.IsNullOrEmpty(dr["ToatlDiscountPercent"].ToString()) ? Convert.ToSingle(dr["ToatlDiscountPercent"]) : 0,
-                                                     TDSAmount = !string.IsNullOrEmpty(dr["TDSAmount"].ToString()) ? Convert.ToSingle(dr["TDSAmount"]) : 0,
+                                                     PONetAmt = !string.IsNullOrEmpty(dr["PONetAmt"].ToString()) ? Convert.ToDecimal(dr["PONetAmt"]) : 0,
+                                                     TotalDiscountPercent = !string.IsNullOrEmpty(dr["ToatlDiscountPercent"].ToString()) ? Convert.ToDecimal(dr["ToatlDiscountPercent"]) : 0,
+                                                     TDSAmount = !string.IsNullOrEmpty(dr["TDSAmount"].ToString()) ? Convert.ToDecimal(dr["TDSAmount"]) : 0,
                                                      Remark = dr["Remark"].ToString(),
                                                      ModeOfTrans = dr["ModeOfTrans"].ToString(),
                                                      Approved = dr["Approved"].ToString(),
@@ -906,11 +945,11 @@ public class PurchaseBillDAL
                                                      UpdatedOn = string.IsNullOrEmpty(dr["LastUpdatedDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["LastUpdatedDate"]),
                                                      CreatedBy = string.IsNullOrEmpty(dr["Uid"].ToString()) ? 0 : Convert.ToInt32(dr["Uid"].ToString()),
                                                      CreatedOn = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
-                                                     BillAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToSingle(dr["BillAmt"]) : 0,
-                                                     TaxableAmount = !string.IsNullOrEmpty(dr["Taxableamt"].ToString()) ? Convert.ToSingle(dr["Taxableamt"]) : 0,
-                                                     GSTAmount = !string.IsNullOrEmpty(dr["GSTAmount"].ToString()) ? Convert.ToSingle(dr["GSTAmount"]) : 0,
-                                                     RoundOffAmt = !string.IsNullOrEmpty(dr["RoundOffAmt"].ToString()) ? Convert.ToSingle(dr["RoundOffAmt"]) : 0,
-                                                     NetAmt = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToSingle(dr["NetAmt"]) : 0,
+                                                     BillAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToDecimal(dr["BillAmt"]) : 0,
+                                                     TaxableAmount = !string.IsNullOrEmpty(dr["Taxableamt"].ToString()) ? Convert.ToDecimal(dr["Taxableamt"]) : 0,
+                                                     GSTAmount = !string.IsNullOrEmpty(dr["GSTAmount"].ToString()) ? Convert.ToDecimal(dr["GSTAmount"]) : 0,
+                                                     RoundOffAmt = !string.IsNullOrEmpty(dr["RoundOffAmt"].ToString()) ? Convert.ToDecimal(dr["RoundOffAmt"]) : 0,
+                                                     NetAmt = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToDecimal(dr["NetAmt"]) : 0,
                                                      Amount = !string.IsNullOrEmpty(dr["Amount"].ToString()) ? Convert.ToDecimal(dr["Amount"]) : 0,
                                                      MRNType = dr["PurchaseBillTypeMRNJWChallan"].ToString(),
                                                      DocumentName = dr["DocumentType"].ToString(),
@@ -985,21 +1024,21 @@ public class PurchaseBillDAL
                     MainModel.VehicleNo = oDataSet.Tables[0].Rows[0]["Vehicleno"].ToString();
                     MainModel.VendorName = oDataSet.Tables[0].Rows[0]["VendorName"].ToString();
                     MainModel.MRNNo = oDataSet.Tables[0].Rows[0]["MRNNo"].ToString();
-                    MainModel.MRNYearCode = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["MRNYearCode"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["MRNYearCode"]); 
-                    MainModel.MRNEntryId = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["MRNEntryId"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["MRNEntryId"]); 
+                    MainModel.MRNYearCode = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["MRNYearCode"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["MRNYearCode"]);
+                    MainModel.MRNEntryId = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["MRNEntryId"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["MRNEntryId"]);
                     MainModel.StrMRNEntryDate = oDataSet.Tables[0].Rows[0]["MRNDate"].ToString();
                     MainModel.GateNo = oDataSet.Tables[0].Rows[0]["GateNo"].ToString();
-                    MainModel.GateYearCode = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["GateYearcode"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["GateYearcode"]); 
+                    MainModel.GateYearCode = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["GateYearcode"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["GateYearcode"]);
                     MainModel.GateEntryId = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["GateEntryId"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["GateEntryId"]);
-                    MainModel.RoundOffAccountCode = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["RoundOffAccountCode"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["RoundOffAccountCode"]); 
+                    MainModel.RoundOffAccountCode = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["RoundOffAccountCode"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["RoundOffAccountCode"]);
                     MainModel.StrGateDate = oDataSet.Tables[0].Rows[0]["GateDate"].ToString();
                     MainModel.GSTNO = oDataSet.Tables[0].Rows[0]["GSTNO"].ToString();
                     MainModel.GSTRegistered = oDataSet.Tables[0].Rows[0]["GSTRegistered"].ToString();
-                    MainModel.MRNRemark = oDataSet.Tables[0].Rows[0]["MrnRemark"].ToString(); 
+                    MainModel.MRNRemark = oDataSet.Tables[0].Rows[0]["MrnRemark"].ToString();
                     MainModel.PurchaseBillDirectPB = oDataSet.Tables[0].Rows[0]["PurchaseBillDirectPB"].ToString();
                     MainModel.TypeITEMSERVASSETS = oDataSet.Tables[0].Rows[0]["TypeITEMSERVASSETS"].ToString();
                     MainModel.PurchaseBillTypeMRNJWChallan = oDataSet.Tables[0].Rows[0]["PurchaseBillTypeMRNJWChallan"].ToString();
-                    MainModel.ExchangeRate = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["ExchangeRate"].ToString()) ? 0 : Convert.ToSingle(oDataSet.Tables[0].Rows[0]["ExchangeRate"]);
+                    MainModel.ExchangeRate = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["ExchangeRate"].ToString()) ? 0 : Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["ExchangeRate"]);
                     MainModel.RateOfConvFactor = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["ConversionFactor"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["ConversionFactor"]);
                     MainModel.ItemNetAmount = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["NetAmt"].ToString()) ? 0 : Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["NetAmt"]);
                     MainModel.GSTAmount = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["GSTAmount"].ToString()) ? 0 : Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["GSTAmount"]);
@@ -1023,7 +1062,7 @@ public class PurchaseBillDAL
                     MainModel.Approvedby = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["Approvedby"].ToString());
                     MainModel.CretaedByName = oDataSet.Tables[0].Rows[0]["EntryByMachine"].ToString();
                     MainModel.TaxVariationPOvsBill = oDataSet.Tables[0].Rows[0]["TaxVariationPOvsBill"].ToString();
-
+                    MainModel.TallyGUID = oDataSet.Tables[0].Rows[0]["TallyGUID"].ToString();
                     MainModel.Remark = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["Remark"].ToString()) ? string.Empty : oDataSet.Tables[0].Rows[0]["Remark"].ToString();
                     MainModel.CreatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[0]["ActualEntryDate"]);
                     if (!string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["UpdatedBy"].ToString()))
@@ -1076,8 +1115,8 @@ public class PurchaseBillDAL
                             AmtInOtherCurrency = !string.IsNullOrEmpty(row["AmtinOtherCurr"].ToString()) ? Convert.ToInt32(row["AmtinOtherCurr"]) : 0,
                             RateOfConvFactor = !string.IsNullOrEmpty(row["RateConversionFactor"].ToString()) ? Convert.ToInt32(row["RateConversionFactor"]) : 0,
                             AssessRate = !string.IsNullOrEmpty(row["AssesAmount"].ToString()) ? Convert.ToDecimal(row["AssesAmount"]) : 0,
-                            DisPer = !string.IsNullOrEmpty(row["DiscountPer"].ToString()) ? Convert.ToInt32(row["DiscountPer"]) : 0,
-                            DisAmt = !string.IsNullOrEmpty(row["DiscountAmt"].ToString()) ? Convert.ToInt32(row["DiscountAmt"]) : 0,
+                            DisPer = !string.IsNullOrEmpty(row["DiscountPer"].ToString()) ? Convert.ToDecimal(row["DiscountPer"]) : 0,
+                            DisAmt = !string.IsNullOrEmpty(row["DiscountAmt"].ToString()) ? Convert.ToDecimal(row["DiscountAmt"]) : 0,
                             ItemSize = row["ItemSize"].ToString(),
                             ItemColor = row["ItemColor"].ToString(),
                             ItemModel = row["ItemModel"].ToString(),
@@ -1236,7 +1275,8 @@ public class PurchaseBillDAL
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
 
-            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_PurchaseBillMainDetail", SqlParams);
+            //_ResponseResult = await _IDataLogic.ExecuteDataTable("SP_PurchaseBillMainDetail", SqlParams);
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSP_PurchaseBillMainDetail", SqlParams);
 
         }
         catch (Exception ex)
@@ -1342,7 +1382,7 @@ public class PurchaseBillDAL
             SqlParams.Add(new SqlParameter("@RoundOffAmt", (float)Math.Round(model.TotalRoundOffAmt, 2)));
             SqlParams.Add(new SqlParameter("@RoundoffType", model.TotalRoundOff));
             SqlParams.Add(new SqlParameter("@GSTAmount", 0));
-            SqlParams.Add(new SqlParameter("@Taxableamt", (float)Math.Round(model.TxAmount, 2)));
+            SqlParams.Add(new SqlParameter("@Taxableamt", (float)(model.ItemNetAmount)));
             SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", (float)Math.Round(model.TotalDiscountPercentage, 2)));
             SqlParams.Add(new SqlParameter("@TotalDiscountAmount", (float)Math.Round(model.TotalAmtAftrDiscount, 2)));
             SqlParams.Add(new SqlParameter("@NetAmt", (float)model.NetTotal));
@@ -1369,6 +1409,7 @@ public class PurchaseBillDAL
             SqlParams.Add(new SqlParameter("@VendoreAddress", model.VendorAddress));
             SqlParams.Add(new SqlParameter("@paymentDay", model.PaymentDays));
             SqlParams.Add(new SqlParameter("@roundoffaccountcode", model.RoundOffAccountCode));
+            SqlParams.Add(new SqlParameter("@TallyGUID", model.TallyGUID));
 
             RoundFloatColumns(ItemDetailDT);
             RoundFloatColumns(TaxDetailDT);
@@ -1608,6 +1649,7 @@ public class PurchaseBillDAL
                         DocTypeID = string.IsNullOrEmpty(dr["DocTypeID"].ToString()) ? 0 : Convert.ToInt32(dr["DocTypeID"]),
                         ItemCode = string.IsNullOrEmpty(dr["ItemCode"].ToString()) ? 0 : Convert.ToInt32(dr["ItemCode"]),
                         Item_Name = dr["Item_Name"].ToString(),
+                        TaxMandatory = dr["TaxMandatory"].ToString(),
                         PartCode = dr["PartCode"].ToString(),
                         HSNNO = string.IsNullOrEmpty(dr["HSNNO"].ToString()) ? 0 : Convert.ToInt32(dr["HSNNO"]),
                         BillQty = !string.IsNullOrEmpty(dr["BillQty"].ToString()) ? Convert.ToDecimal(dr["BillQty"]) : 0,
@@ -1646,7 +1688,7 @@ public class PurchaseBillDAL
                         PoAmendNo = string.IsNullOrEmpty(dr["PoAmendNo"].ToString()) ? 0 : Convert.ToInt32(dr["PoAmendNo"].ToString()),
                         PORate = string.IsNullOrEmpty(dr["PORate"].ToString()) ? 0 : Convert.ToDecimal(dr["PORate"].ToString()),
                         MIRNO = dr["MIRNO"].ToString(),
-                        MIRYEARCODE = string.IsNullOrEmpty(dr["MIRYEARCODE"].ToString()) ? 0 : Convert.ToInt32(dr["MIRYEARCODE"].ToString()), 
+                        MIRYEARCODE = string.IsNullOrEmpty(dr["MIRYEARCODE"].ToString()) ? 0 : Convert.ToInt32(dr["MIRYEARCODE"].ToString()),
                         MIREntryId = string.IsNullOrEmpty(dr["MIREntryId"].ToString()) ? 0 : Convert.ToInt32(dr["MIREntryId"].ToString()),
                         MIRDATE = dr["MIRDATE"].ToString(),
                         ProjectNo = dr["ProjectNo"].ToString(),
@@ -1662,6 +1704,7 @@ public class PurchaseBillDAL
                 }
 
                 PBItemData.ItemDetailGrid = itemDetailGrid;
+                //PBItemData.ItemDetailGridd = itemDetailGrid;
             }
             if (oDataSet.Tables.Count > 2 && oDataSet.Tables[2].Rows.Count > 0)
             {

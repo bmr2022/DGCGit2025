@@ -22,6 +22,7 @@
     .select2-container--default .select2-results > .select2-results__options {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
+    }
 </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
@@ -29,13 +30,13 @@
     <partial name="_AllowInvoiceNoChangeBox" />
     <partial name="_AllowVouchDateChangeBox" />
     <partial name="_PBConfirmationBox" />
-    <form asp-action="SavePurchaseBILL" autocomplete="off" class="form-horizontal" enctype="multipart/form-data">
+    <form asp-action="SavePurchaseBILL" asp-route-formKey="@ViewBag.formKey" autocomplete="off" class="form-horizontal" enctype="multipart/form-data">
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" asp-for="EID" />
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 <strong>@ViewData["Title"] - @Model.YearCode</strong>
-                <input type="hidden" id="YearCode" value="" />
+               @*  <input type="hidden" id="YearCode" value="" /> *@
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintVoucher"
                        asp-controller="PurchaseBill" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PurchVouchNo="@Model.PurchVouchNo">
@@ -47,11 +48,11 @@
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         PRINT INVOICE
                     </a>
-                    <a asp-action="PurchaseBillList" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                    <a asp-action="PurchaseBillList" asp-route-formKey="@ViewBag.formKey" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Pend Purchase Bill
                     </a>
-                    <a asp-action="Dashboard" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                    <a asp-action="Dashboard" asp-route-formKey="@ViewBag.formKey" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -72,7 +73,9 @@
                             <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
                             <input asp-for="HSNNoBack" type="hidden" value="@Model.HSNNoBack" />
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
-
+                            <input asp-for="TallyGUID" type="hidden" value="@Model.TallyGUID" />
+                            <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                            <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                             <a href="#" class=" btn btn-primary btn-sm" onclick="ddBack()">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
@@ -81,7 +84,8 @@
                         @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
                         {
                             <div class="col-auto">
-                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action + ($('form')[0].action.indexOf('?') >= 0 ? '&' : '?') + 'formKey=' + encodeURIComponent('@ViewBag.formKey')"
+>
                                     <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
                                     REFRESH
                                 </a>
@@ -131,6 +135,24 @@
                         <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
                         </button>
+                        
+                        <button onclick="$('#excelFileImport').click()" 
+        class="btn btn-sm btn-outline-primary" 
+        title="Import Excel" 
+        style="width:150px; white-space: nowrap;" 
+        type="button">
+    <i class="fa-solid fa-file-arrow-up fa-fw"></i> Import
+</button>
+
+<input type="file" id="excelFileImport" accept=".xlsx,.xls" style="display:none" />
+
+<button onclick="ExportToExcel()" 
+        class="btn btn-sm btn-outline-success" 
+        title="Export Excel" 
+        style="width:150px; white-space: nowrap;" 
+        type="button">
+    <i class="fa-solid fa-file-arrow-down fa-fw"></i> Export
+</button>
                         <button onclick="GridButtontoUnlockDoc()" class="GridButtontoUnlockDoc btn btn-sm btn-outline-danger" style="width:150px; text-wrap-mode: nowrap;" type="button">
                             <i class="fa-solid fa-lock fa-fw fa-lg "></i>Allow DocChange
                         </button>
@@ -138,7 +160,7 @@
                             <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
                         </button>
                     </h2>
-                    <div id="BPanel2" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel2">
+                    <div id="BPanel2" class="accordion-collapse show collapse pnl1 bg-gradient" aria-labelledby="HPanel2">
                         <div class="accordion-body">
                             <div class="progress my-2 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -147,8 +169,9 @@
                                 <div class="form-check form-switch mx-3 w-auto position-absolute d-inline" style="margin-left: +18.5rem !important;">
                                     <input class="form-check-input" type="checkbox" role="switch" data-val="true" data-val-required="The IN1 field is required." id="IN1" name="IN1" value="true">Show All
                                 </div>
+                                
                                 <div class="card-body overflow-auto pb-0">
-                                    <div class="table-responsive" id="PBPendingItemDetail" style="max-height:150px;">
+                                    <div class="table-responsive" id="PBPendingItemDetail" style="max-height:300px;">
                                         <partial name="_PBItemDetail" />
                                     </div>
                                 </div>
@@ -272,11 +295,11 @@
                 <h5>
                     <strong>@ViewData["Title"] - @Model.YearCode</strong>
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-action="PurchaseBillList" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                        <a asp-action="PurchaseBillList" asp-route-formKey="@ViewBag.formKey" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Pend Purchase Bill
                         </a>
-                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                        <a asp-action="Dashboard" asp-route-formKey="@ViewBag.formKey"  asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Dashboard
                         </a>
@@ -305,7 +328,7 @@
                             @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
                             {
                                 <div class="col-auto">
-                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action + ($('form')[0].action.indexOf('?') >= 0 ? '&' : '?') + 'formKey=' + encodeURIComponent('@ViewBag.formKey')">
                                         <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
                                         REFRESH
                                     </a>
@@ -370,10 +393,14 @@
                }
                AddAdjstmntDetail1();
            });
+                function ddBack() {
+                   window.history.back();
+                   }
             function GetGateNoFormRights() {
                    $.ajax({
                                url: "@Url.Action("GetFormRights", "GateInward")",
                        type: "POST",
+                       data:{formKey:formKey},
                        success: function (data) {
                                    if (!data) return;
                      var obj = $.parseJSON(data);
@@ -391,6 +418,7 @@
                    $.ajax({
                                url: "@Url.Action("GetFormRights", "MaterialReceipt")",
                        type: "POST",
+                       data:{formKey:formKey},
                        success: function (data) {
                                    if (!data) return;
                      var obj = $.parseJSON(data);
@@ -578,8 +606,131 @@
         $(":focusable").each(function () {
             $(this).attr("tabindex", ++tabIndx);
         });
-        $(document).ready(function () {
-            console.log($('#NetTotal').val());
+
+        function OnChangeDocName(row) {
+
+            var docTypeId = $('#MainItemGrid-DocName-' + row).val();
+
+            $.ajax({
+                url: '/PurchaseBill/UpdateDocTypeSession',
+                type: 'POST',
+                data: { DocTypeId: docTypeId },
+                success: function (res) {
+
+                    if (res.status === "Success") {
+                        console.log("Session Updated");
+                    }
+
+                },
+                error: function () {
+                    alert("Error updating DocType session");
+                }
+            });
+
+
+
+        }
+
+        function ExportToExcel() {
+
+    let data = [];
+
+    // Header row
+    data.push(["Item Name", "Part Code", "Bill Rate"]);
+
+    $('#divPBItemListToAddInGrid tr').each(function () {
+
+        let rowId = $(this).attr('id');
+        if (!rowId) return;
+
+        let index = rowId.split('-')[1];
+
+        let itemName = $('#MainItemGrid-ItemName-' + index).val();
+        let partCode = $('#MainItemGrid-PartCode-' + index).val();
+        let billRate = $('#MainItemGrid-BillRate-' + index).val();
+
+        data.push([itemName, partCode, billRate]);
+    });
+
+    // Convert to worksheet
+    let wb = XLSX.utils.book_new();
+    let ws = XLSX.utils.aoa_to_sheet(data);
+
+    XLSX.utils.book_append_sheet(wb, ws, "PurchaseBill");
+
+    XLSX.writeFile(wb, "PurchaseBill.xlsx");
+}
+
+$('#excelFileImport').on('change', function (e) {
+
+    let file = e.target.files[0];
+    if (!file) return;
+
+    let reader = new FileReader();
+
+    reader.onload = function (e) {
+
+        let data = new Uint8Array(e.target.result);
+        let workbook = XLSX.read(data, { type: 'array' });
+
+        let sheetName = workbook.SheetNames[0];
+        let sheet = workbook.Sheets[sheetName];
+
+        let excelData = XLSX.utils.sheet_to_json(sheet);
+
+        UpdateGridFromExcel(excelData);
+    };
+
+    reader.readAsArrayBuffer(file);
+});
+
+function UpdateGridFromExcel(excelData) {
+
+    $('#divPBItemListToAddInGrid tr').each(function () {
+
+        let rowId = $(this).attr('id');
+        if (!rowId) return;
+
+        let index = rowId.split('-')[1];
+
+        let partCode = $('#MainItemGrid-PartCode-' + index).val();
+
+        // Find matching row in Excel
+        let match = excelData.find(x => x["Part Code"] == partCode);
+
+        if (match) {
+
+            let billRate = parseFloat(match["Bill Rate"]) || 0;
+
+            // Update Bill Rate
+            $('#MainItemGrid-BillRate-' + index).val(billRate);
+
+            let qty = parseFloat($('#MainItemGrid-BillQty-' + index).val()) || 0;
+            let disPer = parseFloat($('#MainItemGrid-DisPer-' + index).val()) || 0;
+
+            // Calculate Discount Amount
+            let disAmt = 0;
+            if (disPer > 0) {
+                disAmt = (billRate * qty * disPer) / 100;
+            }
+
+            $('#MainItemGrid-DisAmt-' + index).val(disAmt.toFixed(2));
+
+            // Calculate Amount
+            let amount = (billRate * qty) - disAmt;
+
+            $('#MainItemGrid-Amount-' + index).val(amount.toFixed(2));
+
+        }
+    });
+}
+ var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
+            $(document).ready(function () 
+            {
+                formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
+                        console.log($('#NetTotal').val());
             $('#YearCode').val($('#sessionYC').text());
             if ($('#PBType').val() == 'Import') {
                 $('#Rate').prop("disabled", true);
@@ -612,6 +763,13 @@
                 $("#RoundOff").show();
             }
         }
+
+        // Disable tab for everything
+    $('#poTable input, #poTable select').attr('tabindex', '-1');
+
+    // Enable only Bill Rate
+    $('.billRate').attr('tabindex', '1');
+
             FillCurrency();
                      GetExchnageRate();
             GetGateNoFormRights();
@@ -653,8 +811,9 @@
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "PBI") {
                 var InvDate = $('#InvDate').val()?.split("-").join("/");
                 InvDate = ValidateNull(InvDate) ? (InvDate.split(" ")[0]) : 'now';
-                $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy'}).datepicker("setDate", InvDate);
-
+               // $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy'}).datepicker("setDate", InvDate);
+                  $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: new Date(), minDate: formattedDate1 }).datepicker("setDate",InvDate);
+               
                 // var StrMRNEntryDate = $('#StrMRNEntryDate').val();//?.split("-").join("/");
                 // StrMRNEntryDate = ValidateNull(StrMRNEntryDate) ? parseDateToFormat(StrMRNEntryDate.split(" ")[0]) : 'now';
                 // $('#StrMRNEntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: new (Date) }).datepicker("setDate", StrMRNEntryDate);
@@ -669,7 +828,8 @@
 
                 var StrVouchDate = $('#VouchDate').val()?.split("-").join("/");
                 StrVouchDate = ValidateNull(StrVouchDate) ? (StrVouchDate.split(" ")[0]) : 'now';
-                $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", StrVouchDate);
+                $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy',maxDate: new Date()}).datepicker("setDate", StrVouchDate);
+               // $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", StrVouchDate);
                   DueDateCalculation();
                 var AdjDueDate = $('#AdjDueDate').val()?.split("-").join("/");
                 AdjDueDate = ValidateNull(AdjDueDate) ? parseDateToFormat(AdjDueDate.split(" ")[0]) : 'now';
@@ -685,12 +845,12 @@
             }
             else {
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
-                $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: new Date(), minDate: formattedDate1 }).datepicker("setDate", 'now');
                 $('#StrMRNEntryDate').datepicker({ dateFormat: 'dd/mm/yy'}).datepicker("setDate", 'now');
                 $('#StrGateDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#PODate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
                 $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
-                $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: new Date(), minDate: formattedDate1 }).datepicker("setDate", 'now');
                 $('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
                 $('#WEF').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
                 $('#RefDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
@@ -717,7 +877,7 @@
                 $('#StrGateDate').datepicker("option", "maxDate", (formattedDate2 > today) ? today : formattedDate2);
                 $('#PODate').datepicker("option", "maxDate", formattedDate2);
                 $('#ScheduleDate').datepicker("option", "maxDate", formattedDate2);
-                $('#VouchDate').datepicker("option", "maxDate", formattedDate2);
+                $('#VouchDate').datepicker("option", "maxDate", new Date());
                 $('#AdjDueDate').datepicker("option", "minDate", formattedDate1);
                 $('#AdjAgnstVouchDate').datepicker("option", "minDate", formattedDate1);
                 $('#AdjPODate').datepicker("option", "minDate", formattedDate1);
@@ -864,7 +1024,7 @@
               });
                  $('#RDT').change(function () {
                var dtValue = $('#RDT').prop("checked") == true ? "T" : "F";
-               FillDocument(dtValue);
+            FillRoundOffAccount(dtValue);
            });
            
                $('#RoundOffAccountCode').change(function () {
@@ -900,6 +1060,12 @@
                    }
                });
            }
+
+        // $('#RDT').change(function(){
+        //     var dtValue = $('#RDT').prop("checked") == true ? "T" : "F";
+
+        //      FillRoundOffAccount(dtValue);
+        // });
 
         function selectDocNamesForAllRows() {
             var rowCounter = $('#PBPendingItemDetail tr').length;
@@ -1033,6 +1199,7 @@
             formData.append("AccountCode", $('#AccountCode').val());
             formData.append("SchNo", "");
             formData.append("SchYearCode", 0);
+            formData.append("uniqueKey", uniqueKey);
             formData.append("Flag", "PurchaseBill");
             formData.append("Currency", $('#Currency').val());
             formData.append("excelFile", fileInput.prop("files")[0]);
@@ -1077,7 +1244,7 @@
             $.ajax({
                 url: '@Url.Action("DeleteFromMemoryGrid")',
                 type: "POST",
-                data: { "SeqNo": SeqNo },
+                        data: { "SeqNo": SeqNo,"uniqueKey":uniqueKey },
                 async: false,
                 success: function (data, status, xhr) {
 
@@ -1101,7 +1268,7 @@
             $.ajax({
                 url: '/PurchaseBill/EditItemRow',
                 type: "POST",
-                data: { SeqNo: SeqNo },
+                data: { SeqNo: SeqNo ,uniqueKey:uniqueKey},
                 success: function (data) {
                     // Replace the content of the first partial view
                     $('#PBItemTable').html(data.partialView1);
@@ -1252,6 +1419,7 @@
                         "DocumentName": $('#' + idsuffix + 'DocName' + '-' + i + ' :selected').text(),
                         "ItemCode": $('#' + idsuffix + 'ItemCode' + '-' + i).val(),
                         "Item_Name": $('#' + idsuffix + 'ItemName' + '-' + i).val(),
+                        "TaxMandatory": $('#' + idsuffix + 'TaxMandatory' + '-' + i).val(),
                         "PartCode": $('#' + idsuffix + 'PartCode' + '-' + i).val(),
                         "HSNNO": $('#' + idsuffix + 'HSNNO' + '-' + i).val(),
                         "BillQty": $('#' + idsuffix + 'BillQty' + '-' + i).val(),
@@ -1302,7 +1470,8 @@
                 $.ajax({
                     url: "@Url.Action("AddtoItemGrid")",
                     type: "POST",
-                    data: { gridList: ItemData },
+                    data: { gridList: ItemData ,uniqueKey:uniqueKey},
+                          async: false,
                     success: function (data, status, xhr) {
                          
                         if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
@@ -1321,7 +1490,7 @@
                              ClearDRCRGrid();
                             ClearAdjustmentGrid();
                                 if($('#divTaxGrid tr td').length>1){
-                                   btnClearTax();
+                                   /* btnClearTax(); */
                                 }
                                        AddAdjstmntDetail1();
                             $('#divPBItemListToAddInGrid').empty();
@@ -1364,6 +1533,8 @@
                    type: "POST",
                    url: "@Url.Action("ClearDRCRGrid")",
                    dataType: "json",
+                   data:{uniqueKey:uniqueKey},
+                   async:false,
                    success: function (result, status, error) {
 
                        $('#divdbCrItemList').empty();
@@ -1376,25 +1547,49 @@
                    }
                });
            }
+        // function CalculateAmount() {
+        //     var rowCount = $('#divPBItemList tr').length;
+        //     if (rowCount > 1) {
+        //         for (var i = 1; i <= rowCount; i++) {
+        //             var billrate = parseFloat(($('#MainItemGrid-BillRate-' + i).val() == '.00' || $('#MainItemGrid-BillRate-' + i).val() == '' || $('#MainItemGrid-BillRate-' + i).val() == '0') ? 0 : $('#MainItemGrid-BillRate-' + i).val());
+
+        //             var billQty = parseFloat(($('#MainItemGrid-BillQty-' + i).val() == '.00' || $('#MainItemGrid-BillQty-' + i).val() == '' || $('#MainItemGrid-BillQty-' + i).val() == '0') ? 0 : $('#MainItemGrid-BillQty-' + i).val());
+
+        //             var DiscountPer = parseFloat(($('#MainItemGrid-DisPer-' + i).val() == '.00' || $('#MainItemGrid-DisPer-' + i).val() == '' || $('#MainItemGrid-DisPer-' + i).val() == '0') ? 0 : $('#MainItemGrid-DisPer-' + i).val());
+
+        //             var billDiscountSum = (billrate * billQty * DiscountPer) / 100;
+        //             var DiscountAmt = billDiscountSum.toFixed(2);
+        //             $('#MainItemGrid-DisAmt-' + i).val(DiscountAmt);
+
+        //             var billAmtsum = (billrate * billQty) - DiscountAmt;
+        //             $('#MainItemGrid-Amount-' + i).val(billAmtsum.toFixed(2));
+        //         }
+        //     }
+        // }
+
         function CalculateAmount() {
-            var rowCount = $('#divPBItemList tr').length;
-            if (rowCount > 1) {
-                for (var i = 1; i <= rowCount; i++) {
-                    var billrate = parseFloat(($('#MainItemGrid-BillRate-' + i).val() == '.00' || $('#MainItemGrid-BillRate-' + i).val() == '' || $('#MainItemGrid-BillRate-' + i).val() == '0') ? 0 : $('#MainItemGrid-BillRate-' + i).val());
+    var rowCount = $('#divPBItemList tr').length;
 
-                    var billQty = parseFloat(($('#MainItemGrid-BillQty-' + i).val() == '.00' || $('#MainItemGrid-BillQty-' + i).val() == '' || $('#MainItemGrid-BillQty-' + i).val() == '0') ? 0 : $('#MainItemGrid-BillQty-' + i).val());
+    if (rowCount > 1) {
+        for (var i = 1; i <= rowCount; i++) {
 
-                    var DiscountPer = parseFloat(($('#MainItemGrid-DisPer-' + i).val() == '.00' || $('#MainItemGrid-DisPer-' + i).val() == '' || $('#MainItemGrid-DisPer-' + i).val() == '0') ? 0 : $('#MainItemGrid-DisPer-' + i).val());
+            var billrate = parseFloat($('#MainItemGrid-BillRate-' + i).val()) || 0;
+            var billQty = parseFloat($('#MainItemGrid-BillQty-' + i).val()) || 0;
+            var DiscountPer = parseFloat($('#MainItemGrid-DisPer-' + i).val()) || 0;
 
-                    var billDiscountSum = DiscountPer / 100;
-                    var DiscountAmt = billDiscountSum.toFixed(2);
-                    $('#MainItemGrid-DisAmt-' + i).val(DiscountAmt);
+            // ✅ Calculate Discount Amount (number)
+            var DiscountAmt = (billrate * billQty * DiscountPer) / 100;
 
-                    var billAmtsum = (billrate * billQty) - DiscountAmt;
-                    $('#MainItemGrid-Amount-' + i).val(billAmtsum.toFixed(2));
-                }
-            }
+            // ✅ Set Discount Amount (formatted)
+            $('#MainItemGrid-DisAmt-' + i).val(DiscountAmt.toFixed(2));
+
+            // ✅ Calculate Final Amount
+            var billAmtsum = (billrate * billQty) - DiscountAmt;
+
+            $('#MainItemGrid-Amount-' + i).val(billAmtsum.toFixed(2));
         }
+    }
+}
         function BasicTotal() {
             refreshitemcountandnetamt();
         }
@@ -1421,9 +1616,10 @@
 
                     var DiscountAmt = parseFloat(($('#MainItemGridd-DisAmt-' + i).text() == '.00' || $('#MainItemGridd-DisAmt-' + i).text() == '' || $('#MainItemGridd-DisAmt-' + i).text() == '0') ? 0 : $('#MainItemGridd-DisAmt-' + i).text());
 
-                    billAmtsum += (billrate * billQty) - DiscountAmt;
-                    mrpsum += (mrprate * billQty) - DiscountAmt;
-                    poAmtsum += (POrate * billQty) - DiscountAmt;
+                    billAmtsum += parseFloat(((billrate * billQty) - DiscountAmt).toFixed(2));
+                   mrpsum += parseFloat(((mrprate * billQty) - DiscountAmt).toFixed(2));
+
+poAmtsum += parseFloat(((POrate * billQty) - DiscountAmt).toFixed(2));
 
                     amtinothercurrsum += parseFloat(($('#MainItemGridd-AmtInOtherCurrency-' + i).text() == '.00' || $('#MainItemGridd-AmtInOtherCurrency-' + i).text() == '' || $('#MainItemGridd-AmtInOtherCurrency-' + i).text() == '0') ? 0 : $('#MainItemGridd-AmtInOtherCurrency' + i).text());
                 }
@@ -1470,11 +1666,21 @@
 
             var DiscountPer = parseFloat(($('#MainItemGrid-DisPer-' + i).val() == '.00' || $('#MainItemGrid-DisPer-' + i).val() == '' || $('#MainItemGrid-DisPer-' + i).val() == '0') ? 0 : $('#MainItemGrid-DisPer-' + i).val());
 
-            var billDiscountSum = DiscountPer / 100;
-            var DiscountAmt = billDiscountSum.toFixed(2);
-            $('#MainItemGrid-DisAmt-' + i).val(DiscountAmt);
+            // var billDiscountSum = DiscountPer / 100;
+            // var DiscountAmt = billDiscountSum.toFixed(2);
+            // $('#MainItemGrid-DisAmt-' + i).val(DiscountAmt);
 
+            // var billAmtsum = (billrate * billQty) - DiscountAmt;
+            // $('#MainItemGrid-Amount-' + i).val(billAmtsum.toFixed(2));
+
+             var DiscountAmt = (billrate * billQty * DiscountPer) / 100;
+
+            // ✅ Set Discount Amount (formatted)
+            $('#MainItemGrid-DisAmt-' + i).val(DiscountAmt.toFixed(2));
+
+            // ✅ Calculate Final Amount
             var billAmtsum = (billrate * billQty) - DiscountAmt;
+
             $('#MainItemGrid-Amount-' + i).val(billAmtsum.toFixed(2));
         }
 
@@ -1685,7 +1891,7 @@
                 const minDateFormatted = formatDateToDDMMYY(minDate);
                 const maxDateFormatted = formatDateToDDMMYY(currentDate);
                 $("#VouchDate").datepicker("option", "minDate", minDateFormatted);
-                $("#VouchDate").datepicker("option", "maxDate", maxDateFormatted);
+                $("#VouchDate").datepicker("option", "maxDate", new Date());
                 $('#errormessage2').hide();
             } else {
                 $('#errormessage2').show();
@@ -2021,7 +2227,9 @@
         $('form').submit(function (event) {
             ;
             $('#PartCode').prop('selectedIndex', 1).trigger("change");
-
+                     if ($('#GSTRegistered').val() == '') {
+                                    $.notify('Please select GST Registered in Account Master.', 'error');
+                      }
             $('.btn-outline-primary').prop('disabled', true).html('Validating Form... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
             if (!ValidateForm()) {
                 event.preventDefault(); // Prevent the form from submitting via the browser
@@ -2104,6 +2312,7 @@
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
+                data:{formKey:formKey},
                 success: function (data) {
 
                     if (data != null) {
@@ -2171,6 +2380,7 @@
             $.ajax({
                 url: "@Url.Action("ResetGridItems")",
                 type: "GET",
+                data:{uniqueKey:uniqueKey,formKey:formKey},
                 success: await function (result, status, xhr) {
                     if (result == 200) {
                         ClearItem();
@@ -2235,7 +2445,7 @@
             $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetTaxPartItem", "Tax")',
-                data: { SessionName: '@ViewData["PageName"]' },
+                data: { SessionName: '@ViewData["PageName"]',uniqueKey:uniqueKey },
                 dataType: "json",
                 success: await function (data, status, error) {
                     $('#TxPartCode').empty();
@@ -2266,8 +2476,13 @@
             var errorPartCode = [];
             $('.divPBItemListPartCode').each(function (i, data) {
                 var partcode = $(data).text().trim();
-                var taxes = $("td[data-txPartCode='" + partcode + "']");
-                if ((!taxes || taxes.length == 0) && (partcode != taxes.text()) && ($('#GSTType').val() != undefined && $('#GSTType').val() != null && $('#GSTType').val() != '')) {
+                // var taxes = $("td[data-txPartCode='" + partcode + "']");
+                   var taxMandatory = $(this).data('taxmandatory');
+
+                var taxes = $("td[data-txPartCode]").filter(function() {
+                    return $(this).attr("data-txPartCode") === partcode;
+                });
+                if ((!taxes || taxes.length == 0) && (partcode != taxes.text()) && taxMandatory === 'Y'  && ($('#GSTType').val() != undefined && $('#GSTType').val() != null && $('#GSTType').val() != '')) {
                     errorPartCode.push(partcode)
                 }
             });
@@ -2366,17 +2581,12 @@
             else if ($('#AccountCode').val() == '0') {
                 $.notify("Vendor Name is required", "error");
             }
-                    if ($('#GSTRegistered').val() == 'Y') {
-                            if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                   isError = true;
-                   return false;
+              if ($("#TotalRoundOff").val() == 'Y'){
+                     if(  $("#RoundOffAccountCode").val() =='0'){
+                            $.notify("Please  Select  Round Off Account ", "error");
+                                return;
+                     }
                }
-            // GST registered → Tax Grid required
-            if (taxGrid <= 1) {
-                $.notify("Tax Grid should at least have one item", "error");
-                return;
-            }
-
             const year = $('#YearCode').val();
             if (vouchDate && year) {
                 if (vouchDate > getFinancialYearRange(year).lastDate || vouchDate < getFinancialYearRange(year).firstDate) {
@@ -2386,23 +2596,61 @@
             }
 
             if (minDate && vouchDate) {
-                    
-                var vouchDateObj = new Date(vouchDate);
-                    var minDateObj = new Date(minDate);
 
+    function parseDate(dateStr) {
+        var parts = dateStr.split('/');
 
-                    if (minDateObj > vouchDateObj) {
-                    $.notify("Vouch Date should be greater than MRN/MIR Date", "error");
-                    isError = true;
-                    return;
-                }
+        // DD/MM/YYYY
+        return new Date(
+            parseInt(parts[2]),        // Year
+            parseInt(parts[1]) - 1,    // Month
+            parseInt(parts[0])         // Day
+        );
+    }
+
+    var vouchDateObj = parseDate(vouchDate);
+    var minDateObj = parseDate(minDate);
+
+    if (minDateObj > vouchDateObj) {
+        $.notify("Vouch Date should be greater than MRN/MIR Date", "error");
+        isError = true;
+        return;
+    }
+}
+              if ($('#GSTRegistered').val() == '') {
+                            $.notify('Please select GST Registered in Account Master.', 'error');
+              }
+              var hasMandatoryTax = false;
+
+                $('.divPBItemListPartCode').each(function (i, data) {
+                    //var taxMandatory = $('#MainItemGrid-TaxMandatory-' + i).val();
+                       var taxMandatory = $(this).data('taxmandatory');
+
+                    if (taxMandatory !== 'N') {
+                        hasMandatoryTax = true;
+                        return false; // break
+                    }
+                });
+                    if ($('#GSTRegistered').val() == 'Y') {
+                        if (hasMandatoryTax) {
+                            if (!checkPartCodeMusthaveAtLeastOneTax()) {
+                   isError = true;
+                   return false;
+               }
+               
+            // GST registered → Tax Grid required
+            if (taxGrid <= 1) {
+                $.notify("Tax Grid should at least have one item", "error");
+                return;
             }
+
+             
 
             let cont = 1;
             for (var i = 1; i <= txRowCount; i++) {
                 var txType = $('#txGridType-' + i).text();
                 var txname = $('#txGridName-' + i).text();
-                if ((txType == '' || txname == '')) {
+                if (((txType == '' || txname == '') )) {
                     $.notify("TaxType Or TaxName cannot be null", "error");
                     isError = true;
                     return;
@@ -2419,46 +2667,50 @@
                 $("form").submit();
             }
         }
-        else {
-            // Not GST registered → skip Tax Grid check
-            const year = $('#YearCode').val();
-            if (vouchDate && year) {
-                if (vouchDate > getFinancialYearRange(year).lastDate || vouchDate < getFinancialYearRange(year).firstDate) {
-                    $.notify("vouchDate must be in logged in financial year", "error");
-                    isError = true;
-                }
-            }
-
-          /*   if (minDate && vouchDate) {
-                    var minDateObj = parseDateToFormat(minDate);
-                    var vouchDateObj = parseDateToFormat(vouchDate);
-
-                if (minDateObj > vouchDate) {
-                    $.notify("Vouch Date should be greater than MRN/MIR Date", "error");
-                    isError = true;
-                    return;
-                }
-            } */
-
-
-                if (minDate && vouchDate) {
-
-                    var vouchDateObj = new Date(vouchDate);
-                    var minDateObj = new Date(minDate);
-
-
-                    if (minDateObj > vouchDateObj) {
-                        $.notify("Vouch Date should be greater than MRN/MIR Date", "error");
-                        isError = true;
-                        return;
-                    }
-                }
-
-            // No tax grid requirement → directly allow submit
-            if (!isError) {
+        }
+         if (!isError) {
                 $("form").submit();
             }
-        }
+        // else {
+        //     // Not GST registered → skip Tax Grid check
+        //   //   const year = $('#YearCode').val();
+        //   //   if (vouchDate && year) {
+        //   //       if (vouchDate > getFinancialYearRange(year).lastDate || vouchDate < getFinancialYearRange(year).firstDate) {
+        //   //           $.notify("vouchDate must be in logged in financial year", "error");
+        //   //           isError = true;
+        //   //       }
+        //   //   }
+
+        //   // /*   if (minDate && vouchDate) {
+        //   //           var minDateObj = parseDateToFormat(minDate);
+        //   //           var vouchDateObj = parseDateToFormat(vouchDate);
+
+        //   //       if (minDateObj > vouchDate) {
+        //   //           $.notify("Vouch Date should be greater than MRN/MIR Date", "error");
+        //   //           isError = true;
+        //   //           return;
+        //   //       }
+        //   //   } */
+
+
+        //   //       if (minDate && vouchDate) {
+
+        //   //           var vouchDateObj = new Date(vouchDate);
+        //   //           var minDateObj = new Date(minDate);
+
+
+        //   //           if (minDateObj > vouchDateObj) {
+        //   //               $.notify("Vouch Date should be greater than MRN/MIR Date", "error");
+        //   //               isError = true;
+        //   //               return;
+        //   //           }
+        //   //       }
+
+        //     // No tax grid requirement → directly allow submit
+        //     if (!isError) {
+        //         $("form").submit();
+        //     }
+        // }
 
             /*    else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
                    $.notify("Tax Grid should at least have one item", "error");
@@ -2717,7 +2969,7 @@
                 $.ajax({
                     url: '@Url.Action("AddItem2Grid")',
                     type: "POST",
-                    data: ItemData,
+                    data: {model:ItemData,uniqueKey:uniqueKey},
                     beforeSend: function (xhr) {
                         //xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
                     },
@@ -2796,7 +3048,7 @@
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("ClearTaxGrid")",
-                data: { YearCode: $('#YearCode').val(), "VODate": $('#VouchDate').val() },
+                data: { YearCode: $('#YearCode').val(), "VODate": $('#VouchDate').val() ,uniqueKey:uniqueKey},
                 dataType: "json",
                 success: function (result, status, error) {
                     $('#divTaxGrid').empty();
@@ -2830,7 +3082,7 @@
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("ClearTDSGrid")",
-                data: { YearCode: $('#YearCode').val(), "VODate": $('#VouchDate').val() },
+                data: { YearCode: $('#YearCode').val(), "VODate": $('#VouchDate').val() ,uniqueKey:uniqueKey},
                 dataType: "json",
                 success: function (result, status, error) {
                     $('#divTDSGrid').empty();
@@ -2858,7 +3110,7 @@
             $.ajax({
                 url: '@Url.Action("DeleteItemRow")',
                 type: "POST",
-                data: { "SeqNo": SeqNo },
+                        data: { "SeqNo": SeqNo ,"uniqueKey":uniqueKey},
                 async: false,
                 success: function (data, status, xhr) {
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
@@ -2998,7 +3250,11 @@
         });
     </script>
                         // New script started
-    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    @* <script src="~/js/tableToExcel.js"></script>
+    <script src="~/css/xlsx.full.min.js"></script> *@
+    <script src="~/js/xlsx.full.min.js"></script>
+     <script src="~/css/tableToExcel.js"></script>
+
 }
 
 <style>
@@ -3059,5 +3315,18 @@
         color: #444;
         line-height: 28px;
         width: 200px;
+    }
+
+    #IN1 {
+        position: relative !important;
+        z-index: 99999 !important;
+        pointer-events: auto !important;
+        cursor: pointer !important;
+    }
+
+    .form-check.form-switch {
+        position: absolute !important;
+        z-index: 99999 !important;
+        pointer-events: auto !important;
     }
 </style>

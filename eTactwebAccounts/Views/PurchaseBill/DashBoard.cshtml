@@ -12,7 +12,7 @@
             <h5>
                 PURCHASE BILL - <strong>Dashboard</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-controller="PurchaseBill" asp-action="PurchaseBillList" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                    <a asp-controller="PurchaseBill" asp-route-formKey="@ViewBag.formKey" asp-action="PurchaseBillList" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                         <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                         Pend Purchase Bill
                     </a>
@@ -24,7 +24,11 @@
             <div class="card overflow-auto">
                 <div class="card-body">
                     <form id="SParam">
+                        @* <input type="hidden" id="formKey" value="@ViewBag.formKey" />
+                        <input type="hidden" id="uniqueKey" value="@ViewBag.uniqueKey" />
+ *@
                         <partial name="_SearchParam" />
+                        
                     </form>
                 </div>
             </div>
@@ -48,8 +52,11 @@
 {
     <script>
             var isEditAllowed = "false";
-
+        var formKey=$('#formKey').val();
+                                var uniqueKey=$('#uniqueKey').val();
         $(function () {
+              formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
             LockedFinancialYear();
             CheckApprovedOrNot();
             var currentDate = new Date();
@@ -65,9 +72,18 @@
             }
             //$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
-            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            // $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+            // $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
+                    
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' });
+
+            // ONLY set default if empty (first load)
+            if (!$('#FromDate').val() || !$('#ToDate').val()) {
+                $('#FromDate').datepicker("setDate", formatDate(firstDayOfMonth));
+                $('#ToDate').datepicker("setDate", 'now');
+            }
             //AutoComplete('VDirectPurchaseBillMain', 'VendorName', 'VendorName', null);
             if ($('#FromDate1').val() != "" && $('#ToDate1').val() != "") {
 
@@ -97,15 +113,6 @@
             }
             $('#DashboardType').select2();
             $('#MRNType').select2();
-            $('#DocumentName').select2();
-            $('#VendorName').select2();
-            $('#VoucherNo').select2();
-            $('#InvoiceNo').select2();
-            $('#MRNNo').select2();
-            $('#GateNo').select2();
-            $('#PartCode').select2();
-            $('#ItemName').select2();
-            $('#HSNNO').select2();
 
             var FromDateBack = sessionStorage.getItem('FromDateBack');
             var ToDateBack = sessionStorage.getItem('ToDateBack');
@@ -139,6 +146,7 @@
                 $('#HSNNo').val(HSNNoBack).trigger('change');
                 $('#search-box').val(GlobalSearchBack);
             }
+            AutoFillDashboardFilters();
             GetSearchData();
                GetFormRights();
             $("#search-box").val($('#search-box').val()).trigger('keyup');
@@ -158,6 +166,8 @@
             sessionStorage.removeItem('HSNNoBack');
             sessionStorage.removeItem('GlobalSearchBack');
         });
+
+
           function  EditButtonData(event,EntryId,YearCode,AgainstVoucherNo) {
                   event.preventDefault();
                    var urlHref = $(event.currentTarget).attr("href");
@@ -213,6 +223,7 @@
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
                 async:false,
+                data:{formKey:formKey},
                 success: function (data) {
 
                     if (data != null) {
@@ -374,10 +385,14 @@
         }
 
         function GetGridData() {
+            var formData = $('#SParam').serializeArray();
+
+            formData.push({ name: 'formKey', value: formKey });
+            formData.push({ name: 'uniqueKey', value: uniqueKey });
             $.ajax({
                 url: '@Url.Action("GetSearchData")',
                 type: "POST",
-                data: $('#SParam').serializeArray(),
+                data: formData,
                 success: function (data) {
                     LockedFinancialYear();
                     $('#divDashboardGrid').empty().append(data);
@@ -410,6 +425,8 @@
 
             var formData = $('#SParam').serializeArray();
             formData.push({ name: 'pageNumber', value: pageNumber });
+            formData.push({ name: 'formKey', value: formKey });
+            formData.push({ name: 'uniqueKey', value: uniqueKey });
             $.ajax({
                 type: 'GET',
                 url: url,
@@ -419,19 +436,20 @@
                     $('#divDashboardGrid').html(result);
 
                     $('#totalRows').text($('#gateDashboardtable tr').length);
+                    CheckApprovedOrNot();
                       GetFormRights();
                     //countAllTotal();
                 }
             });
         }
         $("#search-box").on("input", function () {
-
+            debugger
             var searchString = $(this).val().trim();
             var dashboardType = $('#DashboardType').val();
             $.ajax({
                 url: "/PurchaseBill/GlobalSearch?searchString=" + searchString,
                 type: "GET",
-                data: { searchString: searchString, dashboardType: dashboardType },
+                data: { searchString: searchString, dashboardType: dashboardType ,formKey:formKey,uniqueKey:uniqueKey},
                 success: function (data) {
 
                     $('#divDashboardGrid').empty();
@@ -447,11 +465,14 @@
             });
         });
         function GetSummaryData(){
-            var data = $('#SParam').serialize();
+            var formData = $('#SParam').serializeArray();
+            
+            formData.push({ name: 'formKey', value: formKey });
+            formData.push({ name: 'uniqueKey', value: uniqueKey });
             $.ajax({
                 url: '@Url.Action("GetSearchData")',
                 type: "POST",
-                data: $('#SParam').serializeArray(),
+                data: formData,
                 success: function (data) {
                     LockedFinancialYear();
                     $('#divDashboardGrid').empty().append(data);
@@ -579,16 +600,16 @@
         //     }
         // }
 
-        function confirmDelete(event, entryID, yearCode, purchVouchNo, EnteredBy, invNo, isDetail, cnt) {
+        function confirmDelete(event, entryID, yearCode, purchVouchNo, EnteredBy, invNo, isDetail, cnt, formKey) {
             event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
               
             if (confirm("Are you sure you want to delete this entry?")) {
-                deleteItem(entryID, yearCode, purchVouchNo, EnteredBy, invNo, isDetail, cnt);
+                deleteItem(entryID, yearCode, purchVouchNo, EnteredBy, invNo, isDetail, cnt, formKey);
             }
         }
 
-        function deleteItem(entryID, yearCode, purchVouchNo,EnteredBy, invNo, isDetail, cnt) {
+        function deleteItem(entryID, yearCode, purchVouchNo, EnteredBy, invNo, isDetail, cnt, formKey) {
             // sessionStorage.setItem('FromDateBack', $('#FromDate').val());
             // sessionStorage.setItem('ToDateBack', $('#ToDate').val());
             // sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
@@ -613,7 +634,8 @@
                     PurchVoucherNo: purchVouchNo,
                     EnteredBy: EnteredBy,
                     InvNo: invNo,
-                    IsDetail: isDetail
+                    IsDetail: isDetail,
+                    formKey: formKey
                 },
                 success: function (response) {
                     if (response != null && response != undefined && response != '') {
@@ -667,7 +689,1126 @@
                 }
             });
         }
+       function AutoFillDashboardFilters() {
 
+    // =========================================================
+    // COMMON RESPONSE HANDLER
+    // =========================================================
+    function getAutocompleteRows(result) {
+
+        let data = result;
+
+        // API string return kare to JSON parse karo
+        if (typeof data === "string") {
+            try {
+                data = JSON.parse(data);
+            }
+            catch (e) {
+                console.error("Autocomplete JSON Parse Error:", e);
+                return [];
+            }
+        }
+
+        console.log("Autocomplete API Response:", data);
+
+        // -----------------------------------------------------
+        // 1. Direct Array
+        // -----------------------------------------------------
+        if (Array.isArray(data)) {
+            return data;
+        }
+
+        // -----------------------------------------------------
+        // 2. Result.Table
+        // -----------------------------------------------------
+        if (
+            data &&
+            data.Result &&
+            Array.isArray(data.Result.Table)
+        ) {
+            return data.Result.Table;
+        }
+
+        // -----------------------------------------------------
+        // 3. Result.table
+        // -----------------------------------------------------
+        if (
+            data &&
+            data.Result &&
+            Array.isArray(data.Result.table)
+        ) {
+            return data.Result.table;
+        }
+
+        // -----------------------------------------------------
+        // 4. Table
+        // -----------------------------------------------------
+        if (
+            data &&
+            Array.isArray(data.Table)
+        ) {
+            return data.Table;
+        }
+
+        // -----------------------------------------------------
+        // 5. table
+        // -----------------------------------------------------
+        if (
+            data &&
+            Array.isArray(data.table)
+        ) {
+            return data.table;
+        }
+
+        // -----------------------------------------------------
+        // 6. Result direct Array
+        // -----------------------------------------------------
+        if (
+            data &&
+            Array.isArray(data.Result)
+        ) {
+            return data.Result;
+        }
+
+        console.error(
+            "Autocomplete rows not found in response:",
+            data
+        );
+
+        return [];
+    }
+
+
+    // =========================================================
+    // COMMON VALUE GETTER
+    // =========================================================
+    function getItemValue(item, possibleNames) {
+
+        if (!item) {
+            return "";
+        }
+
+        for (let i = 0; i < possibleNames.length; i++) {
+
+            let key = possibleNames[i];
+
+            if (
+                item[key] !== undefined &&
+                item[key] !== null &&
+                item[key] !== ""
+            ) {
+                return item[key];
+            }
+        }
+
+        return "";
+    }
+
+
+    // =========================================================
+    // 1. DOCUMENT NAME
+    // =========================================================
+    const documentNameSource = function (request, response) {
+
+        $.ajax({
+            url: '@Url.Action("FillDocumentDASHBOARD", "PurchaseBill")',
+            type: 'POST',
+
+            data: {
+                SearchDocumentName: request.term,
+                FromDate: $("#FromDate").val(),
+                ToDate: $("#ToDate").val(),
+                FlagMRNJWCHALLAN: $("#MRNType").val()
+            },
+
+            success: function (result) {
+
+                console.log("Document API Response:", result);
+
+                let rows = getAutocompleteRows(result);
+
+                let term = (request.term || "")
+                    .toString()
+                    .toLowerCase();
+
+                let filtered = rows.filter(function (item) {
+
+                    let value = getItemValue(item, [
+                        "DocumentHead",
+                        "documentHead",
+                        "DocumentName",
+                        "documentName",
+                        "text",
+                        "value"
+                    ]);
+
+                    return value !== "" &&
+                        value.toString()
+                            .toLowerCase()
+                            .includes(term);
+                });
+
+                response($.map(filtered, function (item) {
+
+                    let value = getItemValue(item, [
+                        "DocumentHead",
+                        "documentHead",
+                        "DocumentName",
+                        "documentName",
+                        "text",
+                        "value"
+                    ]);
+
+                    return {
+                        label: value.toString(),
+                        value: value.toString()
+                    };
+                }));
+            },
+
+            error: function (xhr) {
+
+                console.error(
+                    "Document Autocomplete Error:",
+                    xhr.status,
+                    xhr.responseText
+                );
+
+                response([]);
+            }
+        });
+    };
+
+
+    $("#DocumentName").autocomplete({
+
+        source: documentNameSource,
+
+        select: function (event, ui) {
+
+            $("#DocumentName").val(ui.item.value);
+
+            return false;
+        },
+
+        focus: function (event, ui) {
+
+            $("#DocumentName").val(ui.item.value);
+
+            return false;
+        },
+
+        minLength: 1
+    });
+
+
+    // =========================================================
+    // 2. VENDOR NAME
+    // =========================================================
+    const vendorNameSource = function (request, response) {
+
+        $.ajax({
+            url: '@Url.Action("FillVendorNameDASHBOARD", "PurchaseBill")',
+            type: 'POST',
+
+            data: {
+                SearchVendorName: request.term,
+                FromDate: $("#FromDate").val(),
+                ToDate: $("#ToDate").val(),
+                FlagMRNJWCHALLAN: $("#MRNType").val()
+            },
+
+            success: function (result) {
+
+                console.log("Vendor API Response:", result);
+
+                let rows = getAutocompleteRows(result);
+
+                let term = (request.term || "")
+                    .toString()
+                    .toLowerCase();
+
+                let filtered = rows.filter(function (item) {
+
+                    let value = getItemValue(item, [
+                        "VendorName",
+                        "vendorName",
+                        "Vendor",
+                        "vendor",
+                        "text",
+                        "value"
+                    ]);
+
+                    return value !== "" &&
+                        value.toString()
+                            .toLowerCase()
+                            .includes(term);
+                });
+
+                response($.map(filtered, function (item) {
+
+                    let value = getItemValue(item, [
+                        "VendorName",
+                        "vendorName",
+                        "Vendor",
+                        "vendor",
+                        "text",
+                        "value"
+                    ]);
+
+                    return {
+                        label: value.toString(),
+                        value: value.toString()
+                    };
+                }));
+            },
+
+            error: function (xhr) {
+
+                console.error(
+                    "Vendor Autocomplete Error:",
+                    xhr.status,
+                    xhr.responseText
+                );
+
+                response([]);
+            }
+        });
+    };
+
+
+    $("#VendorName").autocomplete({
+
+        source: vendorNameSource,
+
+        select: function (event, ui) {
+
+            $("#VendorName").val(ui.item.value);
+
+            return false;
+        },
+
+        focus: function (event, ui) {
+
+            $("#VendorName").val(ui.item.value);
+
+            return false;
+        },
+
+        minLength: 1
+    });
+
+
+    // =========================================================
+    // 3. VOUCHER NO
+    // =========================================================
+    const voucherNoSource = function (request, response) {
+
+        $.ajax({
+            url: '@Url.Action("FillVoucherNoDASHBOARD", "PurchaseBill")',
+            type: 'POST',
+
+            data: {
+                SearchVoucherNo: request.term,
+                FromDate: $("#FromDate").val(),
+                ToDate: $("#ToDate").val(),
+                FlagMRNJWCHALLAN: $("#MRNType").val()
+            },
+
+            success: function (result) {
+
+                console.log("Voucher API Response:", result);
+
+                let rows = getAutocompleteRows(result);
+
+                let term = (request.term || "")
+                    .toString()
+                    .toLowerCase();
+
+                let filtered = rows.filter(function (item) {
+
+                    let value = getItemValue(item, [
+                        "VoucherNo",
+                        "voucherNo",
+                        "VoucherNO",
+                        "VOUCHERNO",
+                        "text",
+                        "value"
+                    ]);
+
+                    return value !== "" &&
+                        value.toString()
+                            .toLowerCase()
+                            .includes(term);
+                });
+
+                response($.map(filtered, function (item) {
+
+                    let value = getItemValue(item, [
+                        "VoucherNo",
+                        "voucherNo",
+                        "VoucherNO",
+                        "VOUCHERNO",
+                        "text",
+                        "value"
+                    ]);
+
+                    return {
+                        label: value.toString(),
+                        value: value.toString()
+                    };
+                }));
+            },
+
+            error: function (xhr) {
+
+                console.error(
+                    "Voucher Autocomplete Error:",
+                    xhr.status,
+                    xhr.responseText
+                );
+
+                response([]);
+            }
+        });
+    };
+
+
+    $("#VoucherNo").autocomplete({
+
+        source: voucherNoSource,
+
+        select: function (event, ui) {
+
+            $("#VoucherNo").val(ui.item.value);
+
+            return false;
+        },
+
+        focus: function (event, ui) {
+
+            $("#VoucherNo").val(ui.item.value);
+
+            return false;
+        },
+
+        minLength: 1
+    });
+
+
+    // =========================================================
+    // 4. INVOICE NO
+    // =========================================================
+    const invoiceNoSource = function (request, response) {
+
+        $.ajax({
+            url: '@Url.Action("FillInvoiceNoDASHBOARD", "PurchaseBill")',
+            type: 'POST',
+
+            data: {
+                SearchInvoiceNo: request.term,
+                FromDate: $("#FromDate").val(),
+                ToDate: $("#ToDate").val(),
+                FlagMRNJWCHALLAN: $("#MRNType").val()
+            },
+
+            success: function (result) {
+
+                console.log("Invoice API Response:", result);
+
+                let rows = getAutocompleteRows(result);
+
+                let term = (request.term || "")
+                    .toString()
+                    .toLowerCase();
+
+                let filtered = rows.filter(function (item) {
+
+                    let value = getItemValue(item, [
+                        "InvoiceNo",
+                        "invoiceNo",
+                        "InvoiceNO",
+                        "Invoiceno",
+                        "text",
+                        "value"
+                    ]);
+
+                    return value !== "" &&
+                        value.toString()
+                            .toLowerCase()
+                            .includes(term);
+                });
+
+                response($.map(filtered, function (item) {
+
+                    let value = getItemValue(item, [
+                        "InvoiceNo",
+                        "invoiceNo",
+                        "InvoiceNO",
+                        "Invoiceno",
+                        "text",
+                        "value"
+                    ]);
+
+                    return {
+                        label: value.toString(),
+                        value: value.toString()
+                    };
+                }));
+            },
+
+            error: function (xhr) {
+
+                console.error(
+                    "Invoice Autocomplete Error:",
+                    xhr.status,
+                    xhr.responseText
+                );
+
+                response([]);
+            }
+        });
+    };
+
+
+    $("#InvoiceNo").autocomplete({
+
+        source: invoiceNoSource,
+
+        select: function (event, ui) {
+
+            $("#InvoiceNo").val(ui.item.value);
+
+            return false;
+        },
+
+        focus: function (event, ui) {
+
+            $("#InvoiceNo").val(ui.item.value);
+
+            return false;
+        },
+
+        minLength: 1
+    });
+
+
+    // =========================================================
+    // 5. MRN NO
+    // =========================================================
+    const mrnNoSource = function (request, response) {
+
+        $.ajax({
+            url: '@Url.Action("FillMrnNoDASHBOARD", "PurchaseBill")',
+            type: 'POST',
+
+            data: {
+                SearchMRNNo: request.term,
+                FromDate: $("#FromDate").val(),
+                ToDate: $("#ToDate").val(),
+                FlagMRNJWCHALLAN: $("#MRNType").val()
+            },
+
+            success: function (result) {
+
+                console.log("MRN API Response:", result);
+
+                let rows = getAutocompleteRows(result);
+
+                console.log("MRN Rows:", rows);
+
+                let term = (request.term || "")
+                    .toString()
+                    .toLowerCase();
+
+                let filtered = rows.filter(function (item) {
+
+                    let value = getItemValue(item, [
+                        "MRNNo",
+                        "MrnNo",
+                        "mrnNo",
+                        "MRNNO",
+                        "MrnNO",
+                        "text",
+                        "value"
+                    ]);
+
+                    return value !== "" &&
+                        value.toString()
+                            .toLowerCase()
+                            .includes(term);
+                });
+
+                console.log("MRN Filtered:", filtered);
+
+                response($.map(filtered, function (item) {
+
+                    let value = getItemValue(item, [
+                        "MRNNo",
+                        "MrnNo",
+                        "mrnNo",
+                        "MRNNO",
+                        "MrnNO",
+                        "text",
+                        "value"
+                    ]);
+
+                    return {
+                        label: value.toString(),
+                        value: value.toString()
+                    };
+                }));
+            },
+
+            error: function (xhr) {
+
+                console.error(
+                    "MRN Autocomplete Error:",
+                    xhr.status,
+                    xhr.responseText
+                );
+
+                response([]);
+            }
+        });
+    };
+
+
+    $("#MRNNo").autocomplete({
+
+        source: mrnNoSource,
+
+        select: function (event, ui) {
+
+            $("#MRNNo").val(ui.item.value);
+
+            return false;
+        },
+
+        focus: function (event, ui) {
+
+            $("#MRNNo").val(ui.item.value);
+
+            return false;
+        },
+
+        minLength: 1
+    });
+
+
+    // =========================================================
+    // 6. GATE NO
+    // =========================================================
+    const gateNoSource = function (request, response) {
+
+        $.ajax({
+            url: '@Url.Action("FillGateNoDASHBOARD", "PurchaseBill")',
+            type: 'POST',
+
+            data: {
+                SearchGateNo: request.term,
+                FromDate: $("#FromDate").val(),
+                ToDate: $("#ToDate").val(),
+                FlagMRNJWCHALLAN: $("#MRNType").val()
+            },
+
+            success: function (result) {
+
+                console.log("Gate API Response:", result);
+
+                let rows = getAutocompleteRows(result);
+
+                let term = (request.term || "")
+                    .toString()
+                    .toLowerCase();
+
+                let filtered = rows.filter(function (item) {
+
+                    let value = getItemValue(item, [
+                        "GateNo",
+                        "gateNo",
+                        "GateNO",
+                        "Gateno",
+                        "text",
+                        "value"
+                    ]);
+
+                    return value !== "" &&
+                        value.toString()
+                            .toLowerCase()
+                            .includes(term);
+                });
+
+                response($.map(filtered, function (item) {
+
+                    let value = getItemValue(item, [
+                        "GateNo",
+                        "gateNo",
+                        "GateNO",
+                        "Gateno",
+                        "text",
+                        "value"
+                    ]);
+
+                    return {
+                        label: value.toString(),
+                        value: value.toString()
+                    };
+                }));
+            },
+
+            error: function (xhr) {
+
+                console.error(
+                    "Gate Autocomplete Error:",
+                    xhr.status,
+                    xhr.responseText
+                );
+
+                response([]);
+            }
+        });
+    };
+
+
+    $("#GateNo").autocomplete({
+
+        source: gateNoSource,
+
+        select: function (event, ui) {
+
+            $("#GateNo").val(ui.item.value);
+
+            return false;
+        },
+
+        focus: function (event, ui) {
+
+            $("#GateNo").val(ui.item.value);
+
+            return false;
+        },
+
+        minLength: 1
+    });
+
+
+    // =========================================================
+    // 7. PART CODE -> ITEM NAME
+    // =========================================================
+    const partCodeSource = function (request, response) {
+
+        $.ajax({
+            url: '@Url.Action("FillPartCodeDASHBOARD", "PurchaseBill")',
+            type: 'POST',
+
+            data: {
+                SearchPartCode: request.term,
+                FromDate: $("#FromDate").val(),
+                ToDate: $("#ToDate").val(),
+                FlagMRNJWCHALLAN: $("#MRNType").val()
+            },
+
+            success: function (result) {
+
+                console.log("PartCode API Response:", result);
+
+                let rows = getAutocompleteRows(result);
+
+                let term = (request.term || "")
+                    .toString()
+                    .toLowerCase();
+
+                let filtered = rows.filter(function (item) {
+
+                    let value = getItemValue(item, [
+                        "PartCode",
+                        "partCode",
+                        "Partcode",
+                        "PARTCODE",
+                        "text",
+                        "value"
+                    ]);
+
+                    return value !== "" &&
+                        value.toString()
+                            .toLowerCase()
+                            .includes(term);
+                });
+
+                response($.map(filtered, function (item) {
+
+                    let value = getItemValue(item, [
+                        "PartCode",
+                        "partCode",
+                        "Partcode",
+                        "PARTCODE",
+                        "text",
+                        "value"
+                    ]);
+
+                    return {
+                        label: value.toString(),
+                        value: value.toString()
+                    };
+                }));
+            },
+
+            error: function (xhr) {
+
+                console.error(
+                    "PartCode Autocomplete Error:",
+                    xhr.status,
+                    xhr.responseText
+                );
+
+                response([]);
+            }
+        });
+    };
+
+
+    $("#PartCode").autocomplete({
+
+        source: partCodeSource,
+
+        minLength: 1,
+
+        delay: 300,
+
+        select: function (event, ui) {
+
+            $("#PartCode").val(ui.item.value);
+
+            // -------------------------------------------------
+            // PartCode select thay pachi ItemName find karo
+            // -------------------------------------------------
+            $.ajax({
+
+                url: '@Url.Action("FillItems", "PurchaseBill")',
+                type: 'POST',
+
+                data: {
+                    SearchPartCode: ui.item.value,
+                    SearchItemName: ""
+                },
+
+                success: function (result) {
+
+                    console.log(
+                        "ItemName By PartCode Response:",
+                        result
+                    );
+
+                    let rows = getAutocompleteRows(result);
+
+                    if (rows.length > 0) {
+
+                        let item = rows[0];
+
+                        let itemName = getItemValue(item, [
+                            "ItemName",
+                            "itemName",
+                            "Item_Name",
+                            "item_name",
+                            "text",
+                            "value"
+                        ]);
+
+                        if (itemName) {
+
+                            $("#ItemName").val(
+                                itemName.toString()
+                            );
+                        }
+                    }
+                },
+
+                error: function (xhr) {
+
+                    console.error(
+                        "ItemName By PartCode Error:",
+                        xhr.status,
+                        xhr.responseText
+                    );
+                }
+            });
+
+            return false;
+        },
+
+        focus: function (event, ui) {
+
+            $("#PartCode").val(ui.item.value);
+
+            return false;
+        }
+    });
+
+
+    // =========================================================
+    // 8. ITEM NAME -> PART CODE
+    // =========================================================
+    const itemNameSource = function (request, response) {
+
+        $.ajax({
+            url: '@Url.Action("FillItemNameDASHBOARD", "PurchaseBill")',
+            type: 'POST',
+
+            data: {
+                SearchItemName: request.term,
+                FromDate: $("#FromDate").val(),
+                ToDate: $("#ToDate").val(),
+                FlagMRNJWCHALLAN: $("#MRNType").val()
+            },
+
+            success: function (result) {
+
+                console.log("ItemName API Response:", result);
+
+                let rows = getAutocompleteRows(result);
+
+                let term = (request.term || "")
+                    .toString()
+                    .toLowerCase();
+
+                let filtered = rows.filter(function (item) {
+
+                    let value = getItemValue(item, [
+                        "ItemName",
+                        "itemName",
+                        "Item_Name",
+                        "item_name",
+                        "text",
+                        "value"
+                    ]);
+
+                    return value !== "" &&
+                        value.toString()
+                            .toLowerCase()
+                            .includes(term);
+                });
+
+                response($.map(filtered, function (item) {
+
+                    let value = getItemValue(item, [
+                        "ItemName",
+                        "itemName",
+                        "Item_Name",
+                        "item_name",
+                        "text",
+                        "value"
+                    ]);
+
+                    return {
+                        label: value.toString(),
+                        value: value.toString()
+                    };
+                }));
+            },
+
+            error: function (xhr) {
+
+                console.error(
+                    "ItemName Autocomplete Error:",
+                    xhr.status,
+                    xhr.responseText
+                );
+
+                response([]);
+            }
+        });
+    };
+
+
+    $("#ItemName").autocomplete({
+
+        source: itemNameSource,
+
+        minLength: 1,
+
+        delay: 300,
+
+        select: function (event, ui) {
+
+            $("#ItemName").val(ui.item.value);
+
+            // -------------------------------------------------
+            // ItemName select thay pachi PartCode find karo
+            // -------------------------------------------------
+            $.ajax({
+
+                url: '@Url.Action("FillItems", "PurchaseBill")',
+                type: 'POST',
+
+                data: {
+                    SearchItemName: ui.item.value,
+                    SearchPartCode: ""
+                },
+
+                success: function (result) {
+
+                    console.log(
+                        "PartCode By ItemName Response:",
+                        result
+                    );
+
+                    let rows = getAutocompleteRows(result);
+
+                    if (rows.length > 0) {
+
+                        let item = rows[0];
+
+                        let partCode = getItemValue(item, [
+                            "PartCode",
+                            "partCode",
+                            "Partcode",
+                            "PARTCODE",
+                            "text",
+                            "value"
+                        ]);
+
+                        if (partCode) {
+
+                            $("#PartCode").val(
+                                partCode.toString()
+                            );
+                        }
+                    }
+                },
+
+                error: function (xhr) {
+
+                    console.error(
+                        "PartCode By ItemName Error:",
+                        xhr.status,
+                        xhr.responseText
+                    );
+                }
+            });
+
+            return false;
+        },
+
+        focus: function (event, ui) {
+
+            $("#ItemName").val(ui.item.value);
+
+            return false;
+        }
+    });
+
+
+    // =========================================================
+    // 9. HSN NO
+    // =========================================================
+    const hsnNoSource = function (request, response) {
+
+        $.ajax({
+            url: '@Url.Action("FillHSNNODASHBOARD", "PurchaseBill")',
+            type: 'POST',
+
+            data: {
+                SearchHSNNO: request.term,
+                FromDate: $("#FromDate").val(),
+                ToDate: $("#ToDate").val(),
+                FlagMRNJWCHALLAN: $("#MRNType").val()
+            },
+
+            success: function (result) {
+
+                console.log("HSN API Response:", result);
+
+                let rows = getAutocompleteRows(result);
+
+                let term = (request.term || "")
+                    .toString()
+                    .toLowerCase();
+
+                let filtered = rows.filter(function (item) {
+
+                    let value = getItemValue(item, [
+                        "HSNNO",
+                        "HsnNo",
+                        "hsnNo",
+                        "HSNNo",
+                        "HSN",
+                        "text",
+                        "value"
+                    ]);
+
+                    return value !== "" &&
+                        value.toString()
+                            .toLowerCase()
+                            .includes(term);
+                });
+
+                response($.map(filtered, function (item) {
+
+                    let value = getItemValue(item, [
+                        "HSNNO",
+                        "HsnNo",
+                        "hsnNo",
+                        "HSNNo",
+                        "HSN",
+                        "text",
+                        "value"
+                    ]);
+
+                    return {
+                        label: value.toString(),
+                        value: value.toString()
+                    };
+                }));
+            },
+
+            error: function (xhr) {
+
+                console.error(
+                    "HSN Autocomplete Error:",
+                    xhr.status,
+                    xhr.responseText
+                );
+
+                response([]);
+            }
+        });
+    };
+
+
+    $("#HSNNO").autocomplete({
+
+        source: hsnNoSource,
+
+        select: function (event, ui) {
+
+            $("#HSNNO").val(ui.item.value);
+
+            return false;
+        },
+
+        focus: function (event, ui) {
+
+            $("#HSNNO").val(ui.item.value);
+
+            return false;
+        },
+
+        minLength: 1
+    });
+
+}
+$(document).on("autocompleteopen", ".ui-autocomplete-input", function () {
+    var $input = $(this);
+    var $dropdown = $(".ui-autocomplete:visible");
+
+    $dropdown.css({
+        "width": $input.outerWidth() + "px",
+        "max-height": "250px",
+        "overflow-y": "auto",
+        "overflow-x": "hidden"
+    });
+});
     </script>
     <script src="~/Scripts/table2excel.js"></script>
 }

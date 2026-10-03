@@ -103,11 +103,13 @@
                         <input value="@item.ItemCode" id="MainItemGridd-ItemCode-@Cntr" type="hidden" />
                         <input value="@item.DepartmentId" id="MainItemGridd-DepartmentId-@Cntr" type="hidden" />
                         <input value="@item.ProcessId" id="MainItemGridd-ProcessId-@Cntr" type="hidden" />
+                         <input value="@item.TaxMandatory" id="MainItemGridd-TaxMandatory-@Cntr" type="hidden" />
+                        
                         <span readonly class="styled-input styled-qty" id="MainItemGridd-SeqNo-@Cntr">@item.SeqNo</span>
                     </td>
                     <td><span readonly class="" id="MainItemGridd-DocumentName-@Cntr">@item.DocumentName</span></td>
                     <td><span readonly class="" id="MainItemGridd-ItemName-@Cntr">@item.Item_Name</span></td>
-                    <td><span readonly class="divPBItemListPartCode" id="MainItemGridd-PartCode-@Cntr">@item.PartCode</span></td>
+                    <td><span readonly class="divPBItemListPartCode"data-taxmandatory="@item.TaxMandatory"  id="MainItemGridd-PartCode-@Cntr">@item.PartCode</span></td>
                     <td><span readonly class="" id="MainItemGridd-HSNNO-@Cntr">@item.HSNNO</span></td>
                     <td><span readonly class="" id="MainItemGridd-BillQty-@Cntr">@item.BillQty</span></td>
                     <td><span readonly class="" id="MainItemGridd-RecQty-@Cntr">@item.RecQty</span></td>

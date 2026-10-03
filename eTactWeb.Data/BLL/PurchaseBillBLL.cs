@@ -16,7 +16,7 @@ namespace eTactWeb.Data.BLL
 
         public PurchaseBillBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _PurchaseBillDAL = new PurchaseBillDAL(configuration, iDataLogic,connectionStringService);
+            _PurchaseBillDAL = new PurchaseBillDAL(configuration, iDataLogic, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
         public async Task<string> GetItemServiceFORPO(string ItemService)
@@ -54,6 +54,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetExchangeRate(string Currency)
         {
             return await _PurchaseBillDAL.GetExchangeRate(Currency);
+        }
+        public async Task<ResponseResult> FillItem(string SearchItemCode, string SearchPartCode)
+        {
+            return await _PurchaseBillDAL.FillItem(SearchItemCode, SearchPartCode);
         }
 
         public async Task<ResponseResult> FillItems(string Type, string ShowAllItem)
@@ -99,6 +103,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> FillRoundOffAccount(string ShowAll)
         {
             return await _PurchaseBillDAL.FillRoundOffAccount(ShowAll);
+        }
+        public async Task<ResponseResult> FillAccountName(string SearchAccount)
+        {
+            return await _PurchaseBillDAL.FillAccountName(SearchAccount);
         }
         public async Task<ResponseResult> GetGstRegister(string Flag, int Code)
         {

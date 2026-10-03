@@ -5,14 +5,16 @@
         <div class="row">
             <div class="col">
                 <label class="form-label">From Date</label>
-                <input asp-for="FromDate" maxlength="10" class="form-control" />
+                <input asp-for="FromDate" id="FromDate" maxlength="10" class="form-control"  />
             </div>
             <div class="col">
                 <label class="form-label">To Date</label>
-                <input asp-for="ToDate" maxlength="10" class="form-control" />
+                <input asp-for="ToDate" id="ToDate" maxlength="10" class="form-control"  />
             </div>
             <input asp-for="FromDate1" type="hidden" />
             <input asp-for="ToDate1" type="hidden" />
+            <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+            <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
         </div>
     </div>
     <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
@@ -33,121 +35,102 @@
             <option value="ALL">ALL</option>
         </select>
     </div>
-    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="DocumentName" class="form-label">Document Name</label>
-        <select class="form-select" asp-for="DocumentName" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.DocumentNameList,"Value","Text"))">
-            <option value="0">-Select-</option>
-        </select>
-    </div>
-    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="VendorName" class="form-label">Vendor Name</label>
-        <select class="form-select" asp-for="VendorName" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.VendorNameList,"Value","Text"))">
-            <option value="0">-Select-</option>
-        </select>
-    </div>
-    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="VoucherNo" class="form-label">Voucher NO</label>
-        <select class="form-select" asp-for="VoucherNo" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.VoucherNoList,"Value","Text"))">
-            <option value="0">-Select-</option>
-        </select>
-    </div>
-    <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="InvoiceNo" class="form-label">Invoice No</label>
-        <select class="form-select" asp-for="InvoiceNo" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.InvoiceNoList,"Value","Text"))">
-            <option value="0">-Select-</option>
-        </select>
-    </div>
-    <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="MRNNo" class="form-label">MRN No</label>
-        <select class="form-select" asp-for="MRNNo" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.MRNNoList,"Value","Text"))">
-            <option value="0">-Select-</option>
-        </select>
-    </div>
-    <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="GateNo" class="form-label">Gate No</label>
-        <select class="form-select" asp-for="GateNo" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.GateNoList,"Value","Text"))">
-            <option value="0">-Select-</option>
-        </select>
-    </div>
-    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="PartCode" class="form-label">Part Code</label>
-        <select class="form-select" asp-for="PartCode" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.PartCodeList,"Value","Text"))">
-            <option value="0">-Select-</option>
-        </select>
-    </div>
-    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="ItemName" class="form-label">Item Name</label>
-        <select class="form-select" asp-for="ItemName" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.ItemNameList,"Value","Text"))">
-            <option value="0">-Select-</option>
-        </select>
-    </div>
-    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="HSNNO" class="form-label">HSN No</label>
-        <select class="form-select" asp-for="HSNNO" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.HSNNOList,"Value","Text"))">
-            <option value="0">-Select-</option>
-        </select>
-    </div>
-    @* <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="DocumentName" class="form-label">Document</label>
-        <input asp-for="DocumentName" class="form-control" />
-    </div>
-    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="VendorName" class="form-label">Vendor Name</label>
-        <input asp-for="VendorName" class="form-control" />
-    </div>
-    <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="VoucherNo" class="form-label">Voucher No</label>
-        <input asp-for="VoucherNo" class="form-control" />
-    </div>
-    <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="InvoiceNo" class="form-label">Invoice No</label>
-        <input asp-for="InvoiceNo" class="form-control" />
-    </div>
-    <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="MRNNo" class="form-label">MRN No</label>
-        <input asp-for="MRNNo" class="form-control" />
-    </div>
-    <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="GateNo" class="form-label">Gate No</label>
-        <input asp-for="GateNo" class="form-control" />
-    </div>
-    <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="PartCode" class="form-label">Part Code</label>
-        <input asp-for="PartCode" class="form-control" />
-    </div>
-    <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="ItemName" class="form-label">Item Name</label>
-        <input asp-for="ItemName" class="form-control" />
-    </div>
-    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="HSNNO" class="form-label">HSN NO</label>
-        <input asp-for="HSNNO" autocomplete="on" value="" class="form-control" />
-    </div>
-    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
-        <div class="row">
-            <div class="col">
-                <label class="form-label">From Date</label>
-                <input asp-for="FromDate" maxlength="10" class="form-control" />
-            </div>
-            <div class="col">
-                <label class="form-label">To Date</label>
-                <input asp-for="ToDate" maxlength="10" class="form-control" />
-            </div>
-        </div>
-    </div> 
-    <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="DashboardType" class="form-label">Dashboard Type</label>
-        <select class="form-select" asp-for="DashboardType">
-            <option value="" disabled>-Select-</option>
-            <option value="Summary" selected>Summary</option>
-            <option value="Detail">Detail</option>
-        </select>
-    </div> *@
+<div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+    <label asp-for="DocumentName" class="form-label">
+        Document Name
+    </label>
+
+    <input asp-for="DocumentName"
+           id="DocumentName"
+           type="text"
+           class="form-control dashboard-autocomplete"
+           autocomplete="off"
+           placeholder="Search Document Name" />
+</div>
+   <div class="col-md-3">
+    <label asp-for="VendorName" class="form-label">Vendor Name</label>
+    <input asp-for="VendorName"
+           id="VendorName"
+           type="text"
+           class="form-control dashboard-autocomplete"
+           autocomplete="off"
+           placeholder="Search Vendor Name" />
+</div>
+
+<div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+    <label asp-for="VoucherNo" class="form-label">Voucher No</label>
+    <input asp-for="VoucherNo"
+           id="VoucherNo"
+           type="text"
+           class="form-control dashboard-autocomplete"
+           autocomplete="off"
+           placeholder="Search Voucher No" />
+</div>
+
+<div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+    <label asp-for="InvoiceNo" class="form-label">Invoice No</label>
+    <input asp-for="InvoiceNo"
+           id="InvoiceNo"
+           type="text"
+           class="form-control dashboard-autocomplete"
+           autocomplete="off"
+           placeholder="Search Invoice No" />
+</div>
+
+<div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+    <label asp-for="MRNNo" class="form-label">MRN No</label>
+    <input asp-for="MRNNo"
+           id="MRNNo"
+           type="text"
+           class="form-control dashboard-autocomplete"
+           autocomplete="off"
+           placeholder="Search MRN No" />
+</div>
+
+<div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+    <label asp-for="GateNo" class="form-label">Gate No</label>
+    <input asp-for="GateNo"
+           id="GateNo"
+           type="text"
+           class="form-control dashboard-autocomplete"
+           autocomplete="off"
+           placeholder="Search Gate No" />
+</div>
+
+<div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+    <label asp-for="PartCode" class="form-label">Part Code</label>
+    <input asp-for="PartCode"
+           id="PartCode"
+           type="text"
+           class="form-control dashboard-autocomplete"
+           autocomplete="off"
+           placeholder="Search Part Code" />
+</div>
+
+<div class="col-md-3">
+    <label asp-for="ItemName" class="form-label">Item Name</label>
+    <input asp-for="ItemName"
+           id="ItemName"
+           type="text"
+           class="form-control dashboard-autocomplete"
+           autocomplete="off"
+           placeholder="Search Item Name" />
+</div>
+
+<div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+    <label asp-for="HSNNO" class="form-label">HSN No</label>
+    <input asp-for="HSNNO"
+           id="HSNNO"
+           type="text"
+           class="form-control dashboard-autocomplete"
+           autocomplete="off"
+           placeholder="Search HSN No" />
+</div>
     <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
         <label class="form-label">Global search</label>
         <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
     </div>
-    <div class=" d-flex justify-content-center mt-3" width="inherit">
+    <div class="col-sm-3 col-md-6 col-lg-4 col-xl-8 d-flex justify-content-center mt-3" width="inherit">
         <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" onclick="GetSearchData();">
             <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
         </button>
@@ -161,12 +144,9 @@
             <label class="color-box" style="background-color: #FF0000;"></label><label style="margin-left:5px;margin-top:-5px;">UNAPPROVED</label>
             <label class="color-box" style="background-color: green;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">APPROVED</label>
             <label class="color-box" style="background-color: #0dcaf0;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">
-                PAYMENT DONE</
-            @* <label class="color-box" style="background-color: purple;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">1st Level Approved</label>
-            <label class="color-box" style="background-color: blue;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Amendment PENDING</label> *@
+                PAYMENT DONE
         </div>
-    </div>
-    
+    </div> 
 </div>
 
 <style>

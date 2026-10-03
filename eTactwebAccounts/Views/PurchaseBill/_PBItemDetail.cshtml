@@ -1,7 +1,7 @@
 ﻿@model eTactWeb.DOM.Models.PurchaseBillModel
 <style>
     #poTable {
-        max-height: 400px; /* Adjust as needed */
+        max-height: 700px; /* Adjust as needed */
         overflow-y: auto;
     }
 
@@ -41,7 +41,7 @@
         @* <col style="width: 50px;"> *@ <!-- Action -->
         <col style="width: 40px;"> <!-- Seq No -->
         <col style="width: 145px;"> <!-- Document Name -->
-        <col style="width: 120px;"> <!-- Item Name -->
+        <col style="width: 270px;"> <!-- Item Name -->
         <col style="width: 100px;"> <!-- Part Code -->
         <col style="width: 70px;"> <!-- HSNNO -->
         <col style="width: 80px;"> <!-- Bill Qty -->
@@ -49,7 +49,7 @@
         <col style="width: 45px;"> <!-- Unit -->
         <col style="width: 100px;"> <!-- Bill Rate -->
         <col style="width: 100px;"> <!-- PO Rate -->
-        <col style="width: 40px;"> <!-- Disc Per -->
+        <col style="width: 50px;"> <!-- Disc Per -->
         <col style="width: 100px;"> <!-- Disc Amt -->
         <col style="width: 100px;"> <!-- Amount -->
         <col style="width: 60px;"> <!-- Accp Qty -->
@@ -182,6 +182,7 @@
                     <td>
                         <input value="@item.DocTypeID" id="MainItemGrid-DocTypeID-@Cntr" type="hidden" />
                         <input value="@item.ItemCode" id="MainItemGrid-ItemCode-@Cntr" type="hidden" />
+                        <input value="@item.TaxMandatory" id="MainItemGrid-TaxMandatory-@Cntr" type="hidden" />
                         <input value="@item.DepartmentId" id="MainItemGrid-DepartmentId-@Cntr" type="hidden" />
                         <input value="@item.ProcessId" id="MainItemGrid-ProcessId-@Cntr" type="hidden" />
                         <input readonly style="" class="styled-input styled-qty" id="MainItemGrid-SeqNo-@Cntr" value="@item.SeqNo" />
@@ -189,15 +190,15 @@
                     <td onclick="AllowDocNameChange()">
                         <span onclick="AllowDocNameChange()"><select id="MainItemGrid-DocName-@Cntr" onchange="OnChangeDocName(@Cntr)" style="background-color:yellow;pointer-events: none; width: -webkit-fill-available;" readonly><option value="0" selected>-Select-</option></select></span>
                     </td>
-                    <td><input style="" class="styled-input styled-qty" id="MainItemGrid-ItemName-@Cntr" value="@item.Item_Name" /></td>
-                    <td><input style="" class="styled-input styled-qty divPBItemListPartCode" id="MainItemGrid-PartCode-@Cntr" value="@item.PartCode" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-ItemName-@Cntr" value="@item.Item_Name" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty divPBItemListPartCode" id="MainItemGrid-PartCode-@Cntr" value="@item.PartCode" /></td>
                     <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-HSNNO-@Cntr" value="@item.HSNNO" /></td>
-                    <td><input  readonly style="" class="styled-input styled-qty" id="MainItemGrid-BillQty-@Cntr" onchange="BillRateChange(@Cntr)" value="@item.BillQty" /></td>
+                    <td><input  readonly style="" class="styled-input styled-qty " id="MainItemGrid-BillQty-@Cntr" onchange="BillRateChange(@Cntr)" value="@item.BillQty" /></td>
                     <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-RecQty-@Cntr" value="@item.RecQty" /></td>
                     <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-unit-@Cntr" value="@item.Unit" /></td>
-                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-BillRate-@Cntr" onchange="BillRateChange(@Cntr)" value="@item.BillRate" /></td>
+                    <td><input  style="" tabindex="1" class="styled-input styled-qty billRate" id="MainItemGrid-BillRate-@Cntr" onchange="BillRateChange(@Cntr)" value="@item.BillRate" oninput="this.value = this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/^(\d{18})\d+/, '$1').replace(/(\.\d{4})\d+/, '$1');"/></td>
                     <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-PORate-@Cntr" value="@item.PORate" /></td>
-                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-DisPer-@Cntr" onchange="BillRateChange(@Cntr)" value="@item.DisPer" /></td>
+                    <td><input  style="" class="styled-input styled-qty" id="MainItemGrid-DisPer-@Cntr" onchange="BillRateChange(@Cntr)" value="@item.DisPer" /></td>
                     <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-DisAmt-@Cntr" onchange="BillRateChange(@Cntr)" value="@item.DisAmt" /></td>
                     <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-Amount-@Cntr" value="@item.Amount" /></td>
                     <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-AcceptedQty-@Cntr" value="@item.AcceptedQty" /></td>

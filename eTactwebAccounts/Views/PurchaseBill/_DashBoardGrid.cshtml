@@ -1,10 +1,20 @@
 ﻿@model eTactWeb.DOM.Models.PBDashBoard
-@using Microsoft.AspNetCore.Http
-@using System.Reflection.PortableExecutable
 @using System.Globalization
+@using System.Reflection.PortableExecutable
+@using Microsoft.AspNetCore.Http
+@using eTactWeb.Data.Common
 @inject IHttpContextAccessor HttpContextAccessor
+@inject EncryptDecrypt encryptDecrypt
+
 @{
-    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+    var context = HttpContextAccessor.HttpContext;
+    string formKey =
+           context.Request.Query["formKey"].FirstOrDefault()
+        ?? context.Request.Headers["FormKey"].FirstOrDefault()
+        ?? ViewBag.formKey
+        // ?? Model.formKey
+        ?? "";
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"YearCode_{formKey}"));
 }
 @if (Model.DashboardType == "Detail" || Model.DashboardType == "TAXDetail")
 {
@@ -85,7 +95,11 @@ else
                                             </a>
                                         </div>
                                         <div id="viewCursorDiv-@Cntr">
-                                            <a class="table-link link-success" asp-action="PurchaseBill" asp-route-Mode="V" asp-route-ID="@item.PurchBillEntryId" asp-route-YearCode="@item.PurchBillYearCode" onclick="BackButtonData(event,'@item.PurchBillEntryId','@item.PurchBillYearCode');">
+                                            <a class="table-link link-success" asp-route-formKey="@formKey"
+                                            asp-action="PurchaseBill" asp-route-Mode="@encryptDecrypt.Encrypt("V")" 
+                                            asp-route-ID="@EncryptDecrypt.EncodeID(item.PurchBillEntryId)" 
+                                               asp-route-YearCode="(item.PurchBillYearCode)?@EncryptDecrypt.EncodeID(item.PurchBillYearCode):EncryptDecrypt.EncodeID(0) "
+                                            onclick="BackButtonData(event,'@item.PurchBillEntryId','@item.PurchBillYearCode');">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -106,7 +120,9 @@ else
                                         else
                                         {
                                             <div id="editCursorDiv-@Cntr">
-                                                <a class="table-link link-primary" asp-action="PurchaseBill" asp-route-Mode="U" asp-route-ID="@item.PurchBillEntryId" asp-route-YearCode="@item.PurchBillYearCode"
+                                                <a class="table-link link-primary" asp-route-formKey="@formKey" asp-action="PurchaseBill"
+                                                asp-route-Mode="@encryptDecrypt.Encrypt("U")" asp-route-ID="@EncryptDecrypt.EncodeID(item.PurchBillEntryId)"
+                                                asp-route-YearCode="@EncryptDecrypt.EncodeID(item.PurchBillYearCode)"
                                                    onclick="EditButtonData(event,'@item.PurchBillEntryId','@item.PurchBillYearCode','(@item.AgainstVoucherNo)')">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
@@ -139,7 +155,7 @@ else
                                             <div id="deleteCursorDiv-@Cntr"
                                                  class="table-link link-danger"
                                                  style="cursor: pointer;"
-                                                 onclick="confirmDelete(event,'@item.EntryID', '@item.PurchBillYearCode', '@item.VoucherNo','@item.EnteredBy', '@item.InvoiceNo', false, '@Cntr')">
+                                                 onclick="confirmDelete(event,'@item.EntryID', '@item.PurchBillYearCode', '@item.VoucherNo','@item.EnteredBy', '@item.InvoiceNo', false, '@Cntr','@formKey')">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>

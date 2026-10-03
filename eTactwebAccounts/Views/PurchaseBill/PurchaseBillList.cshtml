@@ -12,7 +12,7 @@
             <h5>
                 PURCHASE BILL - <strong>Pend MRN</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="Dashboard" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                    <a asp-action="Dashboard" asp-route-formKey="@ViewBag.formKey" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -25,6 +25,8 @@
                 <div class="card-body">
                     <form id="SParam">
                         <partial name="_SearchParamForPBList" />
+                        <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                        <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                     </form>
                 </div>
             </div>
@@ -71,27 +73,196 @@
             });
         }
 
+           function FillItems() {
+                    // Source for PartCodeText
+                    const partCodeSource = function (request, response) {
+                        $.ajax({
+                            url: '@Url.Action("FillItems", "PurchaseBill")',
+                            type: 'POST',
+                            data: {
+                                SearchItemName: '',
+                                SearchPartCode: request.term
+                            },
+                            success: function (result) {
+                                let obj = typeof result === "string" ? JSON.parse(result) : result;
 
+                                if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                                    let filtered = obj.Result.Table.filter(function (item) {
+                                        let term = request.term.toLowerCase();
+                                        return (
+                                            (item.PartCode && item.PartCode.toLowerCase().includes(term)) ||
+                                            (item.ItemName && item.ItemName.toLowerCase().includes(term))
+                                        );
+                                    });
+
+                                    response($.map(filtered, function (item) {
+                                        return {
+                                            label: item.PartCode,
+                                            value: item.PartCode,
+                                            itemName: item.ItemName,
+                                            itemCode: item.Item_Code,
+                                             partCode: item.PartCode,
+                                           
+                                        };
+                                    }));
+                                } else {
+                                    response([]);
+                                }
+                            }
+                        });
+                    };
+
+                    // Source for ItemNameText
+                    const itemNameSource = function (request, response) {
+                        $.ajax({
+                            url: '@Url.Action("FillItems", "PurchaseBill")',
+                            type: 'POST',
+                            data: {
+                                SearchItemName: request.term,
+                                SearchPartCode: ''
+                            },
+                            success: function (result) {
+                                let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                                if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                                    let filtered = obj.Result.Table.filter(function (item) {
+                                        let term = request.term.toLowerCase();
+                                        return item.ItemName.toLowerCase().includes(term);
+                                    });
+
+                                    response($.map(filtered, function (item) {
+                                        return {
+                                            label: item.ItemName,
+                                            value: item.ItemName,
+                                            itemName: item.ItemName,
+                                            itemCode: item.Item_Code,
+                                            partCode: item.PartCode,
+                                           
+                                        };
+                                    }));
+                                } else {
+                                    response([]);
+                                }
+                            }
+                        });
+                    };
+
+                    // Autocomplete for PartCodeText
+                    $("#PartCode").autocomplete({
+                        source: partCodeSource,
+                        select: function (event, ui) {
+                            $("#PartCode").val(ui.item.partCode).data("itemcode", ui.item.itemCode);
+                            $("#ItemName").val(ui.item.itemName);
+                            return false;
+                        },
+                        focus: function (event, ui) {
+                            $("#PartCode").val(ui.item.partCode);
+                            return false;
+                        },
+                        minLength: 2
+                    });
+
+                    // 🔹 Focusout event for PartCodeText (manual entry validation)
+                   
+
+                    // Autocomplete for ItemNameText
+                    $("#ItemName").autocomplete({
+                        source: itemNameSource,
+                        select: function (event, ui) {
+                            $("#ItemName").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
+                            $("#PartCode").val(ui.item.partCode);
+                            return false;
+
+                        },
+                        focus: function (event, ui) {
+                            $("#ItemName").val(ui.item.itemName);
+                            return false;
+                        },
+                        minLength: 2
+                    });
+
+                  
+                }
+                function AutoFillPARTYNAMELIST() {
+            // Source for PartCodeText
+           // var ischeckedAc = $('#PN1').is(':checked') == true ? 'T' : 'F';
+            const AccountCodeSourse = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("FillAccountName", "PurchaseBill")',
+                    type: 'POST',
+                    data: {
+                        SearchAccount: request.term,
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.Account_Name.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.Account_Name,
+                                    value: item.Account_Name,
+                                    accountCode: item.Account_Code,
+
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+
+
+            // Autocomplete for PartCodeText
+            $("#PartyName").autocomplete({
+                source: AccountCodeSourse,
+                select: function (event, ui) {
+                    $("#PartyName").val(ui.item.value).data("Account_Code", ui.item.accountCode);
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#PartyName").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+        }
+         var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
         $(function () {
                   // Fields to handle
 
-
+        formKey=$('#formKey').val();
+                           uniqueKey=$('#uniqueKey').val();
         // Save all form field values into sessionStorage
 
 
             GetFormRights();
+             FillItems();
+            AutoFillPARTYNAMELIST();
             LockedFinancialYear();
             CheckApprovedOrNot();
             var dashGrid = $('#PBDashboardGrid tr').length - 1;
             $('#totalRows').text(dashGrid);
             setDefaultData();
-            $('#YearCode').val($('#sessionYC').text());
+            $('#YearCode').val($('#sessionYC').text().trim());
                       $(document).on('change', '#FromDate', function () {
             GetPBListDropdownData();
         });
              $(document).on('change', '#ToDate', function () {
             GetPBListDropdownData();
         });
+              
+             $(document).on('change', '#MRNType', function () {
+            GetPBListDropdownData();
+        });
+              
                 var FromDateBack = sessionStorage.getItem('FromDateBack');
         if (FromDateBack) {
             $('#FromDate').val(FromDateBack);
@@ -184,18 +355,18 @@
 
             $('#DashboardType').select2();
             $('#MRNType').select2();
-            $('#PartyName').select2();
+            // $('#PartyName').select2();
             $('#MRNNo').select2();
             $('#PONO').select2();
             $('#InvoiceNo').select2();
             $('#GateNo').select2();
             $('#DocumentName').select2();
-            $('#ItemName').select2();
-            $('#PartCode').select2();
+            // $('#ItemName').select2();
+            // $('#PartCode').select2();
                const selectIds = [
-          'PartyName',
+         
             'MRNNo', 'PONO', 'InvoiceNo', 'GateNo',
-            'DocumentName', 'ItemName', 'PartCode'
+            'DocumentName'
         ];
 
         selectIds.forEach(function (id) {
@@ -260,6 +431,7 @@
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
+                data:{formKey:formKey},
                 success: function (data) {
                     if (data != null) {
 
@@ -390,7 +562,8 @@
                     LockedFinancialYear();
                     $('#SParam').empty().append(data);
                     setDefaultData();
-
+                     FillItems();
+            AutoFillPARTYNAMELIST();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -493,7 +666,7 @@
                 type: "GET",
                 url: "@Url.Action("CheckLockYear")",
                 dataType: "json",
-                data: { "YearCode": $('#sessionYC').text() },
+                data: { "YearCode": $('#sessionYC').text().trim() },
                 success: function (result, status, error) {
 
                     console.log(result);
@@ -534,11 +707,15 @@
             //alert('mrnyear '+mrnYear);
             const currentYear = $('#YearCode').val();
             var FromStoreId = $('#FromStore').val();
+
+            
+           
             if (mrnYear == currentYear) {
                 var url = '/PurchaseBill/Index/?';
-                url += "ID=" + encodeURIComponent(0) +
+                url += 
                     "&YC=" + encodeURIComponent(currentYear) +
                     "&Mode=" + encodeURIComponent('PBI') +
+                    "&formKey=" + encodeURIComponent(formKey) +
                     "&flag=" + encodeURIComponent('DisplayPendmrn') +
                     "&FlagMRNJWCHALLAN=" + encodeURIComponent($('#MRNType').val()) +
                     "&Mrnno=" + encodeURIComponent($('#MRNNo_' + i).text()) +
@@ -549,6 +726,7 @@
                 url += "&FromDate=" + encodeURIComponent($('#FromDate').val()) +
                     "&ToDate=" + encodeURIComponent($('#ToDate').val()) +
                     "&REQNo=" + encodeURIComponent($('#ReqNo').val()) +
+
                     "&ReqYearCode=" + encodeURIComponent($('#ReqYearCode').val()) +
                     "&WCName=" + encodeURIComponent($('#WorkCenter').val()) +
                     "&DeptName=" + encodeURIComponent($('#DeptName').val()) +

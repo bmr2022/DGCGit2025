@@ -39,7 +39,7 @@
             <input asp-for="MRNYearCode" class="form-control" value="@Model.MRNYearCode" readonly />
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
-            <label asp-for="StrMRNEntryDate" class="form-label" style="color: red;">MRN Date*</label>
+            <label  class="form-label" style="color: red;">MRN Date*</label>
             <input asp-for="StrMRNEntryDate" class="form-control" value="@Model.StrMRNEntryDate" readonly disabled />
         </div>
         <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
@@ -52,7 +52,7 @@
             <input asp-for="GateYearCode" class="form-control" value="@Model.GateYearCode" readonly />
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:110px">
-            <label asp-for="StrGateDate" class="form-label">Gate Date</label>
+            <label class="form-label">Gate Date</label>
             <input asp-for="StrGateDate" class="form-control" value="@Model.StrGateDate" readonly disabled />
         </div>
         <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px">
@@ -64,7 +64,7 @@
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" onclick="AllowVouchDateChange()">
             <input type="hidden" id="AllowVouchDateChange" />
             <input type="hidden" id="AllowVouchDateChangePassWord" />
-            <label asp-for="VouchDate" class="form-label">Voucher Date*</label>
+            <label class="form-label">Voucher Date*</label>
             <input asp-for="VouchDate" tabindex="7" readonly onclick="AllowVouchDateChange()" class="form-control datePickerControl" />
         </div>
         <input type="hidden" id="AllowInvoiceNoChange" />
@@ -74,7 +74,7 @@
             <input asp-for="InvNo" class="form-control" onclick="AllowInvoiceNoChange()" value="@Model.InvNo" readonly />
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" onclick="AllowInvoiceNoChange()" style="width:100px">
-            <label asp-for="InvDate" class="form-label" style="color: red;cursor:pointer">InvDate*</label>
+            <label  class="form-label" style="color: red;cursor:pointer">InvDate*</label>
             <input asp-for="InvDate" class="form-control" onclick="AllowInvoiceNoChange()" value="@Model.InvDate" readonly />
         </div>
         <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">

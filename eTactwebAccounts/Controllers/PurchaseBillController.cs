@@ -11,23 +11,22 @@ using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using NuGet.Packaging;
-
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
 using OfficeOpenXml;
 using System.Data;
 using Newtonsoft.Json.Linq;
-//using static Grpc.Core.Metadata;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Net;
-
 using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using eTactWeb.Data.DAL;
 using ClosedXML.Excel;
+using eTactWeb.Services;
+using eTactWeb.Services.Helpers;
 
 namespace eTactWeb.Controllers;
 
@@ -38,8 +37,10 @@ public class PurchaseBillController : Controller
     private readonly IConfiguration iconfiguration;
     private readonly ICompositeViewEngine _viewEngine;
     private readonly IMemoryCache _MemoryCache;
+    //private readonly ITallyService _tallyService;
+    private readonly ICommon _ICommon;
     private readonly ConnectionStringService _connectionStringService;
-    public PurchaseBillController(IPurchaseBill iPurchaseBill, IDataLogic iDataLogic, ILogger<PurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, ICompositeViewEngine viewEngine, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService)
+    public PurchaseBillController(IPurchaseBill iPurchaseBill, IDataLogic iDataLogic, ILogger<PurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, ICompositeViewEngine viewEngine, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService, ICommon ICommon)
     {
         IPurchaseBill = iPurchaseBill;
         IDataLogic = iDataLogic;
@@ -51,6 +52,8 @@ public class PurchaseBillController : Controller
         _MemoryCache = iMemoryCache;
         _viewEngine = viewEngine;
         _connectionStringService = connectionStringService;
+        //_tallyService = tallyService;
+        _ICommon = ICommon;
     }
 
     public ILogger<PurchaseBillModel> _Logger { get; set; }
@@ -58,9 +61,9 @@ public class PurchaseBillController : Controller
     public EncryptDecrypt EncryptDecrypt { get; private set; }
     public IDataLogic IDataLogic { get; private set; }
     public IPurchaseBill IPurchaseBill { get; set; }
-    public IActionResult ClearDRCRGrid()
+    public IActionResult ClearDRCRGrid(string uniqueKey)
     {
-        HttpContext.Session.Remove("KeyDrCrGrid");
+        HttpContext.Session.Remove($"KeyDrCrGrid_{uniqueKey}");
         return Json("Ok");
     }
     public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "")
@@ -68,23 +71,18 @@ public class PurchaseBillController : Controller
         string my_connection_string;
         string contentRootPath = _IWebHostEnvironment.ContentRootPath;
         string webRootPath = _IWebHostEnvironment.WebRootPath;
-        //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
         var webReport = new WebReport();
+        var ReportName = IPurchaseBill.GetReportName();
+        if (!string.IsNullOrWhiteSpace(Convert.ToString(ReportName.Result.Result.Rows[0].ItemArray[0])))
+        {
+            webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+        }
+        else
+        {
+            webReport.Report.Load(webRootPath + "\\PurchaseBill.frx"); // default report
 
-     //   var ReportName = IPurchaseBill.GetReportName();
-        webReport.Report.Load(webRootPath + "\\PurchaseBill.frx");
-        //if (ReportName.Result.Result.Rows[0].ItemArray[0] != System.DBNull.Value)
-        //{
-        //    webReport.Report.Load(webRootPath + "\\PurchaseBill.frx"); // from database
-        //}
-        //else
-        //{
-        //    webReport.Report.Load(webRootPath + "\\PO.frx"); // default report
-
-        //}
-        //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
+        }
         my_connection_string = _connectionStringService.GetConnectionString();
-        //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
         webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
         webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
         webReport.Report.SetParameterValue("entryparam", EntryId);
@@ -92,21 +90,6 @@ public class PurchaseBillController : Controller
         webReport.Report.SetParameterValue("MyParameter", my_connection_string);
         webReport.Report.Refresh();
         return View(webReport);
-   
-        ////webReport.Report.SetParameterValue("ponoparam", PONO);
-
-
-        //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-
-        //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-
-
-        //// webReport.Report.SetParameterValue("accountparam", 1731);
-
-
-        //// webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
-        ////ViewBag.WebReport = webReport;
-        //return View(webReport);
     }
     public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0, string PONO = "")
     {
@@ -137,29 +120,25 @@ public class PurchaseBillController : Controller
 
     public IActionResult GetImage(int EntryId = 0, int YearCode = 0, string PONO = "")
     {
-        // Creatint the Report object
         using (Report report = new Report())
         {
             string webRootPath = _IWebHostEnvironment.WebRootPath;
             var webReport = new WebReport();
 
-
             webReport.Report.Load(webRootPath + "\\PO.frx");
-            //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
             webReport.Report.SetParameterValue("ponoparam", PONO);
-            webReport.Report.Prepare();// Preparing a report
+            webReport.Report.Prepare();
 
-            // Creating the Image export
             using (ImageExport image = new ImageExport())
             {
                 image.ImageFormat = ImageExportFormat.Jpeg;
-                image.JpegQuality = 100; // Set up the quality
-                image.Resolution = 100; // Set up a resolution 
-                image.SeparateFiles = false; // We need all pages in one big single file
+                image.JpegQuality = 100;
+                image.Resolution = 100;
+                image.SeparateFiles = false;
 
-                using (MemoryStream st = new MemoryStream())// Using stream to save export
+                using (MemoryStream st = new MemoryStream())
                 {
                     webReport.Report.Export(image, st);
                     return base.File(st.ToArray(), "image/jpeg");
@@ -168,22 +147,22 @@ public class PurchaseBillController : Controller
         }
     }
 
-    public IActionResult AddItem2Grid(PurchaseBillModel model)
+    public IActionResult AddItem2Grid(PurchaseBillModel model, string uniqueKey)
     {
         bool TF = false;
-        string taxModelJson = HttpContext.Session.GetString("KeyTaxGrid");
+        string taxModelJson = HttpContext.Session.GetString($"KeyTaxGrid_{uniqueKey}");
         List<TaxModel> PBTaxdetail = new List<TaxModel>();
         if (!string.IsNullOrEmpty(taxModelJson))
         {
             PBTaxdetail = JsonConvert.DeserializeObject<List<TaxModel>>(taxModelJson);
         }
-        string tdsModelJson = HttpContext.Session.GetString("KeyTDSGrid");
+        string tdsModelJson = HttpContext.Session.GetString($"KeyTDSGrid_{uniqueKey}");
         List<TDSModel> PBTDSdetail = new List<TDSModel>();
         if (!string.IsNullOrEmpty(tdsModelJson))
         {
             PBTDSdetail = JsonConvert.DeserializeObject<List<TDSModel>>(tdsModelJson);
         }
-        string mainModelJson = HttpContext.Session.GetString("PurchaseBill");
+        string mainModelJson = HttpContext.Session.GetString($"PurchaseBill_{uniqueKey}");
         PurchaseBillModel MainModel = new PurchaseBillModel();
         if (!string.IsNullOrEmpty(mainModelJson))
         {
@@ -201,17 +180,17 @@ public class PurchaseBillController : Controller
         }
         else
         {
-            model = BindItem4Grid(model);
-            HttpContext.Session.Remove("PurchaseBill");
+            model = BindItem4Grid(model, uniqueKey);
+            HttpContext.Session.Remove($"PurchaseBill_{uniqueKey}");
             string modelJson = JsonConvert.SerializeObject(model);
-            HttpContext.Session.SetString("PurchaseBill", modelJson);
+            HttpContext.Session.SetString($"PurchaseBill_{uniqueKey}", modelJson);
         }
 
         return PartialView("_PBItemGrid", model);
     }
-    public async Task<JsonResult> GetFormRights()
+    public async Task<JsonResult> GetFormRights(string formKey)
     {
-        var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+        var userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
         var JSON = await IPurchaseBill.GetFormRights(userID);
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
@@ -234,12 +213,24 @@ public class PurchaseBillController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
-    public string GetEmpByMachineName()
+    public async Task<JsonResult> FillAccountName(string SearchAccount)
+    {
+        var JSON = await IPurchaseBill.FillAccountName(SearchAccount);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> FillItems(string SearchItemName, string SearchPartCode)
+    {
+        var JSON = await IPurchaseBill.FillItem(SearchItemName, SearchPartCode);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public string GetEmpByMachineName(string formKey)
     {
         try
         {
             string empname = string.Empty;
-            empname = HttpContext.Session.GetString("EmpName").ToString();
+            empname = HttpContext.Session.GetString($"EmpName_{formKey}").ToString();
             if (string.IsNullOrEmpty(empname)) { empname = Environment.UserDomainName; }
             return empname;
         }
@@ -250,10 +241,6 @@ public class PurchaseBillController : Controller
     }
     public async Task<PurchaseBillModel> BindModels(PurchaseBillModel model)
     {
-        CommonFunc.LogException<PurchaseBillModel>.LogInfo(_Logger, "**********  *************");
-
-        _Logger.LogInformation("********** Binding Model *************");
-
         var oDataSet = new DataSet();
         var SqlParams = new List<KeyValuePair<string, string>>();
         model.AccountList = new List<TextValue>();
@@ -268,11 +255,14 @@ public class PurchaseBillController : Controller
     }
 
     [Route("{controller}/Dashboard")]
-    public async Task<IActionResult> DashBoard(string FromDate = "", string ToDate = "", string DashboardType = "", string MRNType = "", string DocumentName = "", string VendorName = "", string VoucherNo = "", string InvoiceNo = "", string MRNNo = "", string GateNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "", string Flag = "True")
+    public async Task<IActionResult> DashBoard(string formKey, string FromDate = "", string ToDate = "", string DashboardType = "", string MRNType = "", string DocumentName = "", string VendorName = "", string VoucherNo = "", string InvoiceNo = "", string MRNNo = "", string GateNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "", string Flag = "True")
     {
-        HttpContext.Session.Remove("PurchaseBill");
-        HttpContext.Session.Remove("TaxGrid");
-        HttpContext.Session.Remove("KeyTaxGrid");
+        ViewBag.formKey = formKey;
+        var uniqueKey = Guid.NewGuid().ToString();
+        ViewBag.uniqueKey = uniqueKey;
+        HttpContext.Session.Remove($"PurchaseBill_{uniqueKey}");
+        HttpContext.Session.Remove($"TaxGrid_{uniqueKey}");
+        HttpContext.Session.Remove($"KeyTaxGrid_{uniqueKey}");
 
         var _List = new List<TextValue>();
 
@@ -281,42 +271,137 @@ public class PurchaseBillController : Controller
         DateTime now = DateTime.Now;
         DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
         DateTime today = DateTime.Now;
-        var commonparams = new Dictionary<string, object>()
+        //var commonparams = new Dictionary<string, object>()
+        //{
+        //    { "@Fromdate", firstDayOfMonth },
+        //    { "@ToDate", today }
+        //};
+        DateTime from = firstDayOfMonth;
+        DateTime to = today;
+
+        if (Flag != "True" && !string.IsNullOrEmpty(FromDate) && !string.IsNullOrEmpty(ToDate))
         {
-            { "@Fromdate", firstDayOfMonth },
-            { "@ToDate", today }
-        };
+            from = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
+            to = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
+
+            // user selected → show same in UI
+            MainModel.FromDate = FromDate;
+            MainModel.ToDate = ToDate;
+        }
+        else
+        {
+            // first load → current month
+            MainModel.FromDate = firstDayOfMonth.ToString("dd/MM/yyyy");
+            MainModel.ToDate = today.ToString("dd/MM/yyyy");
+        }
+        var commonparams = new Dictionary<string, object>()
+{
+    { "@Fromdate", from },
+    { "@ToDate", to }
+};
         MainModel = await BindDashboardList(MainModel, commonparams);
-        MainModel.FromDate = new DateTime(DateTime.Today.Year, 4, 1).ToString("dd/MM/yyyy").Replace("-", "/");
-        MainModel.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");// Last day in January next year
+        //MainModel.FromDate = new DateTime(DateTime.Today.Year, 4, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+        //MainModel.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");// Last day in January next year
+        //MainModel.FromDate = from.ToString("dd/MM/yyyy");
+        //MainModel.ToDate = to.ToString("dd/MM/yyyy");
         if (Flag != "True")
         {
             MainModel.FromDate = FromDate;
             MainModel.ToDate = ToDate;
             MainModel.DashboardType = DashboardType != null && DashboardType != "0" && DashboardType != "undefined" ? DashboardType : "0";
             MainModel.MRNType = MRNType != null && MRNType != "0" && MRNType != "undefined" ? MRNType : "";
-            MainModel.DocumentName = DocumentName != null && DocumentName != "0" && DocumentName != "undefined" ? DocumentName : "0";
-            MainModel.VendorName = VendorName != null && VendorName != "0" && VendorName != "undefined" ? VendorName : "0";
-            MainModel.VoucherNo = VoucherNo != null && VoucherNo != "0" && VoucherNo != "undefined" ? VoucherNo : "0";
-            MainModel.InvoiceNo = InvoiceNo != null && InvoiceNo != "0" && InvoiceNo != "undefined" ? InvoiceNo : "0";
-            MainModel.MRNNo = MRNNo != null && MRNNo != "0" && MRNNo != "undefined" ? MRNNo : "0";
-            MainModel.GateNo = GateNo != null && GateNo != "0" && GateNo != "undefined" ? GateNo : "0";
-            MainModel.PartCode = PartCode != null && PartCode != "0" && PartCode != "undefined" ? PartCode : "0";
-            MainModel.ItemName = ItemName != null && ItemName != "0" && ItemName != "undefined" ? ItemName : "0";
-            MainModel.HSNNO = HSNNo != null && HSNNo != "0" && HSNNo != "undefined" ? HSNNo : "0";
+            MainModel.DocumentName =
+    DocumentName != null &&
+    DocumentName != "undefined"
+        ? DocumentName
+        : "";
+
+            MainModel.VendorName =
+                VendorName != null &&
+                VendorName != "undefined"
+                    ? VendorName
+                    : "";
+
+            MainModel.VoucherNo =
+                VoucherNo != null &&
+                VoucherNo != "undefined"
+                    ? VoucherNo
+                    : "";
+
+            MainModel.InvoiceNo =
+                InvoiceNo != null &&
+                InvoiceNo != "undefined"
+                    ? InvoiceNo
+                    : "";
+
+            MainModel.MRNNo =
+                MRNNo != null &&
+                MRNNo != "undefined"
+                    ? MRNNo
+                    : "";
+
+            MainModel.GateNo =
+                GateNo != null &&
+                GateNo != "undefined"
+                    ? GateNo
+                    : "";
+
+            MainModel.PartCode =
+                PartCode != null &&
+                PartCode != "undefined"
+                    ? PartCode
+                    : "";
+
+            MainModel.ItemName =
+                ItemName != null &&
+                ItemName != "undefined"
+                    ? ItemName
+                    : "";
+
+            MainModel.HSNNO =
+                HSNNo != null &&
+                HSNNo != "undefined"
+                    ? HSNNo
+                    : "";
             MainModel.Searchbox = Searchbox != null && Searchbox != "0" && Searchbox != "undefined" ? Searchbox : "";
         }
         return View(MainModel);
     }
-
-    public async Task<IActionResult> PurchaseBillList(string? FromDate,string? ToDate)
+    [HttpGet]
+    public async Task<IActionResult> RefreshDropdowns(string FromDate, string ToDate, string formKey, string uniqueKey)
     {
+        ViewBag.formKey = formKey;
+        ViewBag.uniqueKey = uniqueKey;
+        var MainModel = await IPurchaseBill.GetDashBoardData();
+
+        DateTime from = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
+        DateTime to = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
+
+        var commonparams = new Dictionary<string, object>()
+    {
+        { "@Fromdate", from },
+        { "@ToDate", to }
+    };
+
+        MainModel = await BindDashboardList(MainModel, commonparams);
+
+        // VERY IMPORTANT: set selected dates again
+        MainModel.FromDate = FromDate;
+        MainModel.ToDate = ToDate;
+
+        return PartialView("_SearchParam", MainModel);
+    }
+    public async Task<IActionResult> PurchaseBillList(string? FromDate, string? ToDate, string formKey)
+    {
+        ViewBag.formKey = formKey;
+        var uniqueKey = Guid.NewGuid().ToString();
+        ViewBag.uniqueKey = uniqueKey;
         var _List = new List<TextValue>();
         PBListDataModel model = new PBListDataModel();
-       FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+        FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
 
         ToDate = string.IsNullOrEmpty(model.ToDate) ? DateTime.Now.ToString("dd/MM/yyyy") : model.ToDate;
-        var MainModel = await IPurchaseBill.GetPurchaseBillListData(string.Empty, string.Empty, string.Empty,FromDate,ToDate, model);
+        var MainModel = await IPurchaseBill.GetPurchaseBillListData(string.Empty, string.Empty, string.Empty, FromDate, ToDate, model);
         var MRNType = "MRN";
         DateTime now = DateTime.Now;
         DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
@@ -376,8 +461,8 @@ public class PurchaseBillController : Controller
         var commonparams = new Dictionary<string, object>()
         {
             { "@MRNTYpe", MRNType },
-            { "@Fromdate", model.FromDate != null ? fromDate : firstDayOfMonth },
-            { "@ToDate", model.ToDate != null ? toDate : today }
+            { "@Fromdate", model.FromDate != null ?  CommonFunc.ParseFormattedDate(model.FromDate) : firstDayOfMonth },
+            { "@ToDate", model.ToDate != null ?  CommonFunc.ParseFormattedDate(model.ToDate) : today }
         };
         MainModel = await BindPBList(MainModel, commonparams);
         return PartialView("_SearchParamForPBList", MainModel);
@@ -463,11 +548,184 @@ public class PurchaseBillController : Controller
 
         return MainModel;
     }
-
-    public async Task<IActionResult> DeleteByIDOld(int ID, int YC, string PurchVoucherNo, string InvNo = "", bool? IsDetail = false)
+    private async Task<JsonResult> GetDashboardAutocomplete(
+    string flag,
+    string searchValue,
+    string searchParameter,
+    string fromDate,
+    string toDate,
+    string flagMRNJWCHALLAN)
     {
-        int EntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-        string EntryByMachineName = GetEmpByMachineName();
+        DateTime from = string.IsNullOrWhiteSpace(fromDate)
+            ? DateTime.Now.Date
+            : DateTime.ParseExact(
+                fromDate,
+                "dd/MM/yyyy",
+                CultureInfo.InvariantCulture);
+
+        DateTime to = string.IsNullOrWhiteSpace(toDate)
+            ? DateTime.Now.Date
+            : DateTime.ParseExact(
+                toDate,
+                "dd/MM/yyyy",
+                CultureInfo.InvariantCulture);
+
+        var parameters = new Dictionary<string, object>()
+    {
+        { "@flag", flag },
+        { searchParameter, searchValue ?? "" },
+        { "@FromDate", from },
+        { "@ToDate", to },
+        { "@FlagMRNJWCHALLAN", flagMRNJWCHALLAN ?? "" }
+    };
+
+        var result =
+            await IDataLogic.GetDropDownListWithCustomeVar(
+                "AccSP_PurchaseBillMainDetail",
+                parameters,
+                true);
+
+        return Json(result);
+    }
+    [HttpPost]
+    public async Task<JsonResult> FillDocumentDASHBOARD(
+    string SearchDocumentName,
+    string FromDate,
+    string ToDate,
+    string FlagMRNJWCHALLAN)
+    {
+        return await GetDashboardAutocomplete(
+            "FillDocumentDASHBOARD",
+            SearchDocumentName,
+            "@SearchDocumentName",
+            FromDate,
+            ToDate,
+            FlagMRNJWCHALLAN);
+    }
+    [HttpPost]
+    public async Task<JsonResult> FillGateNoDASHBOARD(
+    string SearchGateNo,
+    string FromDate,
+    string ToDate,
+    string FlagMRNJWCHALLAN)
+    {
+        return await GetDashboardAutocomplete(
+            "FillGateNoDASHBOARD",
+            SearchGateNo,
+            "@SearchGateNo",
+            FromDate,
+            ToDate,
+            FlagMRNJWCHALLAN);
+    }
+    [HttpPost]
+    public async Task<JsonResult> FillVendorNameDASHBOARD(
+    string SearchVendorName,
+    string FromDate,
+    string ToDate,
+    string FlagMRNJWCHALLAN)
+    {
+        return await GetDashboardAutocomplete(
+            "FillVendorNameDASHBOARD",
+            SearchVendorName,
+            "@SearchVendorName",
+            FromDate,
+            ToDate,
+            FlagMRNJWCHALLAN);
+    }
+    [HttpPost]
+    public async Task<JsonResult> FillVoucherNoDASHBOARD(
+    string SearchVoucherNo,
+    string FromDate,
+    string ToDate,
+    string FlagMRNJWCHALLAN)
+    {
+        return await GetDashboardAutocomplete(
+            "FillVoucherNoDASHBOARD",
+            SearchVoucherNo,
+            "@SearchVoucherNo",
+            FromDate,
+            ToDate,
+            FlagMRNJWCHALLAN);
+    }
+    [HttpPost]
+    public async Task<JsonResult> FillInvoiceNoDASHBOARD(
+    string SearchInvoiceNo,
+    string FromDate,
+    string ToDate,
+    string FlagMRNJWCHALLAN)
+    {
+        return await GetDashboardAutocomplete(
+            "FillInvoiceNoDASHBOARD",
+            SearchInvoiceNo,
+            "@SearchInvoiceNo",
+            FromDate,
+            ToDate,
+            FlagMRNJWCHALLAN);
+    }
+    [HttpPost]
+    public async Task<JsonResult> FillMrnNoDASHBOARD(
+    string SearchMRNNo,
+    string FromDate,
+    string ToDate,
+    string FlagMRNJWCHALLAN)
+    {
+        return await GetDashboardAutocomplete(
+            "FillMrnNoDASHBOARD",
+            SearchMRNNo,
+            "@SearchMRNNo",
+            FromDate,
+            ToDate,
+            FlagMRNJWCHALLAN);
+    }
+    [HttpPost]
+    public async Task<JsonResult> FillPartCodeDASHBOARD(
+    string SearchPartCode,
+    string FromDate,
+    string ToDate,
+    string FlagMRNJWCHALLAN)
+    {
+        return await GetDashboardAutocomplete(
+            "FillPartCodeDASHBOARD",
+            SearchPartCode,
+            "@SearchPartCode",
+            FromDate,
+            ToDate,
+            FlagMRNJWCHALLAN);
+    }
+    [HttpPost]
+    public async Task<JsonResult> FillItemNameDASHBOARD(
+    string SearchItemName,
+    string FromDate,
+    string ToDate,
+    string FlagMRNJWCHALLAN)
+    {
+        return await GetDashboardAutocomplete(
+            "FillItemNameDASHBOARD",
+            SearchItemName,
+            "@SearchItemName",
+            FromDate,
+            ToDate,
+            FlagMRNJWCHALLAN);
+    }
+    [HttpPost]
+    public async Task<JsonResult> FillHSNNODASHBOARD(
+    string SearchHSNNO,
+    string FromDate,
+    string ToDate,
+    string FlagMRNJWCHALLAN)
+    {
+        return await GetDashboardAutocomplete(
+            "FillHSNNODASHBOARD",
+            SearchHSNNO,
+            "@SearchHSNNO",
+            FromDate,
+            ToDate,
+            FlagMRNJWCHALLAN);
+    }
+    public async Task<IActionResult> DeleteByIDOld(string formKey, int ID, int YC, string PurchVoucherNo, string InvNo = "", bool? IsDetail = false)
+    {
+        int EntryBy = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+        string EntryByMachineName = GetEmpByMachineName(formKey);
         DateTime EntryDate = DateTime.Today;
         var Result = await IPurchaseBill.DeleteByID(ID, YC, "DELETE", PurchVoucherNo, InvNo, EntryBy, EntryByMachineName, EntryDate);
 
@@ -494,11 +752,11 @@ public class PurchaseBillController : Controller
 
         return RedirectToAction(nameof(DashBoard));
     }
-    public async Task<JsonResult> DeleteByID(int ID, int YC, string PurchVoucherNo, string EnteredBy, string InvNo = "", bool? IsDetail = false)
+    public async Task<JsonResult> DeleteByID(string formKey, int ID, int YC, string PurchVoucherNo, string EnteredBy, string InvNo = "", bool? IsDetail = false)
     {
-        int EntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+        int EntryBy = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
         DateTime EntryDate = DateTime.Today;
-        var Result = await IPurchaseBill.DeleteByID(ID, YC, "DELETE", PurchVoucherNo, InvNo,EntryBy, EnteredBy, EntryDate);
+        var Result = await IPurchaseBill.DeleteByID(ID, YC, "DELETE", PurchVoucherNo, InvNo, EntryBy, EnteredBy, EntryDate);
 
         var rslt = string.Empty;
         if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
@@ -525,25 +783,25 @@ public class PurchaseBillController : Controller
             TempData["500"] = "500";
             rslt = "false";
         }
-        return Json(new { success=rslt, message = Result.StatusText });
+        return Json(new { success = rslt, message = Result.StatusText });
 
-    //    return Json(rslt);
+        //    return Json(rslt);
         //return RedirectToAction(nameof(DashBoard));   
     }
 
-    public IActionResult DeleteItemRow(string SeqNo)
+    public IActionResult DeleteItemRow(string SeqNo, string uniqueKey)
     {
         bool exists = false;
 
-        string tdsGridJson = HttpContext.Session.GetString("KeyTDSGrid");
+        string tdsGridJson = HttpContext.Session.GetString($"KeyTDSGrid_{uniqueKey}");
         List<TDSModel> TDSGrid = !string.IsNullOrEmpty(tdsGridJson)
             ? JsonConvert.DeserializeObject<List<TDSModel>>(tdsGridJson)
             : new List<TDSModel>();
-        string taxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+        string taxGridJson = HttpContext.Session.GetString($"KeyTaxGrid_{uniqueKey}");
         List<TaxModel> TaxGrid = !string.IsNullOrEmpty(taxGridJson)
             ? JsonConvert.DeserializeObject<List<TaxModel>>(taxGridJson)
             : new List<TaxModel>();
-        string mainModelJson = HttpContext.Session.GetString("PurchaseBill");
+        string mainModelJson = HttpContext.Session.GetString($"PurchaseBill_{uniqueKey}");
         PurchaseBillModel MainModel = !string.IsNullOrEmpty(mainModelJson)
             ? JsonConvert.DeserializeObject<PurchaseBillModel>(mainModelJson)
             : new PurchaseBillModel();
@@ -576,7 +834,7 @@ public class PurchaseBillController : Controller
                 item.SeqNo = Indx;
             }
             MainModel.ItemNetAmount = MainModel.ItemDetailGridd?.Sum(x => Convert.ToDecimal(x.Amount ?? 0)) ?? 0;
-            HttpContext.Session.SetString("PurchaseBill", JsonConvert.SerializeObject(MainModel));
+            HttpContext.Session.SetString($"PurchaseBill_{uniqueKey}", JsonConvert.SerializeObject(MainModel));
         }
         return PartialView("_PBItemGrid", MainModel);
     }
@@ -604,24 +862,29 @@ public class PurchaseBillController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
-    public async Task<JsonResult> ClearTaxGrid(int YearCode, string VODate)
+    public async Task<JsonResult> ClearTaxGrid(int YearCode, string VODate, string uniqueKey)
     {
-        HttpContext.Session.Remove("KeyTaxGrid");
+        HttpContext.Session.Remove($"KeyTaxGrid_{uniqueKey}");
+        var JSON = await IPurchaseBill.fillEntryandVouchNo(YearCode, VODate);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        string taxGridJson = HttpContext.Session.GetString($"KeyTaxGrid_{uniqueKey}");
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> ClearTDSGrid(int YearCode, string VODate, string uniqueKey)
+    {
+        HttpContext.Session.Remove($"KeyTDSGrid_{uniqueKey}");
         var JSON = await IPurchaseBill.fillEntryandVouchNo(YearCode, VODate);
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
-    public async Task<JsonResult> ClearTDSGrid(int YearCode, string VODate)
-    {
-        HttpContext.Session.Remove("KeyTDSGrid");
-        var JSON = await IPurchaseBill.fillEntryandVouchNo(YearCode, VODate);
-        string JsonString = JsonConvert.SerializeObject(JSON);
-        return Json(JsonString);
-    }
-    public async Task<IActionResult> GetSearchData(PBDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
+    public async Task<IActionResult> GetSearchData(PBDashBoard model, string formKey, string uniqueKey, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
     {
         model = await IPurchaseBill.GetSummaryData(model);
         model.DashboardType = "Summary";
+        model.uniqueKey = uniqueKey;
+        model.formKey = formKey;
+        ViewBag.formKey = formKey;
+
         var modelList = model?.PBDashboard ?? new List<PBDashBoard>();
 
 
@@ -674,12 +937,16 @@ public class PurchaseBillController : Controller
         _MemoryCache.Set("KeyPurchaseBillList_Summary", modelList, cacheEntryOptions);
         return PartialView("_DashBoardGrid", model);
     }
-    public async Task<IActionResult> GetDetailData(PBDashBoard model, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+    public async Task<IActionResult> GetDetailData(PBDashBoard model, string formKey, string uniqueKey, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
     {
         model.Mode = "SEARCH";
         var type = model.DashboardType;
         model = await IPurchaseBill.GetDetailData(model);
         model.DashboardType = type;
+        model.formKey = formKey;
+        model.uniqueKey = uniqueKey;
+        ViewBag.formKey = formKey;
+
         var modelList = model?.PBDashboard ?? new List<PBDashBoard>();
 
 
@@ -741,9 +1008,13 @@ public class PurchaseBillController : Controller
         return PartialView("_DashBoardGrid", model);
     }
     [HttpGet]
-    public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 50)
+    public IActionResult GlobalSearch(string searchString, string formKey, string uniqueKey, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 50)
     {
         PBDashBoard model = new PBDashBoard();
+        model.formKey = formKey;
+        model.uniqueKey = uniqueKey;
+        ViewBag.formKey = formKey;
+
         if (string.IsNullOrWhiteSpace(searchString))
         {
             return PartialView("_DashBoardGrid", new List<PBDashBoard>());
@@ -949,7 +1220,7 @@ public class PurchaseBillController : Controller
             row++;
         }
     }
-     private void EXPORT_PurchaseBillDetailGrid(IXLWorksheet sheet, IList<PBDashBoard> list)
+    private void EXPORT_PurchaseBillDetailGrid(IXLWorksheet sheet, IList<PBDashBoard> list)
     {
         string[] headers = {
                 "#Sr","Entry ID", "Vendor Name", "Voucher No", "Invoice No", "Document Name",
@@ -1015,26 +1286,43 @@ public class PurchaseBillController : Controller
     // GET: PurchaseOrderController
     [HttpGet]
     [Route("{controller}/Index")]
-    public async Task<IActionResult> PurchaseBill(int ID, int YearCode, string Mode, string? flag, string? FlagMRNJWCHALLAN, string? Mrnno, int? mrnyearcode, int? accountcode, string FromDate = "", string ToDate = "", string DashboardType = "", string MRNType = "", string DocumentName = "", string VendorName = "", string VoucherNo = "", string InvoiceNo = "", string MRNNo = "", string GateNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "")
+    public async Task<IActionResult> PurchaseBill(string formKey, int ID, int YearCode, string Mode, string? flag, string? FlagMRNJWCHALLAN, string? Mrnno, int? mrnyearcode, int? accountcode, string FromDate = "", string ToDate = "", string DashboardType = "", string MRNType = "", string DocumentName = "", string VendorName = "", string VoucherNo = "", string InvoiceNo = "", string MRNNo = "", string GateNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "")
     {
-        HttpContext.Session.Remove("PBTaxGrid");
-        HttpContext.Session.Remove("KeyTaxGrid");
-        HttpContext.Session.Remove("PBTDSGrid");
-        HttpContext.Session.Remove("KeyTDSGrid");
-        HttpContext.Session.Remove("PurchaseBill");
-        HttpContext.Session.Remove("KeyAdjGrid");
+        ViewBag.formKey = formKey;
+        var uniqueKey = Guid.NewGuid().ToString();
+        ViewBag.uniqueKey = uniqueKey;
+        HttpContext.Session.Remove($"PBTaxGrid_{uniqueKey}");
+        HttpContext.Session.Remove($"KeyTaxGrid_{uniqueKey}");
+        HttpContext.Session.Remove($"PBTDSGrid_{uniqueKey}");
+        HttpContext.Session.Remove($"KeyTDSGrid_{uniqueKey}");
+        HttpContext.Session.Remove($"PurchaseBill_{uniqueKey}");
+        HttpContext.Session.Remove($"KeyAdjGrid_{uniqueKey}");
 
         //_Logger.LogInformation("\n \n ********** Page Direct Purchase Bill ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
         //TempData.Clear();
         var MainModel = new PurchaseBillModel();
-        MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-        MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
-        MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-        MainModel.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-        MainModel.PreparedByName = GetEmpByMachineName();
-        MainModel.Branch = HttpContext.Session.GetString("Branch");
+        MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+        MainModel.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+        MainModel.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+        MainModel.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+        MainModel.PreparedByName = GetEmpByMachineName(formKey);
+        MainModel.Branch = HttpContext.Session.GetString($"Branch_{formKey}");
         //var txGrid = MainModel.TaxDetailGridd == null ? new TaxModel() : MainModel.TaxDetailGridd
 
+        string encID = Request.Query["ID"].ToString();
+        string encYC = Request.Query["YearCode"].ToString();
+
+        if (!string.IsNullOrEmpty(encID) || !string.IsNullOrEmpty(encYC))
+        {
+            int decryptedID = EncryptDecrypt.DecodeID(encID);
+            int decryptedYC = EncryptDecrypt.DecodeID(encYC);
+            string decryptedMode = EncryptDecrypt.Decrypt(Mode);
+
+            ID = decryptedID;
+            YearCode = decryptedYC;
+            Mode = decryptedMode;
+
+        }
         if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
         {
             MainModel = await IPurchaseBill.GetViewByID(ID, YearCode, "ViewByID").ConfigureAwait(false);
@@ -1050,11 +1338,11 @@ public class PurchaseBillController : Controller
                 Size = 1024,
             };
             MainModel.Mode = Mode;
-            MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-            MainModel.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-            MainModel.PreparedByName = GetEmpByMachineName();
-            MainModel.Branch = HttpContext.Session.GetString("Branch");
+            MainModel.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            MainModel.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+            MainModel.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+            MainModel.PreparedByName = GetEmpByMachineName(formKey);
+            MainModel.Branch = HttpContext.Session.GetString($"Branch_{formKey}");
         }
         else if (!string.IsNullOrEmpty(Mode) && (Mode == "PBI"))
         {
@@ -1062,12 +1350,12 @@ public class PurchaseBillController : Controller
             model = await IPurchaseBill.GetPurchaseBillItemData(flag, FlagMRNJWCHALLAN, Mrnno, mrnyearcode, accountcode).ConfigureAwait(true);
 
             model.Mode = Mode;
-            model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            model.FinFromDate = HttpContext.Session.GetString("FromDate");
-            model.FinToDate = HttpContext.Session.GetString("ToDate");
-            model.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-            model.PreparedByName = GetEmpByMachineName();
-            model.Branch = HttpContext.Session.GetString("Branch");
+            model.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+            model.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            model.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+            model.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+            model.PreparedByName = GetEmpByMachineName(formKey);
+            model.Branch = HttpContext.Session.GetString($"Branch_{formKey}");
             MainModel = model;
         }
         else
@@ -1088,14 +1376,14 @@ public class PurchaseBillController : Controller
 
         if (Mode != "U" && Mode != "V")
         {
-            MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            MainModel.CretaedByName = GetEmpByMachineName();
+            MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+            MainModel.CretaedByName = GetEmpByMachineName(formKey);
             MainModel.CreatedOn = DateTime.Now;
         }
         else
         {
-            MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            MainModel.UpdatedByName = GetEmpByMachineName();
+            MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+            MainModel.UpdatedByName = GetEmpByMachineName(formKey);
             MainModel.UpdatedOn = DateTime.Now;
         }
 
@@ -1115,22 +1403,23 @@ public class PurchaseBillController : Controller
         MainModel.GlobalSearchBack = Searchbox != null && Searchbox != "0" && Searchbox != "undefined" ? Searchbox : "";
 
         MainModel.ItemNetAmount = MainModel.ItemDetailGridd?.Sum(x => Convert.ToDecimal(x.Amount ?? 0)) ?? 0;
-        HttpContext.Session.SetString("PurchaseBill", JsonConvert.SerializeObject(MainModel));
-        HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(
+        HttpContext.Session.SetString($"PurchaseBill_{uniqueKey}", JsonConvert.SerializeObject(MainModel));
+        string taxGridJson = HttpContext.Session.GetString($"KeyTaxGrid_{uniqueKey}");
+        HttpContext.Session.SetString($"KeyTaxGrid_{uniqueKey}", JsonConvert.SerializeObject(
     MainModel.TaxDetailGridd ?? new List<TaxModel>()));
-        HttpContext.Session.SetString("KeyTDSGrid", JsonConvert.SerializeObject(
+        HttpContext.Session.SetString($"KeyTDSGrid_{uniqueKey}", JsonConvert.SerializeObject(
     MainModel.TDSDetailGridd ?? new List<TDSModel>()
 ));
-        HttpContext.Session.SetString("KeyAdjGrid", JsonConvert.SerializeObject(
+        HttpContext.Session.SetString($"KeyAdjGrid_{uniqueKey}", JsonConvert.SerializeObject(
     MainModel.adjustmentModel ?? new AdjustmentModel()
 ));
         MainModel.adjustmentModel = (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null) ? MainModel.adjustmentModel : new AdjustmentModel();
         MainModel.adjustmentModel.AdjAdjustmentDetailGrid = (MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null) ? MainModel.adjustmentModel.AdjAdjustmentDetailGrid : new List<AdjustmentModel>();
         MainModel.ItemDetailGridd = (MainModel.ItemDetailGridd != null) ? MainModel.ItemDetailGridd : new List<PBItemDetail>();
-        HttpContext.Session.SetString("PurchaseBill", JsonConvert.SerializeObject(MainModel));
+        HttpContext.Session.SetString($"PurchaseBill_{uniqueKey}", JsonConvert.SerializeObject(MainModel));
         return View(MainModel);
     }
-    public IActionResult AddtoItemGrid(IList<PBItemDetail> gridList)
+    public IActionResult AddtoItemGrid(IList<PBItemDetail> gridList, string uniqueKey)
     {
         try
         {
@@ -1145,7 +1434,7 @@ public class PurchaseBillController : Controller
             var seqNo = 1;
             if (gridList != null)
             {
-                string modelJson = HttpContext.Session.GetString("PurchaseBill");
+                string modelJson = HttpContext.Session.GetString($"PurchaseBill_{uniqueKey}");
                 PurchaseBillModel model = !string.IsNullOrEmpty(modelJson)
     ? JsonConvert.DeserializeObject<PurchaseBillModel>(modelJson)
     : new PurchaseBillModel();
@@ -1186,7 +1475,7 @@ public class PurchaseBillController : Controller
             MainModel.ItemDetailGridd = ItemGrid;
             MainModel.ItemDetailGrid = null;
             MainModel.ItemNetAmount = MainModel.ItemDetailGridd?.Sum(x => Convert.ToDecimal(x.Amount ?? 0)) ?? 0;
-            HttpContext.Session.SetString("PurchaseBill", JsonConvert.SerializeObject(MainModel));
+            HttpContext.Session.SetString($"PurchaseBill_{uniqueKey}", JsonConvert.SerializeObject(MainModel));
             return PartialView("_PBItemGrid", MainModel);
         }
         catch (Exception ex)
@@ -1196,16 +1485,16 @@ public class PurchaseBillController : Controller
     }
     //public IActionResult DeletItemRow(int SeqNo)
     //{
-    //    IMemoryCache.TryGetValue("PurchaseBill", out PurchaseBillModel model);
+    //    IMemoryCache.TryGetValue($"PurchaseBill_{uniqueKey}", out PurchaseBillModel model);
 
     //    var ItemGrid = model?.ItemDetailGridd?.Where(x => x.SeqNo == SeqNo);
     //    string JsonString = JsonConvert.SerializeObject(ItemGrid);
     //    return Json(JsonString);
     //}
-    public IActionResult EditItemRow(int SeqNo)
+    public IActionResult EditItemRow(int SeqNo, string uniqueKey)
     {
         var MainModel = new PurchaseBillModel();
-        string modelJson = HttpContext.Session.GetString("PurchaseBill");
+        string modelJson = HttpContext.Session.GetString($"PurchaseBill_{uniqueKey}");
 
         PurchaseBillModel PBItemGrid = !string.IsNullOrEmpty(modelJson)
             ? JsonConvert.DeserializeObject<PurchaseBillModel>(modelJson)
@@ -1244,7 +1533,7 @@ public class PurchaseBillController : Controller
                 Size = 1024,
             };
             MainModel.ItemNetAmount = MainModel.ItemDetailGridd?.Sum(x => Convert.ToDecimal(x.Amount ?? 0)) ?? 0;
-            HttpContext.Session.SetString("PurchaseBill", JsonConvert.SerializeObject(MainModel));
+            HttpContext.Session.SetString($"PurchaseBill_{uniqueKey}", JsonConvert.SerializeObject(MainModel));
         }
         //return PartialView("_PBItemGrid", MainModel);
         var partialView1 = RenderPartialView("_PBItemGrid", MainModel);
@@ -1274,10 +1563,10 @@ public class PurchaseBillController : Controller
         return sw.GetStringBuilder().ToString();
     }
 
-    public IActionResult DeleteFromMemoryGrid(int SeqNo)
+    public IActionResult DeleteFromMemoryGrid(int SeqNo, string uniqueKey)
     {
         var MainModel = new PurchaseBillModel();
-        string modelJson = HttpContext.Session.GetString("PurchaseBill");
+        string modelJson = HttpContext.Session.GetString($"PurchaseBill_{uniqueKey}");
 
         PurchaseBillModel PBItemGrid = !string.IsNullOrEmpty(modelJson)
     ? JsonConvert.DeserializeObject<PurchaseBillModel>(modelJson)
@@ -1307,43 +1596,43 @@ public class PurchaseBillController : Controller
 
             if (PBItemGrid.ItemDetailGrid.Count == 0)
             {
-                HttpContext.Session.Remove("PurchaseBill");
+                HttpContext.Session.Remove($"PurchaseBill_{uniqueKey}");
             }
             MainModel.ItemNetAmount = MainModel.ItemDetailGridd?.Sum(x => Convert.ToDecimal(x.Amount ?? 0)) ?? 0;
-            HttpContext.Session.SetString("PurchaseBill", JsonConvert.SerializeObject(MainModel));
+            HttpContext.Session.SetString($"PurchaseBill_{uniqueKey}", JsonConvert.SerializeObject(MainModel));
         }
         return PartialView("_PBItemDetail", MainModel);
     }
-    public JsonResult ResetGridItems()
+    public JsonResult ResetGridItems(string uniqueKey, string formKey)
     {
-        HttpContext.Session.Remove("POItemList");
-        HttpContext.Session.Remove("PurchaseBill");
-        HttpContext.Session.Remove("KeyTaxGrid");
-        HttpContext.Session.Remove("KeyTDSGrid");
-
+        HttpContext.Session.Remove($"POItemList_{uniqueKey}");
+        HttpContext.Session.Remove($"PurchaseBill_{uniqueKey}");
+        HttpContext.Session.Remove($"KeyTaxGrid_{uniqueKey}");
+        HttpContext.Session.Remove($"KeyTDSGrid_{uniqueKey}");
+        string taxGridJson1 = HttpContext.Session.GetString($"KeyTaxGrid_{uniqueKey}");
         var MainModel = new PurchaseBillModel();
         List<TaxModel> taxList = new List<TaxModel>();
         List<TDSModel> tdsList = new List<TDSModel>();
 
-        MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-        MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
-        MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-        MainModel.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-        MainModel.PreparedByName = GetEmpByMachineName();
-        MainModel.Branch = HttpContext.Session.GetString("Branch");
+        MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+        MainModel.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+        MainModel.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+        MainModel.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+        MainModel.PreparedByName = GetEmpByMachineName(formKey);
+        MainModel.Branch = HttpContext.Session.GetString($"Branch_{formKey}");
 
-        HttpContext.Session.SetString("PurchaseBill", JsonConvert.SerializeObject(MainModel));
-        HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(taxList));
-        HttpContext.Session.SetString("KeyTDSGrid", JsonConvert.SerializeObject(tdsList));
-        string purchaseBillJson = HttpContext.Session.GetString("PurchaseBill");
+        HttpContext.Session.SetString($"PurchaseBill_{uniqueKey}", JsonConvert.SerializeObject(MainModel));
+        HttpContext.Session.SetString($"KeyTaxGrid_{uniqueKey}", JsonConvert.SerializeObject(taxList));
+        HttpContext.Session.SetString($"KeyTDSGrid_{uniqueKey}", JsonConvert.SerializeObject(tdsList));
+        string purchaseBillJson = HttpContext.Session.GetString($"PurchaseBill_{uniqueKey}");
         PurchaseBillModel MainModel1 = !string.IsNullOrEmpty(purchaseBillJson)
             ? JsonConvert.DeserializeObject<PurchaseBillModel>(purchaseBillJson)
             : new PurchaseBillModel();
-        string taxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+        string taxGridJson = HttpContext.Session.GetString($"KeyTaxGrid_{uniqueKey}");
         List<TaxModel> TaxGrid = !string.IsNullOrEmpty(taxGridJson)
             ? JsonConvert.DeserializeObject<List<TaxModel>>(taxGridJson)
             : new List<TaxModel>();
-        string tdsGridJson = HttpContext.Session.GetString("KeyTDSGrid");
+        string tdsGridJson = HttpContext.Session.GetString($"KeyTDSGrid_{uniqueKey}");
         List<TDSModel> TdsGrid = !string.IsNullOrEmpty(tdsGridJson)
             ? JsonConvert.DeserializeObject<List<TDSModel>>(tdsGridJson)
             : new List<TDSModel>();
@@ -1360,6 +1649,8 @@ public class PurchaseBillController : Controller
         try
         {
             bool isError = true;
+            var formKey = model.formKey;
+            var uniqueKey = model.uniqueKey;
             DataSet DS = new();
             DataTable ItemDetailDT = null;
             DataTable TaxDetailDT = null;
@@ -1372,25 +1663,26 @@ public class PurchaseBillController : Controller
             string modePOA = "data";
             var stat = new MemoryCacheStatistics();
 
-            string purchaseBillJson = HttpContext.Session.GetString("PurchaseBill");
+            string purchaseBillJson = HttpContext.Session.GetString($"PurchaseBill_{uniqueKey}");
             PurchaseBillModel MainModel = purchaseBillJson != null ? JsonConvert.DeserializeObject<PurchaseBillModel>(purchaseBillJson) : null;
 
-            string taxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+            string taxGridJson = HttpContext.Session.GetString($"KeyTaxGrid_{uniqueKey}");
             List<TaxModel> TaxGrid = taxGridJson != null ? JsonConvert.DeserializeObject<List<TaxModel>>(taxGridJson) : null;
 
-            string tdsGridJson = HttpContext.Session.GetString("KeyTDSGrid");
+            string tdsGridJson = HttpContext.Session.GetString($"KeyTDSGrid_{uniqueKey}");
             List<TDSModel> TdsGrid = tdsGridJson != null ? JsonConvert.DeserializeObject<List<TDSModel>>(tdsGridJson) : null;
 
-            string drCrGridJson = HttpContext.Session.GetString("KeyDrCrGrid");
+            string drCrGridJson = HttpContext.Session.GetString($"KeyDrCrGrid_{uniqueKey}");
             List<DbCrModel> DrCrGrid = drCrGridJson != null ? JsonConvert.DeserializeObject<List<DbCrModel>>(drCrGridJson) : null;
 
-            string AdjGridJson = HttpContext.Session.GetString("KeyAdjGrid");
-            PBItemDetail AdjGrid=  JsonConvert.DeserializeObject<PBItemDetail>(AdjGridJson);
+            string AdjGridJson = HttpContext.Session.GetString($"KeyAdjGrid_{uniqueKey}");
+            PBItemDetail AdjGrid = JsonConvert.DeserializeObject<PBItemDetail>(AdjGridJson);
 
-            string serializedGrid = HttpContext.Session.GetString("KeyAdjGrid");
+            string serializedGrid = HttpContext.Session.GetString($"KeyAdjGrid_{uniqueKey}");
             AdjustmentModel adjustmentModel = JsonConvert.DeserializeObject<AdjustmentModel>(serializedGrid);
             List<AdjustmentModel> gridData = adjustmentModel.AdjAdjustmentDetailGrid;
-
+            var FeatureOptions = await _ICommon.GetFeatureOptions();
+            DataTable dt = (DataTable)FeatureOptions.Result;
 
             var cc = stat.CurrentEntryCount;
             var pp = stat.CurrentEstimatedSize;
@@ -1406,12 +1698,14 @@ public class PurchaseBillController : Controller
                 isError = false;
                 if (MainModel.ItemDetailGridd != null && MainModel.ItemDetailGridd.Any())
                 {
-                    var hasDupes = MainModel.ItemDetailGridd.GroupBy(x => new { x.ItemCode, x.DocTypeID, x.Description })
+                    var hasDupes = MainModel.ItemDetailGridd.GroupBy(x => new { x.ItemCode, x.DocTypeID, x.Description, x.pono, x.poyearcode, x.schno, x.schyearcode })
                    .Where(x => x.Skip(1).Any()).Any();
                     if (hasDupes)
                     {
                         isError = true;
+
                         ErrList.Add("ItemDetailGridd", "Document Type + ItemCode + Description In ItemDetails can not be Duplicate...!");
+
                     }
                 }
             }
@@ -1435,10 +1729,10 @@ public class PurchaseBillController : Controller
                 DrCrDetailDT = CommonController.GetDrCrDetailTable(DrCrGrid);
             }
 
-           
-                //AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), MainModel.EntryID, MainModel.YearCode, MainModel.AccountCode);
-                AdjDetailDT = CommonController.GetAdjDetailTable(gridData, MainModel.EntryID, MainModel.YearCode, MainModel.AccountCode);
-            
+
+            //AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), MainModel.EntryID, MainModel.YearCode, MainModel.AccountCode);
+            AdjDetailDT = CommonController.GetAdjDetailTable(gridData, MainModel.EntryID, MainModel.YearCode, MainModel.AccountCode);
+
 
             if (model.PreparedBy == 0)
             {
@@ -1471,10 +1765,10 @@ public class PurchaseBillController : Controller
                         model.Mode = "INSERT";
                     }
                     //model.Mode = model.Mode == "U" ? "UPDATE" : "INSERT";
-                   
 
-                    
-                     if (model.PathOfFile1 != null)
+
+
+                    if (model.PathOfFile1 != null)
                     {
                         string ImagePath = "Uploads/PurchaseBill/";
 
@@ -1519,7 +1813,7 @@ public class PurchaseBillController : Controller
                         string safePurchVouchNo = model.PurchVouchNo.Replace("\\", "_").Replace("/", "_");
 
                         string safeInvNo = model.InvNo.Replace("\\", "_").Replace("/", "_");
-                        ImagePath += safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") +"_"+ "2" + "_" + Guid.NewGuid().ToString() + extension;
+                        ImagePath += safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") + "_" + "2" + "_" + Guid.NewGuid().ToString() + extension;
 
 
 
@@ -1555,7 +1849,7 @@ public class PurchaseBillController : Controller
                         //ImagePath += Guid.NewGuid().ToString() + "_" + safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") + "3" + extension;
 
 
-                     //   ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile3.FileName;
+                        //   ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile3.FileName;
                         model.PathOfFile3URL = "/" + ImagePath;
                         string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
                         using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
@@ -1567,57 +1861,175 @@ public class PurchaseBillController : Controller
                     {
                         model.PathOfFile3URL = MainModel.PathOfFile3URL;
                     }
-                    model.FinFromDate = HttpContext.Session.GetString("FromDate");
-                    model.FinToDate = HttpContext.Session.GetString("ToDate");
-                    model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                    model.Branch = HttpContext.Session.GetString("Branch");
-                    model.EntryDate =MainModel.EntryDate;
-                    model.EntryByMachineName = GetEmpByMachineName();
-                    model.PreparedByName = GetEmpByMachineName();
-                    model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    model.EntryByMachineName = HttpContext.Session.GetString("ClientMachineName");
-                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                    model.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                    model.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+                    model.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+                    model.Branch = HttpContext.Session.GetString($"Branch_{formKey}");
+                    model.EntryDate = MainModel.EntryDate;
+                    model.EntryByMachineName = GetEmpByMachineName(formKey);
+                    model.PreparedByName = GetEmpByMachineName(formKey);
+                    model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                    model.EntryByMachineName = HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+                    model.IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
+                    model.InvoiceType = "Purchase";
+                    model.TallyCompanyName = HttpContext.Session.GetString($"TallyCompanyName_{model.formKey}");
+                    if (!string.Equals(model.Mode, "U", StringComparison.OrdinalIgnoreCase) && !string.Equals(model.Mode, "UPDATE", StringComparison.OrdinalIgnoreCase))
+                    {
+                        model.TallyGUID = Guid.NewGuid().ToString();
+                    }
                     Result = await IPurchaseBill.SavePurchaseBILL(ItemDetailDT, TaxDetailDT, TDSDetailDT, model, DrCrDetailDT, AdjDetailDT);
                 }
 
                 if (Result != null)
                 {
-                    if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                    if (Result.StatusText == "Inserted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        HttpContext.Session.Remove("PurchaseBill");
-                        HttpContext.Session.Remove("KeyTaxGrid");
-                        HttpContext.Session.Remove("KeyTDSGrid");
+                        if (dt.Rows.Count > 0)
+                        {
+                            string purchaseBillMandatory = dt.Rows[0]["TransferPurchaseBilldataToTallyIsMandatory"].ToString();
+
+                            if (purchaseBillMandatory == "Y")
+                            {
+                                LogHelper.Write("========== TALLY TRANSFER START ==========");
+
+                                LogHelper.Write(
+                                    $"TALLY STEP 1: Calling PostPurchaseVoucherAsync. " +
+                                    $"EntryID={model?.EntryID}, " +
+                                    $"InvoiceNo={model?.InvNo}, " +
+                                    $"PurchVouchNo={model?.PurchVouchNo}, " +
+                                    $"AccountCode={model?.AccountCode}"
+                                );
+
+                                
+                                LogHelper.Write("========== TALLY TRANSFER END ==========");
+                            }
+                            else
+                            {
+                                LogHelper.Write(
+                                    $"TALLY SKIPPED. TransferPurchaseBilldataToTallyIsMandatory={purchaseBillMandatory}"
+                                );
+                            }
+                        }
+                        HttpContext.Session.Remove($"PurchaseBill_{uniqueKey}");
+                        HttpContext.Session.Remove($"KeyTaxGrid_{uniqueKey}");
+                        HttpContext.Session.Remove($"KeyTDSGrid_{uniqueKey}");
                     }
                     else if (Result.StatusText == "Inserted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        HttpContext.Session.Remove("PurchaseBill");
-                        HttpContext.Session.Remove("KeyTaxGrid");
-                        HttpContext.Session.Remove("KeyTDSGrid");
+                        if (dt.Rows.Count > 0)
+                        {
+                            string purchaseBillMandatory = dt.Rows[0]["TransferPurchaseBilldataToTallyIsMandatory"].ToString();
+                            if (purchaseBillMandatory == "Y")
+                            {
+                                LogHelper.Write("========== TALLY TRANSFER START ==========");
+
+                                LogHelper.Write(
+                                    $"TALLY STEP 1: Calling PostPurchaseVoucherAsync. " +
+                                    $"EntryID={model?.EntryID}, " +
+                                    $"InvoiceNo={model?.InvNo}, " +
+                                    $"PurchVouchNo={model?.PurchVouchNo}, " +
+                                    $"AccountCode={model?.AccountCode}"
+                                );
+
+                                //try
+                                //{
+                                //    var tallyResult = await _tallyService.PostPurchaseVoucherAsync(model);
+
+                                //    LogHelper.Write(
+                                //        $"TALLY STEP 2: PostPurchaseVoucherAsync COMPLETED. " +
+                                //        $"Result={JsonConvert.SerializeObject(tallyResult)}"
+                                //    );
+                                //}
+                                //catch (Exception ex)
+                                //{
+                                //    LogHelper.Error(
+                                //        "TALLY STEP 3: PostPurchaseVoucherAsync FAILED.",
+                                //        ex
+                                //    );
+
+                                //    throw;
+                                //}
+
+                                LogHelper.Write("========== TALLY TRANSFER END ==========");
+                            }
+                            else
+                            {
+                                LogHelper.Write(
+                                    $"TALLY SKIPPED. TransferPurchaseBilldataToTallyIsMandatory={purchaseBillMandatory}"
+                                );
+                            }
+                        }
+                        HttpContext.Session.Remove($"PurchaseBill_{uniqueKey}");
+                        HttpContext.Session.Remove($"KeyTaxGrid_{uniqueKey}");
+                        HttpContext.Session.Remove($"KeyTDSGrid_{uniqueKey}");
                     }
                     else if (Result.StatusText == "Updated Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
-                        HttpContext.Session.Remove("PurchaseBill");
-                        HttpContext.Session.Remove("KeyTaxGrid");
-                        HttpContext.Session.Remove("KeyTDSGrid");
-                        return RedirectToAction(nameof(PurchaseBillList));
+                        if (dt.Rows.Count > 0)
+                        {
+                            string purchaseBillMandatory = dt.Rows[0]["TransferPurchaseBilldataToTallyIsMandatory"].ToString();
+                            if (purchaseBillMandatory == "Y")
+                            {
+                                LogHelper.Write("========== TALLY TRANSFER START ==========");
+
+                                LogHelper.Write(
+                                    $"TALLY STEP 1: Calling PostPurchaseVoucherAsync. " +
+                                    $"EntryID={model?.EntryID}, " +
+                                    $"InvoiceNo={model?.InvNo}, " +
+                                    $"PurchVouchNo={model?.PurchVouchNo}, " +
+                                    $"AccountCode={model?.AccountCode}"
+                                );
+
+                                //try
+                                //{
+                                //    var tallyResult = await _tallyService.PostPurchaseVoucherAsync(model);
+
+                                //    LogHelper.Write(
+                                //        $"TALLY STEP 2: PostPurchaseVoucherAsync COMPLETED. " +
+                                //        $"Result={JsonConvert.SerializeObject(tallyResult)}"
+                                //    );
+                                //}
+                                //catch (Exception ex)
+                                //{
+                                //    LogHelper.Error(
+                                //        "TALLY STEP 3: PostPurchaseVoucherAsync FAILED.",
+                                //        ex
+                                //    );
+
+                                //    throw;
+                                //}
+
+                                LogHelper.Write("========== TALLY TRANSFER END ==========");
+                            }
+                            else
+                            {
+                                LogHelper.Write(
+                                    $"TALLY SKIPPED. TransferPurchaseBilldataToTallyIsMandatory={purchaseBillMandatory}"
+                                );
+                            }
+                        }
+                        HttpContext.Session.Remove($"PurchaseBill_{uniqueKey}");
+                        HttpContext.Session.Remove($"KeyTaxGrid_{uniqueKey}");
+                        HttpContext.Session.Remove($"KeyTDSGrid_{uniqueKey}");
+                        return RedirectToAction(nameof(PurchaseBillList), new { formKey = formKey });
                     }
                     else if (Result.StatusText == "Deleted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["410"] = "410";
-                        HttpContext.Session.Remove("PurchaseBill");
-                        HttpContext.Session.Remove("KeyTaxGrid");
-                        HttpContext.Session.Remove("KeyTDSGrid");
+                        HttpContext.Session.Remove($"PurchaseBill_{uniqueKey}");
+                        HttpContext.Session.Remove($"KeyTaxGrid_{uniqueKey}");
+                        HttpContext.Session.Remove($"KeyTDSGrid_{uniqueKey}");
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
-                        var errNum = Result.ToString(); //.Result.Message.ToString().Split(":")[1];
+                        var errNum = Result.ToString();
                         if (errNum == " 2627")
                         {
                             ViewBag.isSuccess = false;
@@ -1625,15 +2037,15 @@ public class PurchaseBillController : Controller
                             TempData["2627"] = "2627";
                             _Logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                             var model2 = await BindModels(model);
-                            model2.FinFromDate = HttpContext.Session.GetString("FromDate");
-                            model2.FinToDate = HttpContext.Session.GetString("ToDate");
-                            model2.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                            model2.Branch = HttpContext.Session.GetString("Branch");
-                            model2.PreparedByName = GetEmpByMachineName();
-                            model2.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            model2.UpdatedByName = GetEmpByMachineName();
-                            model2.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            return View("PurchaseBill", model);
+                            model2.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                            model2.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+                            model2.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+                            model2.Branch = HttpContext.Session.GetString($"Branch_{formKey}");
+                            model2.PreparedByName = GetEmpByMachineName(formKey);
+                            model2.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                            model2.UpdatedByName = GetEmpByMachineName(formKey);
+                            model2.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                            return RedirectToAction(nameof(PurchaseBillList), new { formKey = formKey });
                         }
                         else
                         {
@@ -1641,60 +2053,60 @@ public class PurchaseBillController : Controller
                             TempData["500"] = "500";
                             model = await BindModels(model);
                             model.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
-                            model.FinFromDate = HttpContext.Session.GetString("FromDate");
-                            model.FinToDate = HttpContext.Session.GetString("ToDate");
-                            model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                            model.Branch = HttpContext.Session.GetString("Branch");
-                            model.PreparedByName = GetEmpByMachineName();
-                            model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            model.UpdatedByName = GetEmpByMachineName();
-                            model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            return View("PurchaseBill", model);
+                            model.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                            model.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+                            model.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+                            model.Branch = HttpContext.Session.GetString($"Branch_{formKey}");
+                            model.PreparedByName = GetEmpByMachineName(formKey);
+                            model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                            model.UpdatedByName = GetEmpByMachineName(formKey);
+                            model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                            return RedirectToAction(nameof(PurchaseBillList), new { formKey = formKey });
                         }
                     }
                     else
                     {
                         model = await BindModels(model);
                         model.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
-                        model.FinFromDate = HttpContext.Session.GetString("FromDate");
-                        model.FinToDate = HttpContext.Session.GetString("ToDate");
-                        model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                        model.Branch = HttpContext.Session.GetString("Branch");
-                        model.PreparedByName = GetEmpByMachineName();
-                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        model.UpdatedByName = GetEmpByMachineName();
-                        model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        model.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                        model.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+                        model.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+                        model.Branch = HttpContext.Session.GetString($"Branch_{formKey}");
+                        model.PreparedByName = GetEmpByMachineName(formKey);
+                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                        model.UpdatedByName = GetEmpByMachineName(formKey);
+                        model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
                         if (Result.StatusText.Contains("success") && (Result.StatusCode == HttpStatusCode.OK || Result.StatusCode == HttpStatusCode.Accepted))
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
-                            HttpContext.Session.Remove("PurchaseBill");
-                            HttpContext.Session.Remove("KeyTaxGrid");
-                            HttpContext.Session.Remove("KeyTDSGrid");
-                            return RedirectToAction(nameof(PurchaseBillList));
+                            HttpContext.Session.Remove($"PurchaseBill_{uniqueKey}");
+                            HttpContext.Session.Remove($"KeyTaxGrid_{uniqueKey}");
+                            HttpContext.Session.Remove($"KeyTDSGrid_{uniqueKey}");
+                            return RedirectToAction(nameof(PurchaseBillList), new { formKey = formKey });
                         }
                         else
                         {
                             TempData["ErrorMessage"] = Result.StatusText;
-                            HttpContext.Session.Remove("KeyTaxGrid");
-                            HttpContext.Session.Remove("KeyTDSGrid");
-                            return View("PurchaseBill", model);
+                            HttpContext.Session.Remove($"KeyTaxGrid_{uniqueKey}");
+                            HttpContext.Session.Remove($"KeyTDSGrid_{uniqueKey}");
+                            return RedirectToAction(nameof(PurchaseBillList), new { formKey = formKey });
                         }
                     }
                 }
                 var model1 = await BindModels(model);
                 model1.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
-                model1.FinFromDate = HttpContext.Session.GetString("FromDate");
-                model1.FinToDate = HttpContext.Session.GetString("ToDate");
-                model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                model1.Branch = HttpContext.Session.GetString("Branch");
-                model1.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                model1.PreparedByName = GetEmpByMachineName();
-                model1.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                model1.UpdatedByName = GetEmpByMachineName();
-                model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model1.FinFromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                model1.FinToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+                model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+                model1.Branch = HttpContext.Session.GetString($"Branch_{formKey}");
+                model1.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
+                model1.PreparedByName = GetEmpByMachineName(formKey);
+                model1.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                model1.UpdatedByName = GetEmpByMachineName(formKey);
+                model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
 
-                return RedirectToAction(nameof(PurchaseBillList));
+                return RedirectToAction(nameof(PurchaseBillList), new { formKey = formKey });
 
             }
             else
@@ -1739,24 +2151,24 @@ public class PurchaseBillController : Controller
         Table.Columns.Add("DocTypeID", typeof(int));
         Table.Columns.Add("ItemCode", typeof(int));
         Table.Columns.Add("Unit", typeof(string));
-        Table.Columns.Add("NoOfCase", typeof(float));
-        Table.Columns.Add("BillQty", typeof(float));
-        Table.Columns.Add("RecQty", typeof(float));
-        Table.Columns.Add("RejectedQty", typeof(float));
-        Table.Columns.Add("AltQty", typeof(float));
+        Table.Columns.Add("NoOfCase", typeof(decimal));
+        Table.Columns.Add("BillQty", typeof(decimal));
+        Table.Columns.Add("RecQty", typeof(decimal));
+        Table.Columns.Add("RejectedQty", typeof(decimal));
+        Table.Columns.Add("AltQty", typeof(decimal));
         Table.Columns.Add("AltUnit", typeof(string));
-        Table.Columns.Add("Rate", typeof(float));
-        Table.Columns.Add("MRP", typeof(float));
+        Table.Columns.Add("Rate", typeof(decimal));
+        Table.Columns.Add("MRP", typeof(decimal));
         Table.Columns.Add("RateUnit", typeof(string));
-        Table.Columns.Add("RateIncludingTaxes", typeof(float));
-        Table.Columns.Add("AmtinOtherCurr", typeof(float));
-        Table.Columns.Add("RateConversionFactor", typeof(float));
+        Table.Columns.Add("RateIncludingTaxes", typeof(decimal));
+        Table.Columns.Add("AmtinOtherCurr", typeof(decimal));
+        Table.Columns.Add("RateConversionFactor", typeof(decimal));
         Table.Columns.Add("CostCenterId", typeof(int));
-        Table.Columns.Add("AssesRate", typeof(float));
-        Table.Columns.Add("AssesAmount", typeof(float));
-        Table.Columns.Add("DiscountPer", typeof(float));
-        Table.Columns.Add("DiscountAmt", typeof(float));
-        Table.Columns.Add("Amount", typeof(float));
+        Table.Columns.Add("AssesRate", typeof(decimal));
+        Table.Columns.Add("AssesAmount", typeof(decimal));
+        Table.Columns.Add("DiscountPer", typeof(decimal));
+        Table.Columns.Add("DiscountAmt", typeof(decimal));
+        Table.Columns.Add("Amount", typeof(decimal));
         Table.Columns.Add("Itemsize", typeof(string));
         Table.Columns.Add("ItemColor", typeof(string));
         Table.Columns.Add("ItemModel", typeof(string));
@@ -1764,7 +2176,7 @@ public class PurchaseBillController : Controller
         Table.Columns.Add("OtherDetail", typeof(string));
         Table.Columns.Add("DebitNoteType", typeof(string));
         Table.Columns.Add("ProcessId", typeof(int));
-        Table.Columns.Add("NewPoRate", typeof(float));
+        Table.Columns.Add("NewPoRate", typeof(decimal));
         Table.Columns.Add("PONo", typeof(string));
         Table.Columns.Add("POYearCode", typeof(int));
         Table.Columns.Add("PODate", typeof(DateTime));
@@ -1772,7 +2184,7 @@ public class PurchaseBillController : Controller
         Table.Columns.Add("SchYearCode", typeof(int));
         Table.Columns.Add("SchDate", typeof(DateTime));
         Table.Columns.Add("POAmmNo", typeof(string));
-        Table.Columns.Add("PoRate", typeof(float));
+        Table.Columns.Add("PoRate", typeof(decimal));
         Table.Columns.Add("POType", typeof(string));
         Table.Columns.Add("MIRNO", typeof(string));
         Table.Columns.Add("MIRYearCode", typeof(int));
@@ -1788,9 +2200,9 @@ public class PurchaseBillController : Controller
         Table.Columns.Add("AgainstImportYearCode", typeof(int));
         Table.Columns.Add("AgainstImportInvDate", typeof(DateTime));
         Table.Columns.Add("HSNNO", typeof(string));
-        Table.Columns.Add("AcceptedQty", typeof(float));
-        Table.Columns.Add("ReworkQty", typeof(float));
-        Table.Columns.Add("HoldQty", typeof(float));
+        Table.Columns.Add("AcceptedQty", typeof(decimal));
+        Table.Columns.Add("ReworkQty", typeof(decimal));
+        Table.Columns.Add("HoldQty", typeof(decimal));
         Table.Columns.Add("ItemLocation", typeof(string));
         #endregion
 
@@ -1865,7 +2277,7 @@ public class PurchaseBillController : Controller
                 Item.ReworkQty > 0 ? Math.Round(Convert.ToDecimal(Item.ReworkQty ?? 0), 2) : 0,
                 Item.HoldQty > 0 ? Math.Round(Convert.ToDecimal(Item.HoldQty ?? 0), 2) : 0,
                   Item.ItemLocation ?? string.Empty,
-               
+
             });
         }
 
@@ -1881,49 +2293,70 @@ public class PurchaseBillController : Controller
         Table.Columns.Add("ItemCode", typeof(int));
         Table.Columns.Add("TaxTypeID", typeof(int));
         Table.Columns.Add("TaxAccountCode", typeof(string));
-        Table.Columns.Add("TaxPercentg", typeof(float));
+        Table.Columns.Add("TaxPercentg", typeof(decimal));
         Table.Columns.Add("AddInTaxable", typeof(char));
         Table.Columns.Add("RountOff", typeof(string));
-        Table.Columns.Add("Amount", typeof(float));
+        Table.Columns.Add("Amount", typeof(decimal));
         Table.Columns.Add("TaxRefundable", typeof(char));
-        Table.Columns.Add("TaxonExp", typeof(string));
+        Table.Columns.Add("TaxonExp", typeof(decimal));
         Table.Columns.Add("Remark", typeof(string));
-
-        if (TaxDetailList != null && TaxDetailList.Count > 0)
+        foreach (TaxModel Item in TaxDetailList)
         {
-            var groupedTaxDetails = TaxDetailList
-                .GroupBy(item => item.TxItemCode)
-                .Select(group => new
-                {
-                    FirstItem = group.First(),
-                    TotalAmount = group.Sum(item => item.TxAmount)
-                });
-            int rowNo = 1;
-            foreach (var group in groupedTaxDetails)
-            {
-                var Item = group.FirstItem;
-                Table.Rows.Add(
+            Table.Rows.Add(
                 new object[]
                 {
-                    rowNo++,
-                    Item.TxType ?? string.Empty,
+                    Item.TxSeqNo,
+                    Item.TxType,
                     Item.TxItemCode,
                     Item.TxTaxType,
                     Item.TxAccountCode,
                     Item.TxPercentg,
-                    !string.IsNullOrEmpty(Item.TxAdInTxable) && Item.TxAdInTxable.Length == 1 ? Convert.ToChar(Item.TxAdInTxable) : 'N',
+                    Item.TxAdInTxable,
                     Item.TxRoundOff,
-                    //Math.Round(Item.TxAmount, 2, MidpointRounding.AwayFromZero),
-                    Math.Round(group.TotalAmount, 2, MidpointRounding.AwayFromZero),
-                    !string.IsNullOrEmpty(Item.TxRefundable) && Item.TxRefundable.Length == 1 ? Convert.ToChar(Item.TxRefundable) : 'N',
+                    Item.TxAmount,
+                    Item.TxRefundable,
                     Item.TxOnExp,
                     Item.TxRemark,
-                    });
-            }
+                });
         }
 
         return Table;
     }
+    //    if (TaxDetailList != null && TaxDetailList.Count > 0)
+    //    {
+    //        var groupedTaxDetails = TaxDetailList
+    //            .GroupBy(item => item.TxItemCode)
+    //            .Select(group => new
+    //            {
+    //                FirstItem = group.First(),
+    //                TotalAmount = group.Sum(item => item.TxAmount)
+    //            });
+    //        int rowNo = 1;
+    //        foreach (var group in groupedTaxDetails)
+    //        {
+    //            var Item = group.FirstItem;
+    //            Table.Rows.Add(
+    //            new object[]
+    //            {
+    //                rowNo++,
+    //                Item.TxType ?? string.Empty,
+    //                Item.TxItemCode,
+    //                Item.TxTaxType,
+    //                Item.TxAccountCode,
+    //                Item.TxPercentg,
+    //                !string.IsNullOrEmpty(Item.TxAdInTxable) && Item.TxAdInTxable.Length == 1 ? Convert.ToChar(Item.TxAdInTxable) : 'N',
+    //                Item.TxRoundOff,
+    //                //Math.Round(Item.TxAmount, 2, MidpointRounding.AwayFromZero),
+    //                Math.Round(group.TotalAmount, 2, MidpointRounding.AwayFromZero),
+    //                !string.IsNullOrEmpty(Item.TxRefundable) && Item.TxRefundable.Length == 1 ? Convert.ToChar(Item.TxRefundable) : 'N',
+    //                Item.TxOnExp,
+    //                Item.TxRemark,
+    //                });
+    //        }
+    //    }
+
+    //    return Table;
+    //}
     private static DataTable GetTDSDetailTable(List<TDSModel> TDSDetailList, PurchaseBillModel MainModel)
     {
         DataTable Table = new();
@@ -1938,11 +2371,11 @@ public class PurchaseBillController : Controller
         Table.Columns.Add("AccountCode", typeof(int));
         Table.Columns.Add("TaxTypeID", typeof(int));
         Table.Columns.Add("TaxNameCode", typeof(int));
-        Table.Columns.Add("TaxPer", typeof(float));
+        Table.Columns.Add("TaxPer", typeof(decimal));
         Table.Columns.Add("RoundOff", typeof(string));
-        Table.Columns.Add("TDSAmount", typeof(float));
-        Table.Columns.Add("InvBasicAmt", typeof(float));
-        Table.Columns.Add("InvNetAmt", typeof(float));
+        Table.Columns.Add("TDSAmount", typeof(decimal));
+        Table.Columns.Add("InvBasicAmt", typeof(decimal));
+        Table.Columns.Add("InvNetAmt", typeof(decimal));
         Table.Columns.Add("Remark", typeof(string));
         Table.Columns.Add("TypePBDirectPBVouch", typeof(string));
         Table.Columns.Add("BankChallanNo", typeof(string));
@@ -1951,8 +2384,8 @@ public class PurchaseBillController : Controller
         Table.Columns.Add("BankVoucherDate", typeof(DateTime));
         Table.Columns.Add("BankVouchEntryId", typeof(int));
         Table.Columns.Add("BankYearCode", typeof(int));
-        Table.Columns.Add("RemainingAmt", typeof(float));
-        Table.Columns.Add("RoundoffAmt", typeof(float));
+        Table.Columns.Add("RemainingAmt", typeof(decimal));
+        Table.Columns.Add("RoundoffAmt", typeof(decimal));
         #endregion
 
         if (TDSDetailList != null && TDSDetailList.Count > 0)
@@ -2009,11 +2442,11 @@ public class PurchaseBillController : Controller
         Table.Columns.Add("AccountCode", typeof(int));
         Table.Columns.Add("DocTypeID", typeof(int));
         Table.Columns.Add("ItemCode", typeof(int));
-        Table.Columns.Add("BillQty", typeof(float));
-        Table.Columns.Add("Rate", typeof(float));
-        Table.Columns.Add("DiscountPer", typeof(float));
-        Table.Columns.Add("DiscountAmt", typeof(float));
-        Table.Columns.Add("AccountAmount", typeof(float));
+        Table.Columns.Add("BillQty", typeof(decimal));
+        Table.Columns.Add("Rate", typeof(decimal));
+        Table.Columns.Add("DiscountPer", typeof(decimal));
+        Table.Columns.Add("DiscountAmt", typeof(decimal));
+        Table.Columns.Add("AccountAmount", typeof(decimal));
         Table.Columns.Add("DRCR", typeof(string));
 
         IList<PBItemDetail> itemDetailList = MainModel.ItemDetailGridd ?? MainModel.ItemDetailGrid;
@@ -2043,21 +2476,21 @@ public class PurchaseBillController : Controller
 
         return Table;
     }
-    public async Task<JsonResult> GetDbCrDataGrid()
+    public async Task<JsonResult> GetDbCrDataGrid(string uniqueKey)
     {
-        string purchaseBillJson = HttpContext.Session.GetString("PurchaseBill");
+        string purchaseBillJson = HttpContext.Session.GetString($"PurchaseBill_{uniqueKey}");
         PurchaseBillModel MainModel = null;
         if (!string.IsNullOrEmpty(purchaseBillJson))
         {
             MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(purchaseBillJson);
         }
-        string taxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+        string taxGridJson = HttpContext.Session.GetString($"KeyTaxGrid_{uniqueKey}");
         List<TaxModel> TaxGrid = new List<TaxModel>();
         if (!string.IsNullOrEmpty(taxGridJson))
         {
             TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(taxGridJson);
         }
-        string tdsGridJson = HttpContext.Session.GetString("KeyTDSGrid");
+        string tdsGridJson = HttpContext.Session.GetString($"KeyTDSGrid_{uniqueKey}");
         List<TDSModel> TdsGrid = new List<TDSModel>();
         if (!string.IsNullOrEmpty(tdsGridJson))
         {
@@ -2071,15 +2504,15 @@ public class PurchaseBillController : Controller
         TaxGridd = GetTaxDetailTable(TaxGrid);
         TdsGridd = GetTDSDetailTable(TdsGrid, MainModel);
 
-        var JSON = await IDataLogic.GetDbCrDataGrid(DbCrGridd, TaxGridd, TdsGridd, "PurchaseBill", MainModel.DocTypeID, MainModel.AccountCode, MainModel.ItemNetAmount, MainModel.NetTotal,MainModel.RoundOffAccountCode,MainModel.TotalRoundOffAmt,0,0);
+        var JSON = await IDataLogic.GetDbCrDataGrid(DbCrGridd, TaxGridd, TdsGridd, "PurchaseBill", MainModel.DocTypeID, MainModel.AccountCode, MainModel.ItemNetAmount, MainModel.NetTotal, MainModel.RoundOffAccountCode, MainModel.TotalRoundOffAmt,0,0);
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
-    private PurchaseBillModel BindItem4Grid(PurchaseBillModel model)
+    private PurchaseBillModel BindItem4Grid(PurchaseBillModel model, string uniqueKey)
     {
         var _List = new List<PBItemDetail>();
 
-        string purchaseBillJson = HttpContext.Session.GetString("PurchaseBill");
+        string purchaseBillJson = HttpContext.Session.GetString($"PurchaseBill_{uniqueKey}");
         PurchaseBillModel MainModel = null;
         if (!string.IsNullOrEmpty(purchaseBillJson))
         {
@@ -2141,7 +2574,7 @@ public class PurchaseBillController : Controller
 
     [HttpGet]
 
-    public async Task<ActionResult> ViewPOCompleted(string Mode, int ID, int YC, string PONO)
+    public async Task<ActionResult> ViewPOCompleted(string Mode, int ID, int YC, string PONO, string uniqueKey)
     {
         var model = new PurchaseBillModel();
         MemoryCacheEntryOptions cacheEntryOptions = new()
@@ -2162,32 +2595,33 @@ public class PurchaseBillController : Controller
             if (model.ItemDetailGrid?.Count != 0 && model.ItemDetailGrid != null)
             {
                 string json = JsonConvert.SerializeObject(model.ItemDetailGrid);
-                HttpContext.Session.SetString("PurchaseBill", json);
+                HttpContext.Session.SetString($"PurchaseBill_{uniqueKey}", json);
             }
 
             if (model.TaxDetailGridd != null)
             {
                 string json = JsonConvert.SerializeObject(model.TaxDetailGridd);
-                HttpContext.Session.SetString("KeyTaxGrid", json);
+                HttpContext.Session.SetString($"KeyTaxGrid_{uniqueKey}", json);
             }
             if (model.TDSDetailGridd != null)
             {
                 string json = JsonConvert.SerializeObject(model.TDSDetailGridd);
-                HttpContext.Session.SetString("KeyTDSGrid", json);
+                HttpContext.Session.SetString($"KeyTDSGrid_{uniqueKey}", json);
             }
         }
         else
         {
             model = await BindModels(null);
-            HttpContext.Session.Remove("POTaxGrid");
-            HttpContext.Session.Remove("KeyTaxGrid");
-            HttpContext.Session.Remove("KeyTDSGrid");
-            HttpContext.Session.Remove("PurchaseBill");
+            HttpContext.Session.Remove($"POTaxGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyTaxGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyTDSGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"PurchaseBill_{uniqueKey}");
+            string taxGridJson = HttpContext.Session.GetString($"KeyTaxGrid_{uniqueKey}");
         }
-        return View("PurchaseBill", model);
+        return View($"PurchaseBill_{uniqueKey}", model);
     }
 
-    public async Task<JsonResult> GetPurchaseBillItemData(string? Mode, string? flag, string? FlagMRNJWCHALLAN, string? Mrnno, int? mrnyearcode, int? accountcode)
+    public async Task<JsonResult> GetPurchaseBillItemData(string uniqueKey, string? Mode, string? flag, string? FlagMRNJWCHALLAN, string? Mrnno, int? mrnyearcode, int? accountcode)
     {
         try
         {
@@ -2208,17 +2642,17 @@ public class PurchaseBillController : Controller
                 if (model != null)
                 {
                     string json = JsonConvert.SerializeObject(model);
-                    HttpContext.Session.SetString("PurchaseBill", json);
+                    HttpContext.Session.SetString($"PurchaseBill_{uniqueKey}", json);
                 }
                 if (model.TaxDetailGridd != null)
                 {
                     string json = JsonConvert.SerializeObject(model.TaxDetailGridd);
-                    HttpContext.Session.SetString("KeyTaxGrid", json);
+                    HttpContext.Session.SetString($"KeyTaxGrid_{uniqueKey}", json);
                 }
                 if (model.TDSDetailGridd != null)
                 {
                     string json = JsonConvert.SerializeObject(model.TDSDetailGridd);
-                    HttpContext.Session.SetString("KeyTDSGrid", json);
+                    HttpContext.Session.SetString($"KeyTDSGrid_{uniqueKey}", json);
                 }
                 TempData["PurchaseBillModel"] = model;
                 result = "Done";
@@ -2226,10 +2660,10 @@ public class PurchaseBillController : Controller
             else
             {
                 model = await BindModels(null);
-                HttpContext.Session.Remove("POTaxGrid");
-                HttpContext.Session.Remove("KeyTaxGrid");
-                HttpContext.Session.Remove("KeyTDSGrid");
-                HttpContext.Session.Remove("PurchaseBill");
+                HttpContext.Session.Remove($"POTaxGrid_{uniqueKey}");
+                HttpContext.Session.Remove($"KeyTaxGrid_{uniqueKey}");
+                HttpContext.Session.Remove($"KeyTDSGrid_{uniqueKey}");
+                HttpContext.Session.Remove($"PurchaseBill_{uniqueKey}");
                 TempData.Clear();
                 result = "error";
             }
@@ -2252,6 +2686,7 @@ public class PurchaseBillController : Controller
     {
         var excelFile = Request.Form.Files[0];
         string pono = Request.Form.Where(x => x.Key == "PoNo").FirstOrDefault().Value;
+        string uniqueKey = Request.Form.Where(x => x.Key == "uniqueKey").FirstOrDefault().Value;
         int poYearcode = Convert.ToInt32(Request.Form.Where(x => x.Key == "POYearcode").FirstOrDefault().Value);
         int AccountCode = Convert.ToInt32(Request.Form.Where(x => x.Key == "AccountCode").FirstOrDefault().Value);
         string SchNo = Request.Form.Where(x => x.Key == "SchNo").FirstOrDefault().Value;
@@ -2350,13 +2785,13 @@ public class PurchaseBillController : Controller
             Size = 1024,
         };
         var seqNo = 0;
-        HttpContext.Session.Remove("PurchaseBill");
+        HttpContext.Session.Remove($"PurchaseBill_{uniqueKey}");
 
         foreach (var item in data)
         {
             if (item != null)
             {
-                string purchaseBillDataJson = HttpContext.Session.GetString("PurchaseBill");
+                string purchaseBillDataJson = HttpContext.Session.GetString($"PurchaseBill_{uniqueKey}");
                 PurchaseBillModel Model = null;
 
                 if (!string.IsNullOrEmpty(purchaseBillDataJson))
@@ -2387,10 +2822,10 @@ public class PurchaseBillController : Controller
                 MainModel.ItemDetailGrid = POItemGrid;
                 MainModel.ItemNetAmount = MainModel.ItemDetailGrid.Sum(x => Convert.ToDecimal(x.Amount ?? 0));
                 string json = JsonConvert.SerializeObject(MainModel);
-                HttpContext.Session.SetString("PurchaseBill", json);
+                HttpContext.Session.SetString($"PurchaseBill_{uniqueKey}", json);
             }
         }
-        string purchaseBillJson = HttpContext.Session.GetString("PurchaseBill");
+        string purchaseBillJson = HttpContext.Session.GetString($"PurchaseBill_{uniqueKey}");
         PurchaseBillModel MainModel1 = null;
 
         if (!string.IsNullOrEmpty(purchaseBillJson))

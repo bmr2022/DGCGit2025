@@ -70,11 +70,10 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-
         public async Task<ResponseResult> GetDashboardData(
-           string spName,
-           string flag,
-           Dictionary<string, object> parameters)
+            string spName,
+            string flag,
+            Dictionary<string, object> parameters)
         {
             var response = new ResponseResult();
 
@@ -104,6 +103,26 @@ namespace eTactWeb.Data.DAL
             return response;
         }
 
+        public async Task<ResponseResult> GetUnit(int ItemCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "Unit"));
+                SqlParams.Add(new SqlParameter("@ItemCode", ItemCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_CommonData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
         public async Task<ResponseResult> CheckRoundOff(string unit)
         {
             var _ResponseResult = new ResponseResult();
@@ -123,6 +142,127 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetCredential()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "GetEinvoiceCredential"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPIRNEInvoiceAndEwayBillData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
 
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillCurrentBatchINStore(int ItemCode, int YearCode, string FinStartDate, string StoreName, string batchno)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var Date = DateTime.Now;
+                var finStDt = new DateTime();
+                finStDt = Convert.ToDateTime(FinStartDate);
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
+                SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
+                SqlParams.Add(new SqlParameter("@StorName", StoreName));
+                SqlParams.Add(new SqlParameter("@FinStartDate", FinStartDate));
+                SqlParams.Add(new SqlParameter("@transDate", Date));
+                SqlParams.Add(new SqlParameter("@batchno", batchno));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINStore", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetBatchNumber(string SPName, int StoreId, string FinStartDate, string StoreName, int ItemCode, string TransDate, int YearCode, string BatchNo)
+        {
+            var Result = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@StorName", StoreName));
+                SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
+                SqlParams.Add(new SqlParameter("@FinStartDate", FinStartDate));
+                SqlParams.Add(new SqlParameter("@transDate", TransDate));
+                SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
+                SqlParams.Add(new SqlParameter("@batchno", BatchNo));
+
+                Result = await _IDataLogic.ExecuteDataTable(SPName, SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return Result;
+        }
+        public async Task<DataTable> GetInvoiceDetailToExportInXml(string FromDate, string ToDate, string InvoiceNo, int AccountCode, string InvoiceType)
+        {
+            var sqlParams = new List<dynamic>();
+            sqlParams.Add(new SqlParameter("@FromDate", ParseFormattedDate(FromDate)));
+            sqlParams.Add(new SqlParameter("@ToDate", ParseFormattedDate(ToDate)));
+            sqlParams.Add(new SqlParameter("@InvoiceNo", InvoiceNo));
+            sqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+            sqlParams.Add(new SqlParameter("@InvoiceType", InvoiceType));
+            var response = await _IDataLogic.ExecuteDataTable("GetInvoiceDetailToExportInXml", sqlParams);
+            if (response.Result is DataTable dt)
+            {
+                return dt;
+            }
+            throw new Exception(response.Result?.ToString());
+        }
+        public async Task<ResponseResult> GetFeatureOptions()
+        {
+            var Result = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetFeaturesOption"));
+
+                Result = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return Result;
+        }
+        public async Task<ResponseResult> GetFormRights(int userId, int menuId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
+                SqlParams.Add(new SqlParameter("@EmpId", userId));
+                SqlParams.Add(new SqlParameter("@MenuId", menuId));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup1", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
     }
 }
