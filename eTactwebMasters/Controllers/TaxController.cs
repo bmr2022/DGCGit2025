@@ -1400,6 +1400,19 @@ public class TaxController : Controller
                 ListOfItems = MainModel.ItemDetailGrid;
 
             }
+            else if (SN == "DirectPurchaseBill")
+            {
+
+                DirectPurchaseBillModel MainModel = new();
+                string modelJson1 = HttpContext.Session.GetString("DirectPurchaseBill");
+                if (!string.IsNullOrEmpty(modelJson1))
+                {
+                    MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJson1);
+                }
+
+                ListOfItems = MainModel.ItemDetailGrid;
+
+            }
             dynamic TaxGrid = new List<TaxModel>();
             string modelTaxJson = HttpContext.Session.GetString("KeyTaxGrid");
             if (!string.IsNullOrEmpty(modelTaxJson))
@@ -1415,7 +1428,7 @@ public class TaxController : Controller
                       
 
                         //Item Amount
-                        if (SN == "SaleInvoice" || SN == "SaleRejection")
+                        if (SN == "SaleInvoice" || SN == "SaleRejection" || SN == "DirectPurchaseBill")
                         {
                             if (item.ItemCode == ToInt32(PC))
                             {
@@ -1430,9 +1443,10 @@ public class TaxController : Controller
             {
                 throw;
             }
-         foreach (var item in ListOfItems)
+            if (SN == "SaleInvoice" || SN == "SaleRejection" || SN == "DirectPurchaseBill")
             {
-                 if (SN == "SaleInvoice")
+                foreach (var item in ListOfItems)
+                    
                 {
                     Amt += item.Amount;
                 }
@@ -1441,7 +1455,7 @@ public class TaxController : Controller
 
             foreach (var item in TaxGrid)
             {
-                if (SN == "SaleInvoice")
+                if (SN == "SaleInvoice" || SN == "SaleRejection" || SN == "DirectPurchaseBill")
                 {
                     Amt += item.TxAmount;
                 }
