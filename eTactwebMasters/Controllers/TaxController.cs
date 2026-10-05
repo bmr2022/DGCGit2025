@@ -1471,7 +1471,7 @@ public class TaxController : Controller
         decimal TaxOnExp = 0;
         decimal BasicTotal = 0;
         dynamic ListOfItems = null;
-        if (SN.StartsWith("ItemList_"))
+        if (SN.StartsWith("ItemList"))
         {
             ListOfItems = new ItemDetail();
         }
@@ -1522,7 +1522,7 @@ public class TaxController : Controller
             if (SN == "ItemList")
             {
                 var itemListSessionKey = HttpContext.Session.Keys
-        .FirstOrDefault(k => k.StartsWith("ItemList_"));
+        .FirstOrDefault(k => k.StartsWith("ItemList"));
 
                 if (!string.IsNullOrEmpty(itemListSessionKey))
                 {
@@ -2172,18 +2172,18 @@ public class TaxController : Controller
             case "ItemList":
 
                 HttpContext.Session.Get(TxPageName);
-                var itemListSessionKey = HttpContext.Session.Keys.FirstOrDefault(k => k.StartsWith("ItemList_"));
+                var itemListSessionKey = HttpContext.Session.Keys.FirstOrDefault(k => k.StartsWith("ItemList"));
 
                 MainModel = new SaleOrderModel();
                 MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(itemListSessionKey));
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 MainModel.TxRoundOff = RF;
-                isSuccess = ValidateHsnTax(MainModel);
-                if (isSuccess != "SuccessFull")
-                {
-                    return Content(isSuccess);
-                }
+                //isSuccess = ValidateHsnTax(MainModel);
+                //if (isSuccess != "SuccessFull")
+                //{
+                //    return Content(isSuccess);
+                //}
                 TaxGrid = await GetHSNTaxList(MainModel);
                 if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
                     return Content(TaxGrid[0].Message);
