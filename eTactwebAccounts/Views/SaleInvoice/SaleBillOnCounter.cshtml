@@ -2735,7 +2735,7 @@
 
                          
                             $(row).find('.discPer').val(0);
-                            $(row).find('.discPer').val(obj.Result[0].PurchaseDiscount);
+                            $(row).find('.discPer').val(obj.Result[0].SaleDiscount);
                     
                     }
                 }
@@ -2770,7 +2770,7 @@
 
                             var data = obj.Result[0];
 
-                            var rate = data.PurchasePrice == '' ? 0 : parseFloat(data.PurchasePrice);
+                            var rate = data.Rate == '' ? 0 : parseFloat(data.Rate);
                             var igst = data.IGST == '' ? 0 : parseFloat(data.IGST);
 
                             var stateCode = $('#StateCode').val();          // Party State
@@ -3426,35 +3426,35 @@ function ExportPOFormate() {
 
         }
 
-        function GetDiscAccountGroupWise() {
+        // function GetDiscAccountGroupWise() {
 
-            var AccountCode = $('#AccountCode').val();
-            var itemcode = $('#ItemCode').val();
-            $.ajax({
-                type: "POST",
-                data: { "AccountCode": AccountCode, "itemcode": itemcode },
-                url: "@Url.Action("GetDiscAccountGroupWise","SaleOrder")",
-                dataType: "json",
-                async: false,
-                success: function (result, status, error) {
+        //     var AccountCode = $('#AccountCode').val();
+        //     var itemcode = $('#ItemCode').val();
+        //     $.ajax({
+        //         type: "POST",
+        //         data: { "AccountCode": AccountCode, "itemcode": itemcode },
+        //         url: "@Url.Action("GetDiscAccountGroupWise","SaleOrder")",
+        //         dataType: "json",
+        //         async: false,
+        //         success: function (result, status, error) {
 
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
+        //             if (result != null) {
+        //                 var obj = $.parseJSON(result);
 
-                        $('#DiscountPer').val(0);
+        //                 $('#DiscountPer').val(0);
                        
 
-                        if (result != null) {
-                            var obj = $.parseJSON(result);
-                            $('#DiscountPer').val(0);
-                            $('#DiscountPer').val(obj.Result[0].SaleDiscount);
+        //                 if (result != null) {
+        //                     var obj = $.parseJSON(result);
+        //                     $('#DiscountPer').val(0);
+        //                     $('#DiscountPer').val(obj.Result[0].SaleDiscount);
 
-                        }
+        //                 }
 
-                    }
-                }
-            });
-        }
+        //             }
+        //         }
+        //     });
+        // }
         function GetSONoFormRights() {
             $.ajax({
                 url: "@Url.Action("GetFormRights", "SaleOrder")",
