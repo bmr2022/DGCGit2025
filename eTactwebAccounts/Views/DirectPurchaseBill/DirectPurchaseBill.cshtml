@@ -118,13 +118,7 @@
         <div class="card-body bg-light pt-0">
             <div class="accordion shadow-lg">
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="HPanel1">
-                        <button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel1" aria-expanded="true" aria-controls="BPanel1">
-                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
-                            Required Parameter
-                            <small class="p-3"></small>
-                        </button>
-                    </h2>
+                  
                     <div id="BPanel1" class="accordion-collapse collapse show pnl4 bg-gradient" aria-labelledby="HPanel1">
                         <partial name="_DPBMain" />
                         <input type="hidden" asp-for="TypeOfSave" value="" />
@@ -195,20 +189,7 @@
                  <div class="tab-content">
                      <div class="tab-pane fade show active" id="tabRequired">
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="HPanel2">
-                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" tabindex="-1" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
-                            <div class="d-flex align-items-center">
-                                <i class="fa-solid fa-table-list fa-lg fa-fw fa-fade me-2"
-                                   style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>
-                                <strong class="text-uppercase">Item Detail Grid</strong>
-                            </div>
-
-                            <!-- Center: Totals -->
-                            
-                                
-                            
-                        </button>
-                    </h2>
+                   
                     <div id="BPanel2" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="HPanel2">
                         <div class="accordion-body">
                             @* <partial name="_DPBItemDetail" />
@@ -1021,7 +1002,7 @@
 
                                            class="GroupName" readonly tabindex="-1" 
                                             />
-                                            <input name="ItemDetailGrid[${index}].ItemLocation"
+                                                        <input name="ItemDetailGrid[${index}].ItemLocation"
 
                                            class="ItemLocation" 
                                             />
@@ -1123,16 +1104,11 @@
                 let cg = parseFloat(row.find(".cgstp").val()) || 0;
                 let sg = parseFloat(row.find(".sgstp").val()) || 0;
 
-                if ($('#AccountCode').val() != 0) {
+                
                     row.find(".igsta").val((amount * ig / 100).toFixed(2));
                     row.find(".cgsta").val((amount * cg / 100).toFixed(2));
                     row.find(".sgsta").val((amount * sg / 100).toFixed(2));
-                }
-                else {
-                    row.find(".igsta").val("0.00");
-                    row.find(".cgsta").val("0.00");
-                    row.find(".sgsta").val("0.00");
-                }
+                
 
                 calculateTotals();
             }
@@ -1172,6 +1148,10 @@
                 calculateroundoffnettotal();
                 $("#TotalQty").text(totalQty);
                 $("#lblItemCount").text(itemCount);
+
+                if (parseFloat($('#lblItemNetAmount').text()) > 0) {
+                    UpdateSession();
+                }
             }
             function deleteRow(btn) {
                 let row = btn.parentNode.parentNode;
@@ -1226,6 +1206,22 @@
                 });
 
        }
+           $(document).on("input", ".qty, .rate, .discPer", function () {
+
+            let value = $(this).val();
+
+            // Remove everything except numbers and decimal point
+            value = value.replace(/[^0-9.]/g, "");
+
+            // Keep only the first decimal point
+            let parts = value.split(".");
+
+            if (parts.length > 2) {
+                value = parts[0] + "." + parts.slice(1).join("");
+            }
+
+            $(this).val(value);
+        });
 
 
             function ApplyGridAutoFill() {
@@ -1238,28 +1234,10 @@
 
                     if ($(this).data("ui-autocomplete")) return;
 
-                    if ($("#InvoiceNo").val() == "") {
-                                        $.notify("Please Add Invoice No First!", "error");
-                                        AddErrorCls('InvoiceNo');
-                                        $("#InvoiceNo").focus();
-                                        return false;
-                                    }
-                                    else {
-                                        RemoveErrorCls('InvoiceNo');
-                                    }
-
-                                    if ($("#AccountCode").val() == "" || $("#AccountCode").val() == 0) {
-                                        $.notify("Please Add Vendor Name!", "error");
-                                        $("#AccountCodeText").focus();
-                                        AddErrorCls('AccountCodeText');
-                                        return false;
-                                    }
-                                    else {
-                                        RemoveErrorCls('AccountCodeText');
-                                    }
+                    
 
                     $(this).autocomplete({
-                        minLength: 2,
+                        minLength: 4,
                         source: function(request, response) {
 
                             $.ajax({
@@ -1345,7 +1323,7 @@
                     if ($(this).data("ui-autocomplete")) return;
 
                     $(this).autocomplete({
-                        minLength: 2,
+                        minLength: 4,
                         source: function(request, response) {
 
                             $.ajax({
@@ -1714,8 +1692,7 @@
                             $(row).find('.ItemLocation').val(data.Location);
                             // $(row).find('.igstp').val(data.IGST);
 
-                            if ($('#GSTNO').val()!='')
-                            {
+                           
                             // ✅ GST Logic
                             if (stateCode === companyStateCode ) {
                                 // Same state → CGST + SGST (half-half)
@@ -1731,14 +1708,7 @@
                                 $(row).find('.cgstp').val(0);
                                 $(row).find('.sgstp').val(0);
                             }
-                            }
-                            else
-                            {
-                                // If GST number not available → Set all taxes to 0
-                                $(row).find('.igstp').val(0);
-                                $(row).find('.cgstp').val(0);
-                                $(row).find('.sgstp').val(0);
-                            }
+                            
                             validateQtyByUnit($(row).find('.Unit').val(),'qty');
                           
                         }
@@ -1827,116 +1797,6 @@
             XLSX.writeFile(wb, "ImportPurchaseBillFormat.xlsx");
         }
 
-        //               function UploadExcel() {
-        //     var fileInput = $('#ExcelFile');
-        //     var file = fileInput.prop("files")[0];
-
-        //     var formData = new FormData();
-        //     var Err = 0;
-
-        //     // ✅ Validate file
-        //     if (!file) {
-        //         AddErrorCls('ExcelFile');
-        //         $.notify("Please select an Excel file.", "error");
-        //         Err = 1;
-        //         return;
-        //     } else {
-        //         RemoveErrorCls('ExcelFile');
-        //         formData.append("excelFile", file); // ✅ attach the file
-        //     }
-
-        //     // ✅ Append additional fields to formData
-        //     formData.append("PoNo", $('#PoNo').val() || '');
-        //     formData.append("POYearcode", $('#POYearcode').val() || 0);
-        //     formData.append("AccountCode", $('#AccountCode').val() || 0);
-        //     formData.append("SchNo", $('#SchNo').val() || '');
-        //     formData.append("SchYearCode", $('#SchYearCode').val() || 0);
-        //     formData.append("Currency", $('#Currency').val() || '');
-        //     formData.append("Flag", $('#Flag').val() || '');
-
-        //     // ✅ Now send the AJAX request
-        //     $.ajax({
-        //         url: "@Url.Action("UploadExcel")",
-        //         type: "POST",
-        //         data: formData,
-        //         processData: false,
-        //         contentType: false,
-        //         beforeSend: function () {
-        //             $('#ajaxLoader').show();
-        //         },
-        //         success: function (result) {
-        //             $('#ajaxLoader').hide();
-
-        //             if (result === "Not Done") {
-        //                 $.notify("Pend Qty cannot be less than 0! Please Try again!", "error");
-        //             } else if (result === "Duplicate") {
-        //                 $.notify("Duplicate Item Not allowed", "error");
-        //             } else if (result === "Partcode not available") {
-        //                 $.notify("Imported Partcode is not available, Please check!!!", "error");
-        //             } else if (result === "Qty is less Then 0") {
-        //                 $.notify("Qty Should be Greater Then 0, Please check!!!", "error");
-        //             } else {
-        //                 // ✅ Replace the div with the updated grid partial view
-        //                 $('#DirectPurchaseBillBody').html(result);
-        //                        var INA = parseFloat($('#ItemNetAmount').val());
-        //                      var rowCount = $('#DirectPurchaseBillBody tr').length;
-        //                      var columnCount = $('#DirectPurchaseBillBody tr td').length;
-        //                      var taxRowCount = $('#divTaxGrid tr').length;
-        //                      var sum = 0;
-
-        //                      //noofitems
-        //                      if (columnCount > 1)
-        //                          $('#lblItemCount').text(rowCount);
-        //                      else
-        //                          $('#lblItemCount').text(0);
-
-        //                      for (var i = 1; i <= rowCount; i++) {
-
-        //                          sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
-        //                      }
-        //                      $('#ItemNetAmount').val(sum);
-        //                      var txSum = 0;
-        //                      if ($('#divTaxGrid tr td').length > 1) {
-        //                          for (var i = 1; i <= taxRowCount; i++) {
-        //                              txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
-        //                          }
-        //                      }
-        //                      $('#lblItemNetAmount').text(sum.toFixed(2));
-
-
-        //                      var txTotal = sum + txSum;
-        //                      $('#NetTotal').val(txTotal.toFixed(2));
-        //                      $('#TotalDiscountPercentage').val(0);
-        //                      $('#TotalAmtAftrDiscount').val(0);
-        //                      $('#TotalRoundOffAmt').val(0.00);
-        //                    GetTaxPartItem();
-        //               GetDbCrDetail();
-        //               GetFeatureOption();
-        //               AddAdjstmntDetail1();
-        //               CalculateRate();
-
-        //               // If adjustment grid exists, clear it
-        //               var AdjGrid = $('#divAdjItemList tr td').length;
-        //               if (AdjGrid >= 1) {
-        //                   ClearAdjustmentGrid();
-        //               }
-        //               AddAdjstmntDetail1();
-        //                 $.notify("Excel imported successfully!", "success");
-        //             }
-        //         },
-        //         error: function (xhr) {
-        //             $('#ajaxLoader').hide();
-        //             if (xhr.status === 400) {
-        //                 $.notify(xhr.responseText, "error");
-        //             } else {
-        //                 $.notify("An unexpected error occurred. Please try again.", "error");
-        //             }
-        //         }
-        //     });
-
-        //     // ✅ Utility: Calculate total item amount
-        
-        // }
 
         function PressBack() {
 
@@ -2353,7 +2213,7 @@
             CalculateRate();
             LockedFinancialYear();
             FillItems();
-            calculatetotalqty();
+            // calculatetotalqty();
             FillCurrency();
             FillDocumentType();
             $('#DPBTypeServItem').val('I');
@@ -2589,25 +2449,12 @@
                 minDate: new Date(currentYear, 4 - 1, 1) // 3 - 1 represents April (January is 0, so April is 3)
             });
             $('#POFor').trigger("change");
+                calculatetotalqty();
 
-            //setInterval(function () { $(".alert").fadeOut(); }, 50000);
-            // if ('@ViewBag.isSuccess' != null && '@ViewBag.isSuccess' != undefined && '@ViewBag.isSuccess' == true){
-            //     if (@Model.Mode == 'INSERT') {
-            //         $.notify("Inserted Successfully...", "success");
-            //     }
-            //     else if('@Model.Mode' == 'UPDATE' || '@Model.Mode' == 'U') {
-            //         $.notify("Updated Successfully...", "success");
-            //     }
-
-            // }
-            // else
-            // {
-            //     if ('@ViewBag.ResponseResult' != null && '@ViewBag.ResponseResult' != undefined) {
-            //         $.notify('@ViewBag.ResponseResult', "error");
-            //     }
-            // }
         });
 
+
+        //ready end here
 
         function ListOfPendingSaleBillFromOtherBranch() {
 
@@ -3424,8 +3271,8 @@
             var totalQty = 0;
 
             // Loop through each row inside tbody (to skip table header)
-            $('#DirectPurchaseBillBody tr').each(function () {
-                var billQty = parseFloat($(this).find('.billQty').text()) || 0;
+                $("#ItemDetailTable tbody tr").each(function () {
+                var billQty = parseFloat($(this).find('.qty').val()) || 0;
                 totalQty += billQty;
             });
 
@@ -4020,36 +3867,7 @@
             return true;
         }
 
-        // $('form').submit(function (event) {
-        //     //var poEffDate = $(this).val();
-        //     //var poDate = $('#PODate').val();
-        //     //if (poEffDate < poDate) {
-        //     //    $.notify("PO EFF Date cannot be less than PO Date", "error");
-        //     //    $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-        //     //}
-        //     //else {
-        //     //    $("form").submit();
-        //     //}
-        //     $('#PartCode').prop('selectedIndex', 1).trigger("change");
-
-        //     $('.btn-outline-primary').prop('disabled', true).html('Validating Form... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
-        //     if (!ValidateForm()) {
-        //         event.preventDefault(); // Prevent the form from submitting via the browser
-        //         $('.btn-outline-primary').prop('disabled', false).html('<i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i> SUBMIT');
-        //     }
-        //     else {
-        //         //event.stopPropagation(); // Prevent calling function inside this function.
-        //         var form = $(this);
-        //         var url = form.attr('action'); //get submit url [replace url here if desired]
-        //         $("form :input").prop("disabled", false);
-        //     }
-        // });
-
-        // $('#submitBTN').click(function (e) {
-        //     e.preventDefault();
-        //     $('#PasswordAllowPopup').modal("show");
-
-        // });
+      
 
 
         // When user clicks "Print"
@@ -4461,38 +4279,7 @@
             }).always(function (data) {
             });
         }
-        // $('#POTypeServItem').change(function () {
-        //   // alert($('#POTypeServItem').val());
-        //    if ($('#POTypeServItem').prop('selectedIndex') != 0) {
-        //        $.getJSON({
-        //            url: "@Url.Action("GetItemServiceFORPO", "DirectPurchaseBill")",
-        //            data: { ItemService: $('#POTypeServItem').val() },
-
-        //            success: function (result, status, xhr)
-        //            {
-        //                if ( result != null)
-        //                {
-        //                var obj = $.parseJSON(result);
-        //                $('#ItemCode').empty();
-
-        //                 $('#ItemCode').append('<option>-Select-</option>');
-        //                    $.each(obj.Result, function (key, val)
-        //                    {
-        //                        $('#ItemCode').append('<option value="' + val.ServiceName + '">' + val.ServiceName + '</option>');
-        //                    });
-
-        //                }
-        //            },
-        //            error: function (result, status, xhr)
-        //            {
-        //            //$.notify(result.responseText, "error");
-        //            alert("error");
-        //            }
-        //        });
-        //    }
-        //   // else $('#VendorAddress').val('');
-        //});
-
+        
         function copyToClipboardForDropdown(element) {
             var $temp = $("<input>");
             $("body").append($temp);
@@ -4541,12 +4328,7 @@
                                 else {
                                     $('#StateCode').val('');
                                 }
-                                if (obj.Result[0].CompanyStatecode != null && obj.Result[0].CompanyStatecode != undefined && obj.Result[0].CompanyStatecode != '') {
-                                    $('#CompanyStateCode').val(obj.Result[0].CompanyStatecode);
-                                }
-                                else {
-                                    $('#CompanyStateCode').val('');
-                                }
+                                
                                 if (obj.Result[0].Address != null && obj.Result[0].Address != undefined && obj.Result[0].Address != '') {
                                     $('#VendorAddress').val(obj.Result[0].Address);
                                 }
@@ -5273,8 +5055,90 @@
                 return true;
             }
 
+
+            function continueValidation() {
+
+    // IMPORTANT:
+    // Get grid counts AFTER ApplyTax4HSN()
+    var poGrid = $('#DirectPurchaseBillBody tr td').length;
+    var taxGrid = $('#divTaxGrid tr td').length;
+    var drCrGrid = $('#divdbCrItemList tr').length;
+    var AdjustGrid = $('#divAdjItemList tr').length;
+
+    var AdjPendAmt = $('#AdjPendAmt').val();
+
+    AdjPendAmt =
+        (AdjPendAmt != null &&
+         AdjPendAmt != '' &&
+         AdjPendAmt != undefined)
+            ? parseFloat(AdjPendAmt)
+            : 0;
+
+    var resultforadj =
+        CheckAndValidateAdjAmtAtTimeofAdd('NetTotal', AdjPendAmt);
+
+    if (!checkAllItemsAvailableInTaxGrid()) {
+        return false;
+    }
+
+    if (
+        $('#divTaxGrid tr td').length <= 1 &&
+        $('#GstType').val() != undefined &&
+        $('#GstType').val() != null &&
+        $('#GstType').val() != ''
+    ) {
+        $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
+        return false;
+    }
+
+    if (resultforadj.toString().toLowerCase() == "true") {
+        $.notify(
+            "Please add Adjust amount properly, And total should be less then or equal to Net Total.",
+            "error"
+        );
+        return false;
+    }
+
+    if (poGrid <= 1) {
+        $.notify("DPB Grid should at least have one item", "error");
+        return false;
+    }
+
+    if (drCrGrid <= 1) {
+        $.notify(
+            "Debit And Credid Amount Status Grid should at least have one item",
+            "error"
+        );
+        return false;
+    }
+
+    if (
+        taxGrid <= 1 &&
+        $('#GstType').val() != undefined &&
+        $('#GstType').val() != null &&
+        $('#GstType').val() != ''
+    ) {
+        $.notify("Tax Grid should at least have one item", "error");
+        return false;
+    }
+
+    if (AdjustGrid < 1) {
+        $.notify(
+            "Adjustment Amount Status Grid should at least have one item",
+            "error"
+        );
+        return false;
+    }
+
+    // Everything is OK
+    checkDuplicateEntry();
+}
+
         $('button[type="submit"]').click(function (e) {
             e.preventDefault();
+
+                
+
             $('#TypeOfSave').val("NS");
 
             // UpdateSession();
@@ -5285,6 +5149,7 @@
             var drCrGrid = $('#divdbCrItemList tr').length;
             var AdjustGrid= $('#divAdjItemList tr').length;
             var hasEmptyLocation = false;
+
 
             $('#DirectPurchaseBillBody tr').each(function () {
                 var txtLocation = $(this).find('.ItemLocation'); // ItemLocation textbox
@@ -5320,63 +5185,33 @@
                     return;
                 }
             }
-
-            //if ($('#AccountCode').find(':selected').data('gstregister') == 'Y') {
-            var AdjPendAmt = $('#AdjPendAmt').val();
-            AdjPendAmt = (AdjPendAmt != null && AdjPendAmt != '' && AdjPendAmt != undefined) ? parseFloat(AdjPendAmt) : 0;
-            var resultforadj = CheckAndValidateAdjAmtAtTimeofAdd('NetTotal', AdjPendAmt);
-                if (!checkAllItemsAvailableInTaxGrid()) {
-                    isError = true;
-                    return false;
-                }
-
-                if ($('#divTaxGrid tr td').length <= 1 && $('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '') {
-                                      $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                    isError = true;
-                    return false;
-                                  }
-              
-
-            else if (resultforadj.toString().toLowerCase() == "true") {
-                $.notify("Please add Adjust amount properly, And total should be less then or equal to Net Total.", "error");
-                isError = true;
-                return false;
-            }
-            else if (poGrid <= 1) {
-                $.notify("DPB Grid should at least have one item", "error");
-                return;
-            }
-            else if (drCrGrid <= 1) {
-                $.notify("Debit And Credid Amount Status Grid should at least have one item", "error");
-                return;
-            }
-            // else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
-            //     $.notify("Total Debit And Total Credit Amount should be same", "error");
-            //     return;
-            // }
-            else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
-                $.notify("Tax Grid should at least have one item", "error");
-                return;
-            }
-               else if (AdjustGrid < 1) {
-                 $.notify("Adjustment Amount Status Grid should at least have one item", "error");
-                return;
-            }
-            else if ($('#AccountCode').val() == '0') {
+              if ($('#AccountCode').val() == '0') {
                 $.notify("Vendor Name is required", "error");
+                return false;
             }
              else if (parseInt($("#PaymentDays").val())<=0) {
                  $.notify("PaymentDays should not be 0", "error");
-                return;
+                    return false;
             }
-         
-            else {
-               
-                       
-                             checkDuplicateEntry();
-                           // $("form").submit();
-                      
+
+                var salebillRowCount = $('#divTaxGrid tr').length;
+                var taxGridText = $('#divTaxGrid').text().trim();
+
+                if (salebillRowCount <= 0 || taxGridText.toUpperCase().includes("NO DATA ADDED")) {
+                    ClearTaxOnSaleBill();
+                     // ApplyTax4HSN();
+                     ApplyTax4HSN().then(function () {
+
+        // ApplyTax4HSN is now completed
+        continueValidation();
+
+    });
+
+    return false;
                 }
+
+                continueValidation();
+
               
           
         });
@@ -5880,6 +5715,7 @@
                 url: "@Url.Action("ClearTaxGrid")",
                 data: { YearCode: $('#YearCode').val(), "VODate": $('#VouchDate').val() },
                 dataType: "json",
+                async:false,
                 success: function (result, status, error) {
                     $('#divTaxGrid').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';

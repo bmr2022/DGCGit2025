@@ -99,6 +99,8 @@ namespace eTactWeb.Controllers
             MainModel.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
              MainModel.PreparedByName = HttpContext.Session.GetString("EmpName");
             MainModel.Branch = HttpContext.Session.GetString("Branch");
+            ViewBag.CompanyStateCode = HttpContext.Session.GetString("CompanyStateCode");
+
 
             ViewBag.AccountCode = AccountCode;
             ViewBag.AccountName = VendorName;

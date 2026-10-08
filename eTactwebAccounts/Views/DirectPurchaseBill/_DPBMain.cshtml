@@ -65,7 +65,7 @@
         </div>
 
 
-        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="AccountCode" class="form-label">Vendor Name*</label>
             <input type="text" asp-for="AccountName" id="AccountCodeText" class="form-control" value="@Model.AccountName" placeholder="Type Party Name..." />
             <input type="hidden" asp-for="AccountCode" id="AccountCode" />
@@ -89,7 +89,7 @@
             <label asp-for="VendorAddress" class="form-label">Vendor Address</label>
             <input asp-for="VendorAddress"  class="form-control" readonly />
         </div>
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12 DirectPurchaseBillCustomerGSTNo">
+        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12 DirectPurchaseBillCustomerGSTNo">
             <label asp-for="GSTNo" class="form-label">GST No</label>
             <input asp-for="GSTNo"  class="form-control" readonly />
         </div>
@@ -145,14 +145,9 @@
             <label asp-for="PaymentDays" class="form-label">Credit Days</label>
             <input asp-for="PaymentDays" class="form-control" />
         </div>
-        <div class="col-sm-auto py-2 text-center divTax4HSN" style="">
-            <button type="button" class="btn btn-sm btn-outline-primary btnTax4HSN" onclick="UpdateSession();ApplyTax4HSN();" style="margin-top:10px;">
-                <i class="fa-solid fa-money-bill-trend-up fa-fw fa-lg"></i>
-                ADD HSN TAX
-            </button>
-        </div>
+      
         <!-- Compact Total Summary -->
-        <div class="col-12 mt-1">
+        <div class="col-6 mt-1">
             <div class="dpb-compact-total">
 
                 <div class="dpb-summary-item">
@@ -186,7 +181,7 @@
         <input type="hidden" asp-for="ApprovedDate" class="form-control" />
         <input type="hidden" asp-for="Approvedby" class="form-control" />
         <input type="hidden" asp-for="StateCode" class="form-control" readonly />
-        <input class="form-control" id="CompanyStateCode" readonly type="hidden" />
+        <input type="hidden" id="CompanyStateCode" value="@ViewBag.CompanyStateCode" />
     </div>
 </div>
 

@@ -5,8 +5,11 @@
 {
     <tr>
         <td>
-            @(i + 1)
-            @Html.HiddenFor(m => m.ItemDetailGrid[i].SeqNo)
+            @Model.ItemDetailGrid[i].SeqNo
+            <input type="hidden"
+                   name="saleBillDetails[@i].SeqNo"
+                   value="@Model.ItemDetailGrid[i].SeqNo" />
+
         </td>
 
         <td>
