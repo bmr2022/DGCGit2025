@@ -244,11 +244,7 @@
             <label asp-for="ConsigneeAddress" class="form-label">Consignee Address</label>
             <input asp-for="ConsigneeAddress" class="form-control" />
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 mt-4">
-            <button type="button" class="SODetail btn btn-sm btn-outline-danger">
-                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i>  Display SO Detail
-            </button>
-        </div>
+    
         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 mt-4 jobWorkChalln">
             <button class="btn btn-sm btn-warning bg-gradient" id="pendingChallanList">
                 <i class="fa fa-plus-circle fafw fa-lg"></i>  Pending ChallanList
@@ -259,20 +255,14 @@
                 <i class="fa fa-plus-circle fafw fa-lg"></i>  Click To Adjust Challan
             </button>
         </div>
-        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:12%">
+        <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:10%">
             <button type="button" id="ShowGroupItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-success mt-3">
-                <i class="bi bi-list"></i>ShowGroupItem
+                <i class="bi bi-list"></i>Show Item
             </button>
         </div>
 
-        <div class="col-sm-auto py-2 text-center divTax4HSN" style="">
-            <button type="button" class="btn btn-sm btn-outline-primary btnTax4HSN" onclick="UpdateSession();ApplyTax4HSN();" style="margin-top:10px;">
-                <i class="fa-solid fa-money-bill-trend-up fa-fw fa-lg"></i>
-                ADD HSN TAX
-            </button>
-        </div>
-        <!-- Compact Total Summary -->
-        <div class="col-12 mt-1">
+      
+        <div class="col-6 mt-2">
             <div class="dpb-compact-total">
 
                 <div class="dpb-summary-item">

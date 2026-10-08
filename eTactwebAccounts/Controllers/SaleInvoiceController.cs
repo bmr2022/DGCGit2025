@@ -106,11 +106,22 @@ namespace eTactWeb.Controllers
         {
             if (Model != null)
             {
-                Model.ItemDetailGrid = Model.saleBillDetails;
-               
-                HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(Model.saleBillDetails));
-                HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(Model));
+                // Keep only rows having ItemCode > 0
+                Model.saleBillDetails = Model.saleBillDetails?
+                    .Where(x => x.ItemCode > 0)
+                    .ToList();
 
+                Model.ItemDetailGrid = Model.saleBillDetails;
+
+                HttpContext.Session.SetString(
+                    "KeySaleBillGrid",
+                    JsonConvert.SerializeObject(Model.saleBillDetails)
+                );
+
+                HttpContext.Session.SetString(
+                    "SaleBillModel",
+                    JsonConvert.SerializeObject(Model)
+                );
             }
 
             return Json(new { success = true });
