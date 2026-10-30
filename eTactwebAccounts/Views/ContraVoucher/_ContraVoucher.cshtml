@@ -45,7 +45,8 @@
             }
         </select>
     </td>
-    <td><input asp-for="AdjustmentAmt" class="form-control" type="number" min="0" style="width:70px;" /></td>
+    <td><input asp-for="AdjustmentAmt" class="form-control"  min="0" style="width:70px;" oninput="this.value=this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/^(\d{18})\d+/, '$1').replace(/(\.\d{4})\d+/,'$1');" 
+/></td>
     <td>
         <input asp-for="AdjustmentAmtOthCur" class="form-control" readonly />
     </td>
@@ -68,22 +69,22 @@
     <td><input asp-for="AgainstVoucherEntryId" class="form-control" readonly /></td>
     <td>
 
-    <select class="form-control" asp-for="SONo" style="width:140px;">
-    <option value="@Model.SONo">-Select-</option>
-    @if (Model.Mode == "U" || Model.Mode == "V")
-    {
-    <option value="@Model.SONo">@Model.SONo</option>
-    }
-    </select>
+        <select class="form-control" asp-for="SONo" style="width:140px;">
+            <option value="@Model.SONo">-Select-</option>
+            @if (Model.Mode == "U" || Model.Mode == "V")
+            {
+                <option value="@Model.SONo">@Model.SONo</option>
+            }
+        </select>
     </td>
     <td>
-    <select class="form-control" asp-for="SOYear" style="width:140px;">
-    <option value="@Model.SOYear">-Select-</option>
-    @if (Model.Mode == "U" || Model.Mode == "V")
-    {
-    <option value="@Model.SOYear">@Model.SOYear</option>
-    }
-    </select>
+        <select class="form-control" asp-for="SOYear" style="width:140px;">
+            <option value="@Model.SOYear">-Select-</option>
+            @if (Model.Mode == "U" || Model.Mode == "V")
+            {
+                <option value="@Model.SOYear">@Model.SOYear</option>
+            }
+        </select>
     </td>
     <td><input asp-for="SoDate" id="SoDate" class="form-control" readonly /></td>
     <td><input asp-for="CustOrderNo" class="form-control" readonly /></td>

@@ -1,19 +1,20 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services;
 using eTactWeb.Services.Interface;
-using FastReport.Web;
 using FastReport;
+using FastReport.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System.Data;
+using System.Globalization;
 using System.Net;
 using System.Runtime.Caching;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
-using System.Globalization;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace eTactwebAccounts.Controllers
@@ -39,16 +40,19 @@ namespace eTactwebAccounts.Controllers
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> BankPayment(int ID, string Mode, int YearCode, string VoucherNo, string FromDate = "", string ToDate = "", string LedgerName = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
+        public async Task<ActionResult> BankPayment(string formKey, int ID, string Mode, int YearCode, string VoucherNo, string FromDate = "", string ToDate = "", string LedgerName = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
         {
-            HttpContext.Session.Remove("KeyBankPaymentGrid");
-            HttpContext.Session.Remove("KeyBankPaymentGridEdit");
+            ViewBag.formKey = formKey;
+            var uniqueKey = Guid.NewGuid().ToString();
+            ViewBag.uniqueKey = uniqueKey;
+            HttpContext.Session.Remove($"KeyBankPaymentGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyBankPaymentGridEdit_{uniqueKey}");
             //TempData.Clear();
-            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            int userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var rights = await _IBankPayment.GetFormRights(userID);
             if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
             {
-                return RedirectToAction("Dashboard", "Home");
+                return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
             }
 
 
@@ -77,21 +81,21 @@ namespace eTactwebAccounts.Controllers
             {
                 if (!(optUpdate))
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
                 }
             }
             if (Mode == "V")
             {
                 if (!(optView))
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
                 }
             }
             if (ID <= 0)
             {
                 if (!optSave)
                 {
-                    return RedirectToAction("BankPaymentDashBoard", "BankPayment");
+                    return RedirectToAction("BankPaymentDashBoard", "BankPayment", new { formKey = formKey });
                 }
             }
 
@@ -99,14 +103,14 @@ namespace eTactwebAccounts.Controllers
 
 
             var MainModel = new BankPaymentModel();
-            MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            MainModel.ActualEntryBy = HttpContext.Session.GetString("EmpName");
+            MainModel.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+            MainModel.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+            MainModel.ActualEntryBy = HttpContext.Session.GetString($"EmpName_{formKey}");
             MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
-            MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            //MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            //MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+            MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+            //MainModel.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            //MainModel.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
 
 
 
@@ -119,17 +123,17 @@ namespace eTactwebAccounts.Controllers
                 MainModel.VoucherNo = VoucherNo;
 
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
-                HttpContext.Session.SetString("KeyBankPaymentGridEdit", serializedGrid);
+                HttpContext.Session.SetString($"KeyBankPaymentGridEdit_{uniqueKey}", serializedGrid);
             }
 
             if (Mode == "U" && MainModel.UpdatedBy == 0)
             {
-                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.UpdatedByEmp = HttpContext.Session.GetString("EmpName");
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.UpdatedByEmp = HttpContext.Session.GetString($"EmpName_{formKey}");
                 MainModel.UpdatedOn = DateTime.Now;
             }
-            MainModel.FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
-            MainModel.ToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
+            MainModel.FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"FromDate_{formKey}"));
+            MainModel.ToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"ToDate_{formKey}"));
 
 
             MainModel.FromDateBack = FromDate;
@@ -150,20 +154,22 @@ namespace eTactwebAccounts.Controllers
             try
             {
                 var GIGrid = new DataTable();
-                string modelJson = HttpContext.Session.GetString("KeyBankPaymentGrid");
+                var formKey = model.formKey;
+                var uniqueKey = model.uniqueKey;
+                string modelJson = HttpContext.Session.GetString($"KeyBankPaymentGrid_{uniqueKey}");
                 List<BankPaymentModel> BankPaymentGrid = new List<BankPaymentModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     BankPaymentGrid = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelJson);
                 }
-                string modelEditJson = HttpContext.Session.GetString("KeyBankPaymentGridEdit");
+                string modelEditJson = HttpContext.Session.GetString($"KeyBankPaymentGridEdit_{uniqueKey}");
                 List<BankPaymentModel> BankPaymentGridEdit = new List<BankPaymentModel>();
                 if (!string.IsNullOrEmpty(modelEditJson))
                 {
                     BankPaymentGridEdit = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelEditJson);
                 }
 
-                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
                 if (model.Mode == "U")
                 {
                     model.UpdatedOn = DateTime.Now;
@@ -173,8 +179,8 @@ namespace eTactwebAccounts.Controllers
                 {
                     GIGrid = GetDetailTable(BankPaymentGrid);
                 }
-                model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
-                model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                model.EntryByMachine = HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+                model.IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
                 var Result = await _IBankPayment.SaveBankPayment(model, GIGrid);
                 if (Result != null)
                 {
@@ -182,33 +188,70 @@ namespace eTactwebAccounts.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        HttpContext.Session.Remove("KeyBankPaymentGrid");
-                        HttpContext.Session.Remove("KeyBankPaymentGridEdit");
+                        HttpContext.Session.Remove($"KeyBankPaymentGrid_{uniqueKey}");
+                        HttpContext.Session.Remove($"KeyBankPaymentGridEdit_{uniqueKey}");
+                        return Json(new
+                        {
+                            success = true,
+                            message = "Bank Payment Save successfully",
+                            redirectUrl = Url.Action(
+        "Index",
+        "BankPayment",
+        new { formKey = formKey }
+
+    )
+                        });
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
-                        HttpContext.Session.Remove("KeyBankPaymentGrid");
-                        HttpContext.Session.Remove("KeyBankPaymentGridEdit");
+                        HttpContext.Session.Remove($"KeyBankPaymentGrid_{uniqueKey}");
+                        HttpContext.Session.Remove($"KeyBankPaymentGridEdit_{uniqueKey}");
+                        return Json(new
+                        {
+                            success = true,
+                            message = "Bank Payment Save successfully",
+                            redirectUrl = Url.Action(
+        "Index",
+        "BankPayment",
+        new { formKey = formKey }
+
+    )
+                        });
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         ViewBag.isSuccess = false;
                         TempData["500"] = "500";
                         _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
-                        return View("Error", Result);
+                        //return View("Error", Result);
+                        return Json(new
+                        {
+                            success = false,
+                            message = "An unexpected error occurred."
+                        });
                     }
                     else if (!string.IsNullOrEmpty(Result.StatusText))
                     {
                         // If SP returned a message (like adjustment error)
                         TempData["ErrorMessage"] = Result.StatusText;
-                        HttpContext.Session.Remove("KeyBankPaymentGrid");
-                        HttpContext.Session.Remove("KeyBankPaymentGridEdit");
+                        HttpContext.Session.Remove($"KeyBankPaymentGrid_{uniqueKey}");
+                        HttpContext.Session.Remove($"KeyBankPaymentGridEdit_{uniqueKey}");
                         //return View(model);
+                        return Json(new
+                        {
+                            success = false,
+                            message = Result.StatusText
+                        });
                     }
                 }
-                return RedirectToAction(nameof(BankPayment));
+                //return RedirectToAction(nameof(BankPayment));
+                return Json(new
+                {
+                    success = false,
+                    message = "An unexpected error occurred."
+                });
             }
             catch (Exception ex)
             {
@@ -219,12 +262,17 @@ namespace eTactwebAccounts.Controllers
                     StatusText = "Error",
                     Result = ex
                 };
-                return View("Error", ResponseResult);
+                //return View("Error", ResponseResult);
+                return Json(new
+                {
+                    success = false,
+                    message = "An unexpected error occurred."
+                });
             }
         }
-        public async Task<JsonResult> GetFormRights()
+        public async Task<JsonResult> GetFormRights(string formKey)
         {
-            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var JSON = await _IBankPayment.GetFormRights(userID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -424,7 +472,7 @@ namespace eTactwebAccounts.Controllers
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            string webRootPath = Path.Combine(_IWebHostEnvironment.WebRootPath, "reports");
             var webReport = new WebReport();
             webReport.Report.Clear();
             webReport.Report.Dispose();
@@ -541,13 +589,13 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult AddBankPaymentDetail(BankPaymentModel model)
+        public IActionResult AddBankPaymentDetail(BankPaymentModel model, string uniqueKey)
         {
             try
             {
                 if (model.Mode == "U" || model.Mode == "V")
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyBankPaymentGridEdit");
+                    string modelJson = HttpContext.Session.GetString($"KeyBankPaymentGridEdit_{uniqueKey}");
                     List<BankPaymentModel> BankPaymentGrid = new List<BankPaymentModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -634,7 +682,7 @@ namespace eTactwebAccounts.Controllers
                         MainModel.BankPaymentGrid = OrderGrid.OrderBy(x => x.SrNO).ToList();
 
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
-                        HttpContext.Session.SetString("KeyBankPaymentGridEdit", serializedGrid);
+                        HttpContext.Session.SetString($"KeyBankPaymentGridEdit_{uniqueKey}", serializedGrid);
                     }
                     else
                     {
@@ -644,7 +692,7 @@ namespace eTactwebAccounts.Controllers
                 }
                 else
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyBankPaymentGrid");
+                    string modelJson = HttpContext.Session.GetString($"KeyBankPaymentGrid_{uniqueKey}");
                     List<BankPaymentModel> BankPaymentGrid = new List<BankPaymentModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -730,7 +778,7 @@ namespace eTactwebAccounts.Controllers
                         MainModel.BankPaymentGrid = OrderGrid.OrderBy(x => x.SrNO).ToList();
 
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
-                        HttpContext.Session.SetString("KeyBankPaymentGrid", serializedGrid);
+                        HttpContext.Session.SetString($"KeyBankPaymentGrid_{uniqueKey}", serializedGrid);
                     }
                     else
                     {
@@ -744,7 +792,7 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public IActionResult AddBankPaymentAdjustDetail(List<BankPaymentModel> model, string Mode)
+        public IActionResult AddBankPaymentAdjustDetail(List<BankPaymentModel> model, string Mode, string uniqueKey)
         {
             try
             {
@@ -752,7 +800,7 @@ namespace eTactwebAccounts.Controllers
                 var ProductionEntryDetail = new List<BankPaymentModel>();
                 if (Mode != "U" && Mode != "V")
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyBankPaymentGrid");
+                    string modelJson = HttpContext.Session.GetString($"KeyBankPaymentGrid_{uniqueKey}");
                     List<BankPaymentModel> ProductionEntryItemDetail = new List<BankPaymentModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -784,11 +832,11 @@ namespace eTactwebAccounts.Controllers
                     MainModel.BankPaymentGrid = ProductionEntryDetail.OrderBy(x => x.SrNO).ToList();
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
-                    HttpContext.Session.SetString("KeyBankPaymentGrid", serializedGrid);
+                    HttpContext.Session.SetString($"KeyBankPaymentGrid_{uniqueKey}", serializedGrid);
                 }
                 else
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyBankPaymentGridEdit");
+                    string modelJson = HttpContext.Session.GetString($"KeyBankPaymentGridEdit_{uniqueKey}");
                     List<BankPaymentModel> ProductionEntryItemDetail = new List<BankPaymentModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -822,7 +870,7 @@ namespace eTactwebAccounts.Controllers
                     MainModel.BankPaymentGrid = ProductionEntryDetail.OrderBy(x => x.SrNO).ToList();
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
-                    HttpContext.Session.SetString("KeyBankPaymentGridEdit", serializedGrid);
+                    HttpContext.Session.SetString($"KeyBankPaymentGridEdit_{uniqueKey}", serializedGrid);
                 }
                 return PartialView("_BankPaymentGrid", MainModel);
             }
@@ -831,12 +879,12 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public JsonResult EditItemRows(int SrNO, string Mode)
+        public JsonResult EditItemRows(int SrNO, string Mode, string uniqueKey)
         {
             if (Mode != "U" && Mode != "V")
             {
                 var MainModel = new BankPaymentModel();
-                string modelJson = HttpContext.Session.GetString("KeyBankPaymentGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyBankPaymentGrid_{uniqueKey}");
                 List<BankPaymentModel> GridDetail = new List<BankPaymentModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -854,7 +902,7 @@ namespace eTactwebAccounts.Controllers
             else
             {
                 var MainModel = new BankPaymentModel();
-                string modelJson = HttpContext.Session.GetString("KeyBankPaymentGridEdit");
+                string modelJson = HttpContext.Session.GetString($"KeyBankPaymentGridEdit_{uniqueKey}");
                 List<BankPaymentModel> GridDetail = new List<BankPaymentModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -870,12 +918,12 @@ namespace eTactwebAccounts.Controllers
                 return Json(JsonString);
             }
         }
-        public IActionResult DeleteItemRow(int SeqNo, string Mode, string PopUpData)
+        public IActionResult DeleteItemRow(int SeqNo, string Mode, string PopUpData, string uniqueKey, bool isedit = false)
         {
             if (PopUpData == "PopUpData")
             {
                 var MainModel = new BankPaymentModel();
-                string modelJson = HttpContext.Session.GetString("KeyBankPaymentGridPopUpData");
+                string modelJson = HttpContext.Session.GetString($"KeyBankPaymentGridPopUpData_{uniqueKey}");
                 List<BankPaymentModel> BankPaymentGrid = new List<BankPaymentModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -898,7 +946,7 @@ namespace eTactwebAccounts.Controllers
 
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
-                    HttpContext.Session.SetString("KeyBankPaymentGridPopUpData", serializedGrid);
+                    HttpContext.Session.SetString($"KeyBankPaymentGridPopUpData_{uniqueKey}", serializedGrid);
                 }
                 return PartialView("_DisplayPopupForPendingVouchers", MainModel);
             }
@@ -907,7 +955,7 @@ namespace eTactwebAccounts.Controllers
                 var MainModel = new BankPaymentModel();
                 if (Mode != "U" && Mode != "V")
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyBankPaymentGrid");
+                    string modelJson = HttpContext.Session.GetString($"KeyBankPaymentGrid_{uniqueKey}");
                     List<BankPaymentModel> BankPaymentGrid = new List<BankPaymentModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -930,12 +978,12 @@ namespace eTactwebAccounts.Controllers
 
 
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
-                        HttpContext.Session.SetString("KeyBankPaymentGrid", serializedGrid);
+                        HttpContext.Session.SetString($"KeyBankPaymentGrid_{uniqueKey}", serializedGrid);
                     }
                 }
                 else
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyBankPaymentGridEdit");
+                    string modelJson = HttpContext.Session.GetString($"KeyBankPaymentGridEdit_{uniqueKey}");
                     List<BankPaymentModel> BankPaymentGrid = new List<BankPaymentModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -957,24 +1005,27 @@ namespace eTactwebAccounts.Controllers
                         MainModel.BankPaymentGrid = BankPaymentGrid.OrderBy(x => x.SrNO).ToList();
 
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
-                        HttpContext.Session.SetString("KeyBankPaymentGridEdit", serializedGrid);
+                        HttpContext.Session.SetString($"KeyBankPaymentGridEdit_{uniqueKey}", serializedGrid);
                     }
                 }
                 return PartialView("_BankPaymentGrid", MainModel);
             }
         }
-        public async Task<IActionResult> BankPaymentDashBoard(string FromDate = "", string ToDate = "", string Flag = "True", string LedgerName = "", string Bank = "", string VoucherNo = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
+        public async Task<IActionResult> BankPaymentDashBoard(string formKey, string FromDate = "", string ToDate = "", string Flag = "True", string LedgerName = "", string Bank = "", string VoucherNo = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
         {
             try
             {
-                HttpContext.Session.Remove("KeyBankPaymentGrid");
-                HttpContext.Session.Remove("KeyBankPaymentGridEdit");
+                ViewBag.formKey = formKey;
+                var uniqueKey = Guid.NewGuid().ToString();
+                ViewBag.uniqueKey = uniqueKey;
+                HttpContext.Session.Remove($"KeyBankPaymentGrid_{uniqueKey}");
+                HttpContext.Session.Remove($"KeyBankPaymentGridEdit_{uniqueKey}");
                 var model = new BankPaymentModel();
-                int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                int userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
                 var rights = await _IBankPayment.GetFormRights(userID);
                 if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
                 }
                 var table = rights.Result.Tables[0];
 
@@ -984,7 +1035,7 @@ namespace eTactwebAccounts.Controllers
                 bool optDelete = Convert.ToBoolean(table.Rows[0]["OptDelete"]);
                 if (!(optAll || optView || optUpdate || optDelete))
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
                 }
                 //var Result = await _IBankPayment.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
                 //            if (Result != null)
@@ -1027,22 +1078,32 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetSearchData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno, string summaryDetail, string searchBox, string Flag = "True")
+        public async Task<IActionResult> GetSearchData(string formKey, string uniqueKey, string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno, string summaryDetail, string searchBox, string Flag = "True", int pageNumber = 1, int pageSize = 10)
         {
             try
             {
+                ViewBag.formKey = formKey;
+
                 var model = new BankPaymentModel
                 {
-                    YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode")),
-                    Searchbox = searchBox
+                    YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}")),
+                    Searchbox = searchBox,
+                    formKey = formKey,
+                    uniqueKey = uniqueKey,
                 };
 
                 var result = await _IBankPayment.GetDashBoardData(summaryDetail, ParseFormattedDate(FromDate), ParseFormattedDate(ToDate), LedgerName, Bank, VoucherNo, AgainstVoucherNo, PoNo, AgainstBillno);
 
                 if (result == null || !(result.Result is DataTable dt))
                 {
+                    model.TotalRecords = 0;
+                    model.Rows = new List<Dictionary<string, object>>();
                     return PartialView("_BankPaymentDashBoardGrid", model);
                 }
+
+                model.TotalRecords = dt.Rows.Count;
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
 
                 model.Headers = dt.Columns
                     .Cast<DataColumn>()
@@ -1053,14 +1114,25 @@ namespace eTactwebAccounts.Controllers
                     })
                     .ToList();
 
+                //model.Rows = dt.AsEnumerable()
+                //    .Select(r => dt.Columns
+                //        .Cast<DataColumn>()
+                //        .ToDictionary(
+                //            c => c.ColumnName,
+                //            c => r[c] == DBNull.Value ? null : r[c]
+                //        ))
+                //    .ToList();
+
                 model.Rows = dt.AsEnumerable()
-                    .Select(r => dt.Columns
-                        .Cast<DataColumn>()
-                        .ToDictionary(
-                            c => c.ColumnName,
-                            c => r[c] == DBNull.Value ? null : r[c]
-                        ))
-                    .ToList();
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(r => dt.Columns
+                    .Cast<DataColumn>()
+                    .ToDictionary(
+                        c => c.ColumnName,
+                        c => r[c] == DBNull.Value ? null : r[c]
+                    ))
+                .ToList();
 
                 return PartialView("_BankPaymentDashBoardGrid", model);
             }
@@ -1069,27 +1141,34 @@ namespace eTactwebAccounts.Controllers
                 throw;
             }
         }
-        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
+        public async Task<IActionResult> GetDashBoardDetailData(string formKey, string uniqueKey, string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
         {
+            ViewBag.formKey = formKey;
             var model = new BankPaymentModel();
             model = await _IBankPayment.GetDashBoardDetailData(FromDate, ToDate, LedgerName, Bank, VoucherNo, AgainstVoucherNo, PoNo, AgainstBillno);
+            model.formKey = formKey;
+            model.uniqueKey = uniqueKey;
+
+
             return PartialView("_BankPaymentDashBoardDetailGrid", model);
         }
-        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PONo, string AgainstBillno)
+        public async Task<IActionResult> GetDashBoardSummaryData(string formKey, string uniqueKey, string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PONo, string AgainstBillno)
         {
             var model = new BankPaymentModel();
             model = await _IBankPayment.GetDashBoardSummaryData(FromDate, ToDate, LedgerName, Bank, VoucherNo, AgainstVoucherNo, PONo, AgainstBillno);
+            model.formKey = formKey;
+            model.uniqueKey = uniqueKey;
             return PartialView("_BankPaymentDashBoardGrid", model);
         }
-        public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
+        public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable, string uniqueKey)
         {
-            HttpContext.Session.Remove("KeyBankPaymentGridPopUpData");
+            HttpContext.Session.Remove($"KeyBankPaymentGridPopUpData_{uniqueKey}");
             var model = await _IBankPayment.PopUpForPendingVouchers(DataTable);
             string serializedGrid = JsonConvert.SerializeObject(model.BankPaymentGrid);
-            HttpContext.Session.SetString("KeyBankPaymentGridPopUpData", serializedGrid);
+            HttpContext.Session.SetString($"KeyBankPaymentGridPopUpData_{uniqueKey}", serializedGrid);
             return PartialView("_DisplayPopupForPendingVouchers", model);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string FromDate = "", string ToDate = "", string LedgerName = "", string Bank = "", string VoucherNo = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
+        public async Task<IActionResult> DeleteByID(string formKey, int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string FromDate = "", string ToDate = "", string LedgerName = "", string Bank = "", string VoucherNo = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
         {
             var Result = await _IBankPayment.DeleteByID(ID, YearCode, ActualEntryBy, EntryByMachine, ActualEntryDate);
 
@@ -1118,7 +1197,7 @@ namespace eTactwebAccounts.Controllers
                 }
             }
 
-            return RedirectToAction("BankPaymentDashBoard", new { EntryByMachine = EntryByMachine, ActualEntryDate = ActualEntryDate, Flag = "False", FromDate = FromDate, ToDate = ToDate, LedgerName = LedgerName, Bank = Bank, VoucherNo = VoucherNo, AgainstVoucherRefNo = AgainstVoucherRefNo, AgainstVoucherNo = AgainstVoucherNo, Searchbox = Searchbox, DashboardType = DashboardType });
+            return RedirectToAction("BankPaymentDashBoard", new { formKey = formKey, EntryByMachine = EntryByMachine, ActualEntryDate = ActualEntryDate, Flag = "False", FromDate = FromDate, ToDate = ToDate, LedgerName = LedgerName, Bank = Bank, VoucherNo = VoucherNo, AgainstVoucherRefNo = AgainstVoucherRefNo, AgainstVoucherNo = AgainstVoucherNo, Searchbox = Searchbox, DashboardType = DashboardType });
 
         }
         public async Task<JsonResult> FillLedgerInDashboard(string FromDate, string ToDate, string VoucherType)
@@ -1150,6 +1229,50 @@ namespace eTactwebAccounts.Controllers
             var JSON = await _IBankPayment.FillAgainstVoucherNoInDashboard(FromDate, ToDate, VoucherType);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }
+        [HttpPost]
+        public IActionResult RemoveAgainstRef(string mode, string uniqueKey)
+        {
+            try
+            {
+                string sessionKey = (mode == "U" || mode == "V")
+                    ? $"KeyBankPaymentGridEdit_{uniqueKey}"
+                    : $"KeyBankPaymentGrid_{uniqueKey}";
+
+                string modelJson = HttpContext.Session.GetString(sessionKey);
+
+                List<BankPaymentModel> BankPaymentGrid = new List<BankPaymentModel>();
+
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    BankPaymentGrid = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelJson);
+                }
+
+                // Remove rows where ModeOfAdjustment = Against Ref
+                BankPaymentGrid = BankPaymentGrid
+                    .Where(x => x.ModeOfAdjustment?.ToLower() != "against ref")
+                    .ToList();
+
+                // Reorder SrNO
+                int sr = 1;
+                foreach (var item in BankPaymentGrid)
+                {
+                    item.SrNO = sr++;
+                }
+
+                HttpContext.Session.SetString(sessionKey, JsonConvert.SerializeObject(BankPaymentGrid));
+
+                var MainModel = new BankPaymentModel
+                {
+                    BankPaymentGrid = BankPaymentGrid
+                };
+
+                return PartialView("_BankPaymentGrid", MainModel);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
     }
 }

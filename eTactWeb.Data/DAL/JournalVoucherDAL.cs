@@ -77,7 +77,9 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
                 SqlParams.Add(new SqlParameter("@EmpId", userId));
+                //SqlParams.Add(new SqlParameter("@MenuId", 385));
                 SqlParams.Add(new SqlParameter("@MainMenu", "JournalVoucher"));
+
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
             }
@@ -272,6 +274,7 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                 }
                 sqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.AccEntryId));
+                sqlParams.Add(new SqlParameter("@AccEntryId", model.AccEntryId));
                 sqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
                 sqlParams.Add(new SqlParameter("@EntryDate", entryDate));
                 sqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
@@ -283,6 +286,7 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@intrument", model.Intrument));
                 sqlParams.Add(new SqlParameter("@intrumentdate", InsDate));
                 sqlParams.Add(new SqlParameter("@cc", model.CC));
+                sqlParams.Add(new SqlParameter("@subvouchertype", model.subvouchertype));
                 sqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryby));
                 sqlParams.Add(new SqlParameter("@DTbooktrans", GIGrid));
 
@@ -625,6 +629,7 @@ namespace eTactWeb.Data.DAL
             model.VoucherDocDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString();
             model.VoucherDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString();
             model.Currency = DS.Tables[0].Rows[0]["Currency"].ToString();
+            model.subvouchertype = DS.Tables[0].Rows[0]["subvouchertype"].ToString();
             model.CurrencyId = Convert.ToInt32(DS.Tables[0].Rows[0]["CurrencyId"].ToString());
             model.UID = Convert.ToInt32(DS.Tables[0].Rows[0]["uid"].ToString());
             model.ActualEntryby = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());
@@ -671,7 +676,7 @@ namespace eTactWeb.Data.DAL
                         AccountCode = Convert.ToInt32(row["Accountcode"].ToString()),
                         DrAmt = Convert.ToDecimal(row["drAmt"].ToString()),
                         CrAmt = Convert.ToDecimal(row["CrAmt"].ToString()),
-                        AdjustmentAmt = Convert.ToDecimal(row["AmountInOtherCurr"].ToString()),
+                        AdjustmentAmt = Convert.ToDecimal(row["Amount"].ToString()),
                         AdjustmentAmtOthCur = Convert.ToDouble(row["AmountInOtherCurr"].ToString()),
                         InsNo = row["instrumentno"].ToString(),
                         Intrument = row["instrument"].ToString(),

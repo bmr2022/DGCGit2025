@@ -148,5 +148,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _BankReceiptDAL.BackDateEntryAllowed();
         }
+
+        public async Task<ResponseResult> FillStore()
+        {
+            return await _BankReceiptDAL.FillStore();
+        }
     }
 }

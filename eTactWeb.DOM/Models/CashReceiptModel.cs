@@ -12,6 +12,8 @@ namespace eTactWeb.DOM.Models
         public string? FromDateBack { get; set; }
         public string? ToDateBack { get; set; }
         public string? IPAddress { get; set; }
+        public string? formKey { get; set; }
+        public string? uniqueKey { get; set; }
         public string? LedgerNameBack { get; set; }
         public string? VoucherNoBack { get; set; }
         public string? AgainstVoucherRefNoBack { get; set; }
@@ -158,6 +160,10 @@ namespace eTactWeb.DOM.Models
         public decimal TotalPopCrAmt { get; set; }
         public decimal PopAdjustmentAmt { get; set; }
         public string? Bank { get; set; }
+        public string? subvouchertype { get; set; }
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; }
         public List<DashboardColumn> Headers { get; set; }
         public List<Dictionary<string, object>> Rows { get; set; }
     }

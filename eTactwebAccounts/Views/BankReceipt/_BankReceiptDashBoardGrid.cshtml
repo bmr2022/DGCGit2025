@@ -188,7 +188,22 @@
  *@
  @model eTactWeb.DOM.Models.BankReceiptModel
 @using eTactWeb.Data.Common
+@inject IHttpContextAccessor HttpContextAccessor
+
 @inject EncryptDecrypt encryptDecrypt
+
+@{
+    var context = HttpContextAccessor.HttpContext;
+    string formKey =
+           context.Request.Query["formKey"].FirstOrDefault()
+        ?? context.Request.Headers["FormKey"].FirstOrDefault()
+            ?? ViewBag.formKey
+
+        ??Model.formKey
+        ?? "";
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString($"YearCode_{formKey}"));
+}
+
 
 <style>
     #container {
@@ -299,7 +314,7 @@
                 Cntr++;
 
                 <tr onclick="selection(this)">
-                    <th>@Cntr</th>
+                    <td>@Cntr</td>
 
                     <td style="text-align:center;white-space: nowrap;">
                         <div id="container">
@@ -323,10 +338,11 @@
                                 <a class="table-link link-success"
                                    asp-action="BankReceipt"
                                    asp-route-Mode=@encryptDecrypt.Encrypt("V")
+                                   asp-route-formKey="@formKey"
                                    asp-route-VoucherNo=@encryptDecrypt.Encrypt(
                            row.ContainsKey("VoucherNo")
                            ? Convert.ToString(row["VoucherNo"])
-                           : string.Empty )
+                                                : string.Empty  )
                                    asp-route-ID="@(row.ContainsKey("AccEntryId")
             ? EncryptDecrypt.EncodeID(Convert.ToInt32(row["AccEntryId"]))
             : EncryptDecrypt.EncodeID(0))"
@@ -345,6 +361,7 @@
                                 <a class="table-link link-primary"
                                    asp-action="BankReceipt"
                                    asp-route-Mode=@encryptDecrypt.Encrypt("U")
+                                   asp-route-formKey="@formKey"
                                    asp-route-VoucherNo="@encryptDecrypt.Encrypt(
                                             row.ContainsKey("VoucherNo")
                                                 ? Convert.ToString(row["VoucherNo"])
@@ -355,7 +372,9 @@
             : EncryptDecrypt.EncodeID(0))"
                                    asp-route-YearCode="@(row.ContainsKey("YearCode")
             ? EncryptDecrypt.EncodeID(Convert.ToInt32(row["YearCode"]))
-            : EncryptDecrypt.EncodeID(0))">
+            : EncryptDecrypt.EncodeID(0))"
+                              
+                                  >
                                     <span class="fa-stack">
                                         <i class="fa fa-square fa-stack-2x"></i>
                                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -363,7 +382,7 @@
                                 </a>
                             </div>
 
-
+                            
 
                         </div>
                     </td>
@@ -411,4 +430,59 @@
         </tr>
     </tfoot>
 </table>
+
+@{
+    int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+}
+
+@if (Model.TotalRecords > 0)
+{
+    //int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+
+    <ul class="pagination d-flex align-items-center">
+
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="@(Model.PageNumber - 1)" href="#">Previous</a>
+            </li>
+        }
+
+        @if (Model.PageNumber > 3)
+        {
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="1" href="#">1</a>
+            </li>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+        }
+
+        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link page-btn" data-page="@i" href="#">@i</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages - 2)
+        {
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="@totalPages" href="#">@totalPages</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="@(Model.PageNumber + 1)" href="#">Next</a>
+            </li>
+        }
+
+    </ul>
+}
 

@@ -14,6 +14,8 @@ namespace eTactWeb.DOM.Models
         public string? ToDateBack { get; set; }
         public string? LedgerNameBack { get; set; }
         public string? VoucherNoBack { get; set; }
+        public string? formKey { get; set; }
+        public string? uniqueKey { get; set; }
         public string? AgainstVoucherRefNoBack { get; set; }
         public string? AgainstVoucherNoBack { get; set; }
         public string? GlobalSearchBack { get; set; }
@@ -62,7 +64,7 @@ namespace eTactWeb.DOM.Models
         //exchange rate
         public double ExRate { get; set; }
         public string PartyWiseNaration { get; set; }
-        public string? Naration { get; set; }
+        public string Naration { get; set; }
         public decimal DrAmt { get; set; }
         public decimal CrAmt { get; set; }
         public double VoucherAmt { get; set; }
@@ -158,6 +160,10 @@ namespace eTactWeb.DOM.Models
         public decimal PopCrAmt { get; set; }
         public decimal PopAdjustmentAmt { get; set; }
         public string? Bank { get; set; }
+        public string? subvouchertype { get; set; }
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; }
         public List<DashboardColumn> Headers { get; set; }
         public List<Dictionary<string, object>> Rows { get; set; }
     }

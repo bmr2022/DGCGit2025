@@ -105,15 +105,16 @@
         input:checked + .tiny-slider:before {
             transform: translateX(14px);
         }
+    }
 </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="JournalVoucher" asp-controller="JournalVoucher" method="post" class="form-horizontal">
+    <form asp-action="JournalVoucher" asp-route-formKey="@ViewBag.formKey" asp-controller="JournalVoucher" method="post" class="form-horizontal">
         <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
             <h5>
-                <strong>Journal Voucher</strong>
+                <strong>Journal Voucher - Financial Year: @Model.YearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-controller="JournalVoucher" asp-action="JournalVoucherDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-controller="JournalVoucher" asp-route-formKey="@ViewBag.formKey" asp-action="JournalVoucherDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
                         Dashboard
                     </a>
@@ -128,6 +129,8 @@
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
                             <a href="#" class="btn btn-primary btn-sm" onclick="ddBack();">
+                                <input type="hidden" asp-for="formKey" value="@ViewBag.formKey" />
+                                <input type="hidden" asp-for="uniqueKey" value="@ViewBag.uniqueKey" />
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
                             </a>
@@ -141,7 +144,8 @@
                         @if (Model.Mode != "V")
                         {
                             <div class="col-auto">
-                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action + ($('form')[0].action.indexOf('?') >= 0 ? '&' : '?') + 'formKey=' + encodeURIComponent('@ViewBag.formKey')"
+>
                                     <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
                                     REFRESH
                                 </a>
@@ -187,13 +191,13 @@
                                 <input asp-for="FromDate" value="@Model.FromDate" class="form-control" type="hidden" />
                                 <input asp-for="ToDate" value="@Model.ToDate" class="form-control" type="hidden" />
                                 <input type="hidden" asp-for="SrNO" />
-
+                               
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="EntryDate" class="form-label">Entry Date</label>
                                     <input asp-for="EntryDate" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
-                                    <label asp-for="SubVoucherName" class="form-label" style="width:130px;color:red;">SubVoucher Name*</label>
+                                    <label asp-for="SubVoucherName" class="form-label" style="width:130px;color:red !important;">SubVoucher Name*</label>
                                     <input type="hidden" asp-for="SubVoucherID" />
                                     <select class="form-control" asp-for="SubVoucherName" style="width:130px;">
                                         <option value="">Journal Voucher</option>
@@ -204,12 +208,24 @@
                                         }
                                     </select>
                                 </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowUnitOnVoucher" style="width:150px;">
+                                    <label asp-for="subvouchertype" class="form-label" style="width:130px;color:red !important;">Unit*</label>
+                                   
+                                    <select class="form-control" asp-for="subvouchertype" style="width:130px;">
+                                        @* <option value="">BANK-RECEIPT</option> *@
+                                       @*  <option value="Bank-Receipt">Bank-Receipt</option> *@
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.subvouchertype" selected>@Model.subvouchertype</option>
+                                        }
+                                    </select>
+                                </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px;">
-                                    <label asp-for="VoucherNo" class="form-label" style=" color:red;">VoucherNo*</label>
+                                    <label asp-for="VoucherNo" class="form-label" style=" color:red !important;">VoucherNo*</label>
                                     <input asp-for="VoucherNo" value="@Model.VoucherNo" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
-                                    <label asp-for="VoucherDate" class="form-label" style=" color:red;">Voucher Date*</label>
+                                    <label asp-for="VoucherDate" class="form-label" style=" color:red !important;">Voucher Date*</label>
                                     <input asp-for="VoucherDate" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:80px;">
@@ -241,7 +257,7 @@
                         </button>
                     </h2>
 
-                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient show" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
                             </div>
@@ -263,7 +279,7 @@
                                                                 <span class="tiny-slider"></span>
                                                             </label>
                                                             <span style="font-size: 12px; color: white;">Show All</span>
-                                                            <!-- Report Button 1 -->
+                                                              <!-- Report Button 1 -->
                                                             <button type="button"
                                                                     onclick="openLedgerReport()"
                                                                     title="Open Ledger Report"
@@ -429,7 +445,7 @@
                                         </a>
                                     </div>
                                     @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-                                    <a asp-controller="JournalVoucher" asp-action="JournalVoucherDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                    <a asp-controller="JournalVoucher" asp-route-formKey="@ViewBag.formKey" asp-action="JournalVoucherDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
                                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                         Dashboard
                                     </a>
@@ -445,7 +461,7 @@
                                         {
                                             <div class="col-auto">
                                                 @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action + ($('form')[0].action.indexOf('?') >= 0 ? '&' : '?') + 'formKey=' + encodeURIComponent('@ViewBag.formKey')">
                                                     @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
                                                     <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
                                                     REFRESH
@@ -491,7 +507,7 @@
                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD;" placeholder="Search...">
                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
                         <label asp-for="AdjustAmount" class="form-label me-2">Total Adjst Amt</label>
-                        <input asp-for="AdjustAmount" class="form-control" onchange="ChangeAdjustAmount()" type="number" min="0" />
+                        <input asp-for="AdjustAmount" class="form-control" onchange="ChangeAdjustAmount()" type="number" min="0"/>
                     </div>
                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
                         <label asp-for="PopUpBalance" class="form-label me-2">Total Pending Amt</label>
@@ -583,12 +599,19 @@
         </div>
     </div>
 </div>
+        <div id="ajaxLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+            <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+                <span class="spinner-border text-primary" role="status"></span>
+                <br />
+                <span>Processing...</span>
+            </div>
+        </div>
 
 @section Scripts {
     <script>
 
-        function Validate_Submit() {
-
+                       function Validate_Submit() {
+                            
             var Err = 0;
             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
             var CrAmt = parseFloat($('#CrAmt').val()) || 0;
@@ -632,79 +655,121 @@
 
         $('.submitBTN').click(function (e) {
 
+            // e.preventDefault();
+            // if (!Validate_Submit()) return;
+            // $('form').submit();
+
+            $('#ajaxLoader').show(); // ✅ Show loader
             e.preventDefault();
-            if (!Validate_Submit()) return;
-            $('form').submit();
+            if (!Validate_Submit())
+            {
+                $('#ajaxLoader').hide();
+            return;
+            }
+                            // 🔥 AJAX SUBMIT
+                                $.ajax({
+                                    url: $('form').attr('action'),
+                                    type: $('form').attr('method'),
+                                    data: $('form').serialize(),
+                                    beforeSend: function () {
+                                        $('#ajaxLoader').show(); // ✅ Show loader
+                                    },
+                                    success: function (response) {
+
+                                        // Success from controller
+                                        if (response.success) {
+
+                                            if (response.redirectUrl) {
+
+                                                window.location.href = response.redirectUrl;
+
+                                            }
+
+
+                                            $('#ajaxLoader').hide();
+                                            // optional redirect
+                                            // window.location.href = response.redirectUrl;
+                                        }
+                                        else {
+                                            // SP StatusText / validation error
+                                            $.notify(response.message, "error");
+                                            $('#ajaxLoader').hide();
+                                        }
+                                    },
+                                    error: function () {
+                                        $.notify("Unexpected server error", "error");
+                                    }
+                                });
         });
 
-        function ChangeAdjustAmount() {
-            var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
-            var AdjustQtyStr = $('#AdjustAmount').val();
+                               function ChangeAdjustAmount() {
+                    var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+                    var AdjustQtyStr = $('#AdjustAmount').val();
 
-            // Step 1: Validation
-            if (AdjustQtyStr.includes('-')) return;
-            var AdjustQty = parseFloat(AdjustQtyStr);
-            if (isNaN(AdjustQty) || AdjustQty <= 0) return;
+                    // Step 1: Validation
+                    if (AdjustQtyStr.includes('-')) return;
+                    var AdjustQty = parseFloat(AdjustQtyStr);
+                    if (isNaN(AdjustQty) || AdjustQty <= 0) return;
 
-            // Step 2: Store original balances (only once)
-            for (let i = 1; i <= rowCount; i++) {
-                const $bal = $('#BalanceAmt-' + i);
-                if ($bal.data('original') === undefined) {
-                    const original = parseFloat($bal.text());
-                    $bal.data('original', original);
+                    // Step 2: Store original balances (only once)
+                    for (let i = 1; i <= rowCount; i++) {
+                        const $bal = $('#BalanceAmt-' + i);
+                        if ($bal.data('original') === undefined) {
+                            const original = parseFloat($bal.text());
+                            $bal.data('original', original);
+                        }
+                    }
+
+                    // Step 3: Reset all rows to original state
+                    for (let i = 1; i <= rowCount; i++) {
+                        const $bal = $('#BalanceAmt-' + i);
+                        const $adjAmt = $('#AdjustAmt-' + i);
+                        const $chk = $('#CheckUnCheck-' + i);
+                        const original = parseFloat($bal.data('original'));
+
+                        $bal.text(original.toFixed(2));
+                        $adjAmt.val("0.00");
+                        $chk.prop('checked', false);
+
+                        // Reset background color of full row to white
+                        $('#AdjustData-' + i).css("background-color", "");
+                    }
+
+                    // Step 4: Distribute AdjustAmount
+                    let RemainingQty = AdjustQty;
+
+                    for (let i = 1; i <= rowCount; i++) {
+                        if (RemainingQty <= 0) break;
+
+                        const $bal = $('#BalanceAmt-' + i);
+                        const $adjAmt = $('#AdjustAmt-' + i);
+                        const $chk = $('#CheckUnCheck-' + i);
+                        const original = parseFloat($bal.data('original'));
+
+                        if (isNaN(original) || original <= 0) continue;
+
+                        const adjustHere = Math.min(RemainingQty, original);
+                        RemainingQty -= adjustHere;
+
+                        $chk.prop('checked', true);
+                        $adjAmt.val(adjustHere.toFixed(2));
+                        $bal.text((original - adjustHere).toFixed(2));
+
+                        // Optional: highlight adjusted rows (light blue)
+                        $('#AdjustData-' + i).css("background-color", "");
+
+                        CheckUnCheckCheck(i);
+                    }
+
+                    // Step 5: Ensure background color of unchecked rows is white
+                    for (let i = 1; i <= rowCount; i++) {
+                        if (!$('#CheckUnCheck-' + i).is(':checked')) {
+                            $('#AdjustData-' + i).css("background-color", "");
+                        }
+                    }
                 }
-            }
-
-            // Step 3: Reset all rows to original state
-            for (let i = 1; i <= rowCount; i++) {
-                const $bal = $('#BalanceAmt-' + i);
-                const $adjAmt = $('#AdjustAmt-' + i);
-                const $chk = $('#CheckUnCheck-' + i);
-                const original = parseFloat($bal.data('original'));
-
-                $bal.text(original.toFixed(2));
-                $adjAmt.val("0.00");
-                $chk.prop('checked', false);
-
-                // Reset background color of full row to white
-                $('#AdjustData-' + i).css("background-color", "");
-            }
-
-            // Step 4: Distribute AdjustAmount
-            let RemainingQty = AdjustQty;
-
-            for (let i = 1; i <= rowCount; i++) {
-                if (RemainingQty <= 0) break;
-
-                const $bal = $('#BalanceAmt-' + i);
-                const $adjAmt = $('#AdjustAmt-' + i);
-                const $chk = $('#CheckUnCheck-' + i);
-                const original = parseFloat($bal.data('original'));
-
-                if (isNaN(original) || original <= 0) continue;
-
-                const adjustHere = Math.min(RemainingQty, original);
-                RemainingQty -= adjustHere;
-
-                $chk.prop('checked', true);
-                $adjAmt.val(adjustHere.toFixed(2));
-                $bal.text((original - adjustHere).toFixed(2));
-
-                // Optional: highlight adjusted rows (light blue)
-                $('#AdjustData-' + i).css("background-color", "");
-
-                CheckUnCheckCheck(i);
-            }
-
-            // Step 5: Ensure background color of unchecked rows is white
-            for (let i = 1; i <= rowCount; i++) {
-                if (!$('#CheckUnCheck-' + i).is(':checked')) {
-                    $('#AdjustData-' + i).css("background-color", "");
-                }
-            }
-        }
-        function openLedgerReport() {
-            var AccountCode = parseInt($('#LedgerName').val()) || 0;
+                 function openLedgerReport() {
+            var AccountCode=parseInt($('#LedgerName').val()) || 0;
             if (AccountCode > 0) {
                 window.open('/TransactionLedger/Index?Accountcode='
                     + AccountCode
@@ -714,11 +779,56 @@
             else {
                 $.notify("Please select a ledger to view the report.", "error");
             }
+               
+        }
+        function BackDateEntryAllowed() {
+            var EntryDate = $('#EntryDate').val();
+            var VoucherDate = $('#VoucherDate').val();
 
+            $.ajax({
+                url: '@Url.Action("BackDateEntryAllowed", "BankReceipt")',
+                type: 'POST',
+
+                async: false,
+                success: function (data, status, xhr) {
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+                        var BackDateEntryAllowed = obj.Result[0].AccAllowBackdateVoucherEntry;
+                         var ShowUnitOnVoucher = obj.Result[0].ShowUnitOnVoucher;
+                        if (BackDateEntryAllowed != "Y") {
+                            $('#EntryDate,#VoucherDate').datepicker("option", "minDate", (EntryDate));
+                            $('#EntryDate,#VoucherDate').datepicker("option", "maxDate", (VoucherDate));
+
+
+                        }
+                        else {
+                            /* Do nothing */
+                        }
+                         if(ShowUnitOnVoucher=='N')
+                        {
+                            $('.ShowUnitOnVoucher').hide();
+                        }
+                        else
+                        {
+                            $('.ShowUnitOnVoucher').show();
+                        }
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load Entry ID.');
+                }
+            });
         }
 
-        $(document).ready(function () {
-            $('#VoucherType').select2();
+
+ var formKey=$('#formKey').val();
+                         var uniqueKey=$('#uniqueKey').val();
+            $(document).ready(function () 
+            {
+                formKey=$('#formKey').val();
+                        uniqueKey=$('#uniqueKey').val();
+                        $('#VoucherType').select2();
             $('#Intrument').select2();
             $('#LedgerName').select2();
             $('#ModeOfAdjustment').select2();
@@ -731,7 +841,7 @@
             FillCurrency();
             BindModeOfAdjust();
             FillLedgerName();
-
+            FillStore();
             $('#CostCenterName').change(function () {
                 $('#CostCenterId').val($('#CostCenterName').val());
             });
@@ -782,53 +892,97 @@
             $('#PRODSTATUSProdUnProdRej').rules("remove", "required");
             $('#PRODSTATUSProdUnProdRej').rules("remove", "required");
 
-            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                     if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                        
+                                var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                    var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                    var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                    var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                                    FillEntryID();
+                    }
+                //     var finFromDate = $('#FromDate').val();
+                // var finToDate = $('#ToDate').val();
 
-                var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                FillEntryID();
+                // var dateParts1 = finFromDate.split("/");
+                // var monthNames = {
+                //     "Jan": "01",
+                //     "Feb": "02",
+                //     "Mar": "03",
+                //     "Apr": "04",
+                //     "May": "05",
+                //     "Jun": "06",
+                //     "Jul": "07",
+                //     "Aug": "08",
+                //     "Sep": "09",
+                //     "Oct": "10",
+                //     "Nov": "11",
+                //     "Dec": "12"
+                // };
+
+                // var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                // var dateParts2 = finToDate.split("/");
+
+                // var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+            var formattedDate1 = $('#FromDate').val();
+            var formattedDate2 = $('#ToDate').val();
+
+            if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V') {
+
+
+
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", $('#EntryDate').val());
+                $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", $('#VoucherDate').val());
+
             }
-            var finFromDate = $('#FromDate').val();
-            var finToDate = $('#ToDate').val();
+                     $('#EntryDate').on('change', function () {
+                    var entryDateVal = $(this).val(); // Get selected EntryDate
+                    $('#VoucherDate').datepicker("setDate", entryDateVal); // Set same date in VoucherDate
+                            FillEntryID();
+                            var count = 0;
 
-            var dateParts1 = finFromDate.split("/");
-            var monthNames = {
-                "Jan": "01",
-                "Feb": "02",
-                "Mar": "03",
-                "Apr": "04",
-                "May": "05",
-                "Jun": "06",
-                "Jul": "07",
-                "Aug": "08",
-                "Sep": "09",
-                "Oct": "10",
-                "Nov": "11",
-                "Dec": "12"
-            };
+                        $('#divBankReceiptDetail tr').each(function() {
+                            var mode = $(this).find('.ClassModeOfAdjustment').text().trim().toLowerCase();
 
-            var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
-            var dateParts2 = finToDate.split("/");
+                            if (mode === "against ref") {
+                                count++;
+                            }
+                        });
 
-            var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+                        if (count > 0) {
 
-            $('#EntryDate').on('change', function () {
-                var entryDateVal = $(this).val(); // Get selected EntryDate
-                $('#VoucherDate').datepicker("setDate", entryDateVal); // Set same date in VoucherDate
-                FillEntryID();
-                $('#divBankReceiptDetail').empty()
-            });
-            $('#VoucherDate').on('change', function () {
-                var voucherDateVal = $(this).val(); // Get selected EntryDate
-                $('#EntryDate').datepicker("setDate", voucherDateVal); // Set same date in VoucherDate
-                FillEntryID();
-                $('#divBankReceiptDetail').empty()
-            });
+                            if (confirm("Changing the Entry Date will remove against ref data. Do you want to continue?")) {
+                                RemoveAgainstRef();
+                            }
+
+                        }
+                                            // $('#divBankReceiptDetail').empty()
+                });
+                $('#VoucherDate').on('change', function () {
+                    var voucherDateVal = $(this).val(); // Get selected EntryDate
+                    $('#EntryDate').datepicker("setDate", voucherDateVal); // Set same date in VoucherDate
+                            FillEntryID();
+                        var count = 0;
+
+                        $('#divBankReceiptDetail tr').each(function() {
+                            var mode = $(this).find('.ClassModeOfAdjustment').text().trim().toLowerCase();
+
+                            if (mode === "against ref") {
+                                count++;
+                            }
+                        });
+
+                        if (count > 0) {
+
+                            if (confirm("Changing the Entry Date will remove against ref data. Do you want to continue?")) {
+                                RemoveAgainstRef();
+                            }
+
+                        }
+                                        // $('#divBankReceiptDetail').empty()
+                });
             $('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
             $('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
-
+            BackDateEntryAllowed();
             var currentDate = new Date();
 
             $('#ActualEntryDate').datepicker({
@@ -941,91 +1095,115 @@
 
             // Initial check on page load
             checkModeOfAdjustment();
-            let lastEnterTime = 0;
-            const doubleEnterThreshold = 400; // milliseconds
+                                    let lastEnterTime = 0;
+        const doubleEnterThreshold = 400; // milliseconds
 
-            document.addEventListener("keydown", function (e) {
-                if (e.key === "Enter") {
-                    const now = Date.now();
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                const now = Date.now();
 
-                    const active = document.activeElement;
+                const active = document.activeElement;
 
-                    // Let Select2 handle selection first
-                    if ($('.select2-container--open').length) {
-                        return;
-                    }
-
-                    e.preventDefault();
-
-                    const form = document.querySelector("form");
-
-                    const focusable = Array.from(form.querySelectorAll("input, select, textarea"))
-                        .filter(el =>
-                            el.offsetParent !== null &&
-                            el.type !== "hidden" &&
-                            !el.disabled &&
-                            !el.readOnly
-                        );
-
-                    let current = active;
-                    if (current.classList.contains("select2-selection") || current.closest(".select2-selection")) {
-                        const container = current.closest(".select2-container");
-                        if (container && container.previousElementSibling) {
-                            current = container.previousElementSibling;
-                        }
-                    }
-
-                    const index = focusable.indexOf(current);
-
-                    // Double Enter pressed
-                    if (now - lastEnterTime < doubleEnterThreshold) {
-                        // Trigger GridButton click
-                        const gridBtn = document.querySelector(".GridButton");
-                        if (gridBtn) gridBtn.click();
-                        lastEnterTime = 0; // reset
-                        return;
-                    }
-
-                    lastEnterTime = now;
-
-                    // Move to next field
-                    if (index > -1 && index < focusable.length - 1) {
-                        let next = focusable[index + 1];
-                        next.focus();
-
-                        if (next.classList.contains("select2-hidden-accessible")) {
-                            $(next).select2("open");
-                        }
-                    }
+                // Let Select2 handle selection first
+                if ($('.select2-container--open').length) {
+                    return;
                 }
-            });
 
-            $(document).on('select2:select', function (e) {
-                const current = e.target;
-                const form = current.closest("form");
+                e.preventDefault();
+
+                const form = document.querySelector("form");
 
                 const focusable = Array.from(form.querySelectorAll("input, select, textarea"))
                     .filter(el =>
                         el.offsetParent !== null &&
                         el.type !== "hidden" &&
-                        !el.disabled
+                        !el.disabled &&
+                        !el.readOnly
                     );
+
+                let current = active;
+                if (current.classList.contains("select2-selection") || current.closest(".select2-selection")) {
+                    const container = current.closest(".select2-container");
+                    if (container && container.previousElementSibling) {
+                        current = container.previousElementSibling;
+                    }
+                }
 
                 const index = focusable.indexOf(current);
 
-                if (index > -1 && index < focusable.length - 1) {
-                    const next = focusable[index + 1];
-                    setTimeout(() => {
-                        next.focus();
-                        if (next.classList.contains("select2-hidden-accessible")) {
-                            $(next).select2("open");
-                        }
-                    }, 100);
+                // Double Enter pressed
+                if (now - lastEnterTime < doubleEnterThreshold) {
+                    // Trigger GridButton click
+                    const gridBtn = document.querySelector(".GridButton");
+                    if (gridBtn) gridBtn.click();
+                    lastEnterTime = 0; // reset
+                    return;
                 }
-            });
+
+                lastEnterTime = now;
+
+                // Move to next field
+                if (index > -1 && index < focusable.length - 1) {
+                    let next = focusable[index + 1];
+                    next.focus();
+
+                    if (next.classList.contains("select2-hidden-accessible")) {
+                        $(next).select2("open");
+                    }
+                }
+            }
+        });
+
+        $(document).on('select2:select', function (e) {
+            const current = e.target;
+            const form = current.closest("form");
+
+            const focusable = Array.from(form.querySelectorAll("input, select, textarea"))
+                .filter(el =>
+                    el.offsetParent !== null &&
+                    el.type !== "hidden" &&
+                    !el.disabled
+                );
+
+            const index = focusable.indexOf(current);
+
+            if (index > -1 && index < focusable.length - 1) {
+                const next = focusable[index + 1];
+                setTimeout(() => {
+                    next.focus();
+                    if (next.classList.contains("select2-hidden-accessible")) {
+                        $(next).select2("open");
+                    }
+                }, 100);
+            }
+        });
 
 
         });
+
+                function RemoveAgainstRef() {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("RemoveAgainstRef", "JournalVoucher")',
+                data: {
+                                    mode: $('#Mode').val(),uniqueKey:uniqueKey
+                },
+                success: function (result) {
+
+                            $('#divBankReceiptDetail').html(result);
+
+                    $.notify('Against Ref records removed', "success");
+
+                    TotalNoOfRows();
+                    calculateTotalBalance();
+                },
+                error: function () {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                }
+            });
+
+        }
 
         function calculateTotalBalance() {
 
@@ -1065,10 +1243,10 @@
 
         function BindModeOfAdjust() {
             $('#ModeOfAdjustment').append(`
-                                                            <option selected value="New Ref">New Ref</option>
-                                                            <option value="Advance">Advance</option>
-                                                            <option value="Against Ref">Against Ref</option>
-                                                        `);
+                                                    <option selected value="New Ref">New Ref</option>
+                                                    <option value="Advance">Advance</option>
+                                                    <option value="Against Ref">Against Ref</option>
+                                                `);
         }
 
         $('#LedgerName').change(function () {
@@ -1148,7 +1326,7 @@
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 
-                        $('#Balance').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
+                        $('#Balance').val(parseFloat(obj.Result[0].TotalTodayBalance).toFixed(2));
                         // $('#VoucherAmt').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
                         $('#DRCR').val(obj.Result[0].TypeDrCr);
                     }
@@ -1463,12 +1641,12 @@
 
         function FillLedgerName() {
 
-            var ShowAll = $('#ShowAll').is(':checked') ? 'Y' : 'N';
+                    var ShowAll = $('#ShowAll').is(':checked') ? 'Y' : 'N';
             $.ajax({
                 url: '@Url.Action("FillLedgerName", "JournalVoucher")',
                 type: 'POST',
                 data: {
-                    ShowAll: ShowAll
+                            ShowAll: ShowAll
                 },
                 async: false,
                 success: function (response, status, error) {
@@ -1689,7 +1867,7 @@
                 url: '@Url.Action("PopUpForPendingVouchers", "JournalVoucher")',
                 type: 'POST',
                 async: false,
-                data: { "DataTable": DataTable },
+                data: { "DataTable": DataTable ,uniqueKey:uniqueKey},
                 success: function (data, status, xhr) {
                     if (data != null) {
 
@@ -1744,7 +1922,7 @@
             $('#PopUpBalance').val(Math.abs(TotalDRAmt - TotalCrAmt).toFixed(2));
 
             // 🧮 Simple total of all adjusted amounts (no DR/CR logic)
-            var totalAdjustment = DRAmt + CRAmt;
+            var totalAdjustment = DRAmt - CRAmt;
             $('#PopAdjustmentAmt').val(totalAdjustment.toFixed(2));
             $('#AdjustAmountss').val(totalAdjustment.toFixed(2));
 
@@ -1758,7 +1936,7 @@
                 $.ajax({
                     url: '@Url.Action("DeleteItemRow")',
                     type: "POST",
-                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val(), "PopUpData": PopUpData },
+                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val(), "PopUpData": PopUpData,uniqueKey:uniqueKey },
                     async: false,
                     success: function (data) {
 
@@ -1784,7 +1962,7 @@
             });
         }
 
-        function ChangeAdjustAmt(i) {
+                function ChangeAdjustAmt(i) {
             let adjustAmtInput = $('#AdjustAmt-' + i);
             let balanceText = $('#BalanceAmt-' + i);
             let netBalanceHidden = $('#NetBalance-' + i);
@@ -1882,8 +2060,8 @@
                         "DRCR": $('#PopUpType-' + i).text(),
                         "DrAmt": DrAmt,
                         "CrAmt": CrAmt,
-                        "ActualEntryby": parseInt($('#ActualEntryby').val()),
-                        "UID": parseInt($('#UID').val()),
+                                "ActualEntryby": parseInt($('#ActualEntryby').val()),
+        "UID": parseInt($('#UID').val()),
                         "EntryByMachine": $('#EntryByMachine').val(),
                         "AgainstVoucherNo": $('#PopUpVoucherNo-' + i).text(),
                         "AgainstVoucheryearCode": $('#PopUpYearCode-' + i).text(),
@@ -1909,7 +2087,7 @@
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddJournalVoucherAdjustDetail", "JournalVoucher")',
-                data: { model: ItemData, "Mode": $('#Mode').val() },
+                data: { model: ItemData, "Mode": $('#Mode').val() ,uniqueKey:uniqueKey},
                 success: function (result, status, xhr) {
                     if (xhr.status == 200 && xhr.responseText == result) {
                         $('#DisplayRoutingDetailModal').modal('hide');
@@ -1935,7 +2113,7 @@
         }
 
         function Validate_GridButton() {
-
+            GetLedgerBalance();
             var Err = 0;
             if ($('#Type').val() == "") {
                 AddErrorCls('Type');
@@ -1969,14 +2147,14 @@
             else {
                 RemoveErrorCls('AdjustmentAmt');
             }
-            /*  if ($('#Balance').val() == 0) {
-                 AddErrorCls('Balance');
-                 $.notify("Balance is must be greater than 0.", "error");
-                 Err = 1;
-             }
-             else {
-                 RemoveErrorCls('Balance');
-             } */
+           /*  if ($('#Balance').val() == 0) {
+                AddErrorCls('Balance');
+                $.notify("Balance is must be greater than 0.", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Balance');
+            } */
             if ($('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
                 AddErrorCls('ModeOfAdjustment');
                 $.notify("Cannot add to grid directly.", "error");
@@ -2042,7 +2220,7 @@
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddJournalVoucherDetail", "JournalVoucher")',
-                data: { model: SchData },
+                data: { model: SchData,uniqueKey:uniqueKey },
                 success: function (result, status, xhr) {
                     if (xhr.status == 200 && xhr.responseText == result) {
                         $('#divBankReceiptDetail').html(result);
@@ -2107,7 +2285,7 @@
                 $.ajax({
                     url: '@Url.Action("EditItemRows", "JournalVoucher")',
                     type: "POST",
-                    data: { SrNO: SrNO, "Mode": $('#Mode').val() },
+                                    data: { SrNO: SrNO, "Mode": $('#Mode').val() ,uniqueKey:uniqueKey},
                     success: function (data) {
 
                         var obj = $.parseJSON(data);
@@ -2175,16 +2353,16 @@
             }
         }
 
-        $('#CheckUnCheckAll').click(function () {
-            var isChecked = $(this).is(':checked');
+                $('#CheckUnCheckAll').click(function () {
+                    var isChecked = $(this).is(':checked');
 
-            $('input[id^="CheckUnCheck-"]').each(function () {
-                $(this).prop('checked', isChecked);
+                    $('input[id^="CheckUnCheck-"]').each(function () {
+                        $(this).prop('checked', isChecked);
 
-                var index = $(this).attr('id').split('-')[1];
-                CheckUnCheckCheck(index);
-            });
-        });
+                        var index = $(this).attr('id').split('-')[1];
+                        CheckUnCheckCheck(index);
+                    });
+                });
 
         function CheckUnCheckCheck(i) {
             var isChecked = $('#CheckUnCheck-' + i).is(':checked');
@@ -2225,48 +2403,96 @@
             AdjustAmount();
         }
 
-        function CheckUnCheckEdit() {
+        																				function CheckUnCheckEdit() {
 
-            var RowCount = $('#divBankReceiptDetail tr').length;
-            var PopUpRow = $('#divDisplayPopupForPendingVouchersDetail tr').length;
-            var selectedRows = 0;
+																							var RowCount = $('#divBankReceiptDetail tr').length;
+															var PopUpRow = $('#divDisplayPopupForPendingVouchersDetail tr').length;
 
-            var existingVoucherIds = new Map();
+															var existingVoucherIds = new Map();
 
-            for (let i = 1; i <= RowCount; i++) {
-                let voucherId = $('#AgainstVoucherEntryId-' + i).text().trim();
-                let amount = parseFloat($('#AdjAmtG-' + i).text());
-                let balance = parseFloat($('#BalanceG-' + i).text());
-                let accountCode = $('#LedgerName').val();
+															// Store existing vouchers
+															for (let i = 1; i <= RowCount; i++) {
+																let voucherId = $('#AgainstVoucherEntryId-' + i).text().trim();
+																let amount = parseFloat($('#AdjAmtG-' + i).text()) || 0;
+																let accountCode = $('#LedgerName').val();
 
-                let key = voucherId + '_' + accountCode;
-                existingVoucherIds.set(voucherId, { amount, balance });
-            }
+																let key = voucherId + '_' + accountCode;
+																existingVoucherIds.set(key, { amount });
+															}
 
-            var selectedRows = $('#divDisplayPopupForPendingVouchersDetail tr').has('input[type="checkbox"]:checked').length;
+															// Count checked rows
+															var selectedRows = $('#divDisplayPopupForPendingVouchersDetail tr')
+																.has('input[type="checkbox"]:checked').length;
 
-            if (selectedRows === RowCount) {
-                $('#CheckUnCheckAll').prop('checked', true);
-            }
-            else {
-                $('#CheckUnCheckAll').prop('checked', false);
-            }
+															// Check/Uncheck header checkbox
+															$('#CheckUnCheckAll').prop('checked', selectedRows === PopUpRow);
 
-            for (let i = 1; i <= PopUpRow; i++) {
-                let popupVoucherId = $('#PopUpAccEntryId-' + i).text().trim();
+															// Loop popup rows
+															for (let i = 1; i <= PopUpRow; i++) {
 
-                if (existingVoucherIds.has(popupVoucherId)) {
-                    selectedRows++;
-                    $('#CheckUnCheck-' + i).prop('checked', true);
-                    let { amount, balance } = existingVoucherIds.get(popupVoucherId);
-                    $('#AdjustAmt-' + i).val(amount);
-                    $('#BalanceAmt-' + i).text(balance);
-                    $('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
-                }
-            }
-            AdjustAmount();
-            $('#lblcheckitem').text(selectedRows);
-        }
+																let popupVoucherId = $('#PopUpAccEntryId-' + i).text().trim();
+																let accountCode = $('#LedgerName').val();
+																let key = popupVoucherId + '_' + accountCode;
+
+																let ActualBalance = parseFloat($('#OriginalBalance-' + i).val()) || 0;
+
+																if (existingVoucherIds.has(key)) {
+
+																	let { amount } = existingVoucherIds.get(key);
+
+																	let BalanceAfterAdj = ActualBalance - amount;
+
+																	$('#CheckUnCheck-' + i).prop('checked', true);
+																	$('#AdjustAmt-' + i).val(amount);
+																	$('#BalanceAmt-' + i).text(BalanceAfterAdj);
+
+																	$('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
+																}
+															}
+														}
+
+                // function CheckUnCheckEdit() {
+
+                //             var RowCount = $('#divBankReceiptDetail tr').length;
+                //             var PopUpRow = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+                //             var selectedRows = 0;
+
+                //             var existingVoucherIds = new Map();
+
+                //             for (let i = 1; i <= RowCount; i++) {
+                //                 let voucherId = $('#AgainstVoucherEntryId-' + i).text().trim();
+                //                 let amount = parseFloat($('#AdjAmtG-' + i).text());
+                //                 let balance = parseFloat($('#BalanceG-' + i).text());
+                //                 let accountCode = $('#LedgerName').val();
+
+                //                 let key = voucherId + '_' + accountCode;
+                //                 existingVoucherIds.set(voucherId, { amount, balance });
+                //             }
+
+                //             var selectedRows = $('#divDisplayPopupForPendingVouchersDetail tr').has('input[type="checkbox"]:checked').length;
+
+                //             if (selectedRows === RowCount) {
+                //                 $('#CheckUnCheckAll').prop('checked', true);
+                //             }
+                //             else {
+                //                 $('#CheckUnCheckAll').prop('checked', false);
+                //             }
+
+                //             for (let i = 1; i <= PopUpRow; i++) {
+                //                 let popupVoucherId = $('#PopUpAccEntryId-' + i).text().trim();
+
+                //                 if (existingVoucherIds.has(popupVoucherId)) {
+                //                     selectedRows++;
+                //                     $('#CheckUnCheck-' + i).prop('checked', true);
+                //                     let { amount, balance } = existingVoucherIds.get(popupVoucherId);
+                //                     $('#AdjustAmt-' + i).val(amount);
+                //                     $('#BalanceAmt-' + i).text(balance);
+                //                     $('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
+                //                 }
+                //             }
+                //             AdjustAmount();
+                //             $('#lblcheckitem').text(selectedRows);
+                //         }
 
         var currentSearchColumn = null;
 
@@ -2284,47 +2510,77 @@
         });
 
         $(document).on("click", ".sortCol", function () {
-            var $column = $(this).parent().closest("th");
-            var colno = $(this).data('columnno');
-            var currentOrder = $(this).data('sortorder');
+    var $column = $(this).parent().closest("th");
+    var colno = $(this).data('columnno');
+    var currentOrder = $(this).data('sortorder');
 
-            $('.sortCol').css('color', 'white');
-            if (currentOrder === 'asc') {
-                sortTable('GateDataTable', colno, false);
-                $(this).data('sortorder', 'desc');
-                $(this).css('color', 'yellow');
-                //$(this).css('font-size', 'larger');
-                $(this).find('i:first').removeClass('fa-arrow-up');
-                $(this).find('i:first').addClass('fa-arrow-down');
-            } else {
-                sortTable('GateDataTable', colno, true);
-                $(this).data('sortorder', 'asc');
-                $(this).css('color', 'yellow');
-                // $(this).css('font-size', 'larger');
-                $(this).find('i:first').removeClass('fa-arrow-down');
-                $(this).find('i:first').addClass('fa-arrow-up');
-            }
-        });
+    $('.sortCol').css('color', 'white');
+    if (currentOrder === 'asc') {
+        sortTable('GateDataTable', colno, false);
+        $(this).data('sortorder', 'desc');
+        $(this).css('color', 'yellow');
+        //$(this).css('font-size', 'larger');
+        $(this).find('i:first').removeClass('fa-arrow-up');
+        $(this).find('i:first').addClass('fa-arrow-down');
+    } else {
+        sortTable('GateDataTable', colno, true);
+        $(this).data('sortorder', 'asc');
+        $(this).css('color', 'yellow');
+        // $(this).css('font-size', 'larger');
+        $(this).find('i:first').removeClass('fa-arrow-down');
+        $(this).find('i:first').addClass('fa-arrow-up');
+    }
+});
 
-        function PressBack() {
+               function PressBack() {
+                     
+                    sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+                    sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+                    sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+                    sessionStorage.setItem('VoucherNoBack', $('#VoucherNoBack').val());
+                    sessionStorage.setItem('AgainstVoucherRefNoBack', $('#AgainstVoucherRefNoBack').val());
+                    sessionStorage.setItem('AgainstVoucherNoBack', $('#AgainstVoucherNoBack').val());
+                    sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+                    sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
 
-            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
-            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
-            sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
-            sessionStorage.setItem('VoucherNoBack', $('#VoucherNoBack').val());
-            sessionStorage.setItem('AgainstVoucherRefNoBack', $('#AgainstVoucherRefNoBack').val());
-            sessionStorage.setItem('AgainstVoucherNoBack', $('#AgainstVoucherNoBack').val());
-            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
-            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
-
-            window.history.back();
-        }
+                    window.history.back();
+                }
 
         $('#btnRoutingExcel').click(function () {
             $("#GateDataTable").table2excel({
                 filename: "PendingVouchersData.xls"
             });
         });
+         function FillStore() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillStore","BankReceipt")",
+                dataType: "json",
+                async:false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#subvouchertype').empty();
+                        // $('#StoreId').append('<option value="0">-Select-</option>');
+                        if (obj.StatusCode != 500) {
+                            $.each(obj.Result, function (index, val) {
+                                $('#subvouchertype').append("<option value=" + val.Store_Name + ">" + val.Store_Name + "</option>");
+                            });
+
+                           
+                        }
+
+                        if($('#Mode').val()=='U'||$('#Mode').val()=='V')
+                        {
+                                        $('#subvouchertype').val('@Model.subvouchertype').trigger('change');
+                        }
+                       
+
+                    }
+                }
+            });
+        }
+
 
     </script>
     <script src="~/Scripts/table2excel.js"></script>

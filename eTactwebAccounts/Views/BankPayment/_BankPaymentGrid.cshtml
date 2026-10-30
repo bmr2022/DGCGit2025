@@ -1,6 +1,6 @@
 ﻿@model eTactWeb.DOM.Models.BankPaymentModel;
 @if (Model.BankPaymentGrid == null)
-{
+ {
     <tr class="text-center">
         <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
     </tr>
@@ -35,7 +35,7 @@ else
             <td>@item.Intrument</td>
             <td>@item.InsNo</td>
             <td>@item.InsDate</td>
-            <td id="ModeOfAdjustment-@Cntr">@item.ModeOfAdjustment</td>
+            <td id="ModeOfAdjustment-@Cntr" class="ClassModeOfAdjustment">@item.ModeOfAdjustment</td>
             <td style="background-color:lightgoldenrodyellow;color:#2e2828">
                 <p class="inline-text" id="AdjAmtG-@Cntr">@item.AdjustmentAmt</p>
                 <p class="inline-text" id="Type-@Cntr">@item.Type</p>

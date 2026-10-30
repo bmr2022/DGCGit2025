@@ -79,7 +79,9 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
                 SqlParams.Add(new SqlParameter("@EmpId", userId));
+                //SqlParams.Add(new SqlParameter("@MenuId", 371));
                 SqlParams.Add(new SqlParameter("@MainMenu", "Bank Receipt"));
+
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
             }
@@ -270,6 +272,7 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                 }
                 sqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.AccEntryId));
+                sqlParams.Add(new SqlParameter("@AccEntryId", model.AccEntryId));
                 sqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
                 sqlParams.Add(new SqlParameter("@EntryDate", entryDate));
                 sqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
@@ -282,6 +285,7 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@VchNarration", model.Naration));
                 sqlParams.Add(new SqlParameter("@intrumentdate", InsDate));
                 sqlParams.Add(new SqlParameter("@UID", model.UID));
+                sqlParams.Add(new SqlParameter("@subvouchertype", model.subvouchertype));
                 sqlParams.Add(new SqlParameter("@cc", model.CC));
                 sqlParams.Add(new SqlParameter("@IPAddress", model.IPAddress));
                 sqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryby));
@@ -637,6 +641,7 @@ namespace eTactWeb.Data.DAL
             model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString().Split(" ")[0];
             model.SubVoucherName = DS.Tables[0].Rows[0]["SubVoucherName"].ToString();
             model.VoucherNo = DS.Tables[0].Rows[0]["VoucherNo"].ToString();
+            model.subvouchertype = DS.Tables[0].Rows[0]["subvouchertype"].ToString();
             model.VoucherDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString().Split(" ")[0];
             model.VoucherDocDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString();
             model.Currency = DS.Tables[0].Rows[0]["Currency"].ToString();
@@ -685,7 +690,7 @@ namespace eTactWeb.Data.DAL
                         AccountCode = Convert.ToInt32(row["Accountcode"].ToString()),
                         DrAmt = Convert.ToDecimal(row["drAmt"].ToString()),
                         CrAmt = Convert.ToDecimal(row["CrAmt"].ToString()),
-                        AdjustmentAmt = Convert.ToDecimal(row["AmountInOtherCurr"].ToString()),
+                        AdjustmentAmt = Convert.ToDecimal(row["Amount"].ToString()),
                         AdjustmentAmtOthCur = Convert.ToDouble(row["AmountInOtherCurr"].ToString()),
                         InsNo = row["instrumentno"].ToString(),
                         Intrument = row["instrument"].ToString(),
@@ -979,6 +984,25 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "BackDateEntryAllowed"));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> FillStore()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillStore"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
             }
             catch (Exception ex)
             {

@@ -55,7 +55,9 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
                 SqlParams.Add(new SqlParameter("@EmpId", userId));
+                //SqlParams.Add(new SqlParameter("@MenuId", 379));
                 SqlParams.Add(new SqlParameter("@MainMenu", "Cash Payment"));
+
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
             }
@@ -79,11 +81,6 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Yearcode", OpeningYearCode));
                 SqlParams.Add(new SqlParameter("@Accountcode", AccountCode));
                 SqlParams.Add(new SqlParameter("@VoucherDate", ParseDate(VoucherDate)));
-
-                //ParseDate(billDate)
-                //SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
-                //SqlParams.Add(new SqlParameter("@VoucherDate", vchDt));
-
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -351,6 +348,7 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                 }
                 sqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.AccEntryId));
+                sqlParams.Add(new SqlParameter("@AccEntryId", model.AccEntryId));
                 sqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
                 sqlParams.Add(new SqlParameter("@EntryDate", entryDate));
                 sqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
@@ -363,6 +361,7 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@intrumentdate", InsDate));
                 sqlParams.Add(new SqlParameter("@VchNarration", model.Naration));
                 sqlParams.Add(new SqlParameter("@UID", model.UID));
+                sqlParams.Add(new SqlParameter("@subvouchertype", model.subvouchertype));
                 sqlParams.Add(new SqlParameter("@cc", model.CC));
                 sqlParams.Add(new SqlParameter("@IPAddress", model.IPAddress));
                 sqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryby));
@@ -727,6 +726,7 @@ namespace eTactWeb.Data.DAL
             model.VoucherDocDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString();
             model.VoucherDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString();
             model.Currency = DS.Tables[0].Rows[0]["Currency"].ToString();
+            model.subvouchertype = DS.Tables[0].Rows[0]["subvouchertype"].ToString();
             model.CurrencyId = Convert.ToInt32(DS.Tables[0].Rows[0]["CurrencyId"].ToString());
             model.Naration = DS.Tables[0].Rows[0]["VoucherRemark"].ToString();
             model.UID = Convert.ToInt32(DS.Tables[0].Rows[0]["uid"].ToString());
@@ -773,7 +773,7 @@ namespace eTactWeb.Data.DAL
                         BillVouchNo = row["BillVouchNo"].ToString(),
                         DrAmt = Convert.ToDecimal(row["drAmt"].ToString()),
                         CrAmt = Convert.ToDecimal(row["CrAmt"].ToString()),
-                        AdjustmentAmt = Convert.ToDecimal(row["AmountInOtherCurr"].ToString()),
+                        AdjustmentAmt = Convert.ToDecimal(row["Amount"].ToString()),
                         AdjustmentAmtOthCur = Convert.ToDouble(row["AmountInOtherCurr"].ToString()),
                         ChequeDate = row["chequeDate"].ToString(),
                         ModeOfAdjustment = row["ModeOfAdjustment"].ToString(),
@@ -806,7 +806,8 @@ namespace eTactWeb.Data.DAL
 
                     });
                 }
-                model.CashPaymentGrid = ItemList;
+                //model.CashPaymentGrid = ItemList;
+                model.CashPaymentGrid = ItemList.OrderBy(x => x.SrNO).ToList();
             }
 
             return model;

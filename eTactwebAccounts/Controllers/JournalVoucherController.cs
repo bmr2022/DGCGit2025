@@ -1,17 +1,18 @@
-﻿using eTactWeb.Controllers;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using eTactWeb.Controllers;
 using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
+using FastReport;
+using FastReport.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using System.Data;
+using System.Globalization;
+using System.Net;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
-using System.Data;
-using System.Net;
-using FastReport.Web;
-using FastReport;
-using System.Globalization;
 
 namespace eTactwebAccounts.Controllers
 {
@@ -34,9 +35,9 @@ namespace eTactwebAccounts.Controllers
             this.iconfiguration = iconfiguration;
             _connectionStringService = connectionStringService;
         }
-        public async Task<JsonResult> GetFormRights()
+        public async Task<JsonResult> GetFormRights(string formKey)
         {
-            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var JSON = await _IJournalVoucher.GetFormRights(userID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -45,7 +46,7 @@ namespace eTactwebAccounts.Controllers
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            string webRootPath = Path.Combine(_IWebHostEnvironment.WebRootPath, "reports");
             var webReport = new WebReport();
             webReport.Report.Clear();
             webReport.Report.Dispose();
@@ -86,16 +87,19 @@ namespace eTactwebAccounts.Controllers
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> JournalVoucher(int ID, string Mode, int YearCode, string VoucherNo, string FromDate = "", string ToDate = "", string LedgerName = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
+        public async Task<ActionResult> JournalVoucher(string formKey, int ID, string Mode, int YearCode, string VoucherNo, string FromDate = "", string ToDate = "", string LedgerName = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
         {
-            HttpContext.Session.Remove("KeyJournalVoucherGrid");
-            HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
+            ViewBag.formKey = formKey;
+            var uniqueKey = Guid.NewGuid().ToString();
+            ViewBag.uniqueKey = uniqueKey;
+            HttpContext.Session.Remove($"KeyJournalVoucherGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyJournalVoucherGridEdit_{uniqueKey}");
             // TempData.Clear();
-            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            int userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var rights = await _IJournalVoucher.GetFormRights(userID);
             if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
             {
-                return RedirectToAction("Dashboard", "Home");
+                return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
             }
 
 
@@ -124,34 +128,34 @@ namespace eTactwebAccounts.Controllers
             {
                 if (!(optUpdate))
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
                 }
             }
             if (Mode == "V")
             {
                 if (!(optView))
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
                 }
             }
             if (ID <= 0)
             {
                 if (!optSave)
                 {
-                    return RedirectToAction("JournalVoucherDashBoard", "JournalVoucher");
+                    return RedirectToAction("JournalVoucherDashBoard", "JournalVoucher", new { formKey = formKey });
                 }
             }
 
 
             var MainModel = new JournalVoucherModel();
-            MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            MainModel.ActualEntryBy = HttpContext.Session.GetString("EmpName");
+            MainModel.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+            MainModel.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+            MainModel.ActualEntryBy = HttpContext.Session.GetString($"EmpName_{formKey}");
             MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
-            MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+            MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+            //MainModel.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            //MainModel.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {
@@ -166,10 +170,13 @@ namespace eTactwebAccounts.Controllers
 
             if (Mode == "U" && MainModel.UpdatedBy == 0)
             {
-                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.UpdatedByEmp = HttpContext.Session.GetString("EmpName");
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.UpdatedByEmp = HttpContext.Session.GetString($"EmpName_{formKey}");
                 MainModel.UpdatedOn = DateTime.Now;
             }
+            MainModel.FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"FromDate_{formKey}"));
+            MainModel.ToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"ToDate_{formKey}"));
+
 
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
@@ -189,21 +196,23 @@ namespace eTactwebAccounts.Controllers
             try
             {
                 var GIGrid = new DataTable();
-                string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGrid");
+                var formKey = model.formKey;
+                var uniqueKey = model.uniqueKey;
+                string modelJson = HttpContext.Session.GetString($"KeyJournalVoucherGrid_{uniqueKey}");
                 List<JournalVoucherModel> JournalVoucherGrid = new List<JournalVoucherModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     JournalVoucherGrid = JsonConvert.DeserializeObject<List<JournalVoucherModel>>(modelJson);
                 }
-                string modelEditJson = HttpContext.Session.GetString("KeyJournalVoucherGridEdit");
+                string modelEditJson = HttpContext.Session.GetString($"KeyJournalVoucherGridEdit_{uniqueKey}");
                 List<JournalVoucherModel> JournalVoucherGridEdit = new List<JournalVoucherModel>();
                 if (!string.IsNullOrEmpty(modelEditJson))
                 {
                     JournalVoucherGridEdit = JsonConvert.DeserializeObject<List<JournalVoucherModel>>(modelEditJson);
                 }
 
-                model.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                model.ActualEntryBy = HttpContext.Session.GetString("UID");
+                model.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                model.ActualEntryBy = HttpContext.Session.GetString($"UID_{formKey}");
                 if (model.Mode == "U")
                 {
                     GIGrid = GetDetailTable(JournalVoucherGridEdit);
@@ -212,8 +221,8 @@ namespace eTactwebAccounts.Controllers
                 {
                     GIGrid = GetDetailTable(JournalVoucherGrid);
                 }
-                model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
-                model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                model.EntryByMachine = HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+                model.IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
                 var Result = await _IJournalVoucher.SaveBankReceipt(model, GIGrid);
                 if (Result != null)
                 {
@@ -221,25 +230,70 @@ namespace eTactwebAccounts.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        HttpContext.Session.Remove("KeyJournalVoucherGrid");
-                        HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
+                        HttpContext.Session.Remove($"KeyJournalVoucherGrid_{uniqueKey}");
+                        HttpContext.Session.Remove($"KeyJournalVoucherGridEdit_{uniqueKey}");
+                        return Json(new
+                        {
+                            success = true,
+                            message = "Journal Voucher Save successfully",
+                            redirectUrl = Url.Action(
+        "Index",
+        "JournalVoucher",
+        new { formKey = formKey }
+
+    )
+                        });
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
-                        HttpContext.Session.Remove("KeyJournalVoucherGrid");
-                        HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
+                        HttpContext.Session.Remove($"KeyJournalVoucherGrid_{uniqueKey}");
+                        HttpContext.Session.Remove($"KeyJournalVoucherGridEdit_{uniqueKey}");
+                        return Json(new
+                        {
+                            success = true,
+                            message = "Journal Voucher Updated successfully",
+                            redirectUrl = Url.Action(
+       "Index",
+       "JournalVoucher",
+               new { formKey = formKey }
+
+
+   )
+                        });
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         ViewBag.isSuccess = false;
                         TempData["500"] = "500";
                         _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
-                        return View("Error", Result);
+                        //return View("Error", Result);
+                        return Json(new
+                        {
+                            success = false,
+                            message = "An unexpected error occurred."
+                        });
+                    }
+                    else if (!string.IsNullOrEmpty(Result.StatusText))
+                    {
+                        // If SP returned a message (like adjustment error)
+                        //TempData["ErrorMessage"] = Result.StatusText;
+                        //HttpContext.Session.Remove($"KeyBankReceiptGridEdit_{uniqueKey}");
+                        //return View(model);
+                        return Json(new
+                        {
+                            success = false,
+                            message = Result.StatusText
+                        });
                     }
                 }
-                return RedirectToAction(nameof(JournalVoucher));
+                return Json(new
+                {
+                    success = false,
+                    message = "An unexpected error occurred."
+                });
+                //return RedirectToAction(nameof(JournalVoucher), new { formKey = formKey });
             }
             catch (Exception ex)
             {
@@ -261,12 +315,12 @@ namespace eTactwebAccounts.Controllers
                 var GIGrid = new DataTable();
                 GIGrid.Columns.Add("AccEntryId", typeof(int));
                 GIGrid.Columns.Add("AccYearCode", typeof(int));
-                GIGrid.Columns.Add("EntryDate", typeof(DateTime));
+                GIGrid.Columns.Add("EntryDate", typeof(string));
                 GIGrid.Columns.Add("DocEntryId", typeof(int));
                 GIGrid.Columns.Add("VoucherDocNo", typeof(string));
                 GIGrid.Columns.Add("BillVouchNo", typeof(string));
-                GIGrid.Columns.Add("VoucherDocDate", typeof(DateTime));
-                GIGrid.Columns.Add("BillInvoiceDate", typeof(DateTime));
+                GIGrid.Columns.Add("VoucherDocDate", typeof(string));
+                GIGrid.Columns.Add("BillInvoiceDate", typeof(string));
                 GIGrid.Columns.Add("BillYearCode", typeof(int));
                 GIGrid.Columns.Add("VoucherRefNo", typeof(string));
                 GIGrid.Columns.Add("SeqNo", typeof(int));
@@ -279,8 +333,8 @@ namespace eTactwebAccounts.Controllers
                 GIGrid.Columns.Add("CrAmt", typeof(decimal));
                 GIGrid.Columns.Add("entryBankCash", typeof(string));
                 GIGrid.Columns.Add("Vouchertype", typeof(string));
-                GIGrid.Columns.Add("chequeDate", typeof(DateTime));
-                GIGrid.Columns.Add("chequeClearDate", typeof(DateTime));
+                GIGrid.Columns.Add("chequeDate", typeof(string));
+                GIGrid.Columns.Add("chequeClearDate", typeof(string));
                 GIGrid.Columns.Add("UID", typeof(int));
                 GIGrid.Columns.Add("CC", typeof(string));
                 GIGrid.Columns.Add("TDSNatureOfPayment", typeof(string));
@@ -293,14 +347,14 @@ namespace eTactwebAccounts.Controllers
                 GIGrid.Columns.Add("AgainstVoucherNo", typeof(string));
                 GIGrid.Columns.Add("AgainstBillno", typeof(string));
                 GIGrid.Columns.Add("PONo", typeof(string));
-                GIGrid.Columns.Add("PoDate", typeof(DateTime));
+                GIGrid.Columns.Add("PoDate", typeof(string));
                 GIGrid.Columns.Add("POYear", typeof(int));
                 GIGrid.Columns.Add("SONo", typeof(int));
                 GIGrid.Columns.Add("CustOrderNo", typeof(string));
-                GIGrid.Columns.Add("SoDate", typeof(DateTime));
+                GIGrid.Columns.Add("SoDate", typeof(string));
                 GIGrid.Columns.Add("SOYear", typeof(int));
                 GIGrid.Columns.Add("ApprovedBy", typeof(int));
-                GIGrid.Columns.Add("ApprovedDate", typeof(DateTime));
+                GIGrid.Columns.Add("ApprovedDate", typeof(string));
                 GIGrid.Columns.Add("Approved", typeof(string));
                 GIGrid.Columns.Add("AccountNarration", typeof(string));
                 GIGrid.Columns.Add("CurrencyId", typeof(int));
@@ -313,14 +367,14 @@ namespace eTactwebAccounts.Controllers
                 GIGrid.Columns.Add("EmpCode", typeof(int));
                 GIGrid.Columns.Add("DeptCode", typeof(int));
                 GIGrid.Columns.Add("MRNNO", typeof(string));
-                GIGrid.Columns.Add("MRNDate", typeof(DateTime));
+                GIGrid.Columns.Add("MRNDate", typeof(string));
                 GIGrid.Columns.Add("MRNYearCode", typeof(int));
                 GIGrid.Columns.Add("CostCenterId", typeof(int));
                 GIGrid.Columns.Add("PaymentMode", typeof(string));
                 GIGrid.Columns.Add("EntryTypebankcashLedger", typeof(string));
                 GIGrid.Columns.Add("TDSApplicable", typeof(string));
                 GIGrid.Columns.Add("TDSChallanNo", typeof(string));
-                GIGrid.Columns.Add("TDSChallanDate", typeof(DateTime));
+                GIGrid.Columns.Add("TDSChallanDate", typeof(string));
                 GIGrid.Columns.Add("PreparedByEmpId", typeof(int));
                 GIGrid.Columns.Add("CGSTAccountCode", typeof(int));
                 GIGrid.Columns.Add("CGSTPer", typeof(decimal));
@@ -336,11 +390,11 @@ namespace eTactwebAccounts.Controllers
                 GIGrid.Columns.Add("BalanceSheetClosed", typeof(string));
                 GIGrid.Columns.Add("ProjectNo", typeof(string));
                 GIGrid.Columns.Add("ProjectYearcode", typeof(int));
-                GIGrid.Columns.Add("ProjectDate", typeof(DateTime));
+                GIGrid.Columns.Add("ProjectDate", typeof(string));
                 GIGrid.Columns.Add("ActualEntryBy", typeof(int));
-                GIGrid.Columns.Add("ActualEntryDate", typeof(DateTime));
+                GIGrid.Columns.Add("ActualEntryDate", typeof(string));
                 GIGrid.Columns.Add("UpdatedBy", typeof(int));
-                GIGrid.Columns.Add("LastUpdatedDate", typeof(DateTime));
+                GIGrid.Columns.Add("LastUpdatedDate", typeof(string));
                 GIGrid.Columns.Add("EntryByMachine", typeof(string));
                 GIGrid.Columns.Add("OursalespersonId", typeof(int));
                 GIGrid.Columns.Add("SubVoucherName", typeof(string));
@@ -353,12 +407,12 @@ namespace eTactwebAccounts.Controllers
                         {
                 Item.AccEntryId ,
                 Item.YearCode ,
-                Item.EntryDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.EntryDate=DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture)  ,
                 Item.DocEntryId ,
                 Item.VoucherDocNo ?? string.Empty,
                 Item.BillVouchNo ?? string.Empty,
-                Item.VoucherDocDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
-                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy",CultureInfo.InvariantCulture) ,
+                Item.VoucherDocDate=DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture)  ,
+                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture)  ,
                 Item.BillYearCode ,
                 Item.VoucherRefNo ?? string.Empty,
                 Item.SrNO ,
@@ -371,8 +425,8 @@ namespace eTactwebAccounts.Controllers
                 Item.CrAmt ,
                 Item.EntryBankCash,
                 Item.VoucherType ?? string.Empty,
-                Item.ChequeDate != null ? Item.ChequeDate : null,
-                Item.BankRECO != null ? Item.ChequeDate : null,
+                Item.ChequeDate != null ? ParseFormattedDate(Item.ChequeDate) : null,
+                Item.BankRECO != null ? ParseFormattedDate(Item.ChequeDate) : null,
                 Item.UID ,
                 Item.CC ?? string.Empty,
                 Item.TDSNatureOfPayment ?? string.Empty,
@@ -385,14 +439,14 @@ namespace eTactwebAccounts.Controllers
                 Item.AgainstVoucherNo ?? string.Empty,
                 Item.AgainstBillno ?? string.Empty,
                 Item.PONo ?? string.Empty,
-                Item.PoDate =DateTime.Now.ToString("dd/MMM/yyyy"),
+                Item.PoDate =DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture) ,
                 Item.POYear ,
                 Item.SONo ,
                 Item.CustOrderNo ?? string.Empty,
-                Item.SoDate  =DateTime.Now.ToString("dd/MMM/yyyy"),
+                Item.SoDate  =DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture) ,
                 Item.SOYear ,
                 Item.ApprovedBy,
-                Item.ApprovedDate = DateTime.Now.ToString("dd/MMM/yyyy"),
+                Item.ApprovedDate = DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture) ,
                 Item.Approved ,
                 Item.AccountNarration ?? string.Empty,
                 Item.CurrencyId ,
@@ -405,14 +459,14 @@ namespace eTactwebAccounts.Controllers
                 Item.EmpCode ,
                 Item.DeptCode,
                 Item.MRNO ?? string.Empty,
-                Item.MRNDate =DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.MRNDate =DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture) ,
                 Item.MRNYearCode ,
                 Item.CostCenterId ,
                 Item.PaymentMode ?? string.Empty,
                 Item.EntryTypebankcashLedger ?? string.Empty,
                 Item.TDSApplicable ?? string.Empty,
                 Item.TDSChallanNo ?? string.Empty,
-                Item.TDSChallanDate = DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.TDSChallanDate = DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture)  ,
                 Item.PreparedByEmpId ,
                 Item.CGSTAccountCode ,
                 Item.CGSTPer ,
@@ -428,11 +482,11 @@ namespace eTactwebAccounts.Controllers
                 Item.BalanceSheetClosed ?? string.Empty,
                 Item.ProjectNo ,
                 Item.ProjectYearcode ,
-                Item.ProjectDate = DateTime.Now.ToString("dd/MMM/yyyy"),
+                Item.ProjectDate = DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture) ,
                 Item.ActualEntryby ,
-                Item.ActualEntryDate = DateTime.Now.ToString("dd/MMM/yyyy"),
+                Item.ActualEntryDate = DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture) ,
                 Item.UpdatedBy ,
-                Item.UpdatedOn ,
+                ParseFormattedDate(Item.UpdatedOn.ToString()) ,
                 Item.EntryByMachine ?? string.Empty,
                 Item.OursalespersonId ,
                 Item.SubVoucher ?? string.Empty,
@@ -526,13 +580,13 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult AddJournalVoucherDetail(JournalVoucherModel model)
+        public IActionResult AddJournalVoucherDetail(JournalVoucherModel model, string uniqueKey)
         {
             try
             {
                 if (model.Mode == "U" || model.Mode == "V")
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGridEdit");
+                    string modelJson = HttpContext.Session.GetString($"KeyJournalVoucherGridEdit_{uniqueKey}");
                     List<JournalVoucherModel> JournalVoucherGrid = new List<JournalVoucherModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -630,7 +684,7 @@ namespace eTactwebAccounts.Controllers
                 }
                 else
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGrid");
+                    string modelJson = HttpContext.Session.GetString($"KeyJournalVoucherGrid_{uniqueKey}");
                     List<JournalVoucherModel> JournalVoucherGrid = new List<JournalVoucherModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -716,7 +770,7 @@ namespace eTactwebAccounts.Controllers
                         MainModel.JournalVoucherList = JournalGrid.OrderBy(x => x.SrNO).ToList();
 
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.JournalVoucherList);
-                        HttpContext.Session.SetString("KeyJournalVoucherGrid", serializedGrid);
+                        HttpContext.Session.SetString($"KeyJournalVoucherGrid_{uniqueKey}", serializedGrid);
                     }
                     else
                     {
@@ -730,7 +784,7 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public IActionResult AddJournalVoucherAdjustDetail(List<JournalVoucherModel> model, string Mode)
+        public IActionResult AddJournalVoucherAdjustDetail(List<JournalVoucherModel> model, string Mode, string uniqueKey)
         {
             try
             {
@@ -739,7 +793,7 @@ namespace eTactwebAccounts.Controllers
 
                 if (Mode != "U" && Mode != "V")
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGrid");
+                    string modelJson = HttpContext.Session.GetString($"KeyJournalVoucherGrid_{uniqueKey}");
                     List<JournalVoucherModel> JournalVoucherItemDetail = new List<JournalVoucherModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -778,11 +832,11 @@ namespace eTactwebAccounts.Controllers
                     // Update the main model and cache
                     MainModel.JournalVoucherList = JournalVoucherDetail.OrderBy(x => x.SrNO).ToList();
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.JournalVoucherList);
-                    HttpContext.Session.SetString("KeyJournalVoucherGrid", serializedGrid);
+                    HttpContext.Session.SetString($"KeyJournalVoucherGrid_{uniqueKey}", serializedGrid);
                 }
                 else
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGridEdit");
+                    string modelJson = HttpContext.Session.GetString($"KeyJournalVoucherGridEdit_{uniqueKey}");
                     List<JournalVoucherModel> JournalVoucherItemDetail = new List<JournalVoucherModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -832,12 +886,12 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public async Task<JsonResult> EditItemRows(int SrNO, string Mode)
+        public async Task<JsonResult> EditItemRows(int SrNO, string Mode, string uniqueKey)
         {
             if (Mode != "U" && Mode != "V")
             {
                 var MainModel = new JournalVoucherModel();
-                string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyJournalVoucherGrid_{uniqueKey}");
                 List<JournalVoucherModel> GridDetail = new List<JournalVoucherModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -850,7 +904,7 @@ namespace eTactwebAccounts.Controllers
             else
             {
                 var MainModel = new JournalVoucherModel();
-                string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGridEdit");
+                string modelJson = HttpContext.Session.GetString($"KeyJournalVoucherGridEdit_{uniqueKey}");
                 List<JournalVoucherModel> GridDetail = new List<JournalVoucherModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -861,12 +915,12 @@ namespace eTactwebAccounts.Controllers
                 return Json(JsonString);
             }
         }
-        public IActionResult DeleteItemRow(int SeqNo, string Mode, string PopUpData)
+        public IActionResult DeleteItemRow(int SeqNo, string Mode, string PopUpData, string uniqueKey)
         {
             if (PopUpData == "PopUpData")
             {
                 var MainModel = new JournalVoucherModel();
-                string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGridPopUpData");
+                string modelJson = HttpContext.Session.GetString($"KeyJournalVoucherGridPopUpData_{uniqueKey}");
                 List<JournalVoucherModel> JournalVoucherGrid = new List<JournalVoucherModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -887,7 +941,7 @@ namespace eTactwebAccounts.Controllers
                     }
                     MainModel.JournalVoucherList = JournalVoucherGrid.OrderBy(x => x.SrNO).ToList();
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.JournalVoucherList);
-                    HttpContext.Session.SetString("KeyJournalVoucherGridPopUpData", serializedGrid);
+                    HttpContext.Session.SetString($"KeyJournalVoucherGridPopUpData_{uniqueKey}", serializedGrid);
                 }
                 return PartialView("_DisplayPopupForPendingVouchers", MainModel);
             }
@@ -896,7 +950,7 @@ namespace eTactwebAccounts.Controllers
                 var MainModel = new JournalVoucherModel();
                 if (Mode != "U" && Mode != "V")
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGrid");
+                    string modelJson = HttpContext.Session.GetString($"KeyJournalVoucherGrid_{uniqueKey}");
                     List<JournalVoucherModel> JournalVoucherGrid = new List<JournalVoucherModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -918,12 +972,12 @@ namespace eTactwebAccounts.Controllers
                         MainModel.JournalVoucherList = JournalVoucherGrid.OrderBy(x => x.SrNO).ToList();
 
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.JournalVoucherList);
-                        HttpContext.Session.SetString("KeyJournalVoucherGrid", serializedGrid);
+                        HttpContext.Session.SetString($"KeyJournalVoucherGrid_{uniqueKey}", serializedGrid);
                     }
                 }
                 else
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGridEdit");
+                    string modelJson = HttpContext.Session.GetString($"KeyJournalVoucherGridEdit_{uniqueKey}");
                     List<JournalVoucherModel> JournalVoucherGrid = new List<JournalVoucherModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -951,20 +1005,23 @@ namespace eTactwebAccounts.Controllers
                 return PartialView("_JournalVoucherGrid", MainModel);
             }
         }
-        public async Task<IActionResult> JournalVoucherDashBoard(string FromDate, string ToDate)
+        public async Task<IActionResult> JournalVoucherDashBoard(string formKey, string FromDate, string ToDate)
         {
             try
             {
-                HttpContext.Session.Remove("KeyJournalVoucherGrid");
-                HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
+                ViewBag.formKey = formKey;
+                var uniqueKey = Guid.NewGuid().ToString();
+                ViewBag.uniqueKey = uniqueKey;
+                HttpContext.Session.Remove($"KeyJournalVoucherGrid_{uniqueKey}");
+                HttpContext.Session.Remove($"KeyJournalVoucherGridEdit_{uniqueKey}");
                 var model = new JournalVoucherModel();
-                FromDate = HttpContext.Session.GetString("FromDate");
-                ToDate = HttpContext.Session.GetString("ToDate");
-                int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
+                int userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
                 var rights = await _IJournalVoucher.GetFormRights(userID);
                 if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
                 }
                 var table = rights.Result.Tables[0];
 
@@ -974,7 +1031,7 @@ namespace eTactwebAccounts.Controllers
                 bool optDelete = Convert.ToBoolean(table.Rows[0]["OptDelete"]);
                 if (!(optAll || optView || optUpdate || optDelete))
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
                 }
                 //var Result = await _IJournalVoucher.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
                 //if (Result != null)
@@ -993,14 +1050,19 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetSearchData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno, string summaryDetail, string searchBox, string Flag = "True")
+        public async Task<IActionResult> GetSearchData(string formKey, string uniqueKey, string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno, string summaryDetail, string searchBox, string Flag = "True", int pageNumber = 1, int pageSize = 10)
         {
+            ViewBag.formKey = formKey;
+
             try
             {
                 var model = new JournalVoucherModel
                 {
-                    YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode")),
-                    Searchbox = searchBox
+                    YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}")),
+                    Searchbox = searchBox,
+                    formKey = formKey,
+                    uniqueKey = uniqueKey
+
                 };
 
                 var result = await _IJournalVoucher
@@ -1009,8 +1071,14 @@ namespace eTactwebAccounts.Controllers
 
                 if (result == null || !(result.Result is DataTable dt))
                 {
+                    model.TotalRecords = 0;
+                    model.Rows = new List<Dictionary<string, object>>();
                     return PartialView("_JournalVoucherDashBoardGrid", model);
                 }
+
+                model.TotalRecords = dt.Rows.Count;
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
 
                 model.Headers = dt.Columns
                     .Cast<DataColumn>()
@@ -1021,14 +1089,26 @@ namespace eTactwebAccounts.Controllers
                     })
                     .ToList();
 
+                //model.Rows = dt.AsEnumerable()
+                //    .Select(r => dt.Columns
+                //        .Cast<DataColumn>()
+                //        .ToDictionary(
+                //            c => c.ColumnName,
+                //            c => r[c] == DBNull.Value ? null : r[c]
+                //        ))
+                //    .ToList();
+
                 model.Rows = dt.AsEnumerable()
-                    .Select(r => dt.Columns
-                        .Cast<DataColumn>()
-                        .ToDictionary(
-                            c => c.ColumnName,
-                            c => r[c] == DBNull.Value ? null : r[c]
-                        ))
-                    .ToList();
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(r => dt.Columns
+                    .Cast<DataColumn>()
+                    .ToDictionary(
+                        c => c.ColumnName,
+                        c => r[c] == DBNull.Value ? null : r[c]
+                    ))
+                .ToList();
+
 
                 return PartialView("_JournalVoucherDashBoardGrid", model);
             }
@@ -1037,32 +1117,36 @@ namespace eTactwebAccounts.Controllers
                 throw;
             }
         }
-        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
+        public async Task<IActionResult> GetDashBoardDetailData(string formKey, string uniqueKey, string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
         {
-            HttpContext.Session.Remove("KeyJournalVoucherGrid");
-            HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
+            HttpContext.Session.Remove($"KeyJournalVoucherGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyJournalVoucherGridEdit_{uniqueKey}");
             var model = new JournalVoucherModel();
             model = await _IJournalVoucher.GetDashBoardDetailData(FromDate, ToDate, LedgerName, VoucherNo, AgainstVoucherRefNo, AgainstVoucherNo);
+            model.formKey = formKey;
+            model.uniqueKey = uniqueKey;
             return PartialView("_JournalVoucherDashBoardDetailGrid", model);
         }
-        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
+        public async Task<IActionResult> GetDashBoardSummaryData(string formKey, string uniqueKey, string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
         {
-            HttpContext.Session.Remove("KeyJournalVoucherGrid");
-            HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
+            HttpContext.Session.Remove($"KeyJournalVoucherGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyJournalVoucherGridEdit_{uniqueKey}");
             var model = new JournalVoucherModel();
             model = await _IJournalVoucher.GetDashBoardSummaryData(FromDate, ToDate, LedgerName, VoucherNo, AgainstVoucherRefNo, AgainstVoucherNo);
+            model.formKey = formKey;
+            model.uniqueKey = uniqueKey;
             return PartialView("_JournalVoucherDashBoardGrid", model);
         }
-        public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
+        public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable, string uniqueKey)
         {
-            HttpContext.Session.Remove("KeyJournalVoucherGridPopUpData");
+            HttpContext.Session.Remove($"KeyJournalVoucherGridPopUpData_{uniqueKey}");
 
             var model = await _IJournalVoucher.PopUpForPendingVouchers(DataTable);
             string serializedGrid = JsonConvert.SerializeObject(model.JournalVoucherList);
-            HttpContext.Session.SetString("KeyJournalVoucherGridPopUpData", serializedGrid);
+            HttpContext.Session.SetString($"KeyJournalVoucherGridPopUpData_{uniqueKey}", serializedGrid);
             return PartialView("_DisplayPopupForPendingVouchers", model);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string VoucherType)
+        public async Task<IActionResult> DeleteByID(string formKey, int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string VoucherType)
         {
             var Result = await _IJournalVoucher.DeleteByID(ID, YearCode, ActualEntryBy, EntryByMachine, ActualEntryDate, VoucherType);
 
@@ -1089,7 +1173,7 @@ namespace eTactwebAccounts.Controllers
 
                 }
             }
-            return RedirectToAction("JournalVoucherDashBoard");
+            return RedirectToAction("JournalVoucherDashBoard", new { formKey = formKey });
         }
         public async Task<JsonResult> FillLedgerInDashboard(string FromDate, string ToDate, string VoucherType)
         {
@@ -1120,6 +1204,51 @@ namespace eTactwebAccounts.Controllers
             var JSON = await _IJournalVoucher.FillAgainstVoucherNoInDashboard(FromDate, ToDate, VoucherType);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }
+
+        [HttpPost]
+        public IActionResult RemoveAgainstRef(string mode, string uniqueKey)
+        {
+            try
+            {
+                string sessionKey = (mode == "U" || mode == "V")
+                    ? $"KeyJournalVoucherGridEdit_{uniqueKey}"
+                    : $"KeyJournalVoucherGrid_{uniqueKey}";
+
+                string modelJson = HttpContext.Session.GetString(sessionKey);
+
+                List<JournalVoucherModel> JournalVoucherGrid = new List<JournalVoucherModel>();
+
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    JournalVoucherGrid = JsonConvert.DeserializeObject<List<JournalVoucherModel>>(modelJson);
+                }
+
+                // Remove rows where ModeOfAdjustment = Against Ref
+                JournalVoucherGrid = JournalVoucherGrid
+                    .Where(x => x.ModeOfAdjustment?.ToLower() != "against ref")
+                    .ToList();
+
+                // Reorder SrNO
+                int sr = 1;
+                foreach (var item in JournalVoucherGrid)
+                {
+                    item.SrNO = sr++;
+                }
+
+                HttpContext.Session.SetString(sessionKey, JsonConvert.SerializeObject(JournalVoucherGrid));
+
+                var MainModel = new JournalVoucherModel
+                {
+                    JournalVoucherList = JournalVoucherGrid
+                };
+
+                return PartialView("_JournalVoucherGrid", MainModel);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
     }
 }

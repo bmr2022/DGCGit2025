@@ -42,5 +42,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillAgainstBillNoInDashboard(string FromDate, string ToDate, string VoucherType);
         Task<ResponseResult> FillSoNoInDashboard(string FromDate, string ToDate, string VoucherType);
         Task<ResponseResult> BackDateEntryAllowed();
+        Task<ResponseResult> FillStore();
     }
 }

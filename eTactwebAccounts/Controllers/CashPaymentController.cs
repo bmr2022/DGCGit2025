@@ -41,7 +41,7 @@ namespace eTactwebAccounts.Controllers
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            string webRootPath = Path.Combine(_IWebHostEnvironment.WebRootPath, "reports");
             var webReport = new WebReport();
             webReport.Report.Clear();
             webReport.Report.Dispose();
@@ -80,26 +80,29 @@ namespace eTactwebAccounts.Controllers
             webReport.Report.Refresh();
             return View(webReport);
         }
-        public async Task<JsonResult> GetFormRights()
+        public async Task<JsonResult> GetFormRights(string formKey)
         {
-            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var JSON = await _ICashPayment.GetFormRights(userID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> CashPayment(int ID, string Mode, int YearCode, string VoucherNo, string FromDate = "", string ToDate = "", string LedgerName = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
+        public async Task<ActionResult> CashPayment(string formKey, int ID, string Mode, int YearCode, string VoucherNo, string FromDate = "", string ToDate = "", string LedgerName = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
         {
-            HttpContext.Session.Remove("KeyCashPaymentGrid");
-            HttpContext.Session.Remove("KeyCashPaymentGridEdit");
+            ViewBag.formKey = formKey;
+            var uniqueKey = Guid.NewGuid().ToString();
+            ViewBag.uniqueKey = uniqueKey;
+            HttpContext.Session.Remove($"KeyCashPaymentGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyCashPaymentGridEdit_{uniqueKey}");
             //TempData.Clear();
 
-            int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            int userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
             var rights = await _ICashPayment.GetFormRights(userID);
             if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
             {
-                return RedirectToAction("Dashboard", "Home");
+                return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
             }
 
 
@@ -128,35 +131,35 @@ namespace eTactwebAccounts.Controllers
             {
                 if (!(optUpdate))
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
                 }
             }
             if (Mode == "V")
             {
                 if (!(optView))
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
                 }
             }
             if (ID <= 0)
             {
                 if (!optSave)
                 {
-                    return RedirectToAction("BankPaymentDashBoard", "BankPayment");
+                    return RedirectToAction("BankPaymentDashBoard", "BankPayment", new { formKey = formKey });
                 }
             }
 
 
 
             var MainModel = new CashPaymentModel();
-            MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            MainModel.ActualEntryBy = HttpContext.Session.GetString("EmpName");
+            MainModel.CC = HttpContext.Session.GetString($"Branch_{formKey}");
+            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}"));
+            MainModel.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+            MainModel.ActualEntryBy = HttpContext.Session.GetString($"EmpName_{formKey}");
             MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
-            MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+            MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+            //MainModel.FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+            //MainModel.ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U" || Mode == "V")
             {
@@ -166,15 +169,18 @@ namespace eTactwebAccounts.Controllers
                 MainModel.YearCode = YearCode;
                 MainModel.VoucherNo = VoucherNo;
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.CashPaymentGrid);
-                HttpContext.Session.SetString("KeyCashPaymentGridEdit", serializedGrid);
+                HttpContext.Session.SetString($"KeyCashPaymentGridEdit_{uniqueKey}", serializedGrid);
             }
 
             if (Mode == "U" && MainModel.UpdatedBy == 0)
             {
-                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.UpdatedByEmp = HttpContext.Session.GetString("EmpName");
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
+                MainModel.UpdatedByEmp = HttpContext.Session.GetString($"EmpName_{formKey}");
                 MainModel.UpdatedOn = DateTime.Now;
             }
+
+            MainModel.FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"FromDate_{formKey}"));
+            MainModel.ToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString($"ToDate_{formKey}"));
 
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
@@ -193,21 +199,23 @@ namespace eTactwebAccounts.Controllers
         {
             try
             {
+                string formKey = model.formKey;
+                string uniqueKey = model.uniqueKey;
                 var GIGrid = new DataTable();
-                string cashModel = HttpContext.Session.GetString("KeyCashPaymentGrid");
+                string cashModel = HttpContext.Session.GetString($"KeyCashPaymentGrid_{uniqueKey}");
                 List<CashPaymentModel> CashPaymentGrid = new List<CashPaymentModel>();
                 if (!string.IsNullOrEmpty(cashModel))
                 {
                     CashPaymentGrid = JsonConvert.DeserializeObject<List<CashPaymentModel>>(cashModel);
                 }
-                string cashEditModel = HttpContext.Session.GetString("KeyCashPaymentGridEdit");
+                string cashEditModel = HttpContext.Session.GetString($"KeyCashPaymentGridEdit_{uniqueKey}");
                 List<CashPaymentModel> CashPaymentGridEdit = new List<CashPaymentModel>();
                 if (!string.IsNullOrEmpty(cashEditModel))
                 {
                     CashPaymentGridEdit = JsonConvert.DeserializeObject<List<CashPaymentModel>>(cashEditModel);
                 }
 
-                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString($"UID_{formKey}"));
                 if (model.Mode == "U")
                 {
                     model.UpdatedOn = DateTime.Now;
@@ -217,8 +225,8 @@ namespace eTactwebAccounts.Controllers
                 {
                     GIGrid = GetDetailTable(CashPaymentGrid);
                 }
-                model.EntryByMachine = HttpContext.Session.GetString("ClientMachineName");
-                model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                model.EntryByMachine = HttpContext.Session.GetString($"ClientMachineName_{formKey}");
+                model.IPAddress = HttpContext.Session.GetString($"ClientIP_{formKey}");
                 var Result = await _ICashPayment.SaveCashPayment(model, GIGrid);
                 if (Result != null)
                 {
@@ -226,32 +234,69 @@ namespace eTactwebAccounts.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        HttpContext.Session.Remove("KeyCashPaymentGrid");
+                        HttpContext.Session.Remove($"KeyCashPaymentGrid_{uniqueKey}");
+                        return Json(new
+                        {
+                            success = true,
+                            message = "Cash Payment Save successfully",
+                            redirectUrl = Url.Action(
+        "Index",
+        "CashPayment",
+        new { formKey = formKey }
+
+    )
+                        });
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
-                        HttpContext.Session.Remove("KeyCashPaymentGridEdit");
+                        HttpContext.Session.Remove($"KeyCashPaymentGridEdit_{uniqueKey}");
+                        return Json(new
+                        {
+                            success = true,
+                            message = "Cash Payment Updated successfully",
+                            redirectUrl = Url.Action(
+       "Index",
+       "CashPayment",
+               new { formKey = formKey }
+
+
+   )
+                        });
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         ViewBag.isSuccess = false;
                         TempData["500"] = "500";
                         _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
-                        return View("Error", Result);
+                        //return View("Error", Result);
+                        return Json(new
+                        {
+                            success = false,
+                            message = "An unexpected error occurred."
+                        });
                     }
                     else if (!string.IsNullOrEmpty(Result.StatusText))
                     {
                         // If SP returned a message (like adjustment error)
                         TempData["ErrorMessage"] = Result.StatusText;
-                        HttpContext.Session.Remove("KeyCashPaymentGrid");
-                        HttpContext.Session.Remove("KeyCashPaymentGridEdit");
+                        HttpContext.Session.Remove($"KeyCashPaymentGrid_{uniqueKey}");
+                        HttpContext.Session.Remove($"KeyCashPaymentGridEdit_{uniqueKey}");
                         //return View(model);
+                        return Json(new
+                        {
+                            success = false,
+                            message = Result.StatusText
+                        });
                     }
                 }
-
-                return RedirectToAction(nameof(CashPaymentDashBoard));
+                return Json(new
+                {
+                    success = false,
+                    message = "An unexpected error occurred."
+                });
+                //return RedirectToAction(nameof(CashPaymentDashBoard),new {formKey=formKey});
 
             }
             catch (Exception ex)
@@ -364,11 +409,11 @@ namespace eTactwebAccounts.Controllers
                         {
                 Item.AccEntryId ,
                 Item.YearCode ,
-                Item.EntryDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.EntryDate=DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture)  ,
                 Item.DocEntryId ,
                 Item.VoucherDocNo ?? string.Empty,
                 Item.BillVouchNo ?? string.Empty,
-                Item.VoucherDocDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.VoucherDocDate=DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture)  ,
                 Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy",CultureInfo.InvariantCulture) ,
                 Item.BillYearCode ,
                 Item.VoucherRefNo ?? string.Empty,
@@ -396,14 +441,14 @@ namespace eTactwebAccounts.Controllers
                 Item.AgainstVoucherNo ?? string.Empty,
                 Item.AgainstBillno ?? string.Empty,
                 Item.PONo ?? string.Empty,
-                Item.PoDate =DateTime.Now.ToString("dd/MMM/yyyy"),
+                Item.PoDate =DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture) ,
                 Item.POYear ,
                 Item.SONo ,
                 Item.CustOrderNo ?? string.Empty,
-                Item.SoDate = DateTime.Now.ToString("dd/MMM/yyyy"),
+                Item.SoDate = DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture) ,
                 Item.SOYear ,
                 Item.ApprovedBy,
-                Item.ApprovedDate = DateTime.Now.ToString("dd/MMM/yyyy"),
+                Item.ApprovedDate = DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture) ,
                 Item.Approved ,
                 Item.PartyWiseNaration ?? string.Empty,
                 Item.CurrencyId ,
@@ -416,14 +461,14 @@ namespace eTactwebAccounts.Controllers
                 Item.EmpCode ,
                 Item.DeptCode,
                 Item.MRNO ?? string.Empty,
-                Item.MRNDate =DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.MRNDate =DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture) ,
                 Item.MRNYearCode ,
                 Item.CostCenterId ,
                 Item.PaymentMode ?? string.Empty,
                 Item.EntryTypebankcashLedger ?? string.Empty,
                 Item.TDSApplicable ?? string.Empty,
                 Item.TDSChallanNo ?? string.Empty,
-                Item.TDSChallanDate = DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.TDSChallanDate = DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture) ,
                 Item.PreparedByEmpId ,
                 Item.CGSTAccountCode ,
                 Item.CGSTPer ,
@@ -439,9 +484,9 @@ namespace eTactwebAccounts.Controllers
                 Item.BalanceSheetClosed ?? string.Empty,
                 Item.ProjectNo ,
                 Item.ProjectYearcode ,
-                Item.ProjectDate = DateTime.Now.ToString("dd/MMM/yyyy"),
+                Item.ProjectDate =DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture) ,
                 Item.ActualEntryby ,
-                Item.ActualEntryDate = DateTime.Now.ToString("dd/MMM/yyyy"),
+                Item.ActualEntryDate =DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture) ,
                 Item.UpdatedBy ,
                 Item.UpdatedOn ,
                 Item.EntryByMachine ?? string.Empty,
@@ -535,13 +580,13 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult AddCashPaymentDetail(CashPaymentModel model)
+        public IActionResult AddCashPaymentDetail(CashPaymentModel model, string uniqueKey)
         {
             try
             {
                 if (model.Mode == "U" || model.Mode == "V")
                 {
-                    string cashEditModel = HttpContext.Session.GetString("KeyCashPaymentGridEdit");
+                    string cashEditModel = HttpContext.Session.GetString($"KeyCashPaymentGridEdit_{uniqueKey}");
                     List<CashPaymentModel> CashPaymentGrid = new List<CashPaymentModel>();
                     if (!string.IsNullOrEmpty(cashEditModel))
                     {
@@ -628,7 +673,7 @@ namespace eTactwebAccounts.Controllers
                         MainModel.CashPaymentGrid = OrderGrid;
 
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.CashPaymentGrid);
-                        HttpContext.Session.SetString("KeyCashPaymentGridEdit", serializedGrid);
+                        HttpContext.Session.SetString($"KeyCashPaymentGridEdit_{uniqueKey}", serializedGrid);
                     }
                     else
                     {
@@ -638,7 +683,7 @@ namespace eTactwebAccounts.Controllers
                 }
                 else
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyCashPaymentGrid");
+                    string modelJson = HttpContext.Session.GetString($"KeyCashPaymentGrid_{uniqueKey}");
                     List<CashPaymentModel> CashPaymentGrid = new List<CashPaymentModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -724,7 +769,7 @@ namespace eTactwebAccounts.Controllers
                         MainModel.CashPaymentGrid = OrderGrid;
 
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.CashPaymentGrid);
-                        HttpContext.Session.SetString("KeyCashPaymentGrid", serializedGrid);
+                        HttpContext.Session.SetString($"KeyCashPaymentGrid_{uniqueKey}", serializedGrid);
                     }
                     else
                     {
@@ -738,7 +783,7 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public IActionResult AddCashPaymentAdjustDetail(List<CashPaymentModel> model, string Mode)
+        public IActionResult AddCashPaymentAdjustDetail(List<CashPaymentModel> model, string Mode, string uniqueKey)
         {
             try
             {
@@ -746,7 +791,7 @@ namespace eTactwebAccounts.Controllers
                 var ProductionEntryDetail = new List<CashPaymentModel>();
                 if (Mode != "U" && Mode != "V")
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyCashPaymentGrid");
+                    string modelJson = HttpContext.Session.GetString($"KeyCashPaymentGrid_{uniqueKey}");
                     List<CashPaymentModel> ProductionEntryItemDetail = new List<CashPaymentModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -787,13 +832,13 @@ namespace eTactwebAccounts.Controllers
                     MainModel.CashPaymentGrid = ProductionEntryDetail;
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.CashPaymentGrid);
-                    HttpContext.Session.SetString("KeyCashPaymentGrid", serializedGrid);
+                    HttpContext.Session.SetString($"KeyCashPaymentGrid_{uniqueKey}", serializedGrid);
 
                 }
                 else
                 {
 
-                    string modelJson = HttpContext.Session.GetString("KeyCashPaymentGridEdit");
+                    string modelJson = HttpContext.Session.GetString($"KeyCashPaymentGridEdit_{uniqueKey}");
                     List<CashPaymentModel> ProductionEntryItemDetail = new List<CashPaymentModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -834,7 +879,7 @@ namespace eTactwebAccounts.Controllers
                     MainModel.CashPaymentGrid = ProductionEntryDetail;
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.CashPaymentGrid);
-                    HttpContext.Session.SetString("KeyCashPaymentGridEdit", serializedGrid);
+                    HttpContext.Session.SetString($"KeyCashPaymentGridEdit_{uniqueKey}", serializedGrid);
                 }
 
                 return PartialView("_CashPaymentGrid", MainModel);
@@ -844,13 +889,13 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public async Task<JsonResult> EditItemRows(int SrNO, string Mode)
+        public async Task<JsonResult> EditItemRows(int SrNO, string Mode, string uniqueKey)
         {
             List<CashPaymentModel> GridDetail = new List<CashPaymentModel>();
             if (Mode != "U" && Mode != "V")
             {
                 var MainModel = new CashPaymentModel();
-                string modelJson = HttpContext.Session.GetString("KeyCashPaymentGrid");
+                string modelJson = HttpContext.Session.GetString($"KeyCashPaymentGrid_{uniqueKey}");
 
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -860,7 +905,7 @@ namespace eTactwebAccounts.Controllers
             else
             {
                 var MainModel = new CashPaymentModel();
-                string modelJson = HttpContext.Session.GetString("KeyCashPaymentGridEdit");
+                string modelJson = HttpContext.Session.GetString($"KeyCashPaymentGridEdit_{uniqueKey}");
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     GridDetail = JsonConvert.DeserializeObject<List<CashPaymentModel>>(modelJson);
@@ -870,12 +915,12 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(SAGrid);
             return Json(JsonString);
         }
-        public IActionResult DeleteItemRow(int SeqNo, string Mode, string PopUpData)
+        public IActionResult DeleteItemRow(int SeqNo, string Mode, string PopUpData, string uniqueKey, bool isedit = false)
         {
             if (PopUpData == "PopUpData")
             {
                 var MainModel = new CashPaymentModel();
-                string modelJson = HttpContext.Session.GetString("KeyCashPaymentGridPopUpData");
+                string modelJson = HttpContext.Session.GetString($"KeyCashPaymentGridPopUpData_{uniqueKey}");
                 List<CashPaymentModel> CashPaymentGrid = new List<CashPaymentModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -887,17 +932,18 @@ namespace eTactwebAccounts.Controllers
                 if (CashPaymentGrid != null && CashPaymentGrid.Count > 0)
                 {
                     CashPaymentGrid.RemoveAt(Convert.ToInt32(Indx));
-                    Indx = 0;
+                    //Indx = 0;
 
-                    foreach (var item in CashPaymentGrid)
-                    {
-                        Indx++;
-                        // item.SequenceNo = Indx;
-                    }
-                    MainModel.CashPaymentGrid = CashPaymentGrid;
+                    //foreach (var item in CashPaymentGrid)
+                    //{
+                    //    Indx++;
+                    //    item.SequenceNo = Indx;
+                    //}
+                    //MainModel.CashPaymentGrid = CashPaymentGrid;
+                    MainModel.CashPaymentGrid = ProcessGrid(CashPaymentGrid, isedit);//kinjal
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.CashPaymentGrid);
-                    HttpContext.Session.SetString("KeyCashPaymentGridPopUpData", serializedGrid);
+                    HttpContext.Session.SetString($"KeyCashPaymentGridPopUpData_{uniqueKey}", serializedGrid);
                 }
                 return PartialView("_DisplayPopupForPendingVouchers", MainModel);
             }
@@ -906,7 +952,7 @@ namespace eTactwebAccounts.Controllers
                 var MainModel = new CashPaymentModel();
                 if (Mode != "U" && Mode != "V")
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyCashPaymentGrid");
+                    string modelJson = HttpContext.Session.GetString($"KeyCashPaymentGrid_{uniqueKey}");
                     List<CashPaymentModel> CashPaymentGrid = new List<CashPaymentModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -918,22 +964,24 @@ namespace eTactwebAccounts.Controllers
                     if (CashPaymentGrid != null && CashPaymentGrid.Count > 0)
                     {
                         CashPaymentGrid.RemoveAt(Convert.ToInt32(Indx));
-                        Indx = 0;
+                        //Indx = 0;
 
-                        foreach (var item in CashPaymentGrid)
-                        {
-                            Indx++;
-                            // item.SequenceNo = Indx;
-                        }
-                        MainModel.CashPaymentGrid = CashPaymentGrid;
+                        //foreach (var item in CashPaymentGrid)
+                        //{
+                        //    Indx++;
+                        //    // item.SequenceNo = Indx;
+                        //}
+                        //MainModel.CashPaymentGrid = CashPaymentGrid;
+
+                        MainModel.CashPaymentGrid = ProcessGrid(CashPaymentGrid, isedit);//kinjal
 
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.CashPaymentGrid);
-                        HttpContext.Session.SetString("KeyCashPaymentGrid", serializedGrid);
+                        HttpContext.Session.SetString($"KeyCashPaymentGrid_{uniqueKey}", serializedGrid);
                     }
                 }
                 else
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyCashPaymentGridEdit");
+                    string modelJson = HttpContext.Session.GetString($"KeyCashPaymentGridEdit_{uniqueKey}");
                     List<CashPaymentModel> CashPaymentGrid = new List<CashPaymentModel>();
                     if (!string.IsNullOrEmpty(modelJson))
                     {
@@ -945,34 +993,58 @@ namespace eTactwebAccounts.Controllers
                     if (CashPaymentGrid != null && CashPaymentGrid.Count > 0)
                     {
                         CashPaymentGrid.RemoveAt(Convert.ToInt32(Indx));
-                        Indx = 0;
+                        //Indx = 0;
 
-                        foreach (var item in CashPaymentGrid)
-                        {
-                            Indx++;
-                            // item.SequenceNo = Indx;
-                        }
-                        MainModel.CashPaymentGrid = CashPaymentGrid;
+                        //foreach (var item in CashPaymentGrid)
+                        //{
+                        //    Indx++;
+                        //    // item.SequenceNo = Indx;
+                        //}
+                        //MainModel.CashPaymentGrid = CashPaymentGrid;
+                        MainModel.CashPaymentGrid = ProcessGrid(CashPaymentGrid, isedit);//kinjal
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.CashPaymentGrid);
-                        HttpContext.Session.SetString("KeyCashPaymentGridEdit", serializedGrid);
+                        HttpContext.Session.SetString($"KeyCashPaymentGridEdit_{uniqueKey}", serializedGrid);
 
                     }
                 }
                 return PartialView("_CashPaymentGrid", MainModel);
             }
         }
-        public async Task<IActionResult> CashPaymentDashBoard(string FromDate, string ToDate, string LedgerName = "", string Bank = "", string VoucherNo = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string PONo = "", string AgainstBillno = "", string DashboardType = "", string Mode = "")
+
+        //kinjal add this processgrid fun
+        private List<CashPaymentModel> ProcessGrid(List<CashPaymentModel> list, bool isedit)
+        {
+            if (list == null || list.Count == 0)
+                return new List<CashPaymentModel>();
+
+            var orderedList = list.OrderBy(x => x.SrNO).ToList();
+
+            if (!isedit)
+            {
+                // Resequence SrNO
+                for (int i = 0; i < orderedList.Count; i++)
+                {
+                    orderedList[i].SrNO = i + 1;
+                }
+            }
+
+            return orderedList;
+        }
+        public async Task<IActionResult> CashPaymentDashBoard(string formKey, string FromDate, string ToDate, string LedgerName = "", string Bank = "", string VoucherNo = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string PONo = "", string AgainstBillno = "", string DashboardType = "", string Mode = "")
         {
             try
             {
-                HttpContext.Session.Remove("KeyCashPaymentGrid");
-                HttpContext.Session.Remove("KeyCashPaymentGridEdit");
+                ViewBag.formKey = formKey;
+                var uniqueKey = Guid.NewGuid().ToString();
+                ViewBag.uniqueKey = uniqueKey;
+                HttpContext.Session.Remove($"KeyCashPaymentGrid_{uniqueKey}");
+                HttpContext.Session.Remove($"KeyCashPaymentGridEdit_{uniqueKey}");
                 var model = new CashPaymentModel();
-                int userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                int userID = Convert.ToInt32(HttpContext.Session.GetString($"EmpID_{formKey}"));
                 var rights = await _ICashPayment.GetFormRights(userID);
                 if (rights?.Result == null || rights.Result.Tables.Count == 0 || rights.Result.Tables[0].Rows.Count == 0)
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
                 }
                 var table = rights.Result.Tables[0];
 
@@ -982,10 +1054,10 @@ namespace eTactwebAccounts.Controllers
                 bool optDelete = Convert.ToBoolean(table.Rows[0]["OptDelete"]);
                 if (!(optAll || optView || optUpdate || optDelete))
                 {
-                    return RedirectToAction("Dashboard", "Home");
+                    return RedirectToAction("Dashboard", "Home", new { formKey = formKey });
                 }
-                //FromDate = HttpContext.Session.GetString("FromDate");
-                //ToDate = HttpContext.Session.GetString("ToDate");
+                //FromDate = HttpContext.Session.GetString($"FromDate_{formKey}");
+                //ToDate = HttpContext.Session.GetString($"ToDate_{formKey}");
                 //var Result = await _ICashPayment.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
                 //if (Result != null)
                 //{
@@ -1013,30 +1085,42 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
+        public async Task<IActionResult> GetDashBoardDetailData(string formKey, string uniqueKey, string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
         {
-            HttpContext.Session.Remove("KeyCashPaymentGrid");
-            HttpContext.Session.Remove("KeyCashPaymentGridEdit");
+            HttpContext.Session.Remove($"KeyCashPaymentGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyCashPaymentGridEdit_{uniqueKey}");
             var model = new CashPaymentModel();
             model = await _ICashPayment.GetDashBoardDetailData(FromDate, ToDate, LedgerName, Bank, VoucherNo, AgainstVoucherNo, PoNo, AgainstBillno);
             return PartialView("_CashPaymentDashBoardDetailGrid", model);
         }
-        public async Task<IActionResult> GetSearchData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno, string summaryDetail, string searchBox, string Flag = "True")
+        public async Task<IActionResult> GetSearchData(string formKey, string uniqueKey, string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno, string summaryDetail, string searchBox, string Flag = "True", int pageNumber = 1, int pageSize = 10)
         {
+            ViewBag.formKey = formKey;
+
             try
             {
+                ViewBag.formKey = formKey;
+
                 var model = new CashPaymentModel
                 {
-                    YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode")),
-                    Searchbox = searchBox
+                    YearCode = Convert.ToInt32(HttpContext.Session.GetString($"YearCode_{formKey}")),
+                    Searchbox = searchBox,
+                    formKey = formKey,
+                    uniqueKey = uniqueKey
                 };
 
                 var result = await _ICashPayment.GetDashBoardData(summaryDetail, ParseFormattedDate(FromDate), ParseFormattedDate(ToDate), LedgerName, Bank, VoucherNo, AgainstVoucherNo, PoNo, AgainstBillno);
 
                 if (result == null || !(result.Result is DataTable dt))
                 {
+                    model.TotalRecords = 0;
+                    model.Rows = new List<Dictionary<string, object>>();
                     return PartialView("_CashPaymentDashBoardGrid", model);
                 }
+
+                model.TotalRecords = dt.Rows.Count;
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
 
                 model.Headers = dt.Columns
                     .Cast<DataColumn>()
@@ -1047,14 +1131,25 @@ namespace eTactwebAccounts.Controllers
                     })
                     .ToList();
 
+                //model.Rows = dt.AsEnumerable()
+                //    .Select(r => dt.Columns
+                //        .Cast<DataColumn>()
+                //        .ToDictionary(
+                //            c => c.ColumnName,
+                //            c => r[c] == DBNull.Value ? null : r[c]
+                //        ))
+                //    .ToList();
+
                 model.Rows = dt.AsEnumerable()
-                    .Select(r => dt.Columns
-                        .Cast<DataColumn>()
-                        .ToDictionary(
-                            c => c.ColumnName,
-                            c => r[c] == DBNull.Value ? null : r[c]
-                        ))
-                    .ToList();
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(r => dt.Columns
+                    .Cast<DataColumn>()
+                    .ToDictionary(
+                        c => c.ColumnName,
+                        c => r[c] == DBNull.Value ? null : r[c]
+                    ))
+                .ToList();
 
                 return PartialView("_CashPaymentDashBoardGrid", model);
             }
@@ -1064,23 +1159,27 @@ namespace eTactwebAccounts.Controllers
             }
         }
 
-        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
+        public async Task<IActionResult> GetDashBoardSummaryData(string formKey, string uniqueKey, string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
         {
-            HttpContext.Session.Remove("KeyCashPaymentGrid");
-            HttpContext.Session.Remove("KeyCashPaymentGridEdit");
+            ViewBag.formKey = formKey;
+
+            HttpContext.Session.Remove($"KeyCashPaymentGrid_{uniqueKey}");
+            HttpContext.Session.Remove($"KeyCashPaymentGridEdit_{uniqueKey}");
             var model = new CashPaymentModel();
             model = await _ICashPayment.GetDashBoardSummaryData(FromDate, ToDate, LedgerName, Bank, VoucherNo, AgainstVoucherNo, PoNo, AgainstBillno);
+            model.formKey = formKey;
+            model.uniqueKey = uniqueKey;
             return PartialView("_CashPaymentDashBoardGrid", model);
         }
-        public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
+        public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable, string uniqueKey)
         {
-            HttpContext.Session.Remove("KeyCashPaymentGridPopUpData");
+            HttpContext.Session.Remove($"KeyCashPaymentGridPopUpData_{uniqueKey}");
             var model = await _ICashPayment.PopUpForPendingVouchers(DataTable);
             string serializedGrid = JsonConvert.SerializeObject(model.CashPaymentGrid);
-            HttpContext.Session.SetString("KeyCashPaymentGridPopUpData", serializedGrid);
+            HttpContext.Session.SetString($"KeyCashPaymentGridPopUpData_{uniqueKey}", serializedGrid);
             return PartialView("_DisplayPopupForPendingVouchers", model);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string VoucherType, string FromDate, string ToDate, string LedgerName = "", string Bank = "", string VoucherNo = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string PONo = "", string AgainstBillno = "", string DashboardType = "", string Mode = "")
+        public async Task<IActionResult> DeleteByID(string formKey, int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string VoucherType, string FromDate, string ToDate, string LedgerName = "", string Bank = "", string VoucherNo = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string PONo = "", string AgainstBillno = "", string DashboardType = "", string Mode = "")
         {
             var Result = await _ICashPayment.DeleteByID(ID, YearCode, ActualEntryBy, EntryByMachine, ActualEntryDate, VoucherType);
 
@@ -1109,7 +1208,7 @@ namespace eTactwebAccounts.Controllers
                 }
             }
 
-            return RedirectToAction("CashPaymentDashBoard", new { FromDate = FromDate, ToDate = ToDate, LedgerName = LedgerName, Bank = Bank, VoucherNo = VoucherNo, AgainstVoucherRefNo = AgainstVoucherRefNo, AgainstVoucherNo = AgainstVoucherNo, PONo = PONo, AgainstBillno = AgainstBillno = "", DashboardType = DashboardType = "", Mode = "Search" });
+            return RedirectToAction("CashPaymentDashBoard", new { formKey = formKey, FromDate = FromDate, ToDate = ToDate, LedgerName = LedgerName, Bank = Bank, VoucherNo = VoucherNo, AgainstVoucherRefNo = AgainstVoucherRefNo, AgainstVoucherNo = AgainstVoucherNo, PONo = PONo, AgainstBillno = AgainstBillno = "", DashboardType = DashboardType = "", Mode = "Search" });
 
         }
         public async Task<JsonResult> FillLedgerInDashboard(string FromDate, string ToDate, string VoucherType)
@@ -1141,6 +1240,50 @@ namespace eTactwebAccounts.Controllers
             var JSON = await _ICashPayment.FillAgainstVoucherNoInDashboard(FromDate, ToDate, VoucherType);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }
+        [HttpPost]
+        public IActionResult RemoveAgainstRef(string mode, string uniqueKey)
+        {
+            try
+            {
+                string sessionKey = (mode == "U" || mode == "V")
+                    ? $"KeyCashPaymentGridEdit_{uniqueKey}"
+                    : $"KeyCashPaymentGrid_{uniqueKey}";
+
+                string modelJson = HttpContext.Session.GetString(sessionKey);
+
+                List<CashPaymentModel> CashPaymentGrid = new List<CashPaymentModel>();
+
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    CashPaymentGrid = JsonConvert.DeserializeObject<List<CashPaymentModel>>(modelJson);
+                }
+
+                // Remove rows where ModeOfAdjustment = Against Ref
+                CashPaymentGrid = CashPaymentGrid
+                    .Where(x => x.ModeOfAdjustment?.ToLower() != "against ref")
+                    .ToList();
+
+                // Reorder SrNO
+                int sr = 1;
+                foreach (var item in CashPaymentGrid)
+                {
+                    item.SrNO = sr++;
+                }
+
+                HttpContext.Session.SetString(sessionKey, JsonConvert.SerializeObject(CashPaymentGrid));
+
+                var MainModel = new CashPaymentModel
+                {
+                    CashPaymentGrid = CashPaymentGrid
+                };
+
+                return PartialView("_CashPaymentGrid", MainModel);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
     }
 }
